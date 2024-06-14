@@ -23,6 +23,7 @@ import {
 } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject, saveDraftProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
+import { clearAllFormData } from '../../../redux/reducers/formData';
 
 const Preview = ({
   stepper,
@@ -125,6 +126,7 @@ const Preview = ({
   );
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     toggleYouDidItModal();
     stepper.next();
   };

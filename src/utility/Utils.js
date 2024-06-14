@@ -801,3 +801,13 @@ export const checkPointRedirection = ({ response, navigate }) => {
     navigate('/dashboard');
   }
 };
+
+export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
+  const filteredObj = Object.fromEntries(
+    Object.keys(savedData) // Get all keys from savedData
+      .filter((key) => key in formSchemaFields) // Keep only keys that are in form schema
+      .map((key) => [key, savedData[key]]), // Map the key-value pairs for the new object
+  );
+
+  return filteredObj;
+};

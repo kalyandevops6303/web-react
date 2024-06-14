@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Progress, Row } from 'reactstrap';
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
@@ -18,13 +18,16 @@ import { projectDetails } from '../../redux/selectors/createBidSelectors';
 import FixedAdvanceMilestoneView from './overview/FixedAdvanceMilestoneView';
 import { truncateSentence } from '../../utility/Utils';
 import DraftSavedModal from '../modals/DraftSavedModal';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../redux/reducers/formData';
 
 const CreateBid = () => {
   const location = useLocation();
   const params = useParams();
   const navigate = useNavigate();
-
-  const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[5]);
+  const savedFormData = useSelector(formData);
+  const dispatch = useDispatch();
+  const [currentStep, setCurrentStep] = useState(savedFormData?.currentStep || location?.pathname?.split('/')?.[5]);
   const [progressPercent, setProgressPercent] = useState(null);
   const [draftSavedModal, setDraftSavedModal] = useState(null);
 
@@ -38,6 +41,7 @@ const CreateBid = () => {
   };
 
   useEffect(() => {
+    dispatch(setFormData({...savedFormData,currentStep}));
     let percent = 0;
     if (currentStep === 'team') {
       percent = 30;

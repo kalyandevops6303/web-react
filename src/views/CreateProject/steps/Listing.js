@@ -1,22 +1,24 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { useEffect } from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import classNames from 'classnames';
 import { Label, Row, Col, Input, Form, Button, Card, CardHeader, CardBody, FormFeedback, Spinner } from 'reactstrap';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
 import { saveDraftProject } from '../../../redux/actions/createProjectActions';
 import { saveDraftProjectId, saveDraftProjectLoading } from '../../../redux/selectors/createProjectSelectors';
-import { removeEmptyKeys } from '../../../utility/Utils';
+import { removeEmptyKeys, filteredFormSchema } from '../../../utility/Utils';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../../redux/reducers/formData';
 
 const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetails, files, draftListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
@@ -58,9 +60,8 @@ const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetail
     defaultValues: {},
   });
 
-  const dispatch = useDispatch();
   const params = useParams();
-
+  const dispatch = useDispatch();
   const draftProjectId = useSelector(saveDraftProjectId);
   const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
 
@@ -193,6 +194,15 @@ const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetail
     );
   };
 
+  const savedFormData = useSelector(formData);
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
   const onSubmit = () => {
     if (!watch('listingOption')) {
       trigger('listingOption');
@@ -237,6 +247,18 @@ const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetail
     }
   }, [draftListingDetails]);
 
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ListingDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
+
   return (
     <RequirementsFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -263,6 +285,8 @@ const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetail
                           clearErrors('endDate');
                           resetField('startDate');
                           resetField('endDate');
+                          setValue('startDate', undefined);
+                          setValue('endDate', undefined);
 
                           const isChecked = e.target.checked;
                           const value = 'enter-duration';

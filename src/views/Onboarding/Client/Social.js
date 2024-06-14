@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
@@ -14,11 +14,13 @@ import { profileDetailsLoading } from '../../../redux/selectors/clientOnboarding
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
+import { filteredFormSchema, formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -32,26 +34,29 @@ const Social = () => {
       }),
     ),
   });
-
   const defaultLink = {
     linkName: '',
     link: '',
   };
+
+  const savedFormData = useSelector(formData);
 
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(SocialSchema),
     defaultValues: {
-      linkedInLink: '',
-      twitterLink: '',
-      githubLink: '',
-      otherSocialLinks: [defaultLink],
+      linkedInLink: savedFormData?.linkedInLink || '',
+      twitterLink: savedFormData?.twitterLink || '',
+      githubLink: savedFormData?.githubLink || '',
+      otherSocialLinks: savedFormData?.otherSocialLinks || [defaultLink],
     },
   });
 
@@ -64,9 +69,27 @@ const Social = () => {
     name: 'otherSocialLinks',
   });
 
+  const localFormData = useWatch({ control });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: SocialSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
@@ -84,6 +107,7 @@ const Social = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
@@ -92,6 +116,7 @@ const Social = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
@@ -169,19 +194,39 @@ const Social = () => {
     if (res) {
       if (res?.client_info?.social_links.length > 0) {
         if (res?.client_info?.social_links.find((link) => link.platform === 'linkedIn')) {
-          setValue('linkedInLink', res?.client_info?.social_links.find((link) => link.platform === 'linkedIn').url, {
-            shouldValidate: true,
-          });
+          setValue(
+            'linkedInLink',
+            savedFormData?.linkedInLink ||
+              res?.client_info?.social_links.find((link) => link.platform === 'linkedIn').url,
+            {
+              shouldValidate: true,
+            },
+          );
+        } else {
+          setValue('linkedInLink', savedFormData?.linkedInLink);
         }
         if (res?.client_info?.social_links.find((link) => link.platform === 'twitter')) {
-          setValue('twitterLink', res?.client_info?.social_links.find((link) => link.platform === 'twitter').url, {
-            shouldValidate: true,
-          });
+          setValue(
+            'twitterLink',
+            savedFormData?.twitterLink ||
+              res?.client_info?.social_links.find((link) => link.platform === 'twitter').url,
+            {
+              shouldValidate: true,
+            },
+          );
+        } else {
+          setValue('twitterLink', savedFormData?.twitterLink);
         }
         if (res?.client_info?.social_links.find((link) => link.platform === 'github')) {
-          setValue('githubLink', res?.client_info?.social_links.find((link) => link.platform === 'github').url, {
-            shouldValidate: true,
-          });
+          setValue(
+            'githubLink',
+            savedFormData?.githubLink || res?.client_info?.social_links.find((link) => link.platform === 'github').url,
+            {
+              shouldValidate: true,
+            },
+          );
+        } else {
+          setValue('githubLink', savedFormData?.githubLink);
         }
         if (
           res?.client_info?.social_links.filter(
@@ -190,16 +235,19 @@ const Social = () => {
         ) {
           setValue(
             'otherSocialLinks',
-            res?.client_info?.social_links
-              .filter(
-                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
-              )
-              .map((link) => ({
-                linkName: link.platform,
-                link: link.url,
-              })),
+            savedFormData?.otherSocialLinks ||
+              res?.client_info?.social_links
+                .filter(
+                  (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+                )
+                .map((link) => ({
+                  linkName: link.platform,
+                  link: link.url,
+                })),
             { shouldValidate: true },
           );
+        } else {
+          setValue('otherSocialLinks', savedFormData?.otherSocialLinks);
         }
       }
     }

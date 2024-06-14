@@ -6,6 +6,7 @@ import { Button, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalHeader
 import ResendOTPComp from '../auth/components/ResendOTP';
 import { EmailVerifyModalContainer } from './style';
 import { createClub } from '../../redux/actions/clubActions';
+import { clearAllFormData } from '../../redux/reducers/formData';
 
 const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
     setIsLoading(false);
     toggleModal();
     setClubCreatedModal(true);
+    dispatch(clearAllFormData());
   };
 
   const verifyOtp = () => {
@@ -41,7 +43,14 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
       email_code: code,
       team_type: 'CLUB',
     };
-    dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess, onError: () => setIsLoading(false) }));
+    const requiredData = Object.keys(dataWithCode).reduce((result, key) => {
+      if (key !== 'selectedImagePreview') {
+        // eslint-disable-next-line no-param-reassign
+        result[key] = dataWithCode[key];
+      }
+      return result;
+    }, {});
+    dispatch(createClub({ data: requiredData, onSuccess: onCreateTeamSuccess, onError: () => setIsLoading(false) }));
   };
 
   return (

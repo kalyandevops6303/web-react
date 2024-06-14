@@ -17,6 +17,7 @@ import { clubStatus } from '../../../../utility/constants/Constant';
 import { getNotificationsPolling } from '../../../../redux/actions/notificationsActions';
 import { notificationsPolling } from '../../../../redux/selectors/notificationsSelectors';
 import styled from 'styled-components';
+import { clearAllFormData } from '../../../../redux/reducers/formData';
 
 const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
@@ -56,6 +57,10 @@ const NavbarUser = ({ setNavBarLoading }) => {
       dispatch(getNotificationsPolling());
     }
   }, [location, userDetailsData]);
+
+  useEffect(() => {
+    dispatch(clearAllFormData());
+  }, [location.pathname]);
 
   const LineWrapper = styled.div`
     position: relative;

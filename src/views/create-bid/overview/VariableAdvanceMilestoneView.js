@@ -60,6 +60,8 @@ import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors'
 import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
 import CreateBidModal from '../../modals/CreateBidModal';
 import capitalize from '../../../lib/capitalize';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 
 const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -135,6 +137,8 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
     ),
   });
 
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const {
     control,
     handleSubmit,
@@ -146,7 +150,7 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
     mode: 'onChange',
     resolver: yupResolver(MilestoneDetailsSchema),
     defaultValues: {
-      milestones: [
+      milestones: savedFormData?.milestones || [
         {
           milestoneId: uuidv4(),
           name: undefined,
@@ -191,6 +195,13 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
   const [createBidModal, setCreateBidModal] = useState(null);
   const [bidData, setBidData] = useState(null);
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const toggle = (id) => {
     if (open === id) {
@@ -278,6 +289,7 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
     });
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`);
   };
 
@@ -451,6 +463,7 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {
@@ -585,10 +598,12 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
       setBidData(res);
-      if (res?.project_start_date > 0) {
+      if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
+      } else if (savedFormData?.estimatedStartDate) {
+        setValue('estimatedStartDate', new Date(savedFormData?.estimatedStartDate), { shouldValidate: true });
       }
-      if (res?.milestones?.length > 0) {
+      if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
           milestoneId: uuidv4(),
           name: milestone?.name,
@@ -620,7 +635,7 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
 
         setValue('milestones', reqData, { shouldValidate: true });
         trigger('milestones');
-      } else if (res?.workers?.length > 0) {
+      } else if (res?.workers?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = [
           {
             milestoneId: uuidv4(),
@@ -639,8 +654,10 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
         ];
 
         setValue('milestones', reqData, { shouldValidate: true });
+      } else {
+        setValue('milestones', savedFormData?.milestones, { shouldValidate: true });
       }
-      if (res?.documents?.length > 0) {
+      if (res?.documents?.length > 0 && !savedFormDocuments?.length) {
         const reqFiles = res?.documents?.map((file) => ({
           file,
           id: uuidv4(),
@@ -650,6 +667,8 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
           isUploaded: true,
         }));
         setFiles(reqFiles);
+      } else if (savedFormDocuments?.length) {
+        setFiles(savedFormDocuments);
       }
       if (res?.workers?.length > 0) {
         setAllWorkers(res?.workers);
@@ -1276,7 +1295,7 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                     </div>
                   </UncontrolledTooltip>
                 </Label>
-                {files.length ? (
+                {files?.length ? (
                   <>
                     <div className="px-1 mt-50">{fileList()}</div>
                     <div {...getRootProps({ className: 'dropzone' })}>
