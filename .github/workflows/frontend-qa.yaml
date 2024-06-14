@@ -3,14 +3,14 @@ on:
   workflow_dispatch:
   push:
     # branches:
-    #   - dev-test
+    #   - qa
     tags:
       - 'qa_v*'
 
 jobs:
   build:
     #runs-on: ubuntu-latest
-    runs-on: [self-hosted, linux, X64, trumio-orgrunner]
+    runs-on: [self-hosted, linux, X64, trumio-qa-orgrunner]
     steps:
       - uses: actions/checkout@v3
       - name: Install Azure cli
