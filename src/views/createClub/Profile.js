@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 // import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,13 +11,15 @@ import { ChevronLeft } from 'react-feather';
 import theme from '../../configs/themeVariables';
 import { InfoContainer } from '../create-bid/style';
 import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
-import { handleEmailClick, isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
+import { filteredFormSchema, handleEmailClick, isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
 import { registerClubEmail, setClubCreateDataAction, updateClub } from '../../redux/actions/clubActions';
 import EmailVerifyModal from './EmailVerifyModal';
 import { getTeamById } from '../../services/teamServices';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userProfileEdit } from '../../utility/constants/Constant';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../redux/reducers/formData';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -51,6 +53,8 @@ const Profile = () => {
     unregister,
     register,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -68,6 +72,7 @@ const Profile = () => {
   const userDetailsData = useSelector(userData);
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
   const loading = useSelector((state) => state.clubs.loading);
+  const savedFormData = useSelector(formData);
 
   const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
   const toggleEmailVerifyModal = () => setEmailVerifyModal(!emailVerifyModal);
@@ -75,6 +80,13 @@ const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const onBackClick = () => {
     if (location.pathname.includes('profile-edit')) {
@@ -94,7 +106,7 @@ const Profile = () => {
 
   const onSubmit = (data) => {
     const { isWebpage, isUniversityApproval, clubEmailID, clubLinkedin, clubWebsite, universityWebpage } = data;
-    const formData = { clubEmailID, clubLinkedin, clubWebsite, universityWebpage };
+    const formDetails = { clubEmailID, clubLinkedin, clubWebsite, universityWebpage };
 
     const clubData = {
       email: clubEmailID,
@@ -104,7 +116,7 @@ const Profile = () => {
     };
 
     if (isWebpage === 'Yes' && isUniversityApproval) {
-      formData.isUniversityApproval = '';
+      formDetails.isUniversityApproval = '';
     }
 
     const removeEmptyClubData = removeEmptyKeys(clubData);
@@ -121,7 +133,7 @@ const Profile = () => {
       };
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
-      onEmailVerifySuccess(formData.clubEmailID);
+      onEmailVerifySuccess(formDetails.clubEmailID);
     }
   };
 
@@ -172,6 +184,18 @@ const Profile = () => {
   }, [clubDetails]);
 
   const disableBtn = isWebpageValue === 'No' && isUniversityApprovalValue === 'No';
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ProfileSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   return (
     <ProfileFormContainer className="w-75">

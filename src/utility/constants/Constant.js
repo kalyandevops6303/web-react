@@ -55,7 +55,7 @@ const bidStatusesOptions = [
   { label: 'Reviewed', value: 'REVIEWED' },
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Closed', value: 'REJECTED' },
-  { label: 'Drafts', value: 'DRAFTS' },
+  { label: 'Drafts', value: 'DRAFT' },
 ];
 
 const statusesOptions = [
@@ -198,6 +198,11 @@ const CUSTOMER_SUPPORT_TYPES = {
   other: 'other',
 };
 
+const CITIZEN_TYPES = {
+  US: 'US',
+  OTHER: 'OTHER',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -232,4 +237,5 @@ export {
   SUPPORT_EMAIL,
   projectStatusEnum,
   CUSTOMER_SUPPORT_TYPES,
+  CITIZEN_TYPES,
 };

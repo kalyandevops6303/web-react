@@ -23,6 +23,7 @@ import {
 } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject, saveDraftProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
+import { clearAllFormData } from '../../../redux/reducers/formData';
 
 const Preview = ({
   stepper,
@@ -125,6 +126,7 @@ const Preview = ({
   );
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     toggleYouDidItModal();
     stepper.next();
   };
@@ -139,7 +141,7 @@ const Preview = ({
       }));
 
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,
@@ -149,7 +151,7 @@ const Preview = ({
       };
     } else {
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,
@@ -255,7 +257,7 @@ const Preview = ({
       }));
 
       details = {
-        name: projectName.trim(),
+        name: projectName?.trim(),
         description: projectDescription,
         expected_duration: {
           duration: expectedDuration,
@@ -265,7 +267,7 @@ const Preview = ({
       };
     } else {
       details = {
-        name: projectName.trim(),
+        name: projectName?.trim(),
         description: projectDescription,
         expected_duration: {
           duration: expectedDuration,

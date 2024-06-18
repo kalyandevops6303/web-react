@@ -53,7 +53,7 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile, getFileSize, removeEmptyKeys, renderFilePreview } from '../../../utility/Utils';
+import { downloadUploadedFile, filteredFormSchema, getFileSize, removeEmptyKeys, renderFilePreview } from '../../../utility/Utils';
 import { saveDraftProject } from '../../../redux/actions/createProjectActions';
 import {
   draftProjectDetailsLoading,
@@ -61,6 +61,8 @@ import {
   saveDraftProjectLoading,
 } from '../../../redux/selectors/createProjectSelectors';
 import SaveForLaterModal from '../../modals/SaveForLaterModal';
+import { setFormData, setFormDocuments } from '../../../redux/reducers/formData';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import TextEditor from '../TextEditor';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSavedModal, draftRequirementDetails }) => {
@@ -273,6 +275,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
   const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
   const draftProjectId = useSelector(saveDraftProjectId);
   const draftProjectDetailsIsLoading = useSelector(draftProjectDetailsLoading);
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
 
   const dispatch = useDispatch();
   const params = useParams();
@@ -280,6 +284,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
   const localFormData = useWatch({ control });
 
   const toggleSaveForLaterModal = () => setSaveForLaterModal(!saveForLaterModal);
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   useEffect(() => {
     clearErrors('expectedDuration');
@@ -568,6 +577,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {
@@ -767,6 +777,21 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
       setValue('currencyType', { label: currenciesData[0]?.name, value: currenciesData[0] }, { shouldValidate: true });
     }
   }, [currenciesData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ProjectDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+    if (savedFormDocuments) {
+      setFiles(savedFormDocuments);
+    }
+  }, []);
 
   return (
     <>

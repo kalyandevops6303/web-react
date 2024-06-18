@@ -1,6 +1,6 @@
 {
   "name": "trumio",
-  "version": "9.0.2",
+  "version": "9.0.4",
   "private": true,
   "dependencies": {
     "@bugsnag/js": "7.18.0",
