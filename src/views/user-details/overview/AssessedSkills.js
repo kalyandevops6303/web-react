@@ -34,10 +34,10 @@ const AssessedSkills = () => {
                         <div className="d-flex gap-1">
                             {userAssessments.map((assessment) => (
                                 assessment.completed_date && !assessment.hidden &&
-                                <div className="d-flex gap-1" style={{ maxWidth: "20%" }}>
+                                <div className="d-flex gap-1 h-full" style={{ maxWidth: "20%" }}>
                                     <AssessedSkillGradeBar grade={assessment.assessment_grade} />
 
-                                    <div className="d-flex flex-column">
+                                    <div className="d-flex flex-column h-100 justify-content-between">
                                         <CardText tag={"h5"}>{assessment.assessment_name}</CardText>
                                         <AssessmentResultText grade={assessment.assessment_grade}>
                                             <small><b>{assessment.assessment_grade}</b></small>

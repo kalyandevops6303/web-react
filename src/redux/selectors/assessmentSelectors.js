@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit';
 const assessmentSelector = (state) => state.assessments; 
 
 const selectUserAssessments = createSelector(assessmentSelector, (assessments) => assessments.userAssessments);
+const selectUserAssessmentsCount = createSelector(assessmentSelector, (assessments) => assessments.userAssessmentsCount);
 const selectAllAssessments = createSelector(assessmentSelector, (assessments) => assessments.allAssessments);
 const selectAssessmentLink = createSelector(assessmentSelector, (assessments) => assessments.assessmentLink);
 const selectAssessmentLinkLoading = createSelector(assessmentSelector, (assessments) => assessments.assessmentLinkLoading);
@@ -13,6 +14,7 @@ const selectUserAssessmentsLoading = createSelector(assessmentSelector, (assessm
 
 export {
     selectUserAssessments,
+    selectUserAssessmentsCount,
     selectAllAssessments,
     selectAssessmentLink,
     selectAssessmentLinkLoading,

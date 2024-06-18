@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     userAssessments: [],
+    userAssessmentsCount: 0, 
     userAssessmentsLoading: false,
     allAssessments: [],
     allAssessmentsLoading: false,
@@ -26,7 +27,8 @@ const assessmentSlice = createSlice({
         }),
         userAssessmentsSuccess: (state, action) => ({
             ...state,
-            userAssessments: action.payload,
+            userAssessments: action.payload.assessments,
+            userAssessmentsCount: action.payload.exam_counter,
             userAssessmentsLoading: false,
             error: null
         }),

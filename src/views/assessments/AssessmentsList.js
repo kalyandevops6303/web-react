@@ -29,7 +29,7 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
 
     const handleAddAssessment = (value) => {
         setDropdownValue(null)
-        dispatch(addAssessment({ assessment_name: value.label, assessment_id: value.value }))
+        dispatch(addAssessment({ assessment_name: value.value.assessment_name, assessment_id: value.value.assessment_id, str_type: value.value.str_type, _id: value.value._id }))
     }
 
     return (
@@ -62,23 +62,24 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
                             <AssessmentsListItem open={setOpen == assessment.assessment_id} assessment={assessment} />
                         ))}
                         <td>
+                            <>
+                                {Array.from({ length: Math.max(5 - data.length, 1) }).map((_, index) => (
+                                    <Select
+                                        isClearable
+                                        options={dropdownOptions?.map((item) => {
+                                            return { value: item, label: item.assessment_name }
+                                        })}
+                                        classNamePrefix="select"
+                                        placeholder={"Enter skill"}
+                                        theme={selectThemeColors}
+                                        menuPosition='fixed'
+                                        onChange={handleAddAssessment}
+                                        value={dropdownValue}
+                                        isDisabled={addAssessmentLoading}
+                                    />
+                                ))}
+                            </>
 
-                            {addAssessmentLoading ?
-                                <div><Spinner color="primary" /></div>
-                                :
-                                <Select
-                                    isClearable
-                                    options={dropdownOptions?.map((item) => {
-                                        return { value: item.assessment_id, label: item.assessment_name }
-                                    })}
-                                    classNamePrefix="select"
-                                    placeholder={"Enter skill"}
-                                    theme={selectThemeColors}
-                                    menuPosition='fixed'
-                                    onChange={handleAddAssessment}
-                                    value={dropdownValue}
-                                    isDisabled={addAssessmentLoading}
-                                />}
 
                         </td>
                     </tbody>

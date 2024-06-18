@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
 
 const gradeColors = {
-  "Novice": "#0D99FF",
-  "Fundamental": "#FFCD29",
-  "Proficient": "#9747FF",
-  "Mastery": "#14AE5C"
+  "Novice": "#FBC02D",
+  "Fundamental": "#00BCD4",
+  "Proficient": "#7C4DFF",
+  "Mastery": "#414DFD",
 }
 
 const getPadding = (props) => {

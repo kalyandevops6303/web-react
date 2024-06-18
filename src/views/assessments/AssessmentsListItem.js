@@ -6,7 +6,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import Tag from "../../@core/components/tags";
 import { Edit, Eye, EyeOff, Trash2 } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllAssessments, selectAssessmentLink, selectAssessmentLinkLoading, selectDeleteAssessmentLoading, selectEditAssessmentLoading } from "../../redux/selectors/assessmentSelectors";
+import { selectAllAssessments, selectAssessmentLink, selectAssessmentLinkLoading, selectDeleteAssessmentLoading, selectEditAssessmentLoading, selectUserAssessmentsCount } from "../../redux/selectors/assessmentSelectors";
 import Select from "react-select";
 import { selectThemeColors } from "../../utility/Utils";
 import { deleteAssessment, editAssessment, getAssessmentLink, toggleAssessmentHidden } from "../../redux/actions/AssessmentActions";
@@ -73,6 +73,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
     const assessmentLinkLoading = useSelector(selectAssessmentLinkLoading)
     const editAssessmentLoading = useSelector(selectEditAssessmentLoading)
     const deleteAssessmentLoading = useSelector(selectDeleteAssessmentLoading)
+    const userAssessmentsCount = useSelector(selectUserAssessmentsCount)
     const dispatch = useDispatch()
 
     const [showSections, setShowSections] = useState(open)
@@ -82,10 +83,10 @@ const AssessmentsListItem = ({ open, assessment }) => {
     const [showAssessmentModal, setShowAssessmentModal] = useState(false)
 
     const getColorByPercentage = (percentage) => {
-        if (percentage <= 50) return "#0D99FF"
-        else if (percentage <= 69) return "#FFCD29"
-        else if (percentage <= 89) return "#9747FF"
-        else return "#14AE5C"
+        if (percentage <= 50) return "#FBC02D"
+        else if (percentage <= 69) return "#00BCD4"
+        else if (percentage <= 89) return "#7C4DFF"
+        else return "#414DFD"
     }
 
     const retakeAvailable = (assessment) => {
@@ -116,8 +117,12 @@ const AssessmentsListItem = ({ open, assessment }) => {
     }
 
     const handleEdit = (value) => {
+        const prev_str_type = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0].str_type
+        const curr_str_type = dropdownOptions.filter((item) => item.assessment_id == value.value.assessment_id)[0].str_type
+        const prev_id = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]._id
+        const curr_id = dropdownOptions.filter((item) => item.assessment_id == value.value.assessment_id)[0]._id
         setEdit(false)
-        dispatch(editAssessment({ curr_assessment_name: value.label, prev_assessment_id: assessment.assessment_id, curr_assessment_id: value.value }))
+        dispatch(editAssessment({ curr_assessment_name: value.label, prev_assessment_id: assessment.assessment_id, curr_assessment_id: value.value.assessment_id, prev_str_type, curr_str_type, prev_id, curr_id }))
     }
 
     const handleDelete = () => {
@@ -125,7 +130,9 @@ const AssessmentsListItem = ({ open, assessment }) => {
     }
 
     const handleDeleteConfirmed = () => {
-        dispatch(deleteAssessment({ assessment_id: assessment.assessment_id }))
+        const str_type = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0].str_type
+        const _id = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]._id
+        dispatch(deleteAssessment({ assessment_id: assessment.assessment_id, str_type, _id }))
         deleteAssessmentLoading && setshowDeleteModal(false)
     }
 
@@ -143,7 +150,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
                         !editAssessmentLoading && <Select
                             isClearable
                             options={dropdownOptions?.map((item) => {
-                                return { value: item.assessment_id, label: item.assessment_name }
+                                return { value: item, label: item.assessment_name }
                             })}
                             classNamePrefix="select"
                             placeholder="Enter skill"
@@ -200,9 +207,14 @@ const AssessmentsListItem = ({ open, assessment }) => {
                         <>
                             {
                                 retakeAvailable(assessment) ?
+                                    <>
+                                    {userAssessmentsCount >= 5? 
+                                    <CardText>Sorry, you're run out of assessments</CardText>
+                                    :
                                     <a href="#" onClick={handleTakeAssessmentClicked}>
                                         <b>Re-take assessment</b>
-                                    </a>
+                                    </a>}
+                                    </>
                                     :
 
                                     <Tag
@@ -213,13 +225,18 @@ const AssessmentsListItem = ({ open, assessment }) => {
                             }
                         </>
                         :
+                        <>
+                        {userAssessmentsCount >= 5 ? 
+                        <CardText>Sorry you're run out of assessments</CardText>
+                        :
                         <a href="#" onClick={handleTakeAssessmentClicked}>
                             <b>Take assessment</b>
-                        </a>
+                        </a>}
+                        </>
                     }
                 </td>
 
-                <td style={{minWidth: 180}}>
+                <td style={{ minWidth: 180 }}>
                     <div className="d-flex align-items-center justify-content-between">
                         {assessment.completed_date ? <div className="cursor-pointer" onClick={handleHidden}>
                             <>
@@ -280,7 +297,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
                     <td></td>
                     <td></td>
                     <td>{key}</td>
-                    <td className="d-flex align-items-center justify-content-between pr-5">
+                    <td className="d-flex align-items-center justify-content-between pr-5 gap-1">
                         <div>{value}%</div>
                         <CircularProgressbarWrapper>
                             <CircularProgressbar
