@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme from '../../configs/themeVariables';
 
 const gradeColors = {
     "Novice": "#FBC02D",
@@ -147,6 +148,19 @@ const ArrowWrapper = styled.div`
     align-items: center;
 `
 
+const SuccessInfoBanner = styled.div`
+  border-radius: 6px;
+  background: ${theme.succesGreenBg};
+
+  .info-banner-icon {
+    margin-top: 2px;
+  }
+
+  p {
+    color: ${theme.succesGreenColor};
+  }
+`;
+
 export {
     RecommendedAssessmentsList,
     RecommendedAssessmentsItemSelected,
@@ -160,5 +174,6 @@ export {
     TableWrapper,
     ActionContainer,
     ActionOffContainer,
-    ArrowWrapper
+    ArrowWrapper,
+    SuccessInfoBanner
 }

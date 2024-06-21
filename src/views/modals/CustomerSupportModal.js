@@ -88,6 +88,15 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
           .max(150, 'Institution must be 150 characters or less')
           .required('Institution is required'),
     }),
+    assessment: yup.string().when('issueType.value', {
+      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_assessment,
+      then: () =>
+        yup
+          .string()
+          .min(1, 'Assessment must be at least 1 character')
+          .max(150, 'Assessment must be 150 characters or less')
+          .required('Assessment is required'),
+    }),
     supportDetails: yup
       .string()
       .min(50, 'Description must be at least 50 characters')
@@ -322,6 +331,30 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
                   {errors.institute && <FormFeedback>{errors.institute.message}</FormFeedback>}
                 </Col>
               )}
+              {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_assessment && (
+                <Col sm="12" md="12" lg="5">
+                  <Label className="form-label" for="assessment">
+                    Assessment
+                    <span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="assessment"
+                    name="assessment"
+                    control={control}
+                    invalid={errors.tool && true}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        step="any"
+                        onWheel={(e) => e.target.blur()}
+                        placeholder="Enter Assessment"
+                        invalid={errors.assessment && true}
+                      />
+                    )}
+                  />
+                  {errors.tool && <FormFeedback>{errors.assessment.message}</FormFeedback>}
+                </Col>
+              )}
             </Row>
 
             <Row className="mb-1">
@@ -378,10 +411,10 @@ CustomerSupportModal.propTypes = {
 
 CustomerSupportModal.defaultProps = {
   modal: false,
-  toggleModal: () => {},
+  toggleModal: () => { },
   primaryFilter: '',
   projectDetail: null,
   selectedTimeline: null,
-  onSuccess: () => {},
+  onSuccess: () => { },
   defaultSelected: [],
 };

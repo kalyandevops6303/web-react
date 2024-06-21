@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     userAssessments: [],
+    notUserAssessments: [],
+    deleteNonAssessmentLoading: false,
     userAssessmentsCount: 0, 
     userAssessmentsLoading: false,
     allAssessments: [],
@@ -13,6 +15,7 @@ const initialState = {
     assessmentLink: null,
     assessmentLinkLoading: false,
     editAssessmentLoading: false,
+    prepopulateLoading: false,
     error: null
 }
 
@@ -29,6 +32,7 @@ const assessmentSlice = createSlice({
             ...state,
             userAssessments: action.payload.assessments,
             userAssessmentsCount: action.payload.exam_counter,
+            notUserAssessments: action.payload.not_assessments,
             userAssessmentsLoading: false,
             error: null
         }),
@@ -57,14 +61,27 @@ const assessmentSlice = createSlice({
             deleteAssessmentLoading: true, 
             error: null
         }),
-        deleteAssessmentsSuccess: (state, action) => ({
+        deleteAssessmentsSuccess: (state) => ({
             ...state, 
-            deleteAssessment: action.payload,
             deleteAssessmentLoading: false 
         }),
         deleteAssessmentsFailure: (state, action) => ({
             ...state, 
             deleteAssessmentLoading: false,
+            error: action.payload
+        }),
+        deleteNonAssessmentsRequest: (state) => ({
+            ...state, 
+            deleteNonAssessmentLoading: true, 
+            error: null
+        }),
+        deleteNonAssessmentsSuccess: (state) => ({
+            ...state, 
+            deleteNonAssessmentLoading: false 
+        }),
+        deleteNonAssessmentsFailure: (state, action) => ({
+            ...state, 
+            deleteNonAssessmentLoading: false,
             error: action.payload
         }),
         toggleAssessmentHiddenRequest: (state) => ({
@@ -127,6 +144,21 @@ const assessmentSlice = createSlice({
             ...state, 
             editAssessmentLoading: false, 
             error: action.payload 
+        }),
+        prepopulateRequest: (state) => ({
+            ...state, 
+            prepopulateLoading: true, 
+            error: null 
+        }),
+        prepopulateSuccess: (state) => ({
+            ...state, 
+            prepopulateLoading: false, 
+            error: null 
+        }),
+        prepopulateFailure: (state, action) => ({
+            ...state, 
+            prepopulateLoading: false, 
+            error: action.payload 
         })
     }
 })
@@ -141,6 +173,9 @@ export const {
     deleteAssessmentsRequest, 
     deleteAssessmentsSuccess, 
     deleteAssessmentsFailure,
+    deleteNonAssessmentsRequest, 
+    deleteNonAssessmentsSuccess, 
+    deleteNonAssessmentsFailure,
     toggleAssessmentHiddenRequest, 
     toggleAssessmentHiddenSuccess, 
     toggleAssessmentHiddenFailure,
@@ -152,7 +187,10 @@ export const {
     assessmentLinkFailure,
     editAssessmentRequest, 
     editAssessmentSuccess, 
-    editAssessmentFailure
+    editAssessmentFailure,
+    prepopulateRequest, 
+    prepopulateFailure, 
+    prepopulateSuccess
 } = assessmentSlice.actions;
 
 export default assessmentSlice.reducer;

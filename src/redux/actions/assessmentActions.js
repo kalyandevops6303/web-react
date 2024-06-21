@@ -1,5 +1,5 @@
 import errorHandler from '../../utility/errorHandler';
-import { userAssessmentsService, allAssessmentsService, deleteAssessmentService, toggleAssessmentHiddenService, addAssessmentService, assessmentLinkService, editAssessmentService } from '../../services/assessmentServices';
+import { userAssessmentsService, allAssessmentsService, deleteAssessmentService, toggleAssessmentHiddenService, addAssessmentService, assessmentLinkService, editAssessmentService, deleteNonAssessmentService, prepopulateService } from '../../services/assessmentServices';
 import { 
     userAssessmentsRequest, 
     userAssessmentsFailure, 
@@ -21,8 +21,15 @@ import {
     assessmentLinkSuccess,
     editAssessmentRequest,
     editAssessmentFailure,
-    editAssessmentSuccess
+    editAssessmentSuccess,
+    deleteNonAssessmentsFailure,
+    deleteNonAssessmentsRequest,
+    deleteNonAssessmentsSuccess,
+    prepopulateRequest,
+    prepopulateSuccess,
+    prepopulateFailure
 } from '../reducers/assessment';
+import { getCustomerSupportList } from './supportActions';
 
 const getUserAssessments = () => async (dispatch) => {
     dispatch(userAssessmentsRequest());
@@ -66,8 +73,8 @@ const getAllAssessments = () => async (dispatch) => {
 const deleteAssessment = ({assessment_id, str_type, _id}) => async (dispatch) => {
     dispatch(deleteAssessmentsRequest());
     try {
-        const res = await deleteAssessmentService({assessment_id, str_type, _id});
-        dispatch(deleteAssessmentsSuccess(res.data));
+        await deleteAssessmentService({assessment_id, str_type, _id});
+        dispatch(deleteAssessmentsSuccess());
         dispatch(getUserAssessments());
         dispatch(getAllAssessments());
     } catch (error) {
@@ -119,6 +126,44 @@ const editAssessment = ({curr_assessment_name, prev_assessment_id, curr_assessme
     }
 }
 
+const deleteNonAssessment = ({str_type, _id}) => async (dispatch) => {
+    dispatch(deleteNonAssessmentsRequest());
+    try {
+        await deleteNonAssessmentService({str_type, _id});
+        dispatch(deleteNonAssessmentsSuccess());
+        dispatch(getUserAssessments());
+        dispatch(getAllAssessments());
+        dispatch(getCustomerSupportList({
+            data: {
+                issue_types: [
+                    "missing_assessment"
+                ]
+            }
+        }));
+    } catch(error) {
+        errorHandler(error, deleteNonAssessmentsFailure);
+    }
+}
+
+const prepopulateAssessments = () => async (dispatch) => {
+    dispatch(prepopulateRequest());
+    try {
+        await prepopulateService();
+        dispatch(prepopulateSuccess());
+        dispatch(getUserAssessments());
+        dispatch(getAllAssessments());
+        dispatch(getCustomerSupportList({
+            data: {
+                issue_types: [
+                    "missing_assessment"
+                ]
+            }
+        }));
+    } catch (error) {
+        errorHandler(error, prepopulateFailure);
+    }
+}
+
 export {
     getUserAssessments,
     getAllAssessments,
@@ -126,5 +171,7 @@ export {
     toggleAssessmentHidden,
     addAssessment,
     getAssessmentLink,
-    editAssessment
+    editAssessment,
+    deleteNonAssessment,
+    prepopulateAssessments
 }

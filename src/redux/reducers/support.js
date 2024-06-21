@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  supportList: [],
+  supportListLoading: false,
+  deleteRequestLoading: false,
   getSupportCountLoading: false,
   supportCount: null,
   loading: false,
@@ -41,6 +44,37 @@ const supportSlice = createSlice({
       getSupportCountLoading: false,
       error: action.payload,
     }),
+    supportListRequest: (state) => ({
+      ...state, 
+      supportListLoading: false,
+      error: null
+    }),
+    supportListSuccess: (state, action) => ({
+      ...state, 
+      supportList: action.payload.data,
+      supportListLoading: false,
+      error: null
+    }),
+    supportListFailure: (state, action) => ({
+      ...state, 
+      supportListLoading: false, 
+      error: action.payload
+    }),
+    deleteRequestRequest: (state) => ({
+      ...state, 
+      deleteRequestLoading: true, 
+      error: null 
+    }),
+    deleteRequestSuccess: (state) => ({
+      ...state, 
+      deleteRequestLoading: false, 
+      error: null 
+    }),
+    deleteRequestFailure: (state, action) => ({
+      ...state, 
+      deleteRequestLoading: false, 
+      error: action.payload
+    })
   },
 });
 
@@ -48,9 +82,15 @@ export const {
   supportRequest,
   supportSuccess,
   supportFailure,
+  supportListRequest, 
+  supportListSuccess, 
+  supportListFailure,
   getSupportCountRequest,
   getSupportCountSuccess,
   getSupportCountFailure,
+  deleteRequestRequest, 
+  deleteRequestSuccess, 
+  deleteRequestFailure
 } = supportSlice.actions;
 
 export default supportSlice.reducer;

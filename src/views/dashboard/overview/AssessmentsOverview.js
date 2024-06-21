@@ -54,7 +54,7 @@ const AssessmentsOverview = () => {
 
             <CardTitle tag="h4">My Assessments</CardTitle>
 
-            {userAssessments.length > 0 &&
+            {userAssessments?.length > 0 &&
               <div className='d-flex gap-1'>
                 <Link to="/assessments">
                   <CardText
@@ -82,7 +82,7 @@ const AssessmentsOverview = () => {
           <CardText
             className="mt-1"
           >
-            {userAssessments.length > 0 ?
+            {userAssessments?.length > 0 ?
               <>
                 <span>{getAssessmentsLeftCount(userAssessments)} / {userAssessments.length} Assessments Left</span>
               </>
@@ -91,7 +91,7 @@ const AssessmentsOverview = () => {
             }
           </CardText>
         </CardHeader>
-        {userAssessments.length == 0 ? <CardBody>
+        {userAssessments?.length == 0 ? <CardBody>
           <Link to="/assessments">
             <Button color="transparent" className="text-primary border-primary">
               Take Assessment
@@ -102,7 +102,7 @@ const AssessmentsOverview = () => {
           <>
             {showAssessmentsList && <CardBody className="d-flex flex-column gap-1">
               {
-                userAssessments.map((assessment) => (
+                userAssessments?.map((assessment) => (
                   <div>
                     {assessment.completed_date &&
                       <AssessmentsListItem assessment={assessment} />
@@ -123,7 +123,7 @@ const AssessmentsOverview = () => {
         }
       </div>
 
-      {userAssessments.length == 0 &&
+      {userAssessments?.length == 0 &&
         <div className=''>
           <img src={assessmentsDashboard}></img>
         </div>

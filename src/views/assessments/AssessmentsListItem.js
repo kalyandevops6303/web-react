@@ -133,7 +133,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
         const str_type = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0].str_type
         const _id = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]._id
         dispatch(deleteAssessment({ assessment_id: assessment.assessment_id, str_type, _id }))
-        deleteAssessmentLoading && setshowDeleteModal(false)
+        // deleteAssessmentLoading && setshowDeleteModal(false)
     }
 
     const handleTakeAssessmentClicked = (e) => {
@@ -145,7 +145,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
     return (
         <>
             <tr>
-                <td>
+                <td style={{ width: 220 }}>
                     {edit ?
                         !editAssessmentLoading && <Select
                             isClearable
@@ -162,11 +162,11 @@ const AssessmentsListItem = ({ open, assessment }) => {
                         <b>{assessment.assessment_name}</b>
                     }
                 </td>
-                <td>
+                <td style={{ width: 250 }}>
                     {assessment.completed_date && getDisplayDate(assessment.completed_date)}
                 </td>
 
-                <td>
+                <td style={{ width: 180 }}>
                     {assessment.sections &&
                         <>
                             {Object.keys(assessment.sections).length == 1 ?
@@ -187,11 +187,11 @@ const AssessmentsListItem = ({ open, assessment }) => {
                     }
                 </td>
 
-                <td>
+                <td style={{ width: 180 }}>
                     <b>{assessment.overall_percentage && `${assessment.overall_percentage}%`}</b>
                 </td>
 
-                <td>
+                <td style={{ width: 180 }}>
                     <div className="d-flex flex-column">
                         {assessment.assessment_grade &&
                             <>
@@ -202,18 +202,18 @@ const AssessmentsListItem = ({ open, assessment }) => {
                     </div>
                 </td>
 
-                <td>
+                <td style={{ width: 180 }}>
                     {assessment.completed_date ?
                         <>
                             {
                                 retakeAvailable(assessment) ?
                                     <>
-                                    {userAssessmentsCount >= 5? 
-                                    <CardText>Sorry, you're run out of assessments</CardText>
-                                    :
-                                    <a href="#" onClick={handleTakeAssessmentClicked}>
-                                        <b>Re-take assessment</b>
-                                    </a>}
+                                        {userAssessmentsCount <= 0 ?
+                                            <CardText>Sorry, you're run out of assessments</CardText>
+                                            :
+                                            <a href="#" onClick={handleTakeAssessmentClicked}>
+                                                <b>Re-take assessment</b>
+                                            </a>}
                                     </>
                                     :
 
@@ -226,17 +226,17 @@ const AssessmentsListItem = ({ open, assessment }) => {
                         </>
                         :
                         <>
-                        {userAssessmentsCount >= 5 ? 
-                        <CardText>Sorry you're run out of assessments</CardText>
-                        :
-                        <a href="#" onClick={handleTakeAssessmentClicked}>
-                            <b>Take assessment</b>
-                        </a>}
+                            {userAssessmentsCount >= 5 ?
+                                <CardText>Sorry you're run out of assessments</CardText>
+                                :
+                                <a href="#" onClick={handleTakeAssessmentClicked}>
+                                    <b>Take assessment</b>
+                                </a>}
                         </>
                     }
                 </td>
 
-                <td style={{ minWidth: 180 }}>
+                <td style={{ width: 180 }}>
                     <div className="d-flex align-items-center justify-content-between">
                         {assessment.completed_date ? <div className="cursor-pointer" onClick={handleHidden}>
                             <>
