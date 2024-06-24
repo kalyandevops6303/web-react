@@ -16,9 +16,9 @@ const UserBio = ({ isTalentView, isTeamView, isClient, data }) => (
               </CardText>
             </div>
             <CardText>
-              {isClient && data?.company_tagline}{' '}
+              {isClient && data?.company_tagline && parse(data?.company_tagline)}{' '}
               {isTalentView && data?.professional_intro && parse(data?.professional_intro)}
-              {isTeamView && data?.introduction}{' '}
+              {isTeamView && data?.introduction && parse(data?.introduction)}{' '}
             </CardText>
           </div>
         </CardBody>
