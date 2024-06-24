@@ -142,7 +142,7 @@ class CometChatReceiverTextMessageBubble extends React.Component {
 
     let count = countEmojiOccurences(emojiParsedMessage, 'class="emoji"');
 
-    const parsedMessage = parse(emojiParsedMessage);
+    const parsedMessage = emojiParsedMessage ? parse(emojiParsedMessage) : emojiParsedMessage;
     let showVariation = true;
     //if larger size emojis feature is disabled
     if (this.state.enableLargerSizeEmojis === false) {

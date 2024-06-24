@@ -4,7 +4,7 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import parse from "html-react-parser";
 import { UserBioWrap } from './style';
 
-const UserBio = ({ isTalentView, isTeamView, isClient, data }) =>(
+const UserBio = ({ isTalentView, isTeamView, isClient, data }) => (
   <UserBioWrap>
     {data?.company_name || data?.tagline ? (
       <Card>
@@ -16,8 +16,9 @@ const UserBio = ({ isTalentView, isTeamView, isClient, data }) =>(
               </CardText>
             </div>
             <CardText>
-              {isClient && data?.company_tagline} {isTalentView && parse(data?.professional_intro)}
-              {isTeamView && data?.introduction}{' '}
+              {isClient && data?.company_tagline && parse(data?.company_tagline)}{' '}
+              {isTalentView && data?.professional_intro && parse(data?.professional_intro)}
+              {isTeamView && data?.introduction && parse(data?.introduction)}{' '}
             </CardText>
           </div>
         </CardBody>
