@@ -62,6 +62,7 @@ const Social = () => {
   const IsresumeParsed = useSelector(resumeParsed);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
+  const [files, setFiles] = useState(savedFormDocuments || [])
   const defaultLink = {
     linkName: '',
     link: '',
@@ -111,6 +112,10 @@ const Social = () => {
   useEffect(() => {
     dispatch(setResumeParsed(parseResume));
   }, [parseResume]);
+
+  useEffect(() => {
+    if (files?.length > 0 && !files[0].file?.name) setFiles([])
+  }, [files])
 
   useEffect(() => {
     if (parseResume === false) {
@@ -563,7 +568,7 @@ const Social = () => {
               </div>
             </Col>
 
-            <Col>
+            {files?.length > 0 && <Col>
               <Card>
                 <CardBody>
                   <div className="d-flex flex-column">
@@ -594,7 +599,7 @@ const Social = () => {
                   </div>
                 </CardBody>
               </Card>
-            </Col>
+            </Col>}
           </Row>
         </Form>
       )}
