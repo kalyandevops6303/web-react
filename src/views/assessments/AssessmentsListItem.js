@@ -208,7 +208,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
                             {
                                 retakeAvailable(assessment) ?
                                     <>
-                                        {userAssessmentsCount <= 0 ?
+                                        {userAssessmentsCount >= 5 ?
                                             <CardText>Sorry, you're run out of assessments</CardText>
                                             :
                                             <a href="#" onClick={handleTakeAssessmentClicked}>

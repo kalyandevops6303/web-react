@@ -47,7 +47,7 @@ const AssessmentsRequestListItem = ({ request }) => {
             dispatch(deleteNonAssessment({ str_type: request.str_type, _id: request.str_id }))
         }
         else {
-            dispatch(deleteRequest({data: request.id}))
+            dispatch(deleteRequest({ data: request.id }))
         }
     }
 

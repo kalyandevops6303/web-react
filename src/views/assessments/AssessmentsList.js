@@ -63,7 +63,7 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
                         ))}
                         <td>
                             <>
-                                {Array.from({ length: Math.max(5 - (data? data.length : 0), 1) }).map((_, index) => (
+                                {Array.from({ length: Math.max(5 - (data ? data.length : 0), 1) }).map((_, index) => (
                                     <Select
                                         isClearable
                                         options={dropdownOptions?.map((item) => {
