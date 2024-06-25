@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Info } from 'react-feather';
 
 // ** Reactstrap Imports
@@ -12,7 +12,7 @@ import { CardTitle, Label, Form, Button, FormFeedback, Spinner, UncontrolledTool
 
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
-import { validations } from '../../utility/Utils';
+import { filteredFormSchema, validations } from '../../utility/Utils';
 
 // ** Styles
 import { OnBoardWrap } from './style';
@@ -22,6 +22,8 @@ import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/au
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PasswordStrengthMeter from './components/PasswordStrengthMeter';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 
 const SetPassword = () => {
   const dispatch = useDispatch();
@@ -29,6 +31,7 @@ const SetPassword = () => {
 
   const isLoading = useSelector(selectAuthLoading);
   const isPasswordSet = useSelector(selectIsPasswordSet);
+  const savedFormData = useSelector(formData);
 
   useEffect(() => {
     if (isPasswordSet) {
@@ -46,17 +49,37 @@ const SetPassword = () => {
     formState: { errors },
     control,
     watch,
+    reset,
+    trigger,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      newPassword: '',
-      cnfPassword: '',
+      newPassword: savedFormData?.newPassword || '',
+      cnfPassword: savedFormData?.cnfPassword || '',
     },
   });
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: schema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const onSubmit = (values) => {
     const { newPassword } = values;
     dispatch(setPassword(newPassword));
+    dispatch(clearAllFormData());
   };
 
   const newPassword = watch('newPassword');

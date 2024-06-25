@@ -59,6 +59,10 @@ const SigninWithGoogle = () => {
         position: 'top-center',
         icon: <Info size="20" color={theme.primary} />,
       });
+    } else {
+      toast.error(error.response?.data?.errorData?.message, {
+        position: 'top-center',
+      });
     }
   };
 

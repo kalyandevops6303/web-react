@@ -1,17 +1,26 @@
+/* eslint-disable no-unsafe-optional-chaining */
+import { useEffect } from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft, ChevronRight } from 'react-feather';
+import { useParams } from 'react-router-dom';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import classNames from 'classnames';
-import { Label, Row, Col, Input, Form, Button, Card, CardHeader, CardBody, FormFeedback } from 'reactstrap';
+import { Label, Row, Col, Input, Form, Button, Card, CardHeader, CardBody, FormFeedback, Spinner } from 'reactstrap';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
+import { saveDraftProject } from '../../../redux/actions/createProjectActions';
+import { saveDraftProjectId, saveDraftProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { removeEmptyKeys, filteredFormSchema } from '../../../utility/Utils';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../../redux/reducers/formData';
 
-const Listing = ({ stepper, setListingDetails }) => {
+const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetails, files, draftListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
     listingOption: yup.string().required('Select one'),
     startDate: yup.object().when('listingOption', {
@@ -42,6 +51,7 @@ const Listing = ({ stepper, setListingDetails }) => {
     clearErrors,
     resetField,
     setValue,
+    reset,
     watch,
     formState: { errors },
   } = useForm({
@@ -49,6 +59,149 @@ const Listing = ({ stepper, setListingDetails }) => {
     resolver: yupResolver(ListingDetailsSchema),
     defaultValues: {},
   });
+
+  const params = useParams();
+  const dispatch = useDispatch();
+  const draftProjectId = useSelector(saveDraftProjectId);
+  const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
+
+  const onSaveDraftSuccess = () => setDraftSavedModal(true);
+
+  const handleSaveDraft = () => {
+    let localListingDetails;
+
+    if (!watch('listingOption')) {
+      trigger('listingOption');
+    } else if (watch('listingOption') === 'select-duration') {
+      trigger('startDate');
+      trigger('endDate');
+    } else if (watch('listingOption') === 'enter-duration') {
+      trigger('duration');
+    }
+
+    if (
+      watch('listingOption') === 'select-duration' &&
+      watch('startDate') &&
+      watch('startDate')?.length > 0 &&
+      watch('endDate') &&
+      watch('endDate')?.length > 0
+    ) {
+      const requiredFormData = {
+        listingOption: watch('listingOption'),
+        startDate: new Date(watch('startDate')),
+        endDate: new Date(watch('endDate')),
+      };
+      setListingDetails(requiredFormData);
+      localListingDetails = requiredFormData;
+    } else if (watch('listingOption') === 'enter-duration' && watch('duration')) {
+      const newData = {
+        listingOption: watch('listingOption'),
+        startDate: new Date(),
+        endDate: new Date(new Date().setDate(new Date().getDate() + parseInt(watch('duration'), 10))),
+        duration: watch('duration'),
+      };
+      setListingDetails(newData);
+      localListingDetails = newData;
+    }
+
+    let details;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      details = {
+        name: projectDetails?.projectName?.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+        documents,
+      };
+    } else {
+      details = {
+        name: projectDetails?.projectName?.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+      };
+    }
+
+    const proficiency = {
+      skills: projectDetails?.skills.map((skill) => skill.value),
+      tools: projectDetails?.tools?.map((tool) => tool.value),
+    };
+    const availability = {
+      timezone: projectDetails?.preferredWorkingTimeZone.value._id,
+      time_overlap: projectDetails?.minTimeOverlapHr,
+      weekdays_avl: {
+        start_time: projectDetails?.availabilityDays?.includes('weekdays')
+          ? projectDetails?.weekdayStartTime?.value
+          : null,
+        end_time: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdayEndTime?.value : null,
+        days: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdays : null,
+      },
+      weekends_avl: {
+        start_time: projectDetails?.availabilityDays?.includes('weekends')
+          ? projectDetails?.weekendStartTime?.value
+          : null,
+        end_time: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekendEndTime?.value : null,
+        days: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekends : null,
+      },
+    };
+    const countries = {
+      included: projectDetails?.includedCountriesSelection?.map((country) => country.value),
+      excluded: projectDetails?.excludedCountriesSelection?.map((country) => country.value),
+    };
+    const pay_type = {
+      currency: projectDetails?.currencyType?.value?._id,
+      variable_cost: projectDetails?.projectPayType !== 'fixed-price',
+      fixed_cost: projectDetails?.projectPayType === 'fixed-price' ? parseInt(projectDetails?.projectFixedCost, 10) : 0,
+    };
+    const nda = {
+      is_nda: projectDetails?.nda === 'yes',
+    };
+
+    const start_date = Date.parse(localListingDetails?.startDate);
+    const end_date = Date.parse(localListingDetails?.endDate);
+
+    const listing_details = {
+      start_date,
+      end_date,
+    };
+
+    const requiredData = {
+      details,
+      proficiency,
+      availability,
+      countries,
+      pay_type,
+      nda,
+      listing_details,
+    };
+
+    dispatch(
+      saveDraftProject({
+        projectId: params?.projectId || draftProjectId,
+        data: removeEmptyKeys(requiredData),
+        onSuccess: onSaveDraftSuccess,
+      }),
+    );
+  };
+
+  const savedFormData = useSelector(formData);
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const onSubmit = () => {
     if (!watch('listingOption')) {
@@ -88,6 +241,24 @@ const Listing = ({ stepper, setListingDetails }) => {
     }
   };
 
+  useEffect(() => {
+    if (params?.projectId) {
+      reset(draftListingDetails);
+    }
+  }, [draftListingDetails]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ListingDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
+
   return (
     <RequirementsFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -114,6 +285,8 @@ const Listing = ({ stepper, setListingDetails }) => {
                           clearErrors('endDate');
                           resetField('startDate');
                           resetField('endDate');
+                          setValue('startDate', undefined);
+                          setValue('endDate', undefined);
 
                           const isChecked = e.target.checked;
                           const value = 'enter-duration';
@@ -234,11 +407,10 @@ const Listing = ({ stepper, setListingDetails }) => {
                       placeholder="Select end date"
                       options={{
                         minDate: watch('startDate')
-                          ? new Date(watch('startDate')[0]).setDate(watch('startDate')[0].getDate() + 1)
+                          ? new Date(watch('startDate')[0])?.setDate(watch('startDate')[0]?.getDate() + 1)
                           : 'today',
                         maxDate: watch('startDate')
-                          ? // eslint-disable-next-line no-unsafe-optional-chaining
-                            new Date(watch('startDate')[0]).setMonth(watch('startDate')[0]?.getMonth() + 3)
+                          ? new Date(watch('startDate')[0])?.setMonth(watch('startDate')[0]?.getMonth() + 3)
                           : 'today',
                         dateFormat: 'M d, Y',
                       }}
@@ -261,10 +433,21 @@ const Listing = ({ stepper, setListingDetails }) => {
             </UploadIconContainer>
             <h5 className="fw-light mb-0 mx-75">Back</h5>
           </div>
-          <Button color="primary" onClick={() => onSubmit()}>
-            <span className="me-50">Save & Continue</span>
-            <ChevronRight size={14} />
-          </Button>
+          <div className="d-flex">
+            <Button
+              color="primary"
+              className="me-2"
+              outline
+              onClick={handleSaveDraft}
+              disabled={saveDraftProjectIsLoading}
+            >
+              {saveDraftProjectIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+            </Button>
+            <Button color="primary" onClick={() => onSubmit()}>
+              <span className="me-50">Continue</span>
+              <ChevronRight size={14} />
+            </Button>
+          </div>
         </div>
       </Form>
     </RequirementsFormContainer>
@@ -276,9 +459,17 @@ export default Listing;
 Listing.propTypes = {
   stepper: Proptypes.object,
   setListingDetails: Proptypes.func,
+  setDraftSavedModal: Proptypes.func,
+  projectDetails: Proptypes.object,
+  files: Proptypes.array,
+  draftListingDetails: Proptypes.object,
 };
 
 Listing.defaultProps = {
   stepper: {},
   setListingDetails: () => {},
+  setDraftSavedModal: () => {},
+  projectDetails: {},
+  files: [],
+  draftListingDetails: {},
 };

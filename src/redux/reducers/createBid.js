@@ -11,9 +11,12 @@ const initialState = {
   allTeamMembers: null,
   rolesLoading: false,
   setWorkersLoading: false,
+  draftSetWorkersLoading: false,
   setMilestonesLoading: false,
+  draftSetMilestonesLoading: false,
   submitBidLoading: false,
   changeBidTypeLoading: false,
+  deleteDraftBidLoading: false,
   error: null,
 };
 
@@ -115,6 +118,21 @@ const createBid = createSlice({
       error: action.payload,
     }),
 
+    draftSetWorkersRequest: (state) => ({
+      ...state,
+      draftSetWorkersLoading: true,
+      error: null,
+    }),
+    draftSetWorkersSuccess: (state) => ({
+      ...state,
+      draftSetWorkersLoading: false,
+    }),
+    draftSetWorkersFailure: (state, action) => ({
+      ...state,
+      draftSetWorkersLoading: false,
+      error: action.payload,
+    }),
+
     setMilestonesRequest: (state) => ({
       ...state,
       setMilestonesLoading: true,
@@ -127,6 +145,21 @@ const createBid = createSlice({
     setMilestonesFailure: (state, action) => ({
       ...state,
       setMilestonesLoading: false,
+      error: action.payload,
+    }),
+
+    draftSetMilestonesRequest: (state) => ({
+      ...state,
+      draftSetMilestonesLoading: true,
+      error: null,
+    }),
+    draftSetMilestonesSuccess: (state) => ({
+      ...state,
+      draftSetMilestonesLoading: false,
+    }),
+    draftSetMilestonesFailure: (state, action) => ({
+      ...state,
+      draftSetMilestonesLoading: false,
       error: action.payload,
     }),
 
@@ -159,6 +192,21 @@ const createBid = createSlice({
       changeBidTypeLoading: false,
       error: action.payload,
     }),
+
+    deleteDraftBidRequest: (state) => ({
+      ...state,
+      deleteDraftBidLoading: true,
+      error: null,
+    }),
+    deleteDraftBidSuccess: (state) => ({
+      ...state,
+      deleteDraftBidLoading: false,
+    }),
+    deleteDraftBidFailure: (state, action) => ({
+      ...state,
+      deleteDraftBidLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -181,15 +229,24 @@ export const {
   setWorkersRequest,
   setWorkersSuccess,
   setWorkersFailure,
+  draftSetWorkersRequest,
+  draftSetWorkersSuccess,
+  draftSetWorkersFailure,
   setMilestonesRequest,
   setMilestonesSuccess,
   setMilestonesFailure,
+  draftSetMilestonesRequest,
+  draftSetMilestonesSuccess,
+  draftSetMilestonesFailure,
   submitBidRequest,
   submitBidSuccess,
   submitBidFailure,
   changeBidTypeRequest,
   changeBidTypeSuccess,
   changeBidTypeFailure,
+  deleteDraftBidRequest,
+  deleteDraftBidSuccess,
+  deleteDraftBidFailure,
 } = createBid.actions;
 
 export default createBid.reducer;

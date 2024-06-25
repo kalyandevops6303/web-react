@@ -94,6 +94,9 @@ const newTagColor = '#093682';
 const darkGreyBorderColor = '#C2C2C2';
 const inputDisabledBg = '#efefef';
 const accordionHeaderActiveBg = '#F2F8FF';
+const draftStatusBadgeBg = '#E0E0E0';
+const draftStatusBadgeColor = '#424242';
+const modalLeftBorderColor = '#ebebeb';
 const pendingOrangeColor = '#FF5F05';
 const fundedBlueColor = '#00ACC1';
 const selectedBlugBg = '#EDF7FF';
@@ -197,6 +200,9 @@ const theme = {
   darkGreyBorderColor,
   inputDisabledBg,
   accordionHeaderActiveBg,
+  draftStatusBadgeBg,
+  draftStatusBadgeColor,
+  modalLeftBorderColor,
   pendingOrangeColor,
   fundedBlueColor,
   selectedBlugBg,

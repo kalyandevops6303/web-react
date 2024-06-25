@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -32,7 +32,7 @@ import { states, statesLoading, cities, citiesLoading } from '../../../redux/sel
 import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
 import { companyIndustriesService, countriesService } from '../../../services/staticServices';
-import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 import { userDetails, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import {
@@ -44,6 +44,8 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import RemoveUploadedPicture from '../../../@core/components/remove-uploaded-picture';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -89,32 +91,66 @@ const Personal = () => {
       .required('City is required'),
   });
 
+  const savedFormData = useSelector(formData);
+
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    trigger,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(PersonalSchema),
     defaultValues: {
-      streetAddress: '',
-      houseNumber: '',
+      companyName: savedFormData?.companyName || '',
+      title: savedFormData?.title || '',
+      companyTagline: savedFormData?.companyTagline || '',
+      companyIndustry: savedFormData?.companyIndustry || '',
+      totalStrength: savedFormData?.totalStrength || null,
+      streetAddress: savedFormData?.streetAddress || '',
+      houseNumber: savedFormData?.houseNumber || '',
+      zipCode: savedFormData?.zipCode || '',
+      country: savedFormData?.country || null,
+      state: savedFormData?.state || null,
+      city: savedFormData?.city || null,
+      selectedImage: savedFormData?.selectedImage || '',
+      selectedImagePreview: savedFormData?.selectedImagePreview || '',
+      imageUrlRes: savedFormData?.imageUrlRes || null,
     },
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const localFormData = useWatch({ control });
+  const updatedFormDocument = useSelector(formDocuments);
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImagePreview, setSelectedImagePreview] = useState(null);
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: PersonalSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
+
+  const [selectedImage, setSelectedImage] = useState(savedFormData?.selectedImage || null);
+  const [selectedImagePreview, setSelectedImagePreview] = useState(savedFormData?.selectedImagePreview || null);
+  const [imageUrlRes, setImageUrlRes] = useState(savedFormData?.imageUrlRes || null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
-  const [imageUrlRes, setImageUrlRes] = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -139,26 +175,43 @@ const Personal = () => {
     }
     return true;
   };
-
   const fetchFile = async (file) => {
     const thumbnail = URL.createObjectURL(file);
     setSelectedImage(file);
+    dispatch(setFormDocuments(file));
     setSelectedImagePreview(thumbnail);
-
+    dispatch(setFormData({ ...savedFormData, selectedImage: file, selectedImagePreview: thumbnail }));
     try {
       setIsImageUploading(true);
       const res = await profileImageUploadService(file.name);
       setImageUrlRes(res?.data?.data);
+      dispatch(
+        setFormData({
+          ...savedFormData,
+          imageUrlRes: res.data?.data,
+          selectedImage: file,
+          selectedImagePreview: thumbnail,
+        }),
+      );
     } catch (error) {
       setIsImageUploading(false);
       setImageUrlRes(null);
     }
   };
 
-  const handleFileChange = (e) => {
+  useEffect(() => {
+    const refetchFile = async () => {
+      if (updatedFormDocument != null) {
+        await fetchFile(updatedFormDocument);
+      }
+    };
+    refetchFile();
+  }, [updatedFormDocument]);
+
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file && isFileValid(file)) {
-      fetchFile(file);
+      await fetchFile(file);
     } else {
       e.target.value = '';
     }
@@ -187,6 +240,9 @@ const Personal = () => {
   }, [imageUrlRes]);
 
   useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData, country: watch('country') };
+    dispatch(setFormData(allData));
+
     if (watch('country')?.value !== userDetailsData?.client_info?.office_address?.country?._id) {
       setValue('state', null);
       setValue('city', null);
@@ -196,15 +252,27 @@ const Personal = () => {
       dispatch(getStates(watch('country').value));
       setCitiesOptions([]);
     }
+    if (savedFormData && savedFormData.country != null && savedFormData?.country?.label === watch('country').label) {
+      setValue('state', savedFormData?.state);
+      if (savedFormData && savedFormData?.state != null) {
+        setValue('city', savedFormData?.city);
+      }
+    }
   }, [watch('country')]);
 
   useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData, state: watch('state') };
+    dispatch(setFormData(allData));
+
     if (watch('state')?.value !== userDetailsData?.client_info?.office_address?.state?._id) {
       setValue('city', null);
     }
 
     if (watch('state')) {
       dispatch(getCities(watch('state').value));
+    }
+    if (watch('state') != null && savedFormData && savedFormData?.state?.label === watch('state').label) {
+      setValue('city', savedFormData?.city);
     }
   }, [watch('state')]);
 
@@ -227,6 +295,7 @@ const Personal = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/educational-details`);
     } else {
@@ -235,6 +304,7 @@ const Personal = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/educational-details`);
     } else {
@@ -343,30 +413,36 @@ const Personal = () => {
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.client_info?.company_logo.length > 0) {
-        setSelectedImage(res.client_info?.company_logo);
-        setSelectedImagePreview(res.client_info?.company_logo);
+        setSelectedImage(savedFormData?.selectedImage || res.client_info?.company_logo);
+        setSelectedImagePreview(savedFormData?.selectedImagePreview || res.client_info?.company_logo);
       }
       if (res?.client_info?.company_name.length > 0) {
         setValue('companyName', res?.client_info?.company_name, { shouldValidate: true });
       }
       if (res?.client_info?.title.length > 0) {
-        setValue('title', res?.client_info?.title, { shouldValidate: true });
+        setValue('title', savedFormData?.title || res?.client_info?.title, {
+          shouldValidate: true,
+        });
       }
       if (res?.client_info?.company_tagline.length > 0) {
-        setValue('companyTagline', res?.client_info?.company_tagline, { shouldValidate: true });
+        setValue('companyTagline', savedFormData?.companyTagline || res?.client_info?.company_tagline, {
+          shouldValidate: true,
+        });
       }
       if ('name' in res?.client_info?.company_industry) {
         setValue(
           'companyIndustry',
           {
-            label: res?.client_info?.company_industry?.name,
-            value: res?.client_info?.company_industry?._id,
+            label: savedFormData?.companyIndustry?.label || res?.client_info?.company_industry?.name,
+            value: savedFormData?.companyIndustry?.value || res?.client_info?.company_industry?._id,
           },
           { shouldValidate: true },
         );
       }
       if (res?.client_info?.company_strength > 0) {
-        setValue('totalStrength', res?.client_info?.company_strength, { shouldValidate: true });
+        setValue('totalStrength', savedFormData?.totalStrength || res?.client_info?.company_strength, {
+          shouldValidate: true,
+        });
       }
       if (
         'streetAddress' in res?.client_info?.office_address ||
@@ -377,20 +453,26 @@ const Personal = () => {
         'city' in res?.client_info?.office_address
       ) {
         if (res?.client_info?.office_address?.street_address.length > 0) {
-          setValue('streetAddress', res?.client_info?.office_address?.street_address, { shouldValidate: true });
+          setValue('streetAddress', savedFormData?.streetAddress || res?.client_info?.office_address?.street_address, {
+            shouldValidate: true,
+          });
         }
         if (res?.client_info?.office_address?.house_number.length > 0) {
-          setValue('houseNumber', res?.client_info?.office_address?.house_number, { shouldValidate: true });
+          setValue('houseNumber', savedFormData?.houseNumber || res?.client_info?.office_address?.house_number, {
+            shouldValidate: true,
+          });
         }
         if (res?.client_info?.office_address?.zip_code > 0) {
-          setValue('zipCode', res?.client_info?.office_address?.zip_code, { shouldValidate: true });
+          setValue('zipCode', savedFormData?.zipCode || res?.client_info?.office_address?.zip_code, {
+            shouldValidate: true,
+          });
         }
         if ('country' in res?.client_info?.office_address) {
           setValue(
             'country',
             {
-              label: res?.client_info?.office_address.country.name,
-              value: res?.client_info?.office_address.country._id,
+              label: savedFormData?.country?.label || res?.client_info?.office_address.country.name,
+              value: savedFormData?.country?.value || res?.client_info?.office_address.country._id,
             },
             { shouldValidate: true },
           );
@@ -399,8 +481,8 @@ const Personal = () => {
           setValue(
             'state',
             {
-              label: res?.client_info?.office_address.state.name,
-              value: res?.client_info?.office_address.state._id,
+              label: savedFormData?.state?.label || res?.client_info?.office_address.state.name,
+              value: savedFormData?.state?.value || res?.client_info?.office_address.state._id,
             },
             { shouldValidate: true },
           );
@@ -409,8 +491,8 @@ const Personal = () => {
           setValue(
             'city',
             {
-              label: res?.client_info?.office_address.city.name,
-              value: res?.client_info?.office_address.city._id,
+              label: savedFormData?.city?.label || res?.client_info?.office_address.city.name,
+              value: savedFormData?.city?.value || res?.client_info?.office_address.city._id,
             },
             { shouldValidate: true },
           );
@@ -420,9 +502,11 @@ const Personal = () => {
   };
 
   const onRemovePictureClick = () => {
+    dispatch(setFormDocuments(null));
     setSelectedImage(null);
     setSelectedImagePreview(null);
     setImageUrlRes(null);
+    dispatch(setFormData({ ...savedFormData, selectedImage: null, selectedImagePreview: null, imageUrlRes: null }));
   };
 
   useEffect(() => {

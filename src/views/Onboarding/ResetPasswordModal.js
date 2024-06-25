@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -20,15 +20,17 @@ import {
 } from 'reactstrap';
 import { Info } from 'react-feather';
 import InputPasswordToggle from '@components/input-password-toggle';
-import { validations } from '../../utility/Utils';
+import { filteredFormSchema, validations } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import { resetPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading } from '../../redux/selectors/authSelectors';
 import PasswordStrengthMeter from '../auth/components/PasswordStrengthMeter';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../redux/reducers/formData';
 
 const ResetPasswordModal = ({ modal, toggleModal }) => {
   const dispatch = useDispatch();
-
+  const savedFormData = useSelector(formData);
   const isLoading = useSelector(selectAuthLoading);
 
   const schema = yup.object().shape({
@@ -42,17 +44,37 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
     formState: { errors },
     control,
     watch,
+    reset,
+    trigger,
   } = useForm({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
     defaultValues: {
-      oldPassword: '',
-      newPassword: '',
-      cnfPassword: '',
+      oldPassword: savedFormData?.oldPassword || '',
+      newPassword: savedFormData?.newPassword || '',
+      cnfPassword: savedFormData?.cnfPassword || '',
     },
   });
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: schema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const onSuccess = () => {
+    dispatch(setFormData({...savedFormData,oldPassword:'',newPassword:'',cnfPassword:''}));
     toggleModal();
   };
 
@@ -67,7 +89,10 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-reset-password-modal-style" className="modal-dialog-centered ">
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={()=>{
+            dispatch(setFormData({...savedFormData,oldPassword:'',newPassword:'',cnfPassword:''}));
+            toggleModal();
+      }} />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalBody>
           <div className="px-3">
@@ -161,7 +186,10 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
         </ModalBody>
         <ModalFooter>
           <div className="pb-1">
-            <Button color="primary" type="button" className="me-2" outline onClick={toggleModal}>
+            <Button color="primary" type="button" className="me-2" outline onClick={()=>{
+            dispatch(setFormData({...savedFormData,oldPassword:'',newPassword:'',cnfPassword:''}));
+            toggleModal();
+      }}>
               Cancel
             </Button>
             <Button color="primary" type="submit" disabled={!oldPassword || !newPassword || !cnfPassword || isLoading}>

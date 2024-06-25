@@ -126,6 +126,11 @@ const ProjectCardWrap = styled(CardWrap)`
       margin-bottom: 2rem !important;
     }
   }
+
+  .empty-text {
+    font-size: 16px;
+    color: ${theme.infoIcon};
+  }
 `;
 
 const TeamCardWrap = styled(CardWrap)`
@@ -456,6 +461,27 @@ const BidsReceivedWrapper = styled.div`
   }
 `;
 
+const CustomDraftProjectBadge = styled.span`
+  .DRAFT {
+    background: ${theme.draftStatusBadgeBg};
+    color: ${theme.draftStatusBadgeColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.draftStatusBadgeColor}` : 'none')};
+  }
+  .rounded-corner {
+    border-radius: 1.0625rem;
+  }
+`;
+
+const DraftSkillsAndToolsContainer = styled.div`
+  .heading {
+    font-weight: 400;
+    margin-right: 1rem;
+    font-size: 0.8rem;
+  }
+  .empty-text {
+  }
+`;
+
 export {
   CardWrap,
   ProjectCardWrap,
@@ -465,4 +491,6 @@ export {
   ResponsiveGrid,
   BidsReceivedWrapper,
   IconWrapper,
+  CustomDraftProjectBadge,
+  DraftSkillsAndToolsContainer,
 };

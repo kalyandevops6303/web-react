@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -53,6 +53,9 @@ import { convertReferral } from '../../redux/actions/referralAndRewardActions';
 import { getItem, removeItem } from '../../utility/localStorageControl';
 import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
+import { formData, formDocuments } from '../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments } from '../../redux/reducers/formData';
+import { filteredFormSchema } from '../../utility/Utils';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -73,27 +76,51 @@ const Account = () => {
     email: yup.string().email().required(),
   });
 
+  const savedFormData = useSelector(formData);
+
   const {
     control,
     handleSubmit,
     setValue,
     watch,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(AccountDetailsSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      countryCode: '',
-      mobileNumber: '',
-      email: '',
+      firstName: savedFormData?.firstName || '',
+      lastName: savedFormData?.lastName || '',
+      countryCode: savedFormData?.countryCode || '',
+      mobileNumber: savedFormData?.mobileNumber || '',
+      email: savedFormData?.email || '',
+      selectedImage: savedFormData?.selectedImage || '',
+      selectedImagePreview: savedFormData?.selectedImagePreview || '',
+      imageUrlRes: savedFormData?.imageUrlRes || null,
     },
   });
-
+  const localFormData = useWatch({ control });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: AccountDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
@@ -103,15 +130,21 @@ const Account = () => {
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const convertReferralIsLoading = useSelector(convertReferralLoading);
 
-  const [resetPasswordModal, setResetPasswordModal] = useState(null);
+  const [resetPasswordModal, setResetPasswordModal] = useState(savedFormData?.resetPasswordModal || null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImagePreview, setSelectedImagePreview] = useState(null);
-  const [imageUrlRes, setImageUrlRes] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(savedFormData?.selectedImage || null);
+  const [selectedImagePreview, setSelectedImagePreview] = useState(savedFormData?.selectedImagePreview || null);
+  const [imageUrlRes, setImageUrlRes] = useState(savedFormData?.imageUrlRes || null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const fileInputRef = useRef(null);
 
-  const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
+  const toggleResetPasswordModal = () => {
+    setResetPasswordModal(!resetPasswordModal);
+  };
+
+  useEffect(() => {
+    dispatch(setFormData({ ...savedFormData, resetPasswordModal }));
+  }, [resetPasswordModal]);
 
   const onReferralConversionSuccess = () => {
     userDetailsData?.user_type === 'TALENT'
@@ -121,6 +154,7 @@ const Account = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       userDetailsData?.user_type === 'TALENT'
         ? navigate(`/${userProfileEdit.talent}/personal-details`)
@@ -157,6 +191,66 @@ const Account = () => {
     }
   };
 
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      setValue('countryCode', res.country_code);
+      setValue('mobileNumber', res.phone);
+      setValue('email', res.email);
+
+      if (res.checkpoint === checkPoints.ACCOUNT_DETAILS && res.oauth_type === 'google') {
+        if (res.user_type === userTypes.talent) {
+          setSelectedImage(savedFormData?.selectedImage || res?.talent_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res?.talent_info?.image_uri);
+          setValue('firstName', savedFormData?.firstName || res?.talent_info?.first_name, {
+            shouldValidate: true,
+          });
+          if (res?.talent_info?.last_name !== '') {
+            setValue('lastName', savedFormData?.lastName || res?.talent_info?.last_name, {
+              shouldValidate: true,
+            });
+          } else {
+            setValue('lastName', savedFormData?.lastName);
+          }
+        } else if (res.user_type === userTypes.client) {
+          setSelectedImage(savedFormData?.selectedImage || res?.client_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res?.client_info?.image_uri);
+          setValue('firstName', savedFormData?.firstName || res?.client_info?.first_name, {
+            shouldValidate: true,
+          });
+          if (res?.client_info?.last_name !== '') {
+            setValue('lastName', savedFormData?.lastName || res?.client_info?.last_name, {
+              shouldValidate: true,
+            });
+          } else {
+            setValue('lastName', savedFormData?.lastName);
+          }
+        }
+      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS || res.checkpoint === checkPoints.COMPLETE) {
+        if (res.user_type === userTypes.talent) {
+          setValue('firstName', savedFormData?.firstName || res.talent_info?.first_name, {
+            shouldValidate: true,
+          });
+          setValue('lastName', savedFormData?.lastName || res.talent_info?.last_name, {
+            shouldValidate: true,
+          });
+          setSelectedImage(savedFormData?.selectedImage || res.talent_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res.talent_info?.image_uri);
+        } else if (res.user_type === userTypes.client) {
+          setValue('firstName', savedFormData?.firstName || res.client_info?.first_name, {
+            shouldValidate: true,
+          });
+          setValue('lastName', savedFormData?.lastName || res.client_info?.last_name, {
+            shouldValidate: true,
+          });
+          setSelectedImage(savedFormData?.selectedImage || res.client_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res.client_info?.image_uri);
+        }
+
+        setIsNextButtonDisabled(false);
+      }
+    }
+  };
+
   const onSubmit = (data) => {
     const { firstName, lastName } = data;
     let reqData;
@@ -174,6 +268,7 @@ const Account = () => {
     ) {
       if (userDetailsData.user_type === userTypes.talent) {
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else {
         dispatch(saveClientAccountDetails(reqData, onSuccess));
       }
@@ -183,46 +278,6 @@ const Account = () => {
         dispatch(saveTalentProfileDetails(reqData, onSuccess));
       } else {
         dispatch(saveClientProfileDetails(reqData, onSuccess));
-      }
-    }
-  };
-
-  const onGetUserDetailsSuccess = (res) => {
-    if (res) {
-      setValue('countryCode', res.country_code);
-      setValue('mobileNumber', res.phone);
-      setValue('email', res.email);
-
-      if (res.checkpoint === checkPoints.ACCOUNT_DETAILS && res.oauth_type === 'google') {
-        if (res.user_type === userTypes.talent) {
-          setSelectedImage(res?.talent_info?.image_uri);
-          setSelectedImagePreview(res?.talent_info?.image_uri);
-          setValue('firstName', res?.talent_info?.first_name, { shouldValidate: true });
-          if (res?.talent_info?.last_name !== '') {
-            setValue('lastName', res?.talent_info?.last_name, { shouldValidate: true });
-          }
-        } else if (res.user_type === userTypes.client) {
-          setSelectedImage(res?.client_info?.image_uri);
-          setSelectedImagePreview(res?.client_info?.image_uri);
-          setValue('firstName', res?.client_info?.first_name, { shouldValidate: true });
-          if (res?.client_info?.last_name !== '') {
-            setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
-          }
-        }
-      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS || res.checkpoint === checkPoints.COMPLETE) {
-        if (res.user_type === userTypes.talent) {
-          setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
-          setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
-          setSelectedImage(res.talent_info?.image_uri);
-          setSelectedImagePreview(res.talent_info?.image_uri);
-        } else if (res.user_type === userTypes.client) {
-          setValue('firstName', res.client_info?.first_name, { shouldValidate: true });
-          setValue('lastName', res.client_info?.last_name, { shouldValidate: true });
-          setSelectedImage(res.client_info?.image_uri);
-          setSelectedImagePreview(res.client_info?.image_uri);
-        }
-
-        setIsNextButtonDisabled(false);
       }
     }
   };
@@ -244,21 +299,32 @@ const Account = () => {
     }
     return true;
   };
-
+  const updatedFormDocument = useSelector(formDocuments);
   const fetchFile = async (file) => {
     const thumbnail = URL.createObjectURL(file);
     setSelectedImage(file);
+    dispatch(setFormDocuments(file));
     setSelectedImagePreview(thumbnail);
-
+    dispatch(setFormData({ ...savedFormData, selectedImage: file, selectedImagePreview: thumbnail }));
     try {
       setIsImageUploading(true);
       const res = await profileImageUploadService(file.name);
       setImageUrlRes(res?.data?.data);
+      dispatch(setFormData({ ...savedFormData, imageUrlRes: res.data?.data }));
     } catch (error) {
       setIsImageUploading(false);
       setImageUrlRes(null);
     }
   };
+
+  useEffect(() => {
+    const refetchFile = async () => {
+      if (updatedFormDocument != null) {
+        await fetchFile(updatedFormDocument);
+      }
+    };
+    refetchFile();
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -286,9 +352,11 @@ const Account = () => {
   };
 
   const onRemovePictureClick = () => {
+    dispatch(setFormDocuments(null));
     setSelectedImage(null);
     setSelectedImagePreview(null);
     setImageUrlRes(null);
+    dispatch(setFormData({ ...savedFormData, selectedImage: null, selectedImagePreview: null, imageUrlRes: null }));
   };
 
   useEffect(() => {

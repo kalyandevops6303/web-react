@@ -19,13 +19,14 @@ import BidMilestone from './overview/BidMilestone';
 import PaymentTab from './payment/PaymentTab';
 import MilestonePaymentListing from './payment/MilestonePaymentListing';
 import { userData } from '../../redux/selectors/dashboardSelectors';
-import { CHECKOUT_STATUS, userTypes } from '../../utility/constants/Constant';
+import { CHECKOUT_STATUS, projectStatusEnum, userTypes } from '../../utility/constants/Constant';
 import { truncateSentence } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import MilestoneDetails from './milestones/MilestoneDetails';
 import ProjectDetailsNavbar from './overview/ProjectDetailsNavbar';
 import DownloadCertificate from './overview/DownloadCertificate';
 import { updatePaymentStatus } from '../../redux/actions/milestonePaymentActions';
+import { downloadCertificate } from '../../redux/actions/projectDetailsAction';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -49,6 +50,7 @@ const ProjectDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
+  const [downloadCertificateURL, setDownloadCertificateURL] = useState('');
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const user = useSelector(userData);
@@ -82,12 +84,17 @@ const ProjectDetails = () => {
   }, [checkoutStatus]);
 
   const isInviteView = location?.pathname?.includes('project-invitation');
+  const { projectId } = params;
+
+  const onSuccess = (data) => {
+    setDownloadCertificateURL(data);
+  };
 
   useEffect(() => {
     let updatedSteps = [];
     if (projectDetailsData) {
       updatedSteps = [...steps]; // Create a copy of the original steps array
-      if (projectDetailsData.status === 'COMPLETED') {
+      if (projectDetailsData.status === projectStatusEnum.COMPLETED) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
@@ -95,13 +102,13 @@ const ProjectDetails = () => {
         const ratingIndex = 4; // Index of the 'Rating' step
         updatedSteps[ratingIndex] = { ...updatedSteps[ratingIndex], isDisabled: false };
       }
-      if (projectDetailsData.status === 'ON_GOING') {
+      if (projectDetailsData.status === projectStatusEnum.ON_GOING) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
       }
-      if (projectDetailsData.status === 'ACTIVE') {
+      if (projectDetailsData.status === projectStatusEnum.ACTIVE) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
@@ -119,6 +126,12 @@ const ProjectDetails = () => {
       setStepsArrayInvite(updatedInviteSteps);
     }
   }, [invitedByData?.request_status]);
+
+  useEffect(() => {
+    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates) {
+      dispatch(downloadCertificate({ project_id: projectId, onSuccess }));
+    }
+  }, [projectDetailsData?.status]);
 
   const fromLocationPrimary = () => {
     const baseRoute = getItem('baseRoute');
@@ -203,7 +216,9 @@ const ProjectDetails = () => {
       <Row className="mt-3">
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
-          {projectDetailsData?.completed_certificates && !isClient && <DownloadCertificate />}
+          {projectDetailsData?.completed_certificates && downloadCertificateURL && !isClient && (
+            <DownloadCertificate downloadUrl={downloadCertificateURL} />
+          )}
           <LeftSidebarProjectDetails />
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
