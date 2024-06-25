@@ -129,9 +129,9 @@ const Login = () => {
     }
   }, []);
 
-  const onSuccess = (resp) => {
+  const onSuccess = (response) => {
     dispatch(clearAllFormData());
-    checkPointRedirection({ resp, navigate });
+    checkPointRedirection({ response, navigate });
   };
 
   const onSubmit = (values) => {
