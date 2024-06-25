@@ -8,6 +8,7 @@ import hat from '@src/assets/images/hat.svg';
 import { Heart } from 'react-feather';
 import { useState } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import parse from 'html-react-parser';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { TeamCardWrap } from './style';
@@ -90,7 +91,7 @@ const ClubCard = ({ data, isSearchPage }) => {
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
                 </span> */}
                 </div>
-                <CardText className="team-desc mb-1">{data?.introduction} </CardText>
+                <CardText className="team-desc mb-1">{data?.introduction && parse(data?.introduction)} </CardText>
 
                 <div className="avatar-wrap mb-1">
                   {users.length > 3 ? (
