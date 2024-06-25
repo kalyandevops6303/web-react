@@ -171,6 +171,7 @@ const Educational = () => {
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [certificatesOptions, setCertificatesOptions] = useState(null);
+  const [files, setFiles] = useState(savedFormDocuments || [])
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
@@ -503,6 +504,11 @@ const Educational = () => {
     dispatch(getCustomerSupportCount());
   };
 
+
+  useEffect(() => {
+    if (files?.length > 0 && !files[0].file?.name) setFiles([])
+  }, [files])
+
   return (
     <ProfileFormContainer>
       {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) ? (
@@ -777,7 +783,7 @@ const Educational = () => {
                 </div>
               </div>
             </Col>
-            <Col>
+            {files.length > 0 && <Col>
               <Card>
                 <CardBody>
                   <div className="d-flex flex-column">
@@ -808,7 +814,7 @@ const Educational = () => {
                   </div>
                 </CardBody>
               </Card>
-            </Col>
+            </Col>}
           </Row>
         </Form>
       )}
