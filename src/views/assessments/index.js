@@ -30,7 +30,7 @@ const Assessments = () => {
     const supportRequests = useSelector(selectSupportList)
 
     useEffect(() => {
-        // dispatch(prepopulateAssessments());
+        dispatch(prepopulateAssessments());
         dispatch(getUserAssessments());
         dispatch(getAllAssessments());
         dispatch(getCustomerSupportList({
@@ -62,7 +62,7 @@ const Assessments = () => {
                         </p>
                     </PaymentInfoBanner>
                     <AssessmentsList setOpen={location.state} data={assessmentsListData} dropdownOptions={dropdownList.filter(item => !assessmentsListData?.some(assessment => assessment.assessment_id === item.assessment_id))} />
-                    <AssessmentsRequestList notUserAssessments={notUserAssessments} supportRequests={supportRequests}/>
+                    <AssessmentsRequestList notUserAssessments={notUserAssessments} supportRequests={supportRequests} />
                 </CardBody>
             </Card>}
         </div>
