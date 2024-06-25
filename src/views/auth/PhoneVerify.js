@@ -25,11 +25,15 @@ import ResendOTPComp from './components/ResendOTP';
 import OtpInput from '../../lib/otp-input';
 import LogoComp from './components/LogoComp';
 import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 
 const VerifyPhone = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [code, setCode] = useState('');
+  const savedFormData = useSelector(formData);
+  const [code, setCode] = useState(savedFormData?.code || '');
 
   const isLoading = useSelector(selectAuthLoading);
   const isPhoneVerified = useSelector(selectIsPhoneVerified);
@@ -57,11 +61,12 @@ const VerifyPhone = () => {
   const [selectedCountry, setSelectedCountry] = useState({
     label: 'United States',
     dial_code: '+1',
-    code: 'US',
+    code: CITIZEN_TYPES.US,
     _id: '6479c2071183add75cda4e37',
   });
 
   const handleChange = (value) => {
+    dispatch(setFormData({code:value}));
     setCode(value);
   };
 
@@ -79,6 +84,7 @@ const VerifyPhone = () => {
         country_id: phoneData?.selectedCountry?._id,
       }),
     );
+    dispatch(clearAllFormData());
   };
 
   return (

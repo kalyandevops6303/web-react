@@ -2,6 +2,7 @@ import errorHandler from '../../utility/errorHandler';
 import {
   accountDetailsService,
   checkpointCompleteService,
+  parsedResumeService,
   profileDetailsService,
   userDetailsService,
 } from '../../services/talentOnboardingServices';
@@ -18,6 +19,9 @@ import {
   checkpointCompleteRequest,
   checkpointCompleteSuccess,
   checkpointCompleteFailure,
+  resumeParsedDetailsRequest,
+  resumeParsedDetailsSuccess,
+  resumeParsedDetailsFailure,
 } from '../reducers/talentOnboarding';
 import { cometChatLogin } from '../reducers/auth';
 import { scanAndProcessFiles } from '../../utility/Utils';
@@ -30,6 +34,19 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
     dispatch(userDetailsSuccess(res.data.data));
   } catch (error) {
     errorHandler(error, userDetailsFailure);
+  }
+};
+
+const getResumeParsedDetails = (setResumeParsedDetails, fileKey) => async (dispatch) => {
+  dispatch(resumeParsedDetailsRequest());
+  try {
+    const res = await parsedResumeService(fileKey);
+    let resumeDetails = res.data.data.generated_info;
+    resumeDetails = { ...resumeDetails, _id: res.data.data._id, file_key: res.data.data?.file_key };
+    setResumeParsedDetails(res.data.data.generated_info);
+    dispatch(resumeParsedDetailsSuccess(resumeDetails));
+  } catch (error) {
+    errorHandler(error, resumeParsedDetailsFailure);
   }
 };
 
@@ -104,6 +121,7 @@ const saveSocialProfileDetails = (data, onSuccess) => async (dispatch) => {
 
 export {
   getUserDetails,
+  getResumeParsedDetails,
   saveTalentAccountDetails,
   saveProfileDetails,
   saveCheckpointComplete,
