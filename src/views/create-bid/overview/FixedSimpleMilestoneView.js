@@ -49,7 +49,7 @@ import {
 import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import {
   bidDetailsLoading,
-  draftSetMilestonesLoading,
+  // draftSetMilestonesLoading,
   projectDetails,
   setMilestonesLoading,
 } from '../../../redux/selectors/createBidSelectors';
@@ -157,7 +157,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
   const projectDetailsData = useSelector(projectDetails);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
+  // const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
 
   const saveAsDraftClicked = useRef();
   const [files, setFiles] = useState(savedFormData?.files || []);
@@ -1095,7 +1095,8 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div className="d-flex justify-content-end">
-              <Button
+              {/** /** Hide Save Drafts flow from Create Bid
+               <Button
                 onClick={() => {
                   saveAsDraftClicked.current = true;
                   handleSubmit(onSubmit)();
@@ -1111,7 +1112,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                 }
               >
                 {draftSetMilestonesIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-              </Button>
+              </Button> */}
               <Button
                 color="primary"
                 type="submit"
