@@ -27,7 +27,6 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const clientDetails = data?.client ?? data?.client_details;
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const userData = useSelector(selectUserData);
-
   const location = useLocation();
 
   const handleLike = (e) => {
@@ -267,35 +266,37 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
       {location.pathname.split('/').includes('my_listings') && (
         <BidsReceivedWrapper>
           <p className="wrapper-title mb-50">Bids Received</p>
-          {bidsReceivedAvatarGroup?.length ? (
-            <div className="d-flex align-items-center">
-              {bidsReceivedAvatarGroup?.length > 3 ? (
-                <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
+          <div className="d-flex align-items-center justify-content-between">
+              {bidsReceivedAvatarGroup?.length === 0 ? (
+                <p className="m-0">None</p>
               ) : (
-                <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                <div className="d-flex align-items-center">
+                  {bidsReceivedAvatarGroup?.length > 3 ? (
+                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
+                  ) : (
+                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                  )}
+                  <div className="total-count px-75 ms-1">
+                    <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+                  </div>
+                </div>
               )}
-              <div className="total-count px-75 ms-1">
-                <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
-              </div>
+              {data?.project?.status === 'LISTING_EXPIRED' ? (
+                <div className="d-flex justify-content-end relist-btn-wrapper">
+                  <Button
+                    color="primary"
+                    outline
+                    className="relist-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRelistConfirmationModal(true);
+                    }}
+                  >
+                    Re-list
+                  </Button>
+                </div>
+              ) : null}
             </div>
-          ) : (
-            <p className="m-0">None</p>
-          )}
-          {data?.status === 'LISTING_EXPIRED' && (
-            <div className="d-flex justify-content-end relist-btn-wrapper">
-              <Button
-                color="primary"
-                outline
-                className="relist-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setRelistConfirmationModal(true);
-                }}
-              >
-                Re-list
-              </Button>
-            </div>
-          )}
         </BidsReceivedWrapper>
       )}
       {location.pathname.split('/').includes('my_bids') &&
