@@ -144,7 +144,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
               <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          {!isSearchPage && (
+          {!isSearchPage && !location.pathname.split('/').includes('my_listings') && (
             <div className="mb-25">
               {isFavorite ? (
                 <Heart
