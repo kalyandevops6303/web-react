@@ -346,7 +346,7 @@ const ProjectWrapper = styled.div`
 
   .active-project-name {
     color: #5e5873;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     height: 40px;
   }
@@ -371,7 +371,7 @@ const ProjectWrapper = styled.div`
 
   .active-project-simple-heading {
     color: #b9b9c3;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
     margin-bottom: -10px;
@@ -379,7 +379,7 @@ const ProjectWrapper = styled.div`
 
   .active-project-milestone-name {
     color: #5e5873;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
   }
 

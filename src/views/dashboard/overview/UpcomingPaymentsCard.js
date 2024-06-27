@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
-import { Badge, Card, CardBody, CardText } from 'reactstrap';
+import { Badge, Card, CardBody } from 'reactstrap';
 
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -124,18 +124,24 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
             <div className="bottom-detail d-flex mt-1">
               <div className="design-planning-wrapper">
                 <div className="design-planning">
-                  <CardText className="mb-25">Due Date</CardText>
-                  <h6 className="mb-0">{`${
+                  <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
+                    Due Date
+                  </p>
+                  <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">{`${
                     DateTime.fromMillis(data?.project_start_date).toFormat('MMM dd, yy') || '-'
-                  }`}</h6>
+                  }`}</p>
                 </div>
               </div>
             </div>
             <div className="bottom-detail d-flex mt-1">
               <div className="design-planning-wrapper">
                 <div className="design-planning">
-                  <CardText className="mb-25">Payment Due</CardText>
-                  <h6 className="mb-0">${roundOfAmount(data?.amount)}</h6>
+                  <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
+                    Payment Due
+                  </p>
+                  <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">
+                    ${roundOfAmount(data?.amount)}
+                  </p>
                 </div>
               </div>
             </div>
