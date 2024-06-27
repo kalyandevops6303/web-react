@@ -102,13 +102,13 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
                 navigate('/marketplace/all_listings');
                 dispatch(setActiveNavTab('marketplace'));
               }}
-              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+              className="font-weight-bold text-center text-primary project-cta mt-25 cursor-pointer"
             >
               Explore Projects
             </div>
           ) : (
             <div
-              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+              className="font-weight-bold text-center text-primary project-cta mt-25 cursor-pointer"
               onClick={() => {
                 navigate('/marketplace/teams');
                 dispatch(setActiveNavTab('marketplace'));

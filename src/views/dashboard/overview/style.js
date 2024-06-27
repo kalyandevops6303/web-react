@@ -278,6 +278,7 @@ const ProjectWrapper = styled.div`
 
   .empty-card {
     margin-bottom: 1rem;
+    padding-bottom:1rem;
     margin-top: 1rem;
     width: fit-content;
   }
@@ -286,6 +287,7 @@ const ProjectWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items:center;
     .get-started {
       margin-top: -2rem;
       font-size: 18px;
@@ -296,10 +298,18 @@ const ProjectWrapper = styled.div`
     }
     .empty-gif {
       height: 15rem;
+        @media (max-width: 768px) {
+        height: 13rem;
+        }
     }
   }
   .empty-h-25 {
-    height: 25.5rem;
+    height: 18.5rem;
+    width: 18.5rem;
+     @media (max-width: 768px) {
+    height: 16.5rem;
+    width: 16.5rem;
+  }
   }
 
   .card-app-design {
