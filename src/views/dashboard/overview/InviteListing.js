@@ -114,7 +114,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
                 dispatch(setActiveNavTab('marketplace'));
               }}
             >
-              View Teams
+              Join Team
             </div>
           )}
         </CardBody>
@@ -372,7 +372,7 @@ const InviteListing = () => {
                     </>
                   ) : (
                     <Empty
-                      isTeam
+                      recommended
                       active={false}
                       isEducationNotCompleted={returnDetailsForMarketPlace(
                         userDetailsData?.user_type,
