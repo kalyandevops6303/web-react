@@ -24,6 +24,7 @@ import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 import OpenListing from './overview/OpenListing';
+import RecommendedTeamsListing from './overview/RecommendedTeamsListing';
 import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
@@ -100,7 +101,6 @@ const PrivateDashboard = () => {
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
-
 
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
@@ -312,6 +312,12 @@ const PrivateDashboard = () => {
             <section className="mb-2">
               <Header className="mb-1">Open Listings</Header>
               <OpenListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              <RecommendedTeamsListing/>
             </section>
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
