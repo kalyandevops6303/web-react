@@ -217,12 +217,12 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
                 <span>
-                  {clientDetails?.first_name}&nbsp;
-                  {clientDetails?.last_name}
+                {clientDetails?.title ?? clientDetails?.company_name}
                 </span>
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                {clientDetails?.title ?? clientDetails?.company_name}
+              {clientDetails?.first_name}&nbsp;
+              {clientDetails?.last_name}
               </CardText>
             </div>
             <div className="d-flex flex-grow-1">
