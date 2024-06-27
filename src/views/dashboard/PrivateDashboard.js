@@ -101,7 +101,6 @@ const PrivateDashboard = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
-
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
