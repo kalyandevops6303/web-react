@@ -58,10 +58,6 @@ Thumbs.db
 .env.production.local
 .env
  
-index.html 
-#TODO: remove index.html from here whenever we want to make any changes here
-
-
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
