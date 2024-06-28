@@ -45,6 +45,8 @@ const API = {
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
+    resumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parse-resume`,
+    updateResumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parsed`,
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
@@ -119,6 +121,9 @@ const API = {
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
+    saveDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft/save`,
+    draftProjectsCheck: `${apiCreateProjectEndpoint}/api/v1/project/draft/check`,
+    deleteDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft`,
   },
   projectDetails: {
     getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
@@ -136,6 +141,7 @@ const API = {
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
     requests: `${apiAuthEndpoint}/api/v1/requests`,
     terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
+    withdrawProject: `${apiCreateProjectEndpoint}/api/v1/withdraw-project`,
     relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     relistProjectByDate: `${apiCreateProjectEndpoint}/api/v1/project/relist-by-date`,
     requestChange: `${apiCreateProjectEndpoint}/api/v1/request-bid-changes`,
@@ -234,6 +240,7 @@ const API = {
     milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/bid/file`,
     submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
     changeBidType: `${apiCreateProjectEndpoint}/api/v1/bid-type`,
+    deleteDraftBid: `${apiCreateProjectEndpoint}/api/v1/bid/remove`,
   },
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,

@@ -4,6 +4,7 @@ import {
   changeBidTypeService,
   checkBidService,
   createBidService,
+  deleteDraftBidService,
   projectDetailsService,
   rolesService,
   setMilestonesService,
@@ -26,6 +27,15 @@ import {
   createBidFailure,
   createBidRequest,
   createBidSuccess,
+  deleteDraftBidFailure,
+  deleteDraftBidRequest,
+  deleteDraftBidSuccess,
+  draftSetMilestonesFailure,
+  draftSetMilestonesRequest,
+  draftSetMilestonesSuccess,
+  draftSetWorkersFailure,
+  draftSetWorkersRequest,
+  draftSetWorkersSuccess,
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
@@ -43,16 +53,12 @@ import {
   submitBidSuccess,
 } from '../reducers/createBid';
 
-const getCheckBid = (projectId, onNoBidFound, onBidFound) => async (dispatch) => {
+const getCheckBid = (projectId, onCheckBidSuccess) => async (dispatch) => {
   dispatch(checkBidRequest());
   try {
     const res = await checkBidService(projectId);
-    if ('bid_id' in res.data.data) {
-      onBidFound(res.data.data);
-    } else {
-      onNoBidFound();
-    }
     dispatch(checkBidSuccess(res.data.data));
+    onCheckBidSuccess(res.data.data);
   } catch (error) {
     errorHandler(error, checkBidFailure);
   }
@@ -100,6 +106,17 @@ const getRoles = (projectId) => async (dispatch) => {
   }
 };
 
+const saveDraftSetWorkers = (bidId, data, onSuccess) => async (dispatch) => {
+  dispatch(draftSetWorkersRequest());
+  try {
+    const res = await setWorkersService(bidId, data);
+    dispatch(draftSetWorkersSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, draftSetWorkersFailure);
+  }
+};
+
 const saveSetWorkers = (bidId, data, onSuccess) => async (dispatch) => {
   dispatch(setWorkersRequest());
   try {
@@ -108,6 +125,30 @@ const saveSetWorkers = (bidId, data, onSuccess) => async (dispatch) => {
     onSuccess();
   } catch (error) {
     errorHandler(error, setWorkersFailure);
+  }
+};
+
+const saveDraftSetMilestones = (projectId, bidId, data, onSuccess) => async (dispatch) => {
+  dispatch(draftSetMilestonesRequest());
+  try {
+    const handleSaveMilestone = async () => {
+      const res = await setMilestonesService(projectId, bidId, data);
+      dispatch(draftSetMilestonesSuccess(res.data.data));
+      onSuccess();
+    };
+
+    if (data?.documents?.length > 0) {
+      scanAndProcessFiles({
+        fileData: data?.documents,
+        handleMainAPI: handleSaveMilestone,
+        onError: () => dispatch(draftSetMilestonesFailure()),
+        isPrivate: true,
+      });
+    } else {
+      handleSaveMilestone();
+    }
+  } catch (error) {
+    errorHandler(error, draftSetMilestonesFailure);
   }
 };
 
@@ -159,6 +200,18 @@ const saveChangeBidType = (bidId, bidType, onSuccess) => async (dispatch) => {
   }
 };
 
+const deleteDraftBid = (bidId, onSuccess) => async (dispatch) => {
+  dispatch(deleteDraftBidRequest());
+  try {
+    const res = await deleteDraftBidService(bidId);
+    dispatch(deleteDraftBidSuccess(res.data.data));
+    ShowToastMessage(SUCCESS, res.data.data.message);
+    onSuccess(res.data.data);
+  } catch (error) {
+    errorHandler(error, deleteDraftBidFailure);
+  }
+};
+
 export {
   getCheckBid,
   createBid,
@@ -169,4 +222,7 @@ export {
   saveSetMilestones,
   saveSubmitBid,
   saveChangeBidType,
+  deleteDraftBid,
+  saveDraftSetWorkers,
+  saveDraftSetMilestones,
 };

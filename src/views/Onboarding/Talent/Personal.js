@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unsafe-optional-chaining */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -14,6 +14,7 @@ import {
   Col,
   Form,
   FormFeedback,
+  FormGroup,
   Input,
   InputGroup,
   InputGroupText,
@@ -21,7 +22,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Upload } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,9 +38,16 @@ import {
   languages,
   languagesLoading,
 } from '../../../redux/selectors/staticSelectors';
-import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import {
+  getResumeParsedDetails,
+  getUserDetails,
+  saveProfileDetails,
+} from '../../../redux/actions/talentOnboardingActions';
 import {
   profileDetailsLoading,
+  resumeParsedDetails,
+  resumeParsedDetailsLoading,
+  // resumeParsedDetails,
   userDetails,
   userDetailsLoading,
 } from '../../../redux/selectors/talentOnboardingSelectors';
@@ -51,6 +59,7 @@ import {
   getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
+  filteredFormSchema,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -58,10 +67,13 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import uuidv4 from '../../../lib/uuidv4';
-import { resumeUploadService } from '../../../services/talentOnboardingServices';
+import { resumeUploadService, updateParsedResumeService } from '../../../services/talentOnboardingServices';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
+import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
+import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments, setResumeParsed } from '../../../redux/reducers/formData';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -146,21 +158,34 @@ const Personal = () => {
       .transform((value) => (value === null ? undefined : value))
       .required('City is required'),
   });
-
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
+  const IsresumeParsed = useSelector(resumeParsed);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(PersonalSchema),
     defaultValues: {
-      tagline: '',
-      professionalIntroduction: '',
-      streetAddress: '',
-      houseNumber: '',
+      tagline: savedFormData?.tagline || '',
+      professionalIntroduction: savedFormData?.professionalIntroduction || '',
+      streetAddress: savedFormData?.streetAddress || '',
+      houseNumber: savedFormData?.houseNumber || '',
+      workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
+      workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
+      role: savedFormData?.role || null,
+      zipCode: savedFormData?.zipCode || null,
+      country: savedFormData?.country || null,
+      state: savedFormData?.state || null,
+      city: savedFormData?.city || null,
+      resume: savedFormData?.resume || null,
+      parseResume: IsresumeParsed || false,
     },
   });
 
@@ -168,13 +193,14 @@ const Personal = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
+  const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [languagesOptions, setLanguagesOptions] = useState(null);
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(savedFormDocuments || []);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
@@ -182,15 +208,51 @@ const Personal = () => {
   const citiesIsLoading = useSelector(citiesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
+  const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const userDetailsData = useSelector(userDetails);
+  const parsedResumeData = useSelector(resumeParsedDetails);
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    if (parseResume === false && resumeParsedLoading === false) {
+      const allData = { ...savedFormData, ...localFormData };
+      dispatch(setFormData(allData));
+    }
+  }, [localFormData, parseResume, resumeParsedLoading]);
+
+  useEffect(() => {
+    dispatch(setResumeParsed(parseResume));
+  }, [parseResume]);
+
+  useEffect(() => {
+    if (parseResume === false) {
+      if (savedFormData) {
+        const requiredFields = filteredFormSchema({
+          savedData: savedFormData,
+          formSchemaFields: PersonalSchema.fields,
+        });
+        reset(requiredFields);
+        const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+        trigger(keysWithValues);
+      }
+    }
+    setFiles(savedFormDocuments);
+  }, [parseResume]);
+
+  useEffect(() => {
+    if (files?.length > 0 && !files[0].file?.name) setFiles([])
+  }, [files])
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
+    setParseResume(false);
+    dispatch(setResumeParsed(false));
+    dispatch(setFormDocuments(null));
   };
 
   const isFileValid = (file) => {
@@ -216,29 +278,114 @@ const Personal = () => {
     }
   };
 
+  const setResumeParsedDetails = (res) => {
+    if (res) {
+      if (res?.tagline && res?.tagline.length > 0) {
+        setValue('tagline', res?.tagline, { shouldValidate: true });
+      }
+      if (res?.work_experience && res?.work_experience > 0) {
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const years = Math.floor(res?.work_experience / 12);
+        const months = res?.work_experience % 12;
+
+        setValue('workExperienceYear', years, { shouldValidate: true });
+        setValue('workExperienceMonth', months, { shouldValidate: true });
+      }
+      if (res?.languages_read && res?.languages_read.length > 0) {
+        setValue(
+          'readLanguages',
+          res.languages_read?.map((language) => ({
+            label: language?.name,
+            value: language?._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.languages_speak && res?.languages_speak.length > 0) {
+        setValue(
+          'speakLanguages',
+          res.languages_speak?.map((language) => ({
+            label: language?.name,
+            value: language?._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.languages_write && res?.languages_write.length > 0) {
+        setValue(
+          'writeLanguages',
+          res.languages_write?.map((language) => ({
+            label: language?.name,
+            value: language?._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.professional_introduction && res?.professional_introduction.length > 0) {
+        setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
+      }
+      if (res?.address && res?.address?.length > 0) {
+        setValue('streetAddress', res?.address, { shouldValidate: true });
+      }
+      if (savedFormDocuments) {
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+          },
+        ]);
+      }
+    }
+  };
+
   const fetchUploadUrl = async (file) => {
     const response = await resumeUploadService(file.name);
-
+    dispatch(getResumeParsedDetails(setResumeParsedDetails, response?.data?.data?.file_key));
     const fileWithUrl = {
       id: uuidv4(),
       file,
       uploadData: response?.data?.data,
       isUploaded: false,
     };
+    dispatch(setFormDocuments([fileWithUrl]));
+    setParseResume(true);
+    dispatch(setResumeParsed(true));
 
     setFiles([fileWithUrl]);
 
     handleUploadFile(fileWithUrl);
   };
 
-  const handleFileChange = (e) => {
-    if (isFileValid(e.target.files[0])) {
-      fetchUploadUrl(e.target.files[0]);
+  const handleFileChange = async (e) => {
+    if (e.target.files) {
+      if (isFileValid(e.target.files[0])) {
+        dispatch(clearAllFormData());
+        await fetchUploadUrl(e.target.files[0]);
+        setParseResume(true);
+        dispatch(setResumeParsed(true));
+      }
     } else {
       e.target.value = '';
     }
   };
 
+  const filesRef = useRef();
+  useEffect(() => {
+    const fileReRender = async () => {
+      if (savedFormDocuments != null) {
+        filesRef.current = files;
+        setFiles(savedFormDocuments);
+        dispatch(setFormDocuments(savedFormDocuments));
+      }
+    };
+    fileReRender();
+  }, [savedFormDocuments]);
   const formattedDate = new Date()
     .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
     .replace(',', '')
@@ -269,9 +416,13 @@ const Personal = () => {
         {files?.map((file, index) => (
           <Row
             key={file.id}
-            className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
+            className={
+              index !== files.length - 1
+                ? 'd-flex flex-column align-items-start mb-1'
+                : 'd-flex flex-column align-items-start'
+            }
           >
-            <Col sm="6" md="4" lg="4">
+            <Col>
               <div
                 className="d-flex cursor-pointer"
                 style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
@@ -282,32 +433,32 @@ const Personal = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center gap-2">
                     <span>{renderFilePreview(file.file)}</span>
                     <span>{file.file.name}</span>
                   </div>
                 )}
               </div>
             </Col>
-            <Col sm="6" md="2" lg="2">
-              {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
-            </Col>
-            <Col sm="2" md="2" lg="2">
-              {getFileSize(file.file.size)}
-            </Col>
-            <Col sm="2" md="2" lg="2">
-              {requiredFormattedDate}
-            </Col>
-            <Col sm="2" md="2" lg="2">
-              <Button
-                color="flat-danger"
-                className="btn-left-margin"
-                disabled={uploadingFiles.includes(file)}
-                onClick={() => handleRemoveFile(file)}
-              >
-                Remove
-              </Button>
-            </Col>
+            <Row className="mt-2">
+              <Row>
+                <Col>{uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}</Col>
+                <Col>{getFileSize(file.file.size)}</Col>
+              </Row>
+              <Row className="d-flex align-items-center">
+                <Col>{requiredFormattedDate}</Col>
+                <Col>
+                  <Button
+                    color="flat-danger"
+                    className="btn-left-margin"
+                    disabled={uploadingFiles.includes(file)}
+                    onClick={() => handleRemoveFile(file)}
+                  >
+                    Remove
+                  </Button>
+                </Col>
+              </Row>
+            </Row>
           </Row>
         ))}
       </Card>
@@ -315,6 +466,8 @@ const Personal = () => {
   );
 
   useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData, country: watch('country') };
+    dispatch(setFormData(allData));
     if (watch('country')?.value !== userDetailsData?.talent_info?.current_residency?.country?._id) {
       setValue('state', null);
       setValue('city', null);
@@ -324,15 +477,30 @@ const Personal = () => {
       dispatch(getStates(watch('country').value));
       setCitiesOptions([]);
     }
+    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country').value) {
+      setValue('state', savedFormData?.state);
+      if (savedFormData && savedFormData?.state != null) {
+        setValue('city', savedFormData?.city);
+      }
+    }
   }, [watch('country')]);
 
   useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData, state: watch('state') };
+    dispatch(setFormData(allData));
     if (watch('state')?.value !== userDetailsData?.talent_info?.current_residency?.state?._id) {
       setValue('city', null);
     }
 
     if (watch('state')) {
       dispatch(getCities(watch('state').value));
+    }
+    const state = watch('state');
+    const savedState = savedFormData?.state?.value;
+    const currentState = state?.value;
+
+    if (state && savedFormData && savedState === currentState) {
+      setValue('city', savedFormData?.city ?? '');
     }
   }, [watch('state')]);
 
@@ -355,6 +523,8 @@ const Personal = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
+    dispatch(setFormDocuments(files));
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -363,6 +533,8 @@ const Personal = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
+    dispatch(setFormDocuments(files));
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -388,8 +560,8 @@ const Personal = () => {
       city,
     } = data;
 
-    const years = workExperienceYear || 0;
-    const months = workExperienceMonth || 0;
+    const years = parseInt(workExperienceYear, 10) || 0;
+    const months = parseInt(workExperienceMonth, 10) || 0;
 
     const work_experience = years * 12 + months;
     const professional_intro = professionalIntroduction;
@@ -437,8 +609,29 @@ const Personal = () => {
         },
       };
     }
-
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    if (IsresumeParsed) {
+      const resumeUpdatedData = {
+        target_info: {
+          ...parsedResumeData,
+          languages_speak: speakLanguages?.map((language) => ({
+            name: language?.label,
+            _id: language?.value,
+          })),
+          languages_write: writeLanguages.map((language) => ({
+            name: language?.label,
+            _id: language?.value,
+          })),
+          languages_read: readLanguages.map((language) => ({
+            name: language?.label,
+            _id: language?.value,
+          })),
+          tagline,
+          professional_introduction: professionalIntroduction,
+        },
+      };
+      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    }
   };
 
   const loadTalentRolesOptions = async (search) => {
@@ -507,39 +700,52 @@ const Personal = () => {
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.talent_info?.tagline.length > 0) {
-        setValue('tagline', res?.talent_info?.tagline, { shouldValidate: true });
+        setValue('tagline', savedFormData?.tagline || res?.talent_info?.tagline, {
+          shouldValidate: true,
+        });
       }
       if (res?.talent_info?.work_experience > 0) {
         // eslint-disable-next-line no-unsafe-optional-chaining
-        const years = Math.floor(res?.talent_info?.work_experience / 12);
-        const months = res?.talent_info?.work_experience % 12;
+        const years = Math.floor(savedFormData?.workExperienceYear || res?.talent_info?.work_experience / 12);
+        const months = savedFormData?.workExperienceMonth || res?.talent_info?.work_experience % 12;
 
         setValue('workExperienceYear', years, { shouldValidate: true });
         setValue('workExperienceMonth', months, { shouldValidate: true });
       }
       if (res?.talent_info?.professional_intro.length > 0) {
-        setValue('professionalIntroduction', res?.talent_info?.professional_intro, { shouldValidate: true });
+        setValue(
+          'professionalIntroduction',
+          savedFormData?.professionalIntroduction || res?.talent_info?.professional_intro,
+          { shouldValidate: true },
+        );
       }
       if ('name' in res?.talent_info?.role) {
         setValue(
           'role',
-          { label: res?.talent_info?.role?.name, value: res?.talent_info?.role?._id },
+          {
+            label: savedFormData?.role?.label || res?.talent_info?.role?.name,
+            value: savedFormData?.role?.value || res?.talent_info?.role?._id,
+          },
           { shouldValidate: true },
         );
       }
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
-        setFiles([
-          {
-            file: {
-              name: res?.talent_info?.resume?.file_name,
-              size: res?.talent_info?.resume?.size,
-            },
-            uploadData: {
-              file_key: res?.talent_info?.resume?.file_key,
-            },
-            isUploaded: true,
+        const fileUrl = {
+          file: {
+            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
+            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
           },
-        ]);
+          uploadData: {
+            file_key:
+              savedFormDocuments != null
+                ? savedFormDocuments[0]?.uploadData?.file_key
+                : res?.talent_info?.resume?.file_key,
+          },
+          isUploaded: true,
+        };
+
+        setFiles([fileUrl]);
+        dispatch(setFormDocuments([fileUrl]));
       }
       if (
         'streetAddress' in res?.talent_info?.current_residency ||
@@ -550,20 +756,28 @@ const Personal = () => {
         'city' in res?.talent_info?.current_residency
       ) {
         if (res?.talent_info?.current_residency?.street_address.length > 0) {
-          setValue('streetAddress', res?.talent_info?.current_residency?.street_address, { shouldValidate: true });
+          setValue(
+            'streetAddress',
+            savedFormData?.streetAddress || res?.talent_info?.current_residency?.street_address,
+            { shouldValidate: true },
+          );
         }
         if (res?.talent_info?.current_residency?.house_number.length > 0) {
-          setValue('houseNumber', res?.talent_info?.current_residency?.house_number, { shouldValidate: true });
+          setValue('houseNumber', savedFormData?.houseNumber || res?.talent_info?.current_residency?.house_number, {
+            shouldValidate: true,
+          });
         }
         if (res?.talent_info?.current_residency?.zip_code > 0) {
-          setValue('zipCode', res?.talent_info?.current_residency?.zip_code, { shouldValidate: true });
+          setValue('zipCode', savedFormData?.zipCode || res?.talent_info?.current_residency?.zip_code, {
+            shouldValidate: true,
+          });
         }
         if ('country' in res?.talent_info?.current_residency) {
           setValue(
             'country',
             {
-              label: res?.talent_info?.current_residency.country.name,
-              value: res?.talent_info?.current_residency.country._id,
+              label: savedFormData?.country?.label || res?.talent_info?.current_residency.country.name,
+              value: savedFormData?.country?.value || res?.talent_info?.current_residency.country._id,
             },
             { shouldValidate: true },
           );
@@ -572,8 +786,8 @@ const Personal = () => {
           setValue(
             'state',
             {
-              label: res?.talent_info?.current_residency.state.name,
-              value: res?.talent_info?.current_residency.state._id,
+              label: savedFormData?.state?.label || res?.talent_info?.current_residency.state.name,
+              value: savedFormData?.state?.value || res?.talent_info?.current_residency.state._id,
             },
             { shouldValidate: true },
           );
@@ -582,8 +796,8 @@ const Personal = () => {
           setValue(
             'city',
             {
-              label: res?.talent_info?.current_residency.city.name,
-              value: res?.talent_info?.current_residency.city._id,
+              label: savedFormData?.city?.label || res?.talent_info?.current_residency.city.name,
+              value: savedFormData?.city?.value || res?.talent_info?.current_residency.city._id,
             },
             { shouldValidate: true },
           );
@@ -593,7 +807,7 @@ const Personal = () => {
   };
 
   useEffect(() => {
-    if (languagesData?.length > 0) {
+    if (!IsresumeParsed && languagesData?.length > 0) {
       setValue(
         'speakLanguages',
         languagesData?.map((language) => ({
@@ -619,442 +833,526 @@ const Personal = () => {
         { shouldValidate: true },
       );
     }
-  }, [languagesData]);
+  }, [languagesData, IsresumeParsed]);
 
   useEffect(() => {
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
+    if (parseResume) {
+      if (parsedResumeData != null) {
+        setResumeParsedDetails(parsedResumeData);
+        dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+        if (savedFormDocuments) {
+          setFiles([
+            {
+              file: {
+                name: savedFormDocuments[0]?.file?.name,
+                size: savedFormDocuments[0]?.file?.size,
+              },
+              uploadData: {
+                file_key: savedFormDocuments[0]?.uploadData?.file_key,
+              },
+              isUploaded: true,
+            },
+          ]);
+        }
+      } else {
+        // dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
+        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+          },
+        ]);
+      }
+    } else {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
     dispatch(getLanguages());
-  }, []);
+  }, [parseResume, parsedResumeData]);
 
   return (
     <ProfileFormContainer>
-      {userDetailsIsLoading || languagesIsLoading ? (
+      {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) || languagesIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Card className="w-75">
-            <CardHeader>
-              <h4 className="m-0 mt-1">About</h4>
-            </CardHeader>
-            <hr className="m-0 card-header-border" />
-            <CardBody>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="tagline">
-                    Tagline<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="tagline"
-                    name="tagline"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder="Enter your tagline in 60 characters or less"
-                        invalid={errors.tagline && true}
-                      />
-                    )}
-                  />
-                  {errors.tagline && <FormFeedback>{errors.tagline.message}</FormFeedback>}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Row>
-                    <Col sm="12" md="6" lg="6">
-                      <Label className="form-label" for="workExperienceYear">
-                        Work Experience - Years
+          <Row className="w-100">
+            <Col className="w-75" xs="100" sm="100" lg="75">
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1">About</h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
+                <CardBody>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="tagline">
+                        Tagline<span className="label-asterisk me-50">*</span>
                       </Label>
                       <Controller
-                        id="workExperienceYear"
-                        name="workExperienceYear"
+                        id="tagline"
+                        name="tagline"
                         control={control}
                         render={({ field }) => (
-                          <InputGroup className="input-group-merge">
-                            <Input
-                              {...field}
-                              type="number"
-                              min={0}
-                              onWheel={(e) => e.target.blur()}
-                              placeholder="Enter"
-                              invalid={errors.workExperienceYear && true}
-                            />
-                            <InputGroupText>Year(s)</InputGroupText>
-                          </InputGroup>
+                          <Input
+                            {...field}
+                            placeholder="Enter your tagline in 60 characters or less"
+                            invalid={errors.tagline && true}
+                          />
                         )}
                       />
-                      {errors.workExperienceYear && <FormFeedback>{errors.workExperienceYear.message}</FormFeedback>}
+                      {errors.tagline && <FormFeedback>{errors.tagline.message}</FormFeedback>}
                     </Col>
-                    <Col sm="12" md="6" lg="6">
-                      <Label className="form-label" for="workExperienceMonth">
-                        Months
-                      </Label>
-                      <Controller
-                        id="workExperienceMonth"
-                        name="workExperienceMonth"
-                        control={control}
-                        render={({ field }) => (
-                          <InputGroup className="input-group-merge">
-                            <Input
-                              {...field}
-                              type="number"
-                              min={0}
-                              onWheel={(e) => e.target.blur()}
-                              placeholder="Enter"
-                              invalid={errors.workExperienceMonth && true}
-                            />
-                            <InputGroupText>Month(s)</InputGroupText>
-                          </InputGroup>
-                        )}
-                      />
-                      {errors.workExperienceMonth && <FormFeedback>{errors.workExperienceMonth.message}</FormFeedback>}
+                    <Col sm="12" md="12" lg="6">
+                      <Row>
+                        <Col sm="12" md="6" lg="6">
+                          <Label className="form-label" for="workExperienceYear">
+                            Work Experience - Years
+                          </Label>
+                          <Controller
+                            id="workExperienceYear"
+                            name="workExperienceYear"
+                            control={control}
+                            render={({ field }) => (
+                              <InputGroup className="input-group-merge">
+                                <Input
+                                  {...field}
+                                  type="number"
+                                  min={0}
+                                  onWheel={(e) => e.target.blur()}
+                                  placeholder="Enter"
+                                  invalid={errors.workExperienceYear && true}
+                                />
+                                <InputGroupText>Year(s)</InputGroupText>
+                              </InputGroup>
+                            )}
+                          />
+                          {errors.workExperienceYear && (
+                            <FormFeedback>{errors.workExperienceYear.message}</FormFeedback>
+                          )}
+                        </Col>
+                        <Col sm="12" md="6" lg="6">
+                          <Label className="form-label" for="workExperienceMonth">
+                            Months
+                          </Label>
+                          <Controller
+                            id="workExperienceMonth"
+                            name="workExperienceMonth"
+                            control={control}
+                            render={({ field }) => (
+                              <InputGroup className="input-group-merge">
+                                <Input
+                                  {...field}
+                                  type="number"
+                                  min={0}
+                                  onWheel={(e) => e.target.blur()}
+                                  placeholder="Enter"
+                                  invalid={errors.workExperienceMonth && true}
+                                />
+                                <InputGroupText>Month(s)</InputGroupText>
+                              </InputGroup>
+                            )}
+                          />
+                          {errors.workExperienceMonth && (
+                            <FormFeedback>{errors.workExperienceMonth.message}</FormFeedback>
+                          )}
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
-                </Col>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="professionalIntroduction">
-                    Professional Introduction<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="professionalIntroduction"
-                    name="professionalIntroduction"
-                    control={control}
-                    render={({ field }) => (
-                      <TextEditor
-                      name={field.name}
-                      onChange={field.onChange}
-                      value={field.value}
-                      placeholder="Describe in 500 characters."
-                    />
-                    )}
-                  />
-                  {errors.professionalIntroduction && (
-                    <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
-                  )}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="role">
-                    Role<span className="label-asterisk">*</span>
-                  </Label>
-                  <Controller
-                    id="role"
-                    name="role"
-                    control={control}
-                    invalid={errors.role && true}
-                    render={({ field }) => (
-                      <AsyncPaginate
-                        loadOptions={loadTalentRolesOptions}
-                        classNamePrefix="select"
-                        placeholder="Select your role"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.role,
-                        })}
-                        {...field}
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="professionalIntroduction">
+                        Professional Introduction<span className="label-asterisk me-50">*</span>
+                      </Label>
+                      <Controller
+                        id="professionalIntroduction"
+                        name="professionalIntroduction"
+                        control={control}
+                        render={({ field }) => (
+                          <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Describe in 500 characters."
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
-                </Col>
-              </Row>
-              <Row className="mt-3 mb-3">
-                {files.length > 0 ? (
-                  <div className="px-1 mt-50">{fileList()}</div>
-                ) : (
-                  <>
-                    <Label for="resume" className="me-2 d-flex align-items-center upload-button cursor-pointer">
-                      <UploadIconContainer>
-                        <Upload size={18} color={theme.activeNavPillText} />
-                      </UploadIconContainer>
-                      <h5 className="fw-bold">Upload your resume</h5>
-                    </Label>
-                    <Controller
-                      id="resume"
-                      name="resume"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          id="resume"
-                          type="file"
-                          max={1}
-                          accept="application/pdf"
-                          style={{ display: 'none' }}
-                          onChange={(e) => {
-                            handleFileChange(e);
-                          }}
-                        />
+                      {errors.professionalIntroduction && (
+                        <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
                       )}
-                    />
-                  </>
-                )}
-              </Row>
-              <Row className="mb-1 mt-3">
-                <h5 className="m-0">Languages</h5>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="speakLanguages">
-                    I can speak well (Top 5)
-                  </Label>
-                  <Controller
-                    id="speakLanguages"
-                    name="speakLanguages"
-                    control={control}
-                    invalid={errors.speakLanguages && true}
-                    render={({ field }) => (
-                      <AsyncPaginate
-                        isDisabled
-                        isMulti
-                        loadOptions={loadLanguagesOptions}
-                        classNamePrefix="select"
-                        placeholder="Select top 5 language you can speak"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.speakLanguages,
-                        })}
-                        {...field}
-                      />
-                    )}
-                  />
-                  {errors.speakLanguages && <FormFeedback>{errors.speakLanguages.message}</FormFeedback>}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="readLanguages">
-                    I can read well (Top 5)
-                  </Label>
-                  <Controller
-                    id="readLanguages"
-                    name="readLanguages"
-                    control={control}
-                    invalid={errors.readLanguages && true}
-                    render={({ field }) => (
-                      <AsyncPaginate
-                        isDisabled
-                        isMulti
-                        loadOptions={loadLanguagesOptions}
-                        classNamePrefix="select"
-                        placeholder="Select top 5 language you can read"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.readLanguages,
-                        })}
-                        {...field}
-                      />
-                    )}
-                  />
-                  {errors.readLanguages && <FormFeedback>{errors.readLanguages.message}</FormFeedback>}
-                </Col>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="writeLanguages">
-                    I can write well (Top 5)
-                  </Label>
-                  <Controller
-                    id="writeLanguages"
-                    name="writeLanguages"
-                    control={control}
-                    invalid={errors.writeLanguages && true}
-                    render={({ field }) => (
-                      <AsyncPaginate
-                        isDisabled
-                        isMulti
-                        loadOptions={loadLanguagesOptions}
-                        classNamePrefix="select"
-                        placeholder="Select top 5 language you can write"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.writeLanguages,
-                        })}
-                        {...field}
-                      />
-                    )}
-                  />
-                  {errors.writeLanguages && <FormFeedback>{errors.writeLanguages.message}</FormFeedback>}
-                </Col>
-              </Row>
-              <Row className="mb-1 mt-3">
-                <h5 className="m-0">
-                  Current Address<span className="label-asterisk">*</span>
-                </h5>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="streetAddress">
-                    Street Address
-                  </Label>
-                  <Controller
-                    id="streetAddress"
-                    name="streetAddress"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder="Enter street address"
-                        invalid={errors.streetAddress && true}
-                        autoComplete="none"
-                      />
-                    )}
-                  />
-                  {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Row>
-                    <Col sm="6" md="6" lg="6">
-                      <Label className="form-label" for="houseNumber">
-                        House Number
-                      </Label>
-                      <Controller
-                        id="houseNumber"
-                        name="houseNumber"
-                        control={control}
-                        render={({ field }) => (
-                          <Input
-                            {...field}
-                            placeholder="Enter house number"
-                            invalid={errors.houseNumber && true}
-                            autoComplete="none"
-                          />
-                        )}
-                      />
-                      {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
                     </Col>
-                    <Col sm="6" md="6" lg="6">
-                      <Label className="form-label" for="zipCode">
-                        Zip Code
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="role">
+                        Role<span className="label-asterisk">*</span>
                       </Label>
                       <Controller
-                        id="zipCode"
-                        name="zipCode"
+                        id="role"
+                        name="role"
                         control={control}
+                        invalid={errors.role && true}
                         render={({ field }) => (
-                          <Input
+                          <AsyncPaginate
+                            loadOptions={loadTalentRolesOptions}
+                            classNamePrefix="select"
+                            placeholder="Select your role"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.role,
+                            })}
                             {...field}
-                            placeholder="Enter zip code"
-                            invalid={errors.zipCode && true}
-                            autoComplete="none"
                           />
                         )}
                       />
-                      {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
+                      {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
                     </Col>
                   </Row>
-                </Col>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="country">
-                    Country<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="country"
-                    name="country"
-                    control={control}
-                    invalid={errors.country && true}
-                    render={({ field }) => (
-                      <AsyncPaginate
-                        loadOptions={loadCountriesOptions}
-                        classNamePrefix="select"
-                        placeholder="Select your country"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.country,
-                        })}
-                        {...field}
+                  <Row className="mb-1 mt-3">
+                    <h5 className="m-0">Languages</h5>
+                  </Row>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="speakLanguages">
+                        I can speak well (Top 5)
+                      </Label>
+                      <Controller
+                        id="speakLanguages"
+                        name="speakLanguages"
+                        control={control}
+                        invalid={errors.speakLanguages && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            isDisabled
+                            isMulti
+                            loadOptions={loadLanguagesOptions}
+                            classNamePrefix="select"
+                            placeholder="Select top 5 language you can speak"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.speakLanguages,
+                            })}
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="state">
-                    State<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="state"
-                    name="state"
-                    control={control}
-                    invalid={errors.state && true}
-                    value={watch('state')}
-                    render={({ field }) => (
-                      <Select
-                        isDisabled={!watch('country')}
-                        isLoading={statesIsLoading}
-                        options={statesOptions}
-                        menuPosition="fixed"
-                        classNamePrefix="select"
-                        placeholder="Select your state"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.state,
-                        })}
-                        {...field}
+                      {errors.speakLanguages && <FormFeedback>{errors.speakLanguages.message}</FormFeedback>}
+                    </Col>
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="readLanguages">
+                        I can read well (Top 5)
+                      </Label>
+                      <Controller
+                        id="readLanguages"
+                        name="readLanguages"
+                        control={control}
+                        invalid={errors.readLanguages && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            isDisabled
+                            isMulti
+                            loadOptions={loadLanguagesOptions}
+                            classNamePrefix="select"
+                            placeholder="Select top 5 language you can read"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.readLanguages,
+                            })}
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
-                </Col>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="city">
-                    City<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="city"
-                    name="city"
-                    control={control}
-                    invalid={errors.city && true}
-                    value={watch('city')}
-                    render={({ field }) => (
-                      <Select
-                        isDisabled={!watch('country') || !watch('state')}
-                        isLoading={citiesIsLoading}
-                        menuPosition="fixed"
-                        minMenuHeight={200}
-                        options={citiesOptions}
-                        classNamePrefix="select"
-                        placeholder="Select your city"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.city,
-                        })}
-                        {...field}
+                      {errors.readLanguages && <FormFeedback>{errors.readLanguages.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="writeLanguages">
+                        I can write well (Top 5)
+                      </Label>
+                      <Controller
+                        id="writeLanguages"
+                        name="writeLanguages"
+                        control={control}
+                        invalid={errors.writeLanguages && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            isDisabled
+                            isMulti
+                            loadOptions={loadLanguagesOptions}
+                            classNamePrefix="select"
+                            placeholder="Select top 5 language you can write"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.writeLanguages,
+                            })}
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
-                </Col>
-              </Row>
-            </CardBody>
-          </Card>
-          <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
-            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-              <UploadIconContainer>
-                <ChevronLeft size={18} color={theme.activeNavPillText} />
-              </UploadIconContainer>
-              <h5 className="fw-bold">Back</h5>
-            </div>
-            <div>
-              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
-                <span className="me-50">Skip</span>
-                <ChevronRight size={14} />
-              </Button>
-              <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
-                {profileDetailsIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <>
-                    <span className="me-50">Save & Continue</span>
+                      {errors.writeLanguages && <FormFeedback>{errors.writeLanguages.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                  <Row className="mb-1 mt-3">
+                    <h5 className="m-0">
+                      Current Address<span className="label-asterisk">*</span>
+                    </h5>
+                  </Row>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="streetAddress">
+                        Street Address
+                      </Label>
+                      <Controller
+                        id="streetAddress"
+                        name="streetAddress"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            placeholder="Enter street address"
+                            invalid={errors.streetAddress && true}
+                            autoComplete="none"
+                          />
+                        )}
+                      />
+                      {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
+                    </Col>
+                    <Col sm="12" md="12" lg="6">
+                      <Row>
+                        <Col sm="6" md="6" lg="6">
+                          <Label className="form-label" for="houseNumber">
+                            House Number
+                          </Label>
+                          <Controller
+                            id="houseNumber"
+                            name="houseNumber"
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                placeholder="Enter house number"
+                                invalid={errors.houseNumber && true}
+                                autoComplete="none"
+                              />
+                            )}
+                          />
+                          {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
+                        </Col>
+                        <Col sm="6" md="6" lg="6">
+                          <Label className="form-label" for="zipCode">
+                            Zip Code
+                          </Label>
+                          <Controller
+                            id="zipCode"
+                            name="zipCode"
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                placeholder="Enter zip code"
+                                invalid={errors.zipCode && true}
+                                autoComplete="none"
+                              />
+                            )}
+                          />
+                          {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="country">
+                        Country<span className="label-asterisk me-50">*</span>
+                      </Label>
+                      <Controller
+                        id="country"
+                        name="country"
+                        control={control}
+                        invalid={errors.country && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            loadOptions={loadCountriesOptions}
+                            classNamePrefix="select"
+                            placeholder="Select your country"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.country,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
+                    </Col>
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="state">
+                        State<span className="label-asterisk me-50">*</span>
+                      </Label>
+                      <Controller
+                        id="state"
+                        name="state"
+                        control={control}
+                        invalid={errors.state && true}
+                        value={watch('state')}
+                        render={({ field }) => (
+                          <Select
+                            isDisabled={!watch('country')}
+                            isLoading={statesIsLoading}
+                            options={statesOptions}
+                            menuPosition="fixed"
+                            classNamePrefix="select"
+                            placeholder="Select your state"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.state,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="city">
+                        City<span className="label-asterisk me-50">*</span>
+                      </Label>
+                      <Controller
+                        id="city"
+                        name="city"
+                        control={control}
+                        invalid={errors.city && true}
+                        value={watch('city')}
+                        render={({ field }) => (
+                          <Select
+                            isDisabled={!watch('country') || !watch('state')}
+                            isLoading={citiesIsLoading}
+                            menuPosition="fixed"
+                            minMenuHeight={200}
+                            options={citiesOptions}
+                            classNamePrefix="select"
+                            placeholder="Select your city"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.city,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+              <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
+                <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+                  <UploadIconContainer>
+                    <ChevronLeft size={18} color={theme.activeNavPillText} />
+                  </UploadIconContainer>
+                  <h5 className="fw-bold">Back</h5>
+                </div>
+                <div>
+                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                    <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
+                  </Button>
+                  <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                    {profileDetailsIsLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <>
+                        <span className="me-50">Save & Continue</span>
+                        <ChevronRight size={14} />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <Card>
+                <CardBody>
+                  <div className="d-flex flex-column">
+                    <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
+                      <Col lg="fit">
+                        <Info className="font-medium-3 me-50" color="#004280" />
+                      </Col>
+
+                      <Col>
+                        <div className="d-flex justify-content-between">
+                          <span style={{ color: '#004280' }}>
+                            <span className="fw-bold">Auto Fill</span>
+
+                            {files && files.length === 0 && (
+                              <span> - Upload your resume to auto fill your personal details</span>
+                            )}
+                          </span>
+                          {files && files?.length > 0 && (
+                            <FormGroup switch>
+                              <Input
+                                type="switch"
+                                checked={parseResume}
+                                onClick={() => {
+                                  setParseResume(!parseResume);
+                                  dispatch(setResumeParsed(!parseResume));
+                                  dispatch(setFormDocuments(files));
+                                }}
+                              />
+                            </FormGroup>
+                          )}
+                        </div>
+
+                        {files?.length === 0 && (
+                          <>
+                            <Label
+                              for="resume"
+                              className="me-2 mt-2 d-flex flex-col align-items-center upload-button cursor-pointer"
+                            >
+                              <UploadIconContainer>
+                                <Upload size={18} color={theme.activeNavPillText} />
+                              </UploadIconContainer>
+                              <h5 className="fw-bold">Upload your resume</h5>
+                            </Label>
+                            <Controller
+                              id="resume"
+                              name="resume"
+                              control={control}
+                              render={({ field }) => (
+                                <Input
+                                  {...field}
+                                  ref={filesRef}
+                                  id="resume"
+                                  type="file"
+                                  max={1}
+                                  accept="application/pdf"
+                                  style={{ display: 'none' }}
+                                  onChange={(e) => {
+                                    handleFileChange(e);
+                                  }}
+                                />
+                              )}
+                            />
+                          </>
+                        )}
+                      </Col>
+                    </div>
+                    <Row>{files && files.length > 0 && <div className="px-1">{fileList()}</div>}</Row>
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
         </Form>
       )}
     </ProfileFormContainer>

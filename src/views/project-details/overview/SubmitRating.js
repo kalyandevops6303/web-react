@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
 import Avatar from '@components/avatar';
@@ -26,6 +26,9 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import RatingSubmitSuccessModal from '../../modals/RatingSubmitSuccessModal';
 import capitalize from '../../../lib/capitalize';
+import { setFormData } from '../../../redux/reducers/formData';
+import { filteredFormSchema } from '../../../utility/Utils';
+import { formData } from '../../../redux/selectors/formDataSelectors';
 
 const SubmitRating = () => {
   const RatingSchema = yup.object().shape({
@@ -35,19 +38,24 @@ const SubmitRating = () => {
       .max(1000, 'Additional description must be 1000 characters or less')
       .required('Additional description is required'),
   });
-
+  const savedFormData = useSelector(formData);
   const {
+    reset,
+    trigger,
     control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(RatingSchema),
+    defaultValues: {
+      additionalDescription: savedFormData?.additionalDescription || '',
+    },
   });
 
   const dispatch = useDispatch();
   const params = useParams();
-
+  const localFormData = useWatch({ control });
   const userData = useSelector(selectUserData);
   const ratingTagsData = useSelector(ratingTags);
   const giveRatingIsLoading = useSelector(giveRatingLoading);
@@ -68,6 +76,23 @@ const SubmitRating = () => {
     dispatch(getYourSubmittedRating(params.projectId));
     setThankYouModal(true);
   };
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: RatingSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const onSubmit = (data) => {
     let reqData;

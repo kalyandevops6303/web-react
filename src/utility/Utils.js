@@ -200,7 +200,7 @@ const isEmpty = (value) => {
   return false;
 };
 
-const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+export const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
 
 export const removeEmptyKeys = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
@@ -800,4 +800,14 @@ export const checkPointRedirection = ({ response, navigate }) => {
   } else if (response?.checkpoint === checkPoints.COMPLETE) {
     navigate('/dashboard');
   }
+};
+
+export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
+  const filteredObj = Object.fromEntries(
+    Object.keys(savedData) // Get all keys from savedData
+      .filter((key) => key in formSchemaFields) // Keep only keys that are in form schema
+      .map((key) => [key, savedData[key]]), // Map the key-value pairs for the new object
+  );
+
+  return filteredObj;
 };

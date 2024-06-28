@@ -4,10 +4,11 @@ import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import LoginPic from '@src/assets/images/auth/loginpic.png';
 import { useSelector } from 'react-redux';
-import ClientPic from '@src/assets/images/auth/client.png';
-import CreatePWPic from '@src/assets/images/auth/password.png';
-import TalentPic from '@src/assets/images/auth/talent.png';
-import VerificationPic from '@src/assets/images/auth/verification.png';
+import ClientPic from '@src/assets/images/auth/clientImage.png';
+import CreatePWPic from '@src/assets/images/auth/createPasswordImg.png';
+import WelcomePic from '@src/assets/images/auth/welcomepic.png';
+import VerificationPic from '@src/assets/images/auth/verificationImage.png';
+import TalentPic from '@src/assets/images/auth/talentImage.png';
 
 import Spinner from '../../@core/components/spinner/Fallback-spinner';
 import { OnBoardWrap } from './style';
@@ -99,7 +100,10 @@ const AuthRoute = () => {
     if (userType === userTypes.client) {
       return <img src={ClientPic} alt="bg-pic" className="me-8 client-pic" />;
     }
-    return <img src={TalentPic} alt="bg-pic" className="me-8 talent-pic" />;
+    if (userType === userTypes?.talent) {
+      return <img src={TalentPic} alt="bg-pic" className="verification-pic" />;
+    }
+    return <img src={WelcomePic} alt="bg-pic" className="me-8 welcome-pic" />;
   };
   return (
     <OnBoardWrap>

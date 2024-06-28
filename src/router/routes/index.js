@@ -152,6 +152,10 @@ const Routes = [
     element: <CreateProject />,
   },
   {
+    path: '/create-project/:projectId',
+    element: <CreateProject />,
+  },
+  {
     path: '/notifications',
     element: <Notifications />,
   },
