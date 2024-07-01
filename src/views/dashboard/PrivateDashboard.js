@@ -302,7 +302,7 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
-          {userDetailsData?.user_type === userTypes.team ? null : (
+          {userDetailsData?.team_type === userTypes.team ? null : (
             <section className="mb-2">
               <Header className="mb-1">Payments</Header>
               <PaymentListing />

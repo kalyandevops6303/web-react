@@ -339,8 +339,13 @@ const getProjectsBidsForClient = () => async (dispatch) => {
   dispatch(projectsBidsForClientRequest());
   try {
     const res = await projectsBidsForClientService();
+    const unReadExpiredBidsCount = res.data.data.data?.filter((bid) => bid.is_expired === false);
     dispatch(
-      projectsBidsForClientSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+      projectsBidsForClientSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.[0]?.is_overall_read || 0,
+        unReadExpiredBidsCount,
+      }),
     );
   } catch (error) {
     errorHandler(error, projectsBidsForClientFailure);
