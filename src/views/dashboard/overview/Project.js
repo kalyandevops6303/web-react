@@ -181,7 +181,7 @@ const Project = ({ accordionName, open, data, className }) => {
               {!data?.pay_type?.variable_cost && (
                 <div className="design-planning">
                   <p className="mb-25 details-box-title">Amount</p>
-                  <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">{`${data?.pay_type.currency?.code}-${data?.pay_type.fixed_cost}`}</p>
+                  <p className="mb-0 details-box">{`${data?.pay_type.currency?.code}-${data?.pay_type.fixed_cost}`}</p>
                 </div>
               )}
             </div>
