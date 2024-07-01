@@ -40,7 +40,7 @@ import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { AccordionName } from './DashboardConstant';
 
-const Empty = ({ active, recommended, isTeam, payment, receivedBid, expiredBid, isEducationNotCompleted }) => {
+const Empty = ({ active, recommended, isTeam, payment, receivedBid, isEducationNotCompleted }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const userDetailsData = useSelector(userData);
@@ -57,7 +57,7 @@ const Empty = ({ active, recommended, isTeam, payment, receivedBid, expiredBid, 
         <CardBody className="empty empty-h-25">
           <div>
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
-            {(receivedBid || expiredBid) && <img src={Nobidgif} className="empty-gif" alt="empty-gif" />}
+            {receivedBid && <img src={Nobidgif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {active && (
               <CardText className="get-started">
@@ -73,9 +73,6 @@ const Empty = ({ active, recommended, isTeam, payment, receivedBid, expiredBid, 
             )}
             {receivedBid && !isEducationNotCompleted && (
               <CardText className="font-weight-normal get-started">No Project Bids</CardText>
-            )}
-            {expiredBid && !isEducationNotCompleted && (
-              <CardText className="font-weight-normal get-started">No Expired Bids Yet</CardText>
             )}
           </div>
           {active && (
@@ -374,7 +371,7 @@ const OpenListing = () => {
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
-                      expiredBid
+                      receivedBid
                       recommended
                       payment={false}
                     />
@@ -495,7 +492,6 @@ Empty.propTypes = {
   recommended: Proptypes.bool,
   payment: Proptypes.bool,
   receivedBid: Proptypes.bool,
-  expiredBid: Proptypes.bool,
   isEducationNotCompleted: Proptypes.bool,
   isTeam: Proptypes.bool,
 };
@@ -505,7 +501,6 @@ Empty.defaultProps = {
   recommended: false,
   payment: false,
   receivedBid: false,
-  expiredBid: false,
   isEducationNotCompleted: false,
   isTeam: false,
 };
