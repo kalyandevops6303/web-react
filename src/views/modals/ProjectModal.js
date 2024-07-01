@@ -402,16 +402,18 @@ const ProjectModal = ({
                   Re-list
                 </Button>
               )}
-              <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
-                {checkBidLoadingIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <>
-                    <span className="me-50">View Project</span>
-                    <ChevronRight size={14} />
-                  </>
-                )}
-              </Button>
+              {data?.status !== 'CLOSED' && (
+                <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
+                  {checkBidLoadingIsLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <>
+                      <span className="me-50">View Project</span>
+                      <ChevronRight size={14} />
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           ) : (
             <div>
