@@ -243,8 +243,10 @@ const Personal = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) setFiles([])
-  }, [files])
+    if (files?.length > 0 && !files[0].file?.name) {
+      setFiles([]);
+    }
+  }, [files]);
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
