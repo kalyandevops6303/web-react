@@ -133,18 +133,18 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
-                <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
+                <p className="mb-25 details-box-title">
                   Start Date
                 </p>
-                <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">{`${
+                <p className="mb-0 details-box">{`${
                   DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'
                 }`}</p>
               </div>
               <div className="design-planning">
-                <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.3rem' }}>
+                <p className="mb-25 details-box-title">
                   Amount
                 </p>
-                <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">
+                <p className="mb-0 details-box">
                   ${roundOfAmount(data?.amount)}
                 </p>
               </div>

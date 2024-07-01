@@ -203,7 +203,7 @@ const OpenListing = () => {
                     count={projectsBidsForClientData?.metadata?.total_records}
                   />
                 </span>
-                {projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === false).length > 0 && (
+                {projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length > 0 && (
                   <CardText onClick={handleReceivedBids} className="view-all-cta">
                     View All
                   </CardText>
@@ -219,19 +219,19 @@ const OpenListing = () => {
                 </div>
               ) : (
                 <ProjectsListingWrap>
-                  {projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === false).length > 0 && isTab ? (
+                  {projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length > 0 && isTab ? (
                     projectsBidsForClientData?.data
                       ?.filter((bid) => bid.is_expired === false)
                       ?.map((project) => (
-                        <ProjectBidCard accordionName={AccordionName.receivedBids} key={project._id} data={project} />
+                        <ProjectBidCard accordionName={AccordionName?.receivedBids} key={project._id} data={project} />
                       ))
-                  ) : projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === false).length > 0 ? (
+                  ) : projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length > 0 ? (
                     <>
-                      {projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === false).length >= 4 ? (
+                      {projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length >= 4 ? (
                         <Slider {...settings}>
                           {projectsBidsForClientData?.data?.map((project, index) => (
                             <ProjectBidCard
-                              accordionName={AccordionName.receivedBids}
+                              accordionName={AccordionName?.receivedBids}
                               className={`slide-${index}`}
                               key={project._id}
                               data={project}
@@ -239,7 +239,7 @@ const OpenListing = () => {
                           ))}
                           {projectsBidsForClientData?.metadata?.total_records > 10 && (
                             <ViewAllCard
-                              accordionName={AccordionName.receivedBids}
+                              accordionName={AccordionName?.receivedBids}
                               height={182}
                               onViewAll={(e) => handleViewAll(e, '/marketplace/my_bids')}
                               count={calculateRemainingBidsCount(projectsBidsForClientData)}
@@ -252,7 +252,7 @@ const OpenListing = () => {
                             ?.filter((bid) => bid.is_expired === false)
                             .map((project) => (
                               <ProjectBidCard
-                                accordionName={AccordionName.receivedBids}
+                                accordionName={AccordionName?.receivedBids}
                                 className="custom-slider-project"
                                 key={project._id}
                                 data={project}
@@ -292,10 +292,10 @@ const OpenListing = () => {
                         ? recommendedTeamsForClientData?.unReadExpiredBidsCount
                         : false
                     }
-                    count={projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === true).length}
+                    count={projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length}
                   />
                 </span>
-                {projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === true).length > 0 && (
+                {projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length > 0 && (
                   <CardText onClick={handleReceivedBids} className="view-all-cta">
                     View All
                   </CardText>
@@ -311,15 +311,15 @@ const OpenListing = () => {
                 </div>
               ) : (
                 <ProjectsListingWrap>
-                  {projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === true).length > 0 && isTab ? (
+                  {projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length > 0 && isTab ? (
                     projectsBidsForClientData?.data
                       ?.filter((bid) => bid.is_expired === true)
                       .map((project) => (
                         <ProjectBidCard accordionName={AccordionName.receivedBids} key={project._id} data={project} />
                       ))
-                  ) : projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === true).length > 0 ? (
+                  ) : projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length > 0 ? (
                     <>
-                      {projectsBidsForClientData?.data?.filter((bid) => bid.is_expired === true).length >= 4 ? (
+                      {projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length >= 4 ? (
                         <Slider {...settings}>
                           {projectsBidsForClientData?.data
                             ?.filter((bid) => bid.is_expired === true)

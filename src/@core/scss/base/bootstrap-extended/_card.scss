@@ -375,13 +375,13 @@
       margin-right: 0.2rem;
     }
   }
-
   .design-planning-wrapper {
     display: flex;
-    width:100%;
+    width: 100%;
     margin: auto;
     justify-content: space-evenly;
     align-items: center;
+
     &:not(:last-child) {
       margin-bottom: 1.3rem;
     }
@@ -393,9 +393,19 @@
       background-color: $body-bg;
       border-radius: $border-radius;
       min-width: 40%;
+
       &:not(:last-child) {
         margin-right: 0.7rem;
       }
+    }
+    .details-box-title {
+      color: '#B9B9C3';
+      font-size: '1.2rem';
+    }
+
+    .details-box {
+      color: black;
+      font-size: 1.2rem;
     }
   }
 }

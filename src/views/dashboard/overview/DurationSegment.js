@@ -6,18 +6,18 @@ const DurationSegment = ({ start_date, end_date }) => (
   <div className="bottom-detail d-flex mt-1">
     <div className="design-planning-wrapper">
       <div className="design-planning">
-        <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
+        <p className="mb-25 details-box-title">
           Start Date
         </p>
-        <p style={{ color: 'black', fontSize: '1.2rem' }} className="mb-0">{`${
+        <p className="mb-0 details-box">{`${
           DateTime.fromMillis(start_date).toFormat('MMM dd, yy') || '-'
         }`}</p>
       </div>
       <div className="design-planning">
-        <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
+        <p className="mb-25 details-box-title">
           End Date
         </p>
-        <p style={{ color: 'black', fontSize: '1.2rem' }} className="mb-0">{`${
+        <p className="mb-0 details-box">{`${
           DateTime.fromMillis(end_date).toFormat('MMM dd, yy') || '-'
         }`}</p>
       </div>

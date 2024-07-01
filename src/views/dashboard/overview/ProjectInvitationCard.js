@@ -121,10 +121,10 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
       case userTypes.team:
         return (
           <div className="design-planning mt-1 bottom-detail-elements">
-            <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.3rem' }}>
+            <p className="mb-25 details-box-title">
               Amount
             </p>
-            <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">{`${
+            <p className="mb-0 details-box">{`${
               data?.project?.pay_type.currency?.code
             }-${roundOfAmount(data?.project?.amount)}`}</p>
           </div>
@@ -132,12 +132,11 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
       case userTypes.client:
         return !data?.pay_type?.variable_cost ? (
           <div className="design-planning mt-1 bottom-detail-elements">
-            <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.3rem' }}>
+            <p className="mb-25 details-box-title">
               Amount
             </p>
             <p
-              style={{ color: 'black', fontSize: '1.3rem' }}
-              className="mb-0"
+              className="mb-0 details-box"
             >{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</p>
           </div>
         ) : null;
@@ -228,10 +227,10 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
                   projectName={data?.project?.details?.name}
                 />
                 <div className="design-planning mt-1 bottom-detail-elements">
-                  <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
+                  <p className="mb-25 details-box-title">
                     Start date
                   </p>
-                  <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">{`${
+                  <p className="mb-0 details-box">{`${
                     DateTime.fromMillis(data?.project?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
                   }`}</p>
                 </div>

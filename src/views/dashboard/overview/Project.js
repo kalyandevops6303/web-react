@@ -173,14 +173,14 @@ const Project = ({ accordionName, open, data, className }) => {
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
               <div className="design-planning">
-              <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>Start date</p>
-              <p style={{ color: 'black', fontSize: '1.2rem' }} className="mb-0">{`${
+              <p className="mb-25 details-box-title">Start date</p>
+              <p className="mb-0 details-box">{`${
                   DateTime.fromMillis(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
                 }`}</p>
               </div>
               {!data?.pay_type?.variable_cost && (
                 <div className="design-planning">
-                  <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.3rem' }}>Amount</p>
+                  <p className="mb-25 details-box-title">Amount</p>
                   <p style={{ color: 'black', fontSize: '1.3rem' }} className="mb-0">{`${data?.pay_type.currency?.code}-${data?.pay_type.fixed_cost}`}</p>
                 </div>
               )}
