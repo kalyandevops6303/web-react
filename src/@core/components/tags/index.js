@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Tagwrapper from './style';
 
 const Tag = ({ count, hasNew }) => {
-  if (count == null || count == undefined) {
+  if (count === null || count === undefined) {
     return '';
   }
   

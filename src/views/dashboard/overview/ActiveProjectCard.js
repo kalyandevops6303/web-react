@@ -12,6 +12,7 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
+import DurationSegment from './DurationSegment';
 
 const ActiveProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -114,26 +115,7 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
             )}
           </div>
           <p className="active-project-simple-heading">Project</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
-                  Start Date
-                </p>
-                <p style={{ color: 'black', fontSize: '1.2rem' }} className="mb-0">{`${
-                  DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'
-                }`}</p>
-              </div>
-              <div className="design-planning">
-                <p className="mb-25" style={{ color: '#B9B9C3', fontSize: '1.2rem' }}>
-                  End Date
-                </p>
-                <p style={{ color: 'black', fontSize: '1.2rem' }} className="mb-0">{`${
-                  DateTime.fromMillis(data?.end_date).toFormat('MMM dd, yy') || '-'
-                }`}</p>
-              </div>
-            </div>
-          </div>
+          <DurationSegment start_date={data?.start_date} end_date={data?.end_date} />
           <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
