@@ -1,11 +1,9 @@
-
 const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
 const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
-// const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
-const apiProjectInfraEndpoint = `http://localhost:8000`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
 
 const API = {
   auth: {
