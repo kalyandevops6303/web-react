@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Heart, MapPin } from 'react-feather';
 import hat from '@src/assets/images/hat.svg';
+import parse from 'html-react-parser';
 import { IconWrapper, TeamCardWrap } from './style';
 import { userTypes } from '../../utility/constants/Constant';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
@@ -155,7 +156,9 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                     </div>
                   </Col>
                 </div>
-                <div className="mt-2">{data?.professional_intro}</div>
+                <div className="mt-2">
+                  {data?.professional_intro && parse(data?.professional_intro)}
+                </div>
               </div>
               <div className="w-25 teamcard-width">
                 <IconWrapper className="d-flex flex-column align-items-start pt-50">
