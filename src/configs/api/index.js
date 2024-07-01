@@ -4,6 +4,8 @@ const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
+// const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
+const apiProjectInfraEndpoint = `http://localhost:8000`;
 
 const API = {
   auth: {
@@ -166,6 +168,11 @@ const API = {
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
+    // Project Infrastructure
+    verifyInfraAccess: `${apiProjectInfraEndpoint}/api/v1/infra/verify-access`,
+    getInfraData: `${apiProjectInfraEndpoint}/api/v1/infra`,
+    createInfra: `${apiProjectInfraEndpoint}/api/v1/infra/create`,
+    terminateInfra: `${apiProjectInfraEndpoint}/api/v1/infra/decommission`,
 
     getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
   },

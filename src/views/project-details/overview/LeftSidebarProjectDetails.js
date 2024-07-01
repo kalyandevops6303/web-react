@@ -352,9 +352,9 @@ const LeftSidebarProjectDetails = () => {
               <BadgeGroup
                 title="Status"
                 data={[
-                  ({ name: statusDisplay[projectDetailsData?.status].state || [] }),
+                  ({ name: statusDisplay[projectDetailsData?.status]?.state || [] }),
                 ]}
-                color={statusDisplay[projectDetailsData?.status].bgcolor}
+                color={statusDisplay[projectDetailsData?.status]?.bgcolor}
                 id={`tooltip-${projectDetailsData?._id}`}
               />
             )}
