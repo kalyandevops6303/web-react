@@ -379,9 +379,6 @@
   .design-planning-wrapper {
     display: flex;
     align-items: center;
-    &:not(:last-child) {
-      margin-bottom: 1.3rem;
-    }
 
     .design-planning {
       padding: 0.5rem;
