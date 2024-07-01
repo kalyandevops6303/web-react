@@ -114,11 +114,17 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
             )}
           </div>
           <p className="active-project-simple-heading">Project</p>
-          <div className="bottom-detail d-flex mt-1">
+          <div className="bottom-detail d-flex mt-1 align-items-center gap-2">
             <div className="design-planning-wrapper">
               <div className="design-planning">
                 <CardText className="mb-25">Start Date</CardText>
                 <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
+              </div>
+            </div>
+            <div className="design-planning-wrapper">
+              <div className="design-planning">
+                <CardText className="mb-25">End Date</CardText>
+                <h6 className="mb-0">{`${DateTime.fromMillis(data?.end_date).toFormat('MMM dd, yy') || '-'}`}</h6>
               </div>
             </div>
           </div>
