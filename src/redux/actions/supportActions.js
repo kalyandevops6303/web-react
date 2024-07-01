@@ -2,7 +2,7 @@ import { deleteRequestService, getRequestsService, getSupportCount, supportServi
 import errorHandler from '../../utility/errorHandler';
 import {
   deleteRequestFailure,
-  deleteRequestRequest,
+  deleteRequestInitiate,
   deleteRequestSuccess,
   getSupportCountFailure,
   getSupportCountRequest,
@@ -49,7 +49,7 @@ const getCustomerSupportList = ({ data }) => async (dispatch) => {
 }
 
 const deleteRequest = ({data}) => async (dispatch) => {
-  dispatch(deleteRequestRequest());
+  dispatch(deleteRequestInitiate());
   try {
     await deleteRequestService(data);
     dispatch(deleteRequestSuccess());

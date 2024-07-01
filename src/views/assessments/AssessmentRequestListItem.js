@@ -11,6 +11,7 @@ import { deleteNonAssessment, getAllAssessments, getUserAssessments } from "../.
 import DeleteGif from "../../assets/images/gifs/delete.gif";
 import { deleteRequest, getCustomerSupportList } from "../../redux/actions/supportActions";
 import { selectDeleteRequestLoading } from "../../redux/selectors/supportSelectors";
+import { SUPPORT_EMAIL } from "../../utility/constants/Constant";
 
 const AssessmentsRequestListItem = ({ request }) => {
 
@@ -83,14 +84,14 @@ const AssessmentsRequestListItem = ({ request }) => {
                                     <PaymentInfoBanner className="d-flex px-1 py-1">
                                         <Info size={18} color={theme.activeNavPillText} className="me-50 info-banner-icon" />
                                         <p className="font-medium-1 m-0 info">
-                                            <span className="fw-bolder font-medium-1">support@trumio.ai</span>  has received your query. Our team is  looking into it. We will revert soon.
+                                            <span className="fw-bolder font-medium-1">{SUPPORT_EMAIL}</span>  has received your query. Our team is  looking into it. We will revert soon.
                                         </p>
                                     </PaymentInfoBanner>
                                     :
                                     <SuccessInfoBanner className="d-flex px-1 py-1">
                                         <Info size={18} color={theme.succesGreenColor} className="me-50 info-banner-icon" />
                                         <p className="font-medium-1 m-0 info">
-                                            <span className="fw-bolder font-medium-1">support@trumio.ai</span>  has resolved your query. Please check your email.
+                                            <span className="fw-bolder font-medium-1">{SUPPORT_EMAIL}</span>  has resolved your query. Please check your email.
                                         </p>
                                     </SuccessInfoBanner>
                                 }
@@ -98,21 +99,16 @@ const AssessmentsRequestListItem = ({ request }) => {
                         }
                     </>
                 </td>
-                <td style={{ width: 180 }}>
-                    <div className="d-flex align-items-center justify-content-between">
-                        <div className="d-flex gap-1">
-                            <div className="cursor-pointer">
-                                <ActionOffContainer onClick={handleDelete}>
-                                    {/* {deleteNonAssessmentLoading ? 
-                                    <Spinner />
-                                    : */}
-                                    <Trash2 width="20px" height="20px" color="#EA5455" />
-                                    {/* } */}
-                                </ActionOffContainer>
-                            </div>
+                <td>
+                    <div className="d-flex gap-1 align-items-center w-25">
+                        <div className="cursor-pointer">
+                            <ActionOffContainer onClick={handleDelete}>
+                                <Trash2 width="20px" height="20px" color="#EA5455" />
+                            </ActionOffContainer>
                         </div>
                     </div>
                 </td>
+
             </tr>
             {customerSupportModal &&
                 (<CustomerSupportModal
@@ -120,6 +116,7 @@ const AssessmentsRequestListItem = ({ request }) => {
                     modal={customerSupportModal}
                     toggleModal={toggleCustomerSupportModal}
                     defaultSelected={["missing_assessment"]}
+                    assessment={request.assessment_name}
                 />)}
 
             <Modal isOpen={showDeleteModal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">

@@ -60,7 +60,7 @@ const supportSlice = createSlice({
       supportListLoading: false, 
       error: action.payload
     }),
-    deleteRequestRequest: (state) => ({
+    deleteRequestInitiate: (state) => ({
       ...state, 
       deleteRequestLoading: true, 
       error: null 
@@ -88,7 +88,7 @@ export const {
   getSupportCountRequest,
   getSupportCountSuccess,
   getSupportCountFailure,
-  deleteRequestRequest, 
+  deleteRequestInitiate, 
   deleteRequestSuccess, 
   deleteRequestFailure
 } = supportSlice.actions;

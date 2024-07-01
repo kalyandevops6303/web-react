@@ -34,7 +34,7 @@ const AssessedSkills = () => {
                         <div className="d-flex gap-1">
                             {userAssessments.map((assessment) => (
                                 assessment.completed_date && !assessment.hidden &&
-                                <div className="d-flex gap-1 h-full" style={{ maxWidth: "20%" }}>
+                                <div className="d-flex gap-1 h-full" style={{width: "20%"}}>
                                     <AssessedSkillGradeBar grade={assessment.assessment_grade} />
 
                                     <div className="d-flex flex-column h-100 justify-content-between">

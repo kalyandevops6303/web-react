@@ -29,7 +29,7 @@ import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport } from '../../redux/actions/supportActions';
 import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
 
-const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }) => {
+const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
   const [issueTypeOptions, setIssueTypeOptions] = useState(null);
   const isLoading = useSelector((state) => state.support.loading);
   const userData = useSelector(selectSavedUserData);
@@ -115,6 +115,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
     resolver: yupResolver(CustomerSupportSchema),
     defaultValues: {
       issueType: defaultOption,
+      assessment
     },
   });
 

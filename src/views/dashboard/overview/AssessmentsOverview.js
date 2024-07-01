@@ -5,13 +5,14 @@ import { AssessmentResultIndicator, AssessmentResultText } from './style';
 import assessmentsDashboard from '../../../assets/images/assessments_dashboard.png';
 import { useEffect, useState } from 'react';
 import { getUserAssessments } from '../../../redux/actions/AssessmentActions';
-import { selectUserAssessments } from '../../../redux/selectors/assessmentSelectors';
-import { ChevronRight } from 'react-feather';
+import { selectUserAssessments, selectUserAssessmentsCount } from '../../../redux/selectors/assessmentSelectors';
+import { ChevronRight, ChevronDown, ChevronUp } from 'react-feather';
+import { currentAssessmentLimit } from "../../../utility/constants/AssessmentConstants.js"
 
 
 const AssessmentsListItem = ({ assessment }) => {
   return (
-    <CardText>
+    <div>
       <div className='d-flex align-items-center justify-content-between'>
         <Link to="/assessments" state={assessment.assessment_id}>
           <div className='d-flex gap-1 cursor-pointer'>
@@ -26,7 +27,7 @@ const AssessmentsListItem = ({ assessment }) => {
           <b><small>{assessment.assessment_grade}</small></b>
         </AssessmentResultText>
       </div>
-    </CardText>
+    </div>
   )
 }
 
@@ -34,12 +35,12 @@ const AssessmentsOverview = () => {
 
   const dispatch = useDispatch();
   const userAssessments = useSelector(selectUserAssessments);
+  const userAssessmentsCount = useSelector(selectUserAssessmentsCount);
 
   const [showAssessmentsList, setShowAssessmentsList] = useState(false);
 
-  const getAssessmentsLeftCount = (assessments) => {
-    const completedCount = assessments.filter(obj => obj.hasOwnProperty("completed_date")).length;
-    return assessments.length - completedCount;
+  const getAssessmentsLeftCount = () => {
+    return currentAssessmentLimit - userAssessmentsCount
   }
 
   useEffect(() => {
@@ -67,13 +68,9 @@ const AssessmentsOverview = () => {
                 <div className="d-flex">
                   <div className="cursor-pointer" onClick={() => setShowAssessmentsList(!showAssessmentsList)}>
                     {showAssessmentsList ?
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z" />
-                      </svg>
+                      <ChevronUp size={18}/>
                       :
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708" />
-                      </svg>}
+                      <ChevronDown size={18}/>}
                   </div>
                 </div>
               </div>
@@ -84,14 +81,14 @@ const AssessmentsOverview = () => {
           >
             {userAssessments?.length > 0 ?
               <>
-                <span>{getAssessmentsLeftCount(userAssessments)} / {userAssessments.length} Assessments Left</span>
+                <span>{getAssessmentsLeftCount()} Assessments Left</span>
               </>
               :
               <span>Get your Skills assessed & increase your chance of getting hired!</span>
             }
           </CardText>
         </CardHeader>
-        {userAssessments?.length == 0 ? <CardBody>
+        {!userAssessments || userAssessments?.length == 0 ? <CardBody>
           <Link to="/assessments">
             <Button color="transparent" className="text-primary border-primary">
               Take Assessment
@@ -103,12 +100,12 @@ const AssessmentsOverview = () => {
             {showAssessmentsList && <CardBody className="d-flex flex-column gap-1">
               {
                 userAssessments?.map((assessment) => (
-                  <div>
+                  <>
                     {assessment.completed_date &&
                       <AssessmentsListItem assessment={assessment} />
                     }
 
-                  </div>
+                  </>
                 ))
               }
               <div className='d-flex justify-content-center'>
@@ -123,8 +120,8 @@ const AssessmentsOverview = () => {
         }
       </div>
 
-      {userAssessments?.length == 0 &&
-        <div className=''>
+      {!userAssessments || userAssessments?.length == 0 &&
+        <div>
           <img src={assessmentsDashboard}></img>
         </div>
       }

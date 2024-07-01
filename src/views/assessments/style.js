@@ -3,7 +3,7 @@ import theme from '../../configs/themeVariables';
 
 const gradeColors = {
     "Novice": "#FBC02D",
-    "Fundamental": "#00BCD4",
+    "Intermediate": "#00BCD4",
     "Proficient": "#7C4DFF",
     "Mastery": "#414DFD",
 }
@@ -149,17 +149,33 @@ const ArrowWrapper = styled.div`
 `
 
 const SuccessInfoBanner = styled.div`
-  border-radius: 6px;
-  background: ${theme.succesGreenBg};
+    border-radius: 6px;
+    background: ${theme.succesGreenBg};
 
-  .info-banner-icon {
+    .info-banner-icon {
     margin-top: 2px;
-  }
+    }
 
-  p {
+    p {
     color: ${theme.succesGreenColor};
-  }
+    }
 `;
+
+const NoteWrapper = styled.div`
+    background: white;
+    padding: 7px 12px;
+    border-radius: 18px;
+    border: 1px solid #0185E4;
+`
+
+const Note = styled.div`
+    border-radius: 6px;
+    background: #FFF6E1;
+    padding: 16px;
+    margin-top: 25px;
+    color: black;
+    display: flex;
+`
 
 export {
     RecommendedAssessmentsList,
@@ -175,5 +191,7 @@ export {
     ActionContainer,
     ActionOffContainer,
     ArrowWrapper,
-    SuccessInfoBanner
+    SuccessInfoBanner,
+    NoteWrapper,
+    Note
 }

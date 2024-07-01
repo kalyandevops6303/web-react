@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { CardText, CardTitle, Spinner, Table, UncontrolledTooltip } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import {  Modal, ModalBody, ModalHeader, CardText, CardTitle, Spinner, Table, UncontrolledTooltip, Button } from 'reactstrap';
 import Select from "react-select";
 import { selectThemeColors } from '../../utility/Utils';
 import AssessmentsListItem from './AssessmentsListItem';
@@ -7,30 +7,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addAssessment } from '../../redux/actions/AssessmentActions';
 import { selectAddAssessmentLoading } from '../../redux/selectors/assessmentSelectors';
 import { Info } from 'react-feather';
-import { TableWrapper } from './style';
+import { Note, TableWrapper } from './style';
+import { currentAssessmentLimit } from '../../utility/constants/AssessmentConstants';
+import { ChevronDown, ChevronUp } from 'react-feather';
+import DeleteGif from "../../assets/images/NewSkillAdded.png";
 
 const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
-    const tableHeadings = ["SKILLS", "COMPLETED ON", "SECTIONS", "OVERALL MARKS", "OVERALL GRADE",
-        <span className='d-flex align-items-center justify-content-center gap-1'>
-            <span>REATTEMPT</span>
-            <Info size={18} id='reattempt' className='cursor-pointer' />
-            <UncontrolledTooltip
-                target="reattempt"
-            >
-                Retake your assessment after cooldown period, if attempts left.
-            </UncontrolledTooltip>
-        </span>,
-        "ACTIONS"]
+    const tableHeadings = ["SKILLS", "COMPLETED ON", "SECTIONS", "OVERALL MARKS", "OVERALL GRADE", "ACTIONS"]
 
     const dispatch = useDispatch()
     const [dropdownValue, setDropdownValue] = useState(null)
+    const [showAssessmentAddedModal, setShowAssessmentAddedModal] = useState(false)
+    const [skillSelected, setSkillSelected] = useState(null)
 
     const addAssessmentLoading = useSelector(selectAddAssessmentLoading)
 
     const handleAddAssessment = (value) => {
         setDropdownValue(null)
-        dispatch(addAssessment({ assessment_name: value.value.assessment_name, assessment_id: value.value.assessment_id, str_type: value.value.str_type, _id: value.value._id }))
+        dispatch(addAssessment({ assessment_name: value.value.str_name, assessment_id: value.value.assessment_id, str_type: value.value.str_type, _id: value.value._id }))
+        setSkillSelected(value.value.str_name)
     }
+
+    useEffect(() => {
+        if (addAssessmentLoading) setShowAssessmentAddedModal(true)
+    }, [addAssessmentLoading])
 
     return (
         <>
@@ -38,10 +38,6 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
                 <CardTitle tag="h4">
                     Skills & Tools Assessment  &nbsp;
                 </CardTitle>
-
-                <CardText>
-                    (Take any 5 assessments)
-                </CardText>
             </div>
 
             <TableWrapper>
@@ -51,9 +47,7 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
                         <tr>
                             {tableHeadings.map((heading) => (
                                 <th>{heading}</th>
-                            ))
-
-                            }
+                            ))}
                         </tr>
                     </thead>
 
@@ -63,11 +57,11 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
                         ))}
                         <td>
                             <>
-                                {Array.from({ length: Math.max(5 - (data ? data.length : 0), 1) }).map((_, index) => (
+                                {Array.from({ length: Math.max(currentAssessmentLimit - (data ? data.length : 0), 1) }).map((_, index) => (
                                     <Select
                                         isClearable
                                         options={dropdownOptions?.map((item) => {
-                                            return { value: item, label: item.assessment_name }
+                                            return { value: item, label: item.str_name }
                                         })}
                                         classNamePrefix="select"
                                         placeholder={"Enter skill"}
@@ -79,13 +73,39 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
                                     />
                                 ))}
                             </>
-
-
                         </td>
+
                     </tbody>
 
                 </Table>
             </TableWrapper>
+
+
+            <Modal isOpen={showAssessmentAddedModal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
+                <ModalHeader toggle={() => setShowAssessmentAddedModal(false)} />
+                <ModalBody>
+                    <div className="d-flex justify-content-between pr-1">
+                        <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
+                        <div className="me-4">
+                            <CardTitle className="modal-heading">New Skill Added!</CardTitle>
+                            <CardText className="modal-body-text fw-light w-76">
+                            By adding a skill assessment your skill set is also updated.
+                            </CardText>
+                            <CardText className="modal-body-text fw-light w-76">
+                                <b>{skillSelected}</b>
+                            </CardText>
+                        </div>
+                    </div>
+                    <div className="d-flex gap-1 me-1 justify-content-end">
+                        <Button outline color="primary" onClick={() => setShowAssessmentAddedModal(false)}>
+                            Close
+                        </Button>
+                        <Button color="primary" onClick={() => setShowAssessmentAddedModal(false)}>
+                            Sounds good
+                        </Button>
+                    </div>
+                </ModalBody>
+            </Modal>
 
         </>
     );

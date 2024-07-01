@@ -4,7 +4,7 @@ import { CardWrapper } from '../../styled';
 
 const gradeColors = {
   "Novice": "#FBC02D",
-  "Fundamental": "#00BCD4",
+  "Intermediate": "#00BCD4",
   "Proficient": "#7C4DFF",
   "Mastery": "#414DFD",
 }
