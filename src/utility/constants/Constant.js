@@ -62,10 +62,6 @@ const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
 ];
-const statusForAllListing = [
-  { label: 'Open', value: 'OPEN' },
-  { label: 'In-review', value: 'IN_REVIEW' },
-];
 const projectTypesOptions = [
   { label: 'Fixed', value: 'FIXED' },
   { label: 'Variable', value: 'VARIABLE' },
@@ -220,7 +216,6 @@ export {
   disputeStatuses,
   disputeStatusEnum,
   bidStatusesOptions,
-  statusForAllListing,
   roleTypeOptions,
   PAYMENT_STATUS,
   clubStatus,
