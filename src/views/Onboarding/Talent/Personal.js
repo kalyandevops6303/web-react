@@ -60,6 +60,7 @@ import {
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
+  isEmpty,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -243,8 +244,10 @@ const Personal = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) setFiles([])
-  }, [files])
+    if (files?.length > 0 && !files[0].file?.name) {
+      setFiles([]);
+    }
+  }, [files]);
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
@@ -559,6 +562,7 @@ const Personal = () => {
       state,
       city,
     } = data;
+    // console.log(data)
 
     const years = parseInt(workExperienceYear, 10) || 0;
     const months = parseInt(workExperienceMonth, 10) || 0;
@@ -590,8 +594,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: files[0]?.file?.name,
-          file_key: files[0]?.uploadData?.file_key,
+          file_name: !isEmpty(files) ? files[0]?.file?.name : "",
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : "",
         },
       };
     } else {
@@ -604,8 +608,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: files[0]?.file?.name,
-          file_key: files[0]?.uploadData?.file_key,
+          file_name: !isEmpty(files) ? files[0]?.file?.name : "",
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : "",
         },
       };
     }

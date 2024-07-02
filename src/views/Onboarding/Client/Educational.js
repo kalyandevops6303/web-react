@@ -95,7 +95,7 @@ const Educational = () => {
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      educationDetails: savedFormData?.educationDetails || null,
+      educationDetails: savedFormData?.educationDetails || [{educationInstitution:"",education:""}],
       area: savedFormData?.area || null,
       skills: savedFormData?.skills || null,
       tools: savedFormData?.tools || null,
@@ -438,8 +438,9 @@ const Educational = () => {
                       errors.educationDetails.length > 0 &&
                       errors.educationDetails[index] && (
                         <FormFeedback>
-                          {errors.educationDetails[index].educationInstitution &&
-                            errors.educationDetails[index].educationInstitution.label.message}
+                          {errors?.educationDetails[index]?.educationInstitution &&
+                            errors?.educationDetails[index]?.educationInstitution?.label?.message}
+
                         </FormFeedback>
                       )}
                   </Col>

@@ -184,7 +184,7 @@ export const giveProgressBarColorClassName = (percentage) => {
   }
 };
 
-const isEmpty = (value) => {
+export const isEmpty = (value) => {
   if (value === undefined || value === null) {
     return true;
   }
