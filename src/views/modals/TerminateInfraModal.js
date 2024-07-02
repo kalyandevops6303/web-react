@@ -9,27 +9,17 @@ const TerminateInfraModal = ({ modal, toggleModal, terminateInfra }) => {
     const [isTerminating, setIsTerminating] = useState(false);
 
     const onClose = () => {
+        setIsTerminating(false);
         toggleModal();
     };
 
-
     const onConfirm = () => {
         setIsTerminating(true);
-        terminateInfra(
-            () => {
-                setIsTerminating(false);
-                onClose();
-            },
-            () => {
-                setIsTerminating(false);
-                onClose();
-            }
-        );
-    }
+        terminateInfra(onClose, onClose);
+    };
 
     return (
-        <>
-            <Modal
+        <Modal
                 isOpen={modal}
                 contentClassName="custom-modal-style delete-modal"
                 className="modal-dialog-centered modal-lg"
@@ -70,7 +60,6 @@ const TerminateInfraModal = ({ modal, toggleModal, terminateInfra }) => {
                                     All the services allotted to this project will be destroyed.
                                 </CardText>
 
-
                             </div>
                         </div>
                         <div className="d-flex gap-1 mt-3 justify-content-end">
@@ -93,7 +82,6 @@ const TerminateInfraModal = ({ modal, toggleModal, terminateInfra }) => {
                     </TerminateModalWrapper>
                 </ModalBody>
             </Modal>
-        </>
     );
 
 };
