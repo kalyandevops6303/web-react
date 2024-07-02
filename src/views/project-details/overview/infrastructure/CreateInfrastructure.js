@@ -179,9 +179,6 @@ const CreateInfrastructure = ({ updateInfraData }) => {
                     <p>
                         Add the services you need and submit to create the infrastructure.
                     </p>
-                    {/* <p className="text-info">
-                        It's absolutely free and we are not charging you even a single buck for the usage.
-                    </p> */}
                 </Col>
             </Row>
             <Row className="gap-2 pt-50">
