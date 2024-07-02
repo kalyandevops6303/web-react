@@ -167,7 +167,7 @@ const PaymentListing = () => {
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
-      {userDetailsData?.user_type === userTypes.team ? null : (
+      {userDetailsData?.team_type === userTypes.team ? null : (
         <AccordionItem>
           <AccordionHeader targetId="4">
             Upcoming Payments
