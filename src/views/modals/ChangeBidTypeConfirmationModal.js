@@ -30,6 +30,7 @@ const ChangeBidTypeConfirmationModal = ({ modal, toggleModal, toggleCreateBidMod
               onClick={() => {
                 toggleModal();
                 toggleCreateBidModal();
+                
               }}
             >
               Change Bid Type
