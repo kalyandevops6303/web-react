@@ -71,15 +71,9 @@ const ManageInfrastructure = ({ data, updateInfraData }) => {
             <TerminateInfraModal modal={isTerminateInfraModal} toggleModal={() => (setIsTerminateInfraModal(!isTerminateInfraModal))} terminateInfra={terminateInfra} />
             <Row className="my-1">
                 <Col sm="12">
-                    {/* <p className="fw-bold font-medium-5">
-                        Welcome back,
-                    </p> */}
                     <p>
                         {getInfraDescriptionByStatus()}
                     </p>
-                    {/* <p className="text-info">
-                        It's absolutely free and we are not charging you even a single buck for the usage.
-                    </p> */}
                 </Col>
             </Row>
             <div className="d-flex flex-wrap justify-content-start">
