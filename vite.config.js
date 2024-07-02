@@ -8,6 +8,7 @@ import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill'
 export default () => {
   return defineConfig({
     plugins: [react()],
+    mode: process.env.VITE_ENV_MODE || 'test',
     define: {
       global: 'globalThis'
     },
