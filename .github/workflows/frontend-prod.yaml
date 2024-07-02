@@ -31,7 +31,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '14.x'
-
+    - name: Set environment variable
+      run: echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
+      
     - name: Install Dependencies and Build
       run: |
         npm install
@@ -49,7 +51,7 @@ jobs:
       run: az storage blob upload-batch --account-name azusctrwebsa --auth-mode login -d '$web' --source ./dist
     
     - name: Purge CDN endpoint
-      run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name trumioprodcdn --domains prod-app.trumio.ai --content-paths '/*'
+      run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name trumioprodcdn --domains app.trumio.ai --content-paths '/*'
 
   # Azure logout
     - name: logout
