@@ -25,8 +25,6 @@ const InfrastructureView = () => {
     const params = useParams();
     const navigate = useNavigate();
 
-    // console.log(userData)
-
     const validateUserType = () => {
         if (userData?.user_type !== userTypes.client) {
             navigate(`/project-details/${params?.projectId}/`);
@@ -46,7 +44,6 @@ const InfrastructureView = () => {
                 const status = errorResponse?.data?.errorData?.errorCode;
                 if (errorResponse && status === 404) {
                     setIsLoading(false);
-                    // console.log(`Infra for the project-${params?.projectId} is not found.`);
                 } else {
                     ShowToastMessage(ERROR, errorResponse?.data?.errorData?.message || "Something went wrong!");
                     navigate(`/project-details/${params?.projectId}/`);

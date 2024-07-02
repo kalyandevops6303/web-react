@@ -90,8 +90,13 @@ const ManageInfrastructure = ({ data, updateInfraData }) => {
             </div>
             <div className="d-flex justify-content-end">
                 {
-                    (data?.status === InfraStatus.CREATION_FAILED) && (
-                        <Button color="primary" type="button" className="me-2 px-3" onClick={retryInfraCreation} disabled={isLoading}>
+                    ((data?.status === InfraStatus.CREATION_FAILED) || (data?.status === InfraStatus.DECOMMISSION_FAILED)) && (
+                        <Button
+                            color={(data?.status === InfraStatus.CREATION_FAILED) ? "primary" : "danger"}
+                            type="button"
+                            className="me-2 px-3"
+                            onClick={(data?.status === InfraStatus.CREATION_FAILED) ? retryInfraCreation : (() => (terminateInfra()))} // calling terminate infra without params
+                            disabled={isLoading}>
                             {isLoading ? (<Spinner size="sm" />) : 'Retry'}
                         </Button>
                     )

@@ -7,10 +7,6 @@ const availableServices = [
         _id: 'storage_account',
         name: 'Azure Storage Account'
     },
-    // {
-    //     _id: 'faceapi',
-    //     name: 'FaceAPI',
-    // },
     {
         _id: 'computervision',
         name: 'Computer Vision'
