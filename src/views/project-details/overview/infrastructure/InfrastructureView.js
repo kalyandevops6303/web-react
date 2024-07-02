@@ -14,7 +14,8 @@ import { getInfraService } from '../../../../services/infrastructureServices';
 import ManageInfrastructure from './ManageInfrastructure';
 import CreateInfrastructure from './CreateInfrastructure';
 import { TagContainer } from './styled';
-import { InfraStatus } from './constants';
+import { InfraStatus } from '../../../../utility/constants/ProjectInfraConstants';
+import { getInfraStatusText } from '../../../../utility/infrastructureUtils';
 
 const InfrastructureView = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -57,25 +58,6 @@ const InfrastructureView = () => {
         setInfraData(data);
     }
 
-    const getInfraStatusText = () => {
-        switch (infraData.status) {
-            case InfraStatus.INITIATED:
-                return 'Creation In-progress';
-            case InfraStatus.CREATED:
-                return 'Created';
-            case InfraStatus.CREATION_FAILED:
-                return 'Creation Error';
-            case InfraStatus.DECOMMISSION_REQUESTED:
-                return 'Deletion In-progress';
-            case InfraStatus.DECOMMISSIONED:
-                return 'Deleted';
-            case InfraStatus.DECOMMISSION_FAILED:
-                return 'Deletion Error';
-            default:
-                return 'Error';
-        }
-    }
-
     const getStatusBadgeColor = () => {
         if ((infraData?.status === InfraStatus.CREATION_FAILED) || (infraData?.status === InfraStatus.DECOMMISSION_FAILED))
             return 'light-danger';
@@ -97,8 +79,6 @@ const InfrastructureView = () => {
 
     return (
         <div>
-            {/* <SubmitRating /> */}
-            {/* Add infra management here */}
             <GrayCardWrapper>
                 <Card>
                     <CardHeader className="p-0">
@@ -109,7 +89,7 @@ const InfrastructureView = () => {
                             <TagContainer>
                                 <Badge color={getStatusBadgeColor()} className={`ms-1 ${getStatusBadgeColor()}`}>
                                     {
-                                        infraData ? getInfraStatusText() : 'Free'
+                                        infraData ? getInfraStatusText(infraData.status) : 'Free'
                                     }
                                 </Badge>
                             </TagContainer>

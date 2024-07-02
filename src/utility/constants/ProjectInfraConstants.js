@@ -1,33 +1,3 @@
-const infraInputDataSchema = {
-    fieldName: 'service_name',
-    type: 'select',
-    choices: [
-        {
-            displayName: 'Azure OpenAI',
-            value: 'openai',
-
-            // Additional fields for the above value
-            extraFields: [
-                {
-                    fieldName: 'model_name',
-                    type: 'select',
-                    choices: [
-                        {
-                            displayName: 'gpt-35-turbo-16k',
-                            value: 'gpt-35-turbo-16k',
-                            // extraFields: null
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            displayName: 'Azure Storage Account',
-            value: 'storage_account',
-        },
-    ]
-};
-
 const availableServices = [
     {
         _id: 'openai',
@@ -73,4 +43,4 @@ const InfraStatus = {
     DECOMMISSIONED: 'DECOMMISSIONED'
 };
 
-export { infraInputDataSchema, availableServices, openaiModels, InfraStatus };
+export { availableServices, openaiModels, InfraStatus };

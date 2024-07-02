@@ -15,7 +15,7 @@ import { returnFilteredDropdownOptions } from '../../../../utility/Utils';
 import { createInfraService } from '../../../../services/infrastructureServices';
 import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { setFormData } from '../../../../redux/reducers/formData';
-import { availableServices, openaiModels } from './constants';
+import { availableServices, openaiModels } from '../../../../utility/constants/ProjectInfraConstants';
 
 const CreateInfrastructure = ({ updateInfraData }) => {
     const [isSubmitLoading, setIsSubmitLoading] = useState(false);
