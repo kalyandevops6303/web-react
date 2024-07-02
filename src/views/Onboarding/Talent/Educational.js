@@ -51,7 +51,7 @@ import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbac
 import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
 import NoteComponent from '../NoteComponent';
 import CustomerSupportCTA from '../CustomerSupportCTA';
-import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { formData, resumeParsed, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments } from '../../../redux/reducers/formData';
@@ -125,7 +125,7 @@ const Educational = () => {
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      educationDetails: savedFormData?.educationDetails || [],
+      educationDetails: savedFormData?.educationDetails || [{ educationInstitution: '', education: '' }],
       tools: savedFormData?.tools || null,
       certificates: savedFormData?.certificates || null,
       skills: savedFormData?.skills || null,
@@ -171,7 +171,7 @@ const Educational = () => {
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [certificatesOptions, setCertificatesOptions] = useState(null);
-  const [files, setFiles] = useState(savedFormDocuments || [])
+  const [files, setFiles] = useState(savedFormDocuments || []);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
@@ -504,10 +504,11 @@ const Educational = () => {
     dispatch(getCustomerSupportCount());
   };
 
-
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) setFiles([])
-  }, [files])
+    if (files?.length > 0 && !files[0].file?.name) {
+      setFiles([]);
+    }
+  }, [files]);
 
   return (
     <ProfileFormContainer>
@@ -783,38 +784,40 @@ const Educational = () => {
                 </div>
               </div>
             </Col>
-            {files.length > 0 && <Col>
-              <Card>
-                <CardBody>
-                  <div className="d-flex flex-column">
-                    <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
-                      <Col lg="fit">
-                        <Info className="font-medium-3 me-50" color="#004280" />
-                      </Col>
+            {!isEmpty(files) && (
+              <Col>
+                <Card>
+                  <CardBody>
+                    <div className="d-flex flex-column">
+                      <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
+                        <Col lg="fit">
+                          <Info className="font-medium-3 me-50" color="#004280" />
+                        </Col>
 
-                      <Col>
-                        <div className="d-flex justify-content-between w-100">
-                          <span style={{ color: '#004280' }}>
-                            <span className="fw-bold">Auto Fill</span>
+                        <Col>
+                          <div className="d-flex justify-content-between w-100">
+                            <span style={{ color: '#004280' }}>
+                              <span className="fw-bold">Auto Fill</span>
 
-                            <FormGroup switch>
-                              <Input
-                                type="switch"
-                                checked={parseResume}
-                                onClick={() => {
-                                  setParseResume(!parseResume);
-                                  dispatch(setResumeParsed(!parseResume));
-                                }}
-                              />
-                            </FormGroup>
-                          </span>
-                        </div>
-                      </Col>
+                              <FormGroup switch>
+                                <Input
+                                  type="switch"
+                                  checked={parseResume}
+                                  onClick={() => {
+                                    setParseResume(!parseResume);
+                                    dispatch(setResumeParsed(!parseResume));
+                                  }}
+                                />
+                              </FormGroup>
+                            </span>
+                          </div>
+                        </Col>
+                      </div>
                     </div>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>}
+                  </CardBody>
+                </Card>
+              </Col>
+            )}
           </Row>
         </Form>
       )}
