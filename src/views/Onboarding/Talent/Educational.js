@@ -51,7 +51,7 @@ import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbac
 import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
 import NoteComponent from '../NoteComponent';
 import CustomerSupportCTA from '../CustomerSupportCTA';
-import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { formData, resumeParsed, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments } from '../../../redux/reducers/formData';
@@ -784,7 +784,7 @@ const Educational = () => {
                 </div>
               </div>
             </Col>
-            {files.length > 0 && (
+            {!isEmpty(files) && (
               <Col>
                 <Card>
                   <CardBody>
