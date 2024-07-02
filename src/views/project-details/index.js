@@ -72,14 +72,16 @@ const ProjectDetails = () => {
   };
 
   const verifyInfrastructureAccess = () => {
+    setInfrastructureAccess(false);
     verifyInfraAccessService()
       .then(() => {
+        // console.log("Access Given");
         setInfrastructureAccess(true);
       })
       .catch(() => {
         // console.log('Infra access denied');
       });
-  }
+  };
 
   useEffect(() => {
     verifyInfrastructureAccess();
@@ -122,21 +124,19 @@ const ProjectDetails = () => {
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
-
-        if (infrastructureAccess && isClient) { // Checks if the user is client
-          updatedSteps.push({ ...infrastructureStep, isDisabled: false }); // add a new step
-        }
       }
       if (projectDetailsData.status === projectStatusEnum.ACTIVE) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
-
-        if (infrastructureAccess && isClient) { // Checks if the user is client
-          updatedSteps.push({ ...infrastructureStep, isDisabled: false }); // add a new step
-        }
       }
+
+      // Append irrespective of the status
+      if (infrastructureAccess && isClient) { // Checks if the user is client and has infrastructure access
+        updatedSteps.push({ ...infrastructureStep, isDisabled: false }); // add a new step
+      }
+
       setStepsArray(updatedSteps);
     }
   }, [projectDetailsData?.status, infrastructureAccess]);
