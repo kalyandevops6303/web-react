@@ -62,7 +62,7 @@ const Social = () => {
   const IsresumeParsed = useSelector(resumeParsed);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
-  const [files, setFiles] = useState(savedFormDocuments || [])
+  const [files, setFiles] = useState(savedFormDocuments || []);
   const defaultLink = {
     linkName: '',
     link: '',
@@ -114,8 +114,8 @@ const Social = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) setFiles([])
-  }, [files])
+    if (files?.length > 0 && !files[0].file?.name) setFiles([]);
+  }, [files]);
 
   useEffect(() => {
     if (parseResume === false) {
@@ -242,7 +242,7 @@ const Social = () => {
             },
           );
         } else {
-          setValue('linkedInLink', savedFormData?.linkedInLink);
+          setValue('linkedInLink', savedFormData?.linkedInLink || '');
         }
         if (res?.talent_info?.social_links.find((link) => link.platform === 'twitter')) {
           setValue(
@@ -254,7 +254,7 @@ const Social = () => {
             },
           );
         } else {
-          setValue('twitterLink', savedFormData?.twitterLink);
+          setValue('twitterLink', savedFormData?.twitterLink || '');
         }
         if (res?.talent_info?.social_links.find((link) => link.platform === 'github')) {
           setValue(
@@ -265,7 +265,7 @@ const Social = () => {
             },
           );
         } else {
-          setValue('githubLink', savedFormData?.githubLink);
+          setValue('githubLink', savedFormData?.githubLink || '');
         }
         if (
           res?.talent_info?.social_links.filter(
@@ -286,7 +286,7 @@ const Social = () => {
             { shouldValidate: true },
           );
         } else {
-          setValue('otherSocialLinks', savedFormData?.otherSocialLinks);
+          setValue('otherSocialLinks', savedFormData?.otherSocialLinks || [defaultLink]);
         }
       }
       // eslint-disable-next-line no-unsafe-optional-chaining
@@ -568,38 +568,40 @@ const Social = () => {
               </div>
             </Col>
 
-            {files?.length > 0 && <Col>
-              <Card>
-                <CardBody>
-                  <div className="d-flex flex-column">
-                    <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
-                      <Col lg="fit">
-                        <Info className="font-medium-3 me-50" color="#004280" />
-                      </Col>
+            {files?.length > 0 && (
+              <Col>
+                <Card>
+                  <CardBody>
+                    <div className="d-flex flex-column">
+                      <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
+                        <Col lg="fit">
+                          <Info className="font-medium-3 me-50" color="#004280" />
+                        </Col>
 
-                      <Col>
-                        <div className="d-flex justify-content-between w-100">
-                          <span style={{ color: '#004280' }}>
-                            <span className="fw-bold">Auto Fill</span>
+                        <Col>
+                          <div className="d-flex justify-content-between w-100">
+                            <span style={{ color: '#004280' }}>
+                              <span className="fw-bold">Auto Fill</span>
 
-                            <FormGroup switch>
-                              <Input
-                                type="switch"
-                                checked={parseResume}
-                                onClick={() => {
-                                  setParseResume(!parseResume);
-                                  dispatch(setResumeParsed(!parseResume));
-                                }}
-                              />
-                            </FormGroup>
-                          </span>
-                        </div>
-                      </Col>
+                              <FormGroup switch>
+                                <Input
+                                  type="switch"
+                                  checked={parseResume}
+                                  onClick={() => {
+                                    setParseResume(!parseResume);
+                                    dispatch(setResumeParsed(!parseResume));
+                                  }}
+                                />
+                              </FormGroup>
+                            </span>
+                          </div>
+                        </Col>
+                      </div>
                     </div>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>}
+                  </CardBody>
+                </Card>
+              </Col>
+            )}
           </Row>
         </Form>
       )}
