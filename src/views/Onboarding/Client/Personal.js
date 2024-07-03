@@ -287,6 +287,7 @@ const Personal = () => {
   }, [citiesData]);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/account-details`);
     } else {

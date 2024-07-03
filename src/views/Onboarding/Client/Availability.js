@@ -169,6 +169,7 @@ const Availability = () => {
   const currenciesIsLoading = useSelector(currenciesLoading);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname?.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/educational-details`);
     } else {
