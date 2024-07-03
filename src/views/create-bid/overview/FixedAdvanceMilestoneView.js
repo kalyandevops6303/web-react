@@ -253,7 +253,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
 
   const calculateTotalValues = () => {
     const totalDuration = allMilestones
-      .map((milestone) => {
+      ?.map((milestone) => {
         const maxDuration = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration)
           .reduce((max, worker) => Math.max(max, worker.duration), 0);
@@ -262,18 +262,16 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       })
       .reduce((sum, duration) => sum + duration, 0);
 
-    const totalHours = allMilestones
-      .map((milestone) => {
+    const totalHours = allMilestones?.map((milestone) => {
         const sumHours = milestone.workers
-          .filter((worker) => worker.isChecked && worker.duration && worker.hours)
+          ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
 
         return sumHours;
       })
       .reduce((sum, hours) => sum + hours, 0);
 
-    const totalCost = allMilestones
-      .map((milestone) => {
+    const totalCost = allMilestones?.map((milestone) => {
         const sumCost = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
@@ -1396,7 +1394,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div className="d-flex justify-content-end">
-               <Button
+              <Button
                 onClick={() => {
                   saveAsDraftClicked.current = true;
                   handleSubmit(onSubmit)();
