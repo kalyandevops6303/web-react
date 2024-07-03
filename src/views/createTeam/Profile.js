@@ -756,7 +756,7 @@ const Profile = () => {
     } else if (savedFormDocuments) {
       setSelectedImage(savedFormDocuments);
       if (!location.pathname.includes('profile-edit')) {
-        setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
+        setSelectedImagePreview(URL?.createObjectURL(savedFormDocuments));
       } else {
         setSelectedImagePreview(savedFormDocuments);
       }
