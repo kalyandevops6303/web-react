@@ -594,8 +594,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : "",
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : "",
+          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
         },
       };
     } else {
@@ -608,8 +608,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : "",
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : "",
+          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
         },
       };
     }
@@ -873,6 +873,17 @@ const Personal = () => {
             isUploaded: true,
           },
         ]);
+      }
+
+      if (parsedResumeData?.languages_read === 0) {
+        setValue(
+          'speakLanguages',
+          [{
+            label: 'English',
+            value: '64831445a51384fb6948e678',
+          }],
+          { shouldValidate: true },
+        );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
