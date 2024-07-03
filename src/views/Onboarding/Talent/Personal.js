@@ -181,7 +181,7 @@ const Personal = () => {
       workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
       workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
       role: savedFormData?.role || null,
-      zipCode: savedFormData?.zipCode || null,
+      zipCode: savedFormData?.zipCode || '',
       country: savedFormData?.country || null,
       state: savedFormData?.state || null,
       city: savedFormData?.city || null,
@@ -244,7 +244,7 @@ const Personal = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) {
+    if (!files || (files?.length > 0 && !files[0].file?.name)) {
       setFiles([]);
     }
   }, [files]);
