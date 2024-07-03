@@ -35,7 +35,7 @@ import {
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { filteredFormSchema, formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
+import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
@@ -140,6 +140,7 @@ const Social = () => {
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/availability-details`);
     } else {
@@ -568,7 +569,7 @@ const Social = () => {
               </div>
             </Col>
 
-            {files?.length > 0 && (
+            {!isEmpty(files) && (
               <Col>
                 <Card>
                   <CardBody>
