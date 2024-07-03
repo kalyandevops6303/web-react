@@ -303,6 +303,17 @@ const Personal = () => {
           })),
           { shouldValidate: true },
         );
+      } else {
+        setValue(
+          'readLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
+          { shouldValidate: true },
+        );
       }
       if (res?.languages_speak && res?.languages_speak.length > 0) {
         setValue(
@@ -313,6 +324,17 @@ const Personal = () => {
           })),
           { shouldValidate: true },
         );
+      } else {
+        setValue(
+          'speakLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
+          { shouldValidate: true },
+        );
       }
       if (res?.languages_write && res?.languages_write.length > 0) {
         setValue(
@@ -321,6 +343,17 @@ const Personal = () => {
             label: language?.name,
             value: language?._id,
           })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'writeLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
           { shouldValidate: true },
         );
       }
@@ -618,18 +651,9 @@ const Personal = () => {
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
-          languages_speak: speakLanguages?.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
-          languages_write: writeLanguages.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
-          languages_read: readLanguages.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
+          languages_speak,
+          languages_write,
+          languages_read,
           tagline,
           professional_introduction: professionalIntroduction,
         },
@@ -807,6 +831,63 @@ const Personal = () => {
           );
         }
       }
+      if (res?.talent_info?.languages_speak.length > 0) {
+        setValue(
+          'speakLanguages',
+          res?.talent_info?.languages_speak?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'speakLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.talent_info?.languages_read.length > 0) {
+        setValue(
+          'readLanguages',
+          res?.talent_info?.languages_read?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'readLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.talent_info?.languages_write.length > 0) {
+        setValue(
+          'writeLanguages',
+          res?.talent_info?.languages_write?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'writeLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
     }
   };
 
@@ -873,17 +954,6 @@ const Personal = () => {
             isUploaded: true,
           },
         ]);
-      }
-
-      if (parsedResumeData?.languages_read === 0) {
-        setValue(
-          'speakLanguages',
-          [{
-            label: 'English',
-            value: '64831445a51384fb6948e678',
-          }],
-          { shouldValidate: true },
-        );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
