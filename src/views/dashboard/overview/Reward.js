@@ -2,7 +2,7 @@
 // ** Third Party Components
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User } from 'react-feather';
+import { User, Users } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 
 // ** Custom Components
@@ -28,9 +28,15 @@ const RewardsCard = ({ cols }) => {
   const [data, setData] = useState([
     {
       title: '$0',
-      subtitle: 'Referral Rewards',
+      subtitle: 'Earned',
       color: 'light-info',
       icon: <User size={24} />,
+    },
+    {
+      title: '$0',
+      subtitle: 'Referrals',
+      color: 'light-warning',
+      icon: <Users size={24} />,
     },
   ]);
 
@@ -46,24 +52,10 @@ const RewardsCard = ({ cols }) => {
 
   useEffect(() => {
     if (totalReferralAmountData) {
-      const reqData = { ...data[0], title: `$${totalReferralAmountData?.total_referral_amount}` };
-      setData([reqData]);
+      const reqData = [{ ...data[0], title: `$${totalReferralAmountData?.total_referral_amount}` }, data[1]];
+      setData(reqData);
     }
   }, [totalReferralAmountData]);
-
-  const renderData = () =>
-    data.map((item, index) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <Col key={index} {...cols}>
-        <div className="d-flex align-items-center">
-          <Avatar color={item.color} icon={item.icon} className="me-1" />
-          <div className="my-auto">
-            <h4 className="fw-bolder mb-0">{item.title}</h4>
-            <CardText className="font-small-2 mb-0">{item.subtitle}</CardText>
-          </div>
-        </div>
-      </Col>
-    ));
 
   return (
     <RewardCardWrapper>
@@ -84,17 +76,30 @@ const RewardsCard = ({ cols }) => {
           )}
         </CardHeader>
         <CardBody className="reward-body">
-          <Row className="reward-comp">{renderData()}</Row>
+          <Row>
+            {data.map((item, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Col key={index} {...cols}>
+                <div className="d-flex align-items-center">
+                  <Avatar color={item.color} icon={item.icon} className="me-1" />
+                  <div className="my-auto">
+                    <h4 className="fw-bolder">{item.title}</h4>
+                    <CardText className="font-small-2 mb-0">{item.subtitle}</CardText>
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
           {isDisabled ? (
             <CardText className="text-center card-text font-small-4 mt-20 text-primary text-muted earn-more cursor-not-allowed">
-              Earn More
+              Make A Referral
             </CardText>
           ) : (
             <CardText
               className="text-center card-text font-small-4 mt-20 text-primary earn-more cursor-pointer"
               onClick={() => setEarnMoreModal(true)}
             >
-              Earn More
+              Make A Referral
             </CardText>
           )}
         </CardBody>

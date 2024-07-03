@@ -190,7 +190,7 @@ const Account = () => {
       }
     }
   };
-
+  const buttonText = selectedImage && selectedImagePreview ? 'Edit Image' : 'Upload Image';
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       setValue('countryCode', res.country_code);
@@ -408,7 +408,9 @@ const Account = () => {
                     disabled={isImageUploading}
                     onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
-                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Image'}
+                    {isImageUploading ? (
+                      <Spinner size="sm" />
+                    ) : buttonText}
                   </Button>
                   {selectedImage && selectedImagePreview && (
                     <RemoveUploadedPicture

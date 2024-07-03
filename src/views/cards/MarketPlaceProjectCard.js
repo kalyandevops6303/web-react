@@ -240,7 +240,7 @@ const MarketPlaceProjectCard = ({
                 <CardTitle className="d-flex align-items-center">
                   <span className="cursor-pointer">{project?.details?.name ?? project?.name}</span>
                 </CardTitle>
-                <div className="d-flex flex-wrap project-stats">
+                <div className="d-flex gap-sm-5 flex-wrap project-stats">
                   <CardText className="project">
                     <>
                       {project?.pay_type} Price &nbsp;
@@ -266,7 +266,7 @@ const MarketPlaceProjectCard = ({
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {!showFullText ? (
-                      <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                      <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop:'10px' }}>
                         {parse(descriptionToShow)}
                       </div>
                     ) : (

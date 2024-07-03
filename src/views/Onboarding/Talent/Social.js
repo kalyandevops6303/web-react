@@ -579,6 +579,7 @@ const Social = () => {
                           <Info className="font-medium-3 me-50" color="#004280" />
                         </Col>
 
+
                         <Col>
                           <div className="d-flex justify-content-between w-100">
                             <span style={{ color: '#004280' }}>

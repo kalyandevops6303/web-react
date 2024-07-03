@@ -128,6 +128,8 @@ const ProjectDetailsNavbar = ({ onChangeStep, steps, currentStep }) => {
         return 'You can view payment details once the project starts.';
       case 'rating':
         return 'You can give and view your ratings after project completion.';
+      case 'infrastructure':
+      return 'Contact your project admin to access the infrastructure.';
       default:
         return '';
     }
