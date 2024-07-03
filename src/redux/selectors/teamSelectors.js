@@ -7,4 +7,6 @@ export const selectTeamData = createSelector(teamSelector, (team) => team.teams)
 
 export const selectCreatedTeamData = createSelector(teamSelector, (team) => team.teamCreated);
 
+export const saveDraftTeamLoading = createSelector(teamSelector, (team) => team.saveDraftTeamLoading);
+
 export const updateTeamLoading = createSelector(teamSelector, (team) => team.updateTeamLoading);

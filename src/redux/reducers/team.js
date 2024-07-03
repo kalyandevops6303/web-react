@@ -4,6 +4,8 @@ const initialState = {
   teams: [],
   teamCreated: {},
   updateTeamLoading: false,
+  draftTeam: {},
+  saveDraftTeamLoading: false,
 };
 
 const teamSlice = createSlice({
@@ -31,6 +33,47 @@ const teamSlice = createSlice({
     clearTeams: () => ({
       teams: [],
       teamCreated: {},
+    }),
+
+    saveDraftTeamRequest: (state) => ({
+      ...state,
+      saveDraftTeamLoading: true,
+    }),
+    saveDraftTeamError: (state) => ({
+      ...state,
+      saveDraftTeamLoading: false,
+    }),
+    saveDraftTeamSuccess: (state, action) => ({
+      ...state,
+      saveDraftTeamLoading: false,
+      draftTeam: action.payload,
+    }),
+
+    deleteDraftTeamRequest: (state) => ({
+      ...state,
+      saveDraftTeamLoading: true,
+    }),
+    deleteDraftTeamSuccess: (state) => ({
+      ...state,
+      saveDraftTeamLoading: false,
+    }),
+    deleteDraftTeamError: (state) => ({
+      ...state,
+      saveDraftTeamLoading: false,
+    }),
+
+    checkDraftTeamRequest: (state) => ({
+      ...state,
+      saveDraftTeamLoading: true,
+    }),
+    checkDraftTeamError: (state) => ({
+      ...state,
+      saveDraftTeamLoading: false,
+    }),
+    checkDraftTeamSuccess: (state, action) => ({
+      ...state,
+      saveDraftTeamLoading: false,
+      draftTeam: action.payload,
     }),
 
     updateTeamRequest: (state) => ({
@@ -63,6 +106,18 @@ export const {
   updateTeamRequest,
   updateTeamSuccess,
   updateTeamFailure,
+  saveDraftTeamRequest,
+  saveDraftTeamError,
+  saveDraftTeamSuccess,
+  checkDraftTeamError,
+  checkDraftTeamRequest,
+  checkDraftTeamSuccess,
+  deleteDraftTeamRequest,
+  deleteDraftTeamSuccess,
+  deleteDraftTeamError,
+  deleteTeamRequest,
+  deleteTeamSuccess,
+  deleteTeamError,
   getTeamRequest,
   getTeamError,
 } = teamSlice.actions;

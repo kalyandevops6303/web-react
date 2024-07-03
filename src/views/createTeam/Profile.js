@@ -46,7 +46,7 @@ import { profileImageUploadService, profileImageUploadToAzureService } from '../
 import { updateTeam } from '../../redux/actions/teamsActions';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
-import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
+import { saveDraftTeamLoading, updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { getLanguages } from '../../redux/actions/staticActions';
@@ -177,7 +177,7 @@ const Profile = () => {
           .required('End time is required'),
     }),
   });
-
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
@@ -190,6 +190,7 @@ const Profile = () => {
     mode: 'onChange',
     resolver: yupResolver(ProfileSchema),
     defaultValues: {
+      teamIntroduction: savedFormData?.teamIntroduction || '',
       availabilityDays: [],
       weekdays: [],
       weekends: [],
@@ -220,9 +221,9 @@ const Profile = () => {
 
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
+  const saveDraftTeamIsLoading = useSelector(saveDraftTeamLoading);
   const languagesData = useSelector(languages);
   const supportData = useSelector((state) => state.support.supportCount);
-  const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const savedFormImage = useSelector(formImage);
   const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
@@ -1501,6 +1502,17 @@ const Profile = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
+          <Button
+            onClick={() => {
+              // console.log('Done');
+            }}
+            color="primary"
+            className="me-2"
+            outline
+            disabled
+          >
+            {saveDraftTeamIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+          </Button>
           <div>
             <Button
               color="primary"

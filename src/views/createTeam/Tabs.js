@@ -7,7 +7,7 @@ import Profile from './Profile';
 import { TabsContainer } from '../Onboarding/style';
 import { userProfileEdit } from '../../utility/constants/Constant';
 
-const Tabs = ({ tabNames, active }) => {
+const Tabs = ({ tabNames, active, setDraftSavedModal }) => {
   const location = useLocation();
 
   return (
@@ -28,7 +28,9 @@ const Tabs = ({ tabNames, active }) => {
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Profile}>
           {(location.pathname === '/create-team/profile-details' ||
-            location.pathname === `/${userProfileEdit.team}/profile-details`) && <Profile />}
+            location.pathname === `/${userProfileEdit.team}/profile-details`) && (
+            <Profile setDraftSavedModal={setDraftSavedModal} />
+          )}
         </TabPane>
       </TabContent>
     </TabsContainer>
@@ -39,9 +41,11 @@ export default Tabs;
 Tabs.propTypes = {
   tabNames: Proptypes.object,
   active: Proptypes.string,
+  setDraftSavedModal: Proptypes.func,
 };
 
 Tabs.defaultProps = {
   tabNames: {},
   active: '',
+  setDraftSavedModal: () => {},
 };

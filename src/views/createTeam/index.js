@@ -9,6 +9,7 @@ import { getItemFromSession, removeItemFromSession } from '../../utility/sessesi
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import { userProfileEdit } from '../../utility/constants/Constant';
 import { CircularBackButtonContainer } from '../styled';
+import DraftSavedModal from '../modals/DraftSavedModal';
 
 const CreateTeam = () => {
   const tabNames = {
@@ -16,7 +17,7 @@ const CreateTeam = () => {
   };
 
   const [active, setActive] = useState(tabNames.Profile);
-
+  const [draftSavedModal, setDraftSavedModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const CreateTeam = () => {
     )
       setActive(tabNames.Profile);
   }, [location]);
+  const toggleDraftSavedModal = () => setDraftSavedModal(!draftSavedModal);
 
   const onBackClick = () => {
     navigate(getItemFromSession('backRouteForProfileEdit'));
@@ -61,8 +63,16 @@ const CreateTeam = () => {
             </div>
           </BackButtonContainer>
         )}
-        <Tabs tabNames={tabNames} active={active} />
+        <Tabs tabNames={tabNames} active={active} setDraftSavedModal={setDraftSavedModal}  />
       </div>
+      {draftSavedModal && (
+        <DraftSavedModal
+          modal={draftSavedModal}
+          toggleModal={toggleDraftSavedModal}
+          path="My Teams > Teams > Drafts Or View Draft"
+          onPrimaryBtnClick={() => navigate('/my-teams/teams')}
+        />
+      )}
     </div>
   );
 };

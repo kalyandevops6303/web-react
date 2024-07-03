@@ -253,7 +253,10 @@ const API = {
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     update: `${apiAuthEndpoint}/api/v1/team/update`,
-    memberType: `${apiAuthEndpoint}/api/v1/team/member_type`,
+    createDraft: `${apiAuthEndpoint}/api/v1/team/update`,
+    checkDraft: `${apiAuthEndpoint}/api/v1/team/check`,
+    deleteDraft: `${apiAuthEndpoint}/api/v1/team/delete`,
+    memberType: `${apiAuthEndpoint}/api/v1/team/draft/save`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
   dispute: {

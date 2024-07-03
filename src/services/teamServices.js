@@ -10,9 +10,28 @@ const createTeamService = (data) => DataService.post(API.team.create, data);
 
 const updateTeamService = (data) => DataService.put(API.team.update, data);
 
+const createDraftTeamService = (data) => DataService.post(API.team.createDraft, data);
+
+const updateDraftTeamService = (id, data) => DataService.post(`${API.team.createDraft}?team_id=${id}`, data);
+
+const checkDraftTeamService = () => DataService.get(`${API.team.checkDraft}`);
+
+const deleteDraftTeamService = (id) => DataService.delete(`${API.team.deleteDraft}?team_id=${id}`);
+
 const getInvitedByService = ({ invitation_id }) =>
   DataService.get(`${API.team.getInvitation}/${invitation_id}?page=1&page_size=20`);
 
 const getInviteDetails = (id) => DataService.get(`${API.team.getInvitation}/${id}`);
 
-export { createTeamService, getTeamService, getTeamById, getInvitedByService, updateTeamService, getInviteDetails };
+export {
+  createTeamService,
+  getTeamService,
+  getTeamById,
+  createDraftTeamService,
+  updateDraftTeamService,
+  checkDraftTeamService,
+  deleteDraftTeamService,
+  getInvitedByService,
+  updateTeamService,
+  getInviteDetails,
+};
