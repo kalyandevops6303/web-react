@@ -203,7 +203,7 @@ const Social = () => {
             },
           );
         } else {
-          setValue('linkedInLink', savedFormData?.linkedInLink);
+          setValue('linkedInLink', savedFormData?.linkedInLink || '');
         }
         if (res?.client_info?.social_links.find((link) => link.platform === 'twitter')) {
           setValue(
@@ -215,7 +215,7 @@ const Social = () => {
             },
           );
         } else {
-          setValue('twitterLink', savedFormData?.twitterLink);
+          setValue('twitterLink', savedFormData?.twitterLink || '');
         }
         if (res?.client_info?.social_links.find((link) => link.platform === 'github')) {
           setValue(
@@ -226,7 +226,7 @@ const Social = () => {
             },
           );
         } else {
-          setValue('githubLink', savedFormData?.githubLink);
+          setValue('githubLink', savedFormData?.githubLink || '');
         }
         if (
           res?.client_info?.social_links.filter(
@@ -247,7 +247,7 @@ const Social = () => {
             { shouldValidate: true },
           );
         } else {
-          setValue('otherSocialLinks', savedFormData?.otherSocialLinks);
+          setValue('otherSocialLinks', savedFormData?.otherSocialLinks || [defaultLink]);
         }
       }
     }
