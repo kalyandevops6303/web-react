@@ -518,6 +518,7 @@ const Personal = () => {
   }, [citiesData]);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/account-details`);
     } else {

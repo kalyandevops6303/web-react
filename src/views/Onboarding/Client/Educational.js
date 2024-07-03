@@ -137,6 +137,7 @@ const Educational = () => {
   const supportData = useSelector((state) => state.support.supportCount);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/personal-details`);
     } else {
