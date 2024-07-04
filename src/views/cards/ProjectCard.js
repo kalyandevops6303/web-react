@@ -5,6 +5,7 @@ import parse from 'html-react-parser';
 import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -36,6 +37,8 @@ const ProjectCard = ({
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const userdata = useSelector(selectUserData);
+  const location = useLocation();
+  const pathname = location.pathname.split('/').pop();
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -59,6 +62,26 @@ const ProjectCard = ({
     COMPLETED: 'Completed',
     ON_GOING: 'On Going',
     ACTIVE: 'Active',
+    BID_SUBMITTED :'Bid Submitted',
+    BID_IN_REVIEW : 'Bid In Review',
+    BID_ACCEPTED : 'Bid Accepted',
+    BID_CHANGE_REQUEST : 'Change Request',
+    SIGN_CONTRACT : 'Sign Contract',
+    SIGN_NDA : 'Sign NDA',
+    PAYMENT_PENDING : 'Payment Pending',
+    WITHDRAWN: 'Withdrawn',
+  };
+
+  const primaryStatus = {
+    OPEN: 'Open Listing',
+    IN_REVIEW: 'In Review',
+    TERMINATED: 'Terminated',
+    CLOSED: 'Closed',
+    LISTING_EXPIRED: 'Listing Expired',
+    COMPLETED: 'Completed',
+    ON_GOING: 'On Going',
+    ACTIVE: 'Active',  
+    WITHDRAWN: 'Withdrawn',  
   };
 
   const divRef = useRef(null);
@@ -105,7 +128,7 @@ const ProjectCard = ({
     }
   };
 
-  return (
+  return (  
     <ProjectCardWrap>
       <Card onClick={handleShowProject} className="cursor-pointer">
         {isNewTag && <NewTag />}
@@ -115,8 +138,8 @@ const ProjectCard = ({
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
-                    <Badge className={`${data?.status} truncate-1`} color="badge">
-                      {statusEnum[data?.status]}
+                    <Badge className={`${Object.keys(primaryStatus).includes(data?.status) ? data?.status : pathname} truncate-1`} color="badge">
+                      {`${statusEnum[data?.status] ? statusEnum[data?.status] : data?.status}`}
                     </Badge>
                   </CustomBadge>
                 </div>
