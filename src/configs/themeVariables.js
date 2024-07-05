@@ -100,6 +100,10 @@ const modalLeftBorderColor = '#ebebeb';
 const pendingOrangeColor = '#FF5F05';
 const fundedBlueColor = '#00ACC1';
 const selectedBlugBg = '#EDF7FF';
+const lightOrangeColor = '#FFF3E8';
+const darkOrangeColor = '#FF9F43';
+const badgeBlueColor = '#E0F6FF';
+const darkBlueColor = "#00B0FF";
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -206,5 +210,9 @@ const theme = {
   pendingOrangeColor,
   fundedBlueColor,
   selectedBlugBg,
+  lightOrangeColor,
+  darkOrangeColor,
+  badgeBlueColor,
+  darkBlueColor,
 };
 export default theme;

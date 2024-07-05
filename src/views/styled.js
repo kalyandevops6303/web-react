@@ -53,9 +53,9 @@ const CustomBadge = styled.span`
   .CREATED,
   .YET_TO_START,
   .TO_BE_LISTED {
-    background: ${theme.lightGreenBg} !important;
-    color: ${theme.lighGreenColor};
-    border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
+    background: ${theme.badgeBlueColor} !important;
+    color: ${theme.darkBlueColor};
+    border: ${ `1px solid ${theme.lighGreenColor}`};
   }
   .ON_GOING,
   .REVIEWED,
@@ -64,6 +64,16 @@ const CustomBadge = styled.span`
     background: ${theme.draftStatusBadgeBg};
     color: ${theme.draftStatusBadgeColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.draftStatusBadgeColor}` : 'none')};
+  }
+  .ongoing {
+    background : ${theme.lightOrangeColor} !important;
+    color: ${theme.darkOrangeColor} !important;
+    border: ${(props) => (props.bordered ? `1px solid ${theme.darkOrangeColor}` : 'none')};
+  }
+  .upcoming {
+    background : ${theme.badgeBlueColor} !important;
+    color: ${theme.darkBlueColor} !important;
+    border: ${(props) => (props.bordered ? `1px solid ${theme.darkBlueColor}` : 'none')};
   }
   .IN_REVIEW {
     background: ${theme.orange}1f;
