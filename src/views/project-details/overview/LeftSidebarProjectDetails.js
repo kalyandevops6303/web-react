@@ -12,6 +12,7 @@ import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
 import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/projectDetailsSelectors';
 import DateTime from '../../../lib/date-time';
+
 import { getProjectDetails, withdrawProject } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
@@ -23,6 +24,22 @@ import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
 import ViewFilesModal from '../../modals/ViewFilesModal';
+
+const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay) => {
+  // checking whether the project has secondary status or not
+  const secondary_status_text = projectDetailsData?.secondary_status
+    ? projectDetailsData?.secondary_status[localStorage.getItem('user_id')].next
+    : projectDetailsData?.status;
+
+  // checking whether the secondary status is present in the statusEnum or not
+  if (Object.keys(statusDisplay).includes(secondary_status_text)) {
+    return statusDisplay[secondary_status_text].state;
+  } if (Object.keys(statusEnum).includes(secondary_status_text)) {
+    return statusEnum[secondary_status_text];
+  } 
+    return secondary_status_text;
+  
+};
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -57,6 +74,7 @@ const LeftSidebarProjectDetails = () => {
   const toggleRelistSuccessModal = () => setRelistSuccessModal(!relistSuccessModal);
 
   const projectDetailsData = useSelector(projectDetails);
+  // const {secondary_status} = projectDetailsData;
 
   const statusEnum = {
     OPEN: 'Open',
@@ -67,13 +85,20 @@ const LeftSidebarProjectDetails = () => {
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
     ACTIVE: 'Active',
+    BID_SUBMITTED: 'Bid Submitted',
+    BID_IN_REVIEW: 'Bid In Review',
+    BID_ACCEPTED: 'Bid Accepted',
+    BID_CHANGE_REQUEST: 'Change Request',
+    SIGN_CONTRACT: 'Sign Contract',
+    SIGN_NDA: 'Sign NDA',
+    PAYMENT_PENDING: 'Payment Pending',
+    WITHDRAWN: 'Withdrawn',
   };
   const statusDisplay = {
     ACTIVE: {
       state: 'Sign Contract',
       bgcolor: 'light-blue',
-      text: 'light-blue'
-
+      text: 'light-blue',
     },
     ON_GOING: {
       state: 'Milestone 1',
@@ -84,34 +109,28 @@ const LeftSidebarProjectDetails = () => {
     LISTING_EXPIRED: {
       state: 'In Review',
       bgcolor: 'warning',
-      text: 'danger'
-
+      text: 'danger',
     },
     WITHDRAWN: {
       state: 'In Review',
       bgcolor: 'warning',
-      text: 'danger'
-
+      text: 'danger',
     },
     TERMINATED: {
-      state: 'Sign Contract',
+      state: 'Ternminated',
       bgcolor: 'light-blue',
-      text: 'light-blue'
-
+      text: 'light-blue',
     },
     COMPLETED: {
       state: 'COMPLERED',
-      bgcolor: 'success',
-      text: 'success'
-
+      bgcolor: 'light-blue',
+      text: 'dark-blue',
     },
     ON_HOLD: {
-      state: 'COMPLERED',
+      state: 'COMPLEtED',
       bgcolor: 'success',
-      text: 'success'
-
+      text: 'success',
     },
-
   };
   const isLoading = useSelector(projectDetailsLoading);
   const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
@@ -239,8 +258,8 @@ const LeftSidebarProjectDetails = () => {
                   projectDetailsData?.worker_details?.entity_type === userTypes.talent
                     ? projectDetailsData?.worker_details?.image_uri || defaultAvatar
                     : projectDetailsData?.worker_details?.entity_type === userTypes.team
-                      ? projectDetailsData?.worker_details?.team_logo || defaultAvatar
-                      : defaultAvatar
+                    ? projectDetailsData?.worker_details?.team_logo || defaultAvatar
+                    : defaultAvatar
                 }
                 imgHeight="35"
                 imgWidth="35"
@@ -347,18 +366,21 @@ const LeftSidebarProjectDetails = () => {
             )}
           </div>
 
-          <div className='d-flex'>
-            {(projectDetailsData && projectDetailsData?.status !== 'OPEN' && projectDetailsData?.status !== 'TO_BE_LISTED') && (
-              <BadgeGroup
-                title="Status"
-                data={[
-                  ({ name: statusDisplay[projectDetailsData?.status]?.state || [] }),
-                ]}
-                color={statusDisplay[projectDetailsData?.status]?.bgcolor}
-                id={`tooltip-${projectDetailsData?._id}`}
-              />
-            )}
-
+          <div className="d-flex">
+            {projectDetailsData &&
+              projectDetailsData?.status !== 'OPEN' &&
+              projectDetailsData?.status !== 'TO_BE_LISTED' && (
+                <BadgeGroup
+                  title="Status"
+                  data={[
+                    {
+                      name: displaySecondaryStatusTextOnSideBar(projectDetailsData, statusEnum, statusDisplay),
+                    },
+                  ]}
+                  color={statusDisplay[projectDetailsData?.status]?.bgcolor}
+                  id={`tooltip-${projectDetailsData?._id}`}
+                />
+              )}
           </div>
           <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
@@ -393,10 +415,10 @@ const LeftSidebarProjectDetails = () => {
                 {(projectDetailsData?.status === 'ACTIVE' ||
                   projectDetailsData?.status === 'ON_GOING' ||
                   projectDetailsData?.status === 'COMPLETED') && (
-                    <Button className="w-50" color="danger" onClick={handleDelete}>
-                      Terminate
-                    </Button>
-                  )}
+                  <Button className="w-50" color="danger" onClick={handleDelete}>
+                    Terminate
+                  </Button>
+                )}
                 {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
                   <Button className="w-50" color="primary" onClick={handleInvite}>
                     Invite
