@@ -138,7 +138,7 @@ const ProjectCard = ({
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
-                    <Badge className={`${Object.keys(primaryStatus).includes(data?.status) ? data?.status : pathname} truncate-1`} color="badge">
+                    <Badge className={`${Object.keys(primaryStatus)?.includes(data?.status) ? data?.status : pathname} truncate-1`} color="badge">
                       {`${statusEnum[data?.status] ? statusEnum[data?.status] : data?.status}`}
                     </Badge>
                   </CustomBadge>

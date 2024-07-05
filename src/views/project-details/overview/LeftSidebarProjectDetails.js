@@ -32,9 +32,9 @@ const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, sta
     : projectDetailsData?.status;
 
   // checking whether the secondary status is present in the statusEnum or not
-  if (Object.keys(statusDisplay).includes(secondary_status_text)) {
+  if (Object.keys(statusDisplay)?.includes(secondary_status_text)) {
     return statusDisplay[secondary_status_text].state;
-  } if (Object.keys(statusEnum).includes(secondary_status_text)) {
+  } if (Object.keys(statusEnum)?.includes(secondary_status_text)) {
     return statusEnum[secondary_status_text];
   } 
     return secondary_status_text;
