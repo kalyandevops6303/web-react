@@ -1,4 +1,4 @@
-import { Card, CardBody, CardText, CardTitle, Badge } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, Badge, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -88,7 +88,12 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
 
   const handleCard = () => {
     updateCard();
-    navigate(`/profile/team/${data?._id}`);
+    if(data?.creation_status === 'DRAFT'){
+      navigate(`/create-team/profile-details/${data?._id}`);
+    }
+    else{
+      navigate(`/profile/team/${data?._id}`);
+    }
   };
 
   return (
@@ -99,7 +104,8 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
           <CardBody>
             <div className="d-flex teamcard-flex-cloumn">
               <div className="w-75">
-                <div className="d-flex justify-content-between">
+                <div className="d-flex flex-column gap-1 justify-content-between">
+                  {data?.creation_status === 'DRAFT' && <div className='draft-badge'>Draft</div>}
                   <CardTitle className="card-title mb-1 d-flex justify-space-between">
                     <span>{data?.name}</span>
                   </CardTitle>
@@ -107,7 +113,9 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
                 </span> */}
                 </div>
-                <CardText className="team-desc mb-1">{data?.introduction && parse(data?.introduction)} </CardText>
+                <CardText className="team-desc mb-1">
+                  {data?.introduction ? parse(data?.introduction) : <i> ( Add Description )</i>}{' '}
+                </CardText>
 
                 <div className="avatar-wrap mb-1">
                   {users.length > 3 ? (
@@ -136,7 +144,7 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
                         <img src={hat} alt="client-badge" width={20} height={20} />
                       </Badge>
                     )}
-                    {!isSearchPage && (
+                    {data?.creation_status !== 'DRAFT' && !isSearchPage && (
                       <div className="mb-25">
                         {isFavorite ? (
                           <Heart
@@ -182,14 +190,45 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
                   </div>
                 </IconWrapper>
                 <div className="">
+                {data?.skills &&
                   <BadgeGroup
                     title="Skills"
                     data={data?.skills}
                     color="light-blue"
                     id={`tooltip-skills-${data?._id}`}
+                    isDraft={data?.creation_status === 'DRAFT'}
                   />
-                  <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} />
+                }
+                  {data?.tools &&
+                    <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} isDraft={data?.creation_status === 'DRAFT'} />
+                  }
                 </div>
+                {data?.creation_status === 'DRAFT' && (
+                  <div className="d-flex justify-content-end mt-3">
+                    <Button
+                      color="flat-danger"
+                      className="me-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      Delete Draft
+                    </Button>
+                    <div className="relist-btn-wrapper">
+                      <Button
+                        color="primary"
+                        outline
+                        className="relist-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/create-team/profile-details/${data?._id}`);
+                        }}
+                      >
+                        Edit Draft
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </CardBody>

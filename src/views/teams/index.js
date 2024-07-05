@@ -47,7 +47,7 @@ const MyTeams = () => {
     useMatch('/my-teams/talents') ||
     useMatch('/my-teams/join_requests') ||
     useMatch('/my-teams/favourites') ||
-    useMatch('/my-teams/recommendation');
+    useMatch('/my-teams/recommendation')    ;
 
   useEffect(() => {
     // eslint-disable-next-line no-undef

@@ -650,7 +650,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               >
                 {selectMyTeamData?.map((item) => {
                   const CardComponent = getCardComp();
-
                   return (
                     <CardComponent
                       primaryFilter={primaryFilter}

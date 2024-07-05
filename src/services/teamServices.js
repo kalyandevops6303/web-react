@@ -6,6 +6,8 @@ const getTeamService = () => DataService.get(`${API.team.getTeam}?page=1&page_si
 
 const getTeamById = (id) => DataService.get(`${API.team.teamById}/${id}`);
 
+const getTeamInfoById = (id) => DataService.get(`${API.team.teamInfoById}?team_id=${id}`);
+
 const createTeamService = (data) => DataService.post(API.team.create, data);
 
 const updateTeamService = (data) => DataService.put(API.team.update, data);
@@ -27,6 +29,7 @@ export {
   createTeamService,
   getTeamService,
   getTeamById,
+  getTeamInfoById,
   createDraftTeamService,
   updateDraftTeamService,
   checkDraftTeamService,

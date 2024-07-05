@@ -251,12 +251,13 @@ const API = {
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
+    teamInfoById: `${apiAuthEndpoint}/api/v1/team`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     update: `${apiAuthEndpoint}/api/v1/team/update`,
-    createDraft: `${apiAuthEndpoint}/api/v1/team/update`,
-    checkDraft: `${apiAuthEndpoint}/api/v1/team/check`,
-    deleteDraft: `${apiAuthEndpoint}/api/v1/team/delete`,
-    memberType: `${apiAuthEndpoint}/api/v1/team/draft/save`,
+    createDraft: `${apiAuthEndpoint}/api/v1/team/draft/save`,
+    checkDraft: `${apiAuthEndpoint}/api/v1/team/draft/check`,
+    deleteDraft: `${apiAuthEndpoint}/api/v1/team/draft`,
+    memberType: `${apiAuthEndpoint}/api/v1/team/member_type`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
   dispute: {

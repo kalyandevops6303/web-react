@@ -8,6 +8,7 @@ import {
   updateDraftTeamService,
   getInviteDetails,
   updateTeamService,
+  getTeamInfoById,
 } from '../../services/teamServices';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -24,6 +25,9 @@ import {
   updateTeamFailure,
   updateTeamRequest,
   updateTeamSuccess,
+  getDraftTeamRequest,
+  getDraftTeamSuccess,
+  getDraftTeamError,
 } from '../reducers/team';
 import { getInvitedBySuccess } from '../reducers/projectDetails';
 import { getMyTeamFailure, getMyTeamRequest, getMyTeamSuccess } from '../reducers/dashboard';
@@ -42,6 +46,22 @@ const getTeams =
     } catch (error) {
       errorHandler(error, getTeamError);
       errorHandler(error, getMyTeamFailure);
+    }
+  };
+
+const getDraftTeamById =
+  ({ id, onSuccess, onError, onGetDraftTeamDetails }) =>
+  async (dispatch) => {
+    dispatch(getDraftTeamRequest());
+    try {
+      const res = await getTeamInfoById(id);
+    await  onGetDraftTeamDetails(res.data.data);
+      onSuccess(res.data.data);
+      dispatch(getDraftTeamSuccess(res.data.data));
+    } catch (error) {
+      dispatch(getDraftTeamError());
+      onError();
+      errorHandler(error, getTeamError);
     }
   };
 
@@ -117,7 +137,7 @@ const checkDraftTeam =
   };
 
 const deleteDraftTeam =
-  ({id, onSuccess, onError }) =>
+  ({ id, onSuccess, onError }) =>
   async (dispatch) => {
     try {
       dispatch(deleteDraftTeamRequest());
@@ -174,6 +194,7 @@ export {
   getTeams,
   getWhoInvited,
   updateTeam,
+  getDraftTeamById,
   createDraftTeam,
   updateDraftTeam,
   deleteDraftTeam,
