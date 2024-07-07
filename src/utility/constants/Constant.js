@@ -58,6 +58,17 @@ const bidStatusesOptions = [
   { label: 'Drafts', value: 'DRAFT' },
 ];
 
+const teamStatusesOptions = [
+  {
+    label: 'Saved',
+    value: 'SAVED',
+  },
+  {
+    label: 'Drafts',
+    value: 'DRAFT',
+  }
+];
+
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
@@ -204,6 +215,7 @@ export {
   checkPoints,
   userTypes,
   userOnboarding,
+  teamStatusesOptions,
   userProfileEdit,
   sortingOptions,
   statusesOptions,

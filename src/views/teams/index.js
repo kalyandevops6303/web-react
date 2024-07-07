@@ -4,6 +4,7 @@ import { Route, Routes, useMatch, useNavigate, useLocation } from 'react-router-
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
+import { Button } from 'reactstrap';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
@@ -89,8 +90,21 @@ const MyTeams = () => {
 
   return (
     <TeamsContainer>
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between w-100">
         <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
+        <div className="relist-btn-wrapper">
+                      <Button
+                        color="primary"
+                        outline
+                        className="relist-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/my-teams/teams', { state: { isDraftTeams: true } });
+                        }}
+                      >
+                      View Drafts
+                      </Button>
+                    </div>
       </div>
       <PrimaryFilter
         selected={primaryFilter}

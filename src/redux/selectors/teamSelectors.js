@@ -14,3 +14,5 @@ export const saveDraftTeamLoading = createSelector(teamSelector, (team) => team.
 export const updateTeamLoading = createSelector(teamSelector, (team) => team.updateTeamLoading);
 
 export const getDraftTeamLoading = createSelector(teamSelector, (team) => team.getDraftTeamLoading);
+
+export const deleteDraftTeamLoading = createSelector(teamSelector, (team) => team.deleteDraftTeamLoading);

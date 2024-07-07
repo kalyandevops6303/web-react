@@ -7,6 +7,7 @@ const initialState = {
   updateTeamLoading: false,
   draftTeam: {},
   saveDraftTeamLoading: false,
+  deleteDraftTeamLoading: false,
   getDraftTeamLoading: false,
 };
 
@@ -67,15 +68,15 @@ const teamSlice = createSlice({
 
     deleteDraftTeamRequest: (state) => ({
       ...state,
-      saveDraftTeamLoading: true,
+      deleteDraftTeamLoading: true,
     }),
     deleteDraftTeamSuccess: (state) => ({
       ...state,
-      saveDraftTeamLoading: false,
+      deleteDraftTeamLoading: false,
     }),
     deleteDraftTeamError: (state) => ({
       ...state,
-      saveDraftTeamLoading: false,
+      deleteDraftTeamLoading: false,
     }),
 
     checkDraftTeamRequest: (state) => ({

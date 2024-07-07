@@ -1,6 +1,6 @@
 import { Card, CardBody, CardText, CardTitle, Badge, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
@@ -21,10 +21,16 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { getReadType } from '../../utility/Utils';
 import { selectUserType } from '../../redux/selectors/authSelectors';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
+import { deleteDraftTeamLoading } from '../../redux/selectors/teamSelectors';
+import DeleteDraftTeamModal from '../modals/DeleteTeamDraftModal';
+import { deleteDraftTeam } from '../../redux/actions/teamsActions';
 
 const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
   const dispatch = useDispatch();
+  const [deleteDraftModal, setDeleteDraftModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDeleteDraftLoading = useSelector(deleteDraftTeamLoading);
   const userType = useSelector(selectUserType);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
@@ -88,16 +94,50 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
 
   const handleCard = () => {
     updateCard();
-    if(data?.creation_status === 'DRAFT'){
+    if (data?.creation_status === 'DRAFT') {
       navigate(`/create-team/profile-details/${data?._id}`);
-    }
-    else{
+    } else {
       navigate(`/profile/team/${data?._id}`);
+    }
+  };
+
+  const toggleDeleteDraftModal = () => setDeleteDraftModal(!deleteDraftModal);
+
+  const onDeleteDraftTeamSuccess = () => {
+    toggleDeleteDraftModal();
+    if (location?.state?.isDraftTeams) {
+      navigate('/my-teams/teams', {
+        state: {
+          isDraftTeams: true,
+        },
+      });
+    } else {
+      navigate('/my-teams/teams');
     }
   };
 
   return (
     <TeamCardWrap>
+      {deleteDraftModal && (
+        <DeleteDraftTeamModal
+          modal={deleteDraftModal}
+          toggleModal={toggleDeleteDraftModal}
+          teamName={data?.name}
+          onDeleteDraft={() => {
+            dispatch(
+              deleteDraftTeam({
+                id: data?._id,
+                onSuccess: () => {
+                  onDeleteDraftTeamSuccess();
+                },
+                onError: () => {},
+              }),
+            );
+          }}
+          teamType={data?.team_type}
+          isDeleteDraftLoading={isDeleteDraftLoading}
+        />
+      )}
       <Card onClick={handleCard} className="cursor-pointer">
         {data?.is_read === false && <NewTag />}
         <Elevate>
@@ -105,7 +145,7 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
             <div className="d-flex teamcard-flex-cloumn">
               <div className="w-75">
                 <div className="d-flex flex-column gap-1 justify-content-between">
-                  {data?.creation_status === 'DRAFT' && <div className='draft-badge'>Draft</div>}
+                  {data?.creation_status === 'DRAFT' && <div className="draft-badge">Draft</div>}
                   <CardTitle className="card-title mb-1 d-flex justify-space-between">
                     <span>{data?.name}</span>
                   </CardTitle>
@@ -190,18 +230,24 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
                   </div>
                 </IconWrapper>
                 <div className="">
-                {data?.skills &&
-                  <BadgeGroup
-                    title="Skills"
-                    data={data?.skills}
-                    color="light-blue"
-                    id={`tooltip-skills-${data?._id}`}
-                    isDraft={data?.creation_status === 'DRAFT'}
-                  />
-                }
-                  {data?.tools &&
-                    <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} isDraft={data?.creation_status === 'DRAFT'} />
-                  }
+                  {data?.skills && (
+                    <BadgeGroup
+                      title="Skills"
+                      data={data?.skills}
+                      color="light-blue"
+                      id={`tooltip-skills-${data?._id}`}
+                      isDraft={data?.creation_status === 'DRAFT'}
+                    />
+                  )}
+                  {data?.tools && (
+                    <BadgeGroup
+                      title="Tools"
+                      data={data?.tools}
+                      color="light-blue"
+                      id={`tooltip-tools-${data?._id}`}
+                      isDraft={data?.creation_status === 'DRAFT'}
+                    />
+                  )}
                 </div>
                 {data?.creation_status === 'DRAFT' && (
                   <div className="d-flex justify-content-end mt-3">
@@ -210,6 +256,7 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
                       className="me-1"
                       onClick={(e) => {
                         e.stopPropagation();
+                        setDeleteDraftModal(true);
                       }}
                     >
                       Delete Draft

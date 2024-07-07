@@ -23,7 +23,11 @@ const Tabs = ({ tabNames, active }) => {
           modal={draftSavedModal}
           toggleModal={toggleDraftSavedModal}
           path="My Teams > Teams > Drafts Or View Draft"
-          onPrimaryBtnClick={() => navigate('/my-teams/teams')}
+          onPrimaryBtnClick={() => navigate('/my-teams/teams',{
+            state: {
+              isDraftTeams: true,
+            },
+          })}
         />
       )}
       <TabsContainer className="pt-2">
