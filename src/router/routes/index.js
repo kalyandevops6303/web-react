@@ -181,6 +181,10 @@ const Routes = [
     element: <CreateTeam />,
   },
   {
+    path: '/create-team/:section-details/:id',
+    element: <CreateTeam />,
+  },
+  {
     path: `/${userProfileEdit.team}/:section-details`,
     element: <CreateTeam />,
   },
@@ -190,6 +194,10 @@ const Routes = [
   },
   {
     path: `/${userProfileEdit.club}/:section-details`,
+    element: <CreateClub />,
+  },
+  {
+    path: '/create-club/:section-details/:id',
     element: <CreateClub />,
   },
   {

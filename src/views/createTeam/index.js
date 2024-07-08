@@ -16,17 +16,16 @@ const CreateTeam = () => {
   };
 
   const [active, setActive] = useState(tabNames.Profile);
-
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (
-      location.pathname === '/create-team/profile-details' ||
-      location.pathname === `/${userProfileEdit.team}/profile-details`
-    )
+    const profileDetailsPath = /^\/create-team\/profile-details(\/.*)?$/;
+    if (profileDetailsPath.test(location.pathname)) {
       setActive(tabNames.Profile);
+    }
+    if (location.pathname === `/${userProfileEdit.team}/profile-details`) setActive(tabNames.Profile);
   }, [location]);
 
   const onBackClick = () => {
@@ -36,7 +35,7 @@ const CreateTeam = () => {
 
   useEffect(() => {
     dispatch(setActiveNavTab(''));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className={`${location.pathname.includes('create-team') ? 'px-5 py-2' : 'px-3 pt-1'} `}>

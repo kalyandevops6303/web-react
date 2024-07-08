@@ -63,12 +63,7 @@ const CreateBid = () => {
           toggleModal={toggleDraftSavedModal}
           path="Marketplace > My Bids > Drafts Or View Draft"
           onPrimaryBtnClick={() =>
-            navigate('/marketplace/my_bids', {
-              state: {
-                isDraftBids: true,
-                draftBidProjectId: params.projectId,
-              },
-            })
+            navigate('/marketplace/my_bids',)
           }
         />
       )}
