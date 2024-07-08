@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   {SERVICE_NAME}:
-    image: user_management
+    image: trumio_frontend
     build:
       context: .
       dockerfile: ./Dockerfile
