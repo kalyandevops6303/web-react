@@ -19,14 +19,14 @@ pipeline {
                     switch (params.ENVIRONMENT) {
                         case 'dev':
                             composeFile = 'docker-compose.dev.yml'
-                            credentialId = 'user_service_env'
+                            credentialId = 'fe_env_file'
 			    serviceName = 'dev'
 			    servicePort = '5000'
 			    targetPort = '5000'
                             break
                         case 'qa':
                             composeFile = 'docker-compose.qa.yml'
-                            credentialId = 'qa_env'
+                            credentialId = 'fe_env_qa'
 			    serviceName = 'qa'
 			    servicePort = '3012'
 			    targetPort  = '3012'
