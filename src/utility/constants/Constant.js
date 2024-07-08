@@ -199,6 +199,7 @@ const CUSTOMER_SUPPORT_TYPES = {
   missing_institute: 'missing_institute',
   missing_skill: 'missing_skill',
   missing_tool: 'missing_tool',
+  missing_assessment: 'missing_assessment',
   missing_talent: 'missing_talent',
   education: 'education',
   tools_and_skills: 'tools_and_skills',

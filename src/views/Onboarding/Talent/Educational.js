@@ -56,6 +56,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import { formData, resumeParsed, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments } from '../../../redux/reducers/formData';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+import { prepopulateAssessments } from '../../../redux/actions/AssessmentActions';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -159,6 +160,10 @@ const Educational = () => {
   useEffect(() => {
     dispatch(setResumeParsed(parseResume));
   }, [parseResume]);
+
+  useEffect(() => {
+    dispatch((prepopulateAssessments()))
+  }, [savedFormData])
 
   useEffect(() => {
     if (parseResume === false) {

@@ -786,6 +786,8 @@ export const getMissingName = (type, values) => {
       return values.tool;
     case CUSTOMER_SUPPORT_TYPES.missing_institute:
       return values.institute;
+    case CUSTOMER_SUPPORT_TYPES.missing_assessment: 
+      return values.assessment;
     default:
       return '';
   }
