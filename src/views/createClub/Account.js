@@ -3,7 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AsyncPaginate, reduceGroupedOptions } from 'react-select-async-paginate';
 import * as yup from 'yup';
 // import Select from 'react-select';
-import { useLocation, useNavigate } from 'react-router-dom';
+import Proptypes from 'prop-types';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
@@ -59,8 +60,10 @@ import CustomerSupportModal from '../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../modals/CustomerSupportFeedbackModal';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import NoteComponent from '../Onboarding/NoteComponent';
+import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
+import { createDraftTeam, updateDraftTeam } from '../../redux/actions/teamsActions';
 
-const Account = () => {
+const Account = ({setDraftSavedModal}) => {
   const ProfileSchema = yup.object().shape({
     clubName: yup.string().max(30, 'Name must be 30 characters or less').required('Name is required'),
     clubTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
@@ -116,6 +119,7 @@ const Account = () => {
     setValue,
     reset,
     trigger,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -136,7 +140,7 @@ const Account = () => {
   const [clubDetails, setClubDetails] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const fileInputRef = useRef(null);
-
+  const saveAsDraftClicked = useRef(null);
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
@@ -145,6 +149,7 @@ const Account = () => {
   const savedFormDocuments = useSelector(formDocuments);
   const savedFormImage = useSelector(formImage);
   const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
+  const params = useParams();
 
   const dispatch = useDispatch();
 
@@ -238,6 +243,69 @@ const Account = () => {
       dispatch(setFormImage(imageUrlRes));
     }
   }, [imageUrlRes]);
+
+  const onDraftSubmit = () => {
+    if (saveAsDraftClicked.current) {
+      const skillsSelected = watch('skills')?.map((skill) => skill.value);
+      const servicesSelected = watch('services').map((skill) => skill.value);
+      const toolsSelected = watch('tools')?.map((skill) => skill.value);
+      const availabilityData = {
+        ...(watch('preferredWorkingTimeZone') && { timezone: watch('preferredWorkingTimeZone')?.value?._id || null }),
+        ...(watch('availabilityDays')?.includes('weekdays') && {
+          weekdays_avl: {
+            start_time: watch('weekdayStartTime')?.value || '',
+            end_time: watch('weekdayEndTime')?.value || '',
+            days: watch('weekdays') || [],
+          },
+        }),
+        ...(watch('availabilityDays')?.includes('weekends') && {
+          weekends_avl: {
+            start_time: watch('weekendStartTime')?.value || '',
+            end_time: watch('weekendEndTime')?.value || '',
+            days: watch('weekends') || [],
+          },
+        }),
+      };
+      const availability = Object.keys(availabilityData).length ? availabilityData : null;
+      const reqData = {
+        team_type: 'CLUB',
+        name: watch('clubName'),
+        team_logo: imageUrlRes?.file_key || null,
+        tagline: watch('clubTagline') || null,
+        introduction: watch('teamIntroduction') || null,
+        interests: null,
+        services: servicesSelected || null,
+        languages_supported: null,
+        tools: toolsSelected || null,
+        skills: skillsSelected || null,
+        availability: availability || null,
+        creation_status: 'DRAFT',
+      };
+
+      if (params?.id) {
+        dispatch(
+          updateDraftTeam({
+            id: params?.id,
+            data: reqData,
+            onSuccess: () => setDraftSavedModal(true),
+            onError: () => {
+              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+            },
+          }),
+        );
+      } else {
+        dispatch(
+          createDraftTeam({
+            data: reqData,
+            onSuccess: () => setDraftSavedModal(true),
+            onError: () => {
+              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+            },
+          }),
+        );
+      }
+    }
+  };
 
   const onSubmit = (data) => {
     let otherIntitution;
@@ -452,6 +520,7 @@ const Account = () => {
   const allToolsList = useSelector(toolsList);
   const allSkillsList = useSelector(skillsList);
   const projectAreasList = useSelector(projectAreas);
+  const saveDraftIsClubLoading = useSelector(saveDraftClubLoading);
 
   useEffect(() => {
     if (clubCreateData) {
@@ -946,6 +1015,18 @@ const Account = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
+        <Button
+              onClick={() => {
+                saveAsDraftClicked.current = true;
+                handleSubmit(onDraftSubmit());
+              }}
+              color="primary"
+              className="me-2"
+              outline
+              disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading || !watch('clubName')}
+            >
+              {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+            </Button>
           <div>
             <Button
               color="primary"
@@ -978,6 +1059,14 @@ const Account = () => {
       )}
     </ProfileFormContainer>
   );
+};
+
+Account.propTypes = {
+  setDraftSavedModal: Proptypes.func,
+};
+
+Account.defaultProps = {
+  setDraftSavedModal: () => {},
 };
 
 export default Account;

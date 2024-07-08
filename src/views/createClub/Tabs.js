@@ -17,6 +17,13 @@ const Tabs = ({ tabNames, active }) => {
       navigate(path);
     }
   };
+  const isAccountDetailsRoute =
+  /^\/create-club\/account-details(\/[^/]+)?$/.test(location.pathname) ||
+  location.pathname === `/${userProfileEdit.team}/account-details`;
+
+  const isProfileDetailsRoute =
+  /^\/create-club\/profile-details(\/[^/]+)?$/.test(location.pathname) ||
+  location.pathname === `/${userProfileEdit.team}/profile-details`;
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
@@ -30,8 +37,7 @@ const Tabs = ({ tabNames, active }) => {
         >
           <NavLink
             active={
-              location.pathname === '/create-club/account-details' ||
-              location.pathname === `/${userProfileEdit.club}/account-details`
+              isAccountDetailsRoute || location.pathname === `/${userProfileEdit.club}/account-details`
             }
           >
             <Home className="font-medium-3 me-50" />
@@ -47,8 +53,7 @@ const Tabs = ({ tabNames, active }) => {
         >
           <NavLink
             active={
-              location.pathname === '/create-club/profile-details' ||
-              location.pathname === `/${userProfileEdit.club}/profile-details`
+              isProfileDetailsRoute || location.pathname === `/${userProfileEdit.club}/profile-details`
             }
           >
             <User className="font-medium-3 me-50" />
@@ -58,9 +63,9 @@ const Tabs = ({ tabNames, active }) => {
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
-          {(location.pathname === '/create-club/account-details' ||
+          {(isAccountDetailsRoute ||
             location.pathname === `/${userProfileEdit.club}/account-details`) && <Account />}
-          {(location.pathname === '/create-club/profile-details' ||
+          {(isProfileDetailsRoute ||
             location.pathname === `/${userProfileEdit.club}/profile-details`) && <Profile />}
         </TabPane>
       </TabContent>

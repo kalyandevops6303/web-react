@@ -22,7 +22,19 @@ const CreateClub = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const accountDetailsPath = /^\/create-club\/account-details(\/.*)?$/;
+    if (accountDetailsPath.test(location.pathname)) {
+      setActive(tabNames.Account);
+    }
     if (location.pathname === '/create-club/account-details') setActive(tabNames.Account);
+  }, [location]);
+
+  useEffect(() => {
+    const accountDetailsPath = /^\/create-club\/profile-details(\/.*)?$/;
+    if (accountDetailsPath.test(location.pathname)) {
+      setActive(tabNames.Account);
+    }
+    if (location.pathname === '/create-club/profile-details') setActive(tabNames.Profile);
   }, [location]);
 
   const onBackClick = () => {

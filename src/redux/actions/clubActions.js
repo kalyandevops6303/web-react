@@ -6,7 +6,7 @@ import {
   registerClubEmailService,
   changeMemberTypeService,
 } from '../../services/clubServices';
-import { createTeamService, updateTeamService } from '../../services/teamServices';
+import { checkDraftTeamService, createDraftTeamService, createTeamService, deleteDraftTeamService, updateDraftTeamService, updateTeamService } from '../../services/teamServices';
 import {
   getClubCreated,
   registerClubEmailFailure,
@@ -20,6 +20,15 @@ import {
   getListReq,
   storeSuccessData,
   clearClubCreateData,
+  saveDraftClubRequest,
+  saveDraftClubSuccess,
+  saveDraftClubError,
+  checkDraftClubRequest,
+  checkDraftClubError,
+  checkDraftClubSuccess,
+  deleteDraftClubRequest,
+  deleteDraftClubSuccess,
+  deleteDraftClubError,
 } from '../reducers/clubs';
 import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
 import { scanAndProcessFiles } from '../../utility/Utils';
@@ -105,6 +114,69 @@ const createClub =
     }
   };
 
+  const createDraftClub =
+  ({ data, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(saveDraftClubRequest());
+      const res = await createDraftTeamService(data);
+      await dispatch(saveDraftClubSuccess(res));
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(saveDraftClubError());
+      errorHandler(error);
+    }
+  };
+
+const updateDraftClub =
+  ({ id, data, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(saveDraftClubRequest());
+      const res = await updateDraftTeamService(id, data);
+      await dispatch(saveDraftClubSuccess(res));
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(saveDraftClubError());
+      errorHandler(error);
+    }
+  };
+
+const checkDraftClub =
+  ({ setSavedDraftsAvailableModal, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(checkDraftClubRequest());
+      const res = await checkDraftTeamService();
+      if (res?.data?.data?.has_draft_team) {
+        setSavedDraftsAvailableModal(true);
+      }
+      dispatch(checkDraftClubSuccess());
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(checkDraftClubError());
+      errorHandler(error);
+    }
+  };
+
+const deleteDraftClub =
+  ({ id, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(deleteDraftClubRequest());
+      const res = await deleteDraftTeamService(id);
+      await dispatch(deleteDraftClubSuccess(res));
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(deleteDraftClubError());
+      errorHandler(error);
+    }
+  };
+
 const changeMemberType = (data, onSuccess) => async () => {
   try {
     await changeMemberTypeService(data);
@@ -147,4 +219,8 @@ export {
   getClubCardInfo,
   changeMemberType,
   updateClub,
+  createDraftClub,
+  updateDraftClub,
+  checkDraftClub,
+  deleteDraftClub,
 };

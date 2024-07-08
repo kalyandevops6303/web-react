@@ -14,6 +14,11 @@ const initialState = {
   clubCreated: {},
   clubs: [],
   error: null,
+  updateClubLoading: false,
+  draftClub: {},
+  saveDraftClubLoading: false,
+  deleteDraftClubLoading: false,
+  getDraftClubLoading: false,
 };
 
 const clubSlice = createSlice({
@@ -93,6 +98,60 @@ const clubSlice = createSlice({
       listData: [],
       users: [],
     }),
+    getDraftClubRequest: (state) => ({
+      ...state,
+      getDraftClubLoading: true,
+    }),
+    getDraftClubSuccess: (state,action) => ({
+      ...state,
+      getDraftClubLoading: false,
+      draftClub: action.payload,
+    }),
+    getDraftClubError: (state) => ({
+      ...state,
+      getDraftClubLoading: false,
+    }),
+
+    saveDraftClubRequest: (state) => ({
+      ...state,
+      saveDraftClubLoading: true,
+    }),
+    saveDraftTeamError: (state) => ({
+      ...state,
+      saveDraftClubLoading: false,
+    }),
+    saveDraftClubSuccess: (state, action) => ({
+      ...state,
+      saveDraftClubLoading: false,
+      draftClub: action.payload,
+    }),
+
+    deleteDraftClubRequest: (state) => ({
+      ...state,
+      deleteDraftClubLoading: true,
+    }),
+    deleteDraftClubSuccess: (state) => ({
+      ...state,
+      deleteDraftClubLoading: false,
+    }),
+    deleteDraftClubError: (state) => ({
+      ...state,
+      deleteDraftClubLoading: false,
+    }),
+
+    checkDraftClubRequest: (state) => ({
+      ...state,
+      saveDraftClubLoading: true,
+    }),
+    checkDraftClubError: (state) => ({
+      ...state,
+      saveDraftClubLoading: false,
+    }),
+    checkDraftTeClubSuccess: (state, action) => ({
+      ...state,
+      saveDraftClubLoading: false,
+      draftClub: action.payload,
+    }),
   },
 });
 
@@ -111,6 +170,18 @@ export const {
   clearTeamCardData,
   getListReq,
   getListErr,
+  getDraftClubRequest,
+  getDraftClubSuccess,
+  getDraftClubError,
+  saveDraftClubRequest,
+  saveDraftClubError,
+  saveDraftClubSuccess,
+  checkDraftClubError,
+  checkDraftClubRequest,
+  checkDraftClubSuccess,
+  deleteDraftClubRequest,
+  deleteDraftClubSuccess,
+  deleteDraftClubError,
 } = clubSlice.actions;
 
 export default clubSlice.reducer;
