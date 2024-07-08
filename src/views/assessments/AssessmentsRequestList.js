@@ -7,6 +7,7 @@ import AssessmentsRequestListItem from "./AssessmentRequestListItem"
 import CustomerSupportModal from "../modals/CustomerSupportModal"
 import { getCustomerSupportList } from "../../redux/actions/supportActions"
 import { useDispatch } from "react-redux"
+import { isEmpty } from "lodash"
 
 const AssessmentsRequestList = ({ notUserAssessments, supportRequests }) => {
 
@@ -17,7 +18,7 @@ const AssessmentsRequestList = ({ notUserAssessments, supportRequests }) => {
     const [showTable, setShowTable] = useState(false)
 
     useEffect(() => {
-        const totalEntries = (notUserAssessments ? notUserAssessments.length : 0) + (supportRequests ? supportRequests.length : 0)
+        const totalEntries = (!isEmpty(notUserAssessments) ? notUserAssessments.length : 0) + (!isEmpty(supportRequests) ? supportRequests.length : 0)
         totalEntries > 0 ? setShowTable(true) : setShowTable(false)
     }, [notUserAssessments, supportRequests])
 
