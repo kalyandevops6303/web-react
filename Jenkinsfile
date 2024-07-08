@@ -28,7 +28,7 @@ pipeline {
                             composeFile = 'docker-compose.qa.yml'
                             credentialId = 'qa_env'
 			    serviceName = 'qa'
-			    servicePort = '3000'
+			    servicePort = '3012'
 			    targetPort  = '3001'
                             break
                         default:
