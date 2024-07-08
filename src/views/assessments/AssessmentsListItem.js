@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAllAssessments, selectAssessmentLink, selectAssessmentLinkLoading, selectDeleteAssessmentLoading, selectUserAssessmentsCount } from "../../redux/selectors/assessmentSelectors";
 import Select from "react-select";
 import { selectThemeColors } from "../../utility/Utils";
-import { deleteAssessment, getAssessmentLink, toggleAssessmentHidden } from "../../redux/actions/AssessmentActions";
+import { deleteAssessment, getAssessmentLink, toggleAssessmentHidden } from "../../redux/actions/assessmentActions";
 import DeleteGif from "../../assets/images/gifs/delete.gif";
 import { Loader } from "react-feather";
 import { ChevronDown, ChevronUp } from "react-feather";

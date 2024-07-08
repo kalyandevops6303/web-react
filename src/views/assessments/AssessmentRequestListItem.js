@@ -7,7 +7,7 @@ import { SuccessInfoBanner } from "./style";
 import CustomerSupportModal from "../modals/CustomerSupportModal";
 import { useDispatch, useSelector } from "react-redux";
 import { selectDeleteNonAssessmentLoading } from "../../redux/selectors/assessmentSelectors";
-import { deleteNonAssessment } from "../../redux/actions/AssessmentActions";
+import { deleteNonAssessment } from "../../redux/actions/assessmentActions";
 import { deleteRequest, getCustomerSupportList } from "../../redux/actions/supportActions";
 import { selectDeleteRequestLoading } from "../../redux/selectors/supportSelectors";
 import { SUPPORT_EMAIL } from "../../utility/constants/Constant";

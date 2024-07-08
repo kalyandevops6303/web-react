@@ -9,7 +9,7 @@ import AssessmentsList from './AssessmentsList';
 import { PaymentInfoBanner } from '../project-details/style';
 import { Info } from 'react-feather';
 import theme from '../../configs/themeVariables';
-import { getAllAssessments, getUserAssessments } from '../../redux/actions/AssessmentActions';
+import { getAllAssessments, getUserAssessments } from '../../redux/actions/assessmentActions';
 import { selectAllAssessments, selectNotUserAssessments, selectUserAssessments, selectUserAssessmentsCount, selectUserAssessmentsLoading } from '../../redux/selectors/assessmentSelectors';
 import { ArrowLeft } from 'react-feather';
 import AssessmentsRequestList from './AssessmentsRequestList';

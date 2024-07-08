@@ -3,7 +3,7 @@ import { Card, CardBody, CardText, CardTitle } from "reactstrap";
 import { AssessedSkillGradeBar, AssessmentResultText, RecentProjectsWrap } from "./style";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserAssessments } from "../../../redux/selectors/assessmentSelectors";
-import { getUserAssessments } from "../../../redux/actions/AssessmentActions";
+import { getUserAssessments } from "../../../redux/actions/assessmentActions";
 
 const AssessedSkills = () => {
 
