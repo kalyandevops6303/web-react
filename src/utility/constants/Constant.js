@@ -210,6 +210,11 @@ const CITIZEN_TYPES = {
   OTHER: 'OTHER',
 };
 
+const TEAM_STATUS = {
+  SAVED: 'SAVED',
+  DRAFT: 'DRAFT',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -245,4 +250,5 @@ export {
   projectStatusEnum,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
+  TEAM_STATUS,
 };

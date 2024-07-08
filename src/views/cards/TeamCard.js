@@ -14,7 +14,7 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { IconWrapper, TeamCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
-import { userTypes } from '../../utility/constants/Constant';
+import { TEAM_STATUS, userTypes } from '../../utility/constants/Constant';
 import { Elevate } from '../styled';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
@@ -94,7 +94,7 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
 
   const handleCard = () => {
     updateCard();
-    if (data?.creation_status === 'DRAFT') {
+    if (data?.creation_status === TEAM_STATUS?.DRAFT) {
       navigate(`/create-team/profile-details/${data?._id}`);
     } else {
       navigate(`/profile/team/${data?._id}`);

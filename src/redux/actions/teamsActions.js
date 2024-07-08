@@ -55,7 +55,7 @@ const getDraftTeamById =
     dispatch(getDraftTeamRequest());
     try {
       const res = await getTeamInfoById(id);
-    await  onGetDraftTeamDetails(res.data.data);
+      await onGetDraftTeamDetails(res.data.data);
       onSuccess(res.data.data);
       dispatch(getDraftTeamSuccess(res.data.data));
     } catch (error) {
@@ -122,12 +122,12 @@ const updateDraftTeam =
   };
 
 const checkDraftTeam =
-  ({ setSavedDraftsAvailableModal , onSuccess, onError }) =>
+  ({ setSavedDraftsAvailableModal, onSuccess, onError }) =>
   async (dispatch) => {
     try {
       dispatch(saveDraftTeamRequest());
       const res = await checkDraftTeamService();
-      if(res.data.data.has_draft_team){
+      if (res?.data?.data?.has_draft_team) {
         setSavedDraftsAvailableModal(true);
       }
       onSuccess();

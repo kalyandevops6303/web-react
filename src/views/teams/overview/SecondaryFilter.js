@@ -565,7 +565,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   className={classNames('react-select')}
                   onChange={(value) => onChangeFilter('teamStatus', value)}
                   value={
-                    secondFilterState.teamStatus.length > 0
+                    !isEmpty(secondFilterState?.teamStatus)
                       ? { value: secondFilterState.teamStatus[0].value, label: secondFilterState.teamStatus[0].label }
                       : null
                   }

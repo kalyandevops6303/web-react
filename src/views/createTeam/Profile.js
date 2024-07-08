@@ -320,7 +320,8 @@ const Profile = ({ setDraftSavedModal }) => {
 
   const onDraftSubmit = () => {
     if (saveAsDraftClicked.current) {
-      const languages_supported = watch('languagesSupported')?.map((language) => language.value) || [];
+      const languages_supported =  languagesOptions?.map((language) => language.value);
+      // const languages_supported = watch('languagesSupported')?.map((language) => language.value) 
       const skillsSelected = watch('skills')?.map((skill) => skill.value);
       const servicesSelected = watch('services').map((skill) => skill.value);
       const toolsSelected = watch('tools')?.map((skill) => skill.value);
@@ -734,19 +735,6 @@ const Profile = ({ setDraftSavedModal }) => {
       dispatch(getDraftTeamById({ id: params?.id, onSuccess: () => {}, onError: () => {}, onGetDraftTeamDetails }));
     }
   }, [params, params?.id, dispatch]);
-
-  // useEffect(() => {
-  //   const loadingServices = async () => {
-  //     if (params?.id) {
-  //       await loadServicesOptions();
-  //       await loadLanguagesOptions();
-  //       await loadToolsOptions();
-  //       await loadSkillsOptions();
-  //       await loadTimezonesOptions();
-  //     }
-  //   };
-  //   loadingServices();
-  // }, [params, params?.id]);
 
   const availabilityDays = watch('availabilityDays');
 
@@ -1361,9 +1349,9 @@ const Profile = ({ setDraftSavedModal }) => {
               </Row>
               <Row>
                 {availabilityDays &&
-                  (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
+                  (availabilityDays?.includes('weekdays') || availabilityDays?.includes('weekends')) && (
                     <>
-                      {availabilityDays.includes('weekdays') && (
+                      {availabilityDays?.includes('weekdays') && (
                         <div>
                           <Row className="mb-1 mt-2">
                             <div className="d-flex align-items-center">
@@ -1486,7 +1474,7 @@ const Profile = ({ setDraftSavedModal }) => {
                                       type="checkbox"
                                       {...field}
                                       id="TUESDAY"
-                                      checked={field.value.includes('TUESDAY')}
+                                      checked={field?.value.includes('TUESDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'TUESDAY';
@@ -1507,7 +1495,7 @@ const Profile = ({ setDraftSavedModal }) => {
                                       type="checkbox"
                                       {...field}
                                       id="WEDNESDAY"
-                                      checked={field.value.includes('WEDNESDAY')}
+                                      checked={field?.value.includes('WEDNESDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'WEDNESDAY';
@@ -1515,7 +1503,7 @@ const Profile = ({ setDraftSavedModal }) => {
                                         if (isChecked) {
                                           field.onChange([...field.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field.onChange(field?.value.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -1536,7 +1524,7 @@ const Profile = ({ setDraftSavedModal }) => {
                                         if (isChecked) {
                                           field.onChange([...field.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field.onChange(field?.value.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -1557,7 +1545,7 @@ const Profile = ({ setDraftSavedModal }) => {
                                         if (isChecked) {
                                           field.onChange([...field.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field.onChange(field?.value.filter((v) => v !== value));
                                         }
                                       }}
                                     />
