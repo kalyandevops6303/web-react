@@ -285,6 +285,7 @@ const ProjectWrapper = styled.div`
 
   .empty-card {
     margin-bottom: 1rem;
+    padding-bottom:1rem;
     margin-top: 1rem;
     width: fit-content;
   }
@@ -293,6 +294,7 @@ const ProjectWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items:center;
     .get-started {
       margin-top: -2rem;
       font-size: 18px;
@@ -303,10 +305,18 @@ const ProjectWrapper = styled.div`
     }
     .empty-gif {
       height: 15rem;
+        @media (max-width: 768px) {
+        height: 13rem;
+        }
     }
   }
   .empty-h-25 {
-    height: 25.5rem;
+    height: 18.5rem;
+    width: 18.5rem;
+     @media (max-width: 768px) {
+    height: 16.5rem;
+    width: 16.5rem;
+  }
   }
 
   .card-app-design {
@@ -343,7 +353,7 @@ const ProjectWrapper = styled.div`
 
   .active-project-name {
     color: #5e5873;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     height: 40px;
   }
@@ -368,7 +378,7 @@ const ProjectWrapper = styled.div`
 
   .active-project-simple-heading {
     color: #b9b9c3;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
     margin-bottom: -10px;
@@ -376,7 +386,7 @@ const ProjectWrapper = styled.div`
 
   .active-project-milestone-name {
     color: #5e5873;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
   }
 

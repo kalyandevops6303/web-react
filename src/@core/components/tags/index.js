@@ -6,6 +6,7 @@ const Tag = ({ count, hasNew, noMargin }) => {
   if (!count) {
     return '';
   }
+  
   return (
     <Tagwrapper noMargin={!!noMargin}>
       <span className="tag">{count < 10 ? `0${count}` : count}</span>

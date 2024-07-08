@@ -60,6 +60,7 @@ import {
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
+  isEmpty,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -180,7 +181,7 @@ const Personal = () => {
       workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
       workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
       role: savedFormData?.role || null,
-      zipCode: savedFormData?.zipCode || null,
+      zipCode: savedFormData?.zipCode || '',
       country: savedFormData?.country || null,
       state: savedFormData?.state || null,
       city: savedFormData?.city || null,
@@ -243,8 +244,10 @@ const Personal = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) setFiles([])
-  }, [files])
+    if (!files || (files?.length > 0 && !files[0].file?.name)) {
+      setFiles([]);
+    }
+  }, [files]);
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
@@ -300,6 +303,17 @@ const Personal = () => {
           })),
           { shouldValidate: true },
         );
+      } else {
+        setValue(
+          'readLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
+          { shouldValidate: true },
+        );
       }
       if (res?.languages_speak && res?.languages_speak.length > 0) {
         setValue(
@@ -310,6 +324,17 @@ const Personal = () => {
           })),
           { shouldValidate: true },
         );
+      } else {
+        setValue(
+          'speakLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
+          { shouldValidate: true },
+        );
       }
       if (res?.languages_write && res?.languages_write.length > 0) {
         setValue(
@@ -318,6 +343,17 @@ const Personal = () => {
             label: language?.name,
             value: language?._id,
           })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'writeLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
           { shouldValidate: true },
         );
       }
@@ -515,6 +551,7 @@ const Personal = () => {
   }, [citiesData]);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/account-details`);
     } else {
@@ -559,6 +596,7 @@ const Personal = () => {
       state,
       city,
     } = data;
+    // console.log(data)
 
     const years = parseInt(workExperienceYear, 10) || 0;
     const months = parseInt(workExperienceMonth, 10) || 0;
@@ -590,8 +628,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: files[0]?.file?.name,
-          file_key: files[0]?.uploadData?.file_key,
+          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
         },
       };
     } else {
@@ -604,8 +642,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: files[0]?.file?.name,
-          file_key: files[0]?.uploadData?.file_key,
+          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
         },
       };
     }
@@ -614,18 +652,9 @@ const Personal = () => {
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
-          languages_speak: speakLanguages?.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
-          languages_write: writeLanguages.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
-          languages_read: readLanguages.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
+          languages_speak,
+          languages_write,
+          languages_read,
           tagline,
           professional_introduction: professionalIntroduction,
         },
@@ -802,6 +831,63 @@ const Personal = () => {
             { shouldValidate: true },
           );
         }
+      }
+      if (res?.talent_info?.languages_speak.length > 0) {
+        setValue(
+          'speakLanguages',
+          res?.talent_info?.languages_speak?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'speakLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.talent_info?.languages_read.length > 0) {
+        setValue(
+          'readLanguages',
+          res?.talent_info?.languages_read?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'readLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.talent_info?.languages_write.length > 0) {
+        setValue(
+          'writeLanguages',
+          res?.talent_info?.languages_write?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'writeLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
       }
     }
   };

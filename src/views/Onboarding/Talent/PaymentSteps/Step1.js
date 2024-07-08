@@ -56,6 +56,7 @@ const Step1 = ({ setStep , step }) => {
   }, []);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {

@@ -1,4 +1,4 @@
-import { Box, CreditCard, FileText, Star, Users } from 'react-feather';
+import { Box, CreditCard, FileText, Star, Users, HardDrive } from 'react-feather';
 
 const stepName = {
   team: 'Team',
@@ -8,6 +8,7 @@ const stepName = {
   rating: 'Rating',
   project: 'Project',
   milestoneDetails: 'Milestone-Details',
+  infrastructure: 'Infrastructure',
 };
 
 const steps = [
@@ -40,6 +41,14 @@ const steps = [
     isDisabled: true,
   },
 ];
+
+const infrastructureStep = {
+  title: stepName.infrastructure,
+  subtitle: 'Manage resources',
+  icon: <HardDrive size={18} />,
+  isDisabled: true,
+}
+
 const InviteView = [
   {
     title: stepName.project,
@@ -200,4 +209,4 @@ const Members = [
     role: 'Developer',
   },
 ];
-export { steps, stepName, currentProfile, dummyText, Members, InviteView };
+export { steps, stepName, infrastructureStep, currentProfile, dummyText, Members, InviteView };

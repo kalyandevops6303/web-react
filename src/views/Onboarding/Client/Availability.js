@@ -48,17 +48,17 @@ const Availability = () => {
     }),
     availabilityDays: yup.array(),
     weekdays: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
     weekends: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -70,7 +70,7 @@ const Availability = () => {
           .required('Start time is required'),
     }),
     weekdayEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -82,7 +82,7 @@ const Availability = () => {
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -94,7 +94,7 @@ const Availability = () => {
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -131,10 +131,10 @@ const Availability = () => {
       availabilityDays: savedFormData?.availabilityDays || [],
       weekdays: savedFormData?.weekdays || [],
       weekends: savedFormData?.weekends || [],
-      weekdayStartTime: savedFormData?.weekdayStartTime || null,
-      weekdayEndTime: savedFormData?.weekdayEndTime || null,
-      weekendStartTime: savedFormData?.weekendStartTime || null,
-      weekendEndTime: savedFormData?.weekendEndTime || null,
+      weekdayStartTime: savedFormData?.weekdayStartTime || {},
+      weekdayEndTime: savedFormData?.weekdayEndTime || {},
+      weekendStartTime: savedFormData?.weekendStartTime || {},
+      weekendEndTime: savedFormData?.weekendEndTime || {},
       currencyPreference: savedFormData?.currencyPreference || null,
     },
   });
@@ -169,7 +169,8 @@ const Availability = () => {
   const currenciesIsLoading = useSelector(currenciesLoading);
 
   const onBackClick = () => {
-    if (location.pathname.includes('profile-edit')) {
+    dispatch(clearAllFormData());
+    if (location.pathname?.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/educational-details`);
     } else {
       navigate(`/${userOnboarding.client}/educational-details`);
@@ -178,7 +179,7 @@ const Availability = () => {
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
+    if (location.pathname?.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/social-details`);
     } else {
       navigate(`/${userOnboarding.client}/social-details`);
@@ -187,7 +188,7 @@ const Availability = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
+    if (location.pathname?.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/social-details`);
     } else {
       navigate(`/${userOnboarding.client}/social-details`);
@@ -301,7 +302,7 @@ const Availability = () => {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
           setValue(
             'weekdays',
-            savedFormData?.weekdays.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
+            savedFormData?.weekdays?.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
             { shouldValidate: true },
           );
           setValue(
@@ -321,7 +322,7 @@ const Availability = () => {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
           setValue(
             'weekends',
-            savedFormData?.weekends.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days,
+            savedFormData?.weekends?.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days,
             { shouldValidate: true },
           );
           setValue(
@@ -339,7 +340,7 @@ const Availability = () => {
         }
         setValue(
           'availabilityDays',
-          savedFormData?.availabilityDays.length > 0 ? savedFormData?.availabilityDays : clientAvailabilityDays,
+          savedFormData?.availabilityDays?.length > 0 ? savedFormData?.availabilityDays : clientAvailabilityDays,
           { shouldValidate: true },
         );
       }
@@ -454,7 +455,7 @@ const Availability = () => {
                           type="checkbox"
                           {...field}
                           id="weekends"
-                          checked={field.value.includes('weekends')}
+                          checked={field?.value?.includes('weekends')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekends';
@@ -477,9 +478,9 @@ const Availability = () => {
               </Row>
               <Row>
                 {availabilityDays &&
-                  (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
+                  (availabilityDays?.includes('weekdays') || availabilityDays?.includes('weekends')) && (
                     <>
-                      {availabilityDays.includes('weekdays') && (
+                      {availabilityDays?.includes('weekdays') && (
                         <div>
                           <Row className="mb-1 mt-2">
                             <div className="d-flex align-items-center">
@@ -581,7 +582,7 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="MONDAY"
-                                      checked={field.value.includes('MONDAY')}
+                                      checked={field.value?.includes('MONDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'MONDAY';
@@ -602,7 +603,7 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="TUESDAY"
-                                      checked={field.value.includes('TUESDAY')}
+                                      checked={field.value?.includes('TUESDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'TUESDAY';
@@ -623,7 +624,7 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="WEDNESDAY"
-                                      checked={field.value.includes('WEDNESDAY')}
+                                      checked={field.value?.includes('WEDNESDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'WEDNESDAY';
@@ -644,7 +645,7 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="THURSDAY"
-                                      checked={field.value.includes('THURSDAY')}
+                                      checked={field.value?.includes('THURSDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'THURSDAY';
@@ -665,7 +666,7 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="FRIDAY"
-                                      checked={field.value.includes('FRIDAY')}
+                                      checked={field.value?.includes('FRIDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'FRIDAY';
@@ -689,7 +690,7 @@ const Availability = () => {
                         </div>
                       )}
 
-                      {availabilityDays.includes('weekends') && (
+                      {availabilityDays?.includes('weekends') && (
                         <div>
                           <Row className="mb-1 mt-2">
                             <div className="d-flex align-items-center">
@@ -791,7 +792,7 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="SATURDAY"
-                                      checked={field.value.includes('SATURDAY')}
+                                      checked={field.value?.includes('SATURDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'SATURDAY';
@@ -812,7 +813,7 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="SUNDAY"
-                                      checked={field.value.includes('SUNDAY')}
+                                      checked={field.value?.includes('SUNDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'SUNDAY';

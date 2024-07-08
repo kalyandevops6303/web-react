@@ -30,7 +30,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '14.x'
-
+      - name: Set environment variable
+        run: echo "VITE_ENV_MODE=uat" >> $GITHUB_ENV
+        
       - name: Install Dependencies and Build
         run: |
           npm install

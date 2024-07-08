@@ -27,7 +27,7 @@ import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
-import { userTypes } from '../../utility/constants/Constant';
+import { projectStatusEnum, userTypes } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
@@ -402,16 +402,18 @@ const ProjectModal = ({
                   Re-list
                 </Button>
               )}
-              <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
-                {checkBidLoadingIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <>
-                    <span className="me-50">View Project</span>
-                    <ChevronRight size={14} />
-                  </>
-                )}
-              </Button>
+              {data?.status !== projectStatusEnum.CLOSED && (
+                <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
+                  {checkBidLoadingIsLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <>
+                      <span className="me-50">View Project</span>
+                      <ChevronRight size={14} />
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           ) : (
             <div>
@@ -422,7 +424,7 @@ const ProjectModal = ({
                     Report
                   </Button>
 
-                  {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') &&
+                  {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
                       ? showCreateBidButton
                       : true) && (

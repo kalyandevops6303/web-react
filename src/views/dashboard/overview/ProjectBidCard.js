@@ -86,7 +86,7 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
               <div className="bottom-detail d-flex mt-1 align-items-center">
                 <div className="design-planning-wrapper mb-0 w-50">
                   <div className="design-planning mb-0">
-                    <CardText className="mb-25 expired-listing-text">Expired Date</CardText>
+                    <CardText className="mb-25">Expired Date</CardText>
                     <h6 className="mb-0 expired-listing-text">{`${
                       DateTime.fromMillis(data?.exipiry_date).toFormat('MMM dd, yy') || '-'
                     }`}</h6>

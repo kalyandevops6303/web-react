@@ -116,8 +116,8 @@ const Personal = () => {
       country: savedFormData?.country || null,
       state: savedFormData?.state || null,
       city: savedFormData?.city || null,
-      selectedImage: savedFormData?.selectedImage || '',
-      selectedImagePreview: savedFormData?.selectedImagePreview || '',
+      selectedImage: savedFormData?.selectedImage || null,
+      selectedImagePreview: savedFormData?.selectedImagePreview || null,
       imageUrlRes: savedFormData?.imageUrlRes || null,
     },
   });
@@ -161,6 +161,7 @@ const Personal = () => {
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const userDetailsData = useSelector(userDetails);
+  const uploadButtonText = selectedImage && selectedImagePreview ? 'Edit Company Logo' : 'Upload Company Logo';
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -287,6 +288,7 @@ const Personal = () => {
   }, [citiesData]);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/account-details`);
     } else {
@@ -550,7 +552,7 @@ const Personal = () => {
                     disabled={isImageUploading}
                     onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
-                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Company Logo'}
+                    {isImageUploading ? <Spinner size="sm" /> : uploadButtonText}
                   </Button>
                   {selectedImage && selectedImagePreview && (
                     <RemoveUploadedPicture
