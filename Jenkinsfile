@@ -21,14 +21,14 @@ pipeline {
                             composeFile = 'docker-compose.dev.yml'
                             credentialId = 'user_service_env'
 			    serviceName = 'dev'
-			    servicePort = '4000'
+			    servicePort = '5000'
 			    targetPort = '4000'
                             break
                         case 'qa':
                             composeFile = 'docker-compose.qa.yml'
                             credentialId = 'qa_env'
 			    serviceName = 'qa'
-			    servicePort = '3001'
+			    servicePort = '3000'
 			    targetPort  = '3001'
                             break
                         default:
