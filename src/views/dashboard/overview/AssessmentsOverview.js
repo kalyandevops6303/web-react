@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { AssessmentResultIndicator, AssessmentResultText } from './style';
 import assessmentsDashboard from '../../../assets/images/assessments_dashboard.png';
 import { useEffect, useState } from 'react';
-import { getUserAssessments } from '../../../redux/actions/AssessmentActions';
+import { getUserAssessments } from '../../../redux/actions/assessmentActions';
 import { selectUserAssessments, selectUserAssessmentsCount } from '../../../redux/selectors/assessmentSelectors';
 import { ChevronRight, ChevronDown, ChevronUp } from 'react-feather';
 import { currentAssessmentLimit } from "../../../utility/constants/AssessmentConstants.js";

@@ -4,7 +4,7 @@ import Select from "react-select";
 import { selectThemeColors } from '../../utility/Utils';
 import AssessmentsListItem from './AssessmentsListItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAssessment } from '../../redux/actions/AssessmentActions';
+import { addAssessment } from '../../redux/actions/assessmentActions';
 import { selectAddAssessmentLoading } from '../../redux/selectors/assessmentSelectors';
 import { Info } from 'react-feather';
 import { Note, TableWrapper } from './style';
