@@ -1,5 +1,5 @@
 import errorHandler from '../../utility/errorHandler';
-import { userAssessmentsService, allAssessmentsService, deleteAssessmentService, toggleAssessmentHiddenService, addAssessmentService, assessmentLinkService, editAssessmentService, deleteNonAssessmentService, prepopulateService } from '../../services/assessmentServices';
+import { userAssessmentsService, allAssessmentsService, deleteAssessmentService, toggleAssessmentHiddenService, addAssessmentService, assessmentLinkService, deleteNonAssessmentService, prepopulateService } from '../../services/assessmentServices';
 import {
     userAssessmentsRequest,
     userAssessmentsFailure,
@@ -19,9 +19,6 @@ import {
     assessmentLinkRequest,
     assessmentLinkFailure,
     assessmentLinkSuccess,
-    editAssessmentRequest,
-    editAssessmentFailure,
-    editAssessmentSuccess,
     deleteNonAssessmentsFailure,
     deleteNonAssessmentsRequest,
     deleteNonAssessmentsSuccess,
@@ -45,44 +42,46 @@ const getAllAssessments = () => async (dispatch) => {
     dispatch(allAssessmentsRequest());
     try {
         const res = await allAssessmentsService();
+        const { data: { data: { skills, roles, tools } } } = res;
         dispatch(allAssessmentsSuccess([
-            ...res.data.data.skills
-                .filter(item => item.assessment.assessment_id)
-                .map(item => ({
-                    assessment_id: item.assessment.assessment_id,
-                    assessment_name: item.assessment.assessment_name,
+            ...skills
+                .filter(({ assessment }) => assessment?.assessment_id)
+                .map(({ assessment, _id, name }) => ({
+                    assessment_id: assessment.assessment_id,
+                    assessment_name: assessment.assessment_name,
                     str_type: "SKILLS",
-                    _id: item._id,
-                    str_name: item.name
+                    _id,
+                    str_name: name
                 })),
-            ...res.data.data.roles
-                .filter(item => item.assessment.assessment_id)
-                .map(item => ({
-                    assessment_id: item.assessment.assessment_id,
-                    assessment_name: item.assessment.assessment_name,
+            ...roles
+                .filter(({ assessment }) => assessment?.assessment_id)
+                .map(({ assessment, _id, name }) => ({
+                    assessment_id: assessment.assessment_id,
+                    assessment_name: assessment.assessment_name,
                     str_type: "ROLES",
-                    _id: item._id,
-                    str_name: item.name
+                    _id,
+                    str_name: name
                 })),
-            ...res.data.data.tools
-                .filter(item => item.assessment.assessment_id)
-                .map(item => ({
-                    assessment_id: item.assessment.assessment_id,
-                    assessment_name: item.assessment.assessment_name,
+            ...tools
+                .filter(({ assessment }) => assessment?.assessment_id)
+                .map(({ assessment, _id, name }) => ({
+                    assessment_id: assessment.assessment_id,
+                    assessment_name: assessment.assessment_name,
                     str_type: "TOOLS",
-                    _id: item._id,
-                    str_name: item.name
+                    _id,
+                    str_name: name
                 }))
         ]));
+
     } catch (error) {
         errorHandler(error, allAssessmentsFailure);
     }
 }
 
-const deleteAssessment = ({ assessment_id, str_type, _id }) => async (dispatch) => {
+const deleteAssessment = ({ assessmentId, strType, id }) => async (dispatch) => {
     dispatch(deleteAssessmentsRequest());
     try {
-        await deleteAssessmentService({ assessment_id, str_type, _id });
+        await deleteAssessmentService({ assessmentId, strType, id });
         dispatch(deleteAssessmentsSuccess());
         dispatch(getUserAssessments());
         dispatch(getAllAssessments());
@@ -91,20 +90,20 @@ const deleteAssessment = ({ assessment_id, str_type, _id }) => async (dispatch) 
     }
 }
 
-const toggleAssessmentHidden = ({ assessment_id }) => async (dispatch) => {
+const toggleAssessmentHidden = ({ assessmentId }) => async (dispatch) => {
     dispatch(toggleAssessmentHiddenRequest());
     try {
-        await toggleAssessmentHiddenService({ assessment_id });
+        await toggleAssessmentHiddenService({ assessmentId });
         dispatch(toggleAssessmentHiddenSuccess());
     } catch (error) {
         errorHandler(error, toggleAssessmentHiddenFailure);
     }
 }
 
-const addAssessment = ({ assessment_name, assessment_id, str_type, _id }) => async (dispatch) => {
+const addAssessment = ({ assessmentName, assessmentId, strType, id }) => async (dispatch) => {
     dispatch(addAssessmentRequest());
     try {
-        await addAssessmentService({ assessment_name, assessment_id, str_type, _id });
+        await addAssessmentService({ assessmentName, assessmentId, strType, id });
         dispatch(addAssessmentSuccess());
         dispatch(getUserAssessments());
         dispatch(getAllAssessments());
@@ -113,32 +112,20 @@ const addAssessment = ({ assessment_name, assessment_id, str_type, _id }) => asy
     }
 }
 
-const getAssessmentLink = ({ assessment_name, assessment_id }) => async (dispatch) => {
+const getAssessmentLink = ({ assessmentName, assessmentId }) => async (dispatch) => {
     dispatch(assessmentLinkRequest());
     try {
-        const res = await assessmentLinkService({ assessment_name, assessment_id });
+        const res = await assessmentLinkService({ assessmentName, assessmentId });
         dispatch(assessmentLinkSuccess(res.data.data.invite_link));
     } catch (error) {
         errorHandler(error, assessmentLinkFailure);
     }
 }
 
-const editAssessment = ({ curr_assessment_name, prev_assessment_id, curr_assessment_id, prev_str_type, curr_str_type, prev_id, curr_id }) => async (dispatch) => {
-    dispatch(editAssessmentRequest());
-    try {
-        await editAssessmentService({ curr_assessment_name, prev_assessment_id, curr_assessment_id, prev_str_type, curr_str_type, prev_id, curr_id });
-        dispatch(editAssessmentSuccess());
-        dispatch(getUserAssessments());
-        dispatch(getAllAssessments());
-    } catch (error) {
-        errorHandler(error, editAssessmentFailure);
-    }
-}
-
-const deleteNonAssessment = ({ str_type, _id }) => async (dispatch) => {
+const deleteNonAssessment = ({ strType, id }) => async (dispatch) => {
     dispatch(deleteNonAssessmentsRequest());
     try {
-        await deleteNonAssessmentService({ str_type, _id });
+        await deleteNonAssessmentService({ strType, id });
         dispatch(deleteNonAssessmentsSuccess());
         dispatch(getUserAssessments());
         dispatch(getAllAssessments());
@@ -180,7 +167,6 @@ export {
     toggleAssessmentHidden,
     addAssessment,
     getAssessmentLink,
-    editAssessment,
     deleteNonAssessment,
     prepopulateAssessments
 }

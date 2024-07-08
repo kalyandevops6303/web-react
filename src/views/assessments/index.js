@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import { Card } from 'reactstrap';
 import { CardBody } from 'reactstrap';
-import { NavigationText, AssessmentsNavigation, ArrowWrapper, NoteWrapper, Note } from './style';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavigationText, AssessmentsNavigation, ArrowWrapper, NoteWrapper } from './style';
+import { useNavigate } from 'react-router-dom';
 import AssessmentsList from './AssessmentsList';
 import { PaymentInfoBanner } from '../project-details/style';
 import { Info } from 'react-feather';
 import theme from '../../configs/themeVariables';
-import { getAllAssessments, getUserAssessments, prepopulateAssessments } from '../../redux/actions/AssessmentActions';
+import { getAllAssessments, getUserAssessments } from '../../redux/actions/AssessmentActions';
 import { selectAllAssessments, selectNotUserAssessments, selectUserAssessments, selectUserAssessmentsCount, selectUserAssessmentsLoading } from '../../redux/selectors/assessmentSelectors';
 import { ArrowLeft } from 'react-feather';
 import AssessmentsRequestList from './AssessmentsRequestList';
@@ -32,7 +32,6 @@ const Assessments = () => {
     const userAssessmentsCount = useSelector(selectUserAssessmentsCount)
 
     useEffect(() => {
-        dispatch(prepopulateAssessments());
         dispatch(getUserAssessments());
         dispatch(getAllAssessments());
         dispatch(getCustomerSupportList({
@@ -43,10 +42,6 @@ const Assessments = () => {
             }
         }));
     }, [])
-
-    useEffect(() => {
-        console.log(dropdownList)
-    }, [dropdownList])
 
     return (
         <div>
@@ -59,25 +54,16 @@ const Assessments = () => {
 
             {<Card>
                 <CardBody>
-                    {/* ON HOLD */}
-                    {/* <RecommendedAssessments data={recommendedAssessmentsData} /> */}
                     <PaymentInfoBanner className="mb-2 d-flex px-1 py-2 align-items-center">
                         <Info size={18} color={theme.activeNavPillText} className="me-50 info-banner-icon" />
                         <p className="font-medium-1 m-0 info d-flex align-items-center justify-content-between w-100">
-                            <div><span className="fw-bolder font-medium-1">Note:</span> You allowed up to {currentAssessmentLimit} assessments. These assessment scores will increase your discoverability to clients.</div>
+                            <div><span className="fw-bolder font-medium-1">Note:</span> You are allowed up to {currentAssessmentLimit} assessments. These assessment scores will increase your discoverability to clients.</div>
                             <NoteWrapper>
                                 <div>{currentAssessmentLimit - userAssessmentsCount} Assessments Left</div>
                             </NoteWrapper>
                         </p>
                     </PaymentInfoBanner>
                     <AssessmentsList setOpen={location.state} data={assessmentsListData} dropdownOptions={dropdownList.filter(item => !assessmentsListData?.some(assessment => assessment.assessment_id === item.assessment_id))} />
-
-                    <Note>
-                    <Info size={18} className="me-50 info-banner-icon" />
-                        <b>Note: </b> &nbsp; You can edit your skills in your profile.
-                        <Link to="/talent-profile-edit/educational-details"> &nbsp; <b>Edit Skills</b></Link>
-                    </Note>
-
                     <AssessmentsRequestList notUserAssessments={notUserAssessments} supportRequests={supportRequests} />
                 </CardBody>
             </Card>}

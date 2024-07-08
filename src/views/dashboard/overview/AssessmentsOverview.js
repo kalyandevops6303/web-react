@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import { getUserAssessments } from '../../../redux/actions/AssessmentActions';
 import { selectUserAssessments, selectUserAssessmentsCount } from '../../../redux/selectors/assessmentSelectors';
 import { ChevronRight, ChevronDown, ChevronUp } from 'react-feather';
-import { currentAssessmentLimit } from "../../../utility/constants/AssessmentConstants.js"
-
+import { currentAssessmentLimit } from "../../../utility/constants/AssessmentConstants.js";
+import { isEmpty } from "lodash";
 
 const AssessmentsListItem = ({ assessment }) => {
   return (
@@ -81,14 +81,14 @@ const AssessmentsOverview = () => {
           >
             {userAssessments?.length > 0 ?
               <>
-                <span>{getAssessmentsLeftCount()} Assessments Left</span>
+                <span>{getAssessmentsLeftCount()} / {currentAssessmentLimit} Assessments Left</span>
               </>
               :
               <span>Get your Skills assessed & increase your chance of getting hired!</span>
             }
           </CardText>
         </CardHeader>
-        {!userAssessments || userAssessments?.length == 0 ? <CardBody>
+        {isEmpty(userAssessments) ? <CardBody>
           <Link to="/assessments">
             <Button color="transparent" className="text-primary border-primary">
               Take Assessment
@@ -120,7 +120,7 @@ const AssessmentsOverview = () => {
         }
       </div>
 
-      {!userAssessments || userAssessments?.length == 0 &&
+      {isEmpty(userAssessments) &&
         <div>
           <img src={assessmentsDashboard}></img>
         </div>

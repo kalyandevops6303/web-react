@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux"
 
 const AssessmentsRequestList = ({ notUserAssessments, supportRequests }) => {
 
-    const tableHeadings = ["SKILLS", "NOTE", "ACTIONS"]
+    const tableHeadings = ["SKILLS", "NOTE"]
 
     const dispatch = useDispatch();
     const [customerSupportModal, setCustomerSupportModal] = useState(false)

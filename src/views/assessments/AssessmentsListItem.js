@@ -6,10 +6,10 @@ import 'react-circular-progressbar/dist/styles.css';
 import Tag from "../../@core/components/tags";
 import { Edit, Eye, EyeOff, Trash2 } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllAssessments, selectAssessmentLink, selectAssessmentLinkLoading, selectDeleteAssessmentLoading, selectEditAssessmentLoading, selectUserAssessmentsCount } from "../../redux/selectors/assessmentSelectors";
+import { selectAllAssessments, selectAssessmentLink, selectAssessmentLinkLoading, selectDeleteAssessmentLoading, selectUserAssessmentsCount } from "../../redux/selectors/assessmentSelectors";
 import Select from "react-select";
 import { selectThemeColors } from "../../utility/Utils";
-import { deleteAssessment, editAssessment, getAssessmentLink, toggleAssessmentHidden } from "../../redux/actions/AssessmentActions";
+import { deleteAssessment, getAssessmentLink, toggleAssessmentHidden } from "../../redux/actions/AssessmentActions";
 import DeleteGif from "../../assets/images/gifs/delete.gif";
 import { Loader } from "react-feather";
 import { ChevronDown, ChevronUp } from "react-feather";
@@ -20,15 +20,13 @@ const AssessmentsListItem = ({ open, assessment }) => {
     const dropdownOptions = useSelector(selectAllAssessments)
     const assessmentLink = useSelector(selectAssessmentLink)
     const assessmentLinkLoading = useSelector(selectAssessmentLinkLoading)
-    const editAssessmentLoading = useSelector(selectEditAssessmentLoading)
     const deleteAssessmentLoading = useSelector(selectDeleteAssessmentLoading)
     const userAssessmentsCount = useSelector(selectUserAssessmentsCount)
     const dispatch = useDispatch()
 
     const [showSections, setShowSections] = useState(open)
     const [hidden, setHidden] = useState(assessment.hidden)
-    const [edit, setEdit] = useState(false)
-    const [showDeleteModal, setshowDeleteModal] = useState(false)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showAssessmentModal, setShowAssessmentModal] = useState(false)
 
     const getColorByPercentage = (percentage) => {
@@ -40,9 +38,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
 
     const retakeAvailable = (assessment) => {
         const retakeDate = new Date(Number(assessment.retake_date));
-
         const currentDate = new Date();
-
         return (retakeDate <= currentDate);
     }
 
@@ -61,55 +57,31 @@ const AssessmentsListItem = ({ open, assessment }) => {
     }
 
     const handleHidden = () => {
-        dispatch(toggleAssessmentHidden({ assessment_id: assessment.assessment_id }))
+        dispatch(toggleAssessmentHidden({ assessmentId: assessment.assessment_id }))
         setHidden(!hidden)
     }
 
-    const handleEdit = (value) => {
-        const prev_str_type = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0].str_type
-        const curr_str_type = dropdownOptions.filter((item) => item.assessment_id == value.value.assessment_id)[0].str_type
-        const prev_id = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]._id
-        const curr_id = dropdownOptions.filter((item) => item.assessment_id == value.value.assessment_id)[0]._id
-        setEdit(false)
-        dispatch(editAssessment({ curr_assessment_name: value.label, prev_assessment_id: assessment.assessment_id, curr_assessment_id: value.value.assessment_id, prev_str_type, curr_str_type, prev_id, curr_id }))
-    }
-
     const handleDelete = () => {
-        setshowDeleteModal(true)
+        setShowDeleteModal(true)
     }
 
     const handleDeleteConfirmed = () => {
-        const str_type = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0].str_type
-        const _id = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]._id
-        dispatch(deleteAssessment({ assessment_id: assessment.assessment_id, str_type, _id }))
-        // deleteAssessmentLoading && setshowDeleteModal(false)
+        const strType = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0].str_type
+        const id = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]._id
+        dispatch(deleteAssessment({ assessmentId: assessment.assessment_id, strType, id }))
     }
 
     const handleTakeAssessmentClicked = (e) => {
         e.preventDefault();
-        setShowAssessmentModal(true)
-        dispatch(getAssessmentLink({ assessment_name: assessment.assessment_name, assessment_id: assessment.assessment_id }));
+        setShowAssessmentModal(true);
+        dispatch(getAssessmentLink({ assessmentName: assessment.assessment_name, assessmentId: assessment.assessment_id }));
     }
 
     return (
         <>
             <tr>
                 <td>
-                    {edit ?
-                        !editAssessmentLoading && <Select
-                            isClearable
-                            options={dropdownOptions?.map((item) => {
-                                return { value: item, label: item.assessment_name }
-                            })}
-                            classNamePrefix="select"
-                            placeholder="Enter skill"
-                            theme={selectThemeColors}
-                            menuPosition='fixed'
-                            onChange={handleEdit}
-                        />
-                        :
-                        <b>{assessment.assessment_name}</b>
-                    }
+                    <b>{assessment.assessment_name}</b>
                 </td>
                 <td>
                     {assessment.completed_date && getDisplayDate(assessment.completed_date)}
@@ -151,7 +123,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
                     </div>
                 </td>
 
-                <td style={{width: "300px"}}>
+                <td style={{ width: "300px" }}>
                     {assessment.completed_date ?
                         <div className="d-flex gap-1 align-items-center justify-content-between">
                             {
@@ -220,69 +192,15 @@ const AssessmentsListItem = ({ open, assessment }) => {
                                 </a>}
 
                             <div className="d-flex gap-1 align-items-center w-25">
-                            <div className="cursor-pointer">
-                                <ActionOffContainer onClick={handleDelete}>
-                                    <Trash2 width="20px" height="20px" color="#EA5455" />
-                                </ActionOffContainer>
-                            </div>
-                            </div>
-                        </div>
-                    }
-                </td>
-
-                {/* <td style={{ width: 180 }}>
-                    <div className="d-flex align-items-center justify-content-between">
-                        {assessment.completed_date ? <div className="cursor-pointer" onClick={handleHidden}>
-                            <>
-                                <div id="eye">
-                                    {hidden ?
-                                        <ActionOffContainer>
-                                            <EyeOff width="20px" height="20px" color="#EA5455" />
-                                        </ActionOffContainer>
-                                        :
-                                        <ActionContainer>
-                                            <Eye width="20px" height="20px" color="#0185E4" />
-                                        </ActionContainer>
-                                    }
-                                </div>
-                                <UncontrolledTooltip target="eye">
-                                    Use this to hide assessment score from your public profile.
-                                </UncontrolledTooltip>
-                            </>
-                        </div>
-
-                            :
-                            <div className="d-flex gap-1">
-                                <div className="cursor-pointer">
-                                    {editAssessmentLoading ?
-                                        <Spinner color="primary" />
-                                        :
-                                        <ActionContainer onClick={() => setEdit(!edit)}>
-                                            <Edit width="20px" height="20px" color="#0185E4" />
-                                        </ActionContainer>}
-                                </div>
                                 <div className="cursor-pointer">
                                     <ActionOffContainer onClick={handleDelete}>
                                         <Trash2 width="20px" height="20px" color="#EA5455" />
                                     </ActionOffContainer>
                                 </div>
                             </div>
-                        }
-
-                        {assessment.sections &&
-                            <div className="cursor-pointer" onClick={() => setShowSections(!showSections)}>
-                                {showSections ?
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z" />
-                                    </svg>
-                                    :
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708" />
-                                    </svg>}
-                            </div>
-                        }
-                    </div>
-                </td> */}
+                        </div>
+                    }
+                </td>
             </tr>
 
 
@@ -310,14 +228,14 @@ const AssessmentsListItem = ({ open, assessment }) => {
             ))}
 
             <Modal isOpen={showDeleteModal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-                <ModalHeader toggle={() => setshowDeleteModal(false)} />
+                <ModalHeader toggle={() => setShowDeleteModal(false)} />
                 <ModalBody>
                     <div className="d-flex justify-content-between pr-1">
                         <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
                         <div className="me-4">
-                            <CardTitle className="modal-heading">Are you sure you want to remove skill/tool?</CardTitle>
+                            <CardTitle className="modal-heading">Remove Assessment</CardTitle>
                             <CardText className="modal-body-text fw-light w-76">
-                                Skill/tool will be removed from your profile.
+                                Are you sure you want to remove this assessment?
                             </CardText>
                             <CardText className="modal-body-text fw-light w-76">
                                 <b>{assessment.assessment_name}</b>
@@ -325,7 +243,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
                         </div>
                     </div>
                     <div className="d-flex gap-1 me-1 justify-content-end">
-                        <Button outline color="primary" onClick={() => setshowDeleteModal(false)}>
+                        <Button outline color="primary" onClick={() => setShowDeleteModal(false)}>
                             Cancel
                         </Button>
                         <Button disabled={deleteAssessmentLoading} color="danger" onClick={handleDeleteConfirmed}>

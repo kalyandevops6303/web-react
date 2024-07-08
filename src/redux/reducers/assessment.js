@@ -14,7 +14,6 @@ const initialState = {
     addAssessmentLoading: false,
     assessmentLink: null,
     assessmentLinkLoading: false,
-    editAssessmentLoading: false,
     prepopulateLoading: false,
     error: null
 }
@@ -131,20 +130,6 @@ const assessmentSlice = createSlice({
             assessmentLinkLoading: false, 
             error: action.payload
         }),
-        editAssessmentRequest: (state) => ({
-            ...state, 
-            editAssessmentLoading: true,
-            error: null 
-        }),
-        editAssessmentSuccess: (state) => ({
-            ...state, 
-            editAssessmentLoading: false 
-        }),
-        editAssessmentFailure: (state, action) => ({
-            ...state, 
-            editAssessmentLoading: false, 
-            error: action.payload 
-        }),
         prepopulateRequest: (state) => ({
             ...state, 
             prepopulateLoading: true, 
@@ -185,9 +170,6 @@ export const {
     assessmentLinkRequest, 
     assessmentLinkSuccess, 
     assessmentLinkFailure,
-    editAssessmentRequest, 
-    editAssessmentSuccess, 
-    editAssessmentFailure,
     prepopulateRequest, 
     prepopulateFailure, 
     prepopulateSuccess

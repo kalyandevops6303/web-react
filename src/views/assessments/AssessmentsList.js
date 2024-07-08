@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {  Modal, ModalBody, ModalHeader, CardText, CardTitle, Spinner, Table, UncontrolledTooltip, Button } from 'reactstrap';
+import { Modal, ModalBody, ModalHeader, CardText, CardTitle, Spinner, Table, UncontrolledTooltip, Button } from 'reactstrap';
 import Select from "react-select";
 import { selectThemeColors } from '../../utility/Utils';
 import AssessmentsListItem from './AssessmentsListItem';
@@ -17,20 +17,13 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
 
     const dispatch = useDispatch()
     const [dropdownValue, setDropdownValue] = useState(null)
-    const [showAssessmentAddedModal, setShowAssessmentAddedModal] = useState(false)
-    const [skillSelected, setSkillSelected] = useState(null)
 
     const addAssessmentLoading = useSelector(selectAddAssessmentLoading)
 
     const handleAddAssessment = (value) => {
         setDropdownValue(null)
-        dispatch(addAssessment({ assessment_name: value.value.str_name, assessment_id: value.value.assessment_id, str_type: value.value.str_type, _id: value.value._id }))
-        setSkillSelected(value.value.str_name)
+        dispatch(addAssessment({ assessmentName: value.value.str_name, assessmentId: value.value.assessment_id, strType: value.value.str_type, id: value.value._id }))
     }
-
-    useEffect(() => {
-        if (addAssessmentLoading) setShowAssessmentAddedModal(true)
-    }, [addAssessmentLoading])
 
     return (
         <>
@@ -79,34 +72,6 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
 
                 </Table>
             </TableWrapper>
-
-
-            <Modal isOpen={showAssessmentAddedModal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-                <ModalHeader toggle={() => setShowAssessmentAddedModal(false)} />
-                <ModalBody>
-                    <div className="d-flex justify-content-between pr-1">
-                        <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
-                        <div className="me-4">
-                            <CardTitle className="modal-heading">New Skill Added!</CardTitle>
-                            <CardText className="modal-body-text fw-light w-76">
-                            By adding a skill assessment your skill set is also updated.
-                            </CardText>
-                            <CardText className="modal-body-text fw-light w-76">
-                                <b>{skillSelected}</b>
-                            </CardText>
-                        </div>
-                    </div>
-                    <div className="d-flex gap-1 me-1 justify-content-end">
-                        <Button outline color="primary" onClick={() => setShowAssessmentAddedModal(false)}>
-                            Close
-                        </Button>
-                        <Button color="primary" onClick={() => setShowAssessmentAddedModal(false)}>
-                            Sounds good
-                        </Button>
-                    </div>
-                </ModalBody>
-            </Modal>
-
         </>
     );
 };
