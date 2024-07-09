@@ -16,6 +16,7 @@ import AssessmentsRequestList from './AssessmentsRequestList';
 import { selectSupportList } from '../../redux/selectors/supportSelectors';
 import { getCustomerSupportList } from '../../redux/actions/supportActions';
 import { currentAssessmentLimit } from '../../utility/constants/AssessmentConstants';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const Assessments = () => {
 
@@ -30,8 +31,12 @@ const Assessments = () => {
     const notUserAssessments = useSelector(selectNotUserAssessments)
     const supportRequests = useSelector(selectSupportList)
     const userAssessmentsCount = useSelector(selectUserAssessmentsCount)
+    const userDetailsData = useSelector(selectUserData)
 
     useEffect(() => {
+
+        if (userDetailsData?.user_type === "CLIENT") navigate("/dashboard")
+
         dispatch(getUserAssessments());
         dispatch(getAllAssessments());
         dispatch(getCustomerSupportList({

@@ -29,6 +29,10 @@ const AssessmentsListItem = ({ open, assessment }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showAssessmentModal, setShowAssessmentModal] = useState(false)
 
+    useEffect(() => {
+        if (!deleteAssessmentLoading) setShowDeleteModal(false)
+    }, [deleteAssessmentLoading])
+
     const getColorByPercentage = (percentage) => {
         if (percentage <= 50) return "#FBC02D"
         else if (percentage <= 69) return "#00BCD4"
@@ -280,7 +284,9 @@ const AssessmentsListItem = ({ open, assessment }) => {
                         {!assessmentLinkLoading && <Button outline color="primary" onClick={() => setShowAssessmentModal(false)}>
                             Not Now
                         </Button>}
-                        <a href={assessmentLinkLoading ? "#" : assessmentLink} target="_blank">
+                        <a href={assessmentLinkLoading ? "#" : assessmentLink}
+                        onClick={() => setShowAssessmentModal(false)}
+                        >
                             <Button disabled={assessmentLinkLoading} color="primary">
                                 {assessmentLinkLoading ?
                                     <div className="d-flex gap-1 align-items-center">
