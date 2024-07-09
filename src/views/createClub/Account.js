@@ -45,7 +45,13 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import { GroupLabelWrapper } from './style';
 import EducationInstitutionModal from './EducationInstitutionModal';
-import { setClubCreateDataAction, updateClub } from '../../redux/actions/clubActions';
+import {
+  createDraftClub,
+  getDraftClubById,
+  setClubCreateDataAction,
+  updateClub,
+  updateDraftClub,
+} from '../../redux/actions/clubActions';
 import { getTeamById } from '../../services/teamServices';
 import { getProjectAreas, getSkills, getTools } from '../../redux/actions/staticActions';
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
@@ -60,10 +66,10 @@ import CustomerSupportModal from '../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../modals/CustomerSupportFeedbackModal';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import NoteComponent from '../Onboarding/NoteComponent';
-import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
-import { createDraftTeam, updateDraftTeam } from '../../redux/actions/teamsActions';
+import { getDraftClubLoading, saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
-const Account = ({setDraftSavedModal}) => {
+const Account = ({ setDraftSavedModal }) => {
   const ProfileSchema = yup.object().shape({
     clubName: yup.string().max(30, 'Name must be 30 characters or less').required('Name is required'),
     clubTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
@@ -112,7 +118,7 @@ const Account = ({setDraftSavedModal}) => {
       .min(1, 'At least one skill is required')
       .required('Skill is required'),
   });
-
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
@@ -124,6 +130,15 @@ const Account = ({setDraftSavedModal}) => {
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ProfileSchema),
+    defaultValues: {
+      clubName: savedFormData?.clubName || '',
+      clubTagline: savedFormData?.clubTagline || '',
+      clubIntroduction: savedFormData?.clubIntroduction || '',
+      interests: savedFormData?.interests || [],
+      tools: savedFormData?.tools || [],
+      skills: savedFormData?.skills || [],
+      educationInstitution: savedFormData?.educationInstitution || { label: '', value: '' },
+    },
   });
 
   const navigate = useNavigate();
@@ -134,6 +149,8 @@ const Account = ({setDraftSavedModal}) => {
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
+  const [draftImagePreview, setDraftImagePreview] = useState(null);
+  const [clubData, setClubData] = useState(null);
   const [imageUrlRes, setImageUrlRes] = useState(null);
   const [educationInstitutionModal, setEducationInstitutionModal] = useState(false);
   const [isImageUploading, setIsImageUploading] = useState(false);
@@ -143,9 +160,9 @@ const Account = ({setDraftSavedModal}) => {
   const saveAsDraftClicked = useRef(null);
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
+  const isGetDraftTeamLoading = useSelector(getDraftClubLoading);
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
   const supportData = useSelector((state) => state.support.supportCount);
-  const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const savedFormImage = useSelector(formImage);
   const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
@@ -247,44 +264,32 @@ const Account = ({setDraftSavedModal}) => {
   const onDraftSubmit = () => {
     if (saveAsDraftClicked.current) {
       const skillsSelected = watch('skills')?.map((skill) => skill.value);
-      const servicesSelected = watch('services').map((skill) => skill.value);
+      const interestsSelected = watch('interests').map((skill) => skill.value);
       const toolsSelected = watch('tools')?.map((skill) => skill.value);
-      const availabilityData = {
-        ...(watch('preferredWorkingTimeZone') && { timezone: watch('preferredWorkingTimeZone')?.value?._id || null }),
-        ...(watch('availabilityDays')?.includes('weekdays') && {
-          weekdays_avl: {
-            start_time: watch('weekdayStartTime')?.value || '',
-            end_time: watch('weekdayEndTime')?.value || '',
-            days: watch('weekdays') || [],
-          },
-        }),
-        ...(watch('availabilityDays')?.includes('weekends') && {
-          weekends_avl: {
-            start_time: watch('weekendStartTime')?.value || '',
-            end_time: watch('weekendEndTime')?.value || '',
-            days: watch('weekends') || [],
-          },
-        }),
-      };
-      const availability = Object.keys(availabilityData).length ? availabilityData : null;
+
       const reqData = {
         team_type: 'CLUB',
         name: watch('clubName'),
         team_logo: imageUrlRes?.file_key || null,
         tagline: watch('clubTagline') || null,
-        introduction: watch('teamIntroduction') || null,
-        interests: null,
-        services: servicesSelected || null,
+        introduction: watch('clubIntroduction') || null,
+        education_institute: watch('educationInstitution')?.value || null,
+        interests: interestsSelected || null,
         languages_supported: null,
         tools: toolsSelected || null,
         skills: skillsSelected || null,
-        availability: availability || null,
+        university_webpage: clubData?.university_webpage || null,
+        linked_in: clubData?.linked_in || null,
+        email: clubData?.email || null,
+        email_code: clubData?.email_code || null,
+        website: clubData?.website || null,
+        // availibility: null,
         creation_status: 'DRAFT',
       };
 
       if (params?.id) {
         dispatch(
-          updateDraftTeam({
+          updateDraftClub({
             id: params?.id,
             data: reqData,
             onSuccess: () => setDraftSavedModal(true),
@@ -295,7 +300,7 @@ const Account = ({setDraftSavedModal}) => {
         );
       } else {
         dispatch(
-          createDraftTeam({
+          createDraftClub({
             data: reqData,
             onSuccess: () => setDraftSavedModal(true),
             onError: () => {
@@ -384,8 +389,15 @@ const Account = ({setDraftSavedModal}) => {
           };
 
           const removeEmpty = removeEmptyKeys(reqData);
+
           dispatch(setClubCreateDataAction(removeEmpty));
-          navigate(`/create-club/profile-details`);
+          if(params?.id){
+            navigate(`/create-club/profile-details/${params?.id}`);
+          }
+          else{
+            navigate(`/create-club/profile-details`);
+          }
+        
         } else {
           reqData = {
             name: clubName,
@@ -401,10 +413,20 @@ const Account = ({setDraftSavedModal}) => {
 
           if (selectedImage && selectedImagePreview) {
             dispatch(setClubCreateDataAction(removeEmpty));
-            navigate(`/create-club/profile-details`);
+            if(params?.id){
+              navigate(`/create-club/profile-details/${params?.id}`);
+            }
+            else{
+              navigate(`/create-club/profile-details`);
+            }
           } else {
             dispatch(setClubCreateDataAction({ ...removeEmpty, team_logo: '' }));
-            navigate(`/create-club/profile-details`);
+            if(params?.id){
+              navigate(`/create-club/profile-details/${params?.id}`);
+            }
+            else{
+              navigate(`/create-club/profile-details`);
+            }
           }
         }
       }
@@ -501,6 +523,75 @@ const Account = ({setDraftSavedModal}) => {
       return { options: [] };
     }
   };
+
+  const onGetDraftClubDetails = async (data) => {
+    if (data) {
+      const educationInstitutionOptionsLoaded = await loadEducationInstitutionOptions('', [], { page: 1 });
+      const toolsOptionsLoaded = await loadToolsOptions();
+      const skillsOptionsLoaded = await loadSkillsOptions();
+      const interestsOptionsLoaded = await loadInterestsOptions();
+      setClubData(data);
+      setValue('clubName', data?.name || '', { shouldValidate: true });
+      setValue('clubTagline', data?.tagline || '', { shouldValidate: true });
+      setValue('clubIntroduction', data?.introduction || '', { shouldValidate: true });
+      let institute;
+      if (data?.education_institute) {
+        const instituteList = educationInstitutionOptionsLoaded?.options?.find((institution) =>
+          institution?.options?.find((option) => option?.value === data?.education_institute),
+        );
+        institute = instituteList?.options?.find((option) => option?.value === data?.education_institute);
+      }
+
+      setValue(
+        'educationInstitution',
+        {
+          label: institute?.label,
+          value: data?.education_institute,
+        } || {},
+        { shouldValidate: true },
+      );
+      setValue(
+        'skills',
+        data?.skills?.map((skill) => ({
+          label: skillsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+          value: skill,
+        })) || [],
+        {
+          shouldValidate: true,
+        },
+      );
+
+      setValue(
+        'tools',
+        data?.tools?.map((tool) => ({
+          label: toolsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
+          value: tool,
+        })) || [],
+        {
+          shouldValidate: true,
+        },
+      );
+
+      setValue(
+        'interests',
+        data?.interests?.map((tool) => ({
+          label: interestsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
+          value: tool,
+        })) || [],
+        {
+          shouldValidate: true,
+        },
+      );
+
+      setDraftImagePreview(data?.team_logo);
+    }
+  };
+
+  useEffect(() => {
+    if (params?.id) {
+      dispatch(getDraftClubById({ id: params?.id, onSuccess: () => {}, onError: () => {}, onGetDraftClubDetails }));
+    }
+  }, [params, params?.id, dispatch]);
 
   const getTeamDetails = async () => {
     const res = await getTeamById(userDetailsData._id);
@@ -757,265 +848,270 @@ const Account = ({setDraftSavedModal}) => {
           selectedOption={selectedOption}
         />
       )}
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">About</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <div className="d-flex align-items-center pb-2 image-container">
-              {selectedImage && selectedImagePreview ? (
-                <img src={selectedImagePreview} alt="profile" className="selected-image" />
-              ) : (
-                <AccountImageContainer>
-                  <UserPlus size={50} />
-                </AccountImageContainer>
-              )}
-              <div className="ml-2 mr-1">
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png"
-                  onChange={handleFileChange}
-                  className="file-input"
-                  ref={fileInputRef}
-                />
-                <Button
-                  id={selectedImage && selectedImagePreview ? 'popFocus' : 'noFocus'}
-                  color="primary"
-                  className="ml-2 mr-1 d-flex align-items-center py-50"
-                  disabled={isImageUploading}
-                  onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
-                >
-                  <Camera className="me-50" />
-                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Club Logo'}
-                </Button>
-                {selectedImage && selectedImagePreview && (
-                  <RemoveUploadedPicture
-                    fileInputRef={fileInputRef}
-                    onRemovePicture={onRemovePictureClick}
-                    offset={[15, 10]}
-                  />
+      {isGetDraftTeamLoading ? (
+        <div className="w-75">
+          <ComponentSpinner className="mt-5" />
+        </div>
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Card>
+            <CardHeader>
+              <h4 className="m-0 mt-1">About</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <div className="d-flex align-items-center pb-2 image-container">
+                {draftImagePreview || (selectedImage && selectedImagePreview) ? (
+                  <img src={draftImagePreview || selectedImagePreview} alt="profile" className="selected-image" />
+                ) : (
+                  <AccountImageContainer>
+                    <UserPlus size={50} />
+                  </AccountImageContainer>
                 )}
-              </div>
-              <Info size={18} color={theme.infoIcon} id="logo-info" />
-              <UncontrolledTooltip placement="right" target="logo-info">
-                <div className="d-flex flex-column align-items-start">
-                  <p className="m-0">Allowed file types:</p>
-                  <p className="m-0">png, jpg, jpeg.</p>
-                  <p className="m-0">Max file size: 5MB</p>
+                <div className="ml-2 mr-1">
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    onChange={handleFileChange}
+                    className="file-input"
+                    ref={fileInputRef}
+                  />
+                  <Button
+                    id={selectedImage && selectedImagePreview ? 'popFocus' : 'noFocus'}
+                    color="primary"
+                    className="ml-2 mr-1 d-flex align-items-center py-50"
+                    disabled={isImageUploading}
+                    onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
+                  >
+                    <Camera className="me-50" />
+                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Club Logo'}
+                  </Button>
+                  {selectedImage && selectedImagePreview && (
+                    <RemoveUploadedPicture
+                      fileInputRef={fileInputRef}
+                      onRemovePicture={onRemovePictureClick}
+                      offset={[15, 10]}
+                    />
+                  )}
                 </div>
-              </UncontrolledTooltip>
-            </div>
+                <Info size={18} color={theme.infoIcon} id="logo-info" />
+                <UncontrolledTooltip placement="right" target="logo-info">
+                  <div className="d-flex flex-column align-items-start">
+                    <p className="m-0">Allowed file types:</p>
+                    <p className="m-0">png, jpg, jpeg.</p>
+                    <p className="m-0">Max file size: 5MB</p>
+                  </div>
+                </UncontrolledTooltip>
+              </div>
 
-            <Row className="mb-1 mt-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="clubName">
-                  Club Name<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="clubName"
-                  name="clubName"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter your club's name"
-                      disabled={location.pathname.includes('profile-edit')}
-                      invalid={errors.clubName && true}
-                      className={`${location.pathname.includes('profile-edit') ? 'disabled-input' : ''}`}
-                    />
-                  )}
-                />
-                {errors.clubName && <FormFeedback>{errors.clubName.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="clubTagline">
-                  Club Tagline<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="clubTagline"
-                  name="clubTagline"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter your club tagline in 60 character"
-                      invalid={errors.clubTagline && true}
-                    />
-                  )}
-                />
-                {errors.clubTagline && <FormFeedback>{errors.clubTagline.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1 mt-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="tools">
-                  Education Institution<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="educationInstitution"
-                  name="educationInstitution"
-                  control={control}
-                  invalid={errors.educationInstitution && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      {...field}
-                      debounceTimeout={1000}
-                      additional={{ page: 1 }}
-                      loadOptions={loadEducationInstitutionOptions}
-                      isDisabled={location.pathname.includes('profile-edit')}
-                      reduceOptions={reduceGroupedOptions}
-                      onChange={(selOption) => handleSelectChange(selOption, field)}
-                      classNamePrefix="select"
-                      placeholder="Enter your institution name"
-                      theme={selectThemeColors}
-                      formatGroupLabel={formatGroupLabel}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.educationInstitution,
-                      })}
-                    />
-                  )}
-                />
-                {errors.educationInstitution && <FormFeedback>{errors.educationInstitution.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6" className="mt-auto mb-50">
-                <CustomerSupportCTA
-                  type={CUSTOMER_SUPPORT_TYPES.education}
-                  handleCustomerSupport={handleCustomerSupport}
-                />
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="12">
-                <Label className="form-label" for="clubIntroduction">
-                  Club Introduction<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="clubIntroduction"
-                  name="clubIntroduction"
-                  control={control}
-                  render={({ field }) => (
-                    <TextEditor
-                      name={field.name}
-                      onChange={field.onChange}
-                      value={field.value}
-                      placeholder="Write your club introduction in 500 characters."
-                    />
-                  )}
-                />
-                {errors.clubIntroduction && <FormFeedback>{errors.clubIntroduction.message}</FormFeedback>}
-              </Col>
-            </Row>
-            {supportData?.tools_and_skills?.pending_requests > 0 && (
-              <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
-            )}
-            {supportData?.tools_and_skills?.approved_requests > 0 && (
-              <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
-            )}
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader className="align-items-end">
-            <h4 className="m-0 mt-1">Area of Interests</h4>
-            <CustomerSupportCTA
-              type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
-              handleCustomerSupport={handleCustomerSupport}
-            />
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="services">
-                  Interests<span className="label-asterisk">*</span> <i>(Top 5)</i>
-                </Label>
-                <Controller
-                  id="interests"
-                  name="interests"
-                  control={control}
-                  invalid={errors.interests && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadInterestsOptions}
-                      classNamePrefix="select"
-                      placeholder="Select up to 5 interests"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.interests,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.interests && <FormFeedback>{errors.interests.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="skills">
-                  Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
-                </Label>
-                <Controller
-                  id="skills"
-                  name="skills"
-                  control={control}
-                  invalid={errors.skills && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadSkillsOptions}
-                      hideSelectedOptions
-                      classNamePrefix="select"
-                      placeholder="Select up to 5 skills"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.skills,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="tools">
-                  Tools
-                </Label>
-                <Controller
-                  id="tools"
-                  name="tools"
-                  control={control}
-                  invalid={errors.tools && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadToolsOptions}
-                      classNamePrefix="select"
-                      placeholder="Select up to 5 tools"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.tools,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
-              </Col>
-            </Row>
+              <Row className="mb-1 mt-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="clubName">
+                    Club Name<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="clubName"
+                    name="clubName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter your club's name"
+                        disabled={location.pathname.includes('profile-edit')}
+                        invalid={errors.clubName && true}
+                        className={`${location.pathname.includes('profile-edit') ? 'disabled-input' : ''}`}
+                      />
+                    )}
+                  />
+                  {errors.clubName && <FormFeedback>{errors.clubName.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="clubTagline">
+                    Club Tagline<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="clubTagline"
+                    name="clubTagline"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter your club tagline in 60 character"
+                        invalid={errors.clubTagline && true}
+                      />
+                    )}
+                  />
+                  {errors.clubTagline && <FormFeedback>{errors.clubTagline.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1 mt-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="tools">
+                    Education Institution<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="educationInstitution"
+                    name="educationInstitution"
+                    control={control}
+                    invalid={errors.educationInstitution && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        {...field}
+                        debounceTimeout={1000}
+                        additional={{ page: 1 }}
+                        loadOptions={loadEducationInstitutionOptions}
+                        isDisabled={location.pathname.includes('profile-edit')}
+                        reduceOptions={reduceGroupedOptions}
+                        onChange={(selOption) => handleSelectChange(selOption, field)}
+                        classNamePrefix="select"
+                        placeholder="Enter your institution name"
+                        theme={selectThemeColors}
+                        formatGroupLabel={formatGroupLabel}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.educationInstitution,
+                        })}
+                      />
+                    )}
+                  />
+                  {errors.educationInstitution && <FormFeedback>{errors.educationInstitution.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6" className="mt-auto mb-50">
+                  <CustomerSupportCTA
+                    type={CUSTOMER_SUPPORT_TYPES.education}
+                    handleCustomerSupport={handleCustomerSupport}
+                  />
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="12">
+                  <Label className="form-label" for="clubIntroduction">
+                    Club Introduction<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="clubIntroduction"
+                    name="clubIntroduction"
+                    control={control}
+                    render={({ field }) => (
+                      <TextEditor
+                        name={field.name}
+                        onChange={field.onChange}
+                        value={field.value}
+                        placeholder="Write your club introduction in 500 characters."
+                      />
+                    )}
+                  />
+                  {errors.clubIntroduction && <FormFeedback>{errors.clubIntroduction.message}</FormFeedback>}
+                </Col>
+              </Row>
+              {supportData?.tools_and_skills?.pending_requests > 0 && (
+                <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
+              )}
+              {supportData?.tools_and_skills?.approved_requests > 0 && (
+                <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
+              )}
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader className="align-items-end">
+              <h4 className="m-0 mt-1">Area of Interests</h4>
+              <CustomerSupportCTA
+                type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
+                handleCustomerSupport={handleCustomerSupport}
+              />
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="services">
+                    Interests<span className="label-asterisk">*</span> <i>(Top 5)</i>
+                  </Label>
+                  <Controller
+                    id="interests"
+                    name="interests"
+                    control={control}
+                    invalid={errors.interests && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isMulti
+                        loadOptions={loadInterestsOptions}
+                        classNamePrefix="select"
+                        placeholder="Select up to 5 interests"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.interests,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.interests && <FormFeedback>{errors.interests.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="skills">
+                    Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
+                  </Label>
+                  <Controller
+                    id="skills"
+                    name="skills"
+                    control={control}
+                    invalid={errors.skills && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isMulti
+                        loadOptions={loadSkillsOptions}
+                        hideSelectedOptions
+                        classNamePrefix="select"
+                        placeholder="Select up to 5 skills"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.skills,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="tools">
+                    Tools
+                  </Label>
+                  <Controller
+                    id="tools"
+                    name="tools"
+                    control={control}
+                    invalid={errors.tools && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isMulti
+                        loadOptions={loadToolsOptions}
+                        classNamePrefix="select"
+                        placeholder="Select up to 5 tools"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.tools,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
+                </Col>
+              </Row>
 
-            {supportData?.tools_and_skills?.pending_requests > 0 && (
-              <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
-            )}
-            {supportData?.tools_and_skills?.approved_requests > 0 && (
-              <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
-            )}
-          </CardBody>
-        </Card>
-        <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
-        <Button
+              {supportData?.tools_and_skills?.pending_requests > 0 && (
+                <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
+              )}
+              {supportData?.tools_and_skills?.approved_requests > 0 && (
+                <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
+              )}
+            </CardBody>
+          </Card>
+          <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
+            <Button
               onClick={() => {
                 saveAsDraftClicked.current = true;
                 handleSubmit(onDraftSubmit());
@@ -1027,25 +1123,26 @@ const Account = ({setDraftSavedModal}) => {
             >
               {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
             </Button>
-          <div>
-            <Button
-              color="primary"
-              outline={location.pathname.includes('profile-edit')}
-              disabled={isImageUploading || !isValid || updateTeamIsLoading}
-              type="submit"
-            >
-              {updateTeamIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
+            <div>
+              <Button
+                color="primary"
+                outline={location.pathname.includes('profile-edit')}
+                disabled={isImageUploading || !isValid || updateTeamIsLoading}
+                type="submit"
+              >
+                {updateTeamIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Save & Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-        </div>
-      </Form>
+        </Form>
+      )}
       {customerSupportModal && (
         <CustomerSupportModal
           onSuccess={onCustomerSupportSuccess}

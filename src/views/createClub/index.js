@@ -32,7 +32,7 @@ const CreateClub = () => {
   useEffect(() => {
     const accountDetailsPath = /^\/create-club\/profile-details(\/.*)?$/;
     if (accountDetailsPath.test(location.pathname)) {
-      setActive(tabNames.Account);
+      setActive(tabNames.Profile);
     }
     if (location.pathname === '/create-club/profile-details') setActive(tabNames.Profile);
   }, [location]);

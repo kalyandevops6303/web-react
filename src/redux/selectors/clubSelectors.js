@@ -1,18 +1,18 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-const teamSelector = (state) => state.team;
+const clubSelector = (state) => state.clubs;
 
 // eslint-disable-next-line import/prefer-default-export
-export const selectClubData = createSelector(teamSelector, (club) => club.clubs);
+export const selectClubData = createSelector(clubSelector, (club) => club.clubs);
 
-export const selectDraftClubData = createSelector(teamSelector, (team) => team.draftClub);
+export const selectCreatedClubData = createSelector(clubSelector, (club) => club.clubCreated);
 
-export const selectCreatedClubData = createSelector(teamSelector, (team) => team.clubCreated);
+export const selectDraftClubData = createSelector(clubSelector, (club) => club.draftClub);
 
-export const saveDraftClubLoading = createSelector(teamSelector, (team) => team.saveDraftClubLoading);
+export const saveDraftClubLoading = createSelector(clubSelector, (club) => club.saveDraftClubLoading);
 
-export const updateClubLoading = createSelector(teamSelector, (team) => team.updateClubLoading);
+export const updateClubLoading = createSelector(clubSelector, (club) => club.updateClubLoading);
 
-export const getDraftClubLoading = createSelector(teamSelector, (team) => team.getDraftClubLoading);
+export const getDraftClubLoading = createSelector(clubSelector, (club) => club.getDraftClubLoading);
 
-export const deleteDraftClubLoading = createSelector(teamSelector, (team) => team.deleteDraftClubLoading);
+export const deleteDraftClubLoading = createSelector(clubSelector, (club) => club.deleteDraftClubLoading);

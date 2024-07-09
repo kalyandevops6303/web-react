@@ -6,7 +6,15 @@ import {
   registerClubEmailService,
   changeMemberTypeService,
 } from '../../services/clubServices';
-import { checkDraftTeamService, createDraftTeamService, createTeamService, deleteDraftTeamService, updateDraftTeamService, updateTeamService } from '../../services/teamServices';
+import {
+  checkDraftTeamService,
+  createDraftTeamService,
+  createTeamService,
+  deleteDraftTeamService,
+  getTeamInfoById,
+  updateDraftTeamService,
+  updateTeamService,
+} from '../../services/teamServices';
 import {
   getClubCreated,
   registerClubEmailFailure,
@@ -29,8 +37,11 @@ import {
   deleteDraftClubRequest,
   deleteDraftClubSuccess,
   deleteDraftClubError,
+  getDraftClubRequest,
+  getDraftClubSuccess,
+  getDraftClubError,
 } from '../reducers/clubs';
-import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
+import { getTeamError, updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
 import { scanAndProcessFiles } from '../../utility/Utils';
 import { getTeams } from './teamsActions';
 
@@ -105,16 +116,15 @@ const createClub =
           isPrivate: false,
         });
       } else {
-       await handleCreateClub();
-       await dispatch(getTeams({ onSuccess: () => {} }));
+        await handleCreateClub();
+        await dispatch(getTeams({ onSuccess: () => {} }));
       }
-
     } catch (error) {
       errorHandler(error);
     }
   };
 
-  const createDraftClub =
+const createDraftClub =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
@@ -132,8 +142,8 @@ const createClub =
 const updateDraftClub =
   ({ id, data, onSuccess, onError }) =>
   async (dispatch) => {
+    dispatch(saveDraftClubRequest());
     try {
-      dispatch(saveDraftClubRequest());
       const res = await updateDraftTeamService(id, data);
       await dispatch(saveDraftClubSuccess(res));
       onSuccess();
@@ -167,13 +177,30 @@ const deleteDraftClub =
   async (dispatch) => {
     try {
       dispatch(deleteDraftClubRequest());
-      const res = await deleteDraftTeamService(id);
-      await dispatch(deleteDraftClubSuccess(res));
+      await deleteDraftTeamService(id);
+      await dispatch(deleteDraftClubSuccess());
       onSuccess();
     } catch (error) {
       onError();
       dispatch(deleteDraftClubError());
       errorHandler(error);
+    }
+  };
+
+  const getDraftClubById =
+  ({ id, onSuccess, onError, onGetDraftClubDetails }) =>
+  async (dispatch) => {
+    try {
+      dispatch(getDraftClubRequest());
+      const res = await getTeamInfoById(id);
+      const data = res?.data?.data;
+      await onGetDraftClubDetails(data);
+      onSuccess();
+      dispatch(getDraftClubSuccess(res?.data?.data));
+    } catch (error) {
+      dispatch(getDraftClubError());
+      onError();
+      errorHandler(error, getTeamError);
     }
   };
 
@@ -202,8 +229,8 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
         isPrivate: false,
       });
     } else {
-     await handleUpdateClub();
-     await dispatch(getTeams({ onSuccess: () => {} }));
+      await handleUpdateClub();
+      await dispatch(getTeams({ onSuccess: () => {} }));
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
@@ -223,4 +250,5 @@ export {
   updateDraftClub,
   checkDraftClub,
   deleteDraftClub,
+  getDraftClubById
 };

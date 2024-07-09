@@ -69,6 +69,17 @@ const teamStatusesOptions = [
   }
 ];
 
+const clubStatusesOptions = [
+  {
+    label: 'Accepted',
+    value: 'ACCEPTED',
+  },
+  {
+    label: 'Drafts',
+    value: 'DRAFT',
+  }
+];
+
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
@@ -221,6 +232,7 @@ export {
   userTypes,
   userOnboarding,
   teamStatusesOptions,
+  clubStatusesOptions,
   userProfileEdit,
   sortingOptions,
   statusesOptions,
