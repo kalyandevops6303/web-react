@@ -48,6 +48,7 @@ pipeline {
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
 	     		    sed -i "s/{mode}/${mode}/g" docker-compose.yml
+	                    sed -i "s/'test'/'qa'/g" vite.config.js
 	                    cat docker-compose.yml
                             docker compose build
                             docker compose up -d
