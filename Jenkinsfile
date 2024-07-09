@@ -14,6 +14,7 @@ pipeline {
 		    def serviceName
 		    def servicePort
 		    def targetPort
+		    def mode
 
                     // Docker Compose file & Credential ID based on selected environment
                     switch (params.ENVIRONMENT) {
