@@ -43,7 +43,10 @@ pipeline {
 			    apiAuthEndpoint=1553
 			    apiOnboardingEndpoint=3553
 			    apiCreateProjectEndpoint=2553
-			    
+			    apiCreateProjectAIEndpoint=5553
+			    apiPaymentEndPoint-4553
+			    apiProjectInfraEndpoint=8553
+			    apiAssessmentsEndpoint=3553
                             break
                         default:
                             composeFile = 'docker-compose.yml'
