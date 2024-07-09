@@ -16,8 +16,12 @@ pipeline {
 		    def targetPort
 		    def mode
 		    def apiAuthEndpoint=1443
-		    def apiOnboardingEndpoint='3443'
-		    def apiCreateProjectEndpoint='2443'
+		    def apiOnboardingEndpoint=3443
+		    def apiCreateProjectEndpoint=2443
+		    def apiCreateProjectAIEndpoint=5443
+		    def apiPaymentEndPoint=4443
+		    def apiProjectInfraEndpoint=8443	
+		    def apiAssessmentsEndpoint=3443
 			
                     // Docker Compose file & Credential ID based on selected environment
                     switch (params.ENVIRONMENT) {
@@ -37,6 +41,9 @@ pipeline {
 			    targetPort  = '3012'
 			    mode='qa'
 			    apiAuthEndpoint=1553
+			    apiOnboardingEndpoint=3553
+			    apiCreateProjectEndpoint=2553
+			    
                             break
                         default:
                             composeFile = 'docker-compose.yml'
@@ -52,7 +59,13 @@ pipeline {
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml	     	
 	     		    sed -i "s/'test'/'${mode}'/g" vite.config.js
-	                    sed -i "s/1443/${apiAuthEndpoint}/g" src/configs/api/index.js		     	   
+	                    sed -i "s/1443/${apiAuthEndpoint}/g" src/configs/api/index.js
+		     	    sed -i "s/3443/${apiOnboardingEndpoint}/g" src/configs/api/index.js
+	    		    sed -i "s/2443/${apiCreateProjectEndpoint}/g" src/configs/api/index.js
+	   		    sed -i "s/4443/${apiPaymentEndPoint}/g" src/configs/api/index.js
+	 		    sed -i "s/5443/${apiCreateProjectAIEndpoint}/g" src/configs/api/index.js
+			    sed -i "s/8443/${apiProjectInfraEndpoint}/g" src/configs/api/index.js
+       			    sed -i "s/3443/${apiAssessmentsEndpoint}/g" src/configs/api/index.js
 	                    cat src/configs/api/index.js
                             docker compose build
                             docker compose up -d
