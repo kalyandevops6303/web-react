@@ -12,7 +12,6 @@ services:
       - {SERVICE_PORT}:{TARGET_PORT}
     environment:
       - VITE_ENV_MODE:{mode}
-    env_file: .env
     logging:
       driver: local
       options:
