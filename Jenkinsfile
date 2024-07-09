@@ -24,6 +24,7 @@ pipeline {
 			    serviceName = 'dev'
 			    servicePort = '5000'
 			    targetPort = '5000'
+			    mode='test'
                             break
                         case 'qa':
                             composeFile = 'docker-compose.qa.yml'
@@ -32,6 +33,7 @@ pipeline {
 			    serviceName = 'qa'
 			    servicePort = '3012'
 			    targetPort  = '3012'
+			    mode='qa'
                             break
                         default:
                             composeFile = 'docker-compose.yml'
@@ -49,6 +51,7 @@ pipeline {
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
+	     		    sed -i "s/{mode}/${mode}/g" docker-compose.yml
                             docker compose build
                             docker compose up -d
                         """
