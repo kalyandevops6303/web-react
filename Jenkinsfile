@@ -50,9 +50,8 @@ pipeline {
                      sh """                  
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
-       			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
-	     		    sed -i "s/{mode}/${mode}/g" docker-compose.yml
-	     		    sed -i "s/'test'/${mode}/g" vite.config.js
+       			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml	     	
+	     		    sed -i "s/'test'/'${mode}'/g" vite.config.js
 	                    sed -i "s/'1443'/${apiAuthEndpoint}/g" src/configs/api/index.js		     	   
 	                    cat vite.config.js
                             docker compose build
