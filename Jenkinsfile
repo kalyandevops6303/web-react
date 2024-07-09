@@ -41,7 +41,7 @@ pipeline {
                     echo "${credentialId}"
 	            echo "${serviceName}"
                     echo "${servicePort}"
-		    echo "${envFile}
+		    echo "${envFile}"
                    ##withCredentials([file(credentialsId: credentialId, variable: 'envFile')]) {
                         sh """
                            # chmod +w \$envFile
