@@ -49,7 +49,7 @@ pipeline {
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
-                            docker compose -e VITE_ENV_MODE=qa build
+                            docker compose --env-file ${envFile} build
                             docker compose up -d
                         """
                         cleanWs()
