@@ -318,7 +318,7 @@ const PrivateDashboard = () => {
           {userDetailsData?.user_type === userTypes.client && (
             <section className="mb-2">
               <Header className="mb-1">Teams</Header>
-              <RecommendedTeamsListing/>
+              <RecommendedTeamsListing />
             </section>
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
@@ -348,19 +348,27 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.team_type !== userTypes.club && <AssessmentsOverview />}
+          {userDetailsData?.team_type !== userTypes.club &&
+            <>
+              {
+                userDetailsData?.user_type === "CLIENT" ?
+                  <AvailableTime />
+                  :
+                  <AssessmentsOverview />
+              }
+            </>}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />

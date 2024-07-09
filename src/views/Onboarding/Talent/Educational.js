@@ -162,10 +162,6 @@ const Educational = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    dispatch((prepopulateAssessments()))
-  }, [savedFormData])
-
-  useEffect(() => {
     if (parseResume === false) {
       if (savedFormData) {
         const requiredFields = filteredFormSchema({
@@ -207,6 +203,7 @@ const Educational = () => {
   };
 
   const onSuccess = () => {
+    dispatch((prepopulateAssessments()))
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/availability-details`);
