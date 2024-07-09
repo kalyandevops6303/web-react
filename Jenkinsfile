@@ -19,7 +19,7 @@ pipeline {
                     switch (params.ENVIRONMENT) {
                         case 'dev':
                             composeFile = 'docker-compose.dev.yml'
-			    envFile     = '.env.test.local'
+			    VITE_ENV_MODE = 'test'
                             credentialId = 'fe_env_file'
 			    serviceName = 'dev'
 			    servicePort = '5000'
@@ -27,7 +27,7 @@ pipeline {
                             break
                         case 'qa':
                             composeFile = 'docker-compose.qa.yml'
-			    envFile  = '.env.qa.local'
+			    VITE_ENV_MODE  = 'qa'
                             credentialId = 'fe_env_qa'
 			    serviceName = 'qa'
 			    servicePort = '3012'
@@ -49,7 +49,7 @@ pipeline {
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
-                            docker compose --env-file ${envFile} build
+                            docker compose build
                             docker compose up -d
                         """
                         cleanWs()
