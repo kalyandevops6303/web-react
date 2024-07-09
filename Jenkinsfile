@@ -42,14 +42,14 @@ pipeline {
 	            echo "${serviceName}"
                     echo "${servicePort}"
 		    echo "${envFile}"
-                   ##withCredentials([file(credentialsId: credentialId, variable: 'envFile')]) {
+                   withCredentials([file(credentialsId: credentialId, variable: 'envFile')]) {
                         sh """
-                           # chmod +w \$envFile
-                           # cp \$envFile .env                         
+                            chmod +w \$envFile
+                            cp \$envFile .env                         
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
-                            docker compose build --env-file ${envFile}
+                            docker compose -e VITE_ENV_MODE=qa build
                             docker compose up -d
                         """
                         cleanWs()
