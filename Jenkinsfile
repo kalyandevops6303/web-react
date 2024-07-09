@@ -42,8 +42,8 @@ pipeline {
                     echo "${credentialId}"
 	            echo "${serviceName}"
                     echo "${servicePort}"
-	            withCredentials([file(credentialsId: credentialId, variable: 'envFile')]) {
-                        sh """
+	            //withCredentials([file(credentialsId: credentialId, variable: 'envFile')]) 
+                     sh """
                             chmod +w \$envFile
                             cp \$envFile .env                         
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
@@ -54,7 +54,7 @@ pipeline {
                             docker compose up -d
                         """
                         cleanWs()
-                    }
+                    
                 }
             }
         }
