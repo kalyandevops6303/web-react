@@ -203,7 +203,6 @@ const Educational = () => {
   };
 
   const onSuccess = () => {
-    dispatch((prepopulateAssessments()))
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/availability-details`);
