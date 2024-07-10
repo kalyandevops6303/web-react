@@ -60,7 +60,9 @@ const Educational = () => {
     area: yup.object().shape({
       label: yup.string(),
       value: yup.string(),
-    }),
+    })
+    .nullable()
+    .optional(),
     skills: yup
       .array()
       .of(
@@ -69,6 +71,8 @@ const Educational = () => {
           value: yup.string(),
         }),
       )
+      .nullable()
+      .optional()
       .max(5, 'Maximum of five skills can be added'),
     tools: yup
       .array()
@@ -78,6 +82,8 @@ const Educational = () => {
           value: yup.string(),
         }),
       )
+      .nullable()
+      .optional()
       .max(5, 'Maximum of five tools can be added'),
   });
 
@@ -523,7 +529,7 @@ const Educational = () => {
           <Card className="w-75">
             <CardHeader className="d-flex align-items-end">
               <h4 className="m-0 mt-1">
-                Project Domain<span className="label-asterisk m-0">*</span>
+                Project Domain 
               </h4>
               <CustomerSupportCTA
                 type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
