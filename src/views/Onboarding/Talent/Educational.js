@@ -88,13 +88,17 @@ const Educational = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Maximum of five tools can be added'),
+      .max(5, 'Maximum of five tools can be added')
+      .nullable()
+      .optional(),
     certificates: yup.array().of(
       yup.object().shape({
         label: yup.string(),
         value: yup.string(),
       }),
-    ),
+    )
+    .nullable()
+    .optional(),
     skills: yup
       .array()
       .of(
