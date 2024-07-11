@@ -57,7 +57,8 @@ pipeline {
 	            echo "${serviceName}"
                     echo "${servicePort}"
 	            //withCredentials([file(credentialsId: credentialId, variable: 'envFile')]) 
-                     sh """                  
+                     sh """   
+		     	    sudo chmod -R ugo+w /var/lib/jenkins/workspace
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml	  
