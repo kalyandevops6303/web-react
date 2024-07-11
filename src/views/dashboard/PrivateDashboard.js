@@ -107,8 +107,7 @@ const PrivateDashboard = () => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
     } else if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute')
+      profilePercentageData?.values_missing?.includes('company_name')
     ) {
       setCompleteProfileModal(true);
     } else {
