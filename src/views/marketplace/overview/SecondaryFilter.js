@@ -34,7 +34,6 @@ import {
   bidStatusesOptions,
   projectTypesOptions,
   sortingOptions,
-  statusForAllListing,
   statusesOptions,
   userTypes,
 } from '../../../utility/constants/Constant';
@@ -413,9 +412,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const setStatusOptions = () => {
-    if (primaryFilter === 'all_listings') {
-      return statusForAllListing;
-    } else if (primaryFilter === 'my_listings') {
+   if (primaryFilter === 'my_listings') {
       return [
         ...statusesOptions,
         { label: 'Expired', value: 'LISTING_EXPIRED' },
@@ -540,7 +537,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               </Col>
             ) : (
               <span className="w-auto">
-                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'all_listings' && primaryFilter !== 'teams' && (
                   <Col>
                     <Label className="form-label">Status</Label>
                     <Select

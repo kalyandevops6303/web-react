@@ -2,24 +2,51 @@ import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button } from 'reactstrap';
 import { CreateBidRadioOption } from '../styled';
+import SavedDraftsAvailableModal from './SavedDraftsAvailableModal';
+import { checkDraftTeam } from '../../redux/actions/teamsActions';
 
 const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(false);
+  const toggleSavedDraftsAvailableModal = () => {
+    setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
+  };
   const [selectedGroup, setSelectedGroup] = useState('');
 
   const onNextClick = () => {
     if (selectedGroup === 'CLUB') {
       navigate('/create-club/account-details');
     } else if (selectedGroup === 'TEAM') {
-      navigate('/create-team/profile-details');
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, onSuccess: () => {}, onError: () => {} }));
     }
   };
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
+      {savedDraftsAvailableModal && (
+        <SavedDraftsAvailableModal
+          modal={savedDraftsAvailableModal}
+          toggleModal={toggleSavedDraftsAvailableModal}
+          modalText="You have a bid in draft mode for this project. Would you like to continue where you left off?"
+          firstBtnText="Create New Bid"
+          secondBtnText="View Draft"
+          firstBtnAction={() => {
+            toggleSavedDraftsAvailableModal();
+            navigate('/create-team/profile-details');
+          }}
+          secondBtnAction={() =>
+            navigate('/my-teams/teams', {
+              state: {
+                isDraftTeams: true,
+              },
+            })
+          }
+        />
+      )}
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="pt-0 pb-2">
         <p className="font-large-1 text-center">Create </p>

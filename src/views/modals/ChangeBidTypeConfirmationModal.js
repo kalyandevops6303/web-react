@@ -1,12 +1,16 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { useDispatch } from 'react-redux';
+import { clearAllFormData } from '../../redux/reducers/formData';
+
 import '../custom-styles.scss';
 import Notepad from '../../assets/images/youDidIt.gif';
 import { ChangeBidTypeConfirmationModalWrapper } from '../create-bid/style';
 
 // eslint-disable-next-line arrow-body-style
 const ChangeBidTypeConfirmationModal = ({ modal, toggleModal, toggleCreateBidModal }) => {
+  const dispatch = useDispatch();
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={toggleModal} />
@@ -30,6 +34,7 @@ const ChangeBidTypeConfirmationModal = ({ modal, toggleModal, toggleCreateBidMod
               onClick={() => {
                 toggleModal();
                 toggleCreateBidModal();
+                dispatch(clearAllFormData());
               }}
             >
               Change Bid Type

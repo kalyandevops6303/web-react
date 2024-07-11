@@ -58,11 +58,18 @@ const bidStatusesOptions = [
   { label: 'Drafts', value: 'DRAFT' },
 ];
 
-const statusesOptions = [
-  { label: 'Open', value: 'OPEN' },
-  { label: 'In-review', value: 'IN_REVIEW' },
+const teamStatusesOptions = [
+  {
+    label: 'Saved',
+    value: 'SAVED',
+  },
+  {
+    label: 'Drafts',
+    value: 'DRAFT',
+  }
 ];
-const statusForAllListing = [
+
+const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
 ];
@@ -192,6 +199,7 @@ const CUSTOMER_SUPPORT_TYPES = {
   missing_institute: 'missing_institute',
   missing_skill: 'missing_skill',
   missing_tool: 'missing_tool',
+  missing_assessment: 'missing_assessment',
   missing_talent: 'missing_talent',
   education: 'education',
   tools_and_skills: 'tools_and_skills',
@@ -203,11 +211,17 @@ const CITIZEN_TYPES = {
   OTHER: 'OTHER',
 };
 
+const TEAM_STATUS = {
+  SAVED: 'SAVED',
+  DRAFT: 'DRAFT',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
   userTypes,
   userOnboarding,
+  teamStatusesOptions,
   userProfileEdit,
   sortingOptions,
   statusesOptions,
@@ -220,7 +234,6 @@ export {
   disputeStatuses,
   disputeStatusEnum,
   bidStatusesOptions,
-  statusForAllListing,
   roleTypeOptions,
   PAYMENT_STATUS,
   clubStatus,
@@ -238,4 +251,5 @@ export {
   projectStatusEnum,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
+  TEAM_STATUS,
 };

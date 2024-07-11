@@ -24,6 +24,7 @@ import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 import OpenListing from './overview/OpenListing';
+import RecommendedTeamsListing from './overview/RecommendedTeamsListing';
 import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
@@ -36,6 +37,7 @@ import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 import getTeamId from '../../utility/commonUtils';
 import InviteListing from './overview/InviteListing';
 import PaymentListing from './overview/PaymentListing';
+import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
@@ -300,7 +302,7 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
-          {userDetailsData?.user_type === userTypes.team ? null : (
+          {userDetailsData?.team_type === userTypes.team ? null : (
             <section className="mb-2">
               <Header className="mb-1">Payments</Header>
               <PaymentListing />
@@ -310,6 +312,12 @@ const PrivateDashboard = () => {
             <section className="mb-2">
               <Header className="mb-1">Open Listings</Header>
               <OpenListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              <RecommendedTeamsListing />
             </section>
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
@@ -339,19 +347,27 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.team_type !== userTypes.club && <AvailableTime />}
+          {userDetailsData?.team_type !== userTypes.club &&
+            <>
+              {
+                userDetailsData?.user_type === "CLIENT" ?
+                  <AvailableTime />
+                  :
+                  <AssessmentsOverview />
+              }
+            </>}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />

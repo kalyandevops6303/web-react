@@ -1,8 +1,10 @@
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/user`;
-const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
-const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
-const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
-const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
+const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 
 const API = {
   auth: {
@@ -165,6 +167,11 @@ const API = {
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
+    // Project Infrastructure
+    verifyInfraAccess: `${apiProjectInfraEndpoint}/api/v1/infra/verify-access`,
+    getInfraData: `${apiProjectInfraEndpoint}/api/v1/infra`,
+    createInfra: `${apiProjectInfraEndpoint}/api/v1/infra/create`,
+    terminateInfra: `${apiProjectInfraEndpoint}/api/v1/infra/decommission`,
 
     getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
   },
@@ -245,8 +252,12 @@ const API = {
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
+    teamInfoById: `${apiAuthEndpoint}/api/v1/team`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     update: `${apiAuthEndpoint}/api/v1/team/update`,
+    createDraft: `${apiAuthEndpoint}/api/v1/team/draft/save`,
+    checkDraft: `${apiAuthEndpoint}/api/v1/team/draft/check`,
+    deleteDraft: `${apiAuthEndpoint}/api/v1/team/draft`,
     memberType: `${apiAuthEndpoint}/api/v1/team/member_type`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
@@ -316,9 +327,21 @@ const API = {
   fileUpload: {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
   },
+  assessments: {
+    user_assessments: `${apiAssessmentsEndpoint}/api/v1/candidate/assessments`,
+    all_assessments: `${apiAssessmentsEndpoint}/api/v1/all/assessment/dropdown`,
+    delete_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment`,
+    toggle_assessment_hidden: `${apiAssessmentsEndpoint}/api/v1/candidate/hide/assessment`,
+    add_assessment: `${apiAssessmentsEndpoint}/api/v1/add/candidate/assessment/list`,
+    get_assessment_link: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/link`,
+    delete_non_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/non-assessment`,
+    prepopulate: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/prepopulate`
+  },
   support: {
     create: `${apiAuthEndpoint}/api/v1/support-request`,
     count: `${apiAuthEndpoint}/api/v1/support-request/count`,
+    list: `${apiAuthEndpoint}/api/v1/support-requests/paginated`,
+    delete: `${apiAuthEndpoint}/api/v1/support-request`
   },
 };
 
