@@ -37,8 +37,8 @@ pipeline {
                             composeFile = 'docker-compose.qa.yml'
                             credentialId = 'fe_env_qa'
 			    serviceName = 'qa'
-			    servicePort = '3012'
-			    targetPort  = '3012'
+			    servicePort = '9012'
+			    targetPort  = '9012'
 			    mode='qa'
 			    apiAuthEndpoint=1553
 			    apiOnboardingEndpoint=3553
