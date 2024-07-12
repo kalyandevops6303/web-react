@@ -248,6 +248,7 @@ const Profile = ({ setDraftSavedModal }) => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
   }, [localFormData]);
+
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
   };
@@ -921,6 +922,7 @@ const Profile = ({ setDraftSavedModal }) => {
 
   const onRemovePictureClick = () => {
     setSelectedImage(null);
+    setDraftImagePreview(null);
     setSelectedImagePreview(null);
     setImageUrlRes(null);
     dispatch(setFormDocuments(null));

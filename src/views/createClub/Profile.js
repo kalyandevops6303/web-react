@@ -140,6 +140,7 @@ const Profile = ({ setDraftSavedModal }) => {
 
     const removeEmptyClubData = removeEmptyKeys(clubData);
     dispatch(setClubCreateDataAction(removeEmptyClubData));
+    // dispatch(deleteDraftClub({id:params?.id, onSuccess: () => navigate(`/dashboard`), onError: () => {}}));
 
     if (location.pathname.includes('profile-edit')) {
       const linked_in = clubLinkedin;
@@ -151,7 +152,8 @@ const Profile = ({ setDraftSavedModal }) => {
         navigate(`/dashboard`);
       };
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
-    } else {
+    }
+    else {
       onEmailVerifySuccess(formDetails.clubEmailID);
     }
   };

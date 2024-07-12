@@ -19,7 +19,7 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
 
   const onNextClick = () => {
     if (selectedGroup === 'CLUB') {
-      navigate('/create-club/account-details');
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, onSuccess: () => {}, onError: () => {} }));
     } else if (selectedGroup === 'TEAM') {
       dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, onSuccess: () => {}, onError: () => {} }));
     }
@@ -32,19 +32,32 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
           modal={savedDraftsAvailableModal}
           toggleModal={toggleSavedDraftsAvailableModal}
           modalText="You have a bid in draft mode for this project. Would you like to continue where you left off?"
-          firstBtnText="Create New Bid"
+          firstBtnText={`Create New ${selectedGroup === 'CLUB' ? 'Club' : 'Team'}`}
           secondBtnText="View Draft"
           firstBtnAction={() => {
             toggleSavedDraftsAvailableModal();
-            navigate('/create-team/profile-details');
+            if (selectedGroup === 'CLUB') {
+              navigate('/create-club/account-details');
+            }
+            if (selectedGroup === 'TEAM') {
+              navigate('/create-team/profile-details');
+            }
           }}
-          secondBtnAction={() =>
-            navigate('/my-teams/teams', {
-              state: {
-                isDraftTeams: true,
-              },
-            })
-          }
+          secondBtnAction={() => {
+            if (selectedGroup === 'CLUB') {
+              navigate('/clubs/my_clubs', {
+                state: {
+                  isDraftClubs: true,
+                },
+              });
+            } else if (selectedGroup === 'TEAM') {
+              navigate('/my-teams/teams', {
+                state: {
+                  isDraftTeams: true,
+                },
+              });
+            }
+          }}
         />
       )}
       <ModalHeader toggle={toggleModal} />

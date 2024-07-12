@@ -131,6 +131,7 @@ const checkDraftTeam =
         setSavedDraftsAvailableModal(true);
       }
       onSuccess();
+      dispatch(saveDraftTeamSuccess());
     } catch (error) {
       onError();
       dispatch(saveDraftTeamError());

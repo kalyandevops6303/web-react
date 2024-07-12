@@ -209,13 +209,24 @@ const ClubCard = ({ data, isSearchPage }) => {
                   </div>
                 </div>
                 <div className="">
-                  <BadgeGroup
-                    title="Skills"
-                    data={data?.skills}
-                    color="light-blue"
-                    id={`tooltip-skills-${data?._id}`}
-                  />
-                  <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} />
+                  {data?.skills && (
+                    <BadgeGroup
+                      title="Skills"
+                      data={data?.skills}
+                      color="light-blue"
+                      id={`tooltip-skills-${data?._id}`}
+                      isDraft={data?.creation_status === 'DRAFT'}
+                    />
+                  )}
+                  {data?.tools && (
+                    <BadgeGroup
+                      title="Tools"
+                      data={data?.tools}
+                      color="light-blue"
+                      id={`tooltip-tools-${data?._id}`}
+                      isDraft={data?.creation_status === 'DRAFT'}
+                    />
+                  )}
                 </div>
                 {data?.creation_status === 'DRAFT' && (
                   <div className="d-flex justify-content-end mt-3">

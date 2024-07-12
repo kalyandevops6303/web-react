@@ -59,25 +59,13 @@ const bidStatusesOptions = [
 ];
 
 const teamStatusesOptions = [
-  {
-    label: 'Saved',
-    value: 'SAVED',
-  },
-  {
-    label: 'Drafts',
-    value: 'DRAFT',
-  }
+  { label: 'Saved', value: 'SAVED' },
+  { label: 'Drafts', value: 'DRAFT' },
 ];
 
 const clubStatusesOptions = [
-  {
-    label: 'Accepted',
-    value: 'ACCEPTED',
-  },
-  {
-    label: 'Drafts',
-    value: 'DRAFT',
-  }
+  { label: 'Accepted', value: 'ACCEPTED' },
+  { label: 'Drafts', value: 'DRAFT' },
 ];
 
 const statusesOptions = [
