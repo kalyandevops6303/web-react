@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
+import { useLocation } from 'react-router-dom';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
@@ -14,14 +15,28 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
+import { DisputeCount } from '../styled';
+
+const determineClassWhenDisputeStatus = (pathname, userData) => {
+  if (pathname === 'dispute' && userData?.user_type === userTypes.client) {
+    return 'w-100  d-flex  justify-content-between';
+  } if (
+    userData?.user_type === userTypes.talent ||
+    userData?.user_type === userTypes.team ||
+    userData?.user_type === userTypes.club
+  ) {
+    return 'w-50 d-flex flex-column justify-content-between d-none';
+  } return 'w-50';
+};
 
 const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data }) => {
   const userData = useSelector(selectAuthUserData);
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
-
+  const location = useLocation();
   const navigate = useNavigate();
+  const pathname = location.pathname.split('/').pop();
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -237,14 +252,26 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
         </section>
       ) : (
         <>
-          <div className="d-flex">
+          <div className="d-flex w-100">
             <section
               className={
-                userData?.user_type === userTypes.client
-                  ? 'w-50 me-2 d-none'
-                  : 'w-50 me-2 d-flex flex-column justify-content-between'
+                userData?.user_type === userTypes.client ? 'w-50 me-2 d-none' : 'w-100  d-flex justify-content-between'
               }
             >
+              {' '}
+              {pathname === 'dispute' &&
+              (userData?.user_type === userTypes.talent ||
+                userData?.user_type === userTypes.team ||
+                userData?.user_type === userTypes.club) ? (
+                <div className="w-100">
+                  <div className="fw-bold d-flex flex-column gap-1">
+                    <div>Unresolved Disputes</div>
+                    <DisputeCount>
+                      {data?.dispute_count < 10 ? `0${data?.dispute_count}` : `${data?.dispute_count}`}
+                    </DisputeCount>
+                  </div>
+                </div>
+              ) : null}
               <div className="d-flex w-100">
                 <img
                   className="market-place-card-photo cursor-pointer me-75"
@@ -275,11 +302,20 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
             </section>
             <div
               className={
-                userData?.user_type === userTypes.talent || userData?.user_type === userTypes.team
-                  ? 'w-50 d-flex flex-column justify-content-between'
-                  : 'w-50'
+               determineClassWhenDisputeStatus(pathname, userData)
               }
             >
+              {' '}
+              {pathname === 'dispute' && userData?.user_type === userTypes.client ? (
+                <div>
+                  <div className="fw-bold d-flex flex-column gap-1">
+                    <div>Unresolved Disputes</div>
+                    <DisputeCount>
+                      {data?.dispute_count < 10 ? `0${data?.dispute_count}` : `${data?.dispute_count}`}
+                    </DisputeCount>
+                  </div>
+                </div>
+              ) : null}
               <div>
                 {data?.worker_details?.user_type === userTypes.talent ? (
                   <div className={userData?.user_type === userTypes.talent ? 'd-none' : ''}>

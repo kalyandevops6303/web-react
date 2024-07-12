@@ -63,7 +63,6 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
           ) : (
             <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
           )}
-
           {data?.match_percentage && (
             <div className="circular-progressbar-container m-0">
               <CircularProgressbarWithChildren
