@@ -225,10 +225,6 @@ const Personal = () => {
   }, [localFormData, parseResume, resumeParsedLoading]);
 
   useEffect(() => {
-    dispatch(setResumeParsed(parseResume));
-  }, [parseResume]);
-
-  useEffect(() => {
     if (parseResume === false) {
       if (savedFormData) {
         const requiredFields = filteredFormSchema({
@@ -253,8 +249,6 @@ const Personal = () => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
-    setParseResume(false);
-    dispatch(setResumeParsed(false));
     dispatch(setFormDocuments(null));
   };
 
@@ -275,6 +269,8 @@ const Personal = () => {
         'Content-Type': file.file.type,
       });
     } catch (error) {
+      dispatch(parsedResumeData(null));
+      setParseResume(false);
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
       setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
@@ -382,7 +378,6 @@ const Personal = () => {
 
   const fetchUploadUrl = async (file) => {
     const response = await resumeUploadService(file.name);
-    dispatch(getResumeParsedDetails(setResumeParsedDetails, response?.data?.data?.file_key));
     const fileWithUrl = {
       id: uuidv4(),
       file,
@@ -390,12 +385,14 @@ const Personal = () => {
       isUploaded: false,
     };
     dispatch(setFormDocuments([fileWithUrl]));
-    setParseResume(true);
-    dispatch(setResumeParsed(true));
-
     setFiles([fileWithUrl]);
-
-    handleUploadFile(fileWithUrl);
+    await handleUploadFile(fileWithUrl);
+    if (response)
+      dispatch(
+        getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
+      );
+    dispatch(setResumeParsed(true));
+    setParseResume(true);
   };
 
   const handleFileChange = async (e) => {
@@ -488,7 +485,12 @@ const Personal = () => {
                     color="flat-danger"
                     className="btn-left-margin"
                     disabled={uploadingFiles.includes(file)}
-                    onClick={() => handleRemoveFile(file)}
+                    onClick={() => {
+                      handleRemoveFile(file);
+                      setParseResume(false);
+                      dispatch(parsedResumeData(null));
+                      dispatch(setResumeParsed(false));
+                    }}
                   >
                     Remove
                   </Button>
@@ -941,8 +943,14 @@ const Personal = () => {
           ]);
         }
       } else {
-        // dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(
+          getResumeParsedDetails(
+            setResumeParsedDetails,
+            setParseResume,
+            savedFormDocuments[0]?.uploadData?.file_key,
+            setFiles,
+          ),
+        );
         setFiles([
           {
             file: {
@@ -964,7 +972,7 @@ const Personal = () => {
 
   return (
     <ProfileFormContainer>
-      {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) || languagesIsLoading ? (
+      {(IsresumeParsed ? resumeParsedLoading : userDetailsIsLoading && languagesIsLoading) ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
