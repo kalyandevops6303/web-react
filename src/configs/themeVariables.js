@@ -107,6 +107,7 @@ const darkBlueColor = "#00B0FF";
 const lightGreenBatchColor = "#E5F8EE";
 const lightRedColor = "#FCEAEB";
 const disputeBorderRedColor = "#E05152";
+const disputeCountBackgroundColor = "#FFF8F8";
 const theme = {
   primary: primaryColor, // primary color for all components
   headerShadow: headerShadowColor, // color for header shadow
@@ -218,6 +219,7 @@ const theme = {
   darkBlueColor,
   lightGreenBatchColor,
   lightRedColor,
-  disputeBorderRedColor
+  disputeBorderRedColor,
+  disputeCountBackgroundColor
 };
 export default theme;
