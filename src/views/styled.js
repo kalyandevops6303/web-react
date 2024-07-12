@@ -37,16 +37,25 @@ const CustomBadge = styled.span`
     padding-left: 8px !important;
   }
   .light-blue,
-  .NEW,
-  .ACTIVE {
+  .NEW {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.lightBlueColor}` : 'none')};
+  }
+  .ACTIVE {
+    background: ${theme.lightGreenBatchColor} !important;
+    color: ${theme.green};
+    border: ${`2px solid ${theme.green}`};
   }
   .OPEN {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
+  }
+  .DISPUTED {
+    background: ${theme.lightRedColor} !important;
+    color: ${theme.disputeBorderRedColor};
+    border: ${`2px solid ${theme.disputeBorderRedColor}`};
   }
   .COMPLETED,
   .ACCEPTED,
@@ -55,9 +64,13 @@ const CustomBadge = styled.span`
   .TO_BE_LISTED {
     background: ${theme.badgeBlueColor} !important;
     color: ${theme.darkBlueColor};
-    border: ${ `1px solid ${theme.lighGreenColor}`};
+    border: ${`1px solid ${theme.lighGreenColor}`};
   }
-  .ON_GOING,
+  .ON_GOING {
+    background: ${theme.lightGreenBatchColor};
+    color: ${theme.green};
+    border: ${`2px solid ${theme.green}`};
+  }
   .REVIEWED,
   .IN_PROGRESS,
   .DRAFT {
@@ -66,12 +79,12 @@ const CustomBadge = styled.span`
     border: ${(props) => (props.bordered ? `1px solid ${theme.draftStatusBadgeColor}` : 'none')};
   }
   .ongoing {
-    background : ${theme.lightOrangeColor} !important;
+    background: ${theme.lightOrangeColor} !important;
     color: ${theme.darkOrangeColor} !important;
     border: ${(props) => (props.bordered ? `1px solid ${theme.darkOrangeColor}` : 'none')};
   }
   .upcoming {
-    background : ${theme.badgeBlueColor} !important;
+    background: ${theme.badgeBlueColor} !important;
     color: ${theme.darkBlueColor} !important;
     border: ${(props) => (props.bordered ? `1px solid ${theme.darkBlueColor}` : 'none')};
   }
@@ -494,6 +507,15 @@ const TooltipWrapper = styled.div`
   }
 `;
 
+const DisputeCount = styled.div`
+  background: ${theme.disputeCountBackgroundColor};
+  color: ${theme.disputeBorderRedColor};
+  border: ${`2px solid ${theme.disputeBorderRedColor}`};
+  border-radius: 20px;
+  text-align: center;
+  width: 40px;
+`;
+
 export {
   ElevateShadow,
   CardWrapper,
@@ -511,4 +533,5 @@ export {
   Elevate,
   CircularBackButtonContainer,
   TooltipWrapper,
+  DisputeCount
 };

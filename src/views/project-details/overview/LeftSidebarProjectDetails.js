@@ -93,6 +93,7 @@ const LeftSidebarProjectDetails = () => {
     SIGN_NDA: 'Sign NDA',
     PAYMENT_PENDING: 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
+    DISPUTED: 'Disputed',
   };
   const statusDisplay = {
     ACTIVE: {
@@ -122,15 +123,20 @@ const LeftSidebarProjectDetails = () => {
       text: 'light-blue',
     },
     COMPLETED: {
-      state: 'COMPLERED',
+      state: 'COMPLETED',
       bgcolor: 'light-blue',
       text: 'dark-blue',
     },
     ON_HOLD: {
-      state: 'COMPLEtED',
+      state: 'COMPLETED',
       bgcolor: 'success',
       text: 'success',
     },
+    DISPUTED : {
+      state : "Disputed",
+      bgcolor : "DISPUTED",
+      text : "Disputed"
+    }
   };
   const isLoading = useSelector(projectDetailsLoading);
   const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
