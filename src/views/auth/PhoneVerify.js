@@ -53,7 +53,9 @@ const VerifyPhone = () => {
     if (isPhoneVerified && userType) {
       // show success message and navigate user to login page
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
-      navigate('/auth/login');
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 2000);
     } else if (isPhoneVerified && !userType) {
       navigate('/auth');
     }
