@@ -102,7 +102,7 @@ const VerifyPhone = () => {
         <CardText className="mb-2 card-text">
           We sent a verification code to your mobile number. Enter it in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Go back
+            Edit Mobile
           </span>
         </CardText>
 
