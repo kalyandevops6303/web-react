@@ -4,6 +4,7 @@ import { AlertCardWrapper } from './style';
 import NoMeeting from '../../../assets/images/meetings.gif';
 
 const Meetings = () => {
+  // TODO: Remove this function and use date from server
   const getDate = () => {
     const currentDate = new Date();
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
