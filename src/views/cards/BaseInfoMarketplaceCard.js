@@ -19,8 +19,8 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal, setDeleteDraftModal }) => {
-  const project = data?.project;
-  const bid = data?.bid;
+  const project = data && data?.project;
+  const bid = data && data?.bid;
   const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -249,7 +249,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
       ) : (
         <div className="mb-2" />
       )}
-      <div>
+      {project && <div>
         <BadgeGroup
           title="Skills"
           data={project?.skills_required}
@@ -262,7 +262,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           color="light-blue"
           id={`tooltip-tools-project-${data?._id}`}
         />
-      </div>
+      </div>}
       {location.pathname.split('/').includes('my_listings') && (
         <BidsReceivedWrapper>
           <p className="wrapper-title mb-50">Bids Received</p>
