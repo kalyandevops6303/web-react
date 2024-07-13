@@ -51,9 +51,9 @@ const VerifyPhone = () => {
 
   useEffect(() => {
     if (isPhoneVerified && userType) {
+      // show success message and navigate user to login page
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
       navigate('/auth/login');
-      // navigate(`/${userType.toLowerCase()}-onboarding/account-details`);
     } else if (isPhoneVerified && !userType) {
       navigate('/auth');
     }
