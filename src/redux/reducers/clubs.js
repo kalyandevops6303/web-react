@@ -116,7 +116,7 @@ const clubSlice = createSlice({
       ...state,
       saveDraftClubLoading: true,
     }),
-    saveDraftTeamError: (state) => ({
+    saveDraftClubError: (state) => ({
       ...state,
       saveDraftClubLoading: false,
     }),

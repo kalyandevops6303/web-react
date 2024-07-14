@@ -57,8 +57,8 @@ import { getProjectAreas, getSkills, getTools } from '../../redux/actions/static
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
 import { CUSTOMER_SUPPORT_TYPES, userProfileEdit } from '../../utility/constants/Constant';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
-import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
-import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
+import { confirmSaveForLater, formData, formDocuments, formImage, isFormImageRemoved, navigatingRoute } from '../../redux/selectors/formDataSelectors';
+import { setConfirmSaveForLater, setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
 import { clearClubCreateData } from '../../redux/reducers/clubs';
 import TextEditor from '../CreateProject/TextEditor';
 import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
@@ -68,6 +68,7 @@ import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import NoteComponent from '../Onboarding/NoteComponent';
 import { getDraftClubLoading, saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import SaveForLaterModal from '../modals/SaveForLaterModal';
 
 const Account = ({ setDraftSavedModal }) => {
   const ProfileSchema = yup.object().shape({
@@ -167,8 +168,20 @@ const Account = ({ setDraftSavedModal }) => {
   const savedFormImage = useSelector(formImage);
   const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
   const params = useParams();
-
   const dispatch = useDispatch();
+  const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
+  const isOpenSaveForLater = useSelector(confirmSaveForLater);
+  const navigatedRoute = useSelector(navigatingRoute);
+  const toggleOpenSaveLaterModal = () => {
+    setOpenSaveLaterModal(!openSaveLaterModal);
+    dispatch(setConfirmSaveForLater(false));
+  };
+
+  useEffect(() => {
+    if(isOpenSaveForLater){
+      setOpenSaveLaterModal(true);
+    }
+  }, [isOpenSaveForLater]);
 
   const localFormData = useWatch({ control });
 
@@ -262,7 +275,6 @@ const Account = ({ setDraftSavedModal }) => {
   }, [imageUrlRes]);
 
   const onDraftSubmit = () => {
-    if (saveAsDraftClicked.current) {
       const skillsSelected = watch('skills')?.map((skill) => skill.value);
       const interestsSelected = watch('interests').map((skill) => skill.value);
       const toolsSelected = watch('tools')?.map((skill) => skill.value);
@@ -296,6 +308,8 @@ const Account = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       } else {
@@ -306,10 +320,11 @@ const Account = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       }
-    }
   };
 
   const onSubmit = (data) => {
@@ -854,6 +869,7 @@ const Account = ({ setDraftSavedModal }) => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
+            {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftType='CLUB' draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
           <Card>
             <CardHeader>
               <h4 className="m-0 mt-1">About</h4>

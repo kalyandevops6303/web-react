@@ -1046,7 +1046,7 @@ const Profile = ({ setDraftSavedModal }) => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
-          {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
+          {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftType='TEAM' draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
           <Card>
             <CardHeader>
               <h4 className="m-0 mt-1">About</h4>

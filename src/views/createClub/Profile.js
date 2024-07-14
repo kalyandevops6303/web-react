@@ -24,12 +24,13 @@ import EmailVerifyModal from './EmailVerifyModal';
 import { getTeamById } from '../../services/teamServices';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userProfileEdit } from '../../utility/constants/Constant';
-import { formData } from '../../redux/selectors/formDataSelectors';
-import { setFormData } from '../../redux/reducers/formData';
+import { confirmSaveForLater, formData, navigatingRoute } from '../../redux/selectors/formDataSelectors';
+import { setConfirmSaveForLater, setFormData } from '../../redux/reducers/formData';
 import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { createDraftTeam, updateDraftTeam } from '../../redux/actions/teamsActions';
 import { ERROR } from '../../utility/constants/ToastTypes';
+import SaveForLaterModal from '../modals/SaveForLaterModal';
 
 const Profile = ({ setDraftSavedModal }) => {
   const ProfileSchema = yup.object().shape({
@@ -90,13 +91,26 @@ const Profile = ({ setDraftSavedModal }) => {
   const params = useParams();
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
   const loading = useSelector((state) => state.clubs.loading);
+  const dispatch = useDispatch();
+  const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
+  const isOpenSaveForLater = useSelector(confirmSaveForLater);
+  const navigatedRoute = useSelector(navigatingRoute);
+  const toggleOpenSaveLaterModal = () => {
+    setOpenSaveLaterModal(!openSaveLaterModal);
+    dispatch(setConfirmSaveForLater(false));
+  };
+
+  useEffect(() => {
+    if(isOpenSaveForLater){
+      setOpenSaveLaterModal(true);
+    }
+  }, [isOpenSaveForLater]);
 
   const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
   const toggleEmailVerifyModal = () => setEmailVerifyModal(!emailVerifyModal);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const localFormData = useWatch({ control });
 
@@ -175,7 +189,6 @@ const Profile = ({ setDraftSavedModal }) => {
   }, [params, params?.id, dispatch]);
 
   const onDraftSubmit = () => {
-    if (saveAsDraftClicked.current) {
       const reqData = {
         team_type: 'CLUB',
         name: clubDraftData?.name || null,
@@ -204,6 +217,8 @@ const Profile = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       } else {
@@ -214,10 +229,11 @@ const Profile = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       }
-    }
   };
 
   const isWebpageValue = watch('isWebpage');
@@ -291,6 +307,7 @@ const Profile = ({ setDraftSavedModal }) => {
       )}
       {clubCreatedModal && <ClubCreatedModal modal={clubCreatedModal} toggleModal={toggleClubCreatedModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
+      {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftType='CLUB' draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
         <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">Club details</h4>
