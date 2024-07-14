@@ -31,7 +31,7 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
           toggleModal={toggleSavedDraftsAvailableModal}
-          modalText="You have a bid in draft mode for this project. Would you like to continue where you left off?"
+          modalText={`You have a ${selectedGroup === 'CLUB' ? 'Club' : 'Team'} in draft mode. Would you like to continue where you left off from the drafts?`}
           firstBtnText={`Create New ${selectedGroup === 'CLUB' ? 'Club' : 'Team'}`}
           secondBtnText="View Draft"
           firstBtnAction={() => {

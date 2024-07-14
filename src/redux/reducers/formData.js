@@ -6,6 +6,8 @@ const initialState = {
   formImage: null,
   parseResume: false,
   isFormImageRemoved: null,
+  confirmSaveForLater: false,
+  navigatingRoute: '',
 };
 
 const formData = createSlice({
@@ -39,10 +41,18 @@ const formData = createSlice({
       formImage: null,
       isFormImageRemoved: null,
     }),
+    setConfirmSaveForLater: (state, action) => ({
+      ...state,
+      confirmSaveForLater: action.payload,
+    }),
+    setNavigatingRoute: (state, action) => ({
+      ...state,
+      navigatingRoute: action.payload,
+    }),
   },
 });
 
-export const { setFormData, setFormDocuments, setFormImage, setResumeParsed, setIsFormImageRemoved, clearAllFormData } =
+export const { setFormData, setFormDocuments, setFormImage, setResumeParsed, setIsFormImageRemoved, clearAllFormData, setConfirmSaveForLater, setNavigatingRoute } =
   formData.actions;
 
 export default formData.reducer;

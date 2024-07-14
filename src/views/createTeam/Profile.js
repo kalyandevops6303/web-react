@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import Select from 'react-select';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
@@ -54,8 +55,8 @@ import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
 import TeamCreatingModal from './TeamCreatingModal';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
-import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
-import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
+import { confirmSaveForLater, formData, formDocuments, formImage, isFormImageRemoved, navigatingRoute } from '../../redux/selectors/formDataSelectors';
+import { setConfirmSaveForLater, setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
 import { getItemFromSession } from '../../utility/sessesionStorageControl';
 import TextEditor from '../CreateProject/TextEditor';
 import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
@@ -65,6 +66,7 @@ import NoteComponent from '../Onboarding/NoteComponent';
 import CustomerSupportModal from '../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../modals/CustomerSupportFeedbackModal';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import SaveForLaterModal from '../modals/SaveForLaterModal';
 
 const Profile = ({ setDraftSavedModal }) => {
   const ProfileSchema = yup.object().shape({
@@ -241,6 +243,19 @@ const Profile = ({ setDraftSavedModal }) => {
   const isGetDraftTeamLoading = useSelector(getDraftTeamLoading);
   const savedFormImage = useSelector(formImage);
   const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
+  const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
+  const isOpenSaveForLater = useSelector(confirmSaveForLater);
+  const navigatedRoute = useSelector(navigatingRoute);
+  const toggleOpenSaveLaterModal = () => {
+    setOpenSaveLaterModal(!openSaveLaterModal);
+    dispatch(setConfirmSaveForLater(false));
+  };
+
+  useEffect(() => {
+    if(isOpenSaveForLater){
+      setOpenSaveLaterModal(true);
+    }
+  }, [isOpenSaveForLater]);
 
   const localFormData = useWatch({ control });
 
@@ -320,9 +335,9 @@ const Profile = ({ setDraftSavedModal }) => {
   }, [imageUrlRes]);
 
   const onDraftSubmit = () => {
-    if (saveAsDraftClicked.current) {
-      const languages_supported =  languagesOptions?.map((language) => language.value);
-      // const languages_supported = watch('languagesSupported')?.map((language) => language.value) 
+    // if (saveAsDraftClicked.current) {
+      // const languages_supported =  languagesOptions?.map((language) => language.value);
+      const languages_supported = watch('languagesSupported')?.map((language) => language.value);
       const skillsSelected = watch('skills')?.map((skill) => skill.value);
       const servicesSelected = watch('services').map((skill) => skill.value);
       const toolsSelected = watch('tools')?.map((skill) => skill.value);
@@ -347,12 +362,12 @@ const Profile = ({ setDraftSavedModal }) => {
       const reqData = {
         team_type: 'TEAM',
         name: watch('teamName'),
-        team_logo: imageUrlRes?.file_key || null,
+        // team_logo: imageUrlRes?.file_key ?? null,
         tagline: watch('teamTagline') || null,
         introduction: watch('teamIntroduction') || null,
+        languages_supported: languages_supported || null,
         interests: null,
         services: servicesSelected || null,
-        languages_supported,
         tools: toolsSelected || null,
         skills: skillsSelected || null,
         availability: availability || null,
@@ -368,6 +383,8 @@ const Profile = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       } else {
@@ -378,10 +395,12 @@ const Profile = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       }
-    }
+    // }
   };
 
   const onSubmit = (data) => {
@@ -959,7 +978,7 @@ const Profile = ({ setDraftSavedModal }) => {
     } else if (savedFormDocuments) {
       setSelectedImage(savedFormDocuments);
       if (!location.pathname.includes('profile-edit')) {
-        setSelectedImagePreview(URL?.createObjectURL(savedFormDocuments));
+        setSelectedImagePreview(URL?.createObjectURL(savedFormDocuments && savedFormDocuments));
       } else {
         setSelectedImagePreview(savedFormDocuments);
       }
@@ -1027,6 +1046,7 @@ const Profile = ({ setDraftSavedModal }) => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
+          {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
           <Card>
             <CardHeader>
               <h4 className="m-0 mt-1">About</h4>
