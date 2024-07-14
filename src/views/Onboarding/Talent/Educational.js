@@ -56,6 +56,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import { formData, resumeParsed, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments } from '../../../redux/reducers/formData';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+import { prepopulateAssessments } from '../../../redux/actions/assessmentActions';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -91,16 +92,14 @@ const Educational = () => {
       .max(5, 'Maximum of five tools can be added')
       .nullable()
       .optional(),
-    certificates: yup
-      .array()
-      .of(
-        yup.object().shape({
-          label: yup.string(),
-          value: yup.string(),
-        }),
-      )
-      .nullable()
-      .optional(),
+    certificates: yup.array().of(
+      yup.object().shape({
+        label: yup.string(),
+        value: yup.string(),
+      }),
+    )
+    .nullable()
+    .optional(),
     skills: yup
       .array()
       .of(

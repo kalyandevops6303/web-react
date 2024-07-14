@@ -70,6 +70,7 @@ const ProjectCard = ({
     SIGN_NDA : 'Sign NDA',
     PAYMENT_PENDING : 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
+    DISPUTED : "Disputed",
   };
 
   const primaryStatus = {
@@ -82,6 +83,7 @@ const ProjectCard = ({
     ON_GOING: 'On Going',
     ACTIVE: 'Active',  
     WITHDRAWN: 'Withdrawn',  
+    DISPUTED : "Disputed",
   };
 
   const divRef = useRef(null);

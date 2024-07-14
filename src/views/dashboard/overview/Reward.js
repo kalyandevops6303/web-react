@@ -33,7 +33,7 @@ const RewardsCard = ({ cols }) => {
       icon: <User size={24} />,
     },
     {
-      title: '$0',
+      title: '0',
       subtitle: 'Referrals',
       color: 'light-warning',
       icon: <Users size={24} />,
