@@ -45,7 +45,7 @@ import {
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
-import { createDraftTeam, getDraftTeamById, updateDraftTeam, updateTeam } from '../../redux/actions/teamsActions';
+import { createDraftTeam, deleteDraftTeam, getDraftTeamById, updateDraftTeam, updateTeam } from '../../redux/actions/teamsActions';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
 import { getDraftTeamLoading, saveDraftTeamLoading, updateTeamLoading } from '../../redux/selectors/teamSelectors';
@@ -60,7 +60,7 @@ import { setConfirmSaveForLater, setFormData, setFormDocuments, setFormImage, se
 import { getItemFromSession } from '../../utility/sessesionStorageControl';
 import TextEditor from '../CreateProject/TextEditor';
 import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
-import { CUSTOMER_SUPPORT_TYPES } from '../../utility/constants/Constant';
+import { clubOrTeamStatuses, CUSTOMER_SUPPORT_TYPES, teamTypes } from '../../utility/constants/Constant';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import NoteComponent from '../Onboarding/NoteComponent';
 import CustomerSupportModal from '../modals/CustomerSupportModal';
@@ -216,6 +216,7 @@ const Profile = ({ setDraftSavedModal }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [teamCreatedModal, setTeamCreatedModal] = useState(null);
+  const [draftTeamId, setDraftTeamId] = useState(null);
   const [teamCreatingModal, setTeamCreatingModal] = useState(null);
   const [teamData, setTeamData] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(false);
@@ -335,8 +336,6 @@ const Profile = ({ setDraftSavedModal }) => {
   }, [imageUrlRes]);
 
   const onDraftSubmit = () => {
-    // if (saveAsDraftClicked.current) {
-      // const languages_supported =  languagesOptions?.map((language) => language.value);
       const languages_supported = watch('languagesSupported')?.map((language) => language.value);
       const skillsSelected = watch('skills')?.map((skill) => skill.value);
       const servicesSelected = watch('services').map((skill) => skill.value);
@@ -400,7 +399,6 @@ const Profile = ({ setDraftSavedModal }) => {
           }),
         );
       }
-    // }
   };
 
   const onSubmit = (data) => {
@@ -448,7 +446,8 @@ const Profile = ({ setDraftSavedModal }) => {
 
       if (imageUrlRes) {
         reqData = {
-          team_type: 'TEAM',
+          team_type: teamTypes.team,
+          creation_status:clubOrTeamStatuses.SAVED,
           _id: userDetailsData._id,
           name: teamName,
           team_logo: imageUrlRes.file_key,
@@ -463,7 +462,8 @@ const Profile = ({ setDraftSavedModal }) => {
         dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
-          team_type: 'TEAM',
+          team_type: teamTypes.team,
+          creation_status:clubOrTeamStatuses.SAVED,
           _id: userDetailsData._id,
           name: teamName,
           tagline: teamTagline,
@@ -486,6 +486,7 @@ const Profile = ({ setDraftSavedModal }) => {
       if (imageUrlRes) {
         reqData = {
           name: teamName,
+          creation_status:clubOrTeamStatuses.SAVED,
           team_logo: imageUrlRes.file_key,
           tagline: teamTagline,
           introduction: teamIntroduction,
@@ -501,6 +502,7 @@ const Profile = ({ setDraftSavedModal }) => {
       } else {
         reqData = {
           name: teamName,
+          creation_status:clubOrTeamStatuses.SAVED,
           tagline: teamTagline,
           introduction: teamIntroduction,
           services: servicesSelected,
@@ -518,6 +520,7 @@ const Profile = ({ setDraftSavedModal }) => {
           setTeamCreatingModal(true);
         }
       }
+      dispatch(deleteDraftTeam({ id: draftTeamId, onSuccess: () => {}, onError: () => {} }));
     }
   };
 
@@ -747,6 +750,7 @@ const Profile = ({ setDraftSavedModal }) => {
         { shouldValidate: true },
       );
       setDraftImagePreview(data?.team_logo);
+      setDraftTeamId(data?._id);
     }
   };
 

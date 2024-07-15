@@ -15,6 +15,7 @@ import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import { filteredFormSchema, handleEmailClick, isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
 import {
+  deleteDraftClub,
   getDraftClubById,
   registerClubEmail,
   setClubCreateDataAction,
@@ -23,7 +24,7 @@ import {
 import EmailVerifyModal from './EmailVerifyModal';
 import { getTeamById } from '../../services/teamServices';
 import { userData } from '../../redux/selectors/dashboardSelectors';
-import { userProfileEdit } from '../../utility/constants/Constant';
+import { clubOrTeamStatuses, teamTypes, userProfileEdit } from '../../utility/constants/Constant';
 import { confirmSaveForLater, formData, navigatingRoute } from '../../redux/selectors/formDataSelectors';
 import { setConfirmSaveForLater, setFormData } from '../../redux/reducers/formData';
 import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
@@ -101,7 +102,7 @@ const Profile = ({ setDraftSavedModal }) => {
   };
 
   useEffect(() => {
-    if(isOpenSaveForLater){
+    if (isOpenSaveForLater) {
       setOpenSaveLaterModal(true);
     }
   }, [isOpenSaveForLater]);
@@ -136,7 +137,6 @@ const Profile = ({ setDraftSavedModal }) => {
   const onEmailVerifySuccess = (email) => {
     dispatch(registerClubEmail({ email, onSuccess }));
   };
-
   const onSubmit = (data) => {
     const { isWebpage, isUniversityApproval, clubEmailID, clubLinkedin, clubWebsite, universityWebpage } = data;
     const formDetails = { clubEmailID, clubLinkedin, clubWebsite, universityWebpage };
@@ -146,6 +146,7 @@ const Profile = ({ setDraftSavedModal }) => {
       linked_in: clubLinkedin,
       website: clubWebsite,
       university_webpage: universityWebpage,
+      creation_status: 'SAVED',
     };
 
     if (isWebpage === 'Yes' && isUniversityApproval) {
@@ -154,7 +155,6 @@ const Profile = ({ setDraftSavedModal }) => {
 
     const removeEmptyClubData = removeEmptyKeys(clubData);
     dispatch(setClubCreateDataAction(removeEmptyClubData));
-    // dispatch(deleteDraftClub({id:params?.id, onSuccess: () => navigate(`/dashboard`), onError: () => {}}));
 
     if (location.pathname.includes('profile-edit')) {
       const linked_in = clubLinkedin;
@@ -166,12 +166,11 @@ const Profile = ({ setDraftSavedModal }) => {
         navigate(`/dashboard`);
       };
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
-    }
-    else {
+    } else {
       onEmailVerifySuccess(formDetails.clubEmailID);
     }
+    dispatch(deleteDraftClub({ id: params?.id, onSuccess: () => {}, onError: () => {} }));
   };
-
   const onGetDraftClubDetails = async (data) => {
     if (data) {
       setClubDraftData(data);
@@ -189,51 +188,51 @@ const Profile = ({ setDraftSavedModal }) => {
   }, [params, params?.id, dispatch]);
 
   const onDraftSubmit = () => {
-      const reqData = {
-        team_type: 'CLUB',
-        name: clubDraftData?.name || null,
-        team_logo: clubDraftData?.team_logo || null,
-        tagline: clubDraftData?.tagline || null,
-        introduction: clubDraftData?.introduction || null,
-        education_institute: clubDraftData?.education_institute || null,
-        interests: clubDraftData?.interests || null,
-        languages_supported: null,
-        tools: clubDraftData?.tools || null,
-        skills: clubDraftData?.skills || null,
-        university_webpage: watch('universityWebpage') || null,
-        linked_in: watch('clubLinkedin') || null,
-        email: watch('clubEmailID') || null,
-        email_code:  null,
-        website: watch('clubWebsite') || null,
-        creation_status: 'DRAFT',
-      };
+    const reqData = {
+      team_type: teamTypes.club,
+      name: clubDraftData?.name || null,
+      team_logo: clubDraftData?.team_logo || null,
+      tagline: clubDraftData?.tagline || null,
+      introduction: clubDraftData?.introduction || null,
+      education_institute: clubDraftData?.education_institute || null,
+      interests: clubDraftData?.interests || null,
+      languages_supported: null,
+      tools: clubDraftData?.tools || null,
+      skills: clubDraftData?.skills || null,
+      university_webpage: watch('universityWebpage') || null,
+      linked_in: watch('clubLinkedin') || null,
+      email: watch('clubEmailID') || null,
+      email_code: null,
+      website: watch('clubWebsite') || null,
+      creation_status: clubOrTeamStatuses.DRAFT,
+    };
 
-      if (params?.id) {
-        dispatch(
-          updateDraftTeam({
-            id: params?.id,
-            data: reqData,
-            onSuccess: () => setDraftSavedModal(true),
-            onError: () => {
-              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
-            },
-            redirection: ()=> navigate(navigatedRoute),
-            isOpenSaveForLater,
-          }),
-        );
-      } else {
-        dispatch(
-          createDraftTeam({
-            data: reqData,
-            onSuccess: () => setDraftSavedModal(true),
-            onError: () => {
-              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
-            },
-            redirection: ()=> navigate(navigatedRoute),
-            isOpenSaveForLater,
-          }),
-        );
-      }
+    if (params?.id) {
+      dispatch(
+        updateDraftTeam({
+          id: params?.id,
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
+    } else {
+      dispatch(
+        createDraftTeam({
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
+    }
   };
 
   const isWebpageValue = watch('isWebpage');
@@ -307,7 +306,15 @@ const Profile = ({ setDraftSavedModal }) => {
       )}
       {clubCreatedModal && <ClubCreatedModal modal={clubCreatedModal} toggleModal={toggleClubCreatedModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
-      {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftType='CLUB' draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
+        {openSaveLaterModal && (
+          <SaveForLaterModal
+            modal={openSaveLaterModal}
+            toggleModal={toggleOpenSaveLaterModal}
+            draftType="CLUB"
+            draftAction={onDraftSubmit}
+            redirectionRoute={navigatedRoute}
+          />
+        )}
         <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">Club details</h4>
