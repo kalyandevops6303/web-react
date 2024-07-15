@@ -106,7 +106,7 @@ const Account = ({ setDraftSavedModal }) => {
         }),
       )
       .max(5, 'Maximum of five tools can be added')
-      .min(1, 'At least one tool is required'),
+      .min(1, 'At least one tool is required').nullable(),
     skills: yup
       .array()
       .of(
@@ -135,9 +135,9 @@ const Account = ({ setDraftSavedModal }) => {
       clubName: savedFormData?.clubName || '',
       clubTagline: savedFormData?.clubTagline || '',
       clubIntroduction: savedFormData?.clubIntroduction || '',
-      interests: savedFormData?.interests || [],
-      tools: savedFormData?.tools || [],
-      skills: savedFormData?.skills || [],
+      interests: savedFormData?.interests || null,
+      tools: savedFormData?.tools || null,
+      skills: savedFormData?.skills || null,
       educationInstitution: savedFormData?.educationInstitution || { label: '', value: '' },
     },
   });
@@ -621,6 +621,9 @@ const Account = ({ setDraftSavedModal }) => {
     } else {
       dispatch(clearClubCreateData());
     }
+    return () => {
+      dispatch(setFormDocuments(null));
+    };
   }, []);
 
   const allToolsList = useSelector(toolsList);

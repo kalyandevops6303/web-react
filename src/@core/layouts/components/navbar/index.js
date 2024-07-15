@@ -137,10 +137,6 @@ const ThemeNavbar = (props) => {
     }
 }, [location,location?.pathname]);
 
-useEffect(() => {
-  console.log(activeTab)
-}, [activeTab]);
-
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
   console.log(isOpenSaveForLater)
   return (
@@ -161,6 +157,7 @@ useEffect(() => {
           onClick={() => {
             if (draftTeamPath) {
               dispatch(setConfirmSaveForLater(true));
+              dispatch(setNavigatingRoute('/dashboard'));
             } else {
               if (userData) {
                 navigate('/dashboard');

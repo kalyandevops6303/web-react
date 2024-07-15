@@ -200,7 +200,7 @@ const Profile = ({ setDraftSavedModal }) => {
       languagesSupported: savedFormData?.languagesSupported || [],
       tools: savedFormData?.tools || [],
       skills: savedFormData?.skills || [],
-      preferredWorkingTimeZone: savedFormData?.preferredWorkingTimeZone || { label: '', value: '' },
+      preferredWorkingTimeZone: savedFormData?.preferredWorkingTimeZone || null,
       weekdayStartTime: savedFormData?.weekdayStartTime || {},
       weekdayEndTime: savedFormData?.weekdayEndTime || {},
       weekendStartTime: savedFormData?.weekendStartTime || {},
@@ -978,7 +978,7 @@ const Profile = ({ setDraftSavedModal }) => {
     } else if (savedFormDocuments) {
       setSelectedImage(savedFormDocuments);
       if (!location.pathname.includes('profile-edit')) {
-        setSelectedImagePreview(URL?.createObjectURL(savedFormDocuments && savedFormDocuments));
+        setSelectedImagePreview(URL?.createObjectURL(savedFormDocuments ?? null));
       } else {
         setSelectedImagePreview(savedFormDocuments);
       }
@@ -986,6 +986,9 @@ const Profile = ({ setDraftSavedModal }) => {
     if (savedFormImage) {
       setImageUrlRes(savedFormImage);
     }
+    return () => {
+      dispatch(setFormDocuments(null));
+    };
   }, []);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
