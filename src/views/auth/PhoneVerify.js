@@ -128,11 +128,11 @@ const VerifyPhone = () => {
             inputStyle={{
               border: `1px solid ${theme.OTPborderColor}`,
               borderRadius: '8px',
-              width: '50px',
+              width: '55px',
               height: '50px',
-              fontSize: '12px',
+              fontSize: '18px',
               color: '#000',
-              fontWeight: '400',
+              fontWeight: '500',
               caretColor: 'blue',
             }}
             focusStyle={{
