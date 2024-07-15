@@ -28,6 +28,8 @@ import SpeechEmoji from '../../assets/images/logo/speech_baloon.png';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
+import ShowToastMessage from '../../@core/components/toast';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 
 const VerifyPhone = () => {
   const dispatch = useDispatch();
@@ -49,7 +51,11 @@ const VerifyPhone = () => {
 
   useEffect(() => {
     if (isPhoneVerified && userType) {
-      navigate(`/${userType.toLowerCase()}-onboarding/account-details`);
+      // show success message and navigate user to login page
+      ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 2000);
     } else if (isPhoneVerified && !userType) {
       navigate('/auth');
     }
@@ -99,7 +105,7 @@ const VerifyPhone = () => {
         <CardText className="mb-2 card-text">
           We sent a verification code to your mobile number. Enter it in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Go back
+            Edit Mobile
           </span>
         </CardText>
 
