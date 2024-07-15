@@ -24,7 +24,7 @@ import {
 import ResendOTPComp from './components/ResendOTP';
 import OtpInput from '../../lib/otp-input';
 import LogoComp from './components/LogoComp';
-import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
+import SpeechEmoji from '../../assets/images/logo/speech_baloon.png';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
@@ -34,7 +34,7 @@ const VerifyPhone = () => {
   const navigate = useNavigate();
   const savedFormData = useSelector(formData);
   const [code, setCode] = useState(savedFormData?.code || '');
-
+  const [error, setError] = useState('');
   const isLoading = useSelector(selectAuthLoading);
   const isPhoneVerified = useSelector(selectIsPhoneVerified);
   const phoneData = useSelector(selectMobile);
@@ -66,7 +66,7 @@ const VerifyPhone = () => {
   });
 
   const handleChange = (value) => {
-    dispatch(setFormData({code:value}));
+    dispatch(setFormData({ code: value }));
     setCode(value);
   };
 
@@ -75,8 +75,8 @@ const VerifyPhone = () => {
     setSelectedCountry(value);
   };
 
-  const verifyOtp = () => {
-    dispatch(
+  const verifyOtp = async () => {
+    const response = await dispatch(
       verifyPhone({
         phone: phoneData.phone,
         country_code: phoneData?.selectedCountry.dial_code,
@@ -84,6 +84,7 @@ const VerifyPhone = () => {
         country_id: phoneData?.selectedCountry?._id,
       }),
     );
+    setError(response);
     dispatch(clearAllFormData());
   };
 
@@ -92,7 +93,7 @@ const VerifyPhone = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Two Step Verification <img className='speech-emoji' src={SpeechEmoji} alt='' />
+          Two Step Verification <img className="speech-emoji" src={SpeechEmoji} alt="" />
         </CardTitle>
 
         <CardText className="mb-2 card-text">
@@ -128,11 +129,11 @@ const VerifyPhone = () => {
             inputStyle={{
               border: `1px solid ${theme.OTPborderColor}`,
               borderRadius: '8px',
-              width: '50px',
+              width: '55px',
               height: '50px',
-              fontSize: '12px',
+              fontSize: '18px',
               color: '#000',
-              fontWeight: '400',
+              fontWeight: '500',
               caretColor: 'blue',
             }}
             focusStyle={{
@@ -140,6 +141,9 @@ const VerifyPhone = () => {
               outline: 'none',
             }}
           />
+          {error && <Label className="mt-2 text-danger text-xl-left">
+            <b>{error}</b>
+          </Label>}
           <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             Submit
           </Button>
