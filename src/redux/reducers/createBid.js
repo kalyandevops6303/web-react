@@ -14,6 +14,7 @@ const initialState = {
   draftSetWorkersLoading: false,
   setMilestonesLoading: false,
   draftSetMilestonesLoading: false,
+  getDraftMilestoneLoading: false,
   submitBidLoading: false,
   changeBidTypeLoading: false,
   deleteDraftBidLoading: false,
@@ -163,6 +164,21 @@ const createBid = createSlice({
       error: action.payload,
     }),
 
+    getDrafttMilestonesRequest: (state) => ({
+      ...state,
+      getDraftMilestoneLoading: true,
+      error: null,
+    }),
+    getDrafttMilestonesSuccess: (state) => ({
+      ...state,
+      getDraftMilestoneLoading: false,
+    }),
+    getDrafttMilestonesFailure: (state, action) => ({
+      ...state,
+      getDraftMilestoneLoading: false,
+      error: action.payload,
+    }),
+
     submitBidRequest: (state) => ({
       ...state,
       submitBidLoading: true,
@@ -247,6 +263,9 @@ export const {
   deleteDraftBidRequest,
   deleteDraftBidSuccess,
   deleteDraftBidFailure,
+  getDrafttMilestonesRequest,
+  getDrafttMilestonesSuccess,
+  getDrafttMilestonesFailure,
 } = createBid.actions;
 
 export default createBid.reducer;

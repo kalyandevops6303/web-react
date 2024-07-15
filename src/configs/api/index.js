@@ -188,6 +188,9 @@ const API = {
     markComplete: `${apiCreateProjectEndpoint}/api/v1/project/milestones/complete`,
     getSingleMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestone`,
     getDisputes: `${apiCreateProjectEndpoint}/api/v1/project/disputes`,
+    saveDraftMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts/save`,
+    getDraftMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts/draft`,
+    deleteDraftMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts/delete`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
