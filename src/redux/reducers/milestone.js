@@ -190,6 +190,9 @@ export const {
   milestoneDisputeFailure,
   milestoneDisputeRequest,
   milestoneDisputeSuccess,
+  draftMilestoneRequest,
+  draftMilestoneSuccess,
+  draftMilestoneFailure,
 } = milestoneSlice.actions;
 
 export default milestoneSlice.reducer;
