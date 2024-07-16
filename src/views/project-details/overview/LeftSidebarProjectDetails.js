@@ -34,11 +34,11 @@ const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, sta
   // checking whether the secondary status is present in the statusEnum or not
   if (Object.keys(statusDisplay)?.includes(secondary_status_text)) {
     return statusDisplay[secondary_status_text].state;
-  } if (Object.keys(statusEnum)?.includes(secondary_status_text)) {
+  }
+  if (Object.keys(statusEnum)?.includes(secondary_status_text)) {
     return statusEnum[secondary_status_text];
-  } 
-    return secondary_status_text;
-  
+  }
+  return secondary_status_text;
 };
 
 const LeftSidebarProjectDetails = () => {
@@ -132,11 +132,11 @@ const LeftSidebarProjectDetails = () => {
       bgcolor: 'success',
       text: 'success',
     },
-    DISPUTED : {
-      state : "Disputed",
-      bgcolor : "DISPUTED",
-      text : "Disputed"
-    }
+    DISPUTED: {
+      state: 'Disputed',
+      bgcolor: 'DISPUTED',
+      text: 'Disputed',
+    },
   };
   const isLoading = useSelector(projectDetailsLoading);
   const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
@@ -418,9 +418,7 @@ const LeftSidebarProjectDetails = () => {
           {userData?.user_type === userTypes.client && (
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                {(projectDetailsData?.status === 'ACTIVE' ||
-                  projectDetailsData?.status === 'ON_GOING' ||
-                  projectDetailsData?.status === 'COMPLETED') && (
+                {(projectDetailsData?.status === 'ACTIVE' || projectDetailsData?.status === 'ON_GOING') && (
                   <Button className="w-50" color="danger" onClick={handleDelete}>
                     Terminate
                   </Button>
