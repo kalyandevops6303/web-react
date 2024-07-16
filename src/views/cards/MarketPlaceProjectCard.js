@@ -255,6 +255,7 @@ const MarketPlaceProjectCard = ({
                     {project?.client?.office_address?.country?.name ||
                       project?.client_details?.office_address?.country?.name ||
                       data?.client?.country_name ||
+                      project?.country_name ||
                       'Location'}
                   </CardText>
                   <CardText className=" mb-1">

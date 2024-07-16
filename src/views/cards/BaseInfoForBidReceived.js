@@ -113,7 +113,7 @@ const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
         </div>
       </IconWrapper>
 
-      <div>
+      {project && <div>
         <BadgeGroup
           title="Skills"
           data={project?.skills_required}
@@ -126,7 +126,7 @@ const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
           color="light-blue"
           id={`tooltip-tools-project-${project?._id}`}
         />
-      </div>
+      </div>}
       <BidsReceivedWrapper>
         <p className="wrapper-title mb-50">Bids Received</p>
         {bidsReceivedAvatarGroup?.length ? (
