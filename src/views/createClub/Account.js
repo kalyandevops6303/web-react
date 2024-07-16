@@ -80,7 +80,7 @@ const Account = ({ setDraftSavedModal }) => {
         label: yup.string(),
         value: yup.string(),
       })
-      .required('Education institution is required'),
+      .required('Education institution is required').nullable(),
     clubIntroduction: yup
       .string()
       .max(500, 'Introduction must be 500 characters or less')
@@ -135,10 +135,10 @@ const Account = ({ setDraftSavedModal }) => {
       clubName: savedFormData?.clubName || '',
       clubTagline: savedFormData?.clubTagline || '',
       clubIntroduction: savedFormData?.clubIntroduction || '',
-      interests: savedFormData?.interests || null,
-      tools: savedFormData?.tools || null,
-      skills: savedFormData?.skills || null,
-      educationInstitution: savedFormData?.educationInstitution || { label: '', value: '' },
+      interests: savedFormData?.interests || [],
+      tools: savedFormData?.tools || [],
+      skills: savedFormData?.skills || [],
+      educationInstitution: savedFormData?.educationInstitution || null,
     },
   });
 
@@ -183,7 +183,7 @@ const Account = ({ setDraftSavedModal }) => {
     }
   }, [isOpenSaveForLater]);
 
-  const localFormData = useWatch({ control });
+  const localFormData = useWatch({ control });  
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
@@ -236,7 +236,6 @@ const Account = ({ setDraftSavedModal }) => {
     const myInstitution = userDetailsData?.talent_info?.educational_institute
       .map((educationDetails) => educationDetails.institution)
       .map((institute) => institute._id);
-
     const otherIntitution = myInstitution.includes(selectedOptionValue);
 
     if (!otherIntitution) {
@@ -274,10 +273,10 @@ const Account = ({ setDraftSavedModal }) => {
     }
   }, [imageUrlRes]);
 
-  const onDraftSubmit = () => {
-      const skillsSelected = watch('skills')?.map((skill) => skill.value);
-      const interestsSelected = watch('interests').map((skill) => skill.value);
-      const toolsSelected = watch('tools')?.map((skill) => skill.value);
+  const onDraftSubmit = async() => {
+      const skillsSelected = watch('skills') && watch('skills')?.map((skill) => skill.value);
+      const interestsSelected = watch('interests') && watch('interests').map((skill) => skill.value);
+      const toolsSelected = watch('tools') && watch('tools')?.map((skill) => skill.value);
 
       const reqData = {
         team_type: 'CLUB',
@@ -300,7 +299,7 @@ const Account = ({ setDraftSavedModal }) => {
       };
 
       if (params?.id) {
-        dispatch(
+       await dispatch(
           updateDraftClub({
             id: params?.id,
             data: reqData,
@@ -313,7 +312,7 @@ const Account = ({ setDraftSavedModal }) => {
           }),
         );
       } else {
-        dispatch(
+       await dispatch(
           createDraftClub({
             data: reqData,
             onSuccess: () => setDraftSavedModal(true),
@@ -327,7 +326,7 @@ const Account = ({ setDraftSavedModal }) => {
       }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async(data) => {
     let otherIntitution;
     if (!location.pathname.includes('profile-edit')) {
       const selectedOptionValue = selectedOption?.value;
@@ -389,6 +388,7 @@ const Account = ({ setDraftSavedModal }) => {
           }
         }
       } else {
+        await  onDraftSubmit();
         // eslint-disable-next-line no-lonely-if
         if (imageUrlRes) {
           reqData = {
@@ -444,6 +444,7 @@ const Account = ({ setDraftSavedModal }) => {
             }
           }
         }
+              
       }
     }
   };
@@ -1138,7 +1139,7 @@ const Account = ({ setDraftSavedModal }) => {
               color="primary"
               className="me-2"
               outline
-              disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading || !watch('clubName')}
+              disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading}
             >
               {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
             </Button>

@@ -361,7 +361,7 @@ const Profile = ({ setDraftSavedModal }) => {
       const reqData = {
         team_type: 'TEAM',
         name: watch('teamName'),
-        // team_logo: imageUrlRes?.file_key ?? null,
+        team_logo: imageUrlRes?.file_key ?? null,
         tagline: watch('teamTagline') || null,
         introduction: watch('teamIntroduction') || null,
         languages_supported: languages_supported || null,
@@ -1746,7 +1746,7 @@ const Profile = ({ setDraftSavedModal }) => {
               color="primary"
               className="me-2"
               outline
-              disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading || !watch('teamName')}
+              disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading}
             >
               {saveDraftTeamIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
             </Button>

@@ -168,8 +168,8 @@ const Profile = ({ setDraftSavedModal }) => {
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
       onEmailVerifySuccess(formDetails.clubEmailID);
+      dispatch(deleteDraftClub({ id: params?.id, onSuccess: () => {}, onError: () => {} }));
     }
-    dispatch(deleteDraftClub({ id: params?.id, onSuccess: () => {}, onError: () => {} }));
   };
   const onGetDraftClubDetails = async (data) => {
     if (data) {
