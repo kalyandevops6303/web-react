@@ -20,15 +20,18 @@ import {
   submitMilestoneSuccess,
 } from '../reducers/milestone';
 import {
+  getDraftMilestoneService,
   getMilestoneDisputesService,
   getSubmissionHistoryService,
   markCompelteService,
   milestoneDetailService,
+  saveDraftMilestoneService,
   submitMilestoneService,
 } from '../../services/projectMilestoneService';
 import { transferFundService } from '../../services/paymentDetailService';
 
 import { scanAndProcessFiles } from '../../utility/Utils';
+import { draftSetMilestonesFailure, draftSetMilestonesRequest, draftSetMilestonesSuccess, getDrafttMilestonesSuccess } from '../reducers/createBid';
 
 const getMilestoneDetail =
   ({ milestoneId }) =>
@@ -127,6 +130,40 @@ const markComplete =
     }
   };
 
+const saveDraftMilestone = ({milestoneId, data, onSuccess}) => async (dispatch) => {
+  dispatch(draftSetMilestonesRequest());
+  try {
+    const res = await saveDraftMilestoneService(milestoneId, data);
+    dispatch(draftSetMilestonesSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, draftSetMilestonesFailure);
+  }
+};
+
+const getDraftMilestone = ({milestoneId, onGetSavedMilestone , onSuccess}) => async (dispatch) => {
+  dispatch(getDrafttMilestonesSuccess());
+  try {
+    const res = await getDraftMilestoneService(milestoneId);
+   await dispatch(getDrafttMilestonesSuccess(res.data.data));
+    await onGetSavedMilestone(res.data.data);
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, draftSetMilestonesFailure);
+  }
+};
+
+const deleteDraftMilestone = ({milestoneId, onSuccess}) => async (dispatch) => {
+  dispatch(draftSetMilestonesRequest());
+  try {
+    const res = await getDraftMilestoneService(milestoneId);
+    dispatch(draftSetMilestonesSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, draftSetMilestonesFailure);
+  }
+};
+
 export {
   getMilestoneDetail,
   getMilestoneDisputes,
@@ -134,4 +171,7 @@ export {
   markComplete,
   getSubmissionHistory,
   accpetMilestone,
+  saveDraftMilestone,
+  getDraftMilestone,
+  deleteDraftMilestone,
 };

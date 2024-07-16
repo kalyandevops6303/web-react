@@ -9,6 +9,7 @@ import { getItemFromSession, removeItemFromSession } from '../../utility/sessesi
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import { userProfileEdit } from '../../utility/constants/Constant';
 import { CircularBackButtonContainer } from '../styled';
+import { setConfirmSaveForLater, setNavigatingRoute } from '../../redux/reducers/formData';
 
 const CreateTeam = () => {
   const tabNames = {
@@ -19,7 +20,6 @@ const CreateTeam = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   useEffect(() => {
     const profileDetailsPath = /^\/create-team\/profile-details(\/.*)?$/;
     if (profileDetailsPath.test(location.pathname)) {
@@ -43,7 +43,10 @@ const CreateTeam = () => {
         {location.pathname.includes('create-team') ? (
           <CircularBackButtonContainer
             className="d-flex align-items-center cursor-pointer"
-            onClick={() => navigate('/dashboard')}
+            onClick={() =>{
+              dispatch(setConfirmSaveForLater(true));
+              dispatch(setNavigatingRoute('/dashboard'));
+            }}
           >
             <div className="back-icon-container">
               <ArrowLeft size={18} color={theme.white} />

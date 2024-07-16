@@ -12,4 +12,8 @@ const resumeParsed = createSelector(formDataSelector, (state) => state.parseResu
 
 const isFormImageRemoved = createSelector(formDataSelector, (state) => state.isFormImageRemoved);
 
-export { formData, formDocuments, formImage, resumeParsed, isFormImageRemoved };
+const confirmSaveForLater = createSelector(formDataSelector, (state) => state.confirmSaveForLater);
+
+const navigatingRoute = createSelector(formDataSelector, (state) => state.navigatingRoute);
+
+export { formData, formDocuments, formImage, resumeParsed, isFormImageRemoved, confirmSaveForLater, navigatingRoute };

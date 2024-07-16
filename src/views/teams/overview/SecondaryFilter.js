@@ -13,7 +13,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, isEmpty, selectThemeColors, useIsTab } from '../../../utility/Utils';
 
 import { clearData } from '../../../redux/reducers/myTeams';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';

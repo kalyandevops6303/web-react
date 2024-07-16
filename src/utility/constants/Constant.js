@@ -23,6 +23,12 @@ const userTypes = {
   team: 'TEAM',
   club: 'CLUB',
 };
+
+const teamTypes = {
+  team: 'TEAM',
+  club: 'CLUB',
+};
+
 const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
@@ -49,6 +55,11 @@ const bidTypes = {
 };
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
+const clubOrTeamStatuses = {
+  SAVED: 'SAVED',
+  DRAFT: 'DRAFT',
+};
+
 const bidStatusesOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Updated', value: 'UPDATED' },
@@ -59,14 +70,13 @@ const bidStatusesOptions = [
 ];
 
 const teamStatusesOptions = [
-  {
-    label: 'Saved',
-    value: 'SAVED',
-  },
-  {
-    label: 'Drafts',
-    value: 'DRAFT',
-  }
+  { label: 'Saved', value: 'SAVED' },
+  { label: 'Drafts', value: 'DRAFT' },
+];
+
+const clubStatusesOptions = [
+  { label: 'Accepted', value: 'ACCEPTED' },
+  { label: 'Drafts', value: 'DRAFT' },
 ];
 
 const statusesOptions = [
@@ -222,6 +232,7 @@ export {
   userTypes,
   userOnboarding,
   teamStatusesOptions,
+  clubStatusesOptions,
   userProfileEdit,
   sortingOptions,
   statusesOptions,
@@ -252,4 +263,6 @@ export {
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
   TEAM_STATUS,
+  teamTypes,
+  clubOrTeamStatuses,
 };

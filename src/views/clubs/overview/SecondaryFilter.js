@@ -8,7 +8,7 @@ import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
 import CollInactive from '@src/assets/images/coll_inactive.png';
 import ExpandActive from '@src/assets/images/expand_active.png';
-
+import { useLocation } from 'react-router-dom';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
@@ -17,7 +17,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isEmpty, selectThemeColors, useIsTab } from '../../../utility/Utils';
 
 import { clearData } from '../../../redux/reducers/clubs';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -29,6 +29,7 @@ import { skillsService, toolsService } from '../../../services/staticServices';
 import { getClubs } from '../../../redux/actions/clubActions';
 import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
+import { clubStatusesOptions } from '../../../utility/constants/Constant';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -62,9 +63,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const dispatch = useDispatch();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
-
+  const location = useLocation();
   const [hasMore, setHasMore] = useState(true);
   const [secondFilterState, setSecondFilterState] = useState({
+    clubStatus: location?.state?.isDraftClubs ? [{ label: 'Drafts', value: 'DRAFT' }] : [],
     status: [],
     skills: [],
     tools: [],
@@ -138,12 +140,20 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
 
     if (primaryFilter === 'my_clubs') {
+      let status = null;
+      if (secondFilterState.clubStatus?.map((item) => item.value).includes('DRAFT')) {
+        status = 'DRAFT';
+      } else if (secondFilterState.clubStatus?.map((item) => item.value).includes('SAVED')) {
+        status = 'ACCEPTED';
+      } else {
+        status = null;
+      }
       dispatch(
         getClubs({
           metaData,
           onSuccess,
           onError,
-          filterData: { clubs_filter: 'MY_CLUBS', search_query: searchText || '' },
+          filterData: { clubs_filter: 'MY_CLUBS', search_query: searchText || '', creation_status: status },
         }),
       );
     } else if (primaryFilter === 'all_clubs') {
@@ -489,6 +499,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             ) : null}
+
+            {(primaryFilter === 'my_clubs' || primaryFilter === 'all_clubs') && (
+              <Col>
+                <Label className="form-label">Status</Label>
+                <Select
+                  isClearable
+                  loadOptions={clubStatusesOptions}
+                  classNamePrefix="select"
+                  placeholder="Select status"
+                  theme={selectThemeColors}
+                  className={classNames('react-select')}
+                  onChange={(value) => onChangeFilter('clubStatus', value)}
+                  value={
+                    !isEmpty(secondFilterState?.clubStatus)
+                      ? { value: secondFilterState.clubStatus[0].value, label: secondFilterState.clubStatus[0].label }
+                      : null
+                  }
+                />
+              </Col>
+            )}
             {(primaryFilter === 'recommendation' ||
               primaryFilter === 'clients' ||
               primaryFilter === 'talents' ||

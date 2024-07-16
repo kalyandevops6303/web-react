@@ -54,6 +54,12 @@ const getMilestoneDisputesService = ({ metaData, milestoneId, projectId }) =>
 const markCompelteService = (milestone_id) =>
   DataService.put(`${API.projectMilestones.markComplete}?milestone_id=${milestone_id}`);
 
+const saveDraftMilestoneService = (milestone_id, data) => DataService.post(`${API.projectMilestones.saveDraftMilestone}?milestone_id=${milestone_id}`, data);
+
+const getDraftMilestoneService = (milestone_id) => DataService.get(`${API.projectMilestones.getDraftMilestone}?milestone_id=${milestone_id}`);
+
+const deleteDraftMilestoneService = (milestone_id) => DataService.delete(`${API.projectMilestones.deleteDraftMilestone}?milestone_id=${milestone_id}`);
+
 export {
   markCompelteService,
   submitMilestoneService,
@@ -67,4 +73,7 @@ export {
   milestoneDetailService,
   getSubmissionHistoryService,
   getMilestoneDisputesService,
+  saveDraftMilestoneService,
+  getDraftMilestoneService,
+  deleteDraftMilestoneService,
 };

@@ -32,6 +32,7 @@ import {
 import { getInvitedBySuccess } from '../reducers/projectDetails';
 import { getMyTeamFailure, getMyTeamRequest, getMyTeamSuccess } from '../reducers/dashboard';
 import { scanAndProcessFiles } from '../../utility/Utils';
+import { setConfirmSaveForLater } from '../reducers/formData';
 
 const getTeams =
   ({ onSuccess }) =>
@@ -92,13 +93,19 @@ const createTeam =
   };
 
 const createDraftTeam =
-  ({ data, onSuccess, onError }) =>
+  ({ data, onSuccess, onError, redirection, isOpenSaveForLater }) =>
   async (dispatch) => {
     try {
       dispatch(saveDraftTeamRequest());
       const res = await createDraftTeamService(data);
       await dispatch(saveDraftTeamSuccess(res));
-      onSuccess();
+
+      if (isOpenSaveForLater) {
+        redirection();
+      } else {
+        onSuccess();
+      }
+      dispatch(setConfirmSaveForLater(false));
     } catch (error) {
       onError();
       dispatch(saveDraftTeamError());
@@ -107,13 +114,18 @@ const createDraftTeam =
   };
 
 const updateDraftTeam =
-  ({ id, data, onSuccess, onError }) =>
+  ({ id, data, onSuccess, onError, redirection, isOpenSaveForLater }) =>
   async (dispatch) => {
     try {
       dispatch(saveDraftTeamRequest());
       const res = await updateDraftTeamService(id, data);
       await dispatch(saveDraftTeamSuccess(res));
-      onSuccess();
+      if (isOpenSaveForLater) {
+        redirection();
+      } else {
+        onSuccess();
+      }
+      dispatch(setConfirmSaveForLater(false));
     } catch (error) {
       onError();
       dispatch(saveDraftTeamError());
@@ -131,6 +143,7 @@ const checkDraftTeam =
         setSavedDraftsAvailableModal(true);
       }
       onSuccess();
+      dispatch(saveDraftTeamSuccess());
     } catch (error) {
       onError();
       dispatch(saveDraftTeamError());

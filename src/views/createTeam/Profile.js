@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import Select from 'react-select';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
@@ -44,7 +45,7 @@ import {
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
-import { createDraftTeam, getDraftTeamById, updateDraftTeam, updateTeam } from '../../redux/actions/teamsActions';
+import { createDraftTeam, deleteDraftTeam, getDraftTeamById, updateDraftTeam, updateTeam } from '../../redux/actions/teamsActions';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
 import { getDraftTeamLoading, saveDraftTeamLoading, updateTeamLoading } from '../../redux/selectors/teamSelectors';
@@ -54,17 +55,18 @@ import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
 import TeamCreatingModal from './TeamCreatingModal';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
-import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
-import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
+import { confirmSaveForLater, formData, formDocuments, formImage, isFormImageRemoved, navigatingRoute } from '../../redux/selectors/formDataSelectors';
+import { setConfirmSaveForLater, setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
 import { getItemFromSession } from '../../utility/sessesionStorageControl';
 import TextEditor from '../CreateProject/TextEditor';
 import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
-import { CUSTOMER_SUPPORT_TYPES } from '../../utility/constants/Constant';
+import { clubOrTeamStatuses, CUSTOMER_SUPPORT_TYPES, teamTypes } from '../../utility/constants/Constant';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import NoteComponent from '../Onboarding/NoteComponent';
 import CustomerSupportModal from '../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../modals/CustomerSupportFeedbackModal';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import SaveForLaterModal from '../modals/SaveForLaterModal';
 
 const Profile = ({ setDraftSavedModal }) => {
   const ProfileSchema = yup.object().shape({
@@ -198,7 +200,7 @@ const Profile = ({ setDraftSavedModal }) => {
       languagesSupported: savedFormData?.languagesSupported || [],
       tools: savedFormData?.tools || [],
       skills: savedFormData?.skills || [],
-      preferredWorkingTimeZone: savedFormData?.preferredWorkingTimeZone || { label: '', value: '' },
+      preferredWorkingTimeZone: savedFormData?.preferredWorkingTimeZone || null,
       weekdayStartTime: savedFormData?.weekdayStartTime || {},
       weekdayEndTime: savedFormData?.weekdayEndTime || {},
       weekendStartTime: savedFormData?.weekendStartTime || {},
@@ -214,6 +216,7 @@ const Profile = ({ setDraftSavedModal }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [teamCreatedModal, setTeamCreatedModal] = useState(null);
+  const [draftTeamId, setDraftTeamId] = useState(null);
   const [teamCreatingModal, setTeamCreatingModal] = useState(null);
   const [teamData, setTeamData] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(false);
@@ -241,6 +244,19 @@ const Profile = ({ setDraftSavedModal }) => {
   const isGetDraftTeamLoading = useSelector(getDraftTeamLoading);
   const savedFormImage = useSelector(formImage);
   const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
+  const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
+  const isOpenSaveForLater = useSelector(confirmSaveForLater);
+  const navigatedRoute = useSelector(navigatingRoute);
+  const toggleOpenSaveLaterModal = () => {
+    setOpenSaveLaterModal(!openSaveLaterModal);
+    dispatch(setConfirmSaveForLater(false));
+  };
+
+  useEffect(() => {
+    if(isOpenSaveForLater){
+      setOpenSaveLaterModal(true);
+    }
+  }, [isOpenSaveForLater]);
 
   const localFormData = useWatch({ control });
 
@@ -248,6 +264,7 @@ const Profile = ({ setDraftSavedModal }) => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
   }, [localFormData]);
+
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
   };
@@ -319,9 +336,7 @@ const Profile = ({ setDraftSavedModal }) => {
   }, [imageUrlRes]);
 
   const onDraftSubmit = () => {
-    if (saveAsDraftClicked.current) {
-      const languages_supported =  languagesOptions?.map((language) => language.value);
-      // const languages_supported = watch('languagesSupported')?.map((language) => language.value) 
+      const languages_supported = watch('languagesSupported')?.map((language) => language.value);
       const skillsSelected = watch('skills')?.map((skill) => skill.value);
       const servicesSelected = watch('services').map((skill) => skill.value);
       const toolsSelected = watch('tools')?.map((skill) => skill.value);
@@ -346,12 +361,12 @@ const Profile = ({ setDraftSavedModal }) => {
       const reqData = {
         team_type: 'TEAM',
         name: watch('teamName'),
-        team_logo: imageUrlRes?.file_key || null,
+        team_logo: imageUrlRes?.file_key ?? null,
         tagline: watch('teamTagline') || null,
         introduction: watch('teamIntroduction') || null,
+        languages_supported: languages_supported || null,
         interests: null,
         services: servicesSelected || null,
-        languages_supported,
         tools: toolsSelected || null,
         skills: skillsSelected || null,
         availability: availability || null,
@@ -367,6 +382,8 @@ const Profile = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       } else {
@@ -377,10 +394,11 @@ const Profile = ({ setDraftSavedModal }) => {
             onError: () => {
               ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
             },
+            redirection: ()=> navigate(navigatedRoute),
+            isOpenSaveForLater,
           }),
         );
       }
-    }
   };
 
   const onSubmit = (data) => {
@@ -428,7 +446,8 @@ const Profile = ({ setDraftSavedModal }) => {
 
       if (imageUrlRes) {
         reqData = {
-          team_type: 'TEAM',
+          team_type: teamTypes.team,
+          creation_status:clubOrTeamStatuses.SAVED,
           _id: userDetailsData._id,
           name: teamName,
           team_logo: imageUrlRes.file_key,
@@ -443,7 +462,8 @@ const Profile = ({ setDraftSavedModal }) => {
         dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
-          team_type: 'TEAM',
+          team_type: teamTypes.team,
+          creation_status:clubOrTeamStatuses.SAVED,
           _id: userDetailsData._id,
           name: teamName,
           tagline: teamTagline,
@@ -466,6 +486,7 @@ const Profile = ({ setDraftSavedModal }) => {
       if (imageUrlRes) {
         reqData = {
           name: teamName,
+          creation_status:clubOrTeamStatuses.SAVED,
           team_logo: imageUrlRes.file_key,
           tagline: teamTagline,
           introduction: teamIntroduction,
@@ -481,6 +502,7 @@ const Profile = ({ setDraftSavedModal }) => {
       } else {
         reqData = {
           name: teamName,
+          creation_status:clubOrTeamStatuses.SAVED,
           tagline: teamTagline,
           introduction: teamIntroduction,
           services: servicesSelected,
@@ -498,6 +520,7 @@ const Profile = ({ setDraftSavedModal }) => {
           setTeamCreatingModal(true);
         }
       }
+      dispatch(deleteDraftTeam({ id: draftTeamId, onSuccess: () => {}, onError: () => {} }));
     }
   };
 
@@ -727,6 +750,7 @@ const Profile = ({ setDraftSavedModal }) => {
         { shouldValidate: true },
       );
       setDraftImagePreview(data?.team_logo);
+      setDraftTeamId(data?._id);
     }
   };
 
@@ -921,6 +945,7 @@ const Profile = ({ setDraftSavedModal }) => {
 
   const onRemovePictureClick = () => {
     setSelectedImage(null);
+    setDraftImagePreview(null);
     setSelectedImagePreview(null);
     setImageUrlRes(null);
     dispatch(setFormDocuments(null));
@@ -957,7 +982,7 @@ const Profile = ({ setDraftSavedModal }) => {
     } else if (savedFormDocuments) {
       setSelectedImage(savedFormDocuments);
       if (!location.pathname.includes('profile-edit')) {
-        setSelectedImagePreview(URL?.createObjectURL(savedFormDocuments));
+        setSelectedImagePreview(URL?.createObjectURL(savedFormDocuments ?? null));
       } else {
         setSelectedImagePreview(savedFormDocuments);
       }
@@ -965,6 +990,9 @@ const Profile = ({ setDraftSavedModal }) => {
     if (savedFormImage) {
       setImageUrlRes(savedFormImage);
     }
+    return () => {
+      dispatch(setFormDocuments(null));
+    };
   }, []);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
@@ -1025,6 +1053,7 @@ const Profile = ({ setDraftSavedModal }) => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
+          {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftType='TEAM' draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
           <Card>
             <CardHeader>
               <h4 className="m-0 mt-1">About</h4>
@@ -1717,7 +1746,7 @@ const Profile = ({ setDraftSavedModal }) => {
               color="primary"
               className="me-2"
               outline
-              disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading || !watch('teamName')}
+              disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading}
             >
               {saveDraftTeamIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
             </Button>
