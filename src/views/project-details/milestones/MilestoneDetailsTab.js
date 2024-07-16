@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Badge,
   Button,
@@ -47,7 +47,7 @@ import { TableWrapper } from '../style';
 import FeedbackForSubmitModal from '../../modals/FeedbackForSubmitModal';
 import RemoveArtifactsModal from '../../modals/RemoveArtifactsModal';
 import FeedbackRemoveArtifactsModal from '../../modals/FeedbackRemoveArtifacts';
-import { getDraftMilestone, saveDraftMilestone, submitMilstone } from '../../../redux/actions/milestoneActions';
+import { submitMilstone } from '../../../redux/actions/milestoneActions';
 import { milestoneSubmissionFileUploadService } from '../../../services/projectMilestoneService';
 
 const MilestoneDetailsSchema = yup.object().shape({
@@ -85,11 +85,8 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const userDataLocal = useSelector(selectAuthUserData);
   const isMilestoneSubmitting = useSelector((state) => state.milestone.isMilestoneSubmitting);
-  const isMilestoneDraftLoading = useSelector((state) => state.milestone.draftMilestoneLoading);
-  // const isGetMilestoneDraftLoading = useSelector((state) => state.milestone.getDraftMilestoneLoading);
   const {
     control,
-    watch,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -161,60 +158,6 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
     }
   };
-
-  const onSaveDraftMilestone = async () => {
-    const files = watch('documents');
-    const linksData = watch('links');
-    const postData = {
-      documents:
-        files?.map((file) => ({
-          file_name: file?.fileData?.file?.name,
-          file_key: file?.fileData?.file_key,
-          download_url: file?.fileData?.uploadData?.upload_url,
-          size: file?.fileData?.file?.size,
-          created_at: file?.fileData?.file?.lastModified,
-          description: file?.description ?? '',
-        })) ?? [],
-      links:
-        linksData?.map((link) => ({
-          url: link?.link,
-          description: link?.description,
-        })) ?? [],
-    };
-
-    dispatch(saveDraftMilestone({ milestoneId: selectedMilestone._id, data: postData, onSuccess: () => {} }));
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const onGetSavedMilestone = async (res) => {
-    // if (res?.documents?.length > 0) {
-    //   res.documents.forEach((file) => {
-    //     documentsAppend({
-    //       fileData: {
-    //         file_key: file.file_key,
-    //         file_name: file.file_name,
-    //       },
-    //       description: file.description,
-    //       time: DateTime.fromMillis(file.created_at).toFormat(`dd MMM yyyy, hh:mm a`),
-    //     });
-    //   });
-    // }
-    // if (res?.links?.length > 0) {
-    //   res.links.forEach((link) => {
-    //     linksAppend({
-    //       link: link.url,
-    //       description: link.description,
-    //       time: DateTime.fromMillis(link.created_at).toFormat(`dd MMM yyyy, hh:mm a`),
-    //     });
-    //   });
-    // }
-  };
-
-  useEffect(() => {
-    if (selectedMilestone?._id) {
-      dispatch(getDraftMilestone({ milestoneId: selectedMilestone._id, onGetSavedMilestone, onSuccess: () => {} }));
-    }
-  }, [selectedMilestone?._id]);
 
   const onDrop = async (acceptedFiles, rejectedFiles) => {
     rejectedFiles.forEach((file) =>
@@ -677,17 +620,6 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             </div>
 
             <div className="w-100 mt-2 mb-2 d-flex justify-content-end">
-              {(linksFields?.length > 0 || documentsFields?.length > 0) && (
-                <Button
-                  onClick={onSaveDraftMilestone}
-                  color="primary"
-                  className="me-2"
-                  outline
-                  disabled={isMilestoneDraftLoading}
-                >
-                  {isMilestoneDraftLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-                </Button>
-              )}
               <Button
                 onClick={() => setSubmitModal(true)}
                 disabled={
