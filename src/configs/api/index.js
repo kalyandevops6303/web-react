@@ -3,8 +3,8 @@ const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
-const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
-const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
 
 const API = {
   auth: {
