@@ -16,7 +16,7 @@ const createDraftTeamService = (data) => DataService.post(API.team.createDraft, 
 
 const updateDraftTeamService = (id, data) => DataService.post(`${API.team.createDraft}?team_id=${id}`, data);
 
-const checkDraftTeamService = () => DataService.get(`${API.team.checkDraft}`);
+const checkDraftTeamService = (data) => DataService.get(`${API.team.checkDraft}?team_type=${data}`);
 
 const deleteDraftTeamService = (id) => DataService.delete(`${API.team.deleteDraft}?team_id=${id}`);
 
