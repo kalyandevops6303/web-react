@@ -53,7 +53,7 @@ const ForgotPasswordVerification = () => {
         <CardText className="mb-2 card-text">
           We sent a verification code to your email ID. Enter the code in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Go back
+            Edit Email
           </span>
         </CardText>
         <Form className="auth-login-form" onSubmit={(e) => e.preventDefault()}>
