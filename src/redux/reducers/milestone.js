@@ -18,6 +18,8 @@ const initialState = {
   error: null,
   draftMilestonesData: null,
   draftMilestoneLoading: false,
+  isDeleteDraftMilestoneLoading: false,
+  draftArtifactsLoading: false,
 };
 
 const milestoneSlice = createSlice({
@@ -55,6 +57,42 @@ const milestoneSlice = createSlice({
       draftMilestonesData: null,
       draftMilestoneLoading: false,
       error: action.payload,
+    }),
+
+    getDraftArtifactsRequest: (state) => ({
+      ...state,
+      draftArtifactsLoading: true,
+      error: null,
+    }),
+
+    getDraftArtifactsSuccess: (state, action) => ({
+      ...state,
+      draftArtifactsLoading: false,
+      draftMilestonesData: action.payload,
+      error: null,
+    }),
+    getDraftArtifactsFailure: (state) => ({
+      ...state,
+      draftArtifactsLoading: false,
+      error: null,
+    }),
+
+    deleteDraftMilestoneRequest: (state) => ({
+      ...state,
+      isDeleteDraftMilestoneLoading: true,
+      error: null,
+    }),
+
+    deleteDraftMilestoneSuccess: (state) => ({
+      ...state,
+      isDeleteDraftMilestoneLoading: false,
+      error: null,
+    }),
+
+    deleteDraftMilestoneFailure: (state) => ({
+      ...state,
+      isDeleteDraftMilestoneLoading: false,
+      error: null,
     }),
 
     acceptMilestoneRequest: (state) => ({
@@ -193,6 +231,12 @@ export const {
   draftMilestoneRequest,
   draftMilestoneSuccess,
   draftMilestoneFailure,
+  deleteDraftMilestoneRequest,
+  deleteDraftMilestoneSuccess,
+  deleteDraftMilestoneFailure,
+  getDraftArtifactsRequest,
+  getDraftArtifactsSuccess,
+  getDraftArtifactsFailure,
 } = milestoneSlice.actions;
 
 export default milestoneSlice.reducer;

@@ -23,6 +23,7 @@ import { useDropzone } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import {
+  downloadFile,
   downloadUploadedFile,
   formatDate,
   isFileValid,
@@ -49,6 +50,8 @@ import RemoveArtifactsModal from '../../modals/RemoveArtifactsModal';
 import FeedbackRemoveArtifactsModal from '../../modals/FeedbackRemoveArtifacts';
 import { getDraftMilestone, saveDraftMilestone, submitMilstone } from '../../../redux/actions/milestoneActions';
 import { milestoneSubmissionFileUploadService } from '../../../services/projectMilestoneService';
+import { downloadUrlService } from '../../../services/dashboardServices';
+import { draftArtifactsLoading, draftMilestoneLoading } from '../../../redux/selectors/milestoneSelectors';
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
@@ -85,11 +88,13 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const userDataLocal = useSelector(selectAuthUserData);
   const isMilestoneSubmitting = useSelector((state) => state.milestone.isMilestoneSubmitting);
-  const isMilestoneDraftLoading = useSelector((state) => state.milestone.draftMilestoneLoading);
-  // const isGetMilestoneDraftLoading = useSelector((state) => state.milestone.getDraftMilestoneLoading);
+  const isMilestoneDraftLoading = useSelector(draftMilestoneLoading);
+  const isGetMilestoneDraftLoading = useSelector(draftArtifactsLoading);
+
   const {
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -167,47 +172,76 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     const linksData = watch('links');
     const postData = {
       documents:
-        files?.map((file) => ({
-          file_name: file?.fileData?.file?.name,
-          file_key: file?.fileData?.file_key,
-          download_url: file?.fileData?.uploadData?.upload_url,
-          size: file?.fileData?.file?.size,
-          created_at: file?.fileData?.file?.lastModified,
-          description: file?.description ?? '',
-        })) ?? [],
-      links:
-        linksData?.map((link) => ({
-          url: link?.link,
-          description: link?.description,
-        })) ?? [],
-    };
+        files?.map((file) => {
+          const document = {
+            file_name: file?.fileData?.file?.name,
+            file_key: file?.fileData?.file_key,
+            download_url: file?.fileData?.uploadData?.upload_url,
+            size: file?.fileData?.file?.size,
+            created_at: file?.fileData?.file?.lastModified,
+            description: file?.description ?? '',
+          };
 
+          if (file?.doc_id) {
+            document.doc_id = file.doc_id;
+          }
+
+          return document;
+        }) ?? [],
+      links:
+        linksData?.map((link) => {
+          const linkObject = {
+            url: link?.link,
+            description: link?.description,
+          };
+
+          if (link?.doc_id) {
+            linkObject.doc_id = link.doc_id;
+          }
+
+          return linkObject;
+        }) ?? [],
+    };
     dispatch(saveDraftMilestone({ milestoneId: selectedMilestone._id, data: postData, onSuccess: () => {} }));
   };
 
-  // eslint-disable-next-line no-unused-vars
   const onGetSavedMilestone = async (res) => {
-    // if (res?.documents?.length > 0) {
-    //   res.documents.forEach((file) => {
-    //     documentsAppend({
-    //       fileData: {
-    //         file_key: file.file_key,
-    //         file_name: file.file_name,
-    //       },
-    //       description: file.description,
-    //       time: DateTime.fromMillis(file.created_at).toFormat(`dd MMM yyyy, hh:mm a`),
-    //     });
-    //   });
-    // }
-    // if (res?.links?.length > 0) {
-    //   res.links.forEach((link) => {
-    //     linksAppend({
-    //       link: link.url,
-    //       description: link.description,
-    //       time: DateTime.fromMillis(link.created_at).toFormat(`dd MMM yyyy, hh:mm a`),
-    //     });
-    //   });
-    // }
+    if (res) {
+      const links = res?.filter((doc) => doc?.type === 'LINKS');
+      const documents = res?.filter((doc) => doc?.type === 'DOCUMENTS');
+      const linksData = links?.map((link) => ({
+        doc_id: link?._id,
+        link: link?.url,
+        description: link?.description,
+        time: DateTime.fromMillis(link?.updated_at).toFormat(`dd MMM yyyy, hh:mm a`),
+        isDraft: true,
+      }));
+      linksData?.forEach((link) => {
+        linksAppend(link);
+      });
+      setValue('links', linksData);
+      const documentsData = documents?.map((file) => ({
+        description: file?.description,
+        isDraft: true,
+        fileData: {
+          doc_id: file?._id,
+          file: { name: file?.file_name, size: file?.size, lastModified: file?.updated_at },
+          file_key: file?.file_key,
+          id: file?._id,
+          newId: 'projects-milestones',
+          uploadData: {
+            upload_url: file?.download_url,
+            file_key: file?.file_key,
+          },
+        },
+        id: file?._id,
+        time: DateTime.fromMillis(file?.updated_at).toFormat(`dd MMM yyyy, hh:mm a`),
+      }));
+      documentsData?.forEach((document) => {
+        documentsAppend(document);
+      });
+      setValue('documents', documentsData);
+    }
   };
 
   useEffect(() => {
@@ -290,6 +324,19 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     YET_TO_START: 'Yet to Start',
   };
 
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
+  const downloadDocument = async (file) => {
+    if (file?.isDraft) {
+      const res = await downloadUrlService(file?.fileData?.uploadData?.file_key);
+      onDownloadResumeUrlSuccess({ download_url: res.data.data, file_name: file?.fileData?.file?.name });
+    } else {
+      downloadUploadedFile({ file: file?.fileData?.file });
+    }
+  };
+
   const isPaymentDone = (milestone) =>
     milestone?.payment_status === PAYMENT_STATUS.PAID ||
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
@@ -352,6 +399,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             setDeleteModal(false);
             setDeleteFeedbackModal(true);
           }}
+          milestoneId={selectedMilestone._id}
           data={deleteData}
         />
       )}
@@ -414,7 +462,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             <div className="pb-2">
               <CardText className="fs-4 mb-0 fw-bold">Submissions</CardText>
             </div>
-            <Form className="w-100">
+          {isGetMilestoneDraftLoading ? <Spinner size="sm" />  :  <Form className="w-100">
               {(documentsFields.length > 0 || linksFields.length > 0) && (
                 <TableWrapper className="w-100 medium-shadow">
                   <Row className="w-100 header">
@@ -491,7 +539,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                           </span>
                         ) : (
                           <div className="fw-bold m-auto d-flex gap-1">
-                            <MessageIconWrap onClick={() => downloadUploadedFile({ file: file?.fileData?.file })}>
+                            <MessageIconWrap onClick={() => downloadDocument(file)}>
                               <span className="mail-bg">
                                 <Download size={20} className="mail-icon" color={theme.activeColor} />
                               </span>
@@ -644,7 +692,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                   ))}
                 </TableWrapper>
               )}
-            </Form>
+            </Form>}
 
             <div>
               <div
@@ -677,17 +725,16 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             </div>
 
             <div className="w-100 mt-2 mb-2 d-flex justify-content-end">
-              {(linksFields?.length > 0 || documentsFields?.length > 0) && (
-                <Button
-                  onClick={onSaveDraftMilestone}
-                  color="primary"
-                  className="me-2"
-                  outline
-                  disabled={isMilestoneDraftLoading}
-                >
-                  {isMilestoneDraftLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-                </Button>
-              )}
+              <Button
+                onClick={onSaveDraftMilestone}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={isMilestoneDraftLoading || (linksFields?.length === 0 && documentsFields?.length === 0)}
+              >
+                {isMilestoneDraftLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+
               <Button
                 onClick={() => setSubmitModal(true)}
                 disabled={
