@@ -353,8 +353,7 @@ const PrivateDashboard = () => {
                 userDetailsData?.user_type === "CLIENT" ?
                   <AvailableTime />
                   :
-                  // <AssessmentsOverview />
-                  <AvailableTime />
+                  <AssessmentsOverview />
               }
             </>}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
