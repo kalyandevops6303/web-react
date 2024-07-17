@@ -81,8 +81,9 @@ const ThemeNavbar = (props) => {
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
+  const saveArtifactDraftPath = /^\/project-details\/[a-zA-Z0-9_-]+\/milestone-details\/[a-zA-Z0-9_-]+$/;
   const draftTeamPath = location?.pathname.includes(
-    '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details');
+    '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details') || saveArtifactDraftPath.test(location?.pathname);;
   const isTabDisabled = userData?.club_status === clubStatus.IN_REVIEW;
 
   // ** Props

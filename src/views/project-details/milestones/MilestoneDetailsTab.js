@@ -21,6 +21,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import {
   downloadFile,
@@ -52,6 +53,9 @@ import { getDraftMilestone, saveDraftMilestone, submitMilstone } from '../../../
 import { milestoneSubmissionFileUploadService } from '../../../services/projectMilestoneService';
 import { downloadUrlService } from '../../../services/dashboardServices';
 import { draftArtifactsLoading, draftMilestoneLoading } from '../../../redux/selectors/milestoneSelectors';
+import SaveForLaterModal from '../../modals/SaveForLaterModal';
+import { confirmSaveForLater, navigatingRoute } from '../../../redux/selectors/formDataSelectors';
+import { setConfirmSaveForLater } from '../../../redux/reducers/formData';
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
@@ -80,8 +84,10 @@ const MilestoneDetailsSchema = yup.object().shape({
 
 const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [submitModal, setSubmitModal] = useState(false);
+  const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
   const [submitFeedbackModal, setSubmitFeedbackModal] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteData, setDeleteData] = useState(false);
   const [deleteFeedbackModal, setDeleteFeedbackModal] = useState(false);
@@ -90,6 +96,21 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const isMilestoneSubmitting = useSelector((state) => state.milestone.isMilestoneSubmitting);
   const isMilestoneDraftLoading = useSelector(draftMilestoneLoading);
   const isGetMilestoneDraftLoading = useSelector(draftArtifactsLoading);
+  const isOpenSaveForLater = useSelector(confirmSaveForLater);
+  const navigatedRoute = useSelector(navigatingRoute);
+
+  const toggleOpenSaveLaterModal = () => {
+    setOpenSaveLaterModal(!openSaveLaterModal);
+    dispatch(setConfirmSaveForLater(false));
+  };
+
+  useEffect(() => () =>  dispatch(setConfirmSaveForLater(false)), []);
+
+  useEffect(() => {
+    if (isOpenSaveForLater) {
+      setOpenSaveLaterModal(true);
+    }
+  }, [isOpenSaveForLater]);
 
   const {
     control,
@@ -202,7 +223,15 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           return linkObject;
         }) ?? [],
     };
-    dispatch(saveDraftMilestone({ milestoneId: selectedMilestone._id, data: postData, onSuccess: () => {} }));
+    dispatch(
+      saveDraftMilestone({
+        milestoneId: selectedMilestone._id,
+        data: postData,
+        onSuccess: () => {},
+        redirection: () => navigate(navigatedRoute),
+        isOpenSaveForLater,
+      }),
+    );
   };
 
   const onGetSavedMilestone = async (res) => {
@@ -462,132 +491,186 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             <div className="pb-2">
               <CardText className="fs-4 mb-0 fw-bold">Submissions</CardText>
             </div>
-          {isGetMilestoneDraftLoading ? <Spinner size="sm" />  :  <Form className="w-100">
-              {(documentsFields.length > 0 || linksFields.length > 0) && (
-                <TableWrapper className="w-100 medium-shadow">
-                  <Row className="w-100 header">
-                    <Col sm="12" md="12" lg="3">
-                      <p className=" fw-bolder mb-0">FILE NAME </p>
-                    </Col>
-                    <Col sm="12" md="12" lg="4">
-                      <p className=" fw-bolder mb-0">DESCRIPTION</p>
-                    </Col>
-                    <Col sm="12" md="12" lg="3">
-                      <p className=" fw-bolder mb-0">UPLOADED ON</p>
-                    </Col>
-                    <Col sm="12" md="12" lg="2">
-                      <p className=" fw-bolder mb-0 ps-75">ACTION</p>
-                    </Col>
-                  </Row>
-                  {documentsFields.map((file, index) => (
-                    <Row key={file?.file_key} className="w-100 tbody border-bottom">
-                      <Col sm="12" md="12" lg="3" className="m-auto d-flex">
-                        {renderFilePreview(file?.fileData?.file)}
-                        <span className="truncated-filename mt-25" id={file?.fileData?.newId}>
-                          {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
-                        </span>
-                        <UncontrolledTooltip placement="bottom" target={file?.fileData?.newId}>
-                          {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
-                        </UncontrolledTooltip>
+            {isGetMilestoneDraftLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <Form className="w-100">
+                {openSaveLaterModal && (
+                  <SaveForLaterModal
+                    modal={openSaveLaterModal}
+                    toggleModal={toggleOpenSaveLaterModal}
+                    draftAction={onSaveDraftMilestone}
+                    redirectionRoute={navigatedRoute}
+                    loading={isMilestoneDraftLoading}
+                  />
+                )}
+                {(documentsFields.length > 0 || linksFields.length > 0) && (
+                  <TableWrapper className="w-100 medium-shadow">
+                    <Row className="w-100 header">
+                      <Col sm="12" md="12" lg="3">
+                        <p className=" fw-bolder mb-0">FILE NAME </p>
                       </Col>
                       <Col sm="12" md="12" lg="4">
-                        <Controller
-                          id={`documents[${index}].description`}
-                          name={`documents[${index}].description`}
-                          control={control}
-                          invalid={
-                            errors &&
+                        <p className=" fw-bolder mb-0">DESCRIPTION</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="3">
+                        <p className=" fw-bolder mb-0">UPLOADED ON</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2">
+                        <p className=" fw-bolder mb-0 ps-75">ACTION</p>
+                      </Col>
+                    </Row>
+                    {documentsFields.map((file, index) => (
+                      <Row key={file?.file_key} className="w-100 tbody border-bottom">
+                        <Col sm="12" md="12" lg="3" className="m-auto d-flex">
+                          {renderFilePreview(file?.fileData?.file)}
+                          <span className="truncated-filename mt-25" id={file?.fileData?.newId}>
+                            {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
+                          </span>
+                          <UncontrolledTooltip placement="bottom" target={file?.fileData?.newId}>
+                            {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
+                          </UncontrolledTooltip>
+                        </Col>
+                        <Col sm="12" md="12" lg="4">
+                          <Controller
+                            id={`documents[${index}].description`}
+                            name={`documents[${index}].description`}
+                            control={control}
+                            invalid={
+                              errors &&
+                              errors.documents &&
+                              errors.documents.length > 0 &&
+                              errors.documents[index] &&
+                              errors.documents[index].description &&
+                              true
+                            }
+                            render={({ field }) => (
+                              <AutoResizeTextarea
+                                {...field}
+                                type="textarea"
+                                rows="4"
+                                className="desc-input"
+                                placeholder="Add short description (optional)"
+                                invalid={
+                                  errors &&
+                                  errors.documents &&
+                                  errors.documents.length > 0 &&
+                                  errors.documents[index] &&
+                                  errors.documents[index].description &&
+                                  true
+                                }
+                              />
+                            )}
+                          />
+                          {errors &&
                             errors.documents &&
                             errors.documents.length > 0 &&
                             errors.documents[index] &&
-                            errors.documents[index].description &&
-                            true
-                          }
-                          render={({ field }) => (
-                            <AutoResizeTextarea
-                              {...field}
-                              type="textarea"
-                              rows="4"
-                              className="desc-input"
-                              placeholder="Add short description (optional)"
+                            errors.documents[index].description && (
+                              <FormFeedback>{errors.documents[index].description.message}</FormFeedback>
+                            )}{' '}
+                        </Col>
+                        <Col sm="12" md="12" lg="3" className="m-auto">
+                          <p className="fw-normal m-auto"> {file?.time}</p>
+                        </Col>
+                        <Col sm="12" md="12" lg="2" className="m-auto">
+                          {uploadingFiles.some((obj) => obj.file_key === file?.fileData?.file_key) ? (
+                            <span className="ps-3">
+                              <Spinner size="sm" />
+                            </span>
+                          ) : (
+                            <div className="fw-bold m-auto d-flex gap-1">
+                              <MessageIconWrap onClick={() => downloadDocument(file)}>
+                                <span className="mail-bg">
+                                  <Download size={20} className="mail-icon" color={theme.activeColor} />
+                                </span>
+                              </MessageIconWrap>
+                              <MessageIconWrap
+                                onClick={() => {
+                                  handleRemove({ item: allDocuments?.[index], index });
+                                }}
+                              >
+                                <span className="trash-bg">
+                                  <Trash2 size={20} className="mail-icon" color={theme.red} />
+                                </span>
+                              </MessageIconWrap>
+                            </div>
+                          )}
+                        </Col>
+                      </Row>
+                    ))}
+
+                    {linksFields.map((item, index) => (
+                      <Row key={`links-${item?.id}`} className="w-100 tbody border-bottom">
+                        <Col sm="12" md="12" lg="3" className="m-auto d-flex">
+                          <Link size="22" className="m-auto me-1 " />
+                          <span className="w-100">
+                            <Controller
+                              id={`links[${index}].link`}
+                              name={`links[${index}].link`}
+                              control={control}
                               invalid={
                                 errors &&
-                                errors.documents &&
-                                errors.documents.length > 0 &&
-                                errors.documents[index] &&
-                                errors.documents[index].description &&
+                                errors.links &&
+                                errors.links.length > 0 &&
+                                errors.links[index] &&
+                                errors.links[index].link &&
                                 true
                               }
+                              render={({ field }) => (
+                                <Input
+                                  {...field}
+                                  rows="4"
+                                  className="desc-input"
+                                  placeholder="Add link here"
+                                  invalid={
+                                    errors &&
+                                    errors.links &&
+                                    errors.links.length > 0 &&
+                                    errors.links[index] &&
+                                    errors.links[index].link &&
+                                    true
+                                  }
+                                />
+                              )}
                             />
-                          )}
-                        />
-                        {errors &&
-                          errors.documents &&
-                          errors.documents.length > 0 &&
-                          errors.documents[index] &&
-                          errors.documents[index].description && (
-                            <FormFeedback>{errors.documents[index].description.message}</FormFeedback>
-                          )}{' '}
-                      </Col>
-                      <Col sm="12" md="12" lg="3" className="m-auto">
-                        <p className="fw-normal m-auto"> {file?.time}</p>
-                      </Col>
-                      <Col sm="12" md="12" lg="2" className="m-auto">
-                        {uploadingFiles.some((obj) => obj.file_key === file?.fileData?.file_key) ? (
-                          <span className="ps-3">
-                            <Spinner size="sm" />
+                            {errors &&
+                              errors.links &&
+                              errors.links.length > 0 &&
+                              errors.links[index] &&
+                              errors.links[index].link && (
+                                <FormFeedback>{errors.links[index].link.message}</FormFeedback>
+                              )}{' '}
                           </span>
-                        ) : (
-                          <div className="fw-bold m-auto d-flex gap-1">
-                            <MessageIconWrap onClick={() => downloadDocument(file)}>
-                              <span className="mail-bg">
-                                <Download size={20} className="mail-icon" color={theme.activeColor} />
-                              </span>
-                            </MessageIconWrap>
-                            <MessageIconWrap
-                              onClick={() => {
-                                handleRemove({ item: allDocuments?.[index], index });
-                              }}
-                            >
-                              <span className="trash-bg">
-                                <Trash2 size={20} className="mail-icon" color={theme.red} />
-                              </span>
-                            </MessageIconWrap>
-                          </div>
-                        )}
-                      </Col>
-                    </Row>
-                  ))}
+                        </Col>
 
-                  {linksFields.map((item, index) => (
-                    <Row key={`links-${item?.id}`} className="w-100 tbody border-bottom">
-                      <Col sm="12" md="12" lg="3" className="m-auto d-flex">
-                        <Link size="22" className="m-auto me-1 " />
-                        <span className="w-100">
+                        <Col sm="12" md="12" lg="4">
                           <Controller
-                            id={`links[${index}].link`}
-                            name={`links[${index}].link`}
+                            className="w-100"
+                            id={`links[${index}].description`}
+                            name={`links[${index}].description`}
                             control={control}
                             invalid={
                               errors &&
                               errors.links &&
                               errors.links.length > 0 &&
                               errors.links[index] &&
-                              errors.links[index].link &&
+                              errors.links[index].description &&
                               true
                             }
                             render={({ field }) => (
-                              <Input
+                              <AutoResizeTextarea
                                 {...field}
+                                type="textarea"
                                 rows="4"
-                                className="desc-input"
-                                placeholder="Add link here"
+                                className="desc-input w-100"
+                                placeholder="Enter description in 500 characters"
                                 invalid={
                                   errors &&
                                   errors.links &&
                                   errors.links.length > 0 &&
                                   errors.links[index] &&
-                                  errors.links[index].link &&
+                                  errors.links[index].description &&
                                   true
                                 }
                               />
@@ -597,102 +680,61 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             errors.links &&
                             errors.links.length > 0 &&
                             errors.links[index] &&
-                            errors.links[index].link && (
-                              <FormFeedback>{errors.links[index].link.message}</FormFeedback>
-                            )}{' '}
-                        </span>
-                      </Col>
-
-                      <Col sm="12" md="12" lg="4">
-                        <Controller
-                          className="w-100"
-                          id={`links[${index}].description`}
-                          name={`links[${index}].description`}
-                          control={control}
-                          invalid={
-                            errors &&
-                            errors.links &&
-                            errors.links.length > 0 &&
-                            errors.links[index] &&
-                            errors.links[index].description &&
-                            true
-                          }
-                          render={({ field }) => (
-                            <AutoResizeTextarea
-                              {...field}
-                              type="textarea"
-                              rows="4"
-                              className="desc-input w-100"
-                              placeholder="Enter description in 500 characters"
-                              invalid={
-                                errors &&
-                                errors.links &&
-                                errors.links.length > 0 &&
-                                errors.links[index] &&
-                                errors.links[index].description &&
-                                true
-                              }
-                            />
-                          )}
-                        />
-                        {errors &&
-                          errors.links &&
-                          errors.links.length > 0 &&
-                          errors.links[index] &&
-                          errors.links[index].description && (
-                            <FormFeedback>{errors.links[index].description.message}</FormFeedback>
-                          )}
-                      </Col>
-                      <Col sm="12" md="12" lg="3" className="m-auto">
-                        <p className="fw-normal m-auto">{item?.time}</p>
-                      </Col>
-                      <Col sm="12" md="12" lg="2" className="m-auto">
-                        <div className="fw-bold m-auto d-flex gap-1">
-                          <MessageIconWrap
-                            onClick={() => {
-                              if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
-                                handleLinkOpen(allLinks?.[index]?.link);
-                              }
-                            }}
-                          >
-                            <span className="mail-bg">
-                              <ExternalLink
-                                size={20}
-                                className="mail-icon"
-                                color={
-                                  allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
-                                    ? theme.activeColor
-                                    : `${theme.activeColor}5f`
+                            errors.links[index].description && (
+                              <FormFeedback>{errors.links[index].description.message}</FormFeedback>
+                            )}
+                        </Col>
+                        <Col sm="12" md="12" lg="3" className="m-auto">
+                          <p className="fw-normal m-auto">{item?.time}</p>
+                        </Col>
+                        <Col sm="12" md="12" lg="2" className="m-auto">
+                          <div className="fw-bold m-auto d-flex gap-1">
+                            <MessageIconWrap
+                              onClick={() => {
+                                if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
+                                  handleLinkOpen(allLinks?.[index]?.link);
                                 }
-                              />
-                            </span>
-                          </MessageIconWrap>
-                          <MessageIconWrap
-                            onClick={() => {
-                              if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
-                                handleRemove({ item: allLinks?.[index], index });
-                              }
-                            }}
-                          >
-                            <span className="trash-bg">
-                              <Trash2
-                                size={20}
-                                className="mail-icon"
-                                color={
-                                  allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
-                                    ? theme.red
-                                    : `${theme.red}5f`
+                              }}
+                            >
+                              <span className="mail-bg">
+                                <ExternalLink
+                                  size={20}
+                                  className="mail-icon"
+                                  color={
+                                    allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                      ? theme.activeColor
+                                      : `${theme.activeColor}5f`
+                                  }
+                                />
+                              </span>
+                            </MessageIconWrap>
+                            <MessageIconWrap
+                              onClick={() => {
+                                if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
+                                  handleRemove({ item: allLinks?.[index], index });
                                 }
-                              />
-                            </span>
-                          </MessageIconWrap>
-                        </div>
-                      </Col>
-                    </Row>
-                  ))}
-                </TableWrapper>
-              )}
-            </Form>}
+                              }}
+                            >
+                              <span className="trash-bg">
+                                <Trash2
+                                  size={20}
+                                  className="mail-icon"
+                                  color={
+                                    allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                      ? theme.red
+                                      : `${theme.red}5f`
+                                  }
+                                />
+                              </span>
+                            </MessageIconWrap>
+                          </div>
+                        </Col>
+                      </Row>
+                    ))}
+                  </TableWrapper>
+                )}
+              </Form>
+            )}
 
             <div>
               <div

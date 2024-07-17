@@ -139,12 +139,16 @@ const markComplete =
     }
   };
 
-const saveDraftMilestone = ({milestoneId, data, onSuccess}) => async (dispatch) => {
+const saveDraftMilestone = ({milestoneId, data, onSuccess,  redirection, isOpenSaveForLater}) => async (dispatch) => {
   dispatch(draftMilestoneRequest());
   try {
     const res = await saveDraftMilestoneService(milestoneId, data);
     dispatch(draftMilestoneSuccess(res.data.data));
-    onSuccess();
+    if (isOpenSaveForLater) {
+      redirection();
+    } else {
+      onSuccess();
+    }
   } catch (error) {
     errorHandler(error, draftMilestoneFailure);
   }
