@@ -196,10 +196,16 @@ const Profile = ({ setDraftSavedModal }) => {
       tagline: clubDraftData?.tagline || clubDraftLocalData?.tagline || null,
       introduction: clubDraftData?.introduction || clubDraftLocalData?.introduction || null,
       education_institute: clubDraftData?.education_institute || clubDraftLocalData?.education_institute || null,
-      interests: (clubDraftData?.interests === clubDraftLocalData?.interests ?  clubDraftData?.interests : clubDraftLocalData?.interests) || null,
+      interests:
+        (clubDraftData?.interests === clubDraftLocalData?.interests
+          ? clubDraftData?.interests
+          : clubDraftLocalData?.interests) || null,
       languages_supported: null,
-      tools: (clubDraftData?.tools === clubDraftLocalData?.tools ? clubDraftData?.tools : clubDraftLocalData?.tools) || null,
-      skills: (clubDraftData?.skills === clubDraftLocalData?.skills ? clubDraftData?.skills : clubDraftLocalData?.skills) || null,
+      tools:
+        (clubDraftData?.tools === clubDraftLocalData?.tools ? clubDraftData?.tools : clubDraftLocalData?.tools) || null,
+      skills:
+        (clubDraftData?.skills === clubDraftLocalData?.skills ? clubDraftData?.skills : clubDraftLocalData?.skills) ||
+        null,
       university_webpage: watch('universityWebpage') || null,
       linked_in: watch('clubLinkedin') || null,
       email: watch('clubEmailID') || null,

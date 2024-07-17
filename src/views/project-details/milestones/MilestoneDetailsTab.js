@@ -21,7 +21,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import {
   downloadFile,
@@ -56,6 +56,7 @@ import { draftArtifactsLoading, draftMilestoneLoading } from '../../../redux/sel
 import SaveForLaterModal from '../../modals/SaveForLaterModal';
 import { confirmSaveForLater, navigatingRoute } from '../../../redux/selectors/formDataSelectors';
 import { setConfirmSaveForLater } from '../../../redux/reducers/formData';
+import DraftSavedModal from '../../modals/DraftSavedModal';
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
@@ -84,10 +85,12 @@ const MilestoneDetailsSchema = yup.object().shape({
 
 const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [submitModal, setSubmitModal] = useState(false);
+  const [draftSavedModal, setDraftSavedModal] = useState(false);
   const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
   const [submitFeedbackModal, setSubmitFeedbackModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteData, setDeleteData] = useState(false);
   const [deleteFeedbackModal, setDeleteFeedbackModal] = useState(false);
@@ -99,12 +102,14 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
   const navigatedRoute = useSelector(navigatingRoute);
 
+  const toggleDraftSavedModal = () => setDraftSavedModal(!draftSavedModal);
+
   const toggleOpenSaveLaterModal = () => {
     setOpenSaveLaterModal(!openSaveLaterModal);
     dispatch(setConfirmSaveForLater(false));
   };
 
-  useEffect(() => () =>  dispatch(setConfirmSaveForLater(false)), []);
+  useEffect(() => () => dispatch(setConfirmSaveForLater(false)), []);
 
   useEffect(() => {
     if (isOpenSaveForLater) {
@@ -227,7 +232,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       saveDraftMilestone({
         milestoneId: selectedMilestone._id,
         data: postData,
-        onSuccess: () => {},
+        onSuccess: () => setDraftSavedModal(true),
         redirection: () => navigate(navigatedRoute),
         isOpenSaveForLater,
       }),
@@ -397,6 +402,16 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
 
   return (
     <div>
+      {draftSavedModal && (
+        <DraftSavedModal
+          modal={draftSavedModal}
+          toggleModal={toggleDraftSavedModal}
+          path="Project Details > Milestones > Drafts Or View Draft"
+          onPrimaryBtnClick={() =>
+            navigate(`/project-details/${params?.projectId}/milestone-details/${params?.milestoneId}`)
+          }
+        />
+      )}
       {submitModal && (
         <SubmitMilestoneModal
           modal={submitModal}
@@ -571,7 +586,11 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             )}{' '}
                         </Col>
                         <Col sm="12" md="12" lg="3" className="m-auto">
-                          <p className="fw-normal m-auto"> {file?.time}</p>
+                          <p className="fw-normal m-auto">
+                            {' '}
+                            {file?.time} <br />
+                            {file?.isDraft && <b>Draft Saved</b>}
+                          </p>
                         </Col>
                         <Col sm="12" md="12" lg="2" className="m-auto">
                           {uploadingFiles.some((obj) => obj.file_key === file?.fileData?.file_key) ? (
@@ -685,7 +704,10 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             )}
                         </Col>
                         <Col sm="12" md="12" lg="3" className="m-auto">
-                          <p className="fw-normal m-auto">{item?.time}</p>
+                          <p className="fw-normal m-auto">
+                            {item?.time} <br />
+                            {item?.isDraft && <b>Draft Saved</b>}
+                          </p>
                         </Col>
                         <Col sm="12" md="12" lg="2" className="m-auto">
                           <div className="fw-bold m-auto d-flex gap-1">
