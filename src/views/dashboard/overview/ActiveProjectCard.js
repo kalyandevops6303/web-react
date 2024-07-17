@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
+import { Badge, Card, CardBody, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
@@ -12,6 +12,7 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
+import DurationSegment from './DurationSegment';
 
 const ActiveProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -114,24 +115,19 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
             )}
           </div>
           <p className="active-project-simple-heading">Project</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <CardText className="mb-25">Start Date</CardText>
-                <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
-              </div>
-            </div>
-          </div>
+          <DurationSegment start_date={data?.start_date} end_date={data?.end_date} />
           <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
               <div className="design-planning">
-                <CardText className="mb-25">Due Date</CardText>
-                <h6 className="mb-0">{`${
+                <p className="mb-25 details-box-title">
+                  Due Date
+                </p>
+                <p className="mb-0 details-box">{`${
                   DateTime.fromMillis(data?.current_milestone?.due_date).toFormat('MMM dd, yy') || '-'
-                }`}</h6>
+                }`}</p>
               </div>
-              <p className="active-project-milestone-name">{data?.current_milestone?.name}</p>
+              <h4 className="active-project-milestone-name">{data?.current_milestone?.name}</h4>
             </div>
           </div>
           <div

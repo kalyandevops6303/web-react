@@ -2,24 +2,64 @@ import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button } from 'reactstrap';
 import { CreateBidRadioOption } from '../styled';
+import SavedDraftsAvailableModal from './SavedDraftsAvailableModal';
+import { checkDraftTeam } from '../../redux/actions/teamsActions';
 
 const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(false);
+  const toggleSavedDraftsAvailableModal = () => {
+    setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
+  };
   const [selectedGroup, setSelectedGroup] = useState('');
 
   const onNextClick = () => {
     if (selectedGroup === 'CLUB') {
-      navigate('/create-club/account-details');
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, onSuccess: () => {}, onError: () => {} }));
     } else if (selectedGroup === 'TEAM') {
-      navigate('/create-team/profile-details');
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, onSuccess: () => {}, onError: () => {} }));
     }
   };
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
+      {savedDraftsAvailableModal && (
+        <SavedDraftsAvailableModal
+          modal={savedDraftsAvailableModal}
+          toggleModal={toggleSavedDraftsAvailableModal}
+          modalText={`You have a ${selectedGroup === 'CLUB' ? 'Club' : 'Team'} in draft mode. Would you like to continue where you left off from the drafts?`}
+          firstBtnText={`Create New ${selectedGroup === 'CLUB' ? 'Club' : 'Team'}`}
+          secondBtnText="View Draft"
+          firstBtnAction={() => {
+            toggleSavedDraftsAvailableModal();
+            if (selectedGroup === 'CLUB') {
+              navigate('/create-club/account-details');
+            }
+            if (selectedGroup === 'TEAM') {
+              navigate('/create-team/profile-details');
+            }
+          }}
+          secondBtnAction={() => {
+            if (selectedGroup === 'CLUB') {
+              navigate('/clubs/my_clubs', {
+                state: {
+                  isDraftClubs: true,
+                },
+              });
+            } else if (selectedGroup === 'TEAM') {
+              navigate('/my-teams/teams', {
+                state: {
+                  isDraftTeams: true,
+                },
+              });
+            }
+          }}
+        />
+      )}
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="pt-0 pb-2">
         <p className="font-large-1 text-center">Create </p>

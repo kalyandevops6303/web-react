@@ -9,6 +9,7 @@ import { getItemFromSession, removeItemFromSession } from '../../utility/sessesi
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import { userProfileEdit } from '../../utility/constants/Constant';
 import { CircularBackButtonContainer } from '../styled';
+import { setConfirmSaveForLater, setNavigatingRoute } from '../../redux/reducers/formData';
 
 const CreateTeam = () => {
   const tabNames = {
@@ -16,17 +17,15 @@ const CreateTeam = () => {
   };
 
   const [active, setActive] = useState(tabNames.Profile);
-
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   useEffect(() => {
-    if (
-      location.pathname === '/create-team/profile-details' ||
-      location.pathname === `/${userProfileEdit.team}/profile-details`
-    )
+    const profileDetailsPath = /^\/create-team\/profile-details(\/.*)?$/;
+    if (profileDetailsPath.test(location.pathname)) {
       setActive(tabNames.Profile);
+    }
+    if (location.pathname === `/${userProfileEdit.team}/profile-details`) setActive(tabNames.Profile);
   }, [location]);
 
   const onBackClick = () => {
@@ -36,7 +35,7 @@ const CreateTeam = () => {
 
   useEffect(() => {
     dispatch(setActiveNavTab(''));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className={`${location.pathname.includes('create-team') ? 'px-5 py-2' : 'px-3 pt-1'} `}>
@@ -44,7 +43,10 @@ const CreateTeam = () => {
         {location.pathname.includes('create-team') ? (
           <CircularBackButtonContainer
             className="d-flex align-items-center cursor-pointer"
-            onClick={() => navigate('/dashboard')}
+            onClick={() =>{
+              dispatch(setConfirmSaveForLater(true));
+              dispatch(setNavigatingRoute('/dashboard'));
+            }}
           >
             <div className="back-icon-container">
               <ArrowLeft size={18} color={theme.white} />

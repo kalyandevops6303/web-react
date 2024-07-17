@@ -40,6 +40,7 @@ import CreateClub from '../../views/createClub';
 import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
+import Assessments from '../../views/assessments';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -181,6 +182,10 @@ const Routes = [
     element: <CreateTeam />,
   },
   {
+    path: '/create-team/:section-details/:id',
+    element: <CreateTeam />,
+  },
+  {
     path: `/${userProfileEdit.team}/:section-details`,
     element: <CreateTeam />,
   },
@@ -190,6 +195,10 @@ const Routes = [
   },
   {
     path: `/${userProfileEdit.club}/:section-details`,
+    element: <CreateClub />,
+  },
+  {
+    path: '/create-club/:section-details/:id',
     element: <CreateClub />,
   },
   {
@@ -208,6 +217,10 @@ const Routes = [
     path: '/payments',
     element: <PaymentFullView />,
   },
+  {
+    path: '/assessments',
+    element: <Assessments />
+  }
 ];
 
 // eslint-disable-next-line consistent-return

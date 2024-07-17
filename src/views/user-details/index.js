@@ -26,6 +26,7 @@ import DetailsCTAHeader from './overview/DetailsCTAHeader';
 import { DetailsHeaderSection, DetailsWrap } from './overview/style';
 import PublicTeamMembersListingModal from '../modals/PublicTeamMembersListingModal';
 import MembersListingCard from './overview/MembersListingCard';
+import AssessedSkills from './overview/AssessedSkills';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -341,6 +342,9 @@ const UserDetails = () => {
               isClient={isClient}
               isEditable={userData?._id === param?.userId}
             />
+          </Row>
+          <Row>
+            <AssessedSkills />
           </Row>
           <Row>
             <RecentProjects isEditable={userData?._id === param?.userId} />

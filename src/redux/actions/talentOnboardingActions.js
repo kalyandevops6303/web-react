@@ -25,6 +25,9 @@ import {
 } from '../reducers/talentOnboarding';
 import { cometChatLogin } from '../reducers/auth';
 import { scanAndProcessFiles } from '../../utility/Utils';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
+import { setFormDocuments } from '../reducers/formData';
 
 const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
@@ -37,16 +40,20 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   }
 };
 
-const getResumeParsedDetails = (setResumeParsedDetails, fileKey) => async (dispatch) => {
-  dispatch(resumeParsedDetailsRequest());
+const getResumeParsedDetails = (setResumeParsedDetails,setParseResume, fileKey, setFiles) => async (dispatch) => {
+  await dispatch(resumeParsedDetailsRequest());
   try {
     const res = await parsedResumeService(fileKey);
     let resumeDetails = res.data.data.generated_info;
-    resumeDetails = { ...resumeDetails, _id: res.data.data._id, file_key: res.data.data?.file_key };
-    setResumeParsedDetails(res.data.data.generated_info);
-    dispatch(resumeParsedDetailsSuccess(resumeDetails));
+    resumeDetails = { ...resumeDetails, _id: res?.data?.data?._id, file_key: res?.data?.data?.file_key };
+    if (res?.data?.data) await setResumeParsedDetails(res?.data?.data?.generated_info);
+    await dispatch(resumeParsedDetailsSuccess(resumeDetails));
   } catch (error) {
-    errorHandler(error, resumeParsedDetailsFailure);
+    setParseResume(false);
+    dispatch(resumeParsedDetailsFailure());
+    setFiles([]);
+    dispatch(setFormDocuments(null));
+    ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
   }
 };
 

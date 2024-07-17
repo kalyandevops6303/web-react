@@ -6,7 +6,7 @@ import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
-import { InviteView, stepName, steps } from './overview/constants';
+import { InviteView, stepName, steps, infrastructureStep } from './overview/constants';
 import BidView from './overview/BidView';
 import TeamView from './overview/TeamView';
 import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
@@ -14,6 +14,7 @@ import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import Milestone from './milestones/Milestone';
 import RatingView from './overview/RatingView';
+import InfrastructureView from './overview/infrastructure/InfrastructureView';
 import { getItem } from '../../utility/localStorageControl';
 import BidMilestone from './overview/BidMilestone';
 import PaymentTab from './payment/PaymentTab';
@@ -27,6 +28,7 @@ import ProjectDetailsNavbar from './overview/ProjectDetailsNavbar';
 import DownloadCertificate from './overview/DownloadCertificate';
 import { updatePaymentStatus } from '../../redux/actions/milestonePaymentActions';
 import { downloadCertificate } from '../../redux/actions/projectDetailsAction';
+import { verifyInfraAccessService } from '../../services/infrastructureServices';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -50,6 +52,7 @@ const ProjectDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
+  const [infrastructureAccess, setInfrastructureAccess] = useState(false);
   const [downloadCertificateURL, setDownloadCertificateURL] = useState('');
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
@@ -67,7 +70,21 @@ const ProjectDetails = () => {
   const changeStep = (step) => {
     setCurrentStep(step);
   };
+
+  const verifyInfrastructureAccess = () => {
+    setInfrastructureAccess(false);
+    verifyInfraAccessService()
+      .then(() => {
+        // console.log("Access Given");
+        setInfrastructureAccess(true);
+      })
+      .catch(() => {
+        // console.log('Infra access denied');
+      });
+  };
+
   useEffect(() => {
+    verifyInfrastructureAccess();
     window?.scrollTo(0, 0);
   }, []);
 
@@ -114,9 +131,15 @@ const ProjectDetails = () => {
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
       }
+
+      // Append irrespective of the status
+      if (infrastructureAccess && isClient) { // Checks if the user is client and has infrastructure access
+        updatedSteps.push({ ...infrastructureStep, isDisabled: false }); // add a new step
+      }
+
       setStepsArray(updatedSteps);
     }
-  }, [projectDetailsData?.status]);
+  }, [projectDetailsData?.status, infrastructureAccess]);
 
   useEffect(() => {
     let updatedInviteSteps = [];
@@ -128,7 +151,7 @@ const ProjectDetails = () => {
   }, [invitedByData?.request_status]);
 
   useEffect(() => {
-    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates) {
+    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates && !isClient) {
       dispatch(downloadCertificate({ project_id: projectId, onSuccess }));
     }
   }, [projectDetailsData?.status]);
@@ -183,6 +206,11 @@ const ProjectDetails = () => {
         return { title: 'Payment' };
       case stepName.rating.toLowerCase():
         return { title: 'Rating' };
+      case stepName.infrastructure.toLowerCase():
+        return {
+          title: 'Infrastructure',
+          link: `/project-details/${params.projectId}/infrastructure`,
+        };
       default:
         return '';
     }
@@ -240,6 +268,7 @@ const ProjectDetails = () => {
             <Route path="payment" element={<PaymentTab />} />
             <Route path="team" element={<TeamView />} />
             <Route path="rating" element={<RatingView />} />
+            <Route path="infrastructure" element={<InfrastructureView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
             <Route path="milestone/project-invitation/:inviteId" element={<BidMilestone />} />
             <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />

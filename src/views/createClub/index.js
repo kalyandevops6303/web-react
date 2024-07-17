@@ -8,6 +8,7 @@ import theme from '../../configs/themeVariables';
 import { getItemFromSession, removeItemFromSession } from '../../utility/sessesionStorageControl';
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import { CircularBackButtonContainer } from '../styled';
+import { setConfirmSaveForLater, setNavigatingRoute } from '../../redux/reducers/formData';
 
 const CreateClub = () => {
   const tabNames = {
@@ -22,7 +23,19 @@ const CreateClub = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const accountDetailsPath = /^\/create-club\/account-details(\/.*)?$/;
+    if (accountDetailsPath.test(location.pathname)) {
+      setActive(tabNames.Account);
+    }
     if (location.pathname === '/create-club/account-details') setActive(tabNames.Account);
+  }, [location]);
+
+  useEffect(() => {
+    const accountDetailsPath = /^\/create-club\/profile-details(\/.*)?$/;
+    if (accountDetailsPath.test(location.pathname)) {
+      setActive(tabNames.Profile);
+    }
+    if (location.pathname === '/create-club/profile-details') setActive(tabNames.Profile);
   }, [location]);
 
   const onBackClick = () => {
@@ -40,7 +53,10 @@ const CreateClub = () => {
         {location.pathname.includes('create-club') ? (
           <CircularBackButtonContainer
             className="d-flex align-items-center cursor-pointer"
-            onClick={() => navigate('/dashboard')}
+            onClick={() =>{
+              dispatch(setConfirmSaveForLater(true));
+              dispatch(setNavigatingRoute('/dashboard'));
+            }}
           >
             <div className="back-icon-container">
               <ArrowLeft size={18} color={theme.white} />

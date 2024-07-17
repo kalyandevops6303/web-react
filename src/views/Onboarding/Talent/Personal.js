@@ -181,7 +181,7 @@ const Personal = () => {
       workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
       workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
       role: savedFormData?.role || null,
-      zipCode: savedFormData?.zipCode || null,
+      zipCode: savedFormData?.zipCode || '',
       country: savedFormData?.country || null,
       state: savedFormData?.state || null,
       city: savedFormData?.city || null,
@@ -225,10 +225,6 @@ const Personal = () => {
   }, [localFormData, parseResume, resumeParsedLoading]);
 
   useEffect(() => {
-    dispatch(setResumeParsed(parseResume));
-  }, [parseResume]);
-
-  useEffect(() => {
     if (parseResume === false) {
       if (savedFormData) {
         const requiredFields = filteredFormSchema({
@@ -244,7 +240,7 @@ const Personal = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) {
+    if (!files || (files?.length > 0 && !files[0].file?.name)) {
       setFiles([]);
     }
   }, [files]);
@@ -253,8 +249,6 @@ const Personal = () => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
-    setParseResume(false);
-    dispatch(setResumeParsed(false));
     dispatch(setFormDocuments(null));
   };
 
@@ -275,6 +269,8 @@ const Personal = () => {
         'Content-Type': file.file.type,
       });
     } catch (error) {
+      dispatch(parsedResumeData(null));
+      setParseResume(false);
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
       setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
@@ -303,6 +299,17 @@ const Personal = () => {
           })),
           { shouldValidate: true },
         );
+      } else {
+        setValue(
+          'readLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
+          { shouldValidate: true },
+        );
       }
       if (res?.languages_speak && res?.languages_speak.length > 0) {
         setValue(
@@ -313,6 +320,17 @@ const Personal = () => {
           })),
           { shouldValidate: true },
         );
+      } else {
+        setValue(
+          'speakLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
+          { shouldValidate: true },
+        );
       }
       if (res?.languages_write && res?.languages_write.length > 0) {
         setValue(
@@ -321,6 +339,17 @@ const Personal = () => {
             label: language?.name,
             value: language?._id,
           })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'writeLanguages',
+          [
+            {
+              label: 'English',
+              value: '64831445a51384fb6948e678',
+            },
+          ],
           { shouldValidate: true },
         );
       }
@@ -349,7 +378,6 @@ const Personal = () => {
 
   const fetchUploadUrl = async (file) => {
     const response = await resumeUploadService(file.name);
-    dispatch(getResumeParsedDetails(setResumeParsedDetails, response?.data?.data?.file_key));
     const fileWithUrl = {
       id: uuidv4(),
       file,
@@ -357,12 +385,14 @@ const Personal = () => {
       isUploaded: false,
     };
     dispatch(setFormDocuments([fileWithUrl]));
-    setParseResume(true);
-    dispatch(setResumeParsed(true));
-
     setFiles([fileWithUrl]);
-
-    handleUploadFile(fileWithUrl);
+    await handleUploadFile(fileWithUrl);
+    if (response)
+      dispatch(
+        getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
+      );
+    dispatch(setResumeParsed(true));
+    setParseResume(true);
   };
 
   const handleFileChange = async (e) => {
@@ -455,7 +485,12 @@ const Personal = () => {
                     color="flat-danger"
                     className="btn-left-margin"
                     disabled={uploadingFiles.includes(file)}
-                    onClick={() => handleRemoveFile(file)}
+                    onClick={() => {
+                      handleRemoveFile(file);
+                      setParseResume(false);
+                      dispatch(parsedResumeData(null));
+                      dispatch(setResumeParsed(false));
+                    }}
                   >
                     Remove
                   </Button>
@@ -595,8 +630,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : "",
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : "",
+          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
         },
       };
     } else {
@@ -609,8 +644,8 @@ const Personal = () => {
         languages_write,
         current_residency,
         resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : "",
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : "",
+          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
+          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
         },
       };
     }
@@ -619,18 +654,9 @@ const Personal = () => {
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
-          languages_speak: speakLanguages?.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
-          languages_write: writeLanguages.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
-          languages_read: readLanguages.map((language) => ({
-            name: language?.label,
-            _id: language?.value,
-          })),
+          languages_speak,
+          languages_write,
+          languages_read,
           tagline,
           professional_introduction: professionalIntroduction,
         },
@@ -808,6 +834,63 @@ const Personal = () => {
           );
         }
       }
+      if (res?.talent_info?.languages_speak.length > 0) {
+        setValue(
+          'speakLanguages',
+          res?.talent_info?.languages_speak?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'speakLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.talent_info?.languages_read.length > 0) {
+        setValue(
+          'readLanguages',
+          res?.talent_info?.languages_read?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'readLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.talent_info?.languages_write.length > 0) {
+        setValue(
+          'writeLanguages',
+          res?.talent_info?.languages_write?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'writeLanguages',
+          languagesData?.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
     }
   };
 
@@ -860,8 +943,14 @@ const Personal = () => {
           ]);
         }
       } else {
-        // dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(
+          getResumeParsedDetails(
+            setResumeParsedDetails,
+            setParseResume,
+            savedFormDocuments[0]?.uploadData?.file_key,
+            setFiles,
+          ),
+        );
         setFiles([
           {
             file: {
@@ -883,14 +972,14 @@ const Personal = () => {
 
   return (
     <ProfileFormContainer>
-      {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) || languagesIsLoading ? (
+      {(IsresumeParsed ? resumeParsedLoading : userDetailsIsLoading && languagesIsLoading) ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="w-100">
-            <Col className="w-75" xs="100" sm="100" lg="75">
+            <Col className="w-75" xs="100" sm="75" lg="75">
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1">About</h4>
@@ -1285,7 +1374,7 @@ const Personal = () => {
                 </div>
               </div>
             </Col>
-            <Col>
+            <Col className=" w-25">
               <Card>
                 <CardBody>
                   <div className="d-flex flex-column">

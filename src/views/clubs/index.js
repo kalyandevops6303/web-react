@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
+import { Button } from 'reactstrap';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
@@ -70,6 +71,19 @@ const Clubs = () => {
     <ClubContainer>
       <div className="d-flex justify-content-between">
         <BreadCrumbs data={[{ title: 'Clubs', link: '/clubs' }, { title: primaryEnum[primaryFilter] }]} />
+        <div className="relist-btn-wrapper">
+                      <Button
+                        color="primary"
+                        outline
+                        className="relist-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/clubs/my_clubs', { state: { isDraftClubs: true } });
+                        }}
+                      >
+                      View Drafts
+                      </Button>
+                    </div>
       </div>
       <PrimaryFilter
         selected={primaryFilter}

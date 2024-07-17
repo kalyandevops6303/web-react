@@ -11,7 +11,7 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { clubStatus, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
@@ -24,6 +24,7 @@ import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 import OpenListing from './overview/OpenListing';
+import RecommendedTeamsListing from './overview/RecommendedTeamsListing';
 import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
@@ -36,6 +37,7 @@ import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 import getTeamId from '../../utility/commonUtils';
 import InviteListing from './overview/InviteListing';
 import PaymentListing from './overview/PaymentListing';
+import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
@@ -75,7 +77,6 @@ const PrivateDashboard = () => {
 
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
-  const checkBidsAcceptedData = useSelector(checkBidsAccepted);
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
@@ -300,7 +301,7 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
-          {userDetailsData?.user_type === userTypes.team ? null : (
+          {userDetailsData?.team_type === userTypes.team ? null : (
             <section className="mb-2">
               <Header className="mb-1">Payments</Header>
               <PaymentListing />
@@ -310,6 +311,12 @@ const PrivateDashboard = () => {
             <section className="mb-2">
               <Header className="mb-1">Open Listings</Header>
               <OpenListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              <RecommendedTeamsListing />
             </section>
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
@@ -339,23 +346,31 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.team_type !== userTypes.club && <AvailableTime />}
+          {userDetailsData?.team_type !== userTypes.club &&
+            <div>
+              {
+                userDetailsData?.user_type === "CLIENT" ?
+                  <AvailableTime />
+                  :
+                  <AssessmentsOverview />
+              }
+            </div>}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />
-          {checkBidsAcceptedData?.data?.length > 0 && <Disputes handleRaiseDispute={handleRaiseDispute} />}
+          <Disputes handleRaiseDispute={handleRaiseDispute} />
           <Meetings />
         </Col>
       </Row>
