@@ -206,10 +206,11 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             size: file?.fileData?.file?.size,
             created_at: file?.fileData?.file?.lastModified,
             description: file?.description ?? '',
+            doc_id : file?.fileData?.id,
           };
 
-          if (file?.doc_id) {
-            document.doc_id = file.doc_id;
+          if (file?.filedata?.id) {
+            document.doc_id = file?.fileData?.id;
           }
 
           return document;
@@ -224,7 +225,6 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           if (link?.doc_id) {
             linkObject.doc_id = link.doc_id;
           }
-
           return linkObject;
         }) ?? [],
     };
@@ -269,6 +269,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           },
         },
         id: file?._id,
+        doc_id: file?._id,
         time: DateTime.fromMillis(file?.updated_at).toFormat(`dd MMM yyyy, hh:mm a`),
       }));
       documentsData?.forEach((document) => {

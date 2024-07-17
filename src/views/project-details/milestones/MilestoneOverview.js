@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { Button } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import theme from '../../../configs/themeVariables';
 import { BackButtonContainer, BackIconContainer } from '../../CreateProject/style';
@@ -16,6 +16,7 @@ import FeedbackForCompleteModal from '../../modals/FeedbackForCompleteModal';
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import FeedbackForAcceptModal from '../../modals/FeedbackForAcceptModal';
 import { accpetMilestone, getMilestoneDisputes, markComplete } from '../../../redux/actions/milestoneActions';
+import { setConfirmSaveForLater, setNavigatingRoute } from '../../../redux/reducers/formData';
 
 const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
   const userData = useSelector(selectAuthUserData);
@@ -27,11 +28,11 @@ const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
   const [acceptModal, setAcceptModal] = useState(false);
   const [feedbackCompleteModal, setFeedbackCompleteModal] = useState(false);
   const submissionHistory = useSelector((state) => state.milestone.submissionHistory);
-  const navigate = useNavigate();
   const param = useParams();
 
   const handleBack = () => {
-    navigate(`/project-details/${param?.projectId}/milestone`);
+    dispatch(setConfirmSaveForLater(true));
+    dispatch(setNavigatingRoute(`/project-details/${param?.projectId}/milestone`));
   };
   const handleDispute = () => {
     setRaiseDisputeModal(true);
