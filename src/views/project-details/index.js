@@ -151,7 +151,7 @@ const ProjectDetails = () => {
   }, [invitedByData?.request_status]);
 
   useEffect(() => {
-    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates) {
+    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates && !isClient) {
       dispatch(downloadCertificate({ project_id: projectId, onSuccess }));
     }
   }, [projectDetailsData?.status]);

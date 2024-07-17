@@ -979,7 +979,7 @@ const Personal = () => {
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="w-100">
-            <Col className="w-75" xs="100" sm="100" lg="75">
+            <Col className="w-75" xs="100" sm="75" lg="75">
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1">About</h4>
@@ -1374,7 +1374,7 @@ const Personal = () => {
                 </div>
               </div>
             </Col>
-            <Col>
+            <Col className=" w-25">
               <Card>
                 <CardBody>
                   <div className="d-flex flex-column">
