@@ -64,7 +64,7 @@ const CustomBadge = styled.span`
   .TO_BE_LISTED {
     background: ${theme.badgeBlueColor} !important;
     color: ${theme.darkBlueColor};
-    border: ${`1px solid ${theme.lighGreenColor}`};
+    border: ${`2px solid ${theme.darkBlueColor}`};
   }
   .ON_GOING {
     background: ${theme.lightGreenBatchColor};
