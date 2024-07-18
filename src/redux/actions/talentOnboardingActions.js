@@ -51,7 +51,9 @@ const getResumeParsedDetails = (setResumeParsedDetails,setParseResume, fileKey, 
   } catch (error) {
     setParseResume(false);
     dispatch(resumeParsedDetailsFailure());
-    setFiles([]);
+    if (setFiles) {
+      setFiles([]);
+    }
     dispatch(setFormDocuments(null));
     ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
   }

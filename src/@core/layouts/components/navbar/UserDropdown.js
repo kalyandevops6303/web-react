@@ -32,6 +32,7 @@ import EditProfileAccordion from './EditProfileAccordion';
 import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
+import { setFormDocuments } from '../../../../redux/reducers/formData';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -94,6 +95,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
       }
+      dispatch(setFormDocuments(null));
     };
 
     dispatch(logoutAction({ fcmToken, onSuccess }));
