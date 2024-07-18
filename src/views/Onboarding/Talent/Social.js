@@ -45,7 +45,14 @@ import {
   resumeDataUploadedForSocial,
   resumeParsed,
 } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFileKey, setFormData, setFormDocuments, setResumeDataUploadedForSocial, setResumeParsed } from '../../../redux/reducers/formData';
+import {
+  clearAllFormData,
+  setFileKey,
+  setFormData,
+  setFormDocuments,
+  setResumeDataUploadedForSocial,
+  setResumeParsed,
+} from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
@@ -324,20 +331,32 @@ const Social = () => {
   const setResumeParsedDetails = (res) => {
     if (res) {
       if (res?.social_links.length > 0) {
-        if (res?.social_links.find((link) => link.platform === 'LinkedIn')) {
-          setValue('linkedInLink', res?.social_links.find((link) => link.platform === 'LinkedIn').url, {
-            shouldValidate: true,
-          });
+        if (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')) {
+          setValue(
+            'linkedInLink',
+            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn').url,
+            {
+              shouldValidate: true,
+            },
+          );
         }
-        if (res?.social_links.find((link) => link.platform === 'Twitter')) {
-          setValue('twitterLink', res?.social_links.find((link) => link.platform === 'Twitter').url, {
-            shouldValidate: true,
-          });
+        if (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')) {
+          setValue(
+            'twitterLink',
+            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter').url,
+            {
+              shouldValidate: true,
+            },
+          );
         }
-        if (res?.social_links.find((link) => link.platform === 'GitHub')) {
-          setValue('githubLink', res?.social_links.find((link) => link.platform === 'GitHub').url, {
-            shouldValidate: true,
-          });
+        if (res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')) {
+          setValue(
+            'githubLink',
+            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub').url,
+            {
+              shouldValidate: true,
+            },
+          );
         }
         if (
           res?.talent_info?.social_links.filter(
@@ -368,7 +387,13 @@ const Social = () => {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
       } else if (!parsedUploaded && parsedResumeData === null) {
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, setParseResume,  savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails));
+        dispatch(
+          getResumeParsedDetails(
+            setResumeParsedDetails,
+            setParseResume,
+            savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
+          ),
+        );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
