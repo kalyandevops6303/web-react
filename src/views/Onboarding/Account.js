@@ -409,9 +409,7 @@ const Account = () => {
                     disabled={isImageUploading}
                     onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
-                    {isImageUploading ? (
-                      <Spinner size="sm" />
-                    ) : buttonText}
+                    {isImageUploading ? <Spinner size="sm" /> : buttonText}
                   </Button>
                   {selectedImage && selectedImagePreview && (
                     <RemoveUploadedPicture
