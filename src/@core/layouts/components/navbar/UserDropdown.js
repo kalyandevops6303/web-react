@@ -29,6 +29,7 @@ import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
+import DelegateAccordion from './DelegateAccordion';
 import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
@@ -218,6 +219,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
             <span className="align-middle ">Public Profile</span>
           </DropdownItem>
           <EditProfileAccordion />
+          <DelegateAccordion />
 
           <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
             {userDetailsData && (

@@ -25,6 +25,7 @@ import SetNewPassword from './SetNewPassword';
 import ForgotPasswordVerification from './ForgotPasswordVerification';
 import { selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import RegisterDelegate from './RegisterDelegate';
 
 const AuthRoute = () => {
   const userType = useSelector(selectUserType);
@@ -44,6 +45,10 @@ const AuthRoute = () => {
     {
       path: '/register',
       element: <Register />,
+    },
+    {
+      path: '/register-delegate',
+      element: <RegisterDelegate />,
     },
     {
       path: '/register-phone',
@@ -97,7 +102,7 @@ const AuthRoute = () => {
     if (currentPath === '/auth/login') {
       return <img src={LoginPic} alt="bg-pic" className="me-8 login-pic" />;
     }
-    if (userType === userTypes.client) {
+    if (userType === userTypes.client || currentPath === '/auth/register-delegate') {
       return <img src={ClientPic} alt="bg-pic" className="me-8 client-pic" />;
     }
     if (userType === userTypes?.talent) {
