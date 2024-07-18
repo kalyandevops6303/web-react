@@ -255,6 +255,7 @@ const Personal = () => {
     setFiles([...filtered]);
     setParseResume(false);
     dispatch(setResumeParsed(false));
+    dispatch(resumeParsedDetailsSuccess(null));
     dispatch(setFormDocuments(null));
   };
 
