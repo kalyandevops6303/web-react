@@ -51,7 +51,7 @@ const SigninWithGoogle = () => {
 
   // Error handler for Google login
   const onError = (error, id_token) => {
-    if (error.response.status === ERROR_CODES.EC_422) {
+    if (error?.response?.status === ERROR_CODES.EC_422) {
       setItem('google_id_token', id_token);
       navigate('/auth');
 
