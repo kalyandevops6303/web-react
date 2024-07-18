@@ -38,7 +38,6 @@ const talentOnboardingSlice = createSlice({
     }),
     resumeParsedDetailsSuccess: (state, action) => ({
       ...state,
-
       resumeParsedDetails: action.payload,
       resumeParsedDetailsLoading: false,
     }),

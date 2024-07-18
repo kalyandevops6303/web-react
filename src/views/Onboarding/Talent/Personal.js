@@ -229,8 +229,8 @@ const Personal = () => {
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-
   const localFormData = useWatch({ control });
+
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
       const allData = { ...savedFormData, ...localFormData };
@@ -589,7 +589,7 @@ const Personal = () => {
                     onClick={() => {
                       handleRemoveFile(file);
                       setParseResume(false);
-                      dispatch(parsedResumeData(null));
+                      dispatch(resumeParsedDetailsSuccess(null));
                       dispatch(setResumeParsed(false));
                     }}
                   >
