@@ -146,11 +146,13 @@ const VerifyPhone = () => {
               border: `1px solid ${theme.primary}`,
               outline: 'none',
             }}
-          />
-          {error && <Label className="mt-2 text-danger text-xl-left">
-            <b>{error}</b>
-          </Label>}
-          <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
+          />          
+          {error && (
+            <Label className="mt-2 text-danger text-xl-left">
+              <b>{error}</b>
+            </Label>
+          )}
+          <Button color="primary" block className="mt-2" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             Submit
           </Button>
         </Form>

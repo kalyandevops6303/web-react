@@ -11,7 +11,7 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { clubStatus, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
@@ -77,7 +77,6 @@ const PrivateDashboard = () => {
 
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
-  const checkBidsAcceptedData = useSelector(checkBidsAccepted);
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
@@ -348,14 +347,14 @@ const PrivateDashboard = () => {
 
         <Col lg="4" sm="12">
           {userDetailsData?.team_type !== userTypes.club &&
-            <>
+            <div>
               {
                 userDetailsData?.user_type === "CLIENT" ?
                   <AvailableTime />
                   :
                   <AssessmentsOverview />
               }
-            </>}
+            </div>}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
@@ -371,7 +370,7 @@ const PrivateDashboard = () => {
             />
           )}
           <Alerts />
-          {checkBidsAcceptedData?.data?.length > 0 && <Disputes handleRaiseDispute={handleRaiseDispute} />}
+          <Disputes handleRaiseDispute={handleRaiseDispute} />
           <Meetings />
         </Col>
       </Row>

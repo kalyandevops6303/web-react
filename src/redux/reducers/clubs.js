@@ -16,6 +16,7 @@ const initialState = {
   error: null,
   updateClubLoading: false,
   draftClub: {},
+  clubLocalData: null,
   saveDraftClubLoading: false,
   deleteDraftClubLoading: false,
   getDraftClubLoading: false,
@@ -51,6 +52,10 @@ const clubSlice = createSlice({
     clearClubCreateData: (state) => ({
       ...state,
       clubCreateData: null,
+    }),
+    setClubLocalData: (state, action) => ({
+      ...state,
+      clubLocalData: action.payload,
     }),
     getCardInfoReq: (state) => ({
       ...state,
@@ -182,6 +187,7 @@ export const {
   deleteDraftClubRequest,
   deleteDraftClubSuccess,
   deleteDraftClubError,
+  setClubLocalData,
 } = clubSlice.actions;
 
 export default clubSlice.reducer;
