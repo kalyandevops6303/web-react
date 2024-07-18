@@ -39,12 +39,13 @@ import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmp
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import {
+  fileKey,
   formData,
   formDocuments,
   resumeDataUploadedForSocial,
   resumeParsed,
 } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments, setResumeDataUploadedForSocial, setResumeParsed } from '../../../redux/reducers/formData';
+import { clearAllFormData, setFileKey, setFormData, setFormDocuments, setResumeDataUploadedForSocial, setResumeParsed } from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
@@ -62,6 +63,7 @@ const Social = () => {
   });
 
   const savedFormData = useSelector(formData);
+  const fileKeyDetails = useSelector(fileKey);
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
@@ -313,6 +315,7 @@ const Social = () => {
           },
           isUploaded: true,
         };
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key ?? savedFormDocuments[0]?.uploadData?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }
     }
@@ -365,7 +368,7 @@ const Social = () => {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
       } else if (!parsedUploaded && parsedResumeData === null) {
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(getResumeParsedDetails(setResumeParsedDetails, setParseResume,  savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));

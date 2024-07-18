@@ -81,6 +81,7 @@ import {
 } from '../../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
+  setFileKey,
   setFormData,
   setFormDocuments,
   setResumeDataUploadedForPersonal,
@@ -484,6 +485,7 @@ const Personal = () => {
     dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
+    dispatch(setFileKey(response?.data?.data?.file_key));
     if (response)
       dispatch(
         getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
@@ -512,8 +514,7 @@ const Personal = () => {
         filesRef.current = files;
         setFiles(savedFormDocuments);
         dispatch(setFormDocuments(savedFormDocuments));
-      }
-      else{
+      } else {
         setFiles([]);
       }
     };
@@ -730,10 +731,12 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
-        resume: !isEmpty(files) ? {
-          file_name: files[0]?.file?.name || '',
-          file_key: files[0]?.uploadData?.file_key || '',
-        } : {},
+        resume: !isEmpty(files)
+          ? {
+              file_name: files[0]?.file?.name || '',
+              file_key: files[0]?.uploadData?.file_key || '',
+            }
+          : {},
       };
     } else {
       reqData = {
@@ -744,10 +747,12 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
-        resume: !isEmpty(files) ? {
-          file_name: files[0]?.file?.name || '',
-          file_key: files[0]?.uploadData?.file_key || '',
-        } : {},
+        resume: !isEmpty(files)
+          ? {
+              file_name: files[0]?.file?.name || '',
+              file_key: files[0]?.uploadData?.file_key || '',
+            }
+          : {},
       };
     }
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
@@ -867,7 +872,13 @@ const Personal = () => {
           },
           isUploaded: true,
         };
-
+        dispatch(
+          setFileKey(
+            savedFormDocuments != null
+              ? savedFormDocuments[0]?.uploadData?.file_key
+              : res?.talent_info?.resume?.file_key,
+          ),
+        );
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
@@ -1037,6 +1048,7 @@ const Personal = () => {
               isUploaded: true,
             },
           ]);
+          dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
         }
       } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
@@ -1061,6 +1073,7 @@ const Personal = () => {
             isUploaded: true,
           },
         ]);
+        dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));

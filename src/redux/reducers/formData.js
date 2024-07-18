@@ -8,6 +8,7 @@ const initialState = {
   isFormImageRemoved: null,
   confirmSaveForLater: false,
   navigatingRoute: '',
+  fileKey: '',
   resumeDataUploadedForPersonal: false,
   resumeDataUploadedForEducation: false,
   resumeDataUploadedForSocial: false,
@@ -44,6 +45,10 @@ const formData = createSlice({
       formImage: null,
       isFormImageRemoved: null,
     }),
+    setFileKey: (state, action) => ({
+      ...state,
+      fileKey: action.payload,
+    }),
     setConfirmSaveForLater: (state, action) => ({
       ...state,
       confirmSaveForLater: action.payload,
@@ -67,7 +72,7 @@ const formData = createSlice({
   },
 });
 
-export const { setFormData, setFormDocuments, setFormImage, setResumeParsed, setIsFormImageRemoved, clearAllFormData, setConfirmSaveForLater, setNavigatingRoute, setResumeDataUploadedForPersonal, setResumeDataUploadedForEducation, setResumeDataUploadedForSocial } =
+export const { setFormData, setFormDocuments, setFormImage, setResumeParsed, setIsFormImageRemoved, clearAllFormData, setConfirmSaveForLater, setNavigatingRoute, setFileKey , setResumeDataUploadedForPersonal, setResumeDataUploadedForEducation, setResumeDataUploadedForSocial } =
   formData.actions;
 
 export default formData.reducer;

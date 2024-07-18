@@ -16,10 +16,12 @@ const confirmSaveForLater = createSelector(formDataSelector, (state) => state.co
 
 const navigatingRoute = createSelector(formDataSelector, (state) => state.navigatingRoute);
 
+const fileKey = createSelector(formDataSelector, (state) => state.fileKey);
+
 const resumeDataUploadedForPersonal = createSelector(formDataSelector, (state) => state.resumeDataUploadedForPersonal);
 
 const resumeDataUploadedForEducation = createSelector(formDataSelector, (state) => state.resumeDataUploadedForEducation);
 
 const resumeDataUploadedForSocial = createSelector(formDataSelector, (state) => state.resumeDataUploadedForSocial);
 
-export { formData, formDocuments, formImage, resumeParsed, isFormImageRemoved, confirmSaveForLater, navigatingRoute, resumeDataUploadedForPersonal, resumeDataUploadedForEducation, resumeDataUploadedForSocial };
+export { formData, formDocuments, formImage, resumeParsed, isFormImageRemoved, confirmSaveForLater, navigatingRoute, fileKey, resumeDataUploadedForPersonal, resumeDataUploadedForEducation, resumeDataUploadedForSocial };

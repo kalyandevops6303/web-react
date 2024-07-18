@@ -53,8 +53,21 @@ import NoteComponent from '../NoteComponent';
 import CustomerSupportCTA from '../CustomerSupportCTA';
 import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { formData, resumeParsed, formDocuments, resumeDataUploadedForEducation } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments, setResumeDataUploadedForEducation } from '../../../redux/reducers/formData';
+import {
+  formData,
+  resumeParsed,
+  formDocuments,
+  resumeDataUploadedForEducation,
+  fileKey,
+} from '../../../redux/selectors/formDataSelectors';
+import {
+  clearAllFormData,
+  setFormData,
+  setResumeParsed,
+  setFormDocuments,
+  setResumeDataUploadedForEducation,
+  setFileKey,
+} from '../../../redux/reducers/formData';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
 const Educational = () => {
@@ -114,6 +127,7 @@ const Educational = () => {
       .required('Skill is required'),
   });
   const savedFormData = useSelector(formData);
+  const fileKeyDetails = useSelector(fileKey);
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
@@ -431,6 +445,7 @@ const Educational = () => {
           },
           isUploaded: true,
         };
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }
     }
@@ -485,13 +500,19 @@ const Educational = () => {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
       } else if (!parsedUploaded && parsedResumeData === null) {
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(
+          getResumeParsedDetails(
+            setResumeParsedDetails,
+            setParseResume,
+            savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
+          ),
+        );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getCustomerSupportCount());
-  }, [parseResume, parsedResumeData,parsedUploaded]);
+  }, [parseResume, parsedResumeData, parsedUploaded]);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
   const [feedbackModal, setFeedbackSupportModal] = useState(false);
@@ -584,8 +605,8 @@ const Educational = () => {
                           errors.educationDetails.length > 0 &&
                           errors.educationDetails[index] && (
                             <FormFeedback>
-                              {errors.educationDetails[index].educationInstitution &&
-                                errors.educationDetails[index].educationInstitution.label.message}
+                              {errors?.educationDetails[index]?.educationInstitution &&
+                                errors?.educationDetails[index]?.educationInstitution?.label?.message}
                             </FormFeedback>
                           )}
                       </Col>
@@ -628,8 +649,8 @@ const Educational = () => {
                           errors.educationDetails.length > 0 &&
                           errors.educationDetails[index] && (
                             <FormFeedback>
-                              {errors.educationDetails[index].education &&
-                                errors.educationDetails[index].education.label.message}
+                              {errors?.educationDetails[index]?.education &&
+                                errors?.educationDetails[index]?.education?.label?.message}
                             </FormFeedback>
                           )}
                       </Col>
