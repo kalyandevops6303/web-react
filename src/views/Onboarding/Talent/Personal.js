@@ -269,7 +269,7 @@ const Personal = () => {
         'Content-Type': file.file.type,
       });
     } catch (error) {
-      dispatch(parsedResumeData(null));
+      dispatch(resumeParsedDetailsSuccess(null));
       setParseResume(false);
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
