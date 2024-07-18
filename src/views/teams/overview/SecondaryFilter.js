@@ -6,13 +6,14 @@ import classNames from 'classnames';
 import { RefreshCcw, Search } from 'react-feather';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, isEmpty, selectThemeColors, useIsTab } from '../../../utility/Utils';
 
 import { clearData } from '../../../redux/reducers/myTeams';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -34,6 +35,7 @@ import { skillsService, toolsService } from '../../../services/staticServices';
 import capitalize from '../../../lib/capitalize';
 import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
+import { teamStatusesOptions } from '../../../utility/constants/Constant';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -67,7 +69,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const popoverRef = useRef(null);
 
   const [hasMore, setHasMore] = useState(true);
+  const location = useLocation();
   const [secondFilterState, setSecondFilterState] = useState({
+    teamStatus: location?.state?.isDraftTeams ? [{ label: 'Drafts', value: 'DRAFT' }] : [],
     status: [],
     skills: [],
     tools: [],
@@ -142,12 +146,20 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
 
     if (primaryFilter === 'teams') {
+      let status = null;
+      if (secondFilterState.teamStatus?.map((item) => item.value).includes('DRAFT')) {
+        status = 'DRAFT';
+      } else if (secondFilterState.teamStatus?.map((item) => item.value).includes('SAVED')) {
+        status = 'SAVED';
+      } else {
+        status = null;
+      }
       dispatch(
         getTeamListing({
           metaData,
           onSuccess,
           onError,
-          filterData: { ...filterData, search_query: searchText || '' },
+          filterData: { ...filterData, search_query: searchText || '', creation_status: status },
           userType,
         }),
       );
@@ -215,6 +227,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const handleReset = () => {
     setSecondFilterState({
+      teamStatus: [],
       status: [],
       skills: [],
       tools: [],
@@ -471,8 +484,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   theme={selectThemeColors}
                   onChange={(value) => onChangeFilter('status', value)}
                   value={
-                    secondFilterState.status.length > 0
-                      ? { value: secondFilterState.status[0].value, label: secondFilterState.status[0].label }
+                    secondFilterState?.status?.length > 0
+                      ? { value: secondFilterState?.status[0]?.value, label: secondFilterState?.status[0]?.label }
                       : null
                   }
                 />
@@ -540,6 +553,25 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             ) : null}
+            {primaryFilter === 'teams' && (
+              <Col>
+                <Label className="form-label">Status</Label>
+                <Select
+                  isClearable
+                  loadOptions={teamStatusesOptions}
+                  classNamePrefix="select"
+                  placeholder="Select status"
+                  theme={selectThemeColors}
+                  className={classNames('react-select')}
+                  onChange={(value) => onChangeFilter('teamStatus', value)}
+                  value={
+                    !isEmpty(secondFilterState?.teamStatus)
+                      ? { value: secondFilterState.teamStatus[0].value, label: secondFilterState.teamStatus[0].label }
+                      : null
+                  }
+                />
+              </Col>
+            )}
             {(primaryFilter === 'recommendation' ||
               primaryFilter === 'clients' ||
               primaryFilter === 'talents' ||
@@ -650,7 +682,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               >
                 {selectMyTeamData?.map((item) => {
                   const CardComponent = getCardComp();
-
                   return (
                     <CardComponent
                       primaryFilter={primaryFilter}

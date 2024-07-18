@@ -15,7 +15,7 @@ import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 import Nobidgif from '@src/assets/images/gifs/no_bids.gif';
 import Tag from '../../../@core/components/tags';
 import ViewAllCard from './ExtraCardWithCount';
-
+import RecommendedTeamsCardForClient from './RecommendedTeamsCardForClient';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
 
@@ -31,11 +31,10 @@ import {
   recommendedTeamsForClientLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
-import { getProjectsBidsForClient, getRecommendedTeamsForClient } from '../../../redux/actions/dashboardActions';
+import { getProjectsBidsForClient} from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import ProjectBidCard from './ProjectBidCard';
-import RecommendedTeamsCardForClient from './RecommendedTeamsCardForClient';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { AccordionName } from './DashboardConstant';
@@ -144,16 +143,8 @@ const OpenListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-    // if (open === '1') {
-    //   dispatch(getProjectsBidsForClient());
-    // }
-    // if (open === '2') {
-    //   dispatch(getRecommendedTeamsForClient());
-    // }
-
     dispatch(getProjectsBidsForClient());
 
-    dispatch(getRecommendedTeamsForClient());
   }, []);
 
   const settings = {
@@ -178,11 +169,6 @@ const OpenListing = () => {
     navigate(path);
     dispatch(setActiveNavTab('marketplace'));
   };
-  const handleViewAllRecommendedTeam = (e, path) => {
-    e.stopPropagation();
-    navigate(path, { state: { isRecommended: true } });
-    dispatch(setActiveNavTab('marketplace'));
-  };
 
   const handleReceivedBids = () => {
     navigate('/marketplace/my_bids', { state: { isOpenListing: true } });
@@ -195,6 +181,11 @@ const OpenListing = () => {
       setIsSliderLoading(false);
     }, 150);
   }, [open]);
+  const handleViewAllRecommendedTeam = (e, path) => {
+    e.stopPropagation();
+    navigate(path, { state: { isRecommended: true } });
+    dispatch(setActiveNavTab('marketplace'));
+  };
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -212,7 +203,7 @@ const OpenListing = () => {
                     count={projectsBidsForClientData?.metadata?.total_records}
                   />
                 </span>
-                {projectsBidsForClientData?.data?.length > 0 && (
+                {projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length > 0 && (
                   <CardText onClick={handleReceivedBids} className="view-all-cta">
                     View All
                   </CardText>
@@ -228,17 +219,19 @@ const OpenListing = () => {
                 </div>
               ) : (
                 <ProjectsListingWrap>
-                  {projectsBidsForClientData?.data?.length > 0 && isTab ? (
-                    projectsBidsForClientData?.data?.map((project) => (
-                      <ProjectBidCard accordionName={AccordionName.receivedBids} key={project._id} data={project} />
-                    ))
-                  ) : projectsBidsForClientData?.data?.length > 0 ? (
+                  {projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length > 0 && isTab ? (
+                    projectsBidsForClientData?.data
+                      ?.filter((bid) => bid.is_expired === false)
+                      ?.map((project) => (
+                        <ProjectBidCard accordionName={AccordionName?.receivedBids} key={project._id} data={project} />
+                      ))
+                  ) : projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length > 0 ? (
                     <>
-                      {projectsBidsForClientData?.data?.length >= 4 ? (
+                      {projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length >= 4 ? (
                         <Slider {...settings}>
                           {projectsBidsForClientData?.data?.map((project, index) => (
                             <ProjectBidCard
-                              accordionName={AccordionName.receivedBids}
+                              accordionName={AccordionName?.receivedBids}
                               className={`slide-${index}`}
                               key={project._id}
                               data={project}
@@ -246,7 +239,7 @@ const OpenListing = () => {
                           ))}
                           {projectsBidsForClientData?.metadata?.total_records > 10 && (
                             <ViewAllCard
-                              accordionName={AccordionName.receivedBids}
+                              accordionName={AccordionName?.receivedBids}
                               height={182}
                               onViewAll={(e) => handleViewAll(e, '/marketplace/my_bids')}
                               count={calculateRemainingBidsCount(projectsBidsForClientData)}
@@ -255,14 +248,16 @@ const OpenListing = () => {
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
-                          {projectsBidsForClientData?.data?.map((project) => (
-                            <ProjectBidCard
-                              accordionName={AccordionName.receivedBids}
-                              className="custom-slider-project"
-                              key={project._id}
-                              data={project}
-                            />
-                          ))}
+                          {projectsBidsForClientData?.data
+                            ?.filter((bid) => bid.is_expired === false)
+                            .map((project) => (
+                              <ProjectBidCard
+                                accordionName={AccordionName?.receivedBids}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
                         </div>
                       )}
                     </>
@@ -290,6 +285,100 @@ const OpenListing = () => {
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
+                  Expired Listings
+                  <Tag
+                    hasNew={
+                      projectsBidsForClientData?.unReadExpiredBidsCount > 0
+                        ? recommendedTeamsForClientData?.unReadExpiredBidsCount
+                        : false
+                    }
+                    count={projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length}
+                  />
+                </span>
+                {projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length > 0 && (
+                  <CardText onClick={handleReceivedBids} className="view-all-cta">
+                    View All
+                  </CardText>
+                )}
+              </AccordionHeadStyle>
+            </AccordionHeader>
+            <AccordionBody accordionId="2">
+              {isSliderLoading || projectsBidsForClientIsLoading ? (
+                <div style={{ height: '200px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                  <img style={{ width: '32%', height: '155px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '155px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '155px' }} src={CardSkeleton} alt="...Loading" />
+                </div>
+              ) : (
+                <ProjectsListingWrap>
+                  {projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length > 0 && isTab ? (
+                    projectsBidsForClientData?.data
+                      ?.filter((bid) => bid.is_expired === true)
+                      .map((project) => (
+                        <ProjectBidCard accordionName={AccordionName.receivedBids} key={project._id} data={project} />
+                      ))
+                  ) : projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length > 0 ? (
+                    <>
+                      {projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length >= 4 ? (
+                        <Slider {...settings}>
+                          {projectsBidsForClientData?.data
+                            ?.filter((bid) => bid.is_expired === true)
+                            .map((project, index) => (
+                              <ProjectBidCard
+                                accordionName={AccordionName.receivedBids}
+                                className={`slide-${index}`}
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                          {projectsBidsForClientData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.receivedBids}
+                              height={182}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/my_bids')}
+                              count={calculateRemainingBidsCount(projectsBidsForClientData)}
+                            />
+                          )}
+                        </Slider>
+                      ) : (
+                        <div className="custom-slider-wrap">
+                          {projectsBidsForClientData?.data
+                            ?.filter((bid) => bid.is_expired === true)
+                            .map((project) => (
+                              <ProjectBidCard
+                                accordionName={AccordionName.receivedBids}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Empty
+                      active={false}
+                      isEducationNotCompleted={returnDetailsForMarketPlace(
+                        userDetailsData?.user_type,
+                        profilePercentageData?.values_missing,
+                      )}
+                      receivedBid
+                      recommended
+                      payment={false}
+                    />
+                  )}
+                </ProjectsListingWrap>
+              )}
+            </AccordionBody>
+          </>
+        )}
+      </AccordionItem>
+      <AccordionItem>
+        {userDetailsData?.user_type === userTypes.client && (
+          <>
+            <AccordionHeader targetId="3">
+              <AccordionHeadStyle>
+                <span className="d-flex align-items-center">
                   Recommended Teams
                   <Tag
                     hasNew={
@@ -310,7 +399,7 @@ const OpenListing = () => {
                 )}
               </AccordionHeadStyle>
             </AccordionHeader>
-            <AccordionBody accordionId="2">
+            <AccordionBody accordionId="3">
               {isSliderLoading || recommendedTeamsForClientIsLoading ? (
                 <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
                   <img style={{ width: '32%', height: '210px' }} src={CardSkeleton} alt="...Loading" />

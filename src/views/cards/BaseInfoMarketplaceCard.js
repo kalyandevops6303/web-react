@@ -19,15 +19,14 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal, setDeleteDraftModal }) => {
-  const project = data?.project;
-  const bid = data?.bid;
+  const project = data && data?.project;
+  const bid = data && data?.bid;
   const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const userData = useSelector(selectUserData);
-
   const location = useLocation();
 
   const handleLike = (e) => {
@@ -144,7 +143,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
               <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          {!isSearchPage && (
+          {!isSearchPage && !location.pathname.split('/').includes('my_listings') && (
             <div className="mb-25">
               {isFavorite ? (
                 <Heart
@@ -217,12 +216,12 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
                 <span>
-                  {clientDetails?.first_name}&nbsp;
-                  {clientDetails?.last_name}
+                {clientDetails?.title ?? clientDetails?.company_name}
                 </span>
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                {clientDetails?.title ?? clientDetails?.company_name}
+              {clientDetails?.first_name}&nbsp;
+              {clientDetails?.last_name}
               </CardText>
             </div>
             <div className="d-flex flex-grow-1">
@@ -250,7 +249,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
       ) : (
         <div className="mb-2" />
       )}
-      <div>
+      {project && <div>
         <BadgeGroup
           title="Skills"
           data={project?.skills_required}
@@ -263,39 +262,41 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           color="light-blue"
           id={`tooltip-tools-project-${data?._id}`}
         />
-      </div>
+      </div>}
       {location.pathname.split('/').includes('my_listings') && (
         <BidsReceivedWrapper>
           <p className="wrapper-title mb-50">Bids Received</p>
-          {bidsReceivedAvatarGroup?.length ? (
-            <div className="d-flex align-items-center">
-              {bidsReceivedAvatarGroup?.length > 3 ? (
-                <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
+          <div className="d-flex align-items-center justify-content-between">
+              {bidsReceivedAvatarGroup?.length === 0 ? (
+                <p className="m-0">None</p>
               ) : (
-                <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                <div className="d-flex align-items-center">
+                  {bidsReceivedAvatarGroup?.length > 3 ? (
+                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
+                  ) : (
+                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                  )}
+                  <div className="total-count px-75 ms-1">
+                    <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+                  </div>
+                </div>
               )}
-              <div className="total-count px-75 ms-1">
-                <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
-              </div>
+              {data?.project?.status === 'LISTING_EXPIRED' ? (
+                <div className="d-flex justify-content-end relist-btn-wrapper">
+                  <Button
+                    color="primary"
+                    outline
+                    className="relist-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRelistConfirmationModal(true);
+                    }}
+                  >
+                    Re-list
+                  </Button>
+                </div>
+              ) : null}
             </div>
-          ) : (
-            <p className="m-0">None</p>
-          )}
-          {data?.status === 'LISTING_EXPIRED' && (
-            <div className="d-flex justify-content-end relist-btn-wrapper">
-              <Button
-                color="primary"
-                outline
-                className="relist-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setRelistConfirmationModal(true);
-                }}
-              >
-                Re-list
-              </Button>
-            </div>
-          )}
         </BidsReceivedWrapper>
       )}
       {location.pathname.split('/').includes('my_bids') &&

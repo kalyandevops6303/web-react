@@ -108,7 +108,7 @@ const PaymentHistory = () => {
       name: 'Status',
       sortable: false,
       minWidth: '10%',
-      selector: (row) => row.status,
+      selector: (row) => row?.status,
     },
     {
       name: 'AMOUNT',
@@ -154,7 +154,7 @@ const PaymentHistory = () => {
       name: 'Status',
       sortable: false,
       minWidth: '10%',
-      selector: (row) => row.status,
+      selector: (row) => row?.status,
     },
     {
       name: 'Pay Type',
@@ -206,7 +206,7 @@ const PaymentHistory = () => {
       name: 'Status',
       sortable: false,
       minWidth: '10%',
-      selector: (row) => row.status,
+      selector: (row) => row?.status,
     },
     {
       name: 'Amount',

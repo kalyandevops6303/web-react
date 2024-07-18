@@ -93,7 +93,7 @@ const PaymentTable = () => {
   const isPaymentInitiated = (milestone) => milestone?.payment_status === PAYMENT_STATUS.INITIATED;
 
   const showMilestoneTransanctions = (milestoneId, item) => {
-    if ((isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')) {
+    if ((isPaymentDone(item) && isClient) || (isPaymentDone(item) && item?.status === 'COMPLETED')) {
       if (open === milestoneId) {
         setOpen(null);
       } else {
@@ -318,7 +318,7 @@ const PaymentTable = () => {
                         <tr
                           style={isClient ? getCardStyle(selectedPaymentId.includes(item?._id)) : {}}
                           className={
-                            (isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')
+                            (isPaymentDone(item) && isClient) || (isPaymentDone(item) && item?.status === 'COMPLETED')
                               ? 'cursor-pointer'
                               : ''
                           }
@@ -375,7 +375,7 @@ const PaymentTable = () => {
                           </td>
                           <td>{}</td>
                           <td className="amountCol">$ {roundOfAmount(getTotalCost(item))}</td>{' '}
-                          {(isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED') ? (
+                          {(isPaymentDone(item) && isClient) || (isPaymentDone(item) && item?.status === 'COMPLETED') ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
                           ) : !isPaymentDone(item) ? (
                             <td>{}</td>

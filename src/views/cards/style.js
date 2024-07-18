@@ -164,6 +164,15 @@ const TeamCardWrap = styled(CardWrap)`
     }
   }
 
+  .draft-badge{
+    background: ${theme.draftStatusBadgeBg};
+    width: fit-content;
+    padding: 0.2rem 0.8rem;
+    border-radius:1rem;
+    color:black;
+    font-weight: 600;
+}
+
   @media only screen and (max-device-width: 600px) {
     .teamcard-flex-cloumn {
       flex-direction: column;

@@ -23,6 +23,12 @@ const userTypes = {
   team: 'TEAM',
   club: 'CLUB',
 };
+
+const teamTypes = {
+  team: 'TEAM',
+  club: 'CLUB',
+};
+
 const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
@@ -49,6 +55,11 @@ const bidTypes = {
 };
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
+const clubOrTeamStatuses = {
+  SAVED: 'SAVED',
+  DRAFT: 'DRAFT',
+};
+
 const bidStatusesOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Updated', value: 'UPDATED' },
@@ -58,11 +69,17 @@ const bidStatusesOptions = [
   { label: 'Drafts', value: 'DRAFT' },
 ];
 
-const statusesOptions = [
-  { label: 'Open', value: 'OPEN' },
-  { label: 'In-review', value: 'IN_REVIEW' },
+const teamStatusesOptions = [
+  { label: 'Saved', value: 'SAVED' },
+  { label: 'Drafts', value: 'DRAFT' },
 ];
-const statusForAllListing = [
+
+const clubStatusesOptions = [
+  { label: 'Accepted', value: 'ACCEPTED' },
+  { label: 'Drafts', value: 'DRAFT' },
+];
+
+const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
 ];
@@ -192,6 +209,7 @@ const CUSTOMER_SUPPORT_TYPES = {
   missing_institute: 'missing_institute',
   missing_skill: 'missing_skill',
   missing_tool: 'missing_tool',
+  missing_assessment: 'missing_assessment',
   missing_talent: 'missing_talent',
   education: 'education',
   tools_and_skills: 'tools_and_skills',
@@ -203,11 +221,18 @@ const CITIZEN_TYPES = {
   OTHER: 'OTHER',
 };
 
+const TEAM_STATUS = {
+  SAVED: 'SAVED',
+  DRAFT: 'DRAFT',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
   userTypes,
   userOnboarding,
+  teamStatusesOptions,
+  clubStatusesOptions,
   userProfileEdit,
   sortingOptions,
   statusesOptions,
@@ -220,7 +245,6 @@ export {
   disputeStatuses,
   disputeStatusEnum,
   bidStatusesOptions,
-  statusForAllListing,
   roleTypeOptions,
   PAYMENT_STATUS,
   clubStatus,
@@ -238,4 +262,7 @@ export {
   projectStatusEnum,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
+  TEAM_STATUS,
+  teamTypes,
+  clubOrTeamStatuses,
 };

@@ -720,7 +720,7 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
     const file = fileData[index];
     try {
       const response = await fileScanningService({ fileKeys: [file], isPrivate });
-      if (response.data.data?.[0].status === fileScanStatus.SCANNING) {
+      if (response.data.data?.[0]?.status === fileScanStatus.SCANNING) {
         // Retry logic
         let retries = 3;
         const retryInterval = setInterval(async () => {
@@ -731,11 +731,11 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
           } else {
             try {
               const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate });
-              if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
+              if (retryResponse.data.data?.[0]?.status !== fileScanStatus.SCANNING) {
                 clearInterval(retryInterval);
-                if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
+                if (retryResponse.data.data?.[0]?.status === fileScanStatus.CLEAN) {
                   processFile(index + 1); // Move to the next file
-                } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
+                } else if (retryResponse.data.data?.[0]?.status === fileScanStatus.THREAT) {
                   onError(); // Handle error for threat
                   ShowToastMessage(ERROR, `${file?.file_name} seems to be malicious/corrupted. `);
                 }
@@ -749,9 +749,9 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
           }
           retries -= 1;
         }, timeDalayToRetryScanning); // Retry every given seconds
-      } else if (response.data.data?.[0].status === fileScanStatus.CLEAN) {
+      } else if (response.data.data?.[0]?.status === fileScanStatus.CLEAN) {
         processFile(index + 1); // Move to the next file
-      } else if (response.data.data?.[0].status === fileScanStatus.THREAT) {
+      } else if (response.data.data?.[0]?.status === fileScanStatus.THREAT) {
         onError(); // Handle error for threat
         ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
       }
@@ -786,6 +786,8 @@ export const getMissingName = (type, values) => {
       return values.tool;
     case CUSTOMER_SUPPORT_TYPES.missing_institute:
       return values.institute;
+    case CUSTOMER_SUPPORT_TYPES.missing_assessment: 
+      return values.assessment;
     default:
       return '';
   }

@@ -1,18 +1,38 @@
 // eslint-disable-next-line import/no-cycle
-import { getTeamService, createTeamService, getInviteDetails, updateTeamService } from '../../services/teamServices';
+import {
+  getTeamService,
+  createTeamService,
+  createDraftTeamService,
+  checkDraftTeamService,
+  deleteDraftTeamService,
+  updateDraftTeamService,
+  getInviteDetails,
+  updateTeamService,
+  getTeamInfoById,
+} from '../../services/teamServices';
 import errorHandler from '../../utility/errorHandler';
 import {
   getTeamCreated,
   getTeamError,
   getTeamRequest,
   getTeamSuccess,
+  saveDraftTeamRequest,
+  saveDraftTeamSuccess,
+  saveDraftTeamError,
+  deleteDraftTeamRequest,
+  deleteDraftTeamSuccess,
+  deleteDraftTeamError,
   updateTeamFailure,
   updateTeamRequest,
   updateTeamSuccess,
+  getDraftTeamRequest,
+  getDraftTeamSuccess,
+  getDraftTeamError,
 } from '../reducers/team';
 import { getInvitedBySuccess } from '../reducers/projectDetails';
 import { getMyTeamFailure, getMyTeamRequest, getMyTeamSuccess } from '../reducers/dashboard';
 import { scanAndProcessFiles } from '../../utility/Utils';
+import { setConfirmSaveForLater } from '../reducers/formData';
 
 const getTeams =
   ({ onSuccess }) =>
@@ -27,6 +47,22 @@ const getTeams =
     } catch (error) {
       errorHandler(error, getTeamError);
       errorHandler(error, getMyTeamFailure);
+    }
+  };
+
+const getDraftTeamById =
+  ({ id, onSuccess, onError, onGetDraftTeamDetails }) =>
+  async (dispatch) => {
+    dispatch(getDraftTeamRequest());
+    try {
+      const res = await getTeamInfoById(id);
+      await onGetDraftTeamDetails(res.data.data);
+      onSuccess(res.data.data);
+      dispatch(getDraftTeamSuccess(res.data.data));
+    } catch (error) {
+      dispatch(getDraftTeamError());
+      onError();
+      errorHandler(error, getTeamError);
     }
   };
 
@@ -47,11 +83,85 @@ const createTeam =
           isPrivate: false,
         });
       } else {
-      await handleCreateTeam();
-      await dispatch(getTeams({ onSuccess: () => {} }));
+        await handleCreateTeam();
+        await dispatch(getTeams({ onSuccess: () => {} }));
       }
     } catch (error) {
       onError();
+      errorHandler(error);
+    }
+  };
+
+const createDraftTeam =
+  ({ data, onSuccess, onError, redirection, isOpenSaveForLater }) =>
+  async (dispatch) => {
+    try {
+      dispatch(saveDraftTeamRequest());
+      const res = await createDraftTeamService(data);
+      await dispatch(saveDraftTeamSuccess(res));
+
+      if (isOpenSaveForLater) {
+        redirection();
+      } else {
+        onSuccess();
+      }
+      dispatch(setConfirmSaveForLater(false));
+    } catch (error) {
+      onError();
+      dispatch(saveDraftTeamError());
+      errorHandler(error);
+    }
+  };
+
+const updateDraftTeam =
+  ({ id, data, onSuccess, onError, redirection, isOpenSaveForLater }) =>
+  async (dispatch) => {
+    try {
+      dispatch(saveDraftTeamRequest());
+      const res = await updateDraftTeamService(id, data);
+      await dispatch(saveDraftTeamSuccess(res));
+      if (isOpenSaveForLater) {
+        redirection();
+      } else {
+        onSuccess();
+      }
+      dispatch(setConfirmSaveForLater(false));
+    } catch (error) {
+      onError();
+      dispatch(saveDraftTeamError());
+      errorHandler(error);
+    }
+  };
+
+const checkDraftTeam =
+  ({ setSavedDraftsAvailableModal, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(saveDraftTeamRequest());
+      const res = await checkDraftTeamService();
+      if (res?.data?.data?.has_draft_team) {
+        setSavedDraftsAvailableModal(true);
+      }
+      onSuccess();
+      dispatch(saveDraftTeamSuccess());
+    } catch (error) {
+      onError();
+      dispatch(saveDraftTeamError());
+      errorHandler(error);
+    }
+  };
+
+const deleteDraftTeam =
+  ({ id, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(deleteDraftTeamRequest());
+      const res = await deleteDraftTeamService(id);
+      await dispatch(deleteDraftTeamSuccess(res));
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(deleteDraftTeamError());
       errorHandler(error);
     }
   };
@@ -73,8 +183,8 @@ const updateTeam = (data, onSuccess) => async (dispatch) => {
         isPrivate: false,
       });
     } else {
-     await handleUpdateTeam();
-     await dispatch(getTeams({ onSuccess: () => {} }));
+      await handleUpdateTeam();
+      await dispatch(getTeams({ onSuccess: () => {} }));
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
@@ -94,4 +204,14 @@ const getWhoInvited =
     }
   };
 // eslint-disable-next-line import/prefer-default-export
-export { createTeam, getTeams, getWhoInvited, updateTeam };
+export {
+  createTeam,
+  getTeams,
+  getWhoInvited,
+  updateTeam,
+  getDraftTeamById,
+  createDraftTeam,
+  updateDraftTeam,
+  deleteDraftTeam,
+  checkDraftTeam,
+};

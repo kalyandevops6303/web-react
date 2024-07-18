@@ -4,10 +4,7 @@ import { CustomBadge } from '../../../views/styled';
 import { BadgeGroupWrap } from './style';
 import uuidv4 from '../../../lib/uuidv4';
 
-const BadgeGroup = ({ id, data, title, color }) => {
-  if (!data || data.length === 0) {
-    return null;
-  }
+const BadgeGroup = ({ id, data, title, color, isDraft }) => {
   const [visibleTags, setVisibleTags] = useState([]);
   const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
   const renderBadge = (name, index) => {
@@ -109,29 +106,33 @@ const BadgeGroup = ({ id, data, title, color }) => {
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
-        <div className="info-key">{title || ''}</div>
-        <div className="d-flex align-items-center">
-          <div className="w-auto badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
-          {hiddenTagsCount > 0 && (
-            <>
-              <CustomBadge id={customBadgeId} className="count">
-                <Badge color="light-blue" className="light-blue ">
-                  + {hiddenTagsCount}
-                </Badge>
-              </CustomBadge>
-              <UncontrolledTooltip placement="right" target={customBadgeId}>
-                {data
-                  ?.filter((item) => !visibleTags.includes(item.name))
-                  .map((item, index) => (
-                    <span key={index}>
-                      {index > 0 && ', '}
-                      {item.name}
-                    </span>
-                  ))}
-              </UncontrolledTooltip>
-            </>
-          )}
-        </div>
+        {(data?.length > 0 || isDraft) && <div className="info-key">{title}</div>}
+        {data?.length === 0 ? (
+          isDraft && <i className="mt-2">( Add {title} )</i>
+        ) : (
+          <div className="d-flex align-items-center">
+            <div className="w-auto badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
+            {hiddenTagsCount > 0 && (
+              <>
+                <CustomBadge id={customBadgeId} className="count">
+                  <Badge color="light-blue" className="light-blue ">
+                    + {hiddenTagsCount}
+                  </Badge>
+                </CustomBadge>
+                <UncontrolledTooltip placement="right" target={customBadgeId}>
+                  {data
+                    ?.filter((item) => !visibleTags.includes(item.name))
+                    .map((item, index) => (
+                      <span key={index}>
+                        {index > 0 && ', '}
+                        {item.name}
+                      </span>
+                    ))}
+                </UncontrolledTooltip>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </BadgeGroupWrap>
   );

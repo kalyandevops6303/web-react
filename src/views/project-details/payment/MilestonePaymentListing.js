@@ -137,7 +137,7 @@ function MilestonePaymentListing() {
                 milestoneName={milestone.name}
                 payableAmount={milestone.estimated_cost}
                 paymentStatus={milestone.payment_status}
-                milestoneStatus={milestone.status}
+                milestoneStatus={milestone?.status}
                 checked={selectedMilestones.includes(milestone._id)}
                 onSelect={!selectedAndDisabledPaymentId?.includes(milestone?._id) && handleMilestoneSelect}
               />

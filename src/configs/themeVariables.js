@@ -100,7 +100,14 @@ const modalLeftBorderColor = '#ebebeb';
 const pendingOrangeColor = '#FF5F05';
 const fundedBlueColor = '#00ACC1';
 const selectedBlugBg = '#EDF7FF';
-
+const lightOrangeColor = '#FFF3E8';
+const darkOrangeColor = '#FF9F43';
+const badgeBlueColor = '#E0F6FF';
+const darkBlueColor = "#00B0FF";
+const lightGreenBatchColor = "#E5F8EE";
+const lightRedColor = "#FCEAEB";
+const disputeBorderRedColor = "#E05152";
+const disputeCountBackgroundColor = "#FFF8F8";
 const theme = {
   primary: primaryColor, // primary color for all components
   headerShadow: headerShadowColor, // color for header shadow
@@ -206,5 +213,13 @@ const theme = {
   pendingOrangeColor,
   fundedBlueColor,
   selectedBlugBg,
+  lightOrangeColor,
+  darkOrangeColor,
+  badgeBlueColor,
+  darkBlueColor,
+  lightGreenBatchColor,
+  lightRedColor,
+  disputeBorderRedColor,
+  disputeCountBackgroundColor
 };
 export default theme;

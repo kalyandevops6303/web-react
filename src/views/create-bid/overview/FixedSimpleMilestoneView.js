@@ -49,6 +49,7 @@ import {
 import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import {
   bidDetailsLoading,
+  draftSetMilestonesLoading,
   // draftSetMilestonesLoading,
   projectDetails,
   setMilestonesLoading,
@@ -157,7 +158,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
   const projectDetailsData = useSelector(projectDetails);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  // const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
+  const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
 
   const saveAsDraftClicked = useRef();
   const [files, setFiles] = useState(savedFormData?.files || []);
@@ -208,9 +209,9 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const calculateTotalValues = () => {
-    const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
+    const totalDuration = allMilestones?.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
 
-    const totalCost = allMilestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+    const totalCost = allMilestones?.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
 
     return { totalDuration, totalCost };
   };
@@ -246,13 +247,13 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
 
     const project_start_date = formatDateWithDash(estimatedStartDate);
     const total_estimated_duration = {
-      duration: milestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0),
+      duration: milestones?.reduce((total, milestone) => total + Number(milestone.duration || 0), 0),
       duration_type: 'WEEK',
     };
-    const total_estimated_cost = milestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+    const total_estimated_cost = milestones?.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
     const newMilestones = milestones.filter((milestone) => !('_id' in milestone.otherDetails));
     const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
-    const maxSeqValue = updatedMilestones.reduce((max, obj) => Math.max(max, obj?.otherDetails?.seq), 0);
+    const maxSeqValue = updatedMilestones?.reduce((max, obj) => Math.max(max, obj?.otherDetails?.seq), 0);
     const create_milestones = newMilestones.map((milestone, index) => ({
       name: milestone.name,
       description: milestone.description,
@@ -1095,7 +1096,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div className="d-flex justify-content-end">
-              {/** /** Hide Save Drafts flow from Create Bid
+              
                <Button
                 onClick={() => {
                   saveAsDraftClicked.current = true;
@@ -1112,7 +1113,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                 }
               >
                 {draftSetMilestonesIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-              </Button> */}
+              </Button>
               <Button
                 color="primary"
                 type="submit"

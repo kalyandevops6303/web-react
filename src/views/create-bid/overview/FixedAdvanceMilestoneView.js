@@ -50,6 +50,7 @@ import {
 import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import {
   bidDetailsLoading,
+  draftSetMilestonesLoading,
   // draftSetMilestonesLoading,
   projectDetails,
   setMilestonesLoading,
@@ -186,7 +187,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const projectDetailsData = useSelector(projectDetails);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  // const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
+  const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
 
   const saveAsDraftClicked = useRef();
   const [files, setFiles] = useState([]);
@@ -252,7 +253,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
 
   const calculateTotalValues = () => {
     const totalDuration = allMilestones
-      .map((milestone) => {
+      ?.map((milestone) => {
         const maxDuration = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration)
           .reduce((max, worker) => Math.max(max, worker.duration), 0);
@@ -261,18 +262,16 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       })
       .reduce((sum, duration) => sum + duration, 0);
 
-    const totalHours = allMilestones
-      .map((milestone) => {
+    const totalHours = allMilestones?.map((milestone) => {
         const sumHours = milestone.workers
-          .filter((worker) => worker.isChecked && worker.duration && worker.hours)
+          ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
 
         return sumHours;
       })
       .reduce((sum, hours) => sum + hours, 0);
 
-    const totalCost = allMilestones
-      .map((milestone) => {
+    const totalCost = allMilestones?.map((milestone) => {
         const sumCost = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
@@ -1395,8 +1394,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div className="d-flex justify-content-end">
-              {/** /** Hide Save Drafts flow from Create Bid
-               <Button
+              <Button
                 onClick={() => {
                   saveAsDraftClicked.current = true;
                   handleSubmit(onSubmit)();
@@ -1421,7 +1419,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                 }
               >
                 {draftSetMilestonesIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-              </Button> */}
+              </Button>
               <Button
                 color="primary"
                 type="submit"

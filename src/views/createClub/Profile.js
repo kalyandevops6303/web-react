@@ -1,9 +1,10 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 // import Select from 'react-select';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller, useWatch } from 'react-hook-form';
+import Proptypes from 'prop-types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,15 +14,26 @@ import { InfoContainer } from '../create-bid/style';
 import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import { filteredFormSchema, handleEmailClick, isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
-import { registerClubEmail, setClubCreateDataAction, updateClub } from '../../redux/actions/clubActions';
+import {
+  deleteDraftClub,
+  getDraftClubById,
+  registerClubEmail,
+  setClubCreateDataAction,
+  updateClub,
+} from '../../redux/actions/clubActions';
 import EmailVerifyModal from './EmailVerifyModal';
 import { getTeamById } from '../../services/teamServices';
 import { userData } from '../../redux/selectors/dashboardSelectors';
-import { userProfileEdit } from '../../utility/constants/Constant';
-import { formData } from '../../redux/selectors/formDataSelectors';
-import { setFormData } from '../../redux/reducers/formData';
+import { clubOrTeamStatuses, teamTypes, userProfileEdit } from '../../utility/constants/Constant';
+import { confirmSaveForLater, formData, navigatingRoute } from '../../redux/selectors/formDataSelectors';
+import { setConfirmSaveForLater, setFormData } from '../../redux/reducers/formData';
+import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
+import ShowToastMessage from '../../@core/components/toast';
+import { createDraftTeam, updateDraftTeam } from '../../redux/actions/teamsActions';
+import { ERROR } from '../../utility/constants/ToastTypes';
+import SaveForLaterModal from '../modals/SaveForLaterModal';
 
-const Profile = () => {
+const Profile = ({ setDraftSavedModal }) => {
   const ProfileSchema = yup.object().shape({
     clubEmailID: yup.string().email('Please enter a valid email').required('Email is required'),
     clubLinkedin: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
@@ -45,7 +57,7 @@ const Profile = () => {
         otherwise: yup.string(),
       }),
   });
-
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
@@ -60,8 +72,12 @@ const Profile = () => {
     mode: 'onChange',
     resolver: yupResolver(ProfileSchema),
     defaultValues: {
-      isWebpage: '',
-      isUniversityApproval: '',
+      isWebpage: savedFormData?.isWebpage || '',
+      isUniversityApproval: savedFormData?.isUniversityApproval || '',
+      clubEmailID: savedFormData?.clubEmailID || '',
+      clubLinkedin: savedFormData?.clubLinkedin || '',
+      clubWebsite: savedFormData?.clubWebsite || '',
+      universityWebpage: savedFormData?.universityWebpage || '',
     },
   });
 
@@ -70,16 +86,32 @@ const Profile = () => {
   const [clubDetails, setClubDetails] = useState(null);
 
   const userDetailsData = useSelector(userData);
+  const saveDraftIsClubLoading = useSelector(saveDraftClubLoading);
+  const [clubDraftData, setClubDraftData] = useState(null);
+  const saveAsDraftClicked = useRef(null);
+  const params = useParams();
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
   const loading = useSelector((state) => state.clubs.loading);
-  const savedFormData = useSelector(formData);
+  const dispatch = useDispatch();
+  const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
+  const isOpenSaveForLater = useSelector(confirmSaveForLater);
+  const navigatedRoute = useSelector(navigatingRoute);
+  const toggleOpenSaveLaterModal = () => {
+    setOpenSaveLaterModal(!openSaveLaterModal);
+    dispatch(setConfirmSaveForLater(false));
+  };
+
+  useEffect(() => {
+    if (isOpenSaveForLater) {
+      setOpenSaveLaterModal(true);
+    }
+  }, [isOpenSaveForLater]);
 
   const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
   const toggleEmailVerifyModal = () => setEmailVerifyModal(!emailVerifyModal);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const localFormData = useWatch({ control });
 
@@ -91,6 +123,8 @@ const Profile = () => {
   const onBackClick = () => {
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.club}/account-details`);
+    } else if (params?.id) {
+      navigate(`/create-club/account-details/${params?.id}`);
     } else {
       navigate(`/create-club/account-details`);
     }
@@ -103,7 +137,6 @@ const Profile = () => {
   const onEmailVerifySuccess = (email) => {
     dispatch(registerClubEmail({ email, onSuccess }));
   };
-
   const onSubmit = (data) => {
     const { isWebpage, isUniversityApproval, clubEmailID, clubLinkedin, clubWebsite, universityWebpage } = data;
     const formDetails = { clubEmailID, clubLinkedin, clubWebsite, universityWebpage };
@@ -113,6 +146,7 @@ const Profile = () => {
       linked_in: clubLinkedin,
       website: clubWebsite,
       university_webpage: universityWebpage,
+      creation_status: 'SAVED',
     };
 
     if (isWebpage === 'Yes' && isUniversityApproval) {
@@ -134,6 +168,70 @@ const Profile = () => {
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
       onEmailVerifySuccess(formDetails.clubEmailID);
+      dispatch(deleteDraftClub({ id: params?.id, onSuccess: () => {}, onError: () => {} }));
+    }
+  };
+  const onGetDraftClubDetails = async (data) => {
+    if (data) {
+      setClubDraftData(data);
+      setValue('clubEmailID', data?.email || '', { shouldValidate: true });
+      setValue('clubLinkedin', data?.linked_in || null, { shouldValidate: true });
+      setValue('clubWebsite', data?.website || null, { shouldValidate: true });
+      setValue('universityWebpage', data?.university_webpage || '', { shouldValidate: true });
+    }
+  };
+
+  useEffect(() => {
+    if (params?.id) {
+      dispatch(getDraftClubById({ id: params?.id, onSuccess: () => {}, onError: () => {}, onGetDraftClubDetails }));
+    }
+  }, [params, params?.id, dispatch]);
+
+  const onDraftSubmit = () => {
+    const reqData = {
+      team_type: teamTypes.club,
+      name: clubDraftData?.name || null,
+      team_logo: clubDraftData?.team_logo || null,
+      tagline: clubDraftData?.tagline || null,
+      introduction: clubDraftData?.introduction || null,
+      education_institute: clubDraftData?.education_institute || null,
+      interests: clubDraftData?.interests || null,
+      languages_supported: null,
+      tools: clubDraftData?.tools || null,
+      skills: clubDraftData?.skills || null,
+      university_webpage: watch('universityWebpage') || null,
+      linked_in: watch('clubLinkedin') || null,
+      email: watch('clubEmailID') || null,
+      email_code: null,
+      website: watch('clubWebsite') || null,
+      creation_status: clubOrTeamStatuses.DRAFT,
+    };
+
+    if (params?.id) {
+      dispatch(
+        updateDraftTeam({
+          id: params?.id,
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
+    } else {
+      dispatch(
+        createDraftTeam({
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
     }
   };
 
@@ -208,6 +306,15 @@ const Profile = () => {
       )}
       {clubCreatedModal && <ClubCreatedModal modal={clubCreatedModal} toggleModal={toggleClubCreatedModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
+        {openSaveLaterModal && (
+          <SaveForLaterModal
+            modal={openSaveLaterModal}
+            toggleModal={toggleOpenSaveLaterModal}
+            draftType="CLUB"
+            draftAction={onDraftSubmit}
+            redirectionRoute={navigatedRoute}
+          />
+        )}
         <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">Club details</h4>
@@ -403,6 +510,18 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
+            <Button
+              onClick={() => {
+                saveAsDraftClicked.current = true;
+                handleSubmit(onDraftSubmit());
+              }}
+              color="primary"
+              className="me-2"
+              outline
+              disabled={saveDraftIsClubLoading}
+            >
+              {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+            </Button>
             {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' ? (
               <Button disabled={!isValid || disableBtn} color="primary" type="submit">
                 {loading ? (
@@ -421,6 +540,14 @@ const Profile = () => {
       </Form>
     </ProfileFormContainer>
   );
+};
+
+Profile.propTypes = {
+  setDraftSavedModal: Proptypes.func,
+};
+
+Profile.defaultProps = {
+  setDraftSavedModal: () => {},
 };
 
 export default Profile;

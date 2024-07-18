@@ -51,6 +51,7 @@ import {
   decoratorMessageStyle,
   decoratorMessageTxtStyle,
 } from './style';
+import { isEmpty } from '../../../../../utility/Utils.js';
 
 class CometChatMessageList extends React.PureComponent {
   loggedInUser = null;
@@ -207,13 +208,13 @@ class CometChatMessageList extends React.PureComponent {
 
         messageList.forEach((message) => {
           //if the sender of the message is not the loggedin user
-          if (message.getSender().getUid() !== this.state.loggedInUser?.uid) {
+          if (!isEmpty(message.getSender()) && message.getSender().getUid() !== this.state.loggedInUser?.uid) {
             //mark the message as delivered
             this.markMessageAsDelivered(message);
 
             //mark the message as read
             if (message.hasOwnProperty('readAt') === false) {
-              CometChat.markAsRead(message).catch((error) => { });
+              CometChat.markAsRead(message).catch((error) => {});
               this.props.actionGenerated(enums.ACTIONS['MESSAGE_READ'], message);
             }
           }
@@ -258,13 +259,13 @@ class CometChatMessageList extends React.PureComponent {
 
         messageList.forEach((message) => {
           //if the sender of the message is not the loggedin user
-          if (message.getSender().getUid() !== this.state.loggedInUser?.uid) {
+          if (!isEmpty(message.getSender()) && message.getSender().getUid() !== this.state.loggedInUser?.uid) {
             //mark the message as delivered
             this.markMessageAsDelivered(message);
 
             //mark the message as read
             if (message.hasOwnProperty('readAt') === false) {
-              CometChat.markAsRead(message).catch((error) => { });
+              CometChat.markAsRead(message).catch((error) => {});
               this.props.actionGenerated(enums.ACTIONS['MESSAGE_READ'], message);
             }
           }
@@ -410,6 +411,7 @@ class CometChatMessageList extends React.PureComponent {
     //read receipts
     if (
       message.getReceiverType() === CometChat.RECEIVER_TYPE.USER &&
+      !isEmpty(message.getSender()) &&
       message.getSender().getUid() === this.context.item.uid &&
       message.getReceiver() === this.state.loggedInUser?.uid
     ) {

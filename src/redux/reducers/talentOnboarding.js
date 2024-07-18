@@ -38,13 +38,14 @@ const talentOnboardingSlice = createSlice({
     }),
     resumeParsedDetailsSuccess: (state, action) => ({
       ...state,
-      resumeParsedDetailsLoading: false,
+
       resumeParsedDetails: action.payload,
+      resumeParsedDetailsLoading: false,
     }),
     resumeParsedDetailsFailure: (state, action) => ({
       ...state,
-      resumeParsedDetailsLoading: false,
       error: action.payload,
+      resumeParsedDetailsLoading: false,
     }),
 
     accountDetailsRequest: (state) => ({
