@@ -217,7 +217,7 @@ const Social = () => {
     for (let i = 0; i < arr.length; i++) {
       const obj = arr[i];
       // eslint-disable-next-line
-      if (!obj.hasOwnProperty('link') || !obj.hasOwnProperty('linkName')) {
+      if (!obj?.hasOwnProperty('link') || !obj?.hasOwnProperty('linkName')) {
         return false;
       }
       if (!obj.link || !obj.linkName) {
