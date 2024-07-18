@@ -38,8 +38,13 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments, setResumeParsed } from '../../../redux/reducers/formData';
+import {
+  formData,
+  formDocuments,
+  resumeDataUploadedForSocial,
+  resumeParsed,
+} from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments, setResumeDataUploadedForSocial, setResumeParsed } from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
@@ -60,6 +65,8 @@ const Social = () => {
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
+  const isResumeDataUploadedForSocial = useSelector(resumeDataUploadedForSocial);
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForSocial || false);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [files, setFiles] = useState(savedFormDocuments || []);
@@ -155,6 +162,7 @@ const Social = () => {
     } else {
       navigate(`/${userOnboarding.talent}/payment-details`);
     }
+    dispatch(setResumeDataUploadedForSocial(parseResume));
   };
 
   const onSkipClick = () => {
@@ -351,10 +359,12 @@ const Social = () => {
   };
   useEffect(() => {
     if (parseResume) {
-      if (parsedResumeData != null) {
+      if (parsedUploaded) {
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
-      } else {
+      } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
       }
     } else {
@@ -589,6 +599,7 @@ const Social = () => {
                                   type="switch"
                                   checked={parseResume}
                                   onClick={() => {
+                                    setParsedUploaded(false);
                                     setParseResume(!parseResume);
                                     dispatch(setResumeParsed(!parseResume));
                                   }}

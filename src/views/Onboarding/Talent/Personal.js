@@ -73,8 +73,8 @@ import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
-import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments, setResumeParsed } from '../../../redux/reducers/formData';
+import { formData, formDocuments, resumeDataUploadedForPersonal, resumeParsed } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments, setResumeDataUploadedForPersonal, setResumeParsed } from '../../../redux/reducers/formData';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -162,6 +162,8 @@ const Personal = () => {
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const IsresumeParsed = useSelector(resumeParsed);
+  const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForPersonal || false);
   const {
     control,
     handleSubmit,
@@ -269,7 +271,7 @@ const Personal = () => {
         'Content-Type': file.file.type,
       });
     } catch (error) {
-      dispatch(parsedResumeData(null));
+      dispatch(resumeParsedDetailsSuccess(null));
       setParseResume(false);
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
@@ -277,10 +279,35 @@ const Personal = () => {
     }
   };
 
-  const setResumeParsedDetails = (res) => {
+  const loadLanguagesOptions = async (search) => {
+    if (search) {
+      return {
+        options: returnFilteredDropdownOptions(search, languagesOptions),
+      };
+    }
+    try {
+      const response = await languagesService();
+
+      const options = response?.data?.data?.map((language) => ({ label: language.name, value: language._id }));
+
+      setLanguagesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const setResumeParsedDetails = async (res) => {
+    const languageDetails = await loadLanguagesOptions();
     if (res) {
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
+      }
+      if (res?.professional_introduction && res?.professional_introduction.length > 0) {
+        setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
       }
       if (res?.work_experience && res?.work_experience > 0) {
         // eslint-disable-next-line no-unsafe-optional-chaining
@@ -294,7 +321,7 @@ const Personal = () => {
         setValue(
           'readLanguages',
           res.languages_read?.map((language) => ({
-            label: language?.name,
+            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
             value: language?._id,
           })),
           { shouldValidate: true },
@@ -315,7 +342,7 @@ const Personal = () => {
         setValue(
           'speakLanguages',
           res.languages_speak?.map((language) => ({
-            label: language?.name,
+            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
             value: language?._id,
           })),
           { shouldValidate: true },
@@ -336,7 +363,7 @@ const Personal = () => {
         setValue(
           'writeLanguages',
           res.languages_write?.map((language) => ({
-            label: language?.name,
+            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
             value: language?._id,
           })),
           { shouldValidate: true },
@@ -353,11 +380,68 @@ const Personal = () => {
           { shouldValidate: true },
         );
       }
-      if (res?.professional_introduction && res?.professional_introduction.length > 0) {
-        setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
-      }
-      if (res?.address && res?.address?.length > 0) {
-        setValue('streetAddress', res?.address, { shouldValidate: true });
+      // As now resume parser API is not sending any data regarding the addresses, so mapping it from the userDetailsData API for better User Experience flow
+      if (parsedUploaded) {
+        if (
+          'streetAddress' in userDetailsData?.talent_info?.current_residency ||
+          'houseNumber' in userDetailsData?.talent_info?.current_residency ||
+          'zipCode' in userDetailsData?.talent_info?.current_residency ||
+          'country' in userDetailsData?.talent_info?.current_residency ||
+          'state' in userDetailsData?.talent_info?.current_residency ||
+          'city' in userDetailsData?.talent_info?.current_residency
+        ) {
+          if (userDetailsData?.talent_info?.current_residency?.street_address.length > 0) {
+            setValue(
+              'streetAddress',
+              savedFormData?.streetAddress || userDetailsData?.talent_info?.current_residency?.street_address,
+              { shouldValidate: true },
+            );
+          }
+          if (userDetailsData?.talent_info?.current_residency?.house_number.length > 0) {
+            setValue(
+              'houseNumber',
+              savedFormData?.houseNumber || userDetailsData?.talent_info?.current_residency?.house_number,
+              {
+                shouldValidate: true,
+              },
+            );
+          }
+          if (userDetailsData?.talent_info?.current_residency?.zip_code > 0) {
+            setValue('zipCode', savedFormData?.zipCode || userDetailsData?.talent_info?.current_residency?.zip_code, {
+              shouldValidate: true,
+            });
+          }
+          if ('country' in userDetailsData?.talent_info?.current_residency) {
+            setValue(
+              'country',
+              {
+                label: savedFormData?.country?.label || userDetailsData?.talent_info?.current_residency.country.name,
+                value: savedFormData?.country?.value || userDetailsData?.talent_info?.current_residency.country._id,
+              },
+              { shouldValidate: true },
+            );
+          }
+          if ('state' in userDetailsData?.talent_info?.current_residency) {
+            setValue(
+              'state',
+              {
+                label: savedFormData?.state?.label || userDetailsData?.talent_info?.current_residency.state.name,
+                value: savedFormData?.state?.value || userDetailsData?.talent_info?.current_residency.state._id,
+              },
+              { shouldValidate: true },
+            );
+          }
+          if ('city' in userDetailsData?.talent_info?.current_residency) {
+            setValue(
+              'city',
+              {
+                label: savedFormData?.city?.label || userDetailsData?.talent_info?.current_residency.city.name,
+                value: savedFormData?.city?.value || userDetailsData?.talent_info?.current_residency.city._id,
+              },
+              { shouldValidate: true },
+            );
+          }
+        }
       }
       if (savedFormDocuments) {
         setFiles([
@@ -515,7 +599,7 @@ const Personal = () => {
       dispatch(getStates(watch('country').value));
       setCitiesOptions([]);
     }
-    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country').value) {
+    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country')?.value) {
       setValue('state', savedFormData?.state);
       if (savedFormData && savedFormData?.state != null) {
         setValue('city', savedFormData?.city);
@@ -579,6 +663,7 @@ const Personal = () => {
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);
     }
+    dispatch(setResumeDataUploadedForPersonal(parseResume));
   };
 
   const onSubmit = (data) => {
@@ -651,16 +736,29 @@ const Personal = () => {
     }
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     if (IsresumeParsed) {
+      const languagesWritten = watch('writeLanguages')?.map((language) => ({
+        name: language.label,
+        _id: language.value,
+      }));
+      const languagesSpoken = watch('speakLanguages')?.map((language) => ({
+        name: language.label,
+        _id: language.value,
+      }));
+      const languagesRead = watch('readLanguages')?.map((language) => ({
+        name: language.label,
+        _id: language.value,
+      }));
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
-          languages_speak,
-          languages_write,
-          languages_read,
+          languages_speak: languagesSpoken,
+          languages_write: languagesWritten,
+          languages_read: languagesRead,
           tagline,
           professional_introduction: professionalIntroduction,
         },
       };
+
       dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
@@ -677,27 +775,6 @@ const Personal = () => {
       const options = response?.data?.map((role) => ({ label: role.name, value: role._id }));
 
       setTalentRolesOptions(options);
-
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
-
-  const loadLanguagesOptions = async (search) => {
-    if (search) {
-      return {
-        options: returnFilteredDropdownOptions(search, languagesOptions),
-      };
-    }
-    try {
-      const response = await languagesService();
-
-      const options = response?.data?.data?.map((language) => ({ label: language.name, value: language._id }));
-
-      setLanguagesOptions(options);
 
       return {
         options,
@@ -925,9 +1002,12 @@ const Personal = () => {
 
   useEffect(() => {
     if (parseResume) {
-      if (parsedResumeData != null) {
+      if (parsedUploaded) {
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+
         if (savedFormDocuments) {
           setFiles([
             {
@@ -942,15 +1022,17 @@ const Personal = () => {
             },
           ]);
         }
-      } else {
+      } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
             setResumeParsedDetails,
             setParseResume,
             savedFormDocuments[0]?.uploadData?.file_key,
             setFiles,
+            location?.state?.isResumeParsedUploaded || false,
           ),
         );
+
         setFiles([
           {
             file: {
@@ -968,7 +1050,7 @@ const Personal = () => {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getLanguages());
-  }, [parseResume, parsedResumeData]);
+  }, [parseResume, parsedResumeData,parsedUploaded]);
 
   return (
     <ProfileFormContainer>
@@ -1313,7 +1395,7 @@ const Personal = () => {
                           />
                         )}
                       />
-                      {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
+                      {errors.state && <FormFeedback>{errors?.state?.label?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   <Row className="mb-1">
@@ -1398,6 +1480,7 @@ const Personal = () => {
                                 type="switch"
                                 checked={parseResume}
                                 onClick={() => {
+                                  setParsedUploaded(false);
                                   setParseResume(!parseResume);
                                   dispatch(setResumeParsed(!parseResume));
                                   dispatch(setFormDocuments(files));

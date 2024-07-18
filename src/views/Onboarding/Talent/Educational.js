@@ -53,10 +53,9 @@ import NoteComponent from '../NoteComponent';
 import CustomerSupportCTA from '../CustomerSupportCTA';
 import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { formData, resumeParsed, formDocuments } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments } from '../../../redux/reducers/formData';
+import { formData, resumeParsed, formDocuments, resumeDataUploadedForEducation } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments, setResumeDataUploadedForEducation } from '../../../redux/reducers/formData';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
-import { prepopulateAssessments } from '../../../redux/actions/assessmentActions';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -92,14 +91,16 @@ const Educational = () => {
       .max(5, 'Maximum of five tools can be added')
       .nullable()
       .optional(),
-    certificates: yup.array().of(
-      yup.object().shape({
-        label: yup.string(),
-        value: yup.string(),
-      }),
-    )
-    .nullable()
-    .optional(),
+    certificates: yup
+      .array()
+      .of(
+        yup.object().shape({
+          label: yup.string(),
+          value: yup.string(),
+        }),
+      )
+      .nullable()
+      .optional(),
     skills: yup
       .array()
       .of(
@@ -177,7 +178,8 @@ const Educational = () => {
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [certificatesOptions, setCertificatesOptions] = useState(null);
   const [files, setFiles] = useState(savedFormDocuments || []);
-
+  const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const supportData = useSelector((state) => state.support.supportCount);
@@ -207,6 +209,7 @@ const Educational = () => {
     } else {
       navigate(`/${userOnboarding.talent}/availability-details`);
     }
+    dispatch(setResumeDataUploadedForEducation(parseResume));
   };
 
   const onSubmit = (data) => {
@@ -476,17 +479,19 @@ const Educational = () => {
 
   useEffect(() => {
     if (parseResume) {
-      if (parsedResumeData != null) {
+      if (parsedUploaded) {
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
-      } else {
+      } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getCustomerSupportCount());
-  }, [parseResume, parsedResumeData]);
+  }, [parseResume, parsedResumeData,parsedUploaded]);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
   const [feedbackModal, setFeedbackSupportModal] = useState(false);
@@ -810,6 +815,7 @@ const Educational = () => {
                                   type="switch"
                                   checked={parseResume}
                                   onClick={() => {
+                                    setParsedUploaded(false);
                                     setParseResume(!parseResume);
                                     dispatch(setResumeParsed(!parseResume));
                                   }}
