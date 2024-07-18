@@ -73,8 +73,19 @@ import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
-import { formData, formDocuments, resumeDataUploadedForPersonal, resumeParsed } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments, setResumeDataUploadedForPersonal, setResumeParsed } from '../../../redux/reducers/formData';
+import {
+  formData,
+  formDocuments,
+  resumeDataUploadedForPersonal,
+  resumeParsed,
+} from '../../../redux/selectors/formDataSelectors';
+import {
+  clearAllFormData,
+  setFormData,
+  setFormDocuments,
+  setResumeDataUploadedForPersonal,
+  setResumeParsed,
+} from '../../../redux/reducers/formData';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -203,7 +214,7 @@ const Personal = () => {
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [files, setFiles] = useState(savedFormDocuments || []);
+  const [files, setFiles] = useState(savedFormDocuments ?? []);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
@@ -227,18 +238,20 @@ const Personal = () => {
   }, [localFormData, parseResume, resumeParsedLoading]);
 
   useEffect(() => {
-    if (parseResume === false) {
-      if (savedFormData) {
-        const requiredFields = filteredFormSchema({
-          savedData: savedFormData,
-          formSchemaFields: PersonalSchema.fields,
-        });
-        reset(requiredFields);
-        const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
-        trigger(keysWithValues);
+    if (savedFormDocuments) {
+      if (parseResume === false) {
+        if (savedFormData) {
+          const requiredFields = filteredFormSchema({
+            savedData: savedFormData,
+            formSchemaFields: PersonalSchema.fields,
+          });
+          reset(requiredFields);
+          const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+          trigger(keysWithValues);
+        }
       }
+      setFiles(savedFormDocuments ?? []);
     }
-    setFiles(savedFormDocuments);
   }, [parseResume]);
 
   useEffect(() => {
@@ -250,8 +263,8 @@ const Personal = () => {
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
-    setFiles([...filtered]);
     dispatch(setFormDocuments(null));
+    setFiles([...filtered]);
   };
 
   const isFileValid = (file) => {
@@ -500,6 +513,9 @@ const Personal = () => {
         setFiles(savedFormDocuments);
         dispatch(setFormDocuments(savedFormDocuments));
       }
+      else{
+        setFiles([]);
+      }
     };
     fileReRender();
   }, [savedFormDocuments]);
@@ -714,10 +730,10 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
-        resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
-        },
+        resume: !isEmpty(files) ? {
+          file_name: files[0]?.file?.name || '',
+          file_key: files[0]?.uploadData?.file_key || '',
+        } : {},
       };
     } else {
       reqData = {
@@ -728,10 +744,10 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
-        resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
-        },
+        resume: !isEmpty(files) ? {
+          file_name: files[0]?.file?.name || '',
+          file_key: files[0]?.uploadData?.file_key || '',
+        } : {},
       };
     }
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
@@ -1050,7 +1066,7 @@ const Personal = () => {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getLanguages());
-  }, [parseResume, parsedResumeData,parsedUploaded]);
+  }, [parseResume, parsedResumeData, parsedUploaded]);
 
   return (
     <ProfileFormContainer>
