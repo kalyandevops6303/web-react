@@ -359,7 +359,7 @@ const Personal = () => {
       if (res?.address && res?.address?.length > 0) {
         setValue('streetAddress', res?.address, { shouldValidate: true });
       }
-      if (savedFormDocuments) {
+      if (!isEmpty(savedFormDocuments)) {
         setFiles([
           {
             file: {
@@ -396,7 +396,7 @@ const Personal = () => {
   };
 
   const handleFileChange = async (e) => {
-    if (e.target.files) {
+    if (e.target.files && !isEmpty(e.target.files)) {
       if (isFileValid(e.target.files[0])) {
         dispatch(clearAllFormData());
         await fetchUploadUrl(e.target.files[0]);
@@ -763,12 +763,18 @@ const Personal = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
+            name:
+              savedFormDocuments != null && !isEmpty(savedFormDocuments)
+                ? savedFormDocuments[0]?.file?.name
+                : res?.talent_info?.resume?.file_name,
+            size:
+              savedFormDocuments != null && !isEmpty(savedFormDocuments)
+                ? savedFormDocuments[0]?.file?.size
+                : res?.talent_info?.resume?.size,
           },
           uploadData: {
             file_key:
-              savedFormDocuments != null
+              savedFormDocuments != null && !isEmpty(savedFormDocuments)
                 ? savedFormDocuments[0]?.uploadData?.file_key
                 : res?.talent_info?.resume?.file_key,
           },
@@ -928,7 +934,7 @@ const Personal = () => {
       if (parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
-        if (savedFormDocuments) {
+        if (savedFormDocuments && !isEmpty(savedFormDocuments)) {
           setFiles([
             {
               file: {
@@ -942,28 +948,28 @@ const Personal = () => {
             },
           ]);
         }
-      } else {
-        dispatch(
-          getResumeParsedDetails(
-            setResumeParsedDetails,
-            setParseResume,
-            savedFormDocuments[0]?.uploadData?.file_key,
-            setFiles,
-          ),
-        );
-        setFiles([
-          {
-            file: {
-              name: savedFormDocuments[0]?.file?.name,
-              size: savedFormDocuments[0]?.file?.size,
+      } else if (savedFormDocuments && !isEmpty(savedFormDocuments)) {
+          dispatch(
+            getResumeParsedDetails(
+              setResumeParsedDetails,
+              setParseResume,
+              savedFormDocuments[0]?.uploadData?.file_key,
+              setFiles,
+            ),
+          );
+          setFiles([
+            {
+              file: {
+                name: savedFormDocuments[0]?.file?.name,
+                size: savedFormDocuments[0]?.file?.size,
+              },
+              uploadData: {
+                file_key: savedFormDocuments[0]?.uploadData?.file_key,
+              },
+              isUploaded: true,
             },
-            uploadData: {
-              file_key: savedFormDocuments[0]?.uploadData?.file_key,
-            },
-            isUploaded: true,
-          },
-        ]);
-      }
+          ]);
+        }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
