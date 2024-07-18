@@ -7,6 +7,7 @@ import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button } from 'reactstr
 import { CreateBidRadioOption } from '../styled';
 import SavedDraftsAvailableModal from './SavedDraftsAvailableModal';
 import { checkDraftTeam } from '../../redux/actions/teamsActions';
+import { teamTypes } from '../../utility/constants/Constant';
 
 const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
@@ -18,10 +19,10 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
   const [selectedGroup, setSelectedGroup] = useState('');
 
   const onNextClick = () => {
-    if (selectedGroup === 'CLUB') {
-      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, onSuccess: () => {}, onError: () => {} }));
-    } else if (selectedGroup === 'TEAM') {
-      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, onSuccess: () => {}, onError: () => {} }));
+    if (selectedGroup === teamTypes.club) {
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.club, onNavigation: ()=>navigate('/create-club/account-details') , onSuccess: () => {}, onError: () => {} }));
+    } else if (selectedGroup === teamTypes.team) {
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.team, onNavigation: ()=>navigate('/create-team/profile-details') , onSuccess: () => {}, onError: () => {} }));
     }
   };
 

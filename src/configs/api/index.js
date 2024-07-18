@@ -5,7 +5,6 @@ const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assi
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
 const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
 const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
-
 const API = {
   auth: {
     login: `${apiAuthEndpoint}/api/v1/user/sign-in`,

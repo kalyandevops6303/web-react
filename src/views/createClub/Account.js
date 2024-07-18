@@ -57,16 +57,29 @@ import { getProjectAreas, getSkills, getTools } from '../../redux/actions/static
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
 import { CUSTOMER_SUPPORT_TYPES, userProfileEdit } from '../../utility/constants/Constant';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
-import { confirmSaveForLater, formData, formDocuments, formImage, isFormImageRemoved, navigatingRoute } from '../../redux/selectors/formDataSelectors';
-import { setConfirmSaveForLater, setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
-import { clearClubCreateData } from '../../redux/reducers/clubs';
+import {
+  confirmSaveForLater,
+  formData,
+  formDocuments,
+  formImage,
+  isFormImageRemoved,
+  navigatingRoute,
+} from '../../redux/selectors/formDataSelectors';
+import {
+  setConfirmSaveForLater,
+  setFormData,
+  setFormDocuments,
+  setFormImage,
+  setIsFormImageRemoved,
+} from '../../redux/reducers/formData';
+import { clearClubCreateData, setClubLocalData } from '../../redux/reducers/clubs';
 import TextEditor from '../CreateProject/TextEditor';
 import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
 import CustomerSupportModal from '../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../modals/CustomerSupportFeedbackModal';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import NoteComponent from '../Onboarding/NoteComponent';
-import { getDraftClubLoading, saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
+import { clubLocalData, getDraftClubLoading, saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import SaveForLaterModal from '../modals/SaveForLaterModal';
 
@@ -80,7 +93,8 @@ const Account = ({ setDraftSavedModal }) => {
         label: yup.string(),
         value: yup.string(),
       })
-      .required('Education institution is required').nullable(),
+      .required('Education institution is required')
+      .nullable(),
     clubIntroduction: yup
       .string()
       .max(500, 'Introduction must be 500 characters or less')
@@ -106,7 +120,8 @@ const Account = ({ setDraftSavedModal }) => {
         }),
       )
       .max(5, 'Maximum of five tools can be added')
-      .min(1, 'At least one tool is required').nullable(),
+      .min(1, 'At least one tool is required')
+      .nullable(),
     skills: yup
       .array()
       .of(
@@ -149,6 +164,7 @@ const Account = ({ setDraftSavedModal }) => {
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
+  const clubDraftLocalData = useSelector(clubLocalData);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [draftImagePreview, setDraftImagePreview] = useState(null);
   const [clubData, setClubData] = useState(null);
@@ -178,12 +194,12 @@ const Account = ({ setDraftSavedModal }) => {
   };
 
   useEffect(() => {
-    if(isOpenSaveForLater){
+    if (isOpenSaveForLater) {
       setOpenSaveLaterModal(true);
     }
   }, [isOpenSaveForLater]);
 
-  const localFormData = useWatch({ control });  
+  const localFormData = useWatch({ control });
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
@@ -273,60 +289,60 @@ const Account = ({ setDraftSavedModal }) => {
     }
   }, [imageUrlRes]);
 
-  const onDraftSubmit = async() => {
-      const skillsSelected = watch('skills') && watch('skills')?.map((skill) => skill.value);
-      const interestsSelected = watch('interests') && watch('interests').map((skill) => skill.value);
-      const toolsSelected = watch('tools') && watch('tools')?.map((skill) => skill.value);
+  const onDraftSubmit = async () => {
+    const skillsSelected = watch('skills') && watch('skills')?.map((skill) => skill.value);
+    const interestsSelected = watch('interests') && watch('interests').map((skill) => skill.value);
+    const toolsSelected = watch('tools') && watch('tools')?.map((skill) => skill.value);
 
-      const reqData = {
-        team_type: 'CLUB',
-        name: watch('clubName'),
-        team_logo: imageUrlRes?.file_key || null,
-        tagline: watch('clubTagline') || null,
-        introduction: watch('clubIntroduction') || null,
-        education_institute: watch('educationInstitution')?.value || null,
-        interests: interestsSelected || null,
-        languages_supported: null,
-        tools: toolsSelected || null,
-        skills: skillsSelected || null,
-        university_webpage: clubData?.university_webpage || null,
-        linked_in: clubData?.linked_in || null,
-        email: clubData?.email || null,
-        email_code: clubData?.email_code || null,
-        website: clubData?.website || null,
-        // availibility: null,
-        creation_status: 'DRAFT',
-      };
+    const reqData = {
+      team_type: 'CLUB',
+      name: watch('clubName'),
+      team_logo: imageUrlRes?.file_key || null,
+      tagline: watch('clubTagline') || null,
+      introduction: watch('clubIntroduction') || null,
+      education_institute: watch('educationInstitution')?.value || null,
+      interests: interestsSelected || null,
+      languages_supported: null,
+      tools: toolsSelected || null,
+      skills: skillsSelected || null,
+      university_webpage: clubData?.university_webpage || null,
+      linked_in: clubData?.linked_in || null,
+      email: clubData?.email || null,
+      email_code: clubData?.email_code || null,
+      website: clubData?.website || null,
+      // availibility: null,
+      creation_status: 'DRAFT',
+    };
 
-      if (params?.id) {
-       await dispatch(
-          updateDraftClub({
-            id: params?.id,
-            data: reqData,
-            onSuccess: () => setDraftSavedModal(true),
-            onError: () => {
-              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
-            },
-            redirection: ()=> navigate(navigatedRoute),
-            isOpenSaveForLater,
-          }),
-        );
-      } else {
-       await dispatch(
-          createDraftClub({
-            data: reqData,
-            onSuccess: () => setDraftSavedModal(true),
-            onError: () => {
-              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
-            },
-            redirection: ()=> navigate(navigatedRoute),
-            isOpenSaveForLater,
-          }),
-        );
-      }
+    if (params?.id) {
+      await dispatch(
+        updateDraftClub({
+          id: params?.id,
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
+    } else {
+      await dispatch(
+        createDraftClub({
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
+    }
   };
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     let otherIntitution;
     if (!location.pathname.includes('profile-edit')) {
       const selectedOptionValue = selectedOption?.value;
@@ -336,15 +352,33 @@ const Account = ({ setDraftSavedModal }) => {
 
       otherIntitution = myInstitution?.includes(selectedOptionValue);
     }
-
+    const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = data;
+    const skillsSelected = skills.map((skill) => skill.value);
+    const interestsSelected = interests.map((skill) => skill.value);
+    const toolsSelected = tools?.map((skill) => skill.value);
+    const draftReqData = {
+      team_type: 'CLUB',
+      name: watch('clubName'),
+      team_logo: imageUrlRes?.file_key || null,
+      tagline: watch('clubTagline') || null,
+      introduction: watch('clubIntroduction') || null,
+      education_institute: watch('educationInstitution')?.value || null,
+      interests: interestsSelected || null,
+      languages_supported: null,
+      tools: toolsSelected || null,
+      skills: skillsSelected || null,
+      university_webpage: clubData?.university_webpage || null,
+      linked_in: clubData?.linked_in || null,
+      email: clubData?.email || null,
+      email_code: clubData?.email_code || null,
+      website: clubData?.website || null,
+      // availibility: null,
+      creation_status: 'DRAFT',
+    };
+    dispatch(setClubLocalData(draftReqData));
     if (!location.pathname.includes('profile-edit') && !otherIntitution) {
       setEducationInstitutionModal(true);
     } else {
-      const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = data;
-      const skillsSelected = skills.map((skill) => skill.value);
-      const interestsSelected = interests.map((skill) => skill.value);
-      const toolsSelected = tools?.map((skill) => skill.value);
-
       let reqData;
 
       if (location.pathname.includes('profile-edit')) {
@@ -388,7 +422,6 @@ const Account = ({ setDraftSavedModal }) => {
           }
         }
       } else {
-        await  onDraftSubmit();
         // eslint-disable-next-line no-lonely-if
         if (imageUrlRes) {
           reqData = {
@@ -406,13 +439,11 @@ const Account = ({ setDraftSavedModal }) => {
           const removeEmpty = removeEmptyKeys(reqData);
 
           dispatch(setClubCreateDataAction(removeEmpty));
-          if(params?.id){
+          if (params?.id) {
             navigate(`/create-club/profile-details/${params?.id}`);
-          }
-          else{
+          } else {
             navigate(`/create-club/profile-details`);
           }
-        
         } else {
           reqData = {
             name: clubName,
@@ -428,23 +459,20 @@ const Account = ({ setDraftSavedModal }) => {
 
           if (selectedImage && selectedImagePreview) {
             dispatch(setClubCreateDataAction(removeEmpty));
-            if(params?.id){
+            if (params?.id) {
               navigate(`/create-club/profile-details/${params?.id}`);
-            }
-            else{
+            } else {
               navigate(`/create-club/profile-details`);
             }
           } else {
             dispatch(setClubCreateDataAction({ ...removeEmpty, team_logo: '' }));
-            if(params?.id){
+            if (params?.id) {
               navigate(`/create-club/profile-details/${params?.id}`);
-            }
-            else{
+            } else {
               navigate(`/create-club/profile-details`);
             }
           }
         }
-              
       }
     }
   };
@@ -548,7 +576,7 @@ const Account = ({ setDraftSavedModal }) => {
       const interestsOptionsLoaded = await loadInterestsOptions();
       setClubData(data);
       setValue('clubName', data?.name || '', { shouldValidate: true });
-      setValue('clubTagline', data?.tagline || '', { shouldValidate: true });
+      setValue('clubTagline', data?.tagline ||  '', { shouldValidate: true });
       setValue('clubIntroduction', data?.introduction || '', { shouldValidate: true });
       let institute;
       if (data?.education_institute) {
@@ -568,10 +596,13 @@ const Account = ({ setDraftSavedModal }) => {
       );
       setValue(
         'skills',
-        data?.skills?.map((skill) => ({
+        (data?.skills === clubDraftLocalData?.skills ? data?.skills?.map((skill) => ({
           label: skillsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
           value: skill,
-        })) || [],
+        })) : clubDraftLocalData?.skills?.map((skill) => ({
+          label: skillsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+          value: skill,
+        }))) || [],
         {
           shouldValidate: true,
         },
@@ -579,10 +610,13 @@ const Account = ({ setDraftSavedModal }) => {
 
       setValue(
         'tools',
-        data?.tools?.map((tool) => ({
+        (data?.tools === clubDraftLocalData?.tools ? data?.tools?.map((tool) => ({
           label: toolsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
           value: tool,
-        })) || [],
+        })) : clubDraftLocalData?.tools?.map((skill) => ({
+          label: toolsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+          value: skill,
+        }))) || [],
         {
           shouldValidate: true,
         },
@@ -590,10 +624,13 @@ const Account = ({ setDraftSavedModal }) => {
 
       setValue(
         'interests',
-        data?.interests?.map((tool) => ({
+      (data?.interests === clubDraftLocalData?.interests ?  data?.interests?.map((tool) => ({
           label: interestsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
           value: tool,
-        })) || [],
+        })) : clubDraftLocalData?.interests?.map((skill) => ({
+          label: interestsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+          value: skill,
+        }))) || [],
         {
           shouldValidate: true,
         },
@@ -858,6 +895,8 @@ const Account = ({ setDraftSavedModal }) => {
     dispatch(getCustomerSupportCount());
   };
 
+  useEffect(() => () => dispatch(setConfirmSaveForLater(false)), []);
+
   return (
     <ProfileFormContainer className="w-75">
       {educationInstitutionModal && (
@@ -873,7 +912,15 @@ const Account = ({ setDraftSavedModal }) => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
-            {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftType='CLUB' draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
+          {openSaveLaterModal && (
+            <SaveForLaterModal
+              modal={openSaveLaterModal}
+              toggleModal={toggleOpenSaveLaterModal}
+              draftAction={onDraftSubmit}
+              redirectionRoute={navigatedRoute}
+              loading={saveDraftIsClubLoading}
+            />
+          )}
           <Card>
             <CardHeader>
               <h4 className="m-0 mt-1">About</h4>
