@@ -38,7 +38,7 @@ const getCompletedDate = (mile) => {
   let result;
   switch (true) {
     // To set the completed date for older milestones, since it was blank
-    case mile.end_date === 0 && mile.status === 'COMPLETED':
+    case mile.end_date === 0 && mile?.status === 'COMPLETED':
       result = formatDate(mile.updated_at);
       break;
     case mile.end_date > 0:
