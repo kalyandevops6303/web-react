@@ -24,7 +24,7 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 
-const RegisterPhone = () => {
+const RegisterPhone = (isDelegate) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const savedFormData = useSelector(formData);
@@ -34,12 +34,12 @@ const RegisterPhone = () => {
 
   const [selectedCountry, setSelectedCountry] = useState(
     savedFormData?.selectCountry ||
-    mobileData?.selectedCountry || {
-      label: 'United States',
-      dial_code: '+1',
-      code: CITIZEN_TYPES.US,
-      _id: '6479c2071183add75cda4e37',
-    },
+      mobileData?.selectedCountry || {
+        label: 'United States',
+        dial_code: '+1',
+        code: CITIZEN_TYPES.US,
+        _id: '6479c2071183add75cda4e37',
+      },
   );
 
   const schema = yup.object().shape({
@@ -58,7 +58,7 @@ const RegisterPhone = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      mobile:  savedFormData?.mobile || mobileData?.phone || '',
+      mobile: savedFormData?.mobile || mobileData?.phone || '',
     },
   });
   const localFormData = useWatch({ control });
@@ -71,7 +71,7 @@ const RegisterPhone = () => {
     if (savedFormData) {
       const requiredFields = filteredFormSchema({
         savedData: savedFormData,
-        formSchemaFields: {...schema.fields, selectedCountry},
+        formSchemaFields: { ...schema.fields, selectedCountry },
       });
       reset(requiredFields);
       const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
@@ -80,7 +80,7 @@ const RegisterPhone = () => {
   }, []);
 
   const handleCountryChange = (value) => {
-    const allData = { ...savedFormData, selectCountry:value };
+    const allData = { ...savedFormData, selectCountry: value };
     dispatch(setFormData(allData));
     setSelectedCountry(value);
     clearErrors();
@@ -113,7 +113,7 @@ const RegisterPhone = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Sign up! 🔐
+          {isDelegate ? 'Delegate sign up' : 'Sign up! 🔐'}
         </CardTitle>
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>

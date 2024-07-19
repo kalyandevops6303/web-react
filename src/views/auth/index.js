@@ -55,6 +55,10 @@ const AuthRoute = () => {
       element: <RegisterPhone />,
     },
     {
+      path: '/register-delegate-phone',
+      element: <RegisterPhone isDelegate />,
+    },
+    {
       path: '/email-verify',
       element: <VerifyEmail />,
     },
@@ -95,7 +99,8 @@ const AuthRoute = () => {
     if (
       currentPath === '/auth/phone-verify' ||
       currentPath === '/auth/email-verify' ||
-      currentPath === '/auth/forgot-password-email-verify'
+      currentPath === '/auth/forgot-password-email-verify' ||
+      currentPath === '/auth/register-delegate-phone'
     ) {
       return <img src={VerificationPic} alt="bg-pic" className="verification-pic" />;
     }

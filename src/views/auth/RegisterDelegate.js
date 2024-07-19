@@ -1,44 +1,44 @@
-// ** React Imports
+/* eslint-disable no-console */
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, useForm } from 'react-hook-form';
-import { useEffect } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import { Info } from 'react-feather';
-
-// ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
-
-// ** Reactstrap Imports
 import { CardTitle, Label, Form, Button, FormFeedback, Spinner, UncontrolledTooltip, Input } from 'reactstrap';
-
-// ** utitlity
-import { validations } from '../../utility/Utils';
-
-// ** Styles
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { validations, filteredFormSchema } from '../../utility/Utils';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import { setNewPassword } from '../../redux/actions/authActions';
-import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
+import { setNewPassword, registerEmail } from '../../redux/actions/authActions';
+import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PasswordStrengthMeter from './components/PasswordStrengthMeter';
+import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
+import TermsModal from '../modals/TermsModal';
 
 const RegisterDelegate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isLoading = useSelector(selectAuthLoading);
-  const isPasswordSet = useSelector(selectIsPasswordSet);
+  const savedFormData = useSelector(formData);
+  const emailData = useSelector(selectEmail);
+  const userType = useSelector(selectUserType);
+  const [privacyPolicyModal, setPrivacyPolicyModal] = useState(null);
+  const [termsModal, setTermsModal] = useState(null);
+  const [agreeTerms, setAgreeTerms] = useState(savedFormData?.agreeTerms || false);
 
-  useEffect(() => {
-    if (isPasswordSet) {
-      navigate('/auth/login');
-    }
-  }, [isPasswordSet, navigate]);
+  const togglePrivacyPolicyModal = () => setPrivacyPolicyModal(!privacyPolicyModal);
+  const toggleTermsModal = () => setTermsModal(!termsModal);
 
   const schema = yup.object().shape({
+    email: validations.email.email('Invalid email address').required('Email is required'),
+    agreeTerms: yup.boolean().oneOf([true], 'You must agree to the terms and conditions'),
     newPassword: validations.newPassword.required('Password is required'),
     cnfPassword: validations.confirmPassword.required('Please Re-type your password'),
   });
@@ -48,15 +48,46 @@ const RegisterDelegate = () => {
     formState: { errors },
     control,
     watch,
+    reset,
+    trigger,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
+      email: savedFormData?.email || emailData || '',
+      agreeTerms: savedFormData?.agreeTerms || false,
       newPassword: '',
       cnfPassword: '',
     },
   });
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: schema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
+  const onSuccess = () => {
+    dispatch(clearAllFormData());
+    console.log('onSuccess called');
+    navigate('/auth/register-delegate-phone');
+  };
+
   const onSubmit = (values) => {
-    dispatch(setNewPassword(values?.newPassword));
+    const { email, newPassword } = values;
+    console.log('onSubmit called');
+
+    dispatch(setNewPassword(newPassword));
+    dispatch(registerEmail({ email, userType, onSuccess }));
   };
 
   const newPassword = watch('newPassword');
@@ -64,6 +95,8 @@ const RegisterDelegate = () => {
 
   return (
     <OnBoardWrap>
+      {privacyPolicyModal && <PrivacyPolicyModal modal={privacyPolicyModal} toggleModal={togglePrivacyPolicyModal} />}
+      {termsModal && <TermsModal modal={termsModal} toggleModal={toggleTermsModal} />}
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
@@ -127,7 +160,7 @@ const RegisterDelegate = () => {
 
             {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
           </div>
-          <div className="mb-3">
+          <div className="mb-2">
             <Label className="form-label" for="login-email">
               Confirm new Password
             </Label>
@@ -150,7 +183,59 @@ const RegisterDelegate = () => {
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
           </div>
-          <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
+          <div className="form-check mb-1">
+            <div className="d-flex justify-content-between align-items-center checkbox-custom-label">
+              <Label className="form-check-label" for="remember-me">
+                <small>
+                  <Controller
+                    type="checkbox"
+                    id="remember-me"
+                    name="agreeTerms"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        value={field.value || false}
+                        type="checkbox"
+                        id="remember-me"
+                        size="md"
+                        checked={field.value} // Use field.value to set the checked state
+                        onChange={(e) => {
+                          field.onChange(e); // Call field.onChange to update the form value
+                          setAgreeTerms(e.target.checked); // Update the local state
+                        }}
+                      />
+                    )}
+                  />
+                  Agree & Sign up
+                </small>
+              </Label>
+
+              <Label color={theme.primary} className="mb-0 ">
+                <small className="privacy-terms-label">
+                  <u className="cursor-pointer" onClick={() => setPrivacyPolicyModal(true)}>
+                    Privacy Policy
+                  </u>
+                </small>
+                <small>
+                  {'  '}&{'  '}
+                </small>
+                <small className="privacy-terms-label">
+                  <u className="cursor-pointer" onClick={() => setTermsModal(true)}>
+                    Terms
+                  </u>
+                </small>
+              </Label>
+            </div>
+            {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
+          </div>
+          <Button
+            onClick={() => dispatch(clearAllFormData())}
+            color="primary"
+            block
+            type="submit"
+            disabled={!newPassword || !cnfPassword || isLoading}
+          >
             {isLoading ? <Spinner size="sm" /> : 'Create Account'}
           </Button>
         </Form>
