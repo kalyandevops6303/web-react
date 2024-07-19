@@ -6,6 +6,8 @@ import addIcon from '../../../../assets/images/plus-rounded-circle.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkIsInviteDelegateModalVisible } from '../../../../redux/selectors/delegateSelectors';
 import { toggleAddDelegateModal } from '../../../../redux/reducers/delegate';
+import { toggleAddDelegateModal } from '../../../../redux/reducers/profile';
+import { checkDelegateModalVisible } from '../../../../redux/selectors/profileSelectors';
 
 const DelegateAccordion = () => {
   const [open, setOpen] = useState('');
