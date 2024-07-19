@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +12,7 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { validations, filteredFormSchema } from '../../utility/Utils';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import { setNewPassword, registerEmail } from '../../redux/actions/authActions';
+import { registerDelegate } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
@@ -78,16 +77,12 @@ const RegisterDelegate = () => {
   }, []);
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    console.log('onSuccess called');
     navigate('/auth/register-delegate-phone');
   };
 
   const onSubmit = (values) => {
     const { email, newPassword } = values;
-    console.log('onSubmit called');
-
-    dispatch(setNewPassword(newPassword));
-    dispatch(registerEmail({ email, userType, onSuccess }));
+    dispatch(registerDelegate({ email, userType, newPassword, onSuccess }));
   };
 
   const newPassword = watch('newPassword');
