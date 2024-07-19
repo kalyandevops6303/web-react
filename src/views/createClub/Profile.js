@@ -27,7 +27,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { clubOrTeamStatuses, teamTypes, userProfileEdit } from '../../utility/constants/Constant';
 import { confirmSaveForLater, formData, navigatingRoute } from '../../redux/selectors/formDataSelectors';
 import { setConfirmSaveForLater, setFormData } from '../../redux/reducers/formData';
-import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
+import { clubLocalData, saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { createDraftTeam, updateDraftTeam } from '../../redux/actions/teamsActions';
 import { ERROR } from '../../utility/constants/ToastTypes';
@@ -58,6 +58,7 @@ const Profile = ({ setDraftSavedModal }) => {
       }),
   });
   const savedFormData = useSelector(formData);
+  const clubDraftLocalData = useSelector(clubLocalData);
   const {
     control,
     handleSubmit,
@@ -190,15 +191,21 @@ const Profile = ({ setDraftSavedModal }) => {
   const onDraftSubmit = () => {
     const reqData = {
       team_type: teamTypes.club,
-      name: clubDraftData?.name || null,
-      team_logo: clubDraftData?.team_logo || null,
-      tagline: clubDraftData?.tagline || null,
-      introduction: clubDraftData?.introduction || null,
-      education_institute: clubDraftData?.education_institute || null,
-      interests: clubDraftData?.interests || null,
+      name: clubDraftData?.name || clubDraftLocalData?.name || null,
+      team_logo: clubDraftData?.team_logo || clubDraftLocalData?.team_logo || null,
+      tagline: clubDraftData?.tagline || clubDraftLocalData?.tagline || null,
+      introduction: clubDraftData?.introduction || clubDraftLocalData?.introduction || null,
+      education_institute: clubDraftData?.education_institute || clubDraftLocalData?.education_institute || null,
+      interests:
+        (clubDraftData?.interests === clubDraftLocalData?.interests
+          ? clubDraftData?.interests
+          : clubDraftLocalData?.interests) || null,
       languages_supported: null,
-      tools: clubDraftData?.tools || null,
-      skills: clubDraftData?.skills || null,
+      tools:
+        (clubDraftData?.tools === clubDraftLocalData?.tools ? clubDraftData?.tools : clubDraftLocalData?.tools) || null,
+      skills:
+        (clubDraftData?.skills === clubDraftLocalData?.skills ? clubDraftData?.skills : clubDraftLocalData?.skills) ||
+        null,
       university_webpage: watch('universityWebpage') || null,
       linked_in: watch('clubLinkedin') || null,
       email: watch('clubEmailID') || null,
@@ -234,6 +241,8 @@ const Profile = ({ setDraftSavedModal }) => {
       );
     }
   };
+
+  useEffect(() => () => dispatch(setConfirmSaveForLater(false)), []);
 
   const isWebpageValue = watch('isWebpage');
   const isUniversityApprovalValue = watch('isUniversityApproval');
@@ -310,9 +319,9 @@ const Profile = ({ setDraftSavedModal }) => {
           <SaveForLaterModal
             modal={openSaveLaterModal}
             toggleModal={toggleOpenSaveLaterModal}
-            draftType="CLUB"
             draftAction={onDraftSubmit}
             redirectionRoute={navigatedRoute}
+            loading={saveDraftIsClubLoading}
           />
         )}
         <Card>
