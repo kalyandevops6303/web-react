@@ -3,10 +3,17 @@ import { DropdownItem, Accordion, AccordionItem, AccordionHeader, AccordionBody 
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import UserNameRoleCompanyComp from '../../../components/username-role-company';
 import addIcon from '../../../../assets/images/plus-rounded-circle.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleAddDelegateModal } from '../../../../redux/reducers/profile';
+import { checkDelegateModalVisible } from '../../../../redux/selectors/profileSelectors';
 
 const EditProfileAccordion = () => {
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
+  const dispatch = useDispatch();
+  const isDelegateModalVisible = useSelector(checkDelegateModalVisible);
+
+  const toggleDelegateModal = () => dispatch(toggleAddDelegateModal(!isDelegateModalVisible));
 
   // mock data to show delegates
   const delegateData = [
@@ -32,7 +39,10 @@ const EditProfileAccordion = () => {
         </AccordionHeader>
         <div style={{ maxHeight: '9rem', overflowY: 'auto' }}>
           <AccordionBody accordionId="1">
-            <DropdownItem className="w-100 text-primary d-flex justify-content-start align-items-center gap-1">
+            <DropdownItem
+              onClick={toggleDelegateModal}
+              className="w-100 text-primary d-flex justify-content-start align-items-center gap-1"
+            >
               <img alt="plus" src={addIcon} height={28} width={28} className="no-border-radius" />
               <span className="align-middle ">Add Delegate</span>
             </DropdownItem>

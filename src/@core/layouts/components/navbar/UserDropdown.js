@@ -219,7 +219,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
             <span className="align-middle ">Public Profile</span>
           </DropdownItem>
           <EditProfileAccordion />
-          <DelegateAccordion />
+          {savedUserDetails?.user_type === userTypes.client && <DelegateAccordion />}
 
           <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
             {userDetailsData && (

@@ -41,6 +41,9 @@ import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
+import { toggleAddDelegateModal } from '../../redux/reducers/profile';
+import AddDelegateModal from '../modals/AddDelegateModal';
+import { checkDelegateModalVisible } from '../../redux/selectors/profileSelectors';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -80,6 +83,9 @@ const PrivateDashboard = () => {
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
+  const isDelegateModalVisible = useSelector(checkDelegateModalVisible);
+
+  const toggleDelegateModal = () => dispatch(toggleAddDelegateModal(!isDelegateModalVisible));
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -105,9 +111,7 @@ const PrivateDashboard = () => {
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
-    } else if (
-      profilePercentageData?.values_missing?.includes('company_name')
-    ) {
+    } else if (profilePercentageData?.values_missing?.includes('company_name')) {
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');
@@ -179,6 +183,7 @@ const PrivateDashboard = () => {
 
   return (
     <div>
+      {isDelegateModalVisible && <AddDelegateModal modal={isDelegateModalVisible} toggleModal={toggleDelegateModal} />}
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
@@ -359,14 +364,14 @@ const PrivateDashboard = () => {
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />
