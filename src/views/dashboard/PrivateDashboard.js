@@ -362,15 +362,9 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.team_type !== userTypes.club &&
-            <div>
-              {
-                userDetailsData?.user_type === "CLIENT" ?
-                  <AvailableTime />
-                  :
-                  <AssessmentsOverview />
-              }
-            </div>}
+          {userDetailsData?.team_type !== userTypes.club && (
+            <div>{userDetailsData?.user_type === 'CLIENT' ? <AvailableTime /> : <AssessmentsOverview />}</div>
+          )}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
