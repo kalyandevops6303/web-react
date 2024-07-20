@@ -34,6 +34,7 @@ import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
+import DelegateProfileCard from '../../../../views/Onboarding/Delegate/DelegateProfileCard';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -49,6 +50,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
   const [supportModal, setSupportModal] = useState(false);
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
+  const isDelegateProfileCreated = true; // TODO: setting this to true, should be computed from server
 
   const handleEdit = () => {
     const talentOrClientProfile =
@@ -214,95 +216,134 @@ const UserDropdown = ({ setNavBarLoading }) => {
       )}
 
       <UserDropDownWrapper>
-        <DropdownMenu end>
-          <DropdownItem onClick={handleEdit} className="w-100 edit">
-            <span className="align-middle ">Public Profile</span>
-          </DropdownItem>
-          <EditProfileAccordion />
+        <DropdownMenu style={{ width: '24rem' }} end>
+          {savedUserDetails?.user_type === userTypes.delegate && (
+            <div className="my-25 edit-accordion">
+              {userDetailsData && (
+                <DelegateProfileCard
+                  savedUserDetails={savedUserDetails}
+                  userDetailsData={userDetailsData}
+                  handleSwitch={handleSwitch}
+                  savedUserName={savedUserName}
+                />
+              )}
+            </div>
+          )}
+          {savedUserDetails?.user_type === userTypes.delegate && (
+            <div className="mt-1">
+              <span className="mb-3 px-1">Delegate for:</span>
+              <div className="delegate">
+                {userDetailsData && (
+                  <DelegateProfileCard
+                    savedUserDetails={savedUserDetails}
+                    userDetailsData={userDetailsData}
+                    handleSwitch={handleSwitch}
+                    savedUserName={savedUserName}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+          {savedUserDetails?.user_type !== userTypes.delegate && (
+            <DropdownItem onClick={handleEdit} className="w-100 edit">
+              <span className="align-middle">Public Profile</span>
+            </DropdownItem>
+          )}
+          {savedUserDetails?.user_type !== userTypes.delegate || isDelegateProfileCreated ? (
+            <EditProfileAccordion />
+          ) : (
+            <DropdownItem onClick={() => navigate('/delegate-onboarding/account-details')} className="w-100 edit">
+              <span className="align-middle">Create My Profile</span>
+            </DropdownItem>
+          )}
           {savedUserDetails?.user_type === userTypes.client && <DelegateAccordion />}
-
-          <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
-            {userDetailsData && (
-              <DropdownItem
-                className={`d-flex justify-content-between ${
-                  savedUserDetails?._id === userDetailsData?._id && !isLoading ? 'isActive' : ''
-                }`}
-                onClick={() => handleSwitch(savedUserDetails, savedUserDetails?._id === userDetailsData?._id)}
-              >
-                <section className="user-info-avatar d-flex align-items-center">
-                  {savedUserDetails?.user_type === userTypes.talent ? (
-                    <Avatar
-                      img={
-                        savedUserDetails?.talent_info?.image_uri.length > 0
-                          ? savedUserDetails?.talent_info?.image_uri
-                          : defaultAvatar
-                      }
-                      imgHeight="40"
-                      imgWidth="40"
-                    />
-                  ) : (
-                    <Avatar
-                      img={
-                        savedUserDetails?.client_info?.image_uri.length > 0
-                          ? savedUserDetails?.client_info?.image_uri
-                          : defaultAvatar
-                      }
-                      imgHeight="40"
-                      imgWidth="40"
-                    />
-                  )}
-                  <div className="user-info ms-1 ms user-nav">
-                    <span className="mb-50 user-name fw-bold text-start d-block" id="username">
-                      {savedUserName}
-                    </span>
-                    {savedUserName?.length > 15 && (
-                      <UncontrolledTooltip placement="right" target="username">
-                        <div className="d-flex flex-column align-items-start">
-                          <p className="text-start m-0">{savedUserName}</p>
-                        </div>
-                      </UncontrolledTooltip>
+          {savedUserDetails?.user_type !== userTypes.delegate && (
+            <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
+              {userDetailsData && (
+                <DropdownItem
+                  className={`d-flex justify-content-between ${
+                    savedUserDetails?._id === userDetailsData?._id && !isLoading ? 'isActive' : ''
+                  }`}
+                  onClick={() => handleSwitch(savedUserDetails, savedUserDetails?._id === userDetailsData?._id)}
+                >
+                  <section className="user-info-avatar d-flex align-items-center">
+                    {savedUserDetails?.user_type === userTypes.talent ? (
+                      <Avatar
+                        img={
+                          savedUserDetails?.talent_info?.image_uri.length > 0
+                            ? savedUserDetails?.talent_info?.image_uri
+                            : defaultAvatar
+                        }
+                        imgHeight="40"
+                        imgWidth="40"
+                      />
+                    ) : (
+                      <Avatar
+                        img={
+                          savedUserDetails?.client_info?.image_uri.length > 0
+                            ? savedUserDetails?.client_info?.image_uri
+                            : defaultAvatar
+                        }
+                        imgHeight="40"
+                        imgWidth="40"
+                      />
                     )}
-                    <span className="w-100 font-small-3 d-block user-status text-start">
-                      {savedUserDetails?.user_type ? capitalize(savedUserDetails?.user_type) : ''}
-                    </span>
-                  </div>
-                </section>
-                {savedUserDetails?._id === userDetailsData?._id && <Check className="m-auto ms-3 me-0" size={14} />}
-              </DropdownItem>
-            )}
-            {teams?.map((team, index) => (
-              <DropdownItem
-                className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
-                onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
-                disabled={team?.club_status === clubStatus.DECLINED || team?.club_status === clubStatus.IN_REVIEW}
-                key={index}
-              >
-                <section className="user-info-avatar d-flex align-items-center">
-                  <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
-                  <div className="user-info ms-1 user-nav">
-                    <span className="mb-50 user-name fw-bold text-start d-block" id={`username-${team?._id}`}>
-                      {team?.name}
-                    </span>
-                    {team?.name?.length > 15 && (
-                      <UncontrolledTooltip placement="right" target={`username-${team?._id}`}>
-                        <div className="d-flex flex-column align-items-start">
-                          <p className="text-start m-0">{team?.name}</p>
-                        </div>
-                      </UncontrolledTooltip>
-                    )}
-                    <span className="w-100 font-small-3 d-block user-status text-start">
-                      {capitalize(team?.team_type) || 'Role'}
-                    </span>
-                  </div>
-                </section>
-                {team.club_status === clubStatus.DECLINED && <DeclinedButton>Rejected</DeclinedButton>}
-                {team.club_status === clubStatus.IN_REVIEW && <InreviewButton>In Review</InreviewButton>}
+                    <div className="user-info ms-1 ms user-nav">
+                      <span className="mb-50 user-name fw-bold text-start d-block" id="username">
+                        {savedUserName}
+                      </span>
+                      {savedUserName?.length > 15 && (
+                        <UncontrolledTooltip placement="right" target="username">
+                          <div className="d-flex flex-column align-items-start">
+                            <p className="text-start m-0">{savedUserName}</p>
+                          </div>
+                        </UncontrolledTooltip>
+                      )}
+                      <span className="w-100 font-small-3 d-block user-status text-start">
+                        {savedUserDetails?.user_type ? capitalize(savedUserDetails?.user_type) : ''}
+                      </span>
+                    </div>
+                  </section>
+                  {savedUserDetails?._id === userDetailsData?._id && <Check className="m-auto ms-3 me-0" size={14} />}
+                </DropdownItem>
+              )}
+              {teams?.map((team, index) => (
+                <DropdownItem
+                  className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
+                  onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
+                  disabled={team?.club_status === clubStatus.DECLINED || team?.club_status === clubStatus.IN_REVIEW}
+                  key={index}
+                >
+                  <section className="user-info-avatar d-flex align-items-center">
+                    <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
+                    <div className="user-info ms-1 user-nav">
+                      <span className="mb-50 user-name fw-bold text-start d-block" id={`username-${team?._id}`}>
+                        {team?.name}
+                      </span>
+                      {team?.name?.length > 15 && (
+                        <UncontrolledTooltip placement="right" target={`username-${team?._id}`}>
+                          <div className="d-flex flex-column align-items-start">
+                            <p className="text-start m-0">{team?.name}</p>
+                          </div>
+                        </UncontrolledTooltip>
+                      )}
+                      <span className="w-100 font-small-3 d-block user-status text-start">
+                        {capitalize(team?.team_type) || 'Role'}
+                      </span>
+                    </div>
+                  </section>
+                  {team.club_status === clubStatus.DECLINED && <DeclinedButton>Rejected</DeclinedButton>}
+                  {team.club_status === clubStatus.IN_REVIEW && <InreviewButton>In Review</InreviewButton>}
 
-                {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
-              </DropdownItem>
-            ))}
-          </div>
-          <DropdownItem onClick={handleCustomerSupport} className="w-100 customer-support">
+                  {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
+                </DropdownItem>
+              ))}
+            </div>
+          )}
+          <DropdownItem
+            onClick={handleCustomerSupport}
+            className={`w-100 customer-support ${savedUserDetails?.user_type !== userTypes.delegate ? 'mt-0' : ''}`}
+          >
             <span className="align-middle ">Customer support</span>
           </DropdownItem>
           <DropdownItem onClick={handleLogout} className="w-100 logout">

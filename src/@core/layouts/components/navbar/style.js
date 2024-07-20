@@ -97,7 +97,11 @@ export const UserDropDownWrapper = styled.div`
       color: white;
     }
   }
-
+  .delegate {
+    padding: 1rem 0rem;
+    display: block;
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+  }
   .dropdown-item {
     width: 100%;
   }

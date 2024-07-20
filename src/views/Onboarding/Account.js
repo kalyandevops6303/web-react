@@ -20,6 +20,7 @@ import {
 } from 'reactstrap';
 import { ChevronRight, Info, UserPlus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
+import Proptypes from 'prop-types';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
 import theme from '../../configs/themeVariables';
 import CountryDropdown from '../../@core/components/country-dropdown';
@@ -57,7 +58,7 @@ import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
 
-const Account = () => {
+const Account = ({ isDelegate }) => {
   const AccountDetailsSchema = yup.object().shape({
     firstName: yup
       .string()
@@ -524,6 +525,11 @@ const Account = () => {
                 Reset Password
               </Button>
             )}
+            {isDelegate && (
+              <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
+                Change Password
+              </Button>
+            )}
             <Button
               color="primary"
               type="submit"
@@ -544,7 +550,7 @@ const Account = () => {
               ) : (
                 <>
                   <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
+                  {!isDelegate && <ChevronRight size={14} />}
                 </>
               )}
             </Button>
@@ -556,3 +562,11 @@ const Account = () => {
 };
 
 export default Account;
+
+Account.propTypes = {
+  isDelegate: Proptypes.bool,
+};
+
+Account.defaultProps = {
+  isDelegate: false,
+};

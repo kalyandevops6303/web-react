@@ -41,6 +41,7 @@ import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
 import Assessments from '../../views/assessments';
+import DelegateOnboarding from '../../views/Onboarding/Delegate';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -149,6 +150,20 @@ const Routes = [
     element: <ClientOnboarding />,
   },
   {
+    path: `/${userOnboarding.delegate}/:section-details`,
+    element: <DelegateOnboarding />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: `/${userProfileEdit.delegate}/:section-details`,
+    element: <DelegateOnboarding />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
     path: '/create-project',
     element: <CreateProject />,
   },
@@ -219,8 +234,8 @@ const Routes = [
   },
   {
     path: '/assessments',
-    element: <Assessments />
-  }
+    element: <Assessments />,
+  },
 ];
 
 // eslint-disable-next-line consistent-return

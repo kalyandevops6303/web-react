@@ -22,6 +22,7 @@ const userTypes = {
   talent: 'TALENT',
   team: 'TEAM',
   club: 'CLUB',
+  delegate: 'DELEGATE',
 };
 
 const teamTypes = {
@@ -32,12 +33,14 @@ const teamTypes = {
 const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
+  delegate: 'delegate-onboarding',
 };
 const userProfileEdit = {
   client: 'client-profile-edit',
   talent: 'talent-profile-edit',
   team: 'team-profile-edit',
   club: 'club-profile-edit',
+  delegate: 'delegate-profile-edit',
 };
 const createBidTalentSteps = [
   { title: 'Milestone', subtitle: 'Add milestone', icon: <Watch size={18} /> },
