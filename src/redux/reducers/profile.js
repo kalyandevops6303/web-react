@@ -9,7 +9,8 @@ const initialState = {
   publicTeamMembers: null,
   publicTeamMembersLoading: false,
   error: null,
-  isDelegateModalVisible: false,
+  isAddDelegateModalVisible: false,
+  isDelegateModeModalVisible: false,
 };
 
 const profileSlice = createSlice({
@@ -137,11 +138,15 @@ const profileSlice = createSlice({
       isLoading: false,
     }),
 
-    // add delegate
+    // delegate
 
     toggleAddDelegateModal: (state, action) => ({
       ...state,
-      isDelegateModalVisible: action.payload,
+      isAddDelegateModalVisible: action.payload,
+    }),
+    toggleDelegateModeModal: (state, action) => ({
+      ...state,
+      isDelegateModeModalVisible: action.payload,
     }),
   },
 });
@@ -170,6 +175,8 @@ export const {
   publicTeamMembersFailure,
   clearPublicTeamMembers,
   toggleAddDelegateModal,
+  toggleDelegateModeModal,
+  isDelegateModeModalVisible,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

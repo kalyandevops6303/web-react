@@ -11,9 +11,9 @@ const EditProfileAccordion = () => {
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
   const dispatch = useDispatch();
-  const isDelegateModalVisible = useSelector(checkDelegateModalVisible);
+  const isAddDelegateModalVisible = useSelector(checkDelegateModalVisible);
 
-  const toggleDelegateModal = () => dispatch(toggleAddDelegateModal(!isDelegateModalVisible));
+  const toggleDelegateModal = () => dispatch(toggleAddDelegateModal(!isAddDelegateModalVisible));
 
   // mock data to show delegates
   const delegateData = [

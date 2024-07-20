@@ -14,4 +14,12 @@ export const publicTeamMembers = createSelector(profileSelector, (profile) => pr
 
 export const publicTeamMembersLoading = createSelector(profileSelector, (profile) => profile.publicTeamMembersLoading);
 
-export const checkDelegateModalVisible = createSelector(profileSelector, (profile) => profile.isDelegateModalVisible);
+export const checkDelegateModalVisible = createSelector(
+  profileSelector,
+  (profile) => profile.isAddDelegateModalVisible,
+);
+
+export const checkDelegateModeModalVisible = createSelector(
+  profileSelector,
+  (profile) => profile.isDelegateModeModalVisible,
+);

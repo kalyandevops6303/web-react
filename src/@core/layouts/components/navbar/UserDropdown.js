@@ -35,6 +35,7 @@ import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal'
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
 import DelegateProfileCard from '../../../../views/Onboarding/Delegate/DelegateProfileCard';
+import DelegateCard from '../../../../views/cards/DelegateCard';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -220,7 +221,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {savedUserDetails?.user_type === userTypes.delegate && (
             <div className="my-25 edit-accordion">
               {userDetailsData && (
-                <DelegateProfileCard
+                <DelegateCard
                   savedUserDetails={savedUserDetails}
                   userDetailsData={userDetailsData}
                   handleSwitch={handleSwitch}
@@ -234,7 +235,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               <span className="mb-3 px-1">Delegate for:</span>
               <div className="delegate">
                 {userDetailsData && (
-                  <DelegateProfileCard
+                  <DelegateCard
                     savedUserDetails={savedUserDetails}
                     userDetailsData={userDetailsData}
                     handleSwitch={handleSwitch}

@@ -41,9 +41,10 @@ import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
-import { toggleAddDelegateModal } from '../../redux/reducers/profile';
+import { toggleAddDelegateModal, toggleDelegateModeModal } from '../../redux/reducers/profile';
 import AddDelegateModal from '../modals/AddDelegateModal';
-import { checkDelegateModalVisible } from '../../redux/selectors/profileSelectors';
+import { checkDelegateModalVisible, checkDelegateModeModalVisible } from '../../redux/selectors/profileSelectors';
+import DelegateModeModal from '../modals/DelegateModeModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -83,9 +84,11 @@ const PrivateDashboard = () => {
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
-  const isDelegateModalVisible = useSelector(checkDelegateModalVisible);
+  const isAddDelegateModalVisible = useSelector(checkDelegateModalVisible);
+  const isDelegateModeModalVisible = useSelector(checkDelegateModeModalVisible);
 
-  const toggleDelegateModal = () => dispatch(toggleAddDelegateModal(!isDelegateModalVisible));
+  const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isAddDelegateModalVisible));
+  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isAddDelegateModalVisible));
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -183,7 +186,12 @@ const PrivateDashboard = () => {
 
   return (
     <div>
-      {isDelegateModalVisible && <AddDelegateModal modal={isDelegateModalVisible} toggleModal={toggleDelegateModal} />}
+      {isAddDelegateModalVisible && (
+        <AddDelegateModal modal={isAddDelegateModalVisible} toggleModal={toggleAddDelegate} />
+      )}
+      {isDelegateModeModalVisible && (
+        <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
+      )}
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
