@@ -36,6 +36,7 @@ import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSu
 import { setFormDocuments } from '../../../../redux/reducers/formData';
 import UserNameRoleCompanyComp from '../../../components/username-role-company';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
+import DelegateProfileCard from '../../../../views/Onboarding/Delegate/DelegateProfileCard';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
