@@ -3,9 +3,9 @@ import { DropdownItem, UncontrolledTooltip } from 'reactstrap';
 import Proptypes from 'prop-types';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import capitalize from '../../../lib/capitalize';
+import capitalize from '../../lib/capitalize';
 
-const DelegateProfileCard = ({ savedUserDetails, handleSwitch, userDetailsData, savedUserName }) => (
+const DelegateCard = ({ savedUserDetails, handleSwitch, userDetailsData, savedUserName }) => (
   <DropdownItem
     className="d-flex justify-content-between"
     onClick={() => handleSwitch(savedUserDetails, savedUserDetails?._id === userDetailsData?._id)}
@@ -37,11 +37,15 @@ const DelegateProfileCard = ({ savedUserDetails, handleSwitch, userDetailsData, 
   </DropdownItem>
 );
 
-export default DelegateProfileCard;
+export default DelegateCard;
 
-DelegateProfileCard.propTypes = {
+DelegateCard.propTypes = {
   savedUserDetails: Proptypes.object.isRequired,
   savedUserName: Proptypes.object.isRequired,
   userDetailsData: Proptypes.object.isRequired,
-  handleSwitch: Proptypes.func.isRequired,
+  handleSwitch: () => {},
+};
+
+DelegateCard.defaultProps = {
+  handleSwitch: () => {},
 };
