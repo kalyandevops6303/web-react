@@ -604,7 +604,7 @@ const Account = ({ setDraftSavedModal }) => {
       const interestsOptionsLoaded = await loadInterestsOptions();
       setClubData(data);
       setValue('clubName', data?.name || '', { shouldValidate: true });
-      setValue('clubTagline', data?.tagline ||  '', { shouldValidate: true });
+      setValue('clubTagline', data?.tagline || '', { shouldValidate: true });
       setValue('clubIntroduction', data?.introduction || '', { shouldValidate: true });
       let institute;
       if (data?.education_institute) {
