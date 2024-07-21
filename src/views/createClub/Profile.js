@@ -82,6 +82,17 @@ const Profile = ({ setDraftSavedModal }) => {
     },
   });
 
+  const isAnyFieldNotEmpty = () => {
+    const { isWebpage, clubEmailID, clubLinkedin, clubWebsite } = watch();
+
+    // Check if any field is not in its initial state
+    if (isWebpage !== '' || clubEmailID !== '' || clubLinkedin !== '' || clubWebsite !== '') {
+      return true;
+    }
+
+    return false;
+  };
+
   const [clubCreatedModal, setClubCreatedModal] = useState(false);
   const [emailVerifyModal, setEmailVerifyModal] = useState(false);
   const [clubDetails, setClubDetails] = useState(null);
@@ -519,18 +530,20 @@ const Profile = ({ setDraftSavedModal }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            {!location?.pathname?.includes(('/club-profile-edit')) && <Button
-              onClick={() => {
-                saveAsDraftClicked.current = true;
-                handleSubmit(onDraftSubmit());
-              }}
-              color="primary"
-              className="me-2"
-              outline
-              disabled={saveDraftIsClubLoading}
-            >
-              {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-            </Button>}
+            {!location?.pathname?.includes('/club-profile-edit') && (
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onDraftSubmit());
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={saveDraftIsClubLoading || !isAnyFieldNotEmpty()}
+              >
+                {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+            )}
             {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' ? (
               <Button disabled={!isValid || disableBtn} color="primary" type="submit">
                 {loading ? (

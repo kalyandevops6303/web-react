@@ -268,6 +268,47 @@ const Profile = ({ setDraftSavedModal }) => {
   const navigatedRoute = useSelector(navigatingRoute);
   const buttonText = selectedImage && selectedImagePreview ? 'Edit Team Logo' : 'Upload Team Logo';
 
+  const isAnyFieldNotEmpty = () => {
+    const {
+      teamName,
+      teamTagline,
+      services,
+      tools,
+      skills,
+      preferredWorkingTimeZone,
+      weekdayStartTime,
+      weekdayEndTime,
+      weekendStartTime,
+      weekendEndTime,
+      teamIntroduction,
+      availabilityDays,
+      weekdays,
+      weekends,
+    } = watch();
+
+    // Check if any field is not in its initial state
+    if (
+      teamName !== '' ||
+      teamTagline !== '' ||
+      services?.length > 0 ||
+      tools?.length > 0 ||
+      skills?.length > 0 ||
+      preferredWorkingTimeZone !== null ||
+      Object.keys(weekdayStartTime)?.length > 0 ||
+      Object.keys(weekdayEndTime)?.length > 0 ||
+      Object.keys(weekendStartTime)?.length > 0 ||
+      Object.keys(weekendEndTime)?.length > 0 ||
+      teamIntroduction !== '' ||
+      availabilityDays?.length > 0 ||
+      weekdays?.length > 0 ||
+      weekends?.length > 0
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   const toggleOpenSaveLaterModal = () => {
     setOpenSaveLaterModal(!openSaveLaterModal);
     dispatch(setConfirmSaveForLater(false));
@@ -1781,7 +1822,7 @@ const Profile = ({ setDraftSavedModal }) => {
                 color="primary"
                 className="me-2"
                 outline
-                disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading}
+                disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading || !isAnyFieldNotEmpty()}
               >
                 {saveDraftTeamIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
               </Button>

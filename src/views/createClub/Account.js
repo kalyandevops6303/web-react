@@ -194,6 +194,33 @@ const Account = ({ setDraftSavedModal }) => {
   };
   const buttonText = selectedImage && selectedImagePreview ? 'Edit Club Logo' : 'Upload Club Logo';
 
+  const isAnyFieldNotEmpty = () => {
+    const {
+      clubName,
+      clubTagline,
+      clubIntroduction,
+      interests,
+      tools,
+      skills,
+      educationInstitution,
+    } = watch();
+  
+    // Check if any field is not in its initial state
+    if (
+      clubName !== '' ||
+      clubTagline !== '' ||
+      clubIntroduction !== '' ||
+      interests?.length > 0 ||
+      tools?.length > 0 ||
+      skills?.length > 0 ||
+      educationInstitution !== null
+    ) {
+      return true;
+    }
+  
+    return false;
+  };  
+
   useEffect(() => {
     if (isOpenSaveForLater) {
       setOpenSaveLaterModal(true);
@@ -1213,7 +1240,7 @@ const Account = ({ setDraftSavedModal }) => {
               color="primary"
               className="me-2"
               outline
-              disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading}
+              disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading || !isAnyFieldNotEmpty()}
             >
               {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
             </Button>}
