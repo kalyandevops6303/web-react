@@ -192,6 +192,7 @@ const Account = ({ setDraftSavedModal }) => {
     setOpenSaveLaterModal(!openSaveLaterModal);
     dispatch(setConfirmSaveForLater(false));
   };
+  const buttonText = selectedImage && selectedImagePreview ? 'Edit Club Logo' : 'Upload Club Logo';
 
   useEffect(() => {
     if (isOpenSaveForLater) {
@@ -576,7 +577,7 @@ const Account = ({ setDraftSavedModal }) => {
       const interestsOptionsLoaded = await loadInterestsOptions();
       setClubData(data);
       setValue('clubName', data?.name || '', { shouldValidate: true });
-      setValue('clubTagline', data?.tagline ||  '', { shouldValidate: true });
+      setValue('clubTagline', data?.tagline || '', { shouldValidate: true });
       setValue('clubIntroduction', data?.introduction || '', { shouldValidate: true });
       let institute;
       if (data?.education_institute) {
@@ -596,13 +597,15 @@ const Account = ({ setDraftSavedModal }) => {
       );
       setValue(
         'skills',
-        (data?.skills === clubDraftLocalData?.skills ? data?.skills?.map((skill) => ({
-          label: skillsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
-          value: skill,
-        })) : clubDraftLocalData?.skills?.map((skill) => ({
-          label: skillsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
-          value: skill,
-        }))) || [],
+        (data?.skills === clubDraftLocalData?.skills
+          ? data?.skills?.map((skill) => ({
+              label: skillsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+              value: skill,
+            }))
+          : clubDraftLocalData?.skills?.map((skill) => ({
+              label: skillsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+              value: skill,
+            }))) || [],
         {
           shouldValidate: true,
         },
@@ -610,13 +613,15 @@ const Account = ({ setDraftSavedModal }) => {
 
       setValue(
         'tools',
-        (data?.tools === clubDraftLocalData?.tools ? data?.tools?.map((tool) => ({
-          label: toolsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
-          value: tool,
-        })) : clubDraftLocalData?.tools?.map((skill) => ({
-          label: toolsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
-          value: skill,
-        }))) || [],
+        (data?.tools === clubDraftLocalData?.tools
+          ? data?.tools?.map((tool) => ({
+              label: toolsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
+              value: tool,
+            }))
+          : clubDraftLocalData?.tools?.map((skill) => ({
+              label: toolsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+              value: skill,
+            }))) || [],
         {
           shouldValidate: true,
         },
@@ -624,13 +629,15 @@ const Account = ({ setDraftSavedModal }) => {
 
       setValue(
         'interests',
-      (data?.interests === clubDraftLocalData?.interests ?  data?.interests?.map((tool) => ({
-          label: interestsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
-          value: tool,
-        })) : clubDraftLocalData?.interests?.map((skill) => ({
-          label: interestsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
-          value: skill,
-        }))) || [],
+        (data?.interests === clubDraftLocalData?.interests
+          ? data?.interests?.map((tool) => ({
+              label: interestsOptionsLoaded?.options?.find((toolOption) => toolOption?.value === tool)?.label,
+              value: tool,
+            }))
+          : clubDraftLocalData?.interests?.map((skill) => ({
+              label: interestsOptionsLoaded?.options?.find((skillOption) => skillOption?.value === skill)?.label,
+              value: skill,
+            }))) || [],
         {
           shouldValidate: true,
         },
@@ -692,7 +699,7 @@ const Account = ({ setDraftSavedModal }) => {
       } else if (savedFormData?.clubName) {
         setValue('clubName', savedFormData?.clubName, { shouldValidate: true });
       }
-      if (clubCreateData?.tagline?.length > 0 && !savedFormData?.clubTagline) {
+      if (clubCreateData?.tagline?.length > 0 && (!savedFormData?.clubTagline || savedFormData?.clubTagline === '')) {
         setValue('clubTagline', clubCreateData?.tagline, { shouldValidate: true });
       } else if (savedFormData?.clubTagline) {
         setValue('clubTagline', savedFormData?.clubTagline, { shouldValidate: true });
@@ -754,18 +761,29 @@ const Account = ({ setDraftSavedModal }) => {
   useEffect(() => {
     if (location.pathname.includes('profile-edit')) {
       if (clubDetails) {
-        if (clubDetails?.team_logo?.length > 0) {
+        if (clubDetails?.team_logo?.length > 0 && !savedFormDocuments) {
           setSelectedImage(clubDetails.team_logo);
           setSelectedImagePreview(clubDetails.team_logo);
+        } else {
+          setSelectedImage(savedFormDocuments);
+          if (savedFormImage) {
+            setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
+          } else {
+            setSelectedImagePreview(savedFormDocuments);
+          }
         }
         if (clubDetails?.name?.length > 0) {
           setValue('clubName', clubDetails?.name, { shouldValidate: true });
         }
-        if (clubDetails?.tagline?.length > 0) {
+        if (clubDetails?.tagline?.length > 0 && savedFormData?.clubTagline?.length === 0) {
           setValue('clubTagline', clubDetails?.tagline, { shouldValidate: true });
+        } else if (savedFormData?.clubTagline?.length > 0) {
+          setValue('clubTagline', savedFormData?.clubTagline, { shouldValidate: true });
         }
-        if (clubDetails?.introduction?.length > 0) {
+        if (clubDetails?.introduction?.length > 0 && savedFormData?.clubIntroduction?.length === 0) {
           setValue('clubIntroduction', clubDetails?.introduction, { shouldValidate: true });
+        } else if (savedFormData?.clubIntroduction?.length > 0) {
+          setValue('clubIntroduction', savedFormData?.clubIntroduction, { shouldValidate: true });
         }
         if (clubDetails?.education_institute) {
           setSelectedOption({
@@ -781,7 +799,10 @@ const Account = ({ setDraftSavedModal }) => {
             { shouldValidate: true },
           );
         }
-        if (clubDetails?.interests?.length > 0) {
+        if (
+          clubDetails?.interests?.length > 0 &&
+          (!savedFormData?.interests || savedFormData?.interests.length === 0)
+        ) {
           setValue(
             'interests',
             clubDetails?.interests.map((interest) => ({
@@ -790,20 +811,26 @@ const Account = ({ setDraftSavedModal }) => {
             })),
             { shouldValidate: true },
           );
+        } else {
+          setValue('interests', savedFormData?.interests, { shouldValidate: true });
         }
-        if (clubDetails?.tools?.length > 0) {
+        if (clubDetails?.tools?.length > 0 && savedFormData?.tools?.length === 0) {
           setValue(
             'tools',
             clubDetails?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
             { shouldValidate: true },
           );
+        } else {
+          setValue('tools', savedFormData?.tools, { shouldValidate: true });
         }
-        if (clubDetails?.skills?.length > 0) {
+        if (clubDetails?.skills?.length > 0 && (!savedFormData?.skills || savedFormData?.skills.length === 0)) {
           setValue(
             'skills',
             clubDetails?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
             { shouldValidate: true },
           );
+        } else {
+          setValue('skills', savedFormData?.skills, { shouldValidate: true });
         }
       }
     }
@@ -951,7 +978,7 @@ const Account = ({ setDraftSavedModal }) => {
                     onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
                     <Camera className="me-50" />
-                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Club Logo'}
+                    {isImageUploading ? <Spinner size="sm" /> : buttonText}
                   </Button>
                   {selectedImage && selectedImagePreview && (
                     <RemoveUploadedPicture
@@ -1178,7 +1205,7 @@ const Account = ({ setDraftSavedModal }) => {
             </CardBody>
           </Card>
           <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
-            <Button
+          {!location?.pathname?.includes(('/club-profile-edit')) &&  <Button
               onClick={() => {
                 saveAsDraftClicked.current = true;
                 handleSubmit(onDraftSubmit());
@@ -1189,7 +1216,7 @@ const Account = ({ setDraftSavedModal }) => {
               disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading}
             >
               {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-            </Button>
+            </Button>}
             <div>
               <Button
                 color="primary"

@@ -519,7 +519,7 @@ const Profile = ({ setDraftSavedModal }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button
+            {!location?.pathname?.includes(('/club-profile-edit')) && <Button
               onClick={() => {
                 saveAsDraftClicked.current = true;
                 handleSubmit(onDraftSubmit());
@@ -530,7 +530,7 @@ const Profile = ({ setDraftSavedModal }) => {
               disabled={saveDraftIsClubLoading}
             >
               {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-            </Button>
+            </Button>}
             {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' ? (
               <Button disabled={!isValid || disableBtn} color="primary" type="submit">
                 {loading ? (
