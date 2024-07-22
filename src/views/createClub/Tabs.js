@@ -27,7 +27,6 @@ const Tabs = ({ tabNames, active }) => {
   const isProfileDetailsRoute =
     /^\/create-club\/profile-details(\/[^/]+)?$/.test(location.pathname) ||
     location.pathname === `/${userProfileEdit.club}/profile-details`;
-
   return (
     <>
       {draftSavedModal && (
