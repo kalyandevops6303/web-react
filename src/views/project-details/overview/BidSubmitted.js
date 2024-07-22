@@ -19,7 +19,7 @@ import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 
 import Empty from './Empty';
-import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
+import { acceptBidChange, getBidDetails, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { bidStages, bidStatus, userTypes } from '../../../utility/constants/Constant';
@@ -39,6 +39,7 @@ const BidSubmitted = () => {
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
   const isBidAccepting = useSelector((state) => state.projectDetails.acceptBidChangeLoading);
   const activeStage = useSelector((state) => state.projectDetails.activeStage);
+  const updatedBidTotal = useSelector((state) => state.projectDetails.bid?.total_estimated_cost);
   const [open, setOpen] = useState(null);
   const [bidRequestModal, setBidRequestModal] = useState(false);
   const [acceptBidModal, setAcceptBidModal] = useState(false);
@@ -136,9 +137,12 @@ const BidSubmitted = () => {
     setBidModal(false);
     setAcceptBidModal(true);
   };
+
   const onAcceptSuccess = () => {
     toggleAccepetModal();
+    dispatch(getBidDetails({project_id: param?.projectId}))
   };
+
   const onAccept = () => {
     dispatch(
       acceptBidChange({
@@ -148,6 +152,7 @@ const BidSubmitted = () => {
       }),
     );
   };
+
 
   const BidTimelineAccordion = (
     <Elevate active={activeStage === bidStages.BID_SUBMITTED || activeStage === bidStages.ACCEPTED_BID}>
@@ -238,7 +243,7 @@ const BidSubmitted = () => {
             modalData={{
               name: bidInfo?.bid_by?.name,
               role: bidInfo?.bid_by?.user_type === userTypes.team ? 'Team Name' : bidInfo?.bid_by?.role,
-              value: bidInfo?.total_estimated_cost,
+              value: updatedBidTotal || bidInfo?.total_estimated_cost
             }}
             modal={acceptBidModal}
             toggleModal={handleCancel}
