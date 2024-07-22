@@ -23,19 +23,19 @@ const CreateClub = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const accountDetailsPath = /^\/create-club\/account-details(\/.*)?$/;
+    const accountDetailsPath = /^\/create-club\/account-details(\/.*)?$/ || /^\/club-profile-edit\/account-details(\/.*)?$/;
     if (accountDetailsPath.test(location.pathname)) {
       setActive(tabNames.Account);
     }
-    if (location.pathname === '/create-club/account-details') setActive(tabNames.Account);
+    if (location.pathname === '/create-club/account-details' || location.pathname === '/club-profile-edit/account-details') setActive(tabNames.Account);
   }, [location]);
 
   useEffect(() => {
-    const accountDetailsPath = /^\/create-club\/profile-details(\/.*)?$/;
+    const accountDetailsPath = /^\/create-club\/profile-details(\/.*)?$/ || /^\/club-profile-edit\/profile-details(\/.*)?$/;
     if (accountDetailsPath.test(location.pathname)) {
       setActive(tabNames.Profile);
     }
-    if (location.pathname === '/create-club/profile-details') setActive(tabNames.Profile);
+    if (location.pathname === '/create-club/profile-details' || location.pathname === '/club-profile-edit/profile-details') setActive(tabNames.Profile);
   }, [location]);
 
   const onBackClick = () => {
