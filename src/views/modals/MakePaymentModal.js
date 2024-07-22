@@ -43,8 +43,12 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
 
   const applicationFee = feeStructre?.application_fee;
   // eslint-disable-next-line no-unsafe-optional-chaining
-  const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
-  const totalPending = totalAmount + trumioFee;
+
+  const trumioFeeBeforeDiscount = (totalAmount * applicationFee?.percentage) / 100;
+  const trumioFeeDiscount = (trumioFeeBeforeDiscount * (applicationFee?.discount_coupon?.percent_off ?? 0)) / 100;
+  const trumioFeeAfterDiscount = trumioFeeBeforeDiscount - trumioFeeDiscount;
+
+  const totalPending = parseFloat(totalAmount + trumioFeeAfterDiscount).toFixed(2);
 
   const user = useSelector(selectAuthUserData);
   const isClient = user?.user_type === userTypes.client;
@@ -210,19 +214,31 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
             ) : selectedIds.length === 0 ? null : (
               <>
                 <div className="d-flex justify-content-between px-1">
-                  <CardText style={{ fontSize: '16px' }}>{`${applicationFee?.name ?? ''} (${
-                    applicationFee?.percentage ?? 0
-                  }%)`}</CardText>
-                  <CardText style={{ fontSize: '16px' }}>{`$ ${Number.isNaN(trumioFee) ? 0 : trumioFee}`}</CardText>
+                  <CardText style={{ fontSize: '16px' }}>
+                    {`${applicationFee?.name ?? ''} (${applicationFee?.percentage ?? 0}%)`}
+                  </CardText>
+                  <CardText style={{ fontSize: '16px' }}>{`$ ${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}</CardText>
                 </div>
+                {
+                  applicationFee?.discount_coupon && (
+                    <div className="d-flex justify-content-between px-1">
+                      <CardText style={{ fontSize: '16px' }}>
+                        {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
+                      </CardText>
+                      <CardText style={{ fontSize: '16px' }}>
+                        {`- $ ${Number.isNaN(trumioFeeDiscount) ? 0 : trumioFeeDiscount}`}
+                      </CardText>
+                    </div>
+                  )
+                }
                 <hr className="m-0 card-header-border" />
                 <div className="d-flex justify-content-between p-1">
                   <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
                     {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
                   </CardText>
-                  <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${
-                    Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
-                  }`}</CardText>
+                  <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                    {`$ ${Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()}`}
+                  </CardText>
                 </div>
               </>
             )}
@@ -253,7 +269,7 @@ MakePaymentModal.propTypes = {
 
 MakePaymentModal.defaultProps = {
   modal: false,
-  toggleModal: () => {},
+  toggleModal: () => { },
   selectedMilestoneIds: [],
   selectedAndDisabledPaymentId: [],
 };
