@@ -42,7 +42,7 @@ const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
     );
   };
   return (
-    data.status === "ON_GOING" ? (
+    data?.status === "ON_GOING" ? (
       <Modal
         isOpen={modal}
         contentClassName="custom-modal-style delete-modal"

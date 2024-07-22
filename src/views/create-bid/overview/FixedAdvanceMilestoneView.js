@@ -695,7 +695,6 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       }
     }
   };
-
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
     // eslint-disable-next-line no-undef
@@ -716,9 +715,9 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
           modal={createBidModal}
           toggleModal={toggleCreateBidModal}
           selectedProject={{
-            _id: params.projectId,
-            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
-            bidType: params.bidType.split('-')[1].toUpperCase(),
+            _id: params?.projectId,
+            pay_type: { variable_cost: params?.bidType?.split('-')[0] === 'variable' },
+            bidType: params?.bidType?.split('-')[1]?.toUpperCase(),
           }}
         />
       )}
@@ -817,7 +816,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                           <Label className="form-label m-0">Bid Type</Label>
                           <div className="d-flex align-items-center custom-cost-margin">
                             <p className="fw-bold font-medium-1 mb-0 mt-25">
-                              {capitalize(params.bidType.split('-')[1])} Flow
+                              {capitalize(params?.bidType?.split('-')[1])} Flow
                             </p>
                             <ChangeBidTypeButton
                               className="d-flex align-items-center cursor-pointer ms-1"

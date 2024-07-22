@@ -21,8 +21,10 @@ const AssessmentsList = ({ setOpen, data, dropdownOptions }) => {
     const addAssessmentLoading = useSelector(selectAddAssessmentLoading)
 
     const handleAddAssessment = (value) => {
-        setDropdownValue(null)
-        dispatch(addAssessment({ assessmentName: value.value.str_name, assessmentId: value.value.assessment_id, strType: value.value.str_type, id: value.value._id }))
+        if (value) {
+            setDropdownValue(null)
+            dispatch(addAssessment({ assessmentName: value.value?.str_name, assessmentId: value.value?.assessment_id, strType: value.value?.str_type, id: value.value?._id }))
+        }
     }
 
     return (
