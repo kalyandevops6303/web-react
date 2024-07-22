@@ -209,9 +209,9 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const calculateTotalValues = () => {
-    const totalDuration = allMilestones?.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
+    const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
 
-    const totalCost = allMilestones?.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+    const totalCost = allMilestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
 
     return { totalDuration, totalCost };
   };
@@ -247,13 +247,13 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
 
     const project_start_date = formatDateWithDash(estimatedStartDate);
     const total_estimated_duration = {
-      duration: milestones?.reduce((total, milestone) => total + Number(milestone.duration || 0), 0),
+      duration: milestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0),
       duration_type: 'WEEK',
     };
-    const total_estimated_cost = milestones?.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+    const total_estimated_cost = milestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
     const newMilestones = milestones.filter((milestone) => !('_id' in milestone.otherDetails));
     const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
-    const maxSeqValue = updatedMilestones?.reduce((max, obj) => Math.max(max, obj?.otherDetails?.seq), 0);
+    const maxSeqValue = updatedMilestones.reduce((max, obj) => Math.max(max, obj?.otherDetails?.seq), 0);
     const create_milestones = newMilestones.map((milestone, index) => ({
       name: milestone.name,
       description: milestone.description,
@@ -592,9 +592,9 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
           modal={createBidModal}
           toggleModal={toggleCreateBidModal}
           selectedProject={{
-            _id: params.projectId,
-            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
-            bidType: params.bidType.split('-')[1].toUpperCase(),
+            _id: params?.projectId,
+            pay_type: { variable_cost: params?.bidType?.split('-')[0] === 'variable' },
+            bidType: params?.bidType?.split('-')[1]?.toUpperCase(),
           }}
         />
       )}
@@ -689,7 +689,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                           <Label className="form-label m-0">Bid Type</Label>
                           <div className="d-flex align-items-center custom-cost-margin">
                             <p className="fw-bold font-medium-1 mb-0 mt-25">
-                              {capitalize(params.bidType.split('-')[1])} Flow
+                              {capitalize(params?.bidType?.split('-')[1])} Flow
                             </p>
                             <ChangeBidTypeButton
                               className="d-flex align-items-center cursor-pointer ms-1"
