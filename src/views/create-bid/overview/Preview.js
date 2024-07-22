@@ -368,7 +368,7 @@ const Preview = () => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <Button color="primary" onClick={() => setBidSubmittedModal(true)}>
-              <span className="me-50">Save & Continue</span>
+              <span className="me-50">Submit Bid</span>
               <ChevronRight size={14} />
             </Button>
           </div>
