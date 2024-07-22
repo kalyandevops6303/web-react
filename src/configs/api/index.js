@@ -49,6 +49,7 @@ const API = {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
     resumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parse-resume`,
     updateResumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parsed`,
+    deleteResume: `${apiAuthEndpoint}/api/v1/talent/resume`,
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
