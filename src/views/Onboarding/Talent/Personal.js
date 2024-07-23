@@ -39,11 +39,13 @@ import {
   languagesLoading,
 } from '../../../redux/selectors/staticSelectors';
 import {
+  deleteResume,
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
 } from '../../../redux/actions/talentOnboardingActions';
 import {
+  deleteResumeLoading,
   profileDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
@@ -260,12 +262,16 @@ const Personal = () => {
       setFiles([]);
     }
   }, [files]);
-
-  const handleRemoveFile = (file) => {
+  const isDeleteResumeLoading = useSelector(deleteResumeLoading);
+  const handleRemoveFile = async (file) => {
     const uploadedFiles = files;
-    const filtered = uploadedFiles.filter((i) => i.id !== file.id);
-    dispatch(setFormDocuments(null));
-    setFiles([...filtered]);
+    await dispatch(
+      deleteResume(() => {
+        const filtered = uploadedFiles.filter((i) => i.id !== file.id);
+        dispatch(setFormDocuments(null));
+        setFiles([...filtered]);
+      }),
+    );
   };
 
   const isFileValid = (file) => {
@@ -585,7 +591,7 @@ const Personal = () => {
                   <Button
                     color="flat-danger"
                     className="btn-left-margin"
-                    disabled={uploadingFiles.includes(file)}
+                    disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
                     onClick={() => {
                       handleRemoveFile(file);
                       setParseResume(false);
@@ -593,7 +599,7 @@ const Personal = () => {
                       dispatch(setResumeParsed(false));
                     }}
                   >
-                    Remove
+                    {isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
                   </Button>
                 </Col>
               </Row>

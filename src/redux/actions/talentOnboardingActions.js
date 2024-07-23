@@ -2,6 +2,7 @@ import errorHandler from '../../utility/errorHandler';
 import {
   accountDetailsService,
   checkpointCompleteService,
+  deleteResumeService,
   parsedResumeService,
   profileDetailsService,
   userDetailsService,
@@ -22,6 +23,9 @@ import {
   resumeParsedDetailsRequest,
   resumeParsedDetailsSuccess,
   resumeParsedDetailsFailure,
+  deleteResumeRequest,
+  deleteResumeSuccess,
+  deleteResumeFailure,
 } from '../reducers/talentOnboarding';
 import { cometChatLogin } from '../reducers/auth';
 import { scanAndProcessFiles } from '../../utility/Utils';
@@ -55,6 +59,18 @@ const getResumeParsedDetails = (setResumeParsedDetails,setParseResume, fileKey, 
       setFiles([]);
     }
     dispatch(setFormDocuments(null));
+    ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
+  }
+};
+
+const deleteResume = (onSuccess) => async (dispatch) => {
+  dispatch(deleteResumeRequest());
+  try {
+    await deleteResumeService();
+    dispatch(deleteResumeSuccess());
+    onSuccess();
+  } catch (error) {
+    dispatch(deleteResumeFailure());
     ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
   }
 };
@@ -135,4 +151,5 @@ export {
   saveProfileDetails,
   saveCheckpointComplete,
   saveSocialProfileDetails,
+  deleteResume,
 };
