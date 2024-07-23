@@ -473,7 +473,7 @@ const PaymentTable = () => {
                   </CardText>{' '}
                 </div>
                 {
-                  applicationFee?.discount_coupon && (
+                  applicationFee?.discount_coupon?.code && (
                     <div className="d-flex w-100 mt-1 justify-content-between">
                       <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
                         {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
