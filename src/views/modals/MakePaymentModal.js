@@ -220,7 +220,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
                   <CardText style={{ fontSize: '16px' }}>{`$ ${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}</CardText>
                 </div>
                 {
-                  applicationFee?.discount_coupon && (
+                  applicationFee?.discount_coupon?.code && (
                     <div className="d-flex justify-content-between px-1">
                       <CardText style={{ fontSize: '16px' }}>
                         {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
