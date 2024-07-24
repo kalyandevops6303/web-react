@@ -43,6 +43,7 @@ import {
   downloadUploadedFile,
   formatDateWithDash,
   getFileSize,
+  isEmpty,
   renderFilePreview,
 } from '../../../utility/Utils';
 import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
@@ -522,7 +523,10 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
       .replace(',', '')
       .split(' ');
-    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    if (!isEmpty(formattedDate)) {
+      return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    }
+    return '';
   };
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {

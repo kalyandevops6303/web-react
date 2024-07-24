@@ -32,7 +32,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize, renderFilePreview, roundOfAmount } from '../../../utility/Utils';
+import { downloadFile, getFileSize, isEmpty, renderFilePreview, roundOfAmount } from '../../../utility/Utils';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -56,7 +56,10 @@ const Preview = () => {
       .replace(',', '')
       .split(' ');
 
-    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    if (!isEmpty(formattedDate)) {
+      return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    }
+    return '';
   };
 
   const onDownloadFileUrlSuccess = ({ download_url, file_name }) => {
