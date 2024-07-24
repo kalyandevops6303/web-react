@@ -29,7 +29,7 @@ import { convertUnixTimestampToDate } from '../../../utility/Utils';
 const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay) => {
   // checking whether the project has secondary status or not
   const secondary_status_text = projectDetailsData?.secondary_status
-    ? projectDetailsData?.secondary_status[localStorage.getItem('user_id')].next
+    ? projectDetailsData?.secondary_status[localStorage.getItem('user_id')]?.next
     : projectDetailsData?.status;
 
   // checking whether the secondary status is present in the statusEnum or not
