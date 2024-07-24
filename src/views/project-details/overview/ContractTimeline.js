@@ -50,8 +50,7 @@ const ContractTimeline = () => {
           <div className="timeline-single-item">
             <h6 className="mb-25">{getProjectStatus({ status: item?.status, type: 'CONTRACT' })}</h6>
             <span className="d-block mb-1">
-              {/* {item?.signed_on ? DateTime.fromMillis(item?.signed_on).toFormat('MMM dd, yy') : '-'} */}
-              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
+              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name ) : '-'}
             </span>
             {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
               <NameInfo name={item.name} info={item.role} img={item?.image_uri} />
@@ -59,8 +58,7 @@ const ContractTimeline = () => {
           </div>
           <div className="meta-data">
             <span className="time ms-auto">
-              {/* {item?.signed_on ? DateTime?.fromMillis(item?.signed_on)?.toRelative() : '-'} */}
-              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
+              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name ) : '-'}
             </span>
             {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
               <span onClick={() => navigate(`doc/contract/${item?.document_id}`)} className="d-none card-cta">
@@ -129,10 +127,7 @@ const ContractTimeline = () => {
                       <div className="me-1">
                         <span className="key">Updated at</span>
                         <CardText className="value">
-                          {/* {contractData?.updated_at
-                            ? DateTime.fromMillis(contractData?.updated_at).toFormat('MMM dd, yy')
-                            : '-'} */}
-                            {contractData?.updated_at ? convertUnixTimestampToDate(contractData?.updated_at, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
+                            {contractData?.updated_at ? convertUnixTimestampToDate(contractData?.updated_at, savedUserData?.availability?.timezone?.name ) : '-'}
                         </CardText>
                       </div>
                     </div>
@@ -150,10 +145,7 @@ const ContractTimeline = () => {
                 <div className="me-1">
                   <span className="key">Terminated at</span>
                   <CardText className="value">
-                    {/* {contractData?.contract_terminated_at
-                      ? DateTime.fromMillis(contractData?.contract_terminated_at).toFormat('MMM dd, yy')
-                      : '-'} */}
-                         {contractData?.contract_terminated_at ? convertUnixTimestampToDate(contractData?.contract_terminated_at, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
+                         {contractData?.contract_terminated_at ? convertUnixTimestampToDate(contractData?.contract_terminated_at, savedUserData?.availability?.timezone?.name ) : '-'}
                   </CardText>
                 </div>
               </div>

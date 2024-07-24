@@ -187,8 +187,7 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                             )}
                             <td className="table-cell-td cell-submitted-on m-auto">
                               <p className="fw-normal m-auto">
-                                {/* {DateTime?.fromMillis(file?.created_at).toFormat(`dd MMM yyyy, hh:mm a`)} */}
-                                {convertUnixTimestampToDate(file?.created_at, savedUserData?.availability?.timezone?.name || 'America/New_York')}
+                                {convertUnixTimestampToDate(file?.created_at, savedUserData?.availability?.timezone?.name )}
                               </p>
                             </td>
                             <td className="m-auto table-cell-td cell-action">

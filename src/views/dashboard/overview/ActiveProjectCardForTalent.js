@@ -99,11 +99,8 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
                   Due Date
                 </p>
                 <p className="mb-0 details-box">
-                  {/* {`${
-                  DateTime.fromMillis(data?.current_milestone?.due_date).toFormat('MMM dd, yy') || '-'
-                }`} */}
                    {`${
-                  convertUnixTimestampToDate(data?.current_milestone?.due_date, savedUserData?.availability?.timezone?.name || 'America/New_York') || '-'
+                  convertUnixTimestampToDate(data?.current_milestone?.due_date, savedUserData?.availability?.timezone?.name ) || '-'
                 }`}
                 </p>
               </div>

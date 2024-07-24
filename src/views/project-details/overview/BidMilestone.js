@@ -283,11 +283,8 @@ const BidMilestone = () => {
           <CardBody className="main-card-body details">
             <div>
               <CardText className="value">
-                {/* {bidData?.project_start_date
-                  ? DateTime.fromMillis(bidData?.project_start_date).toFormat('MMM dd, yy')
-                  : '-'} */}
                   {bidData?.project_start_date
-                  ? convertUnixTimestampToDate(bidData?.project_start_date , savedUserData?.availability?.timezone?.name || 'America/New_York')
+                  ? convertUnixTimestampToDate(bidData?.project_start_date , savedUserData?.availability?.timezone?.name )
                   : '-'}
               </CardText>
               <div className="d-flex align-items-center m-0">

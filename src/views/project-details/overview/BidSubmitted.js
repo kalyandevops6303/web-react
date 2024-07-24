@@ -95,7 +95,7 @@ const BidSubmitted = () => {
             </h6>
             <span className="d-block mb-1">
               {/* {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'} */}
-              {convertUnixTimestampToDate(item?.time, savedUserData?.availability?.timezone?.name || 'America/New_York')}
+              {convertUnixTimestampToDate(item?.time, savedUserData?.availability?.timezone?.name )}
             </span>
             <NameInfo name={item?.by_entity?.name} info={item?.by_entity?.role} img={item?.by_entity?.image} />
             {item?.description && <CardText className="mt-1 word-wrap">{item?.description}</CardText>}{' '}
@@ -191,8 +191,7 @@ const BidSubmitted = () => {
                     <span className="key">Updated at</span>
 
                     <CardText className="value text-end">
-                      {/* {bidInfo?.updated_at ? DateTime.fromMillis(bidInfo?.updated_at).toFormat('MMM dd, yy') : ''} */}
-                      {convertUnixTimestampToDate(bidInfo?.updated_at, savedUserData?.availability?.timezone?.name || 'America/New_York')}
+                      {convertUnixTimestampToDate(bidInfo?.updated_at, savedUserData?.availability?.timezone?.name )}
                     </CardText>
                   </div>
                 </div>

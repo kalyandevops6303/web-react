@@ -225,19 +225,16 @@ const ProjectModal = ({
                   {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' ? (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {/* {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')} */}
-                        {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
+                        {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                       </CardTitle>
                       <CardText className="project-name">Expired Date</CardText>
                     </div>
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {/* {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
-                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')} */}
-                        {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
+                        {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                         {' '} to{' '}
-                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
+                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>
@@ -367,8 +364,7 @@ const ProjectModal = ({
                       {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {/* {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')} */}
-                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
+                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name )}
                     </Col>
                   </Row>
                 ))}

@@ -78,8 +78,7 @@ const PaymentTable = () => {
           />
         </div>
         <span>
-          {/* {formatDate(date)} */}
-        {convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name || 'America/New_York')}
+        {convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name )}
         </span>
       </div>
     ),

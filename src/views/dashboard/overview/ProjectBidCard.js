@@ -90,11 +90,8 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                   <div className="design-planning mb-0">
                     <CardText className="mb-25">Expired Date</CardText>
                     <h6 className="mb-0 expired-listing-text">
-                      {/* {`${
-                      DateTime.fromMillis(data?.exipiry_date).toFormat('MMM dd, yy') || '-'
-                    }`} */}
                      {`${
-                      convertUnixTimestampToDate(data?.exipiry_date, savedUserData?.availability?.timezone?.name || 'America/New_York') || '-'
+                      convertUnixTimestampToDate(data?.exipiry_date, savedUserData?.availability?.timezone?.name ) || '-'
                     }`}
                     </h6>
                   </div>
@@ -119,7 +116,7 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                     <CardText className="mb-25">Posted Date</CardText>
                     <h6 className="mb-0">
                       {/* {`${DateTime.fromMillis(data?.created_at).toFormat('MMM dd, yy') || '-'}`} */}
-                      {`${convertUnixTimestampToDate(data?.created_at, savedUserData?.availability?.timezone?.name || 'America/New_York') || '-'}`}
+                      {`${convertUnixTimestampToDate(data?.created_at, savedUserData?.availability?.timezone?.name ) || '-'}`}
                     </h6>
                   </div>
                 </div>

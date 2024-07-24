@@ -170,10 +170,10 @@ const ProjectCard = ({
                       {data?.assigned_date && (
                         <span className="me-1">
                           {data?.assigned_date
-                            ? // `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}    `
+                            ?
                               `Assigned Date: ${convertUnixTimestampToDate(
                                 data?.assigned_date,
-                                savedUserData?.availability?.timezone?.name || 'America/New_York',
+                                savedUserData?.availability?.timezone?.name ,
                               )}    `
                             : ''}
                         </span>
@@ -181,10 +181,10 @@ const ProjectCard = ({
                       {data?.completed_date && (
                         <span className="me-1">
                           {data?.completed_date
-                            ? //  `Completed Date: ${DateTime?.fromMillis(data?.completed_date).toFormat('dd-MM-yy')}   `
+                            ?
                               `Completed Date: ${convertUnixTimestampToDate(
                                 data?.completed_date,
-                                savedUserData?.availability?.timezone?.name || 'America/New_York',
+                                savedUserData?.availability?.timezone?.name ,
                               )}   `
                             : ''}
                         </span>
@@ -193,10 +193,9 @@ const ProjectCard = ({
                         <span className="me-1">
                           {data?.invite_date
                             ? 
-                            // `Invite Date: ${DateTime?.fromMillis(data?.invite_date).toFormat('dd-MM-yy')}`
                             `Invite Date: ${convertUnixTimestampToDate(
                               data?.invite_date,
-                              savedUserData?.availability?.timezone?.name || 'America/New_York',
+                              savedUserData?.availability?.timezone?.name ,
                             )}`
                             : ''}
                         </span>

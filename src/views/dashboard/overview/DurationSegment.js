@@ -14,11 +14,8 @@ const DurationSegment = ({ start_date, end_date }) => {
           Start Date
         </p>
         <p className="mb-0 details-box">
-          {/* {`${
-          DateTime.fromMillis(start_date).toFormat('MMM dd, yy') || '-'
-        }`} */}
         {`${
-          convertUnixTimestampToDate(start_date, savedUserData?.availability?.timezone?.name || 'America/New_York') || '-'
+          convertUnixTimestampToDate(start_date, savedUserData?.availability?.timezone?.name ) || '-'
         }`}
         </p>
       </div>
@@ -27,11 +24,8 @@ const DurationSegment = ({ start_date, end_date }) => {
           End Date
         </p>
         <p className="mb-0 details-box">
-          {/* {`${
-          DateTime.fromMillis(end_date).toFormat('MMM dd, yy') || '-'
-        }`} */}
          {`${
-          convertUnixTimestampToDate(end_date, savedUserData?.availability?.timezone?.name || 'America/New_York') || '-'
+          convertUnixTimestampToDate(end_date, savedUserData?.availability?.timezone?.name ) || '-'
         }`}
         </p>
       </div>

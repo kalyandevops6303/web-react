@@ -137,10 +137,7 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
                   Start Date
                 </p>
                 <p className="mb-0 details-box">
-                  {/* {`${
-                  DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'
-                }`} */}
-                 {`${convertUnixTimestampToDate(data?.start_date, savedUserData?.availability?.timezone?.name || 'America/New_York')}`}
+                 {`${convertUnixTimestampToDate(data?.start_date, savedUserData?.availability?.timezone?.name )}`}
                 </p>
               </div>
               <div className="design-planning">

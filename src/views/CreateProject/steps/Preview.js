@@ -56,15 +56,6 @@ const Preview = ({
     return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
   };
 
-  // const renderFormattedListingDate = (date) => {
-  //   const formattedDate = date
-  //     .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-  //     .replace(',', '')
-  //     .split(' ');
-
-  //   return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
-  // };
-
   const fileList = () => (
     <div className="custom-card mb-1">
       <Card className="p-1">
@@ -366,10 +357,7 @@ const Preview = ({
               <h4 className="fw-bolder">
                 {listingDetails?.listingOption === 'select-duration'
                   ? 
-                  // `${renderFormattedListingDate(listingDetails?.startDate)} - ${renderFormattedListingDate(
-                  //     listingDetails?.endDate,
-                  //   )}`
-                  `${convertUnixTimestampToDate(listingDetails?.startDate, savedUserData?.availability?.timezone?.name || 'America/New_York')} - ${convertUnixTimestampToDate(listingDetails?.endDate, savedUserData?.availability?.timezone?.name || 'America/New_York')}`
+                  `${convertUnixTimestampToDate(listingDetails?.startDate, savedUserData?.availability?.timezone?.name )} - ${convertUnixTimestampToDate(listingDetails?.endDate, savedUserData?.availability?.timezone?.name )}`
                   : `${listingDetails?.duration}d`}
               </h4>
               <p className="font-medium-1 fw-normal">Listing Duration</p>

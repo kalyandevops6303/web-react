@@ -128,10 +128,7 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
                     Due Date
                   </p>
                   <p className="mb-0 details-box">
-                    {/* {`${
-                    DateTime.fromMillis(data?.project_start_date).toFormat('MMM dd, yy') || '-'
-                  }`} */}
-                  {convertUnixTimestampToDate(data?.project_start_date, savedUserData?.availability?.timezone?.name || 'America/New_York')}
+                  {convertUnixTimestampToDate(data?.project_start_date, savedUserData?.availability?.timezone?.name )}
                   </p>
                 </div>
               </div>

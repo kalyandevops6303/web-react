@@ -472,8 +472,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
-              {/* {selectedMilestone.start_date ? formatDate(selectedMilestone.start_date) : '-'} */}
-              {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
+              {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
             </CardText>
           </div>
           <div>

@@ -36,10 +36,7 @@ const RelistSuccessModal = ({ modal, toggleModal, projectRelistData }) => {
                 <span className="fw-bolder">
                   {projectRelistData?.listingOption === 'select-duration'
                     ? 
-                    // `${DateTime?.fromMillis(projectRelistData?.startDate).toFormat(
-                    //     'dd LLL yyyy',
-                    //   )} - ${DateTime?.fromMillis(projectRelistData?.endDate).toFormat('dd LLL yyyy')}`
-                      `${convertUnixTimestampToDate(projectRelistData?.startDate, savedUserData?.availability?.timezone?.name || 'America/New_York')} - ${convertUnixTimestampToDate(projectRelistData?.endDate, savedUserData?.availability?.timezone?.name || 'America/New_York')}`
+                      `${convertUnixTimestampToDate(projectRelistData?.startDate, savedUserData?.availability?.timezone?.name )} - ${convertUnixTimestampToDate(projectRelistData?.endDate, savedUserData?.availability?.timezone?.name )}`
                     : `${projectRelistData?.duration} Days`}
                 </span>
               </p>

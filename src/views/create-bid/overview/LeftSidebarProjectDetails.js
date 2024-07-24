@@ -137,8 +137,7 @@ const LeftSidebarProjectDetails = () => {
               <span className="info-key">Posted date:</span>
               <CardText className="info-value ">
                 {' '}
-                {/* {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)} */}
-                {convertUnixTimestampToDate(projectDetailsData?.listing_details?.start_date_epoch, savedUserData?.availability?.timezone?.name || 'America/New_York')}
+                {convertUnixTimestampToDate(projectDetailsData?.listing_details?.start_date_epoch, savedUserData?.availability?.timezone?.name )}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (
