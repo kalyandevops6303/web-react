@@ -47,7 +47,7 @@ const VerifyPhone = () => {
     if (!userType) {
       dispatch(getUserData());
     }
-  }, []);
+  }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
 
   useEffect(() => {
     if (isPhoneVerified && userType) {
@@ -62,7 +62,7 @@ const VerifyPhone = () => {
     if (!phoneData) {
       navigate('/auth/register-phone');
     }
-  }, [isPhoneVerified, navigate]);
+  }, [isPhoneVerified, userType, phoneData, navigate]); // added dependencies to avoid infinite re-rendering
 
   const [selectedCountry, setSelectedCountry] = useState({
     label: 'United States',
