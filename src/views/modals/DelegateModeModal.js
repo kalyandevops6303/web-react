@@ -6,19 +6,11 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardSubtitle } from '
 import { useSelector } from 'react-redux';
 import AccountCreated from '../../assets/images/accountCreated.png';
 import { DelegateModeModalWrapper } from './style';
-import DelegateCard from '../cards/DelegateCard';
-import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
-import { userTypes } from '../../utility/constants/Constant';
+import UserNameRoleCompanyComp from '../../@core/components/username-role-company';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const DelegateModeModal = ({ modal, toggleModal }) => {
   const userDetailsData = useSelector(selectUserData);
-  const savedUserDetails = useSelector(selectSavedUserData);
-
-  const savedUserName = savedUserDetails
-    ? savedUserDetails?.user_type === userTypes.talent
-      ? `${savedUserDetails?.talent_info?.first_name} ${savedUserDetails?.talent_info?.last_name}`
-      : `${savedUserDetails?.client_info?.first_name} ${savedUserDetails?.client_info?.last_name}`
-    : '';
 
   const onClose = () => {
     toggleModal();
@@ -38,11 +30,7 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
               <CardSubtitle className="mb-2 fw-light subtitle">
                 You’re in delegate mode. You will be performing actions on behalf of the user
               </CardSubtitle>
-              <DelegateCard
-                savedUserDetails={savedUserDetails}
-                userDetailsData={userDetailsData}
-                savedUserName={savedUserName}
-              />
+              <UserNameRoleCompanyComp data={userDetailsData} />
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">

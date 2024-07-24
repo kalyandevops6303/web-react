@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleAddDelegateModal } from '../../../../redux/reducers/profile';
 import { checkDelegateModalVisible } from '../../../../redux/selectors/profileSelectors';
 
-const EditProfileAccordion = () => {
+const DelegateAccordion = () => {
   const [open, setOpen] = useState('');
-  const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
+  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
   const dispatch = useDispatch();
   const isAddDelegateModalVisible = useSelector(checkDelegateModalVisible);
 
-  const toggleDelegateModal = () => dispatch(toggleAddDelegateModal(!isAddDelegateModalVisible));
+  const openAddDelegateModal = () => dispatch(toggleAddDelegateModal(!isAddDelegateModalVisible));
 
   // mock data to show delegates
   const delegateData = [
@@ -34,13 +34,13 @@ const EditProfileAccordion = () => {
   return (
     <Accordion open={open} toggle={toggle}>
       <AccordionItem>
-        <AccordionHeader className={open === '1' ? 'isActive' : ''} targetId="1">
+        <AccordionHeader className="isActive" targetId="1">
           Delegate
         </AccordionHeader>
         <div style={{ maxHeight: '9rem', overflowY: 'auto' }}>
           <AccordionBody accordionId="1">
             <DropdownItem
-              onClick={toggleDelegateModal}
+              onClick={openAddDelegateModal}
               className="w-100 text-primary d-flex justify-content-start align-items-center gap-1"
             >
               <img alt="plus" src={addIcon} height={28} width={28} className="no-border-radius" />
@@ -58,4 +58,4 @@ const EditProfileAccordion = () => {
   );
 };
 
-export default EditProfileAccordion;
+export default DelegateAccordion;

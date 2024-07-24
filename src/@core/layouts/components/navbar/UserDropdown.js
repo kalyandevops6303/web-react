@@ -34,8 +34,7 @@ import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
-import DelegateProfileCard from '../../../../views/Onboarding/Delegate/DelegateProfileCard';
-import DelegateCard from '../../../../views/cards/DelegateCard';
+import UserNameRoleCompanyComp from '../../../components/username-role-company';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -52,6 +51,12 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const [supportModal, setSupportModal] = useState(false);
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
   const isDelegateProfileCreated = true; // TODO: setting this to true, should be computed from server
+  const delegateData = {
+    first_name: 'Claire',
+    last_name: 'Dunphy',
+    role: 'Delegate2',
+    image_uri: defaultAvatar,
+  };
 
   const handleEdit = () => {
     const talentOrClientProfile =
@@ -218,31 +223,15 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
       <UserDropDownWrapper>
         <DropdownMenu style={{ width: '24rem' }} end>
-          {savedUserDetails?.user_type === userTypes.delegate && (
-            <div className="my-25 edit-accordion">
-              {userDetailsData && (
-                <DelegateCard
-                  savedUserDetails={savedUserDetails}
-                  userDetailsData={userDetailsData}
-                  handleSwitch={handleSwitch}
-                  savedUserName={savedUserName}
-                />
-              )}
+          {savedUserDetails?.user_type === userTypes.delegate && isDelegateProfileCreated && (
+            <div className="my-25 px-1 edit-accordion">
+              {userDetailsData && <UserNameRoleCompanyComp data={delegateData} />}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.delegate && (
-            <div className="mt-1">
-              <span className="mb-3 px-1">Delegate for:</span>
-              <div className="delegate">
-                {userDetailsData && (
-                  <DelegateCard
-                    savedUserDetails={savedUserDetails}
-                    userDetailsData={userDetailsData}
-                    handleSwitch={handleSwitch}
-                    savedUserName={savedUserName}
-                  />
-                )}
-              </div>
+          {savedUserDetails?.user_type !== userTypes.delegate && (
+            <div className="mt-1 px-1">
+              <span className="mb-3">Delegate for:</span>
+              <div className="delegate">{userDetailsData && <UserNameRoleCompanyComp data={delegateData} />}</div>
             </div>
           )}
           {savedUserDetails?.user_type !== userTypes.delegate && (
