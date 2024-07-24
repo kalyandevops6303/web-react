@@ -209,9 +209,9 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const calculateTotalValues = () => {
-    const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
+    const totalDuration = allMilestones?.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
 
-    const totalCost = allMilestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+    const totalCost = allMilestones?.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
 
     return { totalDuration, totalCost };
   };
@@ -978,7 +978,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                           )}
                                       </Col>
                                       <Col sm="12" md="12" lg="4">
-                                        {getValues('milestones')[milestoneIndex].deliverables.length > 1 && (
+                                        {getValues('milestones') && getValues('milestones')[milestoneIndex]?.deliverables?.length > 1 && (
                                           <Button
                                             type="button"
                                             color="flat-danger"
@@ -1004,12 +1004,12 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                             </Col>
                           </Row>
                           <div className="d-flex align-items-center justify-content-end w-100">
-                            {getValues('milestones').length > 1 && (
+                            {getValues('milestones') && getValues('milestones')?.length > 1 && (
                               <Button
                                 type="button"
                                 color="flat-danger"
                                 onClick={() => {
-                                  setRemovedMilestoneIds((oldIds) => [...oldIds, milestone.otherDetails._id]);
+                                  setRemovedMilestoneIds((oldIds) => [...oldIds, milestone?.otherDetails?._id]);
                                   milestonesRemove(milestoneIndex);
                                 }}
                               >
