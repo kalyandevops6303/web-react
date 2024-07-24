@@ -385,7 +385,7 @@ const Preview = ({
             <Col sm="12" md="12" lg="6">
               <TimeWrapper>
                 <section className="weekdays">
-                  {projectDetails?.availabilityDays.includes('weekdays') ? (
+                  {projectDetails?.availabilityDays?.includes('weekdays') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayEndTime?.value, 10))}{' '}
@@ -399,7 +399,7 @@ const Preview = ({
                       <li key={day}>
                         <span
                           className={`dot ${
-                            projectDetails?.availabilityDays.includes('weekdays') &&
+                            projectDetails?.availabilityDays?.includes('weekdays') &&
                             projectDetails?.weekdays.includes(day)
                               ? 'active'
                               : ''

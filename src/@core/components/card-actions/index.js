@@ -57,7 +57,7 @@ const CardActions = (props) => {
      */
 
     if (Array.isArray(actions)) {
-      return actions.map((action, i) => {
+      return actions?.map((action, i) => {
         const Tag = Icons[action];
         return (
           <Tag
