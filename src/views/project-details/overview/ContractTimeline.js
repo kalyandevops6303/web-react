@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAccordion } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateTime } from 'luxon';
 import { useNavigate, useParams } from 'react-router-dom';
 import classnames from 'classnames';
 import { AccordionHeadStyle } from '../style';
@@ -13,8 +12,8 @@ import {
   selectContractData,
   selectContractTimeline,
 } from '../../../redux/selectors/projectDetailsSelectors';
-import { getContractStepLabel, getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
-import { selectUserType } from '../../../redux/selectors/authSelectors';
+import { convertUnixTimestampToDate, getContractStepLabel, getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
+import { selectSavedUserData, selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { getContractTimeline } from '../../../redux/actions/projectDetailsAction';
@@ -28,6 +27,7 @@ const ContractTimeline = () => {
   const contractData = useSelector(selectContractData);
   const contractTimeline = useSelector(selectContractTimeline);
   const projectDetailsData = useSelector(projectDetails);
+  const savedUserData = useSelector(selectSavedUserData);
   const userType = useSelector(selectUserType);
   const bidUpdatesDataSet = [];
   const [open, setOpen] = useState(null);
@@ -50,7 +50,8 @@ const ContractTimeline = () => {
           <div className="timeline-single-item">
             <h6 className="mb-25">{getProjectStatus({ status: item?.status, type: 'CONTRACT' })}</h6>
             <span className="d-block mb-1">
-              {item?.signed_on ? DateTime.fromMillis(item?.signed_on).toFormat('MMM dd, yy') : '-'}
+              {/* {item?.signed_on ? DateTime.fromMillis(item?.signed_on).toFormat('MMM dd, yy') : '-'} */}
+              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
             </span>
             {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
               <NameInfo name={item.name} info={item.role} img={item?.image_uri} />
@@ -58,7 +59,8 @@ const ContractTimeline = () => {
           </div>
           <div className="meta-data">
             <span className="time ms-auto">
-              {item?.signed_on ? DateTime?.fromMillis(item?.signed_on)?.toRelative() : '-'}
+              {/* {item?.signed_on ? DateTime?.fromMillis(item?.signed_on)?.toRelative() : '-'} */}
+              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
             </span>
             {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
               <span onClick={() => navigate(`doc/contract/${item?.document_id}`)} className="d-none card-cta">
@@ -127,9 +129,10 @@ const ContractTimeline = () => {
                       <div className="me-1">
                         <span className="key">Updated at</span>
                         <CardText className="value">
-                          {contractData?.updated_at
+                          {/* {contractData?.updated_at
                             ? DateTime.fromMillis(contractData?.updated_at).toFormat('MMM dd, yy')
-                            : '-'}
+                            : '-'} */}
+                            {contractData?.updated_at ? convertUnixTimestampToDate(contractData?.updated_at, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
                         </CardText>
                       </div>
                     </div>
@@ -147,9 +150,10 @@ const ContractTimeline = () => {
                 <div className="me-1">
                   <span className="key">Terminated at</span>
                   <CardText className="value">
-                    {contractData?.contract_terminated_at
+                    {/* {contractData?.contract_terminated_at
                       ? DateTime.fromMillis(contractData?.contract_terminated_at).toFormat('MMM dd, yy')
-                      : '-'}
+                      : '-'} */}
+                         {contractData?.contract_terminated_at ? convertUnixTimestampToDate(contractData?.contract_terminated_at, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
                   </CardText>
                 </div>
               </div>

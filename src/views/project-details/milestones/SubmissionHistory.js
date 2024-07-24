@@ -8,17 +8,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { SubmissionHistoryWrapper } from '../style';
-import { downloadFile, handleLinkOpen, renderFilePreview } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, downloadFile, handleLinkOpen, renderFilePreview } from '../../../utility/Utils';
 import { MessageIconWrap } from '../../modals/style';
 import theme from '../../../configs/themeVariables';
 import { getSubmissionHistory } from '../../../redux/actions/milestoneActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { clearHistory } from '../../../redux/reducers/milestone';
 import { MilestoneAccordionWrap } from './style';
-import DateTime from '../../../lib/date-time';
 import Empty from './NoDataComp';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const SubmissionHistory = ({ selectedMilestone }) => {
   const dispatch = useDispatch();
@@ -29,6 +29,7 @@ const SubmissionHistory = ({ selectedMilestone }) => {
   const submissionHistoryMetadata = useSelector((state) => state.milestone.submissionHistoryMetadata);
   const submissionHistorycurrentPreview = useSelector((state) => state.milestone.submissionHistoryCurrentPreview);
   const isLoading = useSelector((state) => state.milestone.submissionHistoryLoading);
+  const savedUserData = useSelector(selectSavedUserData);
   const metadata = { page: 1, page_size: 10 };
 
   const param = useParams();
@@ -186,7 +187,8 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                             )}
                             <td className="table-cell-td cell-submitted-on m-auto">
                               <p className="fw-normal m-auto">
-                                {DateTime?.fromMillis(file?.created_at).toFormat(`dd MMM yyyy, hh:mm a`)}
+                                {/* {DateTime?.fromMillis(file?.created_at).toFormat(`dd MMM yyyy, hh:mm a`)} */}
+                                {convertUnixTimestampToDate(file?.created_at, savedUserData?.availability?.timezone?.name || 'America/New_York')}
                               </p>
                             </td>
                             <td className="m-auto table-cell-td cell-action">

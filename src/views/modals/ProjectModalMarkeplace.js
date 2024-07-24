@@ -34,7 +34,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
+import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -209,7 +209,7 @@ const ProjectModal = ({
         imgWidth: 33,
       }))
     : [];
-
+     
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -254,8 +254,11 @@ const ProjectModal = ({
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
-                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                        {/* {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} */}
+                        {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
+                         to{' '}
+                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
+                        {/* {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')} */}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>

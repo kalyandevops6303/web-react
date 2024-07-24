@@ -21,7 +21,6 @@ import Avatar from '@components/avatar';
 import { BidDetailsWrap } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getBidMilestone } from '../../../redux/actions/projectDetailsAction';
-import DateTime from '../../../lib/date-time';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { getWhoInvited, getTeams } from '../../../redux/actions/teamsActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
@@ -39,7 +38,8 @@ import { SUCCESS } from '../../../utility/constants/ToastTypes';
 import { clearInitedByData } from '../../../redux/reducers/projectDetails';
 import { AccordionBodyContent } from '../../create-bid/style';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
-import { roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -115,6 +115,7 @@ const BidMilestone = () => {
   // const projectDetailsData = useSelector(projectDetails);
   const [status, setStatus] = useState(invitedByData?.request_status);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const savedUserData = useSelector(selectSavedUserData);
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
   const toggle = useCallback(
     (id) => (openedAccordion === id ? setOpenedAccordion() : setOpenedAccordion(id)),
@@ -282,8 +283,11 @@ const BidMilestone = () => {
           <CardBody className="main-card-body details">
             <div>
               <CardText className="value">
-                {bidData?.project_start_date
+                {/* {bidData?.project_start_date
                   ? DateTime.fromMillis(bidData?.project_start_date).toFormat('MMM dd, yy')
+                  : '-'} */}
+                  {bidData?.project_start_date
+                  ? convertUnixTimestampToDate(bidData?.project_start_date , savedUserData?.availability?.timezone?.name || 'America/New_York')
                   : '-'}
               </CardText>
               <div className="d-flex align-items-center m-0">

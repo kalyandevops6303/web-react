@@ -15,10 +15,10 @@ import BaseInfoUI from './BaseInfoCardUI';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
-import { getPath, getReadType } from '../../utility/Utils';
+import { convertUnixTimestampToDate, getPath, getReadType } from '../../utility/Utils';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 
 const ProjectCard = ({
@@ -62,15 +62,15 @@ const ProjectCard = ({
     COMPLETED: 'Completed',
     ON_GOING: 'On Going',
     ACTIVE: 'Active',
-    BID_SUBMITTED :'Bid Submitted',
-    BID_IN_REVIEW : 'Bid In Review',
-    BID_ACCEPTED : 'Bid Accepted',
-    BID_CHANGE_REQUEST : 'Change Request',
-    SIGN_CONTRACT : 'Sign Contract',
-    SIGN_NDA : 'Sign NDA',
-    PAYMENT_PENDING : 'Payment Pending',
+    BID_SUBMITTED: 'Bid Submitted',
+    BID_IN_REVIEW: 'Bid In Review',
+    BID_ACCEPTED: 'Bid Accepted',
+    BID_CHANGE_REQUEST: 'Change Request',
+    SIGN_CONTRACT: 'Sign Contract',
+    SIGN_NDA: 'Sign NDA',
+    PAYMENT_PENDING: 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
-    DISPUTED : "Disputed",
+    DISPUTED: 'Disputed',
   };
 
   const primaryStatus = {
@@ -81,9 +81,9 @@ const ProjectCard = ({
     LISTING_EXPIRED: 'Listing Expired',
     COMPLETED: 'Completed',
     ON_GOING: 'On Going',
-    ACTIVE: 'Active',  
-    WITHDRAWN: 'Withdrawn',  
-    DISPUTED : "Disputed",
+    ACTIVE: 'Active',
+    WITHDRAWN: 'Withdrawn',
+    DISPUTED: 'Disputed',
   };
 
   const divRef = useRef(null);
@@ -97,7 +97,7 @@ const ProjectCard = ({
 
   const [createBidModal, setCreateBidModal] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-
+  const savedUserData = useSelector(selectSavedUserData);
   const toggleCreateBidModal = () => {
     setCreateBidModal(!createBidModal);
   };
@@ -130,7 +130,7 @@ const ProjectCard = ({
     }
   };
 
-  return (  
+  return (
     <ProjectCardWrap>
       <Card onClick={handleShowProject} className="cursor-pointer">
         {isNewTag && <NewTag />}
@@ -140,7 +140,12 @@ const ProjectCard = ({
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
-                    <Badge className={`${Object.keys(primaryStatus)?.includes(data?.status) ? data?.status : pathname} truncate-1`} color="badge">
+                    <Badge
+                      className={`${
+                        Object.keys(primaryStatus)?.includes(data?.status) ? data?.status : pathname
+                      } truncate-1`}
+                      color="badge"
+                    >
                       {`${statusEnum[data?.status] ? statusEnum[data?.status] : data?.status}`}
                     </Badge>
                   </CustomBadge>
@@ -165,21 +170,34 @@ const ProjectCard = ({
                       {data?.assigned_date && (
                         <span className="me-1">
                           {data?.assigned_date
-                            ? `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}    `
+                            ? // `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}    `
+                              `Assigned Date: ${convertUnixTimestampToDate(
+                                data?.assigned_date,
+                                savedUserData?.availability?.timezone?.name || 'America/New_York',
+                              )}    `
                             : ''}
                         </span>
                       )}
                       {data?.completed_date && (
                         <span className="me-1">
                           {data?.completed_date
-                            ? `Completed Date: ${DateTime?.fromMillis(data?.completed_date).toFormat('dd-MM-yy')}   `
+                            ? //  `Completed Date: ${DateTime?.fromMillis(data?.completed_date).toFormat('dd-MM-yy')}   `
+                              `Completed Date: ${convertUnixTimestampToDate(
+                                data?.completed_date,
+                                savedUserData?.availability?.timezone?.name || 'America/New_York',
+                              )}   `
                             : ''}
                         </span>
                       )}
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
-                            ? `Invite Date: ${DateTime?.fromMillis(data?.invite_date).toFormat('dd-MM-yy')}`
+                            ? 
+                            // `Invite Date: ${DateTime?.fromMillis(data?.invite_date).toFormat('dd-MM-yy')}`
+                            `Invite Date: ${convertUnixTimestampToDate(
+                              data?.invite_date,
+                              savedUserData?.availability?.timezone?.name || 'America/New_York',
+                            )}`
                             : ''}
                         </span>
                       )}

@@ -15,7 +15,7 @@ import DateTime from '../../../lib/date-time';
 
 import { getProjectDetails, withdrawProject } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { clearModalData } from '../../../redux/reducers/createProject';
@@ -24,6 +24,7 @@ import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
 import ViewFilesModal from '../../modals/ViewFilesModal';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
 
 const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay) => {
   // checking whether the project has secondary status or not
@@ -57,7 +58,7 @@ const LeftSidebarProjectDetails = () => {
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
   const [viewFilesModal, setViewFilesModal] = useState(null);
-
+  const savedUserData = useSelector(selectSavedUserData);
   const toggleViewFilesModal = () => {
     setViewFilesModal(!viewFilesModal);
   };
@@ -358,7 +359,8 @@ const LeftSidebarProjectDetails = () => {
               <span className="info-key">Posted date:</span>
               <CardText className="info-value ">
                 {' '}
-                {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
+                {/* {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)} */}
+                {convertUnixTimestampToDate(projectDetailsData?.listing_details?.start_date_epoch, savedUserData?.availability?.timezone?.name || 'America/New_York')}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (

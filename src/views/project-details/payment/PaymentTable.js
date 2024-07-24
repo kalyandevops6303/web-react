@@ -14,7 +14,7 @@ import {
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import MakePaymentModal from '../../modals/MakePaymentModal';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
-import { formatDate, roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
 import TransactionTimeline from './TransactionTimeline';
 import PaymentStatusForRow from './PaymentStatusForRow';
 import PaymentBy from './PaymentBy';
@@ -23,6 +23,7 @@ import PaymentTableWrapper from './style';
 import theme from '../../../configs/themeVariables';
 import { PaymentInfoBanner } from '../style';
 import { CustomBadge } from '../../styled';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -39,6 +40,7 @@ const PaymentTable = () => {
   const milestoneTransactionLoading = useSelector((state) => state.milestonePayment?.transactionLoading);
   const milestoneTransactionDetails = useSelector((state) => state.milestonePayment?.milestoneTransactionDetails);
   const user = useSelector(userData);
+  const savedUserData = useSelector(selectSavedUserData);
 
   const dispatch = useDispatch();
 
@@ -75,7 +77,10 @@ const PaymentTable = () => {
             className="ms-50"
           />
         </div>
-        <span>{formatDate(date)}</span>
+        <span>
+          {/* {formatDate(date)} */}
+        {convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name || 'America/New_York')}
+        </span>
       </div>
     ),
   });
@@ -227,6 +232,7 @@ const PaymentTable = () => {
   const applicationFee = feeStructure?.application_fee;
   // eslint-disable-next-line no-unsafe-optional-chaining
 
+  // eslint-disable-next-line no-unsafe-optional-chaining
   const trumioFeeBeforeDiscount = (totalAmount * applicationFee?.percentage) / 100;
   const trumioFeeDiscount = (trumioFeeBeforeDiscount * (applicationFee?.discount_coupon?.percent_off ?? 0)) / 100;
   const trumioFeeAfterDiscount = trumioFeeBeforeDiscount - trumioFeeDiscount;

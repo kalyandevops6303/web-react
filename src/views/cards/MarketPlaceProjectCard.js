@@ -65,7 +65,6 @@ const MarketPlaceProjectCard = ({
   const toggleDeleteDraftModal = () => setDeleteDraftModal(!deleteDraftModal);
 
   const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
-
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);

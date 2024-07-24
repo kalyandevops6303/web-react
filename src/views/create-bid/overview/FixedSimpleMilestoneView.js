@@ -209,9 +209,9 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const calculateTotalValues = () => {
-    const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
+    const totalDuration = allMilestones?.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
 
-    const totalCost = allMilestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+    const totalCost = allMilestones?.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
 
     return { totalDuration, totalCost };
   };

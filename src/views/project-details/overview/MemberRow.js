@@ -10,19 +10,19 @@ import { Mail, Trash2 } from 'react-feather';
 import { useSelector } from 'react-redux';
 import { MemberRowWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
-import DateTime from '../../../lib/date-time';
 import RemoveProjectTeamMemberModal from '../../modals/RemoveProjectTeamMemberModal';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import getTeamId from '../../../utility/commonUtils';
 import { userTypes } from '../../../utility/constants/Constant';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
 
 const MemberRow = ({ hasDeleleteAccess, data, withReview, teamMembersCount }) => {
   const [removeProjectTeamMemberModal, setRemoveProjectTeamMemberModal] = useState(null);
   const projectDetailsData = useSelector(projectDetails);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const userDetailsData = useSelector(selectUserData);
-
+  const savedUserData = useSelector(selectSavedUserData);
   const isClubView = userDetailsData?.team_type === userTypes.club;
 
   const teamId = getTeamId('team_id');
@@ -71,7 +71,8 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview, teamMembersCount }) =>
               <div className="me-2">
                 <span className="key">Accepted on</span>
                 <CardText className="value">
-                  {data?.accepted_date ? DateTime.fromMillis(data?.accepted_date).toFormat('MMM dd, yy') : '-'}
+                  {/* {data?.accepted_date ? DateTime.fromMillis(data?.accepted_date).toFormat('MMM dd, yy') : '-'} */}
+                  {data?.accepted_date ? convertUnixTimestampToDate(data?.accepted_date, savedUserData?.availability?.timezone?.name || 'America/New_York') : '-'}
                 </CardText>
               </div>
               <div className="me-1 d-none">

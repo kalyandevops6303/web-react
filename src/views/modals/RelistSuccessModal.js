@@ -2,14 +2,16 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { useSelector } from 'react-redux';
 import '../custom-styles.scss';
 import GreatJobTick from '../../assets/images/greatJobGif.gif';
-import DateTime from '../../lib/date-time';
 import { RelistModalWrapper } from './style';
+import { convertUnixTimestampToDate } from '../../utility/Utils';
+import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 
 const RelistSuccessModal = ({ modal, toggleModal, projectRelistData }) => {
   const navigate = useNavigate();
-
+  const savedUserData = useSelector(selectSavedUserData);
   const onDoneClick = () => {
     navigate('/marketplace/my_listings');
   };
@@ -33,9 +35,11 @@ const RelistSuccessModal = ({ modal, toggleModal, projectRelistData }) => {
                 Listing Duration:{' '}
                 <span className="fw-bolder">
                   {projectRelistData?.listingOption === 'select-duration'
-                    ? `${DateTime?.fromMillis(projectRelistData?.startDate).toFormat(
-                        'dd LLL yyyy',
-                      )} - ${DateTime?.fromMillis(projectRelistData?.endDate).toFormat('dd LLL yyyy')}`
+                    ? 
+                    // `${DateTime?.fromMillis(projectRelistData?.startDate).toFormat(
+                    //     'dd LLL yyyy',
+                    //   )} - ${DateTime?.fromMillis(projectRelistData?.endDate).toFormat('dd LLL yyyy')}`
+                      `${convertUnixTimestampToDate(projectRelistData?.startDate, savedUserData?.availability?.timezone?.name || 'America/New_York')} - ${convertUnixTimestampToDate(projectRelistData?.endDate, savedUserData?.availability?.timezone?.name || 'America/New_York')}`
                     : `${projectRelistData?.duration} Days`}
                 </span>
               </p>
