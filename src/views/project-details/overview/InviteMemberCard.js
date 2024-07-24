@@ -40,7 +40,7 @@ const InviteMemberCard = () => {
           </div>
         </div>
         <Button onClick={handleView} className="m-auto mt-2 d-block" color="primary">
-          View
+          View Project
         </Button>
       </CardBody>
     </Card>

@@ -7,7 +7,7 @@ const gradeColors = {
   "Intermediate": "#00BCD4",
   "Proficient": "#7C4DFF",
   "Mastery": "#414DFD",
-}
+};
 
 const RewardCardWrapper = styled(CardWrapper)`
   .reward-body {
@@ -386,7 +386,7 @@ const ProjectWrapper = styled.div`
 
   .active-project-milestone-name {
     color: #5e5873;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
   }
 
@@ -622,12 +622,12 @@ const AssessmentResultIndicator = styled.div`
   width: 4px;
   border-radius: 6px;
   background: ${({ grade }) => gradeColors[grade] || 'gray'};
-`
+`;
 
 const AssessmentResultText = styled.div`
   text-transform: uppercase;
   color: ${({ grade }) => gradeColors[grade] || 'gray'};
-`
+`;
 
 export {
   TagsWrap,
