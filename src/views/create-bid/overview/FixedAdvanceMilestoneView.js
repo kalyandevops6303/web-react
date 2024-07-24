@@ -239,15 +239,15 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const calculateMilestoneValues = (milestoneIndex) => {
-    const milestoneDuration = allMilestones[milestoneIndex]?.workers
+    const milestoneDuration = allMilestones && allMilestones[milestoneIndex]?.workers
       ?.filter((worker) => worker.isChecked && worker.duration)
-      .reduce((max, worker) => Math.max(max, worker.duration), 0);
-    const milestoneHours = allMilestones[milestoneIndex]?.workers
+      ?.reduce((max, worker) => Math.max(max, worker.duration), 0);
+    const milestoneHours = allMilestones && allMilestones[milestoneIndex]?.workers
       ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
-      .reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
-    const milestoneCost = allMilestones[milestoneIndex]?.workers
+      ?.reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
+    const milestoneCost = allMilestones && allMilestones[milestoneIndex]?.workers
       ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
-      .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
+      ?.reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
 
     return { milestoneDuration, milestoneHours, milestoneCost };
   };
@@ -1268,19 +1268,19 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                             )}
                                           />
                                           {errors &&
-                                            errors.milestones &&
-                                            errors.milestones.length > 0 &&
-                                            errors.milestones[milestoneIndex] &&
-                                            errors.milestones[milestoneIndex].deliverables &&
-                                            errors.milestones[milestoneIndex].deliverables.length > 0 &&
-                                            errors.milestones[milestoneIndex].deliverables[index] && (
+                                            errors?.milestones &&
+                                            errors?.milestones.length > 0 &&
+                                            errors?.milestones[milestoneIndex] &&
+                                            errors?.milestones[milestoneIndex]?.deliverables &&
+                                            errors?.milestones[milestoneIndex]?.deliverables?.length > 0 &&
+                                            errors?.milestones[milestoneIndex]?.deliverables[index] && (
                                               <FormFeedback>
-                                                {errors.milestones[milestoneIndex].deliverables[index]?.message}
+                                                {errors?.milestones[milestoneIndex]?.deliverables[index]?.message}
                                               </FormFeedback>
                                             )}
                                         </Col>
                                         <Col sm="12" md="12" lg="4">
-                                          {getValues('milestones')[milestoneIndex].deliverables.length > 1 && (
+                                          {getValues('milestones') && getValues('milestones')[milestoneIndex]?.deliverables?.length > 1 && (
                                             <Button
                                               type="button"
                                               color="flat-danger"
@@ -1306,12 +1306,12 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                               </Col>
                             </Row>
                             <div className="d-flex align-items-center justify-content-end w-100">
-                              {getValues('milestones').length > 1 && (
+                              {getValues('milestones') && getValues('milestones')?.length > 1 && (
                                 <Button
                                   type="button"
                                   color="flat-danger"
                                   onClick={() => {
-                                    setRemovedMilestoneIds((oldIds) => [...oldIds, milestone.otherDetails._id]);
+                                    setRemovedMilestoneIds((oldIds) => [...oldIds, milestone?.otherDetails?._id]);
                                     milestonesRemove(milestoneIndex);
                                   }}
                                 >
