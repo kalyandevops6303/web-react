@@ -590,7 +590,7 @@ const Educational = () => {
                           )}
                         />
                         {errors && errors.educationInstitution && (
-                          <FormFeedback>{errors.educationInstitution.message}</FormFeedback>
+                          <FormFeedback>{errors.educationInstitution?.message}</FormFeedback>
                         )}
                       </Col>
                       <Col sm="12" md="12" lg="5">
@@ -614,7 +614,7 @@ const Educational = () => {
                             />
                           )}
                         />
-                        {errors && errors.education && <FormFeedback>{errors.education.message}</FormFeedback>}
+                        {errors && errors.education && <FormFeedback>{errors.education?.message}</FormFeedback>}
                       </Col>
                     </Row>
                   ) : (
@@ -781,7 +781,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
+                      {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="certificates">
@@ -808,7 +808,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.certificates && <FormFeedback>{errors.certificates.message}</FormFeedback>}
+                      {errors.certificates && <FormFeedback>{errors.certificates?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   <Row className="mb-2">
@@ -838,7 +838,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
+                      {errors.skills && <FormFeedback>{errors.skills?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   {supportData?.tools_and_skills?.pending_requests > 0 && (
