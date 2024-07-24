@@ -653,7 +653,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                             />
                           )}
                         />
-                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
+                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate?.message}</FormFeedback>}
                       </div>
                     </Col>
                     <Col sm="12" md="12" lg="8" className="d-flex justify-content-end me-1">
@@ -769,7 +769,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones.length > 0 &&
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].duration && (
-                                      <FormFeedback>{errors.milestones[milestoneIndex].duration.message}</FormFeedback>
+                                      <FormFeedback>{errors.milestones[milestoneIndex].duration?.message}</FormFeedback>
                                     )}
                                 </div>
                               </Col>
@@ -824,7 +824,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].talentCost && (
                                       <FormFeedback>
-                                        {errors.milestones[milestoneIndex].talentCost.message}
+                                        {errors.milestones[milestoneIndex].talentCost?.message}
                                       </FormFeedback>
                                     )}
                                 </div>
@@ -873,7 +873,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones.length > 0 &&
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].name && (
-                                      <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
+                                      <FormFeedback>{errors.milestones[milestoneIndex].name?.message}</FormFeedback>
                                     )}
                                   <div className="d-flex mt-2">
                                     <Label className="form-label" for="description">
@@ -919,7 +919,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].description && (
                                       <FormFeedback>
-                                        {errors.milestones[milestoneIndex].description.message}
+                                        {errors.milestones[milestoneIndex].description?.message}
                                       </FormFeedback>
                                     )}
                                 </CardBody>
@@ -973,7 +973,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                           errors.milestones[milestoneIndex].deliverables.length > 0 &&
                                           errors.milestones[milestoneIndex].deliverables[index] && (
                                             <FormFeedback>
-                                              {errors.milestones[milestoneIndex].deliverables[index].message}
+                                              {errors.milestones[milestoneIndex].deliverables[index]?.message}
                                             </FormFeedback>
                                           )}
                                       </Col>
@@ -1096,8 +1096,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div className="d-flex justify-content-end">
-              
-               <Button
+              <Button
                 onClick={() => {
                   saveAsDraftClicked.current = true;
                   handleSubmit(onSubmit)();

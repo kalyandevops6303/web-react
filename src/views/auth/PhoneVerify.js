@@ -72,8 +72,10 @@ const VerifyPhone = () => {
   });
 
   const handleChange = (value) => {
-    dispatch(setFormData({ code: value }));
-    setCode(value);
+    if (value !== code) {
+      dispatch(setFormData({ code: value }));
+      setCode(value);
+    }
   };
 
   // Function to handle dropdown change
@@ -147,9 +149,11 @@ const VerifyPhone = () => {
               outline: 'none',
             }}
           />
-          {error && <Label className="mt-2 text-danger text-xl-left">
-            <b>{error}</b>
-          </Label>}
+          {error && (
+            <Label className="mt-2 text-danger text-xl-left">
+              <b>{error}</b>
+            </Label>
+          )}
           <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             Submit
           </Button>
