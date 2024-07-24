@@ -228,7 +228,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               {userDetailsData && <UserNameRoleCompanyComp data={delegateData} />}
             </div>
           )}
-          {savedUserDetails?.user_type !== userTypes.delegate && (
+          {savedUserDetails?.user_type === userTypes.delegate && (
             <div className="mt-1 px-1">
               <span className="mb-3">Delegate for:</span>
               <div className="delegate">{userDetailsData && <UserNameRoleCompanyComp data={delegateData} />}</div>
