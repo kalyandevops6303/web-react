@@ -22,7 +22,6 @@ import { useNavigate, useLocation } from 'react-router';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import styled from 'styled-components';
-import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
@@ -226,7 +225,8 @@ const ProjectModal = ({
                   {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' ? (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                        {/* {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')} */}
+                        {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
                       </CardTitle>
                       <CardText className="project-name">Expired Date</CardText>
                     </div>
@@ -367,7 +367,8 @@ const ProjectModal = ({
                       {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}
+                      {/* {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')} */}
+                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name || 'America/New_York')}
                     </Col>
                   </Row>
                 ))}
