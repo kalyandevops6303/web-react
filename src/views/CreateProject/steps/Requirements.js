@@ -146,7 +146,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
       .required('Desired time overlap is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
@@ -156,7 +156,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
         yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -168,7 +168,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
           .required('Start time is required'),
     }),
     weekdayEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -1090,7 +1090,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                             type="checkbox"
                             {...field}
                             id="weekdays"
-                            checked={field.value.includes('weekdays')}
+                            checked={field.value?.includes('weekdays')}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               const value = 'weekdays';
@@ -1134,9 +1134,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                 </Row>
                 <Row>
                   {availabilityDays &&
-                    (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
+                    (availabilityDays?.includes('weekdays') || availabilityDays.includes('weekends')) && (
                       <>
-                        {availabilityDays.includes('weekdays') && (
+                        {availabilityDays?.includes('weekdays') && (
                           <div>
                             <Row className="mb-1 mt-2">
                               <div className="d-flex align-items-center">

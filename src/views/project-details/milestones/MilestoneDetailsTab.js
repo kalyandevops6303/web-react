@@ -24,12 +24,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import {
   downloadUploadedFile,
-  formatDate,
   isFileValid,
   isUrlWithoutProtocol,
   renderFilePreview,
 } from '../../../utility/Utils';
-import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -244,7 +243,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       window.open(`https://${URL}`, '_blank');
     }
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   const isEmptyLink = allLinks?.some((item) => item.link === '');
   const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
 
@@ -322,7 +321,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
-              {selectedMilestone.start_date ? formatDate(selectedMilestone.start_date) : '-'}
+            {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
             </CardText>
           </div>
           <div>

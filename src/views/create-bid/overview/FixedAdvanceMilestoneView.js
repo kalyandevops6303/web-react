@@ -45,6 +45,7 @@ import {
   filteredFormSchema,
   formatDateWithDash,
   getFileSize,
+  isEmpty,
   renderFilePreview,
 } from '../../../utility/Utils';
 import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
@@ -262,7 +263,8 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       })
       .reduce((sum, duration) => sum + duration, 0);
 
-    const totalHours = allMilestones?.map((milestone) => {
+    const totalHours = allMilestones
+      ?.map((milestone) => {
         const sumHours = milestone.workers
           ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
@@ -271,7 +273,8 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       })
       .reduce((sum, hours) => sum + hours, 0);
 
-    const totalCost = allMilestones?.map((milestone) => {
+    const totalCost = allMilestones
+      ?.map((milestone) => {
         const sumCost = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
@@ -542,7 +545,10 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
       .replace(',', '')
       .split(' ');
-    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    if (!isEmpty(formattedDate)) {
+      return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    }
+    return '';
   };
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
@@ -776,7 +782,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                             />
                           )}
                         />
-                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
+                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate?.message}</FormFeedback>}
                       </div>
                     </Col>
                     <Col sm="12" md="12" lg="8" className="d-flex justify-content-end me-2">
@@ -903,7 +909,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                       errors.milestones.length > 0 &&
                                       errors.milestones[milestoneIndex] &&
                                       errors.milestones[milestoneIndex].name && (
-                                        <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
+                                        <FormFeedback>{errors.milestones[milestoneIndex].name?.message}</FormFeedback>
                                       )}
                                     <div className="d-flex mt-2">
                                       <Label className="form-label" for="description">
@@ -949,7 +955,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                       errors.milestones[milestoneIndex] &&
                                       errors.milestones[milestoneIndex].description && (
                                         <FormFeedback>
-                                          {errors.milestones[milestoneIndex].description.message}
+                                          {errors.milestones[milestoneIndex].description?.message}
                                         </FormFeedback>
                                       )}
                                   </CardBody>
@@ -1129,7 +1135,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                                         <FormFeedback>
                                                           {
                                                             errors.milestones[milestoneIndex].workers[workerIndex]
-                                                              .duration.message
+                                                              .duration?.message
                                                           }
                                                         </FormFeedback>
                                                       )}
@@ -1204,7 +1210,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                                         <FormFeedback>
                                                           {
                                                             errors.milestones[milestoneIndex].workers[workerIndex].hours
-                                                              .message
+                                                              ?.message
                                                           }
                                                         </FormFeedback>
                                                       )}
