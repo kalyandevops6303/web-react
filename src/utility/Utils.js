@@ -240,6 +240,69 @@ export const returnFilteredDropdownOptions = (search, options) =>
       option.label.toLowerCase().includes(search.toLowerCase()),
   );
 
+export const convertUnixTimestampToDate = (timestamp, timeZone) => {
+  // Create a new Date object adjusted to UTC from the timestamp
+  let timezoneToUse = timeZone;
+  if (!timeZone) {
+    timezoneToUse = 'America/Los_Angeles';
+  }
+  if (!timestamp) {
+    return '';
+  }
+  const date = new Date(timestamp);
+
+  // Adjust date to the specified timeZone
+  const adjustedDate = new Date(date.toLocaleString('en-US', { timeZone: timezoneToUse }));
+
+  // Format the adjusted date to 'Jul 23, 24' style
+  const formattedOutput = adjustedDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+  return formattedOutput;
+};
+
+export const renderFormattedListingDate = (date) => {
+  const formattedDate = date
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+
+  return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
+};
+
+export const returnRelativeTime = (time, timeZone) => {
+  const givenDate = new Date(time);
+
+  const now = new Date().toLocaleString('en-US', { timeZone });
+
+  const currentDate = new Date(now);
+
+  const difference = currentDate.getTime() - givenDate.getTime();
+
+  const timeAgo = (milliseconds) => {
+    const seconds = Math.floor(milliseconds / 1000);
+
+    if (seconds < 60) {
+      return seconds === 1 ? '1 second ago' : `${seconds} seconds ago`;
+    }
+    if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
+    }
+    if (seconds < 86400) {
+      const hours = Math.floor(seconds / 3600);
+      return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
+    }
+    const days = Math.floor(seconds / 86400);
+    return days === 1 ? '1 day ago' : `${days} days ago`;
+  };
+
+  return timeAgo(difference);
+};
+
 export const formatDateWithDash = (date) => {
   if (!date) {
     return undefined;
@@ -786,7 +849,7 @@ export const getMissingName = (type, values) => {
       return values.tool;
     case CUSTOMER_SUPPORT_TYPES.missing_institute:
       return values.institute;
-    case CUSTOMER_SUPPORT_TYPES.missing_assessment: 
+    case CUSTOMER_SUPPORT_TYPES.missing_assessment:
       return values.assessment;
     default:
       return '';

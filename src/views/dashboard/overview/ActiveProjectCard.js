@@ -7,18 +7,19 @@ import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
-import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const ActiveProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
   const dispatch = useDispatch();
-
+  const savedUserData = useSelector(selectSavedUserData);
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
@@ -123,9 +124,11 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
                 <p className="mb-25 details-box-title">
                   Due Date
                 </p>
-                <p className="mb-0 details-box">{`${
-                  DateTime.fromMillis(data?.current_milestone?.due_date).toFormat('MMM dd, yy') || '-'
-                }`}</p>
+                <p className="mb-0 details-box">
+                {`${
+                  convertUnixTimestampToDate(data?.current_milestone?.due_date, savedUserData?.availability?.timezone?.name ) || '-'
+                }`}
+                </p>
               </div>
               <h4 className="active-project-milestone-name">{data?.current_milestone?.name}</h4>
             </div>

@@ -24,14 +24,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import {
+  convertUnixTimestampToDate,
   downloadFile,
   downloadUploadedFile,
-  formatDate,
   isFileValid,
   isUrlWithoutProtocol,
   renderFilePreview,
 } from '../../../utility/Utils';
-import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -101,7 +101,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const isGetMilestoneDraftLoading = useSelector(draftArtifactsLoading);
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
   const navigatedRoute = useSelector(navigatingRoute);
-
+  const savedUserData = useSelector(selectSavedUserData);
   const toggleDraftSavedModal = () => setDraftSavedModal(!draftSavedModal);
 
   const toggleOpenSaveLaterModal = () => {
@@ -472,7 +472,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
-              {selectedMilestone.start_date ? formatDate(selectedMilestone.start_date) : '-'}
+              {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
             </CardText>
           </div>
           <div>

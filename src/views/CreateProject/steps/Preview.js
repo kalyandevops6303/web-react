@@ -9,6 +9,7 @@ import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner 
 import { TagsContainer, TimeWrapper } from '../style';
 import {
   convertTo12HourFormat,
+  convertUnixTimestampToDate,
   downloadUploadedFile,
   getFileSize,
   removeEmptyKeys,
@@ -24,6 +25,7 @@ import {
 import { createNewProject, saveDraftProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
 import { clearAllFormData } from '../../../redux/reducers/formData';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const Preview = ({
   stepper,
@@ -40,7 +42,7 @@ const Preview = ({
 
   const dispatch = useDispatch();
   const params = useParams();
-
+  const savedUserData = useSelector(selectSavedUserData);
   const createProjectIsLoading = useSelector(createProjectLoading);
   const draftProjectId = useSelector(saveDraftProjectId);
   const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
@@ -52,15 +54,6 @@ const Preview = ({
       .split(' ');
 
     return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
-  };
-
-  const renderFormattedListingDate = (date) => {
-    const formattedDate = date
-      .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-      .replace(',', '')
-      .split(' ');
-
-    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
   };
 
   const fileList = () => (
@@ -363,9 +356,8 @@ const Preview = ({
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {listingDetails?.listingOption === 'select-duration'
-                  ? `${renderFormattedListingDate(listingDetails?.startDate)} - ${renderFormattedListingDate(
-                      listingDetails?.endDate,
-                    )}`
+                  ? 
+                  `${convertUnixTimestampToDate(listingDetails?.startDate, savedUserData?.availability?.timezone?.name )} - ${convertUnixTimestampToDate(listingDetails?.endDate, savedUserData?.availability?.timezone?.name )}`
                   : `${listingDetails?.duration}d`}
               </h4>
               <p className="font-medium-1 fw-normal">Listing Duration</p>
