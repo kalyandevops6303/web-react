@@ -30,7 +30,7 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
-  const savedUserData = useSelector(selectSavedUserData());
+  const savedUserData = useSelector(selectSavedUserData);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
 

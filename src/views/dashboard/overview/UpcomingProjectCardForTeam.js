@@ -20,7 +20,7 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
 
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
-  const savedUserData = useSelector(selectSavedUserData());
+  const savedUserData = useSelector(selectSavedUserData);
   const viewProject = () => {
     // navigate(`/project-details/${data._id}/bid`);
     setShowModal(true);
