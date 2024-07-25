@@ -96,9 +96,13 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                     </h6>
                   </div>
                 </div>
-                <div className="d-flex flex-column justify-content-center align-items-center bids-count-wrapper w-50">
-                  <p className="mb-0 text-center bid-label">Bids</p>
-                  <p className="mb-0 text-center bid-count">{data?.total_bids}</p>
+                <div className="design-planning-wrapper mb-0 w-50">
+                  <div className="design-planning mb-0 w-100">
+                    <CardText className="mb-25">Bids</CardText>
+                    <h6 className="mb-0 expired-listing-text">
+                    {data?.total_bids}
+                    </h6>
+                  </div>
                 </div>
               </div>
               <div
@@ -120,10 +124,15 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                     </h6>
                   </div>
                 </div>
-                <div className="d-flex flex-column justify-content-center align-items-center bids-count-wrapper w-50">
-                  <p className="mb-0 text-center bid-label">Bids</p>
-                  <p className="mb-0 text-center bid-count">{data?.total_bids}</p>
+                <div className="design-planning-wrapper mb-0 w-50">
+                  <div className="design-planning mb-0 w-100">
+                    <CardText className="mb-25">Bids</CardText>
+                    <h6 className="mb-0">
+                      {data?.total_bids}
+                    </h6>
+                  </div>
                 </div>
+
               </div>
               <div
                 onClick={viewDetails}
