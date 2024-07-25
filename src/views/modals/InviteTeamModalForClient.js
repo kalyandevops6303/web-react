@@ -443,7 +443,7 @@ const InviteTeamModalForClient = ({
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                    <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
@@ -534,7 +534,7 @@ const InviteTeamModalForClient = ({
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                    <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
