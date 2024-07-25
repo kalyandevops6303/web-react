@@ -332,6 +332,7 @@ const API = {
   },
   assessments: {
     user_assessments: `${apiAssessmentsEndpoint}/api/v1/candidate/assessments`,
+    team_assessments: `${apiAssessmentsEndpoint}/api/v1/assessment/teams-info`,
     all_assessments: `${apiAssessmentsEndpoint}/api/v1/all/assessment/dropdown`,
     delete_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment`,
     toggle_assessment_hidden: `${apiAssessmentsEndpoint}/api/v1/candidate/hide/assessment`,

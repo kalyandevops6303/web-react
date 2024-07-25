@@ -3,16 +3,20 @@ import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { AssessedSkillGradeBar, AssessmentResultText, RecentProjectsWrap } from './style';
 import { selectUserAssessments } from '../../../redux/selectors/assessmentSelectors';
-import { getUserAssessments } from '../../../redux/actions/assessmentActions';
+import { getTeamAssessments, getUserAssessments } from '../../../redux/actions/assessmentActions';
+import { useParams } from 'react-router-dom';
 
 const AssessedSkills = () => {
+  const param = useParams();
   const dispatch = useDispatch();
   const userAssessments = useSelector(selectUserAssessments);
 
   const [showSection, setShowSection] = useState(false);
 
   useEffect(() => {
-    dispatch(getUserAssessments());
+    // if (param?.userType === "TEAM") 
+      dispatch(getTeamAssessments({id: param?.userId}))
+    if (param?.userType === "TALENT") dispatch(getUserAssessments({id: param?.userId}));
   }, []);
 
   useEffect(() => {

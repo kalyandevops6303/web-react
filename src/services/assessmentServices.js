@@ -1,7 +1,8 @@
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const userAssessmentsService = () => DataService.get(API.assessments.user_assessments);
+const userAssessmentsService = ({ id }) => id ? DataService.get(`${API.assessments.user_assessments}?user_id=${id}`) : DataService.get(API.assessments.user_assessments);
+const teamAssessmentsService = ({ id }) => DataService.get(`${API.assessments.team_assessments}?team_id=${id}`)
 const allAssessmentsService = () => DataService.get(API.assessments.all_assessments);
 const deleteAssessmentService = ({ assessmentId, strType, id }) => DataService.delete(`${API.assessments.delete_assessment}?assessment_id=${assessmentId}&str_type=${strType}&_id=${id}`);
 const toggleAssessmentHiddenService = ({ assessmentId }) => DataService.put(`${API.assessments.toggle_assessment_hidden}?assessment_id=${assessmentId}`);
@@ -18,5 +19,6 @@ export {
     addAssessmentService,
     assessmentLinkService,
     deleteNonAssessmentService,
-    prepopulateService
+    prepopulateService,
+    teamAssessmentsService
 }
