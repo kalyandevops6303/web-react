@@ -94,6 +94,7 @@ const MarketPlaceProjectCard = ({
     ACTIVE: 'Active',
     UPDATED: 'Updated',
     TO_BE_LISTED: 'To Be Listed',
+    WITHDRAWN: 'Withdrawn',
   };
 
   const divRef = useRef(null);
@@ -263,7 +264,11 @@ const MarketPlaceProjectCard = ({
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {!showFullText ? (
-                      <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop:'10px' }}>
+                      <div
+                        className="my-div"
+                        ref={divRef}
+                        style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop: '10px' }}
+                      >
                         {parse(descriptionToShow)}
                       </div>
                     ) : (
