@@ -141,7 +141,7 @@ export const pollPercentStyle = (context, width) => {
 export const answerWrapperStyle = (state, optionData, context) => {
   let countPadding = '0px 16px 0px 0px';
   let widthProp = 'calc(100% - 40px)';
-  if (optionData.hasOwnProperty('voters') && optionData.voters.hasOwnProperty(state?.loggedInUser?.uid)) {
+  if (optionData?.hasOwnProperty('voters') && optionData.voters?.hasOwnProperty(state?.loggedInUser?.uid)) {
     //countPadding = "0px 8px";
     widthProp = 'calc(100% - 80px)';
   }

@@ -43,16 +43,16 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
         toggleModal();
       } else {
         if (selectedFlow === bidTypes.simple) {
-          dispatch(saveChangeBidType(params.bidId, bidTypes.simple, onSuccess));
+          dispatch(saveChangeBidType(params?.bidId, bidTypes.simple, onSuccess));
         } else if (selectedFlow === bidTypes.advanced) {
-          dispatch(saveChangeBidType(params.bidId, bidTypes.advanced, onSuccess));
+          dispatch(saveChangeBidType(params?.bidId, bidTypes.advanced, onSuccess));
         }
       }
     } else {
       if (selectedFlow === bidTypes.simple) {
-        dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
+        dispatch(createBid(selectedProject?._id, bidTypes?.simple, onSuccess));
       } else if (selectedFlow === bidTypes.advanced) {
-        dispatch(createBid(selectedProject._id, bidTypes.advanced, onSuccess));
+        dispatch(createBid(selectedProject?._id, bidTypes?.advanced, onSuccess));
       }
     }
   };
@@ -87,7 +87,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
                 />
                 <div className="label">
                   <p className="fw-bolder mb-50">
-                    {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Simple
+                    {selectedProject?.pay_type?.variable_cost ? 'Variable Price' : 'Fixed Price'} - Simple
                   </p>
                   <p className="fw-light mb-0">
                     Select this option for an equal split of milestone payments among all team members.
@@ -113,7 +113,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
                 />
                 <div className="label">
                   <p className="fw-bolder mb-50">
-                    {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Advanced
+                    {selectedProject?.pay_type?.variable_cost ? 'Variable Price' : 'Fixed Price'} - Advanced
                   </p>
                   <p className="fw-light mb-0">
                     Opt for this advanced choice to allocate milestone payments based on each individual team

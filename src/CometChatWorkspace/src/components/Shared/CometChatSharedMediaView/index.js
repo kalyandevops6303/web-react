@@ -130,7 +130,7 @@ class CometChatSharedMediaView extends React.Component {
         // }
       })
       .catch((error) => {
-        const errorCode = error && error.hasOwnProperty('code') ? error.code : 'ERROR';
+        const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'ERROR';
         this.context.setToastMessage('error', errorCode);
       });
   };
