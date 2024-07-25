@@ -29,8 +29,8 @@ const CometChatBlockedUser = (props) => {
       .then((response) => {
         if (
           response &&
-          response.hasOwnProperty(uid) &&
-          response[uid].hasOwnProperty('success') &&
+          response?.hasOwnProperty(uid) &&
+          response[uid]?.hasOwnProperty('success') &&
           response[uid]['success'] === true
         ) {
           const newType = CometChat.ACTION_TYPE.TYPE_USER;

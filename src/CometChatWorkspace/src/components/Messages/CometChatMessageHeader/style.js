@@ -24,7 +24,7 @@ export const chatDetailStyle = () => {
 };
 
 export const chatSideBarBtnStyle = (img, props, context) => {
-  const displayValue = props.hasOwnProperty('sidebar') && props.sidebar === 0 ? { display: 'none!important' } : {};
+  const displayValue = props?.hasOwnProperty('sidebar') && props.sidebar === 0 ? { display: 'none!important' } : {};
 
   const mq = [...context.theme.breakPoints];
 

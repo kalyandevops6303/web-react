@@ -173,8 +173,8 @@ class CometChatMessageThread extends React.PureComponent {
       case enums.ACTIONS['MESSAGE_RECEIVED']:
         {
           const message = messages[0];
-          if (message.hasOwnProperty('parentMessageId') && message.parentMessageId === this.state.parentMessage.id) {
-            const replyCount = this.state.parentMessage.hasOwnProperty('replyCount')
+          if (message?.hasOwnProperty('parentMessageId') && message.parentMessageId === this.state.parentMessage.id) {
+            const replyCount = this.state.parentMessage?.hasOwnProperty('replyCount')
               ? this.state.parentMessage.replyCount
               : 0;
             const newReplyCount = replyCount + 1;
@@ -192,7 +192,7 @@ class CometChatMessageThread extends React.PureComponent {
         break;
       case enums.ACTIONS['MESSAGE_COMPOSED']:
         {
-          const replyCount = this.state.parentMessage.hasOwnProperty('replyCount')
+          const replyCount = this.state.parentMessage?.hasOwnProperty('replyCount')
             ? this.state.parentMessage.replyCount
             : 0;
           const newReplyCount = replyCount + 1;
@@ -317,7 +317,7 @@ class CometChatMessageThread extends React.PureComponent {
     const message = messages[0];
 
     const smartReplyData = checkMessageForExtensionsData(message, 'smart-reply');
-    if (smartReplyData && smartReplyData.hasOwnProperty('error') === false) {
+    if (smartReplyData && smartReplyData?.hasOwnProperty('error') === false) {
       this.setState({ replyPreview: message });
     } else {
       this.setState({ replyPreview: null });
@@ -614,7 +614,7 @@ class CometChatMessageThread extends React.PureComponent {
         <hr />
       </div>
     );
-    if (this.state.parentMessage.hasOwnProperty('replyCount')) {
+    if (this.state.parentMessage?.hasOwnProperty('replyCount')) {
       const replyCount = this.state.parentMessage.replyCount;
       const replyText =
         replyCount === 1

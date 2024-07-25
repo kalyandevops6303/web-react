@@ -68,7 +68,7 @@ class CometChatReceiverDocumentBubble extends React.Component {
   launchCollaborativeDocument = () => {
     let documentUrl = null;
     let documentData = checkMessageForExtensionsData(this.props.message, 'document');
-    if (documentData && documentData.hasOwnProperty('document_url') && documentData.document_url.length) {
+    if (documentData && documentData?.hasOwnProperty('document_url') && documentData.document_url.length) {
       documentUrl = documentData.document_url;
       window.open(documentUrl, '', 'fullscreen=yes, scrollbars=auto');
     }
