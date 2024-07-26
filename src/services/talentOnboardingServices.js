@@ -11,6 +11,8 @@ const resumeUploadService = (data) => DataService.get(`${API.talentOnboarding.pr
 
 const parsedResumeService = (data) => DataService.get(`${API.talentOnboarding.resumeParsedDetails}?file_key=${data}`);
 
+const deleteResumeService = () => DataService.delete(`${API.talentOnboarding.deleteResume}`);
+
 const updateParsedResumeService = (id, data) =>
   DataService.put(`${API.talentOnboarding.updateResumeParsedDetails}/${id}`, data);
 
@@ -31,4 +33,5 @@ export {
   resumeUploadService,
   parsedResumeService,
   updateParsedResumeService,
+  deleteResumeService,
 };
