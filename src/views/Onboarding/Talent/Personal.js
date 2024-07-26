@@ -575,7 +575,7 @@ const Personal = () => {
                 ) : (
                   <div className="d-flex align-items-center w-100 ">
                     <span>{renderFilePreview(file.file)}</span>
-                    <span className="w-100">{file.file.name}</span>
+                    <span className="w-75">{file.file.name}</span>
                   </div>
                 )}
               </Col>
@@ -1532,6 +1532,7 @@ const Personal = () => {
                             {files && files?.length > 0 && (
                               <FormGroup switch>
                                 <Input
+                                  className='cursor-pointer'
                                   type="switch"
                                   checked={parseResume}
                                   onClick={() => {
