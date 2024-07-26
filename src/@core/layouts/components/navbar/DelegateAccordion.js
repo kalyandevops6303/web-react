@@ -4,16 +4,16 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import UserNameRoleCompanyComp from '../../../components/username-role-company';
 import addIcon from '../../../../assets/images/plus-rounded-circle.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleAddDelegateModal } from '../../../../redux/reducers/profile';
-import { checkDelegateModalVisible } from '../../../../redux/selectors/profileSelectors';
+import { checkIsInviteDelegateModalVisible } from '../../../../redux/selectors/delegateSelectors';
+import { toggleAddDelegateModal } from '../../../../redux/reducers/delegate';
 
 const DelegateAccordion = () => {
   const [open, setOpen] = useState('');
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
   const dispatch = useDispatch();
-  const isAddDelegateModalVisible = useSelector(checkDelegateModalVisible);
+  const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
 
-  const openAddDelegateModal = () => dispatch(toggleAddDelegateModal(!isAddDelegateModalVisible));
+  const openAddDelegateModal = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
 
   // mock data to show delegates
   const delegateData = [
@@ -46,8 +46,8 @@ const DelegateAccordion = () => {
               <img alt="plus" src={addIcon} height={28} width={28} className="no-border-radius" />
               <span className="align-middle ">Add Delegate</span>
             </DropdownItem>
-            {delegateData?.map((delegate) => (
-              <DropdownItem className="w-100">
+            {delegateData?.map((delegate, index) => (
+              <DropdownItem key={index} className="w-100">
                 <UserNameRoleCompanyComp data={delegate} />
               </DropdownItem>
             ))}

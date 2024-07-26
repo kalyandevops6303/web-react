@@ -41,10 +41,13 @@ import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
-import { toggleAddDelegateModal, toggleDelegateModeModal } from '../../redux/reducers/profile';
 import AddDelegateModal from '../modals/AddDelegateModal';
-import { checkDelegateModalVisible, checkDelegateModeModalVisible } from '../../redux/selectors/profileSelectors';
 import DelegateModeModal from '../modals/DelegateModeModal';
+import {
+  checkIsDelegateModeModalVisible,
+  checkIsInviteDelegateModalVisible,
+} from '../../redux/selectors/delegateSelectors';
+import { toggleAddDelegateModal, toggleDelegateModeModal } from '../../redux/reducers/delegate';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -84,11 +87,11 @@ const PrivateDashboard = () => {
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
-  const isAddDelegateModalVisible = useSelector(checkDelegateModalVisible);
-  const isDelegateModeModalVisible = useSelector(checkDelegateModeModalVisible);
+  const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
+  const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
-  const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isAddDelegateModalVisible));
-  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isAddDelegateModalVisible));
+  const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
+  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -186,8 +189,8 @@ const PrivateDashboard = () => {
 
   return (
     <div>
-      {isAddDelegateModalVisible && (
-        <AddDelegateModal modal={isAddDelegateModalVisible} toggleModal={toggleAddDelegate} />
+      {isInviteDelegateModalVisible && (
+        <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
       )}
       {isDelegateModeModalVisible && (
         <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
