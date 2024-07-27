@@ -4,6 +4,7 @@ const initialState = {
   delegateProfile: {},
   isLoading: false,
   error: null,
+  isDelegate: false,
   isInviteDelegateModalVisible: false,
   isDelegateModeModalVisible: false,
 };
@@ -30,18 +31,54 @@ const delegateSlice = createSlice({
       error: action.payload,
     }),
 
+    // sign in delegate
+    signInDelegateRequest: (state) => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    }),
+    signInDelegateSuccess: (state, action) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+      isDelegate: true,
+      delegateProfile: action.payload,
+    }),
+    signInDelegateFailure: (state, action) => ({
+      ...state,
+      isLoading: false,
+      error: action.payload,
+    }),
+
     // invite delegate
     inviteDelegateRequest: (state) => ({
       ...state,
       isLoading: true,
       error: null,
     }),
-    inviteDelegateSuccess: (state, action) => ({
+    inviteDelegateSuccess: (state) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+    }),
+    inviteDelegateFailure: (state, action) => ({
+      ...state,
+      isLoading: false,
+      error: action.payload,
+    }),
+
+    // invite delegate
+    delegateInvitationStatusRequest: (state) => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    }),
+    delegateInvitationStatusSuccess: (state, action) => ({
       ...state,
       isLoading: false,
       delegateProfile: action.payload,
     }),
-    inviteDelegateFailure: (state, action) => ({
+    delegateInvitationStatusFailure: (state, action) => ({
       ...state,
       isLoading: false,
       error: action.payload,
@@ -67,6 +104,12 @@ export const {
   signUpDelegateRequest,
   signUpDelegateSuccess,
   signUpDelegateFailure,
+  signInDelegateFailure,
+  signInDelegateRequest,
+  signInDelegateSuccess,
+  delegateInvitationStatusRequest,
+  delegateInvitationStatusSuccess,
+  delegateInvitationStatusFailure,
 } = delegateSlice.actions;
 
 export default delegateSlice.reducer;

@@ -119,6 +119,7 @@ const API = {
   delegate: {
     inviteDelegate: `${apiDelegateEndpoint}/api/v1/invitation/delegate`,
     signUpDelegate: `${apiDelegateEndpoint}/api/v1/user/delegate/signup`,
+    delegateInvitationStatus: `${apiDelegateEndpoint}/api/v1/invitation/delegate/status`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
