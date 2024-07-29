@@ -104,8 +104,6 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const savedUserData = useSelector(selectSavedUserData);
   const toggleDraftSavedModal = () => setDraftSavedModal(!draftSavedModal);
 
-  const toggleDraftSavedModal = () => setDraftSavedModal(!draftSavedModal);
-
   const toggleOpenSaveLaterModal = () => {
     setOpenSaveLaterModal(!openSaveLaterModal);
     dispatch(setConfirmSaveForLater(false));

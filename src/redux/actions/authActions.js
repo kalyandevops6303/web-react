@@ -197,23 +197,6 @@ const setPassword = (Password) => async (dispatch) => {
   }
 };
 
-const registerDelegate =
-  ({ email, password, onSuccess }) =>
-  async (dispatch) => {
-    dispatch(registerEmailRequest());
-    try {
-      // TODO: call function to register delegate
-      // await registerEmailService(email, userType);
-      setPassword(password);
-      dispatch(registerEmailSuccess(email));
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (error) {
-      errorHandler(error, registerEmailFailure);
-    }
-  };
-
 const registerPhone =
   ({ phone, country_code, selectedCountry, onSuccess }) =>
   async (dispatch) => {
@@ -430,5 +413,4 @@ export {
   logoutAction,
   resetPassword,
   checkIsAdmin,
-  registerDelegate,
 };
