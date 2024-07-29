@@ -1,6 +1,12 @@
-import { delegateSignUpService, inviteDelegateService } from '../../services/delegateServices';
+import {
+  delegateInvitationStatusService,
+  delegateSignUpService,
+  inviteDelegateService,
+} from '../../services/delegateServices';
 import errorHandler from '../../utility/errorHandler';
 import {
+  delegateInvitationStatusRequest,
+  delegateInvitationStatusSuccess,
   inviteDelegateFailure,
   inviteDelegateRequest,
   inviteDelegateSuccess,
@@ -19,15 +25,15 @@ const signUpDelegate =
     dispatch(signUpDelegateRequest());
     try {
       const res = await delegateSignUpService({ email, password });
-      setItem('access_token', res.data.data.access_token);
-      setItem('access_token_expires', res.data.data.access_token_expires);
-      setItem('refresh_token', res.data.data.refresh_token);
-      setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-      setItem('user_id', res.data.data.user_id);
-      setItem('user_type', res.data.data.user_type);
-      window.dataLayer.push({ user_id: res.data.data.user_id });
+      setItem('access_token', res?.data?.data.access_token);
+      setItem('access_token_expires', res?.data?.data.access_token_expires);
+      setItem('refresh_token', res?.data?.data.refresh_token);
+      setItem('refresh_token_expires', res?.data?.data.refresh_token_expires);
+      setItem('user_id', res?.data?.data.user_id);
+      setItem('user_type', res?.data?.data.user_type);
+      window.dataLayer.push({ user_id: res?.data?.data.user_id });
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
-        dispatch(signUpDelegateSuccess(res.data.data));
+        dispatch(signUpDelegateSuccess(res?.data?.data));
         setItemFromSession('isUserVisited', true);
       } else {
         dispatch(signUpDelegateSuccess(false));
@@ -46,16 +52,16 @@ const signInDelegate =
     dispatch(signUpDelegateRequest());
     try {
       const res = await loginService({ email, password });
-      setItem('access_token', res.data.data.access_token);
-      setItem('access_token_expires', res.data.data.access_token_expires);
-      setItem('refresh_token', res.data.data.refresh_token);
-      setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-      setItem('user_id', res.data.data.user_id);
-      setItem('is_delegate', res.data.data.is_delegate);
-      setItem('user_type', res.data.data.user_type);
-      window.dataLayer.push({ user_id: res.data.data.user_id });
+      setItem('access_token', res?.data?.data.access_token);
+      setItem('access_token_expires', res?.data?.data.access_token_expires);
+      setItem('refresh_token', res?.data?.data.refresh_token);
+      setItem('refresh_token_expires', res?.data?.data.refresh_token_expires);
+      setItem('user_id', res?.data?.data.user_id);
+      setItem('is_delegate', res?.data?.data.is_delegate);
+      setItem('user_type', res?.data?.data.user_type);
+      window.dataLayer.push({ user_id: res?.data?.data.user_id });
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
-        dispatch(signInDelegateSuccess(res.data.data));
+        dispatch(signInDelegateSuccess(res?.data?.data));
         setItemFromSession('isUserVisited', true);
       } else {
         dispatch(signInDelegateSuccess(false));
@@ -83,19 +89,14 @@ const inviteDelegate =
     }
   };
 
-const delegateInvitationStatus =
-  ({ onSuccess }) =>
-  async (dispatch) => {
-    dispatch(inviteDelegateRequest());
-    try {
-      const res = await inviteDelegateService();
-      dispatch(inviteDelegateSuccess(res));
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (error) {
-      errorHandler(error, inviteDelegateFailure);
-    }
-  };
+const getDelegateInvitationStatus = () => async (dispatch) => {
+  dispatch(delegateInvitationStatusRequest());
+  try {
+    const res = await delegateInvitationStatusService({ page: 1, pageSize: 5 });
+    dispatch(delegateInvitationStatusSuccess(res?.data?.data));
+  } catch (error) {
+    errorHandler(error, inviteDelegateFailure);
+  }
+};
 
-export { inviteDelegate, signUpDelegate, signInDelegate, delegateInvitationStatus };
+export { inviteDelegate, signUpDelegate, signInDelegate, getDelegateInvitationStatus };

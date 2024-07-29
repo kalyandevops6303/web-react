@@ -5,6 +5,7 @@ const initialState = {
   isLoading: false,
   error: null,
   isDelegate: false,
+  delegateInvitationStatusData: [],
   isInviteDelegateModalVisible: false,
   isDelegateModeModalVisible: false,
 };
@@ -76,12 +77,14 @@ const delegateSlice = createSlice({
     delegateInvitationStatusSuccess: (state, action) => ({
       ...state,
       isLoading: false,
-      delegateProfile: action.payload,
+      error: null,
+      delegateInvitationStatusData: [...state.delegateInvitationStatusData, ...action.payload],
     }),
     delegateInvitationStatusFailure: (state, action) => ({
       ...state,
       isLoading: false,
       error: action.payload,
+      delegateInvitationStatusData: null,
     }),
 
     toggleAddDelegateModal: (state, action) => ({

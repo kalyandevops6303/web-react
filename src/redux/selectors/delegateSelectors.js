@@ -6,6 +6,10 @@ export const checkIsInviteDelegateModalVisible = createSelector(
   delegateSelector,
   (delegate) => delegate.isInviteDelegateModalVisible,
 );
+export const delegateInvitationStatusData = createSelector(
+  delegateSelector,
+  (delegate) => delegate.delegateInvitationStatusData,
+);
 
 export const checkIsDelegateModeModalVisible = createSelector(
   delegateSelector,
