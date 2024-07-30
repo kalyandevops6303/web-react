@@ -566,6 +566,8 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             onClick={() => {
                               if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
                                 handleRemove({ item: allLinks?.[index], index });
+                              }else{
+                                linksRemove(index);
                               }
                             }}
                           >
@@ -574,7 +576,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                                 size={20}
                                 className="mail-icon"
                                 color={
-                                  allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                   !errors?.links?.[index]
                                     ? theme.red
                                     : `${theme.red}5f`
                                 }
