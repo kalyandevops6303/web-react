@@ -105,7 +105,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
       .required('Period is required'),
     projectDescription: yup
       .string()
-      .min(100, 'Project description must be at least 100 characters')
+      .min(50, 'Project description must be at least 50 characters')
       .max(3000, 'Project description must be 3000 characters or less')
       .required('Project description is required'),
     skills: yup

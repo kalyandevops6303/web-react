@@ -34,7 +34,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
   const ResponseSchema = yup.object().shape({
     response: yup
       .string()
-      .min(100, 'Response must be at least 100 characters')
+      .min(50, 'Response must be at least 50 characters')
       .max(2000, 'Response must be 2000 characters or less')
       .required('Response is required'),
   });
