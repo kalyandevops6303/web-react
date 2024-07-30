@@ -4,7 +4,7 @@ import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardSubtitle } from 'reactstrap';
 import { useSelector } from 'react-redux';
-import AccountCreated from '../../assets/images/accountCreated.png';
+import DelegateModeGif from '../../assets/images/youDidIt.gif';
 import { DelegateModeModalWrapper } from './style';
 import UserNameRoleCompanyComp from '../../@core/components/username-role-company';
 import { selectUserData } from '../../redux/selectors/authSelectors';
@@ -23,7 +23,7 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
         <DelegateModeModalWrapper>
           <div className="grid">
             <div className="d-flex justify-content-center align-items-center">
-              <img className="object-cover" src={AccountCreated} width={150} height={150} alt="AccountCreated" />
+              <img className="object-cover" src={DelegateModeGif} width={150} height={150} alt="AccountCreated" />
             </div>
             <div>
               <CardTitle className="modal-heading">Delegate Mode</CardTitle>

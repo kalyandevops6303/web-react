@@ -204,10 +204,9 @@ const RegisterDelegate = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: savedFormData?.email || emailData || '',
-      agreeTerms: savedFormData?.agreeTerms || false,
-      newPassword: '',
-      cnfPassword: '',
+      email: savedFormData?.email ?? emailData ?? '',
+      newPassword: savedFormData?.newPassword ?? '',
+      agreeTerms: savedFormData?.agreeTerms ?? false,
     },
   });
   const localFormData = useWatch({ control });

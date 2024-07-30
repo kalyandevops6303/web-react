@@ -246,7 +246,6 @@ const UserDropdown = ({ setNavBarLoading }) => {
               <span className="align-middle">Create My Profile</span>
             </DropdownItem>
           )}
-          {savedUserDetails?.user_type === userTypes.client && <DelegateAccordion />}
           {savedUserDetails?.user_type !== userTypes.delegate && (
             <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
               {userDetailsData && (
@@ -330,6 +329,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               ))}
             </div>
           )}
+          {savedUserDetails?.user_type === userTypes.client && <DelegateAccordion />}
           <DropdownItem
             onClick={handleCustomerSupport}
             className={`w-100 customer-support ${savedUserDetails?.user_type !== userTypes.delegate ? 'mt-0' : ''}`}

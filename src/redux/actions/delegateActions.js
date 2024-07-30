@@ -20,11 +20,12 @@ import { setItemFromSession } from '../../utility/sessesionStorageControl';
 import { loginService } from '../../services/authServices';
 
 const signUpDelegate =
-  ({ email, password, onSuccess }) =>
+  ({ email, newPassword, onSuccess }) =>
   async (dispatch) => {
     dispatch(signUpDelegateRequest());
     try {
-      const res = await delegateSignUpService({ email, password });
+      const invitationToken = 'invitationToken'; // TODO: get from invited mail
+      const res = await delegateSignUpService({ data: { email, password: newPassword }, invitationToken });
       setItem('access_token', res?.data?.data.access_token);
       setItem('access_token_expires', res?.data?.data.access_token_expires);
       setItem('refresh_token', res?.data?.data.refresh_token);
@@ -89,14 +90,16 @@ const inviteDelegate =
     }
   };
 
-const getDelegateInvitationStatus = () => async (dispatch) => {
-  dispatch(delegateInvitationStatusRequest());
-  try {
-    const res = await delegateInvitationStatusService({ page: 1, pageSize: 5 });
-    dispatch(delegateInvitationStatusSuccess(res?.data?.data));
-  } catch (error) {
-    errorHandler(error, inviteDelegateFailure);
-  }
-};
+const getDelegateInvitationStatus =
+  ({ metadata }) =>
+  async (dispatch) => {
+    dispatch(delegateInvitationStatusRequest());
+    try {
+      const res = await delegateInvitationStatusService({ metadata });
+      dispatch(delegateInvitationStatusSuccess(res?.data?.data));
+    } catch (error) {
+      errorHandler(error, inviteDelegateFailure);
+    }
+  };
 
 export { inviteDelegate, signUpDelegate, signInDelegate, getDelegateInvitationStatus };

@@ -12,6 +12,7 @@ import {
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '../../../components/avatar';
 import addIcon from '../../../../assets/images/plus-rounded-circle.svg';
+import settingsIcon from '../../../../assets/images/settingsIcon.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   checkIsInviteDelegateModalVisible,
@@ -23,7 +24,7 @@ import theme from '../../../../configs/themeVariables';
 
 const DelegateAccordion = () => {
   const [open, setOpen] = useState('');
-  const toggle = useCallback((id) => (open === id ? setOpen('0') : setOpen(id)), [open]);
+  const toggle = useCallback((id) => (open === id ? setOpen('') : setOpen(id)), [open]);
 
   const dispatch = useDispatch();
   const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
@@ -32,8 +33,12 @@ const DelegateAccordion = () => {
   const openAddDelegateModal = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
 
   const getDelegateInvitationStatusData = useCallback(() => {
-    if (open === '0') {
-      dispatch(getDelegateInvitationStatus());
+    if (open === '') {
+      const metadata = {
+        page: 1,
+        pageSize: 5,
+      };
+      dispatch(getDelegateInvitationStatus({ metadata }));
     }
   }, [dispatch, open]);
 
@@ -47,10 +52,10 @@ const DelegateAccordion = () => {
         >
           Delegate
         </AccordionHeader>
-        <div style={{ maxHeight: '9rem', overflowY: 'auto' }}>
-          <AccordionBody accordionId="1">
-            {delegateInvitationStatus?.map((delegate, index) => (
-              <DropdownItem tag="div" key={index} className="d-flex align-items-center gap-50 cursor-pointer">
+        <AccordionBody accordionId="1" style={{ maxHeight: '20rem' }}>
+          <div style={{ maxHeight: '9rem', overflowY: 'auto' }}>
+            {delegateInvitationStatus?.map((delegate) => (
+              <DropdownItem tag="div" key={delegate._id} className="d-flex align-items-center gap-50 cursor-pointer">
                 <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" />
                 <div className="ms-50 d-flex justify-content-between align-items-center w-100">
                   <div className="d-flex flex-column">
@@ -83,15 +88,19 @@ const DelegateAccordion = () => {
                 </div>
               </DropdownItem>
             ))}
-            <DropdownItem
-              onClick={openAddDelegateModal}
-              className="w-100 text-primary d-flex justify-content-start align-items-center gap-1"
-            >
-              <img alt="plus" src={addIcon} height={28} width={28} className="no-border-radius" />
-              <span className="align-middle ">Add Delegate</span>
-            </DropdownItem>
-          </AccordionBody>
-        </div>
+          </div>
+          <DropdownItem
+            onClick={openAddDelegateModal}
+            className="w-100 text-primary d-flex justify-content-start align-items-center gap-1"
+          >
+            <img alt="plus" src={addIcon} height={28} width={28} className="no-border-radius" />
+            <span className="align-middle ">Add Delegate</span>
+          </DropdownItem>
+          <DropdownItem className="w-100 text-primary d-flex justify-content-start align-items-center gap-1">
+            <img alt="plus" src={settingsIcon} height={28} width={28} className="no-border-radius" />
+            <span className="align-middle ">Delegate Setting</span>
+          </DropdownItem>
+        </AccordionBody>
       </AccordionItem>
     </Accordion>
   );
