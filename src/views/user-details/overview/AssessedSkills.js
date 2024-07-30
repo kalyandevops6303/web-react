@@ -14,9 +14,7 @@ const AssessedSkills = () => {
   const [showSection, setShowSection] = useState(false);
 
   useEffect(() => {
-    // if (param?.userType === "TEAM") 
-      dispatch(getTeamAssessments({id: param?.userId}))
-    if (param?.userType === "TALENT") dispatch(getUserAssessments({id: param?.userId}));
+    dispatch(getUserAssessments({id: param?.userId}));
   }, []);
 
   useEffect(() => {

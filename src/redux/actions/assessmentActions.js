@@ -35,6 +35,7 @@ function transformData(data) {
     const result = {};
 
     data.forEach(candidate => {
+        const userId = candidate.user_id;
         if (candidate.assessments && candidate.assessments.length) {
             candidate.assessments.forEach(assessment => {
                 if (assessment.assessment_grade) {
@@ -45,7 +46,11 @@ function transformData(data) {
                     if (!result[assessment_name][assessment_grade]) {
                         result[assessment_name][assessment_grade] = [];
                     }
-                    result[assessment_name][assessment_grade].push(assessment);
+                    // Add user_id to the assessment object
+                    result[assessment_name][assessment_grade].push({
+                        ...assessment,
+                        user_id: userId
+                    });
                 }
             });
         }
@@ -53,6 +58,7 @@ function transformData(data) {
 
     return result;
 }
+
 
 const getUserAssessments = ({ id } = {}) => async (dispatch) => {
     dispatch(userAssessmentsRequest());
