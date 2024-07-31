@@ -40,6 +40,7 @@ import { AccordionBodyContent } from '../../create-bid/style';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { getMyTeam } from '../../../redux/actions/dashboardActions';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -203,6 +204,7 @@ const BidMilestone = () => {
           setIsStatusUpdating(false);
           ShowToastMessage(SUCCESS, 'Request accepted');
           dispatch(getTeams({ onSuccess: onGetTeams }));
+          dispatch(getMyTeam())
         },
         onError: () => {
           setIsStatusUpdating(false);

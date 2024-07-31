@@ -413,17 +413,21 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               >
                 Resolve Dispute
               </p>
-              <p
-                className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"
-                onClick={() => {
-                  if (!isReplyBoxPresent) {
-                    reset();
-                    setIsReplyBoxPresent(true);
-                  }
-                }}
-              >
-                Reply
-              </p>
+              {isReplyBoxPresent ?
+                <p className='fw-bold mb-0'
+                >Reply</p>
+                :
+                <p
+                  className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"
+                  onClick={() => {
+                    if (!isReplyBoxPresent) {
+                      reset();
+                      setIsReplyBoxPresent(true);
+                    }
+                  }}
+                >
+                  Reply
+                </p>}
             </div>
           )}
           {isReplyBoxPresent && (
@@ -532,8 +536,8 @@ DisputeDetailsModal.propTypes = {
 
 DisputeDetailsModal.defaultProps = {
   modal: false,
-  toggleModal: () => {},
+  toggleModal: () => { },
   selectedDispute: {},
   primaryFilter: '',
-  onClose: () => {},
+  onClose: () => { },
 };
