@@ -47,17 +47,14 @@ const AuthRoute = () => {
       element: <Register />,
     },
     {
-      path: '/register-delegate',
+      path: '/delegate/register',
       element: <RegisterDelegate />,
     },
     {
       path: '/register-phone',
-      element: <RegisterPhone />,
+      element: <RegisterPhone isDelegate={localStorage.getItem('isDelegate')} />,
     },
-    {
-      path: '/register-delegate-phone',
-      element: <RegisterPhone isDelegate />,
-    },
+
     {
       path: '/email-verify',
       element: <VerifyEmail />,

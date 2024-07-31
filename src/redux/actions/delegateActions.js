@@ -20,11 +20,10 @@ import { setItemFromSession } from '../../utility/sessesionStorageControl';
 import { loginService } from '../../services/authServices';
 
 const signUpDelegate =
-  ({ email, newPassword, onSuccess }) =>
+  ({ email, newPassword, invitationToken, onSuccess }) =>
   async (dispatch) => {
     dispatch(signUpDelegateRequest());
     try {
-      const invitationToken = 'invitationToken'; // TODO: get from invited mail
       const res = await delegateSignUpService({ data: { email, password: newPassword }, invitationToken });
       setItem('access_token', res?.data?.data.access_token);
       setItem('access_token_expires', res?.data?.data.access_token_expires);
@@ -91,12 +90,13 @@ const inviteDelegate =
   };
 
 const getDelegateInvitationStatus =
-  ({ metadata }) =>
+  ({ metadata, onSuccess }) =>
   async (dispatch) => {
     dispatch(delegateInvitationStatusRequest());
     try {
       const res = await delegateInvitationStatusService({ metadata });
-      dispatch(delegateInvitationStatusSuccess(res?.data?.data));
+      dispatch(delegateInvitationStatusSuccess());
+      onSuccess(res?.data?.data?.data);
     } catch (error) {
       errorHandler(error, inviteDelegateFailure);
     }

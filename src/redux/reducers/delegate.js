@@ -74,11 +74,10 @@ const delegateSlice = createSlice({
       isLoading: true,
       error: null,
     }),
-    delegateInvitationStatusSuccess: (state, action) => ({
+    delegateInvitationStatusSuccess: (state) => ({
       ...state,
       isLoading: false,
       error: null,
-      delegateInvitationStatusData: [...state.delegateInvitationStatusData, ...action.payload],
     }),
     delegateInvitationStatusFailure: (state, action) => ({
       ...state,

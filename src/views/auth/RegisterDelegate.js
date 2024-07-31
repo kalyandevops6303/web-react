@@ -213,6 +213,7 @@ const RegisterDelegate = () => {
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
+    localStorage.setItem('isDelegate', true);
   }, [localFormData]);
 
   useEffect(() => {
@@ -229,12 +230,16 @@ const RegisterDelegate = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    navigate('/auth/register-delegate-phone');
+    navigate('/auth/register-phone');
   };
+
+  // extract invitation token from url
+  const queryParams = new URLSearchParams(window.location.search);
+  const invitationToken = queryParams.get('invitation_token');
 
   const onSubmit = (values) => {
     const { email, newPassword } = values;
-    dispatch(signUpDelegate({ email, newPassword, onSuccess }));
+    dispatch(signUpDelegate({ email, newPassword, onSuccess, invitationToken }));
   };
 
   const newPassword = watch('newPassword');

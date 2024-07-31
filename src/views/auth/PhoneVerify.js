@@ -44,7 +44,7 @@ const VerifyPhone = () => {
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
-    if (!userType) {
+    if (!userType && !localStorage.getItem('isDelegate')) {
       dispatch(getUserData());
     }
   }, []);
@@ -146,7 +146,7 @@ const VerifyPhone = () => {
               border: `1px solid ${theme.primary}`,
               outline: 'none',
             }}
-          />          
+          />
           {error && (
             <Label className="mt-2 text-danger text-xl-left">
               <b>{error}</b>

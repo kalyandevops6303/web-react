@@ -1,11 +1,10 @@
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
-const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
-const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
-const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
-const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
-const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
-const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
-const apiDelegateEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1553`;
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1553`;
+const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3553`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2553`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5553`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4553`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8553`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3553`;
 
 const API = {
   auth: {
@@ -117,9 +116,9 @@ const API = {
     downloadUrl: `${apiCreateProjectEndpoint}/api/v1/download/url`,
   },
   delegate: {
-    inviteDelegate: `${apiDelegateEndpoint}/api/v1/invitation/delegate`,
-    signUpDelegate: `${apiDelegateEndpoint}/api/v1/user/delegate/signup`,
-    delegateInvitationStatus: `${apiDelegateEndpoint}/api/v1/invitation/delegate/status`,
+    inviteDelegate: `${apiAuthEndpoint}/api/v1/invitation/delegate`,
+    signUpDelegate: `${apiAuthEndpoint}/api/v1/user/delegate/signup`,
+    delegateInvitationStatus: `${apiAuthEndpoint}/api/v1/invitation/delegate/status`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
