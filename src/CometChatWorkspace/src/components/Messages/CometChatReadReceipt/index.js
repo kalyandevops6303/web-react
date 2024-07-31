@@ -73,7 +73,7 @@ class CometChatReadReceipt extends React.PureComponent {
 
     if (this.props.message?.sender?.uid === this.loggedInUser?.uid) {
       if (this.props.message.receiverType === CometChat.RECEIVER_TYPE.GROUP) {
-        if (this.props.message.hasOwnProperty('error')) {
+        if (this.props.message?.hasOwnProperty('error')) {
           ticks = errorTick;
           receiptText = 'ERROR';
           dateField = this.props.message._composedAt;
@@ -83,14 +83,14 @@ class CometChatReadReceipt extends React.PureComponent {
           receiptText = 'SENDING';
           dateField = this.props.message._composedAt;
           color = this.context.theme.secondaryTextColor;
-          if (this.props.message.hasOwnProperty('sentAt')) {
+          if (this.props.message?.hasOwnProperty('sentAt')) {
             ticks = greyTick;
             receiptText = 'SENT';
             dateField = this.props.message.sentAt;
           }
         }
       } else {
-        if (this.props.message.hasOwnProperty('error')) {
+        if (this.props.message?.hasOwnProperty('error')) {
           ticks = errorTick;
           receiptText = 'ERROR';
           dateField = this.props.message._composedAt;
@@ -101,16 +101,16 @@ class CometChatReadReceipt extends React.PureComponent {
           dateField = this.props.message._composedAt;
           color = this.context.theme.secondaryTextColor;
 
-          if (this.props.message.hasOwnProperty('readAt')) {
+          if (this.props.message?.hasOwnProperty('readAt')) {
             ticks = blueDoubleTick;
             receiptText = 'SEEN';
             color = this.context.theme.primaryColor;
             dateField = this.props.message.readAt;
-          } else if (this.props.message.hasOwnProperty('deliveredAt')) {
+          } else if (this.props.message?.hasOwnProperty('deliveredAt')) {
             ticks = greyDoubleTick;
             receiptText = 'DELIVERED';
             dateField = this.props.message.deliveredAt;
-          } else if (this.props.message.hasOwnProperty('sentAt')) {
+          } else if (this.props.message?.hasOwnProperty('sentAt')) {
             ticks = greyTick;
             receiptText = 'SENT';
             dateField = this.props.message.sentAt;

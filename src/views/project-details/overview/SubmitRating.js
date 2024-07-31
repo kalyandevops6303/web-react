@@ -34,7 +34,7 @@ const SubmitRating = () => {
   const RatingSchema = yup.object().shape({
     additionalDescription: yup
       .string()
-      .min(100, 'Additional description must be at least 100 characters')
+      .min(50, 'Additional description must be at least 50 characters')
       .max(1000, 'Additional description must be 1000 characters or less')
       .required('Additional description is required'),
   });

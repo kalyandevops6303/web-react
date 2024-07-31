@@ -35,7 +35,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail, f
       .required('Dispute Type is required'),
     disputeDetails: yup
       .string()
-      .min(100, 'Dispute details must be at least 100 characters')
+      .min(50, 'Dispute details must be at least 50 characters')
       .max(2000, 'Dispute details must be 2000 characters or less')
       .required('Dispute details is required'),
   });

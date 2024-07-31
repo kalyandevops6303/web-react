@@ -71,7 +71,7 @@ class CometChatSenderAudioMessageBubble extends React.Component {
 
     if (fileMetadata instanceof Blob) {
       return { fileName: fileMetadata['name'] };
-    } else if (this.props.message.data.hasOwnProperty('attachments') && this.props.message.data.attachments.length) {
+    } else if (this.props.message.data?.hasOwnProperty('attachments') && this.props.message.data.attachments.length) {
       const fileName = this.props.message.data.attachments[0]?.name;
       const fileUrl = this.props.message.data.attachments[0]?.url;
 

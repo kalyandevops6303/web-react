@@ -234,7 +234,7 @@ const Social = () => {
     for (let i = 0; i < arr.length; i++) {
       const obj = arr[i];
       // eslint-disable-next-line
-      if (!obj.hasOwnProperty('link') || !obj.hasOwnProperty('linkName')) {
+      if (!obj?.hasOwnProperty('link') || !obj?.hasOwnProperty('linkName')) {
         return false;
       }
       if (!obj.link || !obj.linkName) {
@@ -467,7 +467,7 @@ const Social = () => {
                   </Row>
                   <hr className="m-0 card-header-border mt-2" />
                   <h5 className="m-0 mt-2 mb-1">Other</h5>
-                  {otherSocialLinksFields.map((item, index) => (
+                  {otherSocialLinksFields?.map((item, index) => (
                     <Row key={item.id} className="mb-1">
                       <Col sm="12" md="12" lg="5">
                         <Label className="form-label" for={`otherSocialLinks[${index}].linkName`}>

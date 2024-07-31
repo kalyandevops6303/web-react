@@ -215,13 +215,11 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           <div onClick={(e) => handleNavigate(e)} className="d-flex w-100 align-items-center">
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                <span>
-                {clientDetails?.title ?? clientDetails?.company_name}
-                </span>
+                <span>{clientDetails?.title ?? clientDetails?.company_name}</span>
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-              {clientDetails?.first_name}&nbsp;
-              {clientDetails?.last_name}
+                {clientDetails?.first_name}&nbsp;
+                {clientDetails?.last_name}
               </CardText>
             </div>
             <div className="d-flex flex-grow-1">
@@ -249,54 +247,56 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
       ) : (
         <div className="mb-2" />
       )}
-      {project && <div>
-        <BadgeGroup
-          title="Skills"
-          data={project?.skills_required}
-          color="light-blue"
-          id={`tooltip-skills-project-${data?._id}`}
-        />
-        <BadgeGroup
-          title="Tools"
-          data={project?.tools_required}
-          color="light-blue"
-          id={`tooltip-tools-project-${data?._id}`}
-        />
-      </div>}
+      {project && (
+        <div>
+          <BadgeGroup
+            title="Skills"
+            data={project?.skills_required}
+            color="light-blue"
+            id={`tooltip-skills-project-${data?._id}`}
+          />
+          <BadgeGroup
+            title="Tools"
+            data={project?.tools_required}
+            color="light-blue"
+            id={`tooltip-tools-project-${data?._id}`}
+          />
+        </div>
+      )}
       {location.pathname.split('/').includes('my_listings') && (
         <BidsReceivedWrapper>
           <p className="wrapper-title mb-50">Bids Received</p>
           <div className="d-flex align-items-center justify-content-between">
-              {bidsReceivedAvatarGroup?.length === 0 ? (
-                <p className="m-0">None</p>
-              ) : (
-                <div className="d-flex align-items-center">
-                  {bidsReceivedAvatarGroup?.length > 3 ? (
-                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
-                  ) : (
-                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
-                  )}
-                  <div className="total-count px-75 ms-1">
-                    <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
-                  </div>
+            {bidsReceivedAvatarGroup?.length === 0 ? (
+              <p className="m-0">None</p>
+            ) : (
+              <div className="d-flex align-items-center">
+                {bidsReceivedAvatarGroup?.length > 3 ? (
+                  <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
+                ) : (
+                  <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                )}
+                <div className="total-count px-75 ms-1">
+                  <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
                 </div>
-              )}
-              {data?.project?.status === 'LISTING_EXPIRED' ? (
-                <div className="d-flex justify-content-end relist-btn-wrapper">
-                  <Button
-                    color="primary"
-                    outline
-                    className="relist-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setRelistConfirmationModal(true);
-                    }}
-                  >
-                    Re-list
-                  </Button>
-                </div>
-              ) : null}
-            </div>
+              </div>
+            )}
+            {data?.project?.status === 'LISTING_EXPIRED' || data?.project?.status === 'WITHDRAWN' ? (
+              <div className="d-flex justify-content-end relist-btn-wrapper">
+                <Button
+                  color="primary"
+                  outline
+                  className="relist-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRelistConfirmationModal(true);
+                  }}
+                >
+                  Re-list
+                </Button>
+              </div>
+            ) : null}
+          </div>
         </BidsReceivedWrapper>
       )}
       {location.pathname.split('/').includes('my_bids') &&

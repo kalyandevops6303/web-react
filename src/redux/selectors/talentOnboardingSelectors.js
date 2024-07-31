@@ -4,7 +4,10 @@ const talentOnboardingSelector = (state) => state.talentOnboarding;
 
 export const userDetails = createSelector(talentOnboardingSelector, (talentOnboarding) => talentOnboarding.userDetails);
 
-export const resumeParsedDetails = createSelector(talentOnboardingSelector, (talentOnboarding) => talentOnboarding.resumeParsedDetails);
+export const resumeParsedDetails = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.resumeParsedDetails,
+);
 
 export const userDetailsLoading = createSelector(
   talentOnboardingSelector,
@@ -29,4 +32,9 @@ export const profileDetailsLoading = createSelector(
 export const checkpointCompleteLoading = createSelector(
   talentOnboardingSelector,
   (talentOnboarding) => talentOnboarding.checkpointCompleteLoading,
+);
+
+export const deleteResumeLoading = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.deleteResumeLoading,
 );

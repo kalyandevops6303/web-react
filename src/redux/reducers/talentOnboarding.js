@@ -8,6 +8,7 @@ const initialState = {
   accountDetailsLoading: false,
   profileDetailsLoading: false,
   checkpointCompleteLoading: false,
+  deleteResumeLoading:false,
   error: null,
 };
 
@@ -38,7 +39,6 @@ const talentOnboardingSlice = createSlice({
     }),
     resumeParsedDetailsSuccess: (state, action) => ({
       ...state,
-
       resumeParsedDetails: action.payload,
       resumeParsedDetailsLoading: false,
     }),
@@ -46,6 +46,22 @@ const talentOnboardingSlice = createSlice({
       ...state,
       error: action.payload,
       resumeParsedDetailsLoading: false,
+    }),
+
+    deleteResumeRequest: (state) => ({
+      ...state,
+      deleteResumeLoading: true,
+      error: null,
+    }),
+    deleteResumeSuccess: (state) => ({
+      ...state,
+      deleteResumeLoading: false,
+      error: null,
+    }),
+    deleteResumeFailure: (state, action) => ({
+      ...state,
+      deleteResumeLoading: false,
+      error: action.payload,
     }),
 
     accountDetailsRequest: (state) => ({
@@ -111,6 +127,9 @@ export const {
   checkpointCompleteRequest,
   checkpointCompleteSuccess,
   checkpointCompleteFailure,
+  deleteResumeRequest,
+  deleteResumeSuccess,
+  deleteResumeFailure,
 } = talentOnboardingSlice.actions;
 
 export default talentOnboardingSlice.reducer;

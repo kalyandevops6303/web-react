@@ -22,7 +22,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,11 +39,13 @@ import {
   languagesLoading,
 } from '../../../redux/selectors/staticSelectors';
 import {
+  deleteResume,
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
 } from '../../../redux/actions/talentOnboardingActions';
 import {
+  deleteResumeLoading,
   profileDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
@@ -56,7 +58,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
-  getFileSize,
+  // getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
@@ -260,12 +262,16 @@ const Personal = () => {
       setFiles([]);
     }
   }, [files]);
-
-  const handleRemoveFile = (file) => {
+  const isDeleteResumeLoading = useSelector(deleteResumeLoading);
+  const handleRemoveFile = async (file) => {
     const uploadedFiles = files;
-    const filtered = uploadedFiles.filter((i) => i.id !== file.id);
-    dispatch(setFormDocuments(null));
-    setFiles([...filtered]);
+    await dispatch(
+      deleteResume(() => {
+        const filtered = uploadedFiles.filter((i) => i.id !== file.id);
+        dispatch(setFormDocuments(null));
+        setFiles([...filtered]);
+      }),
+    );
   };
 
   const isFileValid = (file) => {
@@ -520,11 +526,11 @@ const Personal = () => {
     };
     fileReRender();
   }, [savedFormDocuments]);
-  const formattedDate = new Date()
-    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-    .replace(',', '')
-    .split(' ');
-  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+  // const formattedDate = new Date()
+  //   .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+  //   .replace(',', '')
+  //   .split(' ');
+  // const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -546,7 +552,7 @@ const Personal = () => {
 
   const fileList = () => (
     <div className="custom-card mb-1">
-      <Card className="p-1">
+      <Card className="py-1">
         {files?.map((file, index) => (
           <Row
             key={file.id}
@@ -556,9 +562,9 @@ const Personal = () => {
                 : 'd-flex flex-column align-items-start'
             }
           >
-            <Col>
-              <div
-                className="d-flex cursor-pointer"
+            <div className="d-flex flex-wrap w-100 gap-1 gap-xl-0 justify-content-between">
+              <Col
+                className="d-flex cursor-pointer justify-content-between align-items-center  px-1 w-100"
                 style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
                 onClick={() => downloadResume(file)}
               >
@@ -567,14 +573,27 @@ const Personal = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="d-flex align-items-center w-100 ">
                     <span>{renderFilePreview(file.file)}</span>
-                    <span>{file.file.name}</span>
+                    <span className="w-75">{file.file.name}</span>
                   </div>
                 )}
-              </div>
-            </Col>
-            <Row className="mt-2">
+              </Col>
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
+                onClick={() => {
+                  handleRemoveFile(file);
+                  setParseResume(false);
+                  dispatch(resumeParsedDetailsSuccess(null));
+                  dispatch(setResumeParsed(false));
+                }}
+              >
+                {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
+              </Button>
+            </div>
+            {/* <Row className="mt-2">
               <Row>
                 <Col>{uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}</Col>
                 <Col>{getFileSize(file.file.size)}</Col>
@@ -585,7 +604,7 @@ const Personal = () => {
                   <Button
                     color="flat-danger"
                     className="btn-left-margin"
-                    disabled={uploadingFiles.includes(file)}
+                    disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
                     onClick={() => {
                       handleRemoveFile(file);
                       setParseResume(false);
@@ -593,11 +612,11 @@ const Personal = () => {
                       dispatch(setResumeParsed(false));
                     }}
                   >
-                    Remove
+                    {isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
                   </Button>
                 </Col>
               </Row>
-            </Row>
+            </Row> */}
           </Row>
         ))}
       </Card>
@@ -1485,8 +1504,12 @@ const Personal = () => {
                 </div>
               </div>
             </Col>
-            <Col className=" w-25">
+            <Col className="w-25">
               <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1">Resume</h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
                 <CardBody>
                   <div className="d-flex flex-column">
                     <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
@@ -1494,29 +1517,34 @@ const Personal = () => {
                         <Info className="font-medium-3 me-50" color="#004280" />
                       </Col>
 
-                      <Col>
-                        <div className="d-flex justify-content-between">
+                      <Col className="w-100 ">
+                        <div className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between">
                           <span style={{ color: '#004280' }}>
-                            <span className="fw-bold">Auto Fill</span>
+                            <span style={{ color: '#004280' }} className="fw-bold mr-2">
+                              Auto Fill {files && files?.length > 0 && 'Profile'}
+                            </span>
 
                             {files && files.length === 0 && (
                               <span> - Upload your resume to auto fill your personal details</span>
                             )}
                           </span>
-                          {files && files?.length > 0 && (
-                            <FormGroup switch>
-                              <Input
-                                type="switch"
-                                checked={parseResume}
-                                onClick={() => {
-                                  setParsedUploaded(false);
-                                  setParseResume(!parseResume);
-                                  dispatch(setResumeParsed(!parseResume));
-                                  dispatch(setFormDocuments(files));
-                                }}
-                              />
-                            </FormGroup>
-                          )}
+                          <div>
+                            {files && files?.length > 0 && (
+                              <FormGroup switch>
+                                <Input
+                                  className='cursor-pointer'
+                                  type="switch"
+                                  checked={parseResume}
+                                  onClick={() => {
+                                    setParsedUploaded(false);
+                                    setParseResume(!parseResume);
+                                    dispatch(setResumeParsed(!parseResume));
+                                    dispatch(setFormDocuments(files));
+                                  }}
+                                />
+                              </FormGroup>
+                            )}
+                          </div>
                         </div>
 
                         {files?.length === 0 && (
@@ -1525,10 +1553,11 @@ const Personal = () => {
                               for="resume"
                               className="me-2 mt-2 d-flex flex-col align-items-center upload-button cursor-pointer"
                             >
-                              <UploadIconContainer>
+                              {/* <UploadIconContainer>
                                 <Upload size={18} color={theme.activeNavPillText} />
-                              </UploadIconContainer>
-                              <h5 className="fw-bold">Upload your resume</h5>
+                                
+                              </UploadIconContainer> */}
+                              <h5 className="fw-bold">Upload Resume</h5>
                             </Label>
                             <Controller
                               id="resume"
@@ -1553,7 +1582,7 @@ const Personal = () => {
                         )}
                       </Col>
                     </div>
-                    <Row>{files && files.length > 0 && <div className="px-1">{fileList()}</div>}</Row>
+                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
                   </div>
                 </CardBody>
               </Card>

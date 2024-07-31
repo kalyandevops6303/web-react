@@ -8,7 +8,7 @@ import parse from 'html-react-parser';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
-import ProjectModal from '../modals/ProjectModal';
+
 import RelistConfirmationModal from '../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../modals/RelistSuccessModal';
@@ -20,6 +20,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { getReadType } from '../../utility/Utils';
+import ProjectModal from '../modals/ProjectModalMarkeplace';
 
 const SearchProjectCard = ({
   primaryFilter,

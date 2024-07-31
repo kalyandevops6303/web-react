@@ -48,7 +48,7 @@ const CometChatThreadedMessageReplyCount = (props) => {
     </span>
   );
 
-  if (props.message.hasOwnProperty('replyCount') === false) {
+  if (props.message?.hasOwnProperty('replyCount') === false) {
     replies = null;
   }
 

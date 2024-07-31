@@ -24,9 +24,10 @@ import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
+import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { CustomDraftProjectBadge } from '../cards/style';
+import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -83,6 +84,7 @@ const DraftProjectModal = ({ modal, toggleModal, data, setDeleteDraftModal }) =>
   const navigate = useNavigate();
 
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+  const selectSavedUserDetailsData = useSelector(selectSavedUserData);
 
   const [selectedFileKey, setSelectedFileKey] = useState(null);
 
@@ -147,8 +149,9 @@ const DraftProjectModal = ({ modal, toggleModal, data, setDeleteDraftModal }) =>
                       data?.listing_details?.start_date_epoch &&
                       data?.listing_details?.end_date_epoch ? (
                         <>
-                          {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
-                          {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                          {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                         to{' '}
+                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                         </>
                       ) : (
                         <p className="empty-text m-0 mb-25">
