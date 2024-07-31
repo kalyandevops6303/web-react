@@ -321,13 +321,14 @@ const rejectBidChange =
     }
   };
 
-const acceptBidChange =
-  ({ snapshot_id, project_id, onSuccess }) =>
+  const acceptBidChange =
+  ({ snapshot_id, project_id, onSuccess, bid_id }) =>
   async (dispatch) => {
     dispatch(acceptBidChangeRequest());
     try {
       await acceptBidChangeService({ snapshot_id });
       dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
+      dispatch(getBidDetails({ project_id, bid_id }));
       onSuccess();
       dispatch(acceptBidChangeSuccess());
     } catch (error) {

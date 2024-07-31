@@ -38,6 +38,7 @@ const BidSubmitted = () => {
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
   const isBidAccepting = useSelector((state) => state.projectDetails.acceptBidChangeLoading);
+  const snapshotData = useSelector((state) => state.projectDetails.snapshotData);
   const activeStage = useSelector((state) => state.projectDetails.activeStage);
   const [open, setOpen] = useState(null);
   const [bidRequestModal, setBidRequestModal] = useState(false);
@@ -95,7 +96,7 @@ const BidSubmitted = () => {
             </h6>
             <span className="d-block mb-1">
               {/* {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'} */}
-              {convertUnixTimestampToDate(item?.time, savedUserData?.availability?.timezone?.name )}
+              {convertUnixTimestampToDate(item?.time, savedUserData?.availability?.timezone?.name)}
             </span>
             <NameInfo name={item?.by_entity?.name} info={item?.by_entity?.role} img={item?.by_entity?.image} />
             {item?.description && <CardText className="mt-1 word-wrap">{item?.description}</CardText>}{' '}
@@ -146,6 +147,7 @@ const BidSubmitted = () => {
         snapshot_id: selectedTimeline?.snapshot_id,
         project_id: param?.projectId,
         onSuccess: onAcceptSuccess,
+        bid_id: bidInfo?._id,
       }),
     );
   };
@@ -191,7 +193,7 @@ const BidSubmitted = () => {
                     <span className="key">Updated at</span>
 
                     <CardText className="value text-end">
-                      {convertUnixTimestampToDate(bidInfo?.updated_at, savedUserData?.availability?.timezone?.name )}
+                      {convertUnixTimestampToDate(bidInfo?.updated_at, savedUserData?.availability?.timezone?.name)}
                     </CardText>
                   </div>
                 </div>
@@ -239,7 +241,7 @@ const BidSubmitted = () => {
             modalData={{
               name: bidInfo?.bid_by?.name,
               role: bidInfo?.bid_by?.user_type === userTypes.team ? 'Team Name' : bidInfo?.bid_by?.role,
-              value: bidInfo?.total_estimated_cost,
+              value: snapshotData?.bid?.total_estimated_cost,
             }}
             modal={acceptBidModal}
             toggleModal={handleCancel}

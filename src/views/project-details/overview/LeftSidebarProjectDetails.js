@@ -105,7 +105,7 @@ const LeftSidebarProjectDetails = () => {
     },
     ON_GOING: {
       state: 'Milestone 1',
-      bgcolor: 'warning',
+      bgcolor: 'light-warning',
       text: 'warning',
     },
 
