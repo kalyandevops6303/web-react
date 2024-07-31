@@ -39,7 +39,6 @@ const BidSubmitted = () => {
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
   const isBidAccepting = useSelector((state) => state.projectDetails.acceptBidChangeLoading);
-  const snapshotData = useSelector((state) => state.projectDetails.snapshotData);
   const activeStage = useSelector((state) => state.projectDetails.activeStage);
   const [open, setOpen] = useState(null);
   const [bidRequestModal, setBidRequestModal] = useState(false);
