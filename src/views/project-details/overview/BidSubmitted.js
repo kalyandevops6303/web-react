@@ -34,6 +34,7 @@ const BidSubmitted = () => {
   const userData = useSelector(selectUserData);
   const param = useParams();
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const snapshotData = useSelector((state) => state.projectDetails.snapshotData);
   const loading = useSelector((state) => state.projectDetails.getBidInfoLoading);
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
@@ -141,6 +142,7 @@ const BidSubmitted = () => {
   const onAcceptSuccess = () => {
     toggleAccepetModal();
     dispatch(getBidDetails({project_id: param?.projectId}))
+    dispatch(getBidTimeline({project_id: param?.projectId}))
   };
 
   const onAccept = () => {
@@ -243,7 +245,7 @@ const BidSubmitted = () => {
             modalData={{
               name: bidInfo?.bid_by?.name,
               role: bidInfo?.bid_by?.user_type === userTypes.team ? 'Team Name' : bidInfo?.bid_by?.role,
-              value: updatedBidTotal || bidInfo?.total_estimated_cost
+              value: snapshotData?.bid?.total_estimated_cost,
             }}
             modal={acceptBidModal}
             toggleModal={handleCancel}
