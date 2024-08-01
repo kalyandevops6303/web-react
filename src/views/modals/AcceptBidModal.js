@@ -23,7 +23,7 @@ const AcceptBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
                 By accepting this bid you are assigning this project to the following team or talent:
               </CardText>
               <section className="d-flex gap-2 stats">
-                <div style={{ minWidth: '10rem' }}>
+                <div>
                   <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
                   <small className="key">{modalData?.role || 'Talent/Team name'}</small>
                 </div>

@@ -83,7 +83,7 @@ const ThemeNavbar = (props) => {
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
   const saveArtifactDraftPath = /^\/project-details\/[a-zA-Z0-9_-]+\/milestone-details\/[a-zA-Z0-9_-]+$/;
   const draftTeamPath = location?.pathname.includes(
-    '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details') || saveArtifactDraftPath.test(location?.pathname);;
+    '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details');
   const isTabDisabled = userData?.club_status === clubStatus.IN_REVIEW;
 
   // ** Props
@@ -185,6 +185,7 @@ const ThemeNavbar = (props) => {
                   : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
               }
               onClick={() => {
+                console.log("dashboard clicked" + draftTeamPath)
                 if (draftTeamPath) {
                   dispatch(setConfirmSaveForLater(true));
                   dispatch(setNavigatingRoute('/dashboard'));

@@ -9,20 +9,20 @@ import SavedDraftsAvailableModal from './SavedDraftsAvailableModal';
 import { checkDraftTeam } from '../../redux/actions/teamsActions';
 import { teamTypes } from '../../utility/constants/Constant';
 
-const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
+const CreateClubOrTeamModal = ({ modal, toggleModal, defaultSelectedGroup }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(false);
   const toggleSavedDraftsAvailableModal = () => {
     setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
   };
-  const [selectedGroup, setSelectedGroup] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState(defaultSelectedGroup || '');
 
   const onNextClick = () => {
     if (selectedGroup === teamTypes.club) {
-      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.club, onNavigation: ()=>navigate('/create-club/account-details') , onSuccess: () => {}, onError: () => {} }));
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.club, onNavigation: () => navigate('/create-club/account-details'), onSuccess: () => { }, onError: () => { } }));
     } else if (selectedGroup === teamTypes.team) {
-      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.team, onNavigation: ()=>navigate('/create-team/profile-details') , onSuccess: () => {}, onError: () => {} }));
+      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.team, onNavigation: () => navigate('/create-team/profile-details'), onSuccess: () => { }, onError: () => { } }));
     }
   };
 
@@ -69,25 +69,6 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
           <Col sm="12" md="6" lg="6">
             <CreateBidRadioOption
               className="cursor-pointer"
-              active={selectedGroup === 'CLUB'}
-              onClick={() => {
-                setSelectedGroup('CLUB');
-              }}
-            >
-              <div className="form-check form-check-inline checkbox-custom-margin">
-                <Input type="radio" id="simple" checked={selectedGroup === 'CLUB'} />
-                <div className="label">
-                  <p className="fw-bolder mb-50">Club</p>
-                  <p className="fw-light mb-0">
-                    A student led entity within a college focused on a specific domain interested in project work.
-                  </p>
-                </div>
-              </div>
-            </CreateBidRadioOption>
-          </Col>
-          <Col sm="12" md="6" lg="6">
-            <CreateBidRadioOption
-              className="cursor-pointer"
               active={selectedGroup === 'TEAM'}
               onClick={() => {
                 setSelectedGroup('TEAM');
@@ -99,6 +80,25 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
                   <p className="fw-bolder mb-50">Team</p>
                   <p className="fw-light mb-0">
                     A network of worldwide talent who work together on projects in one or more areas of interest.
+                  </p>
+                </div>
+              </div>
+            </CreateBidRadioOption>
+          </Col>
+          <Col sm="12" md="6" lg="6">
+            <CreateBidRadioOption
+              className="cursor-pointer"
+              active={selectedGroup === 'CLUB'}
+              onClick={() => {
+                setSelectedGroup('CLUB');
+              }}
+            >
+              <div className="form-check form-check-inline checkbox-custom-margin">
+                <Input type="radio" id="simple" checked={selectedGroup === 'CLUB'} />
+                <div className="label">
+                  <p className="fw-bolder mb-50">Club</p>
+                  <p className="fw-light mb-0">
+                    A student led entity within a college focused on a specific domain interested in project work.
                   </p>
                 </div>
               </div>
@@ -126,5 +126,5 @@ CreateClubOrTeamModal.propTypes = {
 
 CreateClubOrTeamModal.defaultProps = {
   modal: false,
-  toggleModal: () => {},
+  toggleModal: () => { },
 };
