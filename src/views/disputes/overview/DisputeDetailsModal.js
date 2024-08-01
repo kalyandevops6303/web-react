@@ -429,7 +429,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
           {isReplyBoxPresent && (
             <div className="ps-4">
               <div className="mb-25">
-                <p className="fw-bold mb-0">Response Dispute</p>
+                <p className="fw-bold mb-0">Dispute Response</p>
               </div>
               <div>
                 <Form onSubmit={handleSubmit(onSubmit)}>
