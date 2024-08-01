@@ -48,6 +48,7 @@ import RemoveArtifactsModal from '../../modals/RemoveArtifactsModal';
 import FeedbackRemoveArtifactsModal from '../../modals/FeedbackRemoveArtifacts';
 import { submitMilstone } from '../../../redux/actions/milestoneActions';
 import { milestoneSubmissionFileUploadService } from '../../../services/projectMilestoneService';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
