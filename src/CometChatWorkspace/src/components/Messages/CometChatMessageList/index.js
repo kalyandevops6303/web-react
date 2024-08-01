@@ -208,7 +208,7 @@ class CometChatMessageList extends React.PureComponent {
 
         messageList.forEach((message) => {
           //if the sender of the message is not the loggedin user
-          if (!isEmpty(message.getSender()) && message.getSender().getUid() !== this.state.loggedInUser?.uid) {
+          if (!isEmpty(message?.getSender()) && message?.getSender()?.getUid() !== this.state?.loggedInUser?.uid) {
             //mark the message as delivered
             this.markMessageAsDelivered(message);
 
@@ -259,7 +259,7 @@ class CometChatMessageList extends React.PureComponent {
 
         messageList.forEach((message) => {
           //if the sender of the message is not the loggedin user
-          if (!isEmpty(message.getSender()) && message.getSender().getUid() !== this.state.loggedInUser?.uid) {
+          if (!isEmpty(message?.getSender()) && message?.getSender()?.getUid() !== this.state?.loggedInUser?.uid) {
             //mark the message as delivered
             this.markMessageAsDelivered(message);
 
@@ -411,8 +411,8 @@ class CometChatMessageList extends React.PureComponent {
     //read receipts
     if (
       message.getReceiverType() === CometChat.RECEIVER_TYPE.USER &&
-      !isEmpty(message.getSender()) &&
-      message.getSender().getUid() === this.context.item.uid &&
+      !isEmpty(message?.getSender()) &&
+      message?.getSender()?.getUid() === this.context?.item?.uid &&
       message.getReceiver() === this.state.loggedInUser?.uid
     ) {
       let messageList = [...this.props.messages];
