@@ -19,7 +19,7 @@ import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 
 import Empty from './Empty';
-import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
+import { acceptBidChange, getBidDetails, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { bidStages, bidStatus, userTypes } from '../../../utility/constants/Constant';
@@ -34,6 +34,7 @@ const BidSubmitted = () => {
   const userData = useSelector(selectUserData);
   const param = useParams();
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const snapshotData = useSelector((state) => state.projectDetails.snapshotData);
   const loading = useSelector((state) => state.projectDetails.getBidInfoLoading);
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
@@ -138,6 +139,8 @@ const BidSubmitted = () => {
   };
   const onAcceptSuccess = () => {
     toggleAccepetModal();
+    dispatch(getBidDetails({project_id: param?.projectId}));
+    dispatch(getBidTimeline({project_id: param?.projectId}));
   };
   const onAccept = () => {
     dispatch(
@@ -238,7 +241,7 @@ const BidSubmitted = () => {
             modalData={{
               name: bidInfo?.bid_by?.name,
               role: bidInfo?.bid_by?.user_type === userTypes.team ? 'Team Name' : bidInfo?.bid_by?.role,
-              value: bidInfo?.total_estimated_cost,
+              value: snapshotData?.bid?.total_estimated_cost,
             }}
             modal={acceptBidModal}
             toggleModal={handleCancel}
