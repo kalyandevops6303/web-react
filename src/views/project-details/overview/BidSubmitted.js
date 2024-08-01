@@ -19,7 +19,7 @@ import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 
 import Empty from './Empty';
-import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
+import { acceptBidChange, getBidDetails, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { bidStages, bidStatus, userTypes } from '../../../utility/constants/Constant';
@@ -34,11 +34,11 @@ const BidSubmitted = () => {
   const userData = useSelector(selectUserData);
   const param = useParams();
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const snapshotData = useSelector((state) => state.projectDetails.snapshotData);
   const loading = useSelector((state) => state.projectDetails.getBidInfoLoading);
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
   const isBidAccepting = useSelector((state) => state.projectDetails.acceptBidChangeLoading);
-  const snapshotData = useSelector((state) => state.projectDetails.snapshotData);
   const activeStage = useSelector((state) => state.projectDetails.activeStage);
   const [open, setOpen] = useState(null);
   const [bidRequestModal, setBidRequestModal] = useState(false);
@@ -140,6 +140,8 @@ const BidSubmitted = () => {
   };
   const onAcceptSuccess = () => {
     toggleAccepetModal();
+    dispatch(getBidDetails({project_id: param?.projectId}))
+    dispatch(getBidTimeline({project_id: param?.projectId}))
   };
   const onAccept = () => {
     dispatch(
