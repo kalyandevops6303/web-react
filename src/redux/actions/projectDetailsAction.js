@@ -327,8 +327,11 @@ const rejectBidChange =
     dispatch(acceptBidChangeRequest());
     try {
       await acceptBidChangeService({ snapshot_id });
-      dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
-      dispatch(getBidDetails({ project_id, bid_id }));
+      await dispatch(getBidDetails({ project_id, bid_id }));
+      await dispatch(
+        getReceivedBids({ metadata: { page: 1, page_size: 10 }, search_text: '', bid_status: '', project_id }),
+      );
+      await dispatch(getProjectDetails({ projectId: project_id, isBidView: true })); 
       onSuccess();
       dispatch(acceptBidChangeSuccess());
     } catch (error) {
