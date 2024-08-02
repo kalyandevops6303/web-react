@@ -744,11 +744,11 @@ export const getBidAction = (action) => {
     case bidStatus.BID_SUBMITTED:
       return 'Bid Submitted';
     case bidStatus.BID_CHANGE_REQUEST:
-      return 'Bid change Request';
+      return 'Bid Change Request';
     case bidStatus.BID_CHANGE_ACCPETED:
-      return 'Bid change Accepted';
+      return 'Bid Change Accepted';
     case bidStatus.BID_CHANGE_REJECTED:
-      return 'Bid change Rejected';
+      return 'Bid Change Rejected';
     default:
       return '';
   }

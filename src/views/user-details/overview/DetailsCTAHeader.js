@@ -25,6 +25,7 @@ import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
 import RejectRequestModal from '../../modals/RejectRequestModal';
 import AcceptClubInviationModal from '../../modals/AcceptClubInviationModal';
 import DeclineClubInvitaionModal from '../../modals/DeclineClubInvitationModal';
+import { getMyTeam } from '../../../redux/actions/dashboardActions';
 
 const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
   const dispatch = useDispatch();
@@ -80,6 +81,7 @@ const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
           setAccpetModal(false);
           dispatch(getRequestStatusSuccess(null));
           dispatch(makeTeamMemberSuccess());
+          dispatch(getMyTeam())
         },
         onError: () => {
           setIsStatusUpdating(false);

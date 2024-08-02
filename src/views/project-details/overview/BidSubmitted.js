@@ -140,8 +140,8 @@ const BidSubmitted = () => {
   };
   const onAcceptSuccess = () => {
     toggleAccepetModal();
-    dispatch(getBidDetails({project_id: param?.projectId}))
-    dispatch(getBidTimeline({project_id: param?.projectId}))
+    dispatch(getBidDetails({project_id: param?.projectId}));
+    dispatch(getBidTimeline({project_id: param?.projectId}));
   };
   const onAccept = () => {
     dispatch(
