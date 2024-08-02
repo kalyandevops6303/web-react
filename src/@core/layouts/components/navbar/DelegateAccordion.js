@@ -8,6 +8,7 @@ import {
   Button,
   CardText,
   Badge,
+  UncontrolledTooltip,
 } from 'reactstrap';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '../../../components/avatar';
@@ -64,11 +65,26 @@ const DelegateAccordion = () => {
               <ComponentSpinner size="sm" />
             ) : (
               delegateInvitationStatus?.map((delegate) => (
-                <DropdownItem tag="div" key={delegate._id} className="d-flex align-items-center gap-50 cursor-pointer">
+                <DropdownItem
+                  tag="div"
+                  key={delegate._id}
+                  className="d-flex align-items-center gap-50 cursor-pointer border-bottom border-light-grey"
+                >
                   <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" />
                   <div className="ms-50 d-flex justify-content-between align-items-center w-100">
                     <div className="d-flex flex-column">
-                      <span className="mb-25 font-small-3 fw-light">{delegate.delegate_name}</span>
+                      <span className="mb-25 font-small-3 fw-light" id={`delegate-${delegate._id}`}>
+                        {delegate.delegate_name?.length > 15
+                          ? delegate.delegate_name.slice(0, 15) + '...'
+                          : delegate.delegate_name}
+                      </span>
+                      {delegate.delegate_name?.length > 15 && (
+                        <UncontrolledTooltip placement="top" target={`delegate-${delegate._id}`}>
+                          <div className="d-flex flex-column align-items-start">
+                            <p className="m-0">{delegate.delegate_name}</p>
+                          </div>
+                        </UncontrolledTooltip>
+                      )}
                       {delegate.status === 'EXPIRED' && (
                         <span className="font-small-1 fw-light text-danger">Invitation expired</span>
                       )}
@@ -106,7 +122,7 @@ const DelegateAccordion = () => {
             <img alt="plus" src={addIcon} height={28} width={28} className="no-border-radius" />
             <span className="align-middle ">Add Delegate</span>
           </DropdownItem>
-          <DropdownItem className="w-100 text-primary d-flex justify-content-start align-items-center gap-1">
+          <DropdownItem className="w-100 text-primary d-flex justify-content-start align-items-center gap-1 border-top border-light-grey">
             <img alt="plus" src={settingsIcon} height={28} width={28} className="no-border-radius" />
             <span className="align-middle ">Delegate Setting</span>
           </DropdownItem>
