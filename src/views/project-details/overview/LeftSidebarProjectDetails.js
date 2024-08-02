@@ -13,7 +13,7 @@ import { CustomBadge } from '../../styled';
 import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/projectDetailsSelectors';
 import DateTime from '../../../lib/date-time';
 
-import { getProjectDetails, withdrawProject } from '../../../redux/actions/projectDetailsAction';
+import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -25,6 +25,7 @@ import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
 import ViewFilesModal from '../../modals/ViewFilesModal';
 import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import WithdrawModal from '../../modals/WithdrawModal';
 
 const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay) => {
   // checking whether the project has secondary status or not
@@ -58,6 +59,7 @@ const LeftSidebarProjectDetails = () => {
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
   const [viewFilesModal, setViewFilesModal] = useState(null);
+  const [confirmWithdrawModal, setConfirmWithdrawModal] = useState(false);
   const savedUserData = useSelector(selectSavedUserData);
   const toggleViewFilesModal = () => {
     setViewFilesModal(!viewFilesModal);
@@ -178,14 +180,11 @@ const LeftSidebarProjectDetails = () => {
     setInviteTalentToTeamModal(true);
   };
   const handleWithdraw = () => {
-    dispatch(
-      withdrawProject({
-        project_id: projectDetailsData?._id,
-        onSuccess: () => {
-          navigate('/marketplace/my_listings');
-        },
-      }),
-    );
+    setConfirmWithdrawModal(true);
+  };
+
+  const handleReList = () => {
+    setRelistConfirmationModal(true);
   };
 
   const onMessageClick = () => {
@@ -359,7 +358,10 @@ const LeftSidebarProjectDetails = () => {
               <span className="info-key">Posted date:</span>
               <CardText className="info-value ">
                 {' '}
-                {convertUnixTimestampToDate(projectDetailsData?.listing_details?.start_date_epoch, savedUserData?.availability?.timezone?.name )}
+                {convertUnixTimestampToDate(
+                  projectDetailsData?.listing_details?.start_date_epoch,
+                  savedUserData?.availability?.timezone?.name,
+                )}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (
@@ -439,6 +441,11 @@ const LeftSidebarProjectDetails = () => {
                     Withdraw
                   </Button>
                 )}
+                {projectDetailsData?.status === 'WITHDRAWN' && (
+                  <Button className="w-50" color="primary" onClick={handleReList}>
+                    Re-List
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -459,6 +466,15 @@ const LeftSidebarProjectDetails = () => {
           toggleInviteTeamMemberModal={toggleModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           projectId={params.projectId}
+        />
+      )}
+      {confirmWithdrawModal && (
+        <WithdrawModal
+          modal={confirmWithdrawModal}
+          toggleModal={() => {
+            setConfirmWithdrawModal(false);
+          }}
+          projectDetailsData={projectDetailsData}
         />
       )}
     </LeftSidebarProjectDetailsWrapper>
