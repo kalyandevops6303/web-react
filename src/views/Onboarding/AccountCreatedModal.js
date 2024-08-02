@@ -7,6 +7,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import AccountCreatedGif from '../../assets/images/accountCreatedGif.gif';
 import { AccountCreatedImageContainer } from './style';
 import { setLoggedInStatus } from '../../redux/reducers/auth';
+import { userTypes } from '../../utility/constants/Constant';
+
 const AccountCreatedModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -16,9 +18,9 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
     const route = window.location.pathname;
   
     if (route.includes('talent-onboarding')) {
-      return 'TALENT';
+      return userTypes.talent;
     } else if (route.includes('client-onboarding')) {
-      return 'CLIENT';
+      return userTypes.client;
     } else {
       return null;
     }
@@ -37,7 +39,7 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
 
   return (
     <>
-      {getOnboardingType() === "TALENT" ?
+      {getOnboardingType() === userTypes?.talent ?
         <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
           <ModalHeader toggle={onClose} />
           <ModalBody>
