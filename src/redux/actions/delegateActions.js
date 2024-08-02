@@ -10,14 +10,12 @@ import {
   inviteDelegateFailure,
   inviteDelegateRequest,
   inviteDelegateSuccess,
-  signInDelegateSuccess,
   signUpDelegateRequest,
   signUpDelegateSuccess,
 } from '../reducers/delegate';
 import { setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
 import { setItemFromSession } from '../../utility/sessesionStorageControl';
-import { loginService } from '../../services/authServices';
 
 const signUpDelegate =
   ({ email, newPassword, invitationToken, onSuccess }) =>
@@ -46,34 +44,6 @@ const signUpDelegate =
     }
   };
 
-const signInDelegate =
-  ({ email, password, onSuccess }) =>
-  async (dispatch) => {
-    dispatch(signUpDelegateRequest());
-    try {
-      const res = await loginService({ email, password });
-      setItem('access_token', res?.data?.data.access_token);
-      setItem('access_token_expires', res?.data?.data.access_token_expires);
-      setItem('refresh_token', res?.data?.data.refresh_token);
-      setItem('refresh_token_expires', res?.data?.data.refresh_token_expires);
-      setItem('user_id', res?.data?.data.user_id);
-      setItem('is_delegate', res?.data?.data.is_delegate);
-      setItem('user_type', res?.data?.data.user_type);
-      window.dataLayer.push({ user_id: res?.data?.data.user_id });
-      if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
-        dispatch(signInDelegateSuccess(res?.data?.data));
-        setItemFromSession('isUserVisited', true);
-      } else {
-        dispatch(signInDelegateSuccess(false));
-      }
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (error) {
-      errorHandler(error, inviteDelegateFailure);
-    }
-  };
-
 const inviteDelegate =
   ({ email, onSuccess }) =>
   async (dispatch) => {
@@ -90,16 +60,15 @@ const inviteDelegate =
   };
 
 const getDelegateInvitationStatus =
-  ({ metadata, onSuccess }) =>
+  ({ metadata }) =>
   async (dispatch) => {
     dispatch(delegateInvitationStatusRequest());
     try {
       const res = await delegateInvitationStatusService({ metadata });
-      dispatch(delegateInvitationStatusSuccess());
-      onSuccess(res?.data?.data?.data);
+      dispatch(delegateInvitationStatusSuccess(res?.data?.data?.data));
     } catch (error) {
       errorHandler(error, inviteDelegateFailure);
     }
   };
 
-export { inviteDelegate, signUpDelegate, signInDelegate, getDelegateInvitationStatus };
+export { inviteDelegate, signUpDelegate, getDelegateInvitationStatus };

@@ -20,7 +20,6 @@ import {
 } from 'reactstrap';
 import { ChevronRight, Info, UserPlus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
-import Proptypes from 'prop-types';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
 import theme from '../../configs/themeVariables';
 import CountryDropdown from '../../@core/components/country-dropdown';
@@ -58,7 +57,7 @@ import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
 
-const Account = ({ isDelegate }) => {
+const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
     firstName: yup
       .string()
@@ -78,6 +77,7 @@ const Account = ({ isDelegate }) => {
   });
 
   const savedFormData = useSelector(formData);
+  const isDelegate = getItem('isDelegate');
 
   const {
     control,
@@ -302,7 +302,7 @@ const Account = ({ isDelegate }) => {
   };
   const savedFormImage = useSelector(formImage);
   const fetchFile = async (file) => {
-    if(!file) return;
+    if (!file) return;
     const thumbnail = URL.createObjectURL(file);
     setSelectedImage(file);
     dispatch(setFormImage(file));
@@ -562,11 +562,3 @@ const Account = ({ isDelegate }) => {
 };
 
 export default Account;
-
-Account.propTypes = {
-  isDelegate: Proptypes.bool,
-};
-
-Account.defaultProps = {
-  isDelegate: false,
-};

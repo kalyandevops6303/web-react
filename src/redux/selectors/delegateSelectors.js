@@ -10,6 +10,7 @@ export const delegateInvitationStatusData = createSelector(
   delegateSelector,
   (delegate) => delegate.delegateInvitationStatusData,
 );
+export const delegateProfileData = createSelector(delegateSelector, (delegate) => delegate.delegateProfile);
 
 export const checkIsDelegateModeModalVisible = createSelector(
   delegateSelector,

@@ -30,6 +30,7 @@ import { formData } from '../../redux/selectors/formDataSelectors';
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { getItem } from '../../utility/localStorageControl';
 
 const VerifyPhone = () => {
   const dispatch = useDispatch();
@@ -42,9 +43,10 @@ const VerifyPhone = () => {
   const phoneData = useSelector(selectMobile);
 
   const userType = useSelector(selectUserType);
+  const isDelegate = getItem('isDelegate');
 
   useEffect(() => {
-    if (!userType && !localStorage.getItem('isDelegate')) {
+    if (!userType && !isDelegate) {
       dispatch(getUserData());
     }
   }, []);
@@ -61,6 +63,9 @@ const VerifyPhone = () => {
     }
     if (!phoneData) {
       navigate('/auth/register-phone');
+    }
+    if (isDelegate) {
+      navigate('/client-onboarding/account-details');
     }
   }, [isPhoneVerified, navigate]);
 

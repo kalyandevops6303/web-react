@@ -32,25 +32,6 @@ const delegateSlice = createSlice({
       error: action.payload,
     }),
 
-    // sign in delegate
-    signInDelegateRequest: (state) => ({
-      ...state,
-      isLoading: true,
-      error: null,
-    }),
-    signInDelegateSuccess: (state, action) => ({
-      ...state,
-      isLoading: false,
-      error: null,
-      isDelegate: true,
-      delegateProfile: action.payload,
-    }),
-    signInDelegateFailure: (state, action) => ({
-      ...state,
-      isLoading: false,
-      error: action.payload,
-    }),
-
     // invite delegate
     inviteDelegateRequest: (state) => ({
       ...state,
@@ -74,10 +55,11 @@ const delegateSlice = createSlice({
       isLoading: true,
       error: null,
     }),
-    delegateInvitationStatusSuccess: (state) => ({
+    delegateInvitationStatusSuccess: (state, action) => ({
       ...state,
       isLoading: false,
       error: null,
+      delegateInvitationStatusData: action.payload,
     }),
     delegateInvitationStatusFailure: (state, action) => ({
       ...state,
@@ -106,9 +88,6 @@ export const {
   signUpDelegateRequest,
   signUpDelegateSuccess,
   signUpDelegateFailure,
-  signInDelegateFailure,
-  signInDelegateRequest,
-  signInDelegateSuccess,
   delegateInvitationStatusRequest,
   delegateInvitationStatusSuccess,
   delegateInvitationStatusFailure,

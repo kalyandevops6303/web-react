@@ -17,6 +17,7 @@ import settingsIcon from '../../../../assets/images/settingsIcon.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   checkIsInviteDelegateModalVisible,
+  delegateInvitationStatusData,
   selectDelegateLoading,
 } from '../../../../redux/selectors/delegateSelectors';
 import { toggleAddDelegateModal } from '../../../../redux/reducers/delegate';
@@ -26,18 +27,14 @@ import ComponentSpinner from '../../../components/spinner/Loading-spinner';
 
 const DelegateAccordion = () => {
   const [open, setOpen] = useState('');
-  const [delegateInvitationStatus, setDelegateInvitationStatus] = useState([]);
   const toggle = useCallback((id) => (open === id ? setOpen('') : setOpen(id)), [open]);
 
   const dispatch = useDispatch();
   const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
+  const delegateInvitationStatus = useSelector(delegateInvitationStatusData);
   const isLoading = useSelector(selectDelegateLoading);
 
   const openAddDelegateModal = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
-
-  const onSuccess = (data) => {
-    setDelegateInvitationStatus(data);
-  };
 
   const getDelegateInvitationStatusData = useCallback(() => {
     if (open === '') {
@@ -45,7 +42,7 @@ const DelegateAccordion = () => {
         page: 1,
         pageSize: 5,
       };
-      dispatch(getDelegateInvitationStatus({ metadata, onSuccess }));
+      dispatch(getDelegateInvitationStatus({ metadata }));
     }
   }, [dispatch, open]);
 

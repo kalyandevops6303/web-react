@@ -34,7 +34,6 @@ import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
-import UserNameRoleCompanyComp from '../../../components/username-role-company';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -46,17 +45,12 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const isDelegate = getItem('isDelegate');
 
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
   const [supportModal, setSupportModal] = useState(false);
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
   const isDelegateProfileCreated = true; // TODO: setting this to true, should be computed from server
-  const delegateData = {
-    first_name: 'Claire',
-    last_name: 'Dunphy',
-    role: 'Delegate2',
-    image_uri: defaultAvatar,
-  };
 
   const handleEdit = () => {
     const talentOrClientProfile =
@@ -223,30 +217,96 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
       <UserDropDownWrapper>
         <DropdownMenu style={{ width: '24rem' }} end>
-          {savedUserDetails?.user_type === userTypes.delegate && isDelegateProfileCreated && (
-            <div className="my-25 px-1 edit-accordion">
-              {userDetailsData && <UserNameRoleCompanyComp data={delegateData} />}
+          {isDelegate && isDelegateProfileCreated && (
+            <div className="pb-50 border-bottom border-grey-light">
+              {userDetailsData && (
+                <DropdownItem className="d-flex justify-content-between">
+                  <section className="user-info-avatar d-flex align-items-center">
+                    <Avatar
+                      img={
+                        userDetailsData?.client_info?.image_uri.length > 0
+                          ? userDetailsData?.client_info?.image_uri
+                          : defaultAvatar
+                      }
+                      imgHeight="40"
+                      imgWidth="40"
+                    />
+                    <div className="user-info ms-1 ms user-nav">
+                      <span className="mb-50 user-name fw-bold text-start d-block" id="username">
+                        {userDetailsData?.client_info?.first_name} {userDetailsData?.client_info?.last_name}
+                      </span>
+                      {userDetailsData?.client_info?.first_name?.length > 15 && (
+                        <UncontrolledTooltip placement="right" target="username">
+                          <div className="d-flex flex-column align-items-start">
+                            <p className="text-start m-0">
+                              {userDetailsData?.client_info?.first_name} {userDetailsData?.client_info?.last_name}
+                            </p>
+                          </div>
+                        </UncontrolledTooltip>
+                      )}
+                      <span className="w-100 font-small-3 d-block user-status text-start">
+                        {userDetailsData?.user_type ? capitalize(userDetailsData?.user_type) : ''}
+                      </span>
+                    </div>
+                  </section>
+                </DropdownItem>
+              )}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.delegate && (
-            <div className="mt-1 px-1">
-              <span className="mb-3">Delegate for:</span>
-              <div className="delegate">{userDetailsData && <UserNameRoleCompanyComp data={delegateData} />}</div>
+          {isDelegate && (
+            <div className="mt-1">
+              <span className="px-1">Delegate for:</span>
+              <div className="mt-50 border-bottom border-grey-light">
+                {userDetailsData && (
+                  <DropdownItem className="d-flex justify-content-between">
+                    <section className="user-info-avatar d-flex align-items-center">
+                      <Avatar
+                        img={
+                          userDetailsData?.admin_client_info?.image_uri.length > 0
+                            ? userDetailsData?.admin_client_info?.image_uri
+                            : defaultAvatar
+                        }
+                        imgHeight="40"
+                        imgWidth="40"
+                      />
+                      <div className="user-info ms-1 ms user-nav">
+                        <span className="mb-50 user-name fw-bold text-start d-block" id="username">
+                          {userDetailsData?.admin_client_info?.first_name}{' '}
+                          {userDetailsData?.admin_client_info?.last_name}
+                        </span>
+                        {userDetailsData?.admin_client_info?.first_name?.length > 15 && (
+                          <UncontrolledTooltip placement="right" target="username">
+                            <div className="d-flex flex-column align-items-start">
+                              <p className="text-start m-0">
+                                {userDetailsData?.admin_client_info?.first_name}{' '}
+                                {userDetailsData?.admin_client_info?.last_name}
+                              </p>
+                            </div>
+                          </UncontrolledTooltip>
+                        )}
+                        <span className="w-100 font-small-3 d-block user-status text-start">
+                          {userDetailsData?.user_type ? capitalize(userDetailsData?.user_type) : ''}
+                        </span>
+                      </div>
+                    </section>
+                  </DropdownItem>
+                )}
+              </div>
             </div>
           )}
-          {savedUserDetails?.user_type !== userTypes.delegate && (
+          {!isDelegate && (
             <DropdownItem onClick={handleEdit} className="w-100 edit">
               <span className="align-middle">Public Profile</span>
             </DropdownItem>
           )}
-          {savedUserDetails?.user_type !== userTypes.delegate || isDelegateProfileCreated ? (
+          {!isDelegate || isDelegateProfileCreated ? (
             <EditProfileAccordion />
           ) : (
             <DropdownItem onClick={() => navigate('/delegate-onboarding/account-details')} className="w-100 edit">
               <span className="align-middle">Create My Profile</span>
             </DropdownItem>
           )}
-          {savedUserDetails?.user_type !== userTypes.delegate && (
+          {!isDelegate && (
             <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
               {userDetailsData && (
                 <DropdownItem
@@ -330,10 +390,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
             </div>
           )}
           {savedUserDetails?.user_type === userTypes.client && <DelegateAccordion />}
-          <DropdownItem
-            onClick={handleCustomerSupport}
-            className={`w-100 customer-support ${savedUserDetails?.user_type !== userTypes.delegate ? 'mt-0' : ''}`}
-          >
+          <DropdownItem onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
             <span className="align-middle ">Customer support</span>
           </DropdownItem>
           <DropdownItem onClick={handleLogout} className="w-100 logout">

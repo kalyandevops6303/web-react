@@ -41,7 +41,6 @@ import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
 import Assessments from '../../views/assessments';
-import DelegateOnboarding from '../../views/Onboarding/Delegate';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -148,20 +147,6 @@ const Routes = [
   {
     path: `/${userProfileEdit.client}/:section-details`,
     element: <ClientOnboarding />,
-  },
-  {
-    path: `/${userOnboarding.delegate}/:section-details`,
-    element: <DelegateOnboarding />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: `/${userProfileEdit.delegate}/:section-details`,
-    element: <DelegateOnboarding />,
-    meta: {
-      layout: 'blank',
-    },
   },
   {
     path: '/create-project',

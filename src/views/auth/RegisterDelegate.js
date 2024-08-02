@@ -213,7 +213,6 @@ const RegisterDelegate = () => {
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
-    localStorage.setItem('isDelegate', true);
   }, [localFormData]);
 
   useEffect(() => {
@@ -230,6 +229,7 @@ const RegisterDelegate = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
+    localStorage.setItem('isDelegate', true);
     navigate('/auth/register-phone');
   };
 
