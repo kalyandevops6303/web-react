@@ -34,6 +34,7 @@ import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
+import DelegateNameCard from '../../../../views/cards/DelegateNameCard';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -157,6 +158,10 @@ const UserDropdown = ({ setNavBarLoading }) => {
       : savedUserDetails?.client_info?.first_name + ' ' + savedUserDetails?.client_info?.last_name
     : '';
 
+  const adminUsername =
+    userDetailsData?.admin_client_info &&
+    userDetailsData?.admin_client_info?.first_name + ' ' + userDetailsData?.admin_client_info?.last_name;
+
   return (
     <UncontrolledDropdown
       tag="li"
@@ -165,21 +170,38 @@ const UserDropdown = ({ setNavBarLoading }) => {
     >
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name truncate-1 fw-bold" id="username">
-            {userName}
+          <span className="user-name truncate-1 fw-bold pb-25" id="username">
+            {isDelegate ? `${userDetailsData?.client_info?.company_name}` : userName}
           </span>
           {userName?.length > 15 && (
             <UncontrolledTooltip placement="right" target="username">
               <div className="d-flex flex-column align-items-start">
-                <p className="m-0">{userName}</p>
+                <p className="m-0">{isDelegate ? `${userDetailsData?.client_info?.company_name}` : userName}</p>
               </div>
             </UncontrolledTooltip>
           )}
-          <span className="user-status">
-            {userDetailsData?.team_type
-              ? capitalize(userDetailsData?.team_type)
-              : capitalize(userDetailsData?.user_type) || 'Role'}
-          </span>
+          {isDelegate ? (
+            <>
+              <span className="user-name truncate-1" id="delegateUsername">
+                {isDelegateProfileCreated ? userName : `${userName}(${adminUsername})`}
+              </span>
+              {`${userName}(${adminUsername})`?.length > 15 && (
+                <UncontrolledTooltip placement="right" target="delegateUsername">
+                  <div className="d-flex flex-column align-items-start">
+                    <p className="m-0">
+                      {userName}({adminUsername})
+                    </p>
+                  </div>
+                </UncontrolledTooltip>
+              )}
+            </>
+          ) : (
+            <span className="user-status">
+              {userDetailsData?.team_type
+                ? capitalize(userDetailsData?.team_type)
+                : capitalize(userDetailsData?.user_type) || 'Role'}
+            </span>
+          )}
         </div>
 
         {userDetailsData?.user_type === userTypes.talent && (
@@ -220,36 +242,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {isDelegate && isDelegateProfileCreated && (
             <div className="pb-50 border-bottom border-grey-light">
               {userDetailsData && (
-                <DropdownItem className="d-flex justify-content-between">
-                  <section className="user-info-avatar d-flex align-items-center">
-                    <Avatar
-                      img={
-                        userDetailsData?.client_info?.image_uri.length > 0
-                          ? userDetailsData?.client_info?.image_uri
-                          : defaultAvatar
-                      }
-                      imgHeight="40"
-                      imgWidth="40"
-                    />
-                    <div className="user-info ms-1 ms user-nav">
-                      <span className="mb-50 user-name fw-bold text-start d-block" id="username">
-                        {userDetailsData?.client_info?.first_name} {userDetailsData?.client_info?.last_name}
-                      </span>
-                      {userDetailsData?.client_info?.first_name?.length > 15 && (
-                        <UncontrolledTooltip placement="right" target="username">
-                          <div className="d-flex flex-column align-items-start">
-                            <p className="text-start m-0">
-                              {userDetailsData?.client_info?.first_name} {userDetailsData?.client_info?.last_name}
-                            </p>
-                          </div>
-                        </UncontrolledTooltip>
-                      )}
-                      <span className="w-100 font-small-3 d-block user-status text-start">
-                        {userDetailsData?.user_type ? capitalize(userDetailsData?.user_type) : ''}
-                      </span>
-                    </div>
-                  </section>
-                </DropdownItem>
+                <DelegateNameCard userDetailsData={userDetailsData} userName={userName} defaultAvatar={defaultAvatar} />
               )}
             </div>
           )}
@@ -258,38 +251,15 @@ const UserDropdown = ({ setNavBarLoading }) => {
               <span className="px-1">Delegate for:</span>
               <div className="mt-50 border-bottom border-grey-light">
                 {userDetailsData && (
-                  <DropdownItem className="d-flex justify-content-between">
-                    <section className="user-info-avatar d-flex align-items-center">
-                      <Avatar
-                        img={
-                          userDetailsData?.admin_client_info?.image_uri.length > 0
-                            ? userDetailsData?.admin_client_info?.image_uri
-                            : defaultAvatar
-                        }
-                        imgHeight="40"
-                        imgWidth="40"
-                      />
-                      <div className="user-info ms-1 ms user-nav">
-                        <span className="mb-50 user-name fw-bold text-start d-block" id="username">
-                          {userDetailsData?.admin_client_info?.first_name}{' '}
-                          {userDetailsData?.admin_client_info?.last_name}
-                        </span>
-                        {userDetailsData?.admin_client_info?.first_name?.length > 15 && (
-                          <UncontrolledTooltip placement="right" target="username">
-                            <div className="d-flex flex-column align-items-start">
-                              <p className="text-start m-0">
-                                {userDetailsData?.admin_client_info?.first_name}{' '}
-                                {userDetailsData?.admin_client_info?.last_name}
-                              </p>
-                            </div>
-                          </UncontrolledTooltip>
-                        )}
-                        <span className="w-100 font-small-3 d-block user-status text-start">
-                          {userDetailsData?.user_type ? capitalize(userDetailsData?.user_type) : ''}
-                        </span>
-                      </div>
-                    </section>
-                  </DropdownItem>
+                  <DelegateNameCard
+                    img={
+                      userDetailsData?.admin_client_info?.image_uri.length > 0
+                        ? userDetailsData?.admin_client_info?.image_uri
+                        : defaultAvatar
+                    }
+                    userType={userDetailsData?.user_type}
+                    userName={adminUsername}
+                  />
                 )}
               </div>
             </div>

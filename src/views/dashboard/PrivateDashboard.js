@@ -29,7 +29,7 @@ import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
-import { removeItem, setItem } from '../../utility/localStorageControl';
+import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
@@ -70,6 +70,7 @@ const PrivateDashboard = () => {
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const query = useSelector((state) => state.search.query);
+  const isDelegate = getItem('isDelegate');
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
@@ -92,6 +93,12 @@ const PrivateDashboard = () => {
 
   const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
   const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
+
+  useEffect(() => {
+    if (isDelegate && !isDelegateModeModalVisible) {
+      toggleDelegateMode();
+    }
+  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -192,7 +199,7 @@ const PrivateDashboard = () => {
       {isInviteDelegateModalVisible && (
         <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
       )}
-      {isDelegateModeModalVisible && (
+      {isDelegate && isDelegateModeModalVisible && (
         <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
       )}
       {savedDraftsAvailableModal && (
