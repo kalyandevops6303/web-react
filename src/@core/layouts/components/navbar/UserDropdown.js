@@ -389,7 +389,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               ))}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.client && <DelegateAccordion />}
+          {savedUserDetails?.user_type === userTypes.client && !isDelegate && <DelegateAccordion />}
           <DropdownItem onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
             <span className="align-middle ">Customer support</span>
           </DropdownItem>

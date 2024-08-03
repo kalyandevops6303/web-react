@@ -156,6 +156,10 @@ const Account = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
+    if (isDelegate) {
+      navigate('/dashboard');
+      return;
+    }
     if (location.pathname.includes('profile-edit')) {
       userDetailsData?.user_type === 'TALENT'
         ? navigate(`/${userProfileEdit.talent}/personal-details`)
