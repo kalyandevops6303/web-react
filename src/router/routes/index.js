@@ -219,8 +219,8 @@ const Routes = [
   },
   {
     path: '/assessments',
-    element: <Assessments />,
-  },
+    element: <Assessments />
+  }
 ];
 
 // eslint-disable-next-line consistent-return

@@ -6,7 +6,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import PropTypes from 'prop-types';
 
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback, Spinner } from 'reactstrap';
@@ -24,14 +23,16 @@ import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
+import { getItem } from '../../utility/localStorageControl';
 
-const RegisterPhone = ({ isDelegate }) => {
+const RegisterPhone = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const savedFormData = useSelector(formData);
 
   const isLoading = useSelector(selectAuthLoading);
   const mobileData = useSelector(selectMobile);
+  const isDelegate = getItem('isDelegate');
 
   const [selectedCountry, setSelectedCountry] = useState(
     savedFormData?.selectCountry ||
@@ -162,14 +163,6 @@ const RegisterPhone = ({ isDelegate }) => {
       </div>
     </OnBoardWrap>
   );
-};
-
-RegisterPhone.propTypes = {
-  isDelegate: PropTypes.bool,
-};
-
-RegisterPhone.defaultProps = {
-  isDelegate: false,
 };
 
 export default RegisterPhone;

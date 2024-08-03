@@ -97,6 +97,7 @@ export const UserDropDownWrapper = styled.div`
       color: white;
     }
   }
+
   .dropdown-item {
     width: 100%;
   }

@@ -52,7 +52,7 @@ const AuthRoute = () => {
     },
     {
       path: '/register-phone',
-      element: <RegisterPhone isDelegate={localStorage.getItem('isDelegate')} />,
+      element: <RegisterPhone  />,
     },
 
     {
@@ -97,14 +97,14 @@ const AuthRoute = () => {
       currentPath === '/auth/phone-verify' ||
       currentPath === '/auth/email-verify' ||
       currentPath === '/auth/forgot-password-email-verify' ||
-      currentPath === '/auth/register-delegate-phone'
+      currentPath === '/auth/register-phone'
     ) {
       return <img src={VerificationPic} alt="bg-pic" className="verification-pic" />;
     }
     if (currentPath === '/auth/login') {
       return <img src={LoginPic} alt="bg-pic" className="me-8 login-pic" />;
     }
-    if (userType === userTypes.client || currentPath === '/auth/register-delegate') {
+    if (userType === userTypes.client || currentPath === '/auth/delegate/register') {
       return <img src={ClientPic} alt="bg-pic" className="me-8 client-pic" />;
     }
     if (userType === userTypes?.talent) {
