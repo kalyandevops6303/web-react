@@ -15,6 +15,7 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
   const userName = `${userDetailsData?.client_info?.first_name} ${userDetailsData?.client_info?.last_name}`;
 
   const onClose = () => {
+    localStorage.setItem('markDelegateModeModalSeen', true);
     toggleModal();
   };
 
@@ -46,7 +47,9 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button color="primary">Get Started</Button>
+            <Button onClick={onClose} color="primary">
+              Get Started
+            </Button>
           </div>
         </DelegateModeModalWrapper>
       </ModalBody>

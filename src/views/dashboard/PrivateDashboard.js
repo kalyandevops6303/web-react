@@ -95,7 +95,7 @@ const PrivateDashboard = () => {
   const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
 
   useEffect(() => {
-    if (isDelegate && !isDelegateModeModalVisible) {
+    if (isDelegate && !isDelegateModeModalVisible && !getItem('isDelegateModeModalVisited')) {
       toggleDelegateMode();
     }
   }, []);

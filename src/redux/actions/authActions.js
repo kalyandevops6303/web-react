@@ -119,7 +119,9 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       dispatch(loginSuccess(res.data.data));
       dispatch(cometChatLogin(res.data.data.comet_chat_token));
       setItemFromSession('isUserVisited', true);
-      setItem('isDelegateProfileCreated', true);
+      if (res.data?.data?.is_delegate) {
+        setItem('isDelegateProfileCreated', true);
+      }
     } else {
       dispatch(loginSuccess(false));
     }

@@ -51,7 +51,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
   const [supportModal, setSupportModal] = useState(false);
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
-  const isDelegateProfileCreated = true; // TODO: setting this to true, should be computed from server
+  const isDelegateProfileCreated = getItem('isDelegateProfileCreated');
 
   const handleEdit = () => {
     const talentOrClientProfile =
@@ -170,7 +170,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
     >
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name truncate-1 fw-bold pb-25" id="username">
+          <span className="user-name truncate-1 fw-bold" id="username">
             {isDelegate ? `${userDetailsData?.client_info?.company_name}` : userName}
           </span>
           {userName?.length > 15 && (
@@ -240,9 +240,17 @@ const UserDropdown = ({ setNavBarLoading }) => {
       <UserDropDownWrapper>
         <DropdownMenu style={{ width: '24rem' }} end>
           {isDelegate && isDelegateProfileCreated && (
-            <div className="pb-50 border-bottom border-grey-light">
+            <div className="border-bottom border-grey-light">
               {userDetailsData && (
-                <DelegateNameCard userDetailsData={userDetailsData} userName={userName} defaultAvatar={defaultAvatar} />
+                <DelegateNameCard
+                  img={
+                    userDetailsData?.client_info?.image_uri.length > 0
+                      ? userDetailsData?.client_info?.image_uri
+                      : defaultAvatar
+                  }
+                  userType={userDetailsData?.user_type}
+                  userName={userName}
+                />
               )}
             </div>
           )}
