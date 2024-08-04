@@ -71,6 +71,11 @@ const CustomBadge = styled.span`
     color: ${theme.green};
     border: ${`2px solid ${theme.green}`};
   }
+  .WITHDRAWN {
+    background: ${theme.lightOrangeColor};
+    color: ${theme.orangeColor};
+    border: ${`2px solid ${theme.orangeColor}`};
+  }
   .REVIEWED,
   .IN_PROGRESS,
   .DRAFT {
@@ -533,5 +538,5 @@ export {
   Elevate,
   CircularBackButtonContainer,
   TooltipWrapper,
-  DisputeCount
+  DisputeCount,
 };
