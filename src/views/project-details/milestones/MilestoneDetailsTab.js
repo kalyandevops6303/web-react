@@ -312,17 +312,21 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       <Card className="gray-card pt-2">
         <div className="mb-2 d-flex gap-1">
           <CardText className="fs-5 fw-bold">Milestone {selectedMilestone?.seq}</CardText>
-          <CustomBadge bordered>
-            <Badge className={`${selectedMilestone?.status}`} color="badge">
-              {statusEnum[selectedMilestone?.status]}
-            </Badge>
-          </CustomBadge>
+          {selectedMilestone?.status !== 'YET_TO_START' && (
+            <CustomBadge bordered>
+              <Badge className={`${selectedMilestone?.status}`} color="badge">
+                {statusEnum[selectedMilestone?.status]}
+              </Badge>
+            </CustomBadge>
+          )}
         </div>
         <div className="mb-3 d-flex gap-5">
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
-            {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
+              {selectedMilestone.start_date
+                ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name)
+                : '-'}
             </CardText>
           </div>
           <div>
@@ -566,7 +570,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             onClick={() => {
                               if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
                                 handleRemove({ item: allLinks?.[index], index });
-                              }else{
+                              } else {
                                 linksRemove(index);
                               }
                             }}
@@ -575,11 +579,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                               <Trash2
                                 size={20}
                                 className="mail-icon"
-                                color={
-                                   !errors?.links?.[index]
-                                    ? theme.red
-                                    : `${theme.red}5f`
-                                }
+                                color={!errors?.links?.[index] ? theme.red : `${theme.red}5f`}
                               />
                             </span>
                           </MessageIconWrap>
