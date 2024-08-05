@@ -49,8 +49,8 @@ class CometChatStickerKeyboard extends React.PureComponent {
       .then((stickers) => {
         // Stickers received
         let activeStickerSet = null;
-        const customStickers = stickers.hasOwnProperty('customStickers') ? stickers['customStickers'] : [];
-        const defaultStickers = stickers.hasOwnProperty('defaultStickers') ? stickers['defaultStickers'] : [];
+        const customStickers = stickers?.hasOwnProperty('customStickers') ? stickers['customStickers'] : [];
+        const defaultStickers = stickers?.hasOwnProperty('defaultStickers') ? stickers['defaultStickers'] : [];
 
         defaultStickers.sort(function (a, b) {
           return a.stickerSetOrder - b.stickerSetOrder;

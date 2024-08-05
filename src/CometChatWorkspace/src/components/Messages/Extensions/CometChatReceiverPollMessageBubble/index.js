@@ -74,8 +74,8 @@ class CometChatReceiverPollMessageBubble extends React.Component {
     })
       .then((response) => {
         if (
-          response.hasOwnProperty('success') === false ||
-          (response.hasOwnProperty('success') && response['success'] === false)
+          response?.hasOwnProperty('success') === false ||
+          (response?.hasOwnProperty('success') && response['success'] === false)
         ) {
           this.props.actionGenerated(enums.ACTIONS['ERROR'], [], 'SOMETHING_WRONG');
         }
@@ -99,19 +99,19 @@ class CometChatReceiverPollMessageBubble extends React.Component {
       return null;
     }
 
-    // if (!this.props.message.hasOwnProperty("metadata")) {
+    // if (!this.props.message?.hasOwnProperty("metadata")) {
     //     return null;
     // }
 
-    // if (!this.props.message.metadata.hasOwnProperty("@injected")) {
+    // if (!this.props.message.metadata?.hasOwnProperty("@injected")) {
     //     return null;
     // }
 
-    // if (!this.props.message.metadata["@injected"].hasOwnProperty("extensions")) {
+    // if (!this.props.message.metadata["@injected"]?.hasOwnProperty("extensions")) {
     //     return null;
     // }
 
-    // if (!this.props.message.metadata["@injected"]["extensions"].hasOwnProperty("polls")) {
+    // if (!this.props.message.metadata["@injected"]["extensions"]?.hasOwnProperty("polls")) {
     //     return null;
     // }
 
@@ -157,7 +157,7 @@ class CometChatReceiverPollMessageBubble extends React.Component {
       }
 
       let checkIcon = null;
-      if (optionData.hasOwnProperty('voters') && optionData.voters.hasOwnProperty(this.state.loggedInUser?.uid)) {
+      if (optionData?.hasOwnProperty('voters') && optionData.voters?.hasOwnProperty(this.state.loggedInUser?.uid)) {
         checkIcon = <i css={checkIconStyle(checkImg, this.context)}></i>;
       }
 

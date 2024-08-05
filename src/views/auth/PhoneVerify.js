@@ -24,17 +24,19 @@ import {
 import ResendOTPComp from './components/ResendOTP';
 import OtpInput from '../../lib/otp-input';
 import LogoComp from './components/LogoComp';
-import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
+import SpeechEmoji from '../../assets/images/logo/speech_baloon.png';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
+import ShowToastMessage from '../../@core/components/toast';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 
 const VerifyPhone = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const savedFormData = useSelector(formData);
   const [code, setCode] = useState(savedFormData?.code || '');
-
+  const [error, setError] = useState('');
   const isLoading = useSelector(selectAuthLoading);
   const isPhoneVerified = useSelector(selectIsPhoneVerified);
   const phoneData = useSelector(selectMobile);
@@ -45,18 +47,22 @@ const VerifyPhone = () => {
     if (!userType) {
       dispatch(getUserData());
     }
-  }, []);
+  }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
 
   useEffect(() => {
     if (isPhoneVerified && userType) {
-      navigate(`/${userType.toLowerCase()}-onboarding/account-details`);
+      // show success message and navigate user to login page
+      ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 2000);
     } else if (isPhoneVerified && !userType) {
       navigate('/auth');
     }
     if (!phoneData) {
       navigate('/auth/register-phone');
     }
-  }, [isPhoneVerified, navigate]);
+  }, [isPhoneVerified, userType, phoneData, navigate]); // added dependencies to avoid infinite re-rendering
 
   const [selectedCountry, setSelectedCountry] = useState({
     label: 'United States',
@@ -66,8 +72,10 @@ const VerifyPhone = () => {
   });
 
   const handleChange = (value) => {
-    dispatch(setFormData({code:value}));
-    setCode(value);
+    if (value !== code) {
+      dispatch(setFormData({ code: value }));
+      setCode(value);
+    }
   };
 
   // Function to handle dropdown change
@@ -75,8 +83,8 @@ const VerifyPhone = () => {
     setSelectedCountry(value);
   };
 
-  const verifyOtp = () => {
-    dispatch(
+  const verifyOtp = async () => {
+    const response = await dispatch(
       verifyPhone({
         phone: phoneData.phone,
         country_code: phoneData?.selectedCountry.dial_code,
@@ -84,6 +92,7 @@ const VerifyPhone = () => {
         country_id: phoneData?.selectedCountry?._id,
       }),
     );
+    setError(response);
     dispatch(clearAllFormData());
   };
 
@@ -92,13 +101,13 @@ const VerifyPhone = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Two Step Verification <img className='speech-emoji' src={SpeechEmoji} alt='' />
+          Two Step Verification <img className="speech-emoji" src={SpeechEmoji} alt="" />
         </CardTitle>
 
         <CardText className="mb-2 card-text">
           We sent a verification code to your mobile number. Enter it in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Go back
+            Edit Mobile
           </span>
         </CardText>
 
@@ -128,11 +137,11 @@ const VerifyPhone = () => {
             inputStyle={{
               border: `1px solid ${theme.OTPborderColor}`,
               borderRadius: '8px',
-              width: '50px',
+              width: '55px',
               height: '50px',
-              fontSize: '12px',
+              fontSize: '18px',
               color: '#000',
-              fontWeight: '400',
+              fontWeight: '500',
               caretColor: 'blue',
             }}
             focusStyle={{
@@ -140,6 +149,11 @@ const VerifyPhone = () => {
               outline: 'none',
             }}
           />
+          {error && (
+            <Label className="mt-2 text-danger text-xl-left">
+              <b>{error}</b>
+            </Label>
+          )}
           <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             Submit
           </Button>

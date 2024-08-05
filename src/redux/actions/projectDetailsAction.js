@@ -133,6 +133,7 @@ import {
   withdrawProjectRequest,
   withdrawProjectSuccess,
 } from '../reducers/projectDetails';
+import { getListProjects } from './marketPlaceActions';
 
 const getTeamMembers =
   ({ project_id }) =>
@@ -322,12 +323,16 @@ const rejectBidChange =
   };
 
 const acceptBidChange =
-  ({ snapshot_id, project_id, onSuccess }) =>
+  ({ snapshot_id, project_id, onSuccess, bid_id }) =>
   async (dispatch) => {
     dispatch(acceptBidChangeRequest());
     try {
       await acceptBidChangeService({ snapshot_id });
-      dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
+      await dispatch(getBidDetails({ project_id, bid_id }));
+      await dispatch(
+        getReceivedBids({ metadata: { page: 1, page_size: 10 }, search_text: '', bid_status: '', project_id }),
+      );
+      await dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
       onSuccess();
       dispatch(acceptBidChangeSuccess());
     } catch (error) {
@@ -381,17 +386,17 @@ const updateInvitation =
 
 const removeWorkerFromProjectTeam =
   ({ projectId, teamId, role, workerId, onSuccess }) =>
-    async (dispatch) => {
-      dispatch(removeWorkerRequest());
-      try {
-        const res = await removeWorkerService(projectId, teamId, workerId, role);
-        dispatch(removeWorkerSuccess(res.data.data));
-        onSuccess();
-        ShowToastMessage(SUCCESS, res.data.data);
-      } catch (error) {
-        errorHandler(error, removeWorkerFailure);
-      }
-    };
+  async (dispatch) => {
+    dispatch(removeWorkerRequest());
+    try {
+      const res = await removeWorkerService(projectId, teamId, workerId, role);
+      dispatch(removeWorkerSuccess(res.data.data));
+      onSuccess();
+      ShowToastMessage(SUCCESS, res.data.data);
+    } catch (error) {
+      errorHandler(error, removeWorkerFailure);
+    }
+  };
 
 // Contract flow
 
@@ -527,21 +532,18 @@ const terminateProject =
 
 const withdrawProject =
   ({ project_id, onSuccess }) =>
-    async (dispatch) => {
-      dispatch(withdrawProjectRequest());
-      try {
-        const res = await withdrawProjectServices({ project_id });
+  async (dispatch) => {
+    dispatch(withdrawProjectRequest());
+    try {
+      const res = await withdrawProjectServices({ project_id });
 
-        ShowToastMessage(SUCCESS, res.data.data);
-        dispatch(withdrawProjectSuccess());
-        onSuccess();
-
-      }
-      catch (error) {
-        errorHandler(error,withdrawProjectFailure);
-
-      }
-    };
+      ShowToastMessage(SUCCESS, res.data.data);
+      dispatch(withdrawProjectSuccess());
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, withdrawProjectFailure);
+    }
+  };
 const relistProject =
   ({ project_id, onSuccess }) =>
   async (dispatch) => {
@@ -611,8 +613,19 @@ const relistProjectByDate = (projectId, startDate, endDate, onSuccess) => async 
   dispatch(relistProjectByDateRequest());
   try {
     const res = await relistProjectByDateService(projectId, startDate, endDate);
-    // ShowToastMessage(SUCCESS, res.data.data);
+    ShowToastMessage(SUCCESS, res.data.data);
     dispatch(relistProjectByDateSuccess(res.data.data));
+    dispatch(
+      getListProjects({
+        metaData: { page: 1, page_size: 10 },
+        searchText: '',
+        is_my_listings: true,
+        is_recommended: false,
+        is_favourite: false,
+        show_expired: false,
+        show_to_be_listed: false,
+      }),
+    );
     onSuccess();
   } catch (error) {
     errorHandler(error, relistProjectByDateFailure);

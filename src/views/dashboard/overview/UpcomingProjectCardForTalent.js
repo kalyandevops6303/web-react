@@ -4,14 +4,14 @@ import Proptypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
 import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { Card, CardBody, CardText, Spinner } from 'reactstrap';
+import { Card, CardBody, Spinner } from 'reactstrap';
 import { ProjectWrapper } from './style';
-import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
-import { roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -37,7 +37,7 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
     // navigate(`/project-details/${data._id}/bid`);
     setShowModal(true);
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
@@ -76,12 +76,22 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
               <div className="design-planning">
-                <CardText className="mb-25">Start Date</CardText>
-                <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
+                <p className="mb-25 details-box-title">
+                  Start Date
+                </p>
+                <p className="mb-0 details-box">
+                 {`${
+          convertUnixTimestampToDate(data?.start_date, savedUserData?.availability?.timezone?.name ) || '-'
+        }`}
+                </p>
               </div>
               <div className="design-planning">
-                <CardText className="mb-25">Amount</CardText>
-                <h6 className="mb-0">${roundOfAmount(data?.amount)}</h6>
+                <p className="mb-25 details-box-title">
+                  Amount
+                </p>
+                <p className="mb-0 details-box">
+                  ${roundOfAmount(data?.amount)}
+                </p>
               </div>
             </div>
           </div>

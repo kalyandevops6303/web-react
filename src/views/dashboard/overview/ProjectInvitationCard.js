@@ -121,17 +121,23 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
       case userTypes.team:
         return (
           <div className="design-planning mt-1 bottom-detail-elements">
-            <CardText className="mb-25">Amount</CardText>
-            <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${roundOfAmount(
-              data?.project?.amount,
-            )}`}</h6>
+            <p className="mb-25 details-box-title">
+              Amount
+            </p>
+            <p className="mb-0 details-box">{`${
+              data?.project?.pay_type.currency?.code === 'USD' ? '$' : data?.project?.pay_type.currency?.code
+            } ${roundOfAmount(data?.project?.amount)}`}</p>
           </div>
         );
       case userTypes.client:
         return !data?.pay_type?.variable_cost ? (
           <div className="design-planning mt-1 bottom-detail-elements">
-            <CardText className="mb-25">Amount</CardText>
-            <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</h6>
+            <p className="mb-25 details-box-title">
+              Amount
+            </p>
+            <p
+              className="mb-0 details-box"
+            >{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</p>
           </div>
         ) : null;
       default:
@@ -221,10 +227,12 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
                   projectName={data?.project?.details?.name}
                 />
                 <div className="design-planning mt-1 bottom-detail-elements">
-                  <CardText className="mb-25">Start date</CardText>
-                  <h6 className="mb-0">{`${
+                  <p className="mb-25 details-box-title">
+                    Start date
+                  </p>
+                  <p className="mb-0 details-box">{`${
                     DateTime.fromMillis(data?.project?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
-                  }`}</h6>
+                  }`}</p>
                 </div>
               </div>
               <div>
@@ -247,7 +255,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
               data?.project?.details?.name ? '' : ''
             } cursor-pointer font-weight-normal text-center text-primary project-cta mt-25`}
           >
-            View Invites
+            View Project
           </div>
         </CardBody>
       </Card>

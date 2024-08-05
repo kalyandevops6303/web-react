@@ -213,8 +213,10 @@ const verifyPhone = (data) => async (dispatch) => {
   try {
     await verifyPhoneService(data);
     dispatch(verifyPhoneSuccess());
+    return null;
   } catch (error) {
     errorHandler(error, verifyPhoneFailure);
+    return error?.response?.data?.errorData?.message;
   }
 };
 

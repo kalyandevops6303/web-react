@@ -1,13 +1,12 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
-import { Badge, Card, CardBody, CardText } from 'reactstrap';
+import { Badge, Card, CardBody } from 'reactstrap';
 
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import DateTime from '../../../lib/date-time';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 
 import { ProjectWrapper } from './style';
@@ -15,12 +14,13 @@ import { CustomBadge } from '../../styled';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
-import { roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
   const [openSwitchModal, setOpenSwitchModal] = useState(false);
-
+  const savedUserData = useSelector(selectSavedUserData);
   const dispatch = useDispatch();
 
   const updateCard = () => {
@@ -124,18 +124,24 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
             <div className="bottom-detail d-flex mt-1">
               <div className="design-planning-wrapper">
                 <div className="design-planning">
-                  <CardText className="mb-25">Due Date</CardText>
-                  <h6 className="mb-0">{`${
-                    DateTime.fromMillis(data?.project_start_date).toFormat('MMM dd, yy') || '-'
-                  }`}</h6>
+                  <p className="mb-25 details-box-title">
+                    Due Date
+                  </p>
+                  <p className="mb-0 details-box">
+                  {convertUnixTimestampToDate(data?.project_start_date, savedUserData?.availability?.timezone?.name )}
+                  </p>
                 </div>
               </div>
             </div>
             <div className="bottom-detail d-flex mt-1">
               <div className="design-planning-wrapper">
                 <div className="design-planning">
-                  <CardText className="mb-25">Payment Due</CardText>
-                  <h6 className="mb-0">${roundOfAmount(data?.amount)}</h6>
+                  <p className="mb-25 details-box-title">
+                    Payment Due
+                  </p>
+                  <p className="mb-0 details-box">
+                    ${roundOfAmount(data?.amount)}
+                  </p>
                 </div>
               </div>
             </div>

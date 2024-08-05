@@ -38,8 +38,21 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments, setResumeParsed } from '../../../redux/reducers/formData';
+import {
+  fileKey,
+  formData,
+  formDocuments,
+  resumeDataUploadedForSocial,
+  resumeParsed,
+} from '../../../redux/selectors/formDataSelectors';
+import {
+  clearAllFormData,
+  setFileKey,
+  setFormData,
+  setFormDocuments,
+  setResumeDataUploadedForSocial,
+  setResumeParsed,
+} from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
@@ -57,9 +70,12 @@ const Social = () => {
   });
 
   const savedFormData = useSelector(formData);
+  const fileKeyDetails = useSelector(fileKey);
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
+  const isResumeDataUploadedForSocial = useSelector(resumeDataUploadedForSocial);
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForSocial || false);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [files, setFiles] = useState(savedFormDocuments || []);
@@ -155,6 +171,7 @@ const Social = () => {
     } else {
       navigate(`/${userOnboarding.talent}/payment-details`);
     }
+    dispatch(setResumeDataUploadedForSocial(parseResume));
   };
 
   const onSkipClick = () => {
@@ -217,7 +234,7 @@ const Social = () => {
     for (let i = 0; i < arr.length; i++) {
       const obj = arr[i];
       // eslint-disable-next-line
-      if (!obj.hasOwnProperty('link') || !obj.hasOwnProperty('linkName')) {
+      if (!obj?.hasOwnProperty('link') || !obj?.hasOwnProperty('linkName')) {
         return false;
       }
       if (!obj.link || !obj.linkName) {
@@ -305,6 +322,7 @@ const Social = () => {
           },
           isUploaded: true,
         };
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key ?? savedFormDocuments[0]?.uploadData?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }
     }
@@ -313,20 +331,32 @@ const Social = () => {
   const setResumeParsedDetails = (res) => {
     if (res) {
       if (res?.social_links.length > 0) {
-        if (res?.social_links.find((link) => link.platform === 'LinkedIn')) {
-          setValue('linkedInLink', res?.social_links.find((link) => link.platform === 'LinkedIn').url, {
-            shouldValidate: true,
-          });
+        if (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')) {
+          setValue(
+            'linkedInLink',
+            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn').url,
+            {
+              shouldValidate: true,
+            },
+          );
         }
-        if (res?.social_links.find((link) => link.platform === 'Twitter')) {
-          setValue('twitterLink', res?.social_links.find((link) => link.platform === 'Twitter').url, {
-            shouldValidate: true,
-          });
+        if (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')) {
+          setValue(
+            'twitterLink',
+            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter').url,
+            {
+              shouldValidate: true,
+            },
+          );
         }
-        if (res?.social_links.find((link) => link.platform === 'GitHub')) {
-          setValue('githubLink', res?.social_links.find((link) => link.platform === 'GitHub').url, {
-            shouldValidate: true,
-          });
+        if (res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')) {
+          setValue(
+            'githubLink',
+            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub').url,
+            {
+              shouldValidate: true,
+            },
+          );
         }
         if (
           res?.talent_info?.social_links.filter(
@@ -351,11 +381,19 @@ const Social = () => {
   };
   useEffect(() => {
     if (parseResume) {
-      if (parsedResumeData != null) {
+      if (parsedUploaded) {
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
-      } else {
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+      } else if (!parsedUploaded && parsedResumeData === null) {
+        dispatch(
+          getResumeParsedDetails(
+            setResumeParsedDetails,
+            setParseResume,
+            savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
+          ),
+        );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
@@ -429,7 +467,7 @@ const Social = () => {
                   </Row>
                   <hr className="m-0 card-header-border mt-2" />
                   <h5 className="m-0 mt-2 mb-1">Other</h5>
-                  {otherSocialLinksFields.map((item, index) => (
+                  {otherSocialLinksFields?.map((item, index) => (
                     <Row key={item.id} className="mb-1">
                       <Col sm="12" md="12" lg="5">
                         <Label className="form-label" for={`otherSocialLinks[${index}].linkName`}>
@@ -589,6 +627,7 @@ const Social = () => {
                                   type="switch"
                                   checked={parseResume}
                                   onClick={() => {
+                                    setParsedUploaded(false);
                                     setParseResume(!parseResume);
                                     dispatch(setResumeParsed(!parseResume));
                                   }}

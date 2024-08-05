@@ -21,12 +21,12 @@ import BidPreviewModal from '../../modals/BidPreviewModal';
 import Empty from './Empty';
 import { acceptBidChange, getBidDetails, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { bidStages, bidStatus, userTypes } from '../../../utility/constants/Constant';
 import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
 import AcceptBidModal from '../../modals/AcceptBidModal';
 import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
-import { getBidAction, getStatusColor } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, getBidAction, getStatusColor } from '../../../utility/Utils';
 import { Elevate } from '../../styled';
 
 const BidSubmitted = () => {
@@ -83,7 +83,7 @@ const BidSubmitted = () => {
       );
     }
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   const bidUpdatesDataSet = [];
   bidTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
@@ -95,7 +95,8 @@ const BidSubmitted = () => {
               {getBidAction(item?.action)}
             </h6>
             <span className="d-block mb-1">
-              {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'}
+              {/* {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'} */}
+              {convertUnixTimestampToDate(item?.time, savedUserData?.availability?.timezone?.name)}
             </span>
             <NameInfo name={item?.by_entity?.name} info={item?.by_entity?.role} img={item?.by_entity?.image} />
             {item?.description && <CardText className="mt-1 word-wrap">{item?.description}</CardText>}{' '}
@@ -148,6 +149,7 @@ const BidSubmitted = () => {
         snapshot_id: selectedTimeline?.snapshot_id,
         project_id: param?.projectId,
         onSuccess: onAcceptSuccess,
+        bid_id: bidInfo?._id,
       }),
     );
   };
@@ -193,7 +195,7 @@ const BidSubmitted = () => {
                     <span className="key">Updated at</span>
 
                     <CardText className="value text-end">
-                      {bidInfo?.updated_at ? DateTime.fromMillis(bidInfo?.updated_at).toFormat('MMM dd, yy') : ''}
+                      {convertUnixTimestampToDate(bidInfo?.updated_at, savedUserData?.availability?.timezone?.name)}
                     </CardText>
                   </div>
                 </div>

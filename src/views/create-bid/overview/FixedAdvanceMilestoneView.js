@@ -45,11 +45,13 @@ import {
   filteredFormSchema,
   formatDateWithDash,
   getFileSize,
+  isEmpty,
   renderFilePreview,
 } from '../../../utility/Utils';
 import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import {
   bidDetailsLoading,
+  draftSetMilestonesLoading,
   // draftSetMilestonesLoading,
   projectDetails,
   setMilestonesLoading,
@@ -186,7 +188,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const projectDetailsData = useSelector(projectDetails);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  // const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
+  const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
 
   const saveAsDraftClicked = useRef();
   const [files, setFiles] = useState([]);
@@ -237,22 +239,22 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const calculateMilestoneValues = (milestoneIndex) => {
-    const milestoneDuration = allMilestones[milestoneIndex]?.workers
+    const milestoneDuration = allMilestones && allMilestones[milestoneIndex]?.workers
       ?.filter((worker) => worker.isChecked && worker.duration)
-      .reduce((max, worker) => Math.max(max, worker.duration), 0);
-    const milestoneHours = allMilestones[milestoneIndex]?.workers
+      ?.reduce((max, worker) => Math.max(max, worker.duration), 0);
+    const milestoneHours = allMilestones && allMilestones[milestoneIndex]?.workers
       ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
-      .reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
-    const milestoneCost = allMilestones[milestoneIndex]?.workers
+      ?.reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
+    const milestoneCost = allMilestones && allMilestones[milestoneIndex]?.workers
       ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
-      .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
+      ?.reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
 
     return { milestoneDuration, milestoneHours, milestoneCost };
   };
 
   const calculateTotalValues = () => {
     const totalDuration = allMilestones
-      .map((milestone) => {
+      ?.map((milestone) => {
         const maxDuration = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration)
           .reduce((max, worker) => Math.max(max, worker.duration), 0);
@@ -262,9 +264,9 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       .reduce((sum, duration) => sum + duration, 0);
 
     const totalHours = allMilestones
-      .map((milestone) => {
+      ?.map((milestone) => {
         const sumHours = milestone.workers
-          .filter((worker) => worker.isChecked && worker.duration && worker.hours)
+          ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
 
         return sumHours;
@@ -272,7 +274,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       .reduce((sum, hours) => sum + hours, 0);
 
     const totalCost = allMilestones
-      .map((milestone) => {
+      ?.map((milestone) => {
         const sumCost = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration && worker.hours)
           .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
@@ -543,7 +545,10 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
       .replace(',', '')
       .split(' ');
-    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    if (!isEmpty(formattedDate)) {
+      return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    }
+    return '';
   };
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
@@ -696,7 +701,6 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       }
     }
   };
-
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
     // eslint-disable-next-line no-undef
@@ -717,9 +721,9 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
           modal={createBidModal}
           toggleModal={toggleCreateBidModal}
           selectedProject={{
-            _id: params.projectId,
-            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
-            bidType: params.bidType.split('-')[1].toUpperCase(),
+            _id: params?.projectId,
+            pay_type: { variable_cost: params?.bidType?.split('-')[0] === 'variable' },
+            bidType: params?.bidType?.split('-')[1]?.toUpperCase(),
           }}
         />
       )}
@@ -778,7 +782,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                             />
                           )}
                         />
-                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
+                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate?.message}</FormFeedback>}
                       </div>
                     </Col>
                     <Col sm="12" md="12" lg="8" className="d-flex justify-content-end me-2">
@@ -818,7 +822,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                           <Label className="form-label m-0">Bid Type</Label>
                           <div className="d-flex align-items-center custom-cost-margin">
                             <p className="fw-bold font-medium-1 mb-0 mt-25">
-                              {capitalize(params.bidType.split('-')[1])} Flow
+                              {capitalize(params?.bidType?.split('-')[1])} Flow
                             </p>
                             <ChangeBidTypeButton
                               className="d-flex align-items-center cursor-pointer ms-1"
@@ -905,7 +909,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                       errors.milestones.length > 0 &&
                                       errors.milestones[milestoneIndex] &&
                                       errors.milestones[milestoneIndex].name && (
-                                        <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
+                                        <FormFeedback>{errors.milestones[milestoneIndex].name?.message}</FormFeedback>
                                       )}
                                     <div className="d-flex mt-2">
                                       <Label className="form-label" for="description">
@@ -951,7 +955,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                       errors.milestones[milestoneIndex] &&
                                       errors.milestones[milestoneIndex].description && (
                                         <FormFeedback>
-                                          {errors.milestones[milestoneIndex].description.message}
+                                          {errors.milestones[milestoneIndex].description?.message}
                                         </FormFeedback>
                                       )}
                                   </CardBody>
@@ -1131,7 +1135,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                                         <FormFeedback>
                                                           {
                                                             errors.milestones[milestoneIndex].workers[workerIndex]
-                                                              .duration.message
+                                                              .duration?.message
                                                           }
                                                         </FormFeedback>
                                                       )}
@@ -1206,7 +1210,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                                         <FormFeedback>
                                                           {
                                                             errors.milestones[milestoneIndex].workers[workerIndex].hours
-                                                              .message
+                                                              ?.message
                                                           }
                                                         </FormFeedback>
                                                       )}
@@ -1264,19 +1268,19 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                             )}
                                           />
                                           {errors &&
-                                            errors.milestones &&
-                                            errors.milestones.length > 0 &&
-                                            errors.milestones[milestoneIndex] &&
-                                            errors.milestones[milestoneIndex].deliverables &&
-                                            errors.milestones[milestoneIndex].deliverables.length > 0 &&
-                                            errors.milestones[milestoneIndex].deliverables[index] && (
+                                            errors?.milestones &&
+                                            errors?.milestones.length > 0 &&
+                                            errors?.milestones[milestoneIndex] &&
+                                            errors?.milestones[milestoneIndex]?.deliverables &&
+                                            errors?.milestones[milestoneIndex]?.deliverables?.length > 0 &&
+                                            errors?.milestones[milestoneIndex]?.deliverables[index] && (
                                               <FormFeedback>
-                                                {errors.milestones[milestoneIndex].deliverables[index].message}
+                                                {errors?.milestones[milestoneIndex]?.deliverables[index]?.message}
                                               </FormFeedback>
                                             )}
                                         </Col>
                                         <Col sm="12" md="12" lg="4">
-                                          {getValues('milestones')[milestoneIndex].deliverables.length > 1 && (
+                                          {getValues('milestones') && getValues('milestones')[milestoneIndex]?.deliverables?.length > 1 && (
                                             <Button
                                               type="button"
                                               color="flat-danger"
@@ -1302,12 +1306,12 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                               </Col>
                             </Row>
                             <div className="d-flex align-items-center justify-content-end w-100">
-                              {getValues('milestones').length > 1 && (
+                              {getValues('milestones') && getValues('milestones')?.length > 1 && (
                                 <Button
                                   type="button"
                                   color="flat-danger"
                                   onClick={() => {
-                                    setRemovedMilestoneIds((oldIds) => [...oldIds, milestone.otherDetails._id]);
+                                    setRemovedMilestoneIds((oldIds) => [...oldIds, milestone?.otherDetails?._id]);
                                     milestonesRemove(milestoneIndex);
                                   }}
                                 >
@@ -1395,8 +1399,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div className="d-flex justify-content-end">
-              {/** /** Hide Save Drafts flow from Create Bid
-               <Button
+              <Button
                 onClick={() => {
                   saveAsDraftClicked.current = true;
                   handleSubmit(onSubmit)();
@@ -1421,7 +1424,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                 }
               >
                 {draftSetMilestonesIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-              </Button> */}
+              </Button>
               <Button
                 color="primary"
                 type="submit"

@@ -24,6 +24,8 @@ import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 import { setActiveNavTab } from '../../../../redux/reducers/activeNavTab';
 import SwitchConfirmModal from '../../../../views/modals/SwitchConfirm';
+import { setConfirmSaveForLater, setNavigatingRoute } from '../../../../redux/reducers/formData';
+import { confirmSaveForLater } from '../../../../redux/selectors/formDataSelectors';
 
 const HeadWrapper = styled.div`
   display: flex;
@@ -79,7 +81,9 @@ const ThemeNavbar = (props) => {
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
-
+  const saveArtifactDraftPath = /^\/project-details\/[a-zA-Z0-9_-]+\/milestone-details\/[a-zA-Z0-9_-]+$/;
+  const draftTeamPath = location?.pathname.includes(
+    '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details');
   const isTabDisabled = userData?.club_status === clubStatus.IN_REVIEW;
 
   // ** Props
@@ -109,16 +113,33 @@ const ThemeNavbar = (props) => {
   }, [userData]);
 
   useEffect(() => {
-    if (location?.pathname?.split?.('/')?.[3] === userData?._id) dispatch(setActiveNavTab(''));
-    if (location?.pathname?.split?.('/')?.[1] === 'notifications') dispatch(setActiveNavTab(''));
-    if (location?.pathname?.split?.('/')?.[1] === 'search') dispatch(setActiveNavTab(''));
+    const path = location?.pathname?.split?.('/')?.[1];
+    switch (path) {
+        case 'notifications':
+        case 'search':
+        case undefined: 
+            dispatch(setActiveNavTab(''));
+            break;
+        case 'marketplace':
+            dispatch(setActiveNavTab('marketplace'));
+            break;
+        case 'projects':
+            dispatch(setActiveNavTab('projects'));
+            break;
+        case 'dashboard':
+            dispatch(setActiveNavTab('dashboard'));
+            break;
+        case 'my-teams':
+            dispatch(setActiveNavTab('my-teams'));
+            break;
+        default:
+            dispatch(setActiveNavTab('')); 
+            break;
+    }
+}, [location,location?.pathname]);
 
-    if (location?.pathname?.split?.('/')?.[1] === 'marketplace') dispatch(setActiveNavTab('marketplace'));
-    if (location?.pathname?.split?.('/')?.[1] === 'projects') dispatch(setActiveNavTab('projects'));
-    if (location?.pathname?.split?.('/')?.[1] === 'dashboard') dispatch(setActiveNavTab('dashboard'));
-    if (location?.pathname?.split?.('/')?.[1] === 'my-teams') dispatch(setActiveNavTab('my-teams'));
-  }, [location]);
-
+  const isOpenSaveForLater = useSelector(confirmSaveForLater);
+  console.log(isOpenSaveForLater)
   return (
     <HeadWrapper className={className}>
       <div className="d-flex">
@@ -135,44 +156,65 @@ const ThemeNavbar = (props) => {
         <div
           className="navbar-brand cursor-pointer"
           onClick={() => {
-            if (userData) {
-              navigate('/dashboard');
+            if (draftTeamPath) {
+              dispatch(setConfirmSaveForLater(true));
+              dispatch(setNavigatingRoute('/dashboard'));
             } else {
-              navigate('/auth');
+              if (userData) {
+                navigate('/dashboard');
+                dispatch(setActiveNavTab('dashboard'));
+              } else {
+                navigate('/auth');
+                dispatch(setActiveNavTab('dashboard'));
+              }
             }
-            dispatch(setActiveNavTab('dashboard'));
           }}
         >
           <span className="brand-logo">
             <img src={themeConfig.app.appLogoImage} alt="logo" />
-            <span className="ms-25 mt-25">v1.1.3</span>
+            <span className="ms-25 mt-25">v1.2.0</span>
           </span>
         </div>
 
         {!isNavbarSearchBarOpen && (
           <>
-            <NavLink
-              className={({ isActive }) =>
-                (isActive || activeTab === 'dashboard' ? 'is-active text-nowrap' : '') +
-                ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
+            <div
+              className={
+                (location?.pathname?.split('/')?.[1] === 'dashboard'
+                  ? 'is-active'
+                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
               }
-              to="/dashboard"
               onClick={() => {
-                dispatch(setActiveNavTab('dashboard'));
+                console.log("dashboard clicked" + draftTeamPath)
+                if (draftTeamPath) {
+                  dispatch(setConfirmSaveForLater(true));
+                  dispatch(setNavigatingRoute('/dashboard'));
+                } else {
+                  navigate('/dashboard');
+                  dispatch(setActiveNavTab('dashboard'));
+                }
               }}
             >
               Dashboard
-            </NavLink>
+            </div>
             {isTabDisabled ? (
               <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Marketplace</span>
             ) : (
-              <NavLink
+              <div
                 onClick={() => {
-                  dispatch(setActiveNavTab('marketplace'));
-                  setItem(
-                    'selectedMarketplaceTab',
-                    userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
-                  );
+                  if (draftTeamPath) {
+                    dispatch(setConfirmSaveForLater(true));
+                    dispatch(setNavigatingRoute(`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`));
+                  } else {
+                    navigate(
+                      `/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`,
+                    );
+                    dispatch(setActiveNavTab('marketplace'));
+                    setItem(
+                      'selectedMarketplaceTab',
+                      userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
+                    );
+                  }
                 }}
                 className={
                   (location?.pathname?.split('/')?.[1] === 'marketplace' ||
@@ -181,16 +223,15 @@ const ThemeNavbar = (props) => {
                     ? 'is-active'
                     : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
                 }
-                to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`}
               >
                 Marketplace
-              </NavLink>
+              </div>
             )}
 
             {isTabDisabled ? (
               <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Project</span>
             ) : (
-              <NavLink
+              <div
                 className={
                   (location?.pathname?.split('/')?.[1] === 'projects' ||
                   location?.state?.from?.primary === 'projects' ||
@@ -198,21 +239,34 @@ const ThemeNavbar = (props) => {
                     ? 'is-active'
                     : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
                 }
-                to="/projects/ongoing"
                 onClick={() => {
-                  localStorage.removeItem('selectedProjectTab');
-                  dispatch(setActiveNavTab('projects'));
+                  if (draftTeamPath) {
+                    dispatch(setConfirmSaveForLater(true));
+                    dispatch(setNavigatingRoute('/projects/ongoing'));
+                  } else {
+                    navigate('/projects/ongoing');
+                    localStorage.removeItem('selectedProjectTab');
+                    dispatch(setActiveNavTab('projects'));
+                  }
                 }}
               >
                 Projects
-              </NavLink>
+              </div>
             )}
 
             {isTabDisabled ? (
               <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
             ) : (
-              <NavLink
-                onClick={() => dispatch(setActiveNavTab('my-teams'))}
+              <div
+                onClick={() => {
+                  if (draftTeamPath) {
+                    dispatch(setConfirmSaveForLater(true));
+                    dispatch(setNavigatingRoute(`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`));
+                  } else {
+                    navigate(`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`);
+                    dispatch(setActiveNavTab('my-teams'));
+                  }
+                }}
                 className={
                   (location?.pathname?.split('/')?.[1] === 'my-teams' ||
                   location?.state?.from?.primary === 'my-teams' ||
@@ -220,15 +274,22 @@ const ThemeNavbar = (props) => {
                     ? 'is-active text-nowrap'
                     : '') + ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
                 }
-                to={`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`}
               >
                 My Team
-              </NavLink>
+              </div>
             )}
 
             {userData?.user_type === userTypes.talent && (
-              <NavLink
-                onClick={() => dispatch(setActiveNavTab('clubs'))}
+              <div
+                onClick={() => {
+                  if (draftTeamPath) {
+                    dispatch(setConfirmSaveForLater(true));
+                    dispatch(setNavigatingRoute('/clubs/my_clubs'));
+                  } else {
+                    navigate('/clubs/my_clubs');
+                    dispatch(setActiveNavTab('clubs'));
+                  }
+                }}
                 className={
                   (location?.pathname?.split('/')?.[1] === 'clubs' ||
                   location?.state?.from?.primary === 'clubs' ||
@@ -236,10 +297,9 @@ const ThemeNavbar = (props) => {
                     ? 'is-active'
                     : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
                 }
-                to="/clubs/my_clubs"
               >
                 Clubs
-              </NavLink>
+              </div>
             )}
           </>
         )}

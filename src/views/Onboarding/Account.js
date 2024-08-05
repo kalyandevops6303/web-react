@@ -53,8 +53,8 @@ import { convertReferral } from '../../redux/actions/referralAndRewardActions';
 import { getItem, removeItem } from '../../utility/localStorageControl';
 import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
-import { formData, formDocuments } from '../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments } from '../../redux/reducers/formData';
+import { formData, formImage } from '../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
 
 const Account = () => {
@@ -190,7 +190,7 @@ const Account = () => {
       }
     }
   };
-
+  const buttonText = selectedImage && selectedImagePreview ? 'Edit Image' : 'Upload Image';
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       setValue('countryCode', res.country_code);
@@ -299,11 +299,12 @@ const Account = () => {
     }
     return true;
   };
-  const updatedFormDocument = useSelector(formDocuments);
+  const savedFormImage = useSelector(formImage);
   const fetchFile = async (file) => {
+    if(!file) return;
     const thumbnail = URL.createObjectURL(file);
     setSelectedImage(file);
-    dispatch(setFormDocuments(file));
+    dispatch(setFormImage(file));
     setSelectedImagePreview(thumbnail);
     dispatch(setFormData({ ...savedFormData, selectedImage: file, selectedImagePreview: thumbnail }));
     try {
@@ -319,8 +320,8 @@ const Account = () => {
 
   useEffect(() => {
     const refetchFile = async () => {
-      if (updatedFormDocument != null) {
-        await fetchFile(updatedFormDocument);
+      if (savedFormImage != null) {
+        await fetchFile(savedFormImage);
       }
     };
     refetchFile();
@@ -352,7 +353,7 @@ const Account = () => {
   };
 
   const onRemovePictureClick = () => {
-    dispatch(setFormDocuments(null));
+    dispatch(setFormImage(null));
     setSelectedImage(null);
     setSelectedImagePreview(null);
     setImageUrlRes(null);
@@ -408,7 +409,7 @@ const Account = () => {
                     disabled={isImageUploading}
                     onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
-                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Image'}
+                    {isImageUploading ? <Spinner size="sm" /> : buttonText}
                   </Button>
                   {selectedImage && selectedImagePreview && (
                     <RemoveUploadedPicture

@@ -240,6 +240,69 @@ export const returnFilteredDropdownOptions = (search, options) =>
       option.label.toLowerCase().includes(search.toLowerCase()),
   );
 
+export const convertUnixTimestampToDate = (timestamp, timeZone) => {
+  // Create a new Date object adjusted to UTC from the timestamp
+  let timezoneToUse = timeZone;
+  if (!timeZone) {
+    timezoneToUse = 'America/Los_Angeles';
+  }
+  if (!timestamp) {
+    return '';
+  }
+  const date = new Date(timestamp);
+
+  // Adjust date to the specified timeZone
+  const adjustedDate = new Date(date.toLocaleString('en-US', { timeZone: timezoneToUse }));
+
+  // Format the adjusted date to 'Jul 23, 24' style
+  const formattedOutput = adjustedDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+  return formattedOutput;
+};
+
+export const renderFormattedListingDate = (date) => {
+  const formattedDate = date
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+
+  return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
+};
+
+export const returnRelativeTime = (time, timeZone) => {
+  const givenDate = new Date(time);
+
+  const now = new Date().toLocaleString('en-US', { timeZone });
+
+  const currentDate = new Date(now);
+
+  const difference = currentDate.getTime() - givenDate.getTime();
+
+  const timeAgo = (milliseconds) => {
+    const seconds = Math.floor(milliseconds / 1000);
+
+    if (seconds < 60) {
+      return seconds === 1 ? '1 second ago' : `${seconds} seconds ago`;
+    }
+    if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
+    }
+    if (seconds < 86400) {
+      const hours = Math.floor(seconds / 3600);
+      return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
+    }
+    const days = Math.floor(seconds / 86400);
+    return days === 1 ? '1 day ago' : `${days} days ago`;
+  };
+
+  return timeAgo(difference);
+};
+
 export const formatDateWithDash = (date) => {
   if (!date) {
     return undefined;
@@ -681,11 +744,11 @@ export const getBidAction = (action) => {
     case bidStatus.BID_SUBMITTED:
       return 'Bid Submitted';
     case bidStatus.BID_CHANGE_REQUEST:
-      return 'Bid change Request';
+      return 'Bid Change Request';
     case bidStatus.BID_CHANGE_ACCPETED:
-      return 'Bid change Accepted';
+      return 'Bid Change Accepted';
     case bidStatus.BID_CHANGE_REJECTED:
-      return 'Bid change Rejected';
+      return 'Bid Change Rejected';
     default:
       return '';
   }
@@ -720,7 +783,7 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
     const file = fileData[index];
     try {
       const response = await fileScanningService({ fileKeys: [file], isPrivate });
-      if (response.data.data?.[0].status === fileScanStatus.SCANNING) {
+      if (response.data.data?.[0]?.status === fileScanStatus.SCANNING) {
         // Retry logic
         let retries = 3;
         const retryInterval = setInterval(async () => {
@@ -731,11 +794,11 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
           } else {
             try {
               const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate });
-              if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
+              if (retryResponse.data.data?.[0]?.status !== fileScanStatus.SCANNING) {
                 clearInterval(retryInterval);
-                if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
+                if (retryResponse.data.data?.[0]?.status === fileScanStatus.CLEAN) {
                   processFile(index + 1); // Move to the next file
-                } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
+                } else if (retryResponse.data.data?.[0]?.status === fileScanStatus.THREAT) {
                   onError(); // Handle error for threat
                   ShowToastMessage(ERROR, `${file?.file_name} seems to be malicious/corrupted. `);
                 }
@@ -749,9 +812,9 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
           }
           retries -= 1;
         }, timeDalayToRetryScanning); // Retry every given seconds
-      } else if (response.data.data?.[0].status === fileScanStatus.CLEAN) {
+      } else if (response.data.data?.[0]?.status === fileScanStatus.CLEAN) {
         processFile(index + 1); // Move to the next file
-      } else if (response.data.data?.[0].status === fileScanStatus.THREAT) {
+      } else if (response.data.data?.[0]?.status === fileScanStatus.THREAT) {
         onError(); // Handle error for threat
         ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
       }
@@ -786,6 +849,8 @@ export const getMissingName = (type, values) => {
       return values.tool;
     case CUSTOMER_SUPPORT_TYPES.missing_institute:
       return values.institute;
+    case CUSTOMER_SUPPORT_TYPES.missing_assessment:
+      return values.assessment;
     default:
       return '';
   }

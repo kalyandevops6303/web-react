@@ -55,12 +55,12 @@ export const linkify = (message) => {
 export const checkMessageForExtensionsData = (message, extensionKey) => {
   let output = null;
 
-  if (message.hasOwnProperty('metadata')) {
+  if (message?.hasOwnProperty('metadata')) {
     const metadata = message.metadata;
     const injectedObject = metadata['@injected'];
-    if (injectedObject && injectedObject.hasOwnProperty('extensions')) {
+    if (injectedObject && injectedObject?.hasOwnProperty('extensions')) {
       const extensionsObject = injectedObject['extensions'];
-      if (extensionsObject && extensionsObject.hasOwnProperty(extensionKey)) {
+      if (extensionsObject && extensionsObject?.hasOwnProperty(extensionKey)) {
         output = extensionsObject[extensionKey];
       }
     }
@@ -71,9 +71,9 @@ export const checkMessageForExtensionsData = (message, extensionKey) => {
 
 export const getMessageFileMetadata = (message, metadataKey) => {
   let fileMetadata = null;
-  if (message.hasOwnProperty('metadata')) {
+  if (message?.hasOwnProperty('metadata')) {
     const metadata = message['metadata'];
-    if (metadata.hasOwnProperty(metadataKey)) {
+    if (metadata?.hasOwnProperty(metadataKey)) {
       fileMetadata = metadata[metadataKey];
     }
   }

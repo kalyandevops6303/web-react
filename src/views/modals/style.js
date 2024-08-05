@@ -440,6 +440,43 @@ const ViewFilesModalWrapper = styled.div`
   }
 `;
 
+const WithdrawModalWrapper = styled.div`
+  .heading {
+    color: red;
+  }
+  .list-font {
+    font-size: 15px;
+  }
+  .note-text {
+    line-height: 29.124px;
+  }
+  .project-name-label {
+    color: ${theme.textMuted};
+  }
+  .project-name {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .modal-heading {
+    line-height: 38.832px;
+  }
+  .modal-sub-heading {
+    color: ${theme.bodyColor};
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .details {
+    font-size: 16px;
+  }
+  .btns-container {
+    margin-top: -14px;
+  }
+  .left-border {
+    min-width: 105px;
+    border-left: 2px solid ${theme.modalLeftBorderColor};
+  }
+`;
+
 export {
   RemoveMemberModalWrapper,
   MessageIconWrap,
@@ -456,4 +493,5 @@ export {
   ViewFilesModalWrapper,
   SupportModalWrapper,
   FeedbackSupportModalWrapper,
+  WithdrawModalWrapper,
 };

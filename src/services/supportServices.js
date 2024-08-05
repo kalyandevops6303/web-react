@@ -7,4 +7,8 @@ const getSupportCount = (data) => DataService.get(`${API.support.count}`, data);
 
 const getIssueTypeService = () => DataService.get(`${API.static.issueTypes}`);
 
-export { supportServive, getSupportCount, getIssueTypeService };
+const getRequestsService = (data) => DataService.post(`${API.support.list}?page=1&page_size=100`, data)
+
+const deleteRequestService = (data) => DataService.post(`${API.support.delete}/${data}`)
+
+export { supportServive, getSupportCount, getIssueTypeService, getRequestsService, deleteRequestService };

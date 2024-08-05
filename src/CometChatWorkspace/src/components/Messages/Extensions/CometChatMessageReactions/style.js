@@ -3,7 +3,7 @@ export const messageReactionsStyle = (props, reactionData, context, loggedInUser
   let borderStyle = {};
   let hoveredBorderStyle = {};
 
-  if (reactionData.hasOwnProperty(uid)) {
+  if (reactionData?.hasOwnProperty(uid)) {
     borderStyle = {
       border: `1px solid ${context.theme.primaryColor}`,
     };

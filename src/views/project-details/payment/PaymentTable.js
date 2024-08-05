@@ -14,7 +14,7 @@ import {
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import MakePaymentModal from '../../modals/MakePaymentModal';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
-import { formatDate, roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
 import TransactionTimeline from './TransactionTimeline';
 import PaymentStatusForRow from './PaymentStatusForRow';
 import PaymentBy from './PaymentBy';
@@ -23,6 +23,7 @@ import PaymentTableWrapper from './style';
 import theme from '../../../configs/themeVariables';
 import { PaymentInfoBanner } from '../style';
 import { CustomBadge } from '../../styled';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -39,6 +40,7 @@ const PaymentTable = () => {
   const milestoneTransactionLoading = useSelector((state) => state.milestonePayment?.transactionLoading);
   const milestoneTransactionDetails = useSelector((state) => state.milestonePayment?.milestoneTransactionDetails);
   const user = useSelector(userData);
+  const savedUserData = useSelector(selectSavedUserData);
 
   const dispatch = useDispatch();
 
@@ -75,7 +77,9 @@ const PaymentTable = () => {
             className="ms-50"
           />
         </div>
-        <span>{formatDate(date)}</span>
+        <span>
+        {convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name )}
+        </span>
       </div>
     ),
   });
@@ -93,7 +97,7 @@ const PaymentTable = () => {
   const isPaymentInitiated = (milestone) => milestone?.payment_status === PAYMENT_STATUS.INITIATED;
 
   const showMilestoneTransanctions = (milestoneId, item) => {
-    if ((isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')) {
+    if ((isPaymentDone(item) && isClient) || (isPaymentDone(item) && item?.status === 'COMPLETED')) {
       if (open === milestoneId) {
         setOpen(null);
       } else {
@@ -116,7 +120,7 @@ const PaymentTable = () => {
 
   useEffect(() => {
     if (projectDetailsData?._id) {
-      dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => {}));
+      dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => { }));
     }
 
     return () => {
@@ -226,8 +230,13 @@ const PaymentTable = () => {
 
   const applicationFee = feeStructure?.application_fee;
   // eslint-disable-next-line no-unsafe-optional-chaining
-  const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
-  const totalPending = totalAmount + trumioFee;
+
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const trumioFeeBeforeDiscount = (totalAmount * applicationFee?.percentage) / 100;
+  const trumioFeeDiscount = (trumioFeeBeforeDiscount * (applicationFee?.discount_coupon?.percent_off ?? 0)) / 100;
+  const trumioFeeAfterDiscount = trumioFeeBeforeDiscount - trumioFeeDiscount;
+
+  const totalPending = parseFloat(totalAmount + trumioFeeAfterDiscount).toFixed(2);
 
   const handlePayment = () => {
     setMakePaymentModal(true);
@@ -304,12 +313,12 @@ const PaymentTable = () => {
                       {/* {!isTeam ? <th className="checkboxCol"> </th> : null} */}
                       <th className="checkboxCol"> </th>
                       <th className="ps-0">Milestone</th>
-                      <th>{}</th>
+                      <th>{ }</th>
                       <th>Status</th>
-                      <th>{}</th>
+                      <th>{ }</th>
                       <th>Amount</th>
                       {/* {!isTeam ? <th> </th> : null} */}
-                      <th>{}</th>
+                      <th>{ }</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -318,7 +327,7 @@ const PaymentTable = () => {
                         <tr
                           style={isClient ? getCardStyle(selectedPaymentId.includes(item?._id)) : {}}
                           className={
-                            (isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')
+                            (isPaymentDone(item) && isClient) || (isPaymentDone(item) && item?.status === 'COMPLETED')
                               ? 'cursor-pointer'
                               : ''
                           }
@@ -373,36 +382,36 @@ const PaymentTable = () => {
                               </Badge>
                             </CustomBadge>
                           </td>
-                          <td>{}</td>
+                          <td>{ }</td>
                           <td className="amountCol">$ {roundOfAmount(getTotalCost(item))}</td>{' '}
-                          {(isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED') ? (
+                          {(isPaymentDone(item) && isClient) || (isPaymentDone(item) && item?.status === 'COMPLETED') ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
                           ) : !isPaymentDone(item) ? (
-                            <td>{}</td>
+                            <td>{ }</td>
                           ) : (
-                            <td>{}</td>
+                            <td>{ }</td>
                           )}
                         </tr>
 
                         {item?._id === open && isPaymentDone(item) ? (
                           milestoneTransactionLoading ? (
                             <tr>
-                              <td colSpan={3}>{}</td>
+                              <td colSpan={3}>{ }</td>
                               <td>Loading...</td>
-                              <td colSpan={3}>{}</td>
+                              <td colSpan={3}>{ }</td>
                             </tr>
                           ) : (
                             <>
                               {isClient ? (
                                 <tr style={{ borderBottom: '1px solid white' }}>
-                                  <td>{}</td>
+                                  <td>{ }</td>
                                   <td className="ps-0">
                                     <div className="d-flex flex-column">
                                       <span>Amount</span>
                                       <span>{`${applicationFee?.name}`}</span>
                                     </div>
                                   </td>
-                                  <td colSpan={3}>{}</td>
+                                  <td colSpan={3}>{ }</td>
 
                                   <td>
                                     <div className="d-flex flex-column">
@@ -427,7 +436,7 @@ const PaymentTable = () => {
                                 </tr>
                               ) : null}
                               <tr>
-                                <td>{}</td>
+                                <td>{ }</td>
                                 <td className="ps-0">
                                   <TransactionTimeline transactionData={timelineData} />
                                 </td>
@@ -444,7 +453,7 @@ const PaymentTable = () => {
                                     isClient={isClient}
                                   />
                                 </td>
-                                <td>{}</td>
+                                <td>{ }</td>
                                 <td colSpan={2}>
                                   <PaymentBy paymentBy={milestoneTransactionDetails} />
                                 </td>
@@ -459,12 +468,28 @@ const PaymentTable = () => {
               </PaymentTableWrapper>
             </div>
             {showPaymentCalculation && selectedPaymentId?.length > 0 && (
-              <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`${applicationFee?.name ?? ''} (${
-                  applicationFee?.percentage ?? 0
-                }%)`}</CardText>
-                <CardText>{`$${Number.isNaN(trumioFee) ? 0 : trumioFee}`}</CardText>{' '}
-              </div>
+              <>
+                <div className="d-flex w-100 mt-2 justify-content-between">
+                  <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                    {`${applicationFee?.name ?? ''} (${applicationFee?.percentage ?? 0}%)`}
+                  </CardText>
+                  <CardText>
+                    {`$${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}
+                  </CardText>{' '}
+                </div>
+                {
+                  applicationFee?.discount_coupon?.code && (
+                    <div className="d-flex w-100 mt-1 justify-content-between">
+                      <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                        {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
+                      </CardText>
+                      <CardText>
+                        {`- $${Number.isNaN(trumioFeeDiscount) ? 0 : trumioFeeDiscount}`}
+                      </CardText>{' '}
+                    </div>
+                  )
+                }
+              </>
             )}
             <hr />
             {showPaymentCalculation && selectedPaymentId?.length > 0 && (
@@ -472,9 +497,9 @@ const PaymentTable = () => {
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
                   {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
                 </CardText>
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${
-                  Number.isNaN(totalPending) ? 0 : totalPending
-                }`}</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                  {`$${Number.isNaN(totalPending) ? 0 : totalPending}`}
+                </CardText>
               </div>
             )}
 

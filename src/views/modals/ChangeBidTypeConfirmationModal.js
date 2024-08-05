@@ -1,12 +1,16 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { useDispatch } from 'react-redux';
+import { clearAllFormData } from '../../redux/reducers/formData';
+
 import '../custom-styles.scss';
 import Notepad from '../../assets/images/youDidIt.gif';
 import { ChangeBidTypeConfirmationModalWrapper } from '../create-bid/style';
 
 // eslint-disable-next-line arrow-body-style
 const ChangeBidTypeConfirmationModal = ({ modal, toggleModal, toggleCreateBidModal }) => {
+  const dispatch = useDispatch();
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={toggleModal} />
@@ -15,7 +19,7 @@ const ChangeBidTypeConfirmationModal = ({ modal, toggleModal, toggleCreateBidMod
           <div className="d-flex pe-1">
             <img src={Notepad} alt="notepad" width={189} height={189} className="notepad-gif me-2" />
             <div>
-              <p className="fw-bold modal-custom-heading">Are you sure you want to change Bid Type?</p>
+              <p className="fw-bold modal-custom-heading">Are you sure you want to Change Bid Type?</p>
               <p className="mt-75 modal-custom-sub-heading mb-0">
                 Changing Bid Type may result in loss of unsaved milestone data.
               </p>
@@ -30,6 +34,7 @@ const ChangeBidTypeConfirmationModal = ({ modal, toggleModal, toggleCreateBidMod
               onClick={() => {
                 toggleModal();
                 toggleCreateBidModal();
+                dispatch(clearAllFormData());
               }}
             >
               Change Bid Type

@@ -201,7 +201,7 @@ const TeamListing = () => {
                   />
                 </span>
                 {myTeam?.data?.length > 0 && (
-                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta d-none">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
                   </CardText>
                 )}

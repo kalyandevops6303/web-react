@@ -34,7 +34,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
   const ResponseSchema = yup.object().shape({
     response: yup
       .string()
-      .min(100, 'Response must be at least 100 characters')
+      .min(50, 'Response must be at least 50 characters')
       .max(2000, 'Response must be 2000 characters or less')
       .required('Response is required'),
   });
@@ -413,23 +413,27 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               >
                 Resolve Dispute
               </p>
-              <p
-                className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"
-                onClick={() => {
-                  if (!isReplyBoxPresent) {
-                    reset();
-                    setIsReplyBoxPresent(true);
-                  }
-                }}
-              >
-                Reply
-              </p>
+              {isReplyBoxPresent ?
+                <p className='fw-bold mb-0'
+                >Reply</p>
+                :
+                <p
+                  className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"
+                  onClick={() => {
+                    if (!isReplyBoxPresent) {
+                      reset();
+                      setIsReplyBoxPresent(true);
+                    }
+                  }}
+                >
+                  Reply
+                </p>}
             </div>
           )}
           {isReplyBoxPresent && (
             <div className="ps-4">
               <div className="mb-25">
-                <p className="fw-bold mb-0">Response Dispute</p>
+                <p className="fw-bold mb-0">Dispute Response</p>
               </div>
               <div>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -532,8 +536,8 @@ DisputeDetailsModal.propTypes = {
 
 DisputeDetailsModal.defaultProps = {
   modal: false,
-  toggleModal: () => {},
+  toggleModal: () => { },
   selectedDispute: {},
   primaryFilter: '',
-  onClose: () => {},
+  onClose: () => { },
 };

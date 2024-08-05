@@ -83,7 +83,7 @@ const Step2 = ({ setStep, step }) => {
           .max(999999999, 'Tax Id must be 9 digits without any special characters')
           .integer('Tax Id must be a number')
           .typeError('Tax Id Must be a number'),
-      otherwise: () => Yup.number().optional(),
+      otherwise: () => Yup.number().nullable(),
     }),
     nsnTaxId: Yup.string().when('taxType', {
       is: (taxType) => taxType === 'NON_US',

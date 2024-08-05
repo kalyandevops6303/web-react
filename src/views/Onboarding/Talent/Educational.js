@@ -53,8 +53,21 @@ import NoteComponent from '../NoteComponent';
 import CustomerSupportCTA from '../CustomerSupportCTA';
 import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { formData, resumeParsed, formDocuments } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments } from '../../../redux/reducers/formData';
+import {
+  formData,
+  resumeParsed,
+  formDocuments,
+  resumeDataUploadedForEducation,
+  fileKey,
+} from '../../../redux/selectors/formDataSelectors';
+import {
+  clearAllFormData,
+  setFormData,
+  setResumeParsed,
+  setFormDocuments,
+  setResumeDataUploadedForEducation,
+  setFileKey,
+} from '../../../redux/reducers/formData';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
 const Educational = () => {
@@ -91,14 +104,16 @@ const Educational = () => {
       .max(5, 'Maximum of five tools can be added')
       .nullable()
       .optional(),
-    certificates: yup.array().of(
-      yup.object().shape({
-        label: yup.string(),
-        value: yup.string(),
-      }),
-    )
-    .nullable()
-    .optional(),
+    certificates: yup
+      .array()
+      .of(
+        yup.object().shape({
+          label: yup.string(),
+          value: yup.string(),
+        }),
+      )
+      .nullable()
+      .optional(),
     skills: yup
       .array()
       .of(
@@ -112,6 +127,7 @@ const Educational = () => {
       .required('Skill is required'),
   });
   const savedFormData = useSelector(formData);
+  const fileKeyDetails = useSelector(fileKey);
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
@@ -129,7 +145,7 @@ const Educational = () => {
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      educationDetails: savedFormData?.educationDetails || [{ educationInstitution: '', education: '' }],
+      educationDetails: savedFormData?.educationDetails ?? null,
       tools: savedFormData?.tools || null,
       certificates: savedFormData?.certificates || null,
       skills: savedFormData?.skills || null,
@@ -176,7 +192,8 @@ const Educational = () => {
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [certificatesOptions, setCertificatesOptions] = useState(null);
   const [files, setFiles] = useState(savedFormDocuments || []);
-
+  const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const supportData = useSelector((state) => state.support.supportCount);
@@ -206,17 +223,18 @@ const Educational = () => {
     } else {
       navigate(`/${userOnboarding.talent}/availability-details`);
     }
+    dispatch(setResumeDataUploadedForEducation(parseResume));
   };
 
   const onSubmit = (data) => {
     const { educationDetails, skills, tools, certificates } = data;
 
-    const educational_institute = educationDetails.map((educationDetail) => ({
+    const educational_institute = educationDetails?.map((educationDetail) => ({
       institution: educationDetail.educationInstitution.value,
       education: educationDetail.education.value,
     }));
     const expertise = {
-      skills: skills.map((skill) => skill.value),
+      skills: skills?.map((skill) => skill.value),
       tools: tools?.map((tool) => tool.value),
       certificates: certificates?.map((certificate) => certificate.value),
     };
@@ -377,19 +395,21 @@ const Educational = () => {
         setValue(
           'educationDetails',
           savedFormData?.educationDetails?.length > 0
-            ? savedFormData.educationDetails
-            : res?.talent_info?.educational_institute.map((detail) => ({
+            ? savedFormData?.educationDetails
+            : res?.talent_info?.educational_institute?.map((detail) => ({
                 educationInstitution: { label: detail.institution.name, value: detail.institution._id },
                 education: { label: detail.education.name, value: detail.education._id },
               })),
           { shouldValidate: true },
         );
+      } else {
+        setValue('educationDetails', [{ educationInstitution: '', education: '' }]);
       }
       if (res?.talent_info?.expertise?.tools.length > 0) {
         setValue(
           'tools',
           savedFormData?.tools ||
-            res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+            res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -397,7 +417,7 @@ const Educational = () => {
         setValue(
           'certificates',
           savedFormData?.certificates ||
-            res?.talent_info?.expertise?.certificates.map((certificate) => ({
+            res?.talent_info?.expertise?.certificates?.map((certificate) => ({
               label: certificate.name,
               value: certificate._id,
             })),
@@ -408,7 +428,7 @@ const Educational = () => {
         setValue(
           'skills',
           savedFormData?.skills ||
-            res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+            res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -427,6 +447,7 @@ const Educational = () => {
           },
           isUploaded: true,
         };
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }
     }
@@ -437,7 +458,7 @@ const Educational = () => {
       if (res?.talent_info?.educational_institute?.length > 0) {
         setValue(
           'educationDetails',
-          res?.talent_info?.educational_institute.map((detail) => ({
+          res?.talent_info?.educational_institute?.map((detail) => ({
             educationInstitution: { label: detail.institution.name, value: detail.institution._id },
             education: { label: detail.education.name, value: detail.education._id },
           })),
@@ -449,14 +470,14 @@ const Educational = () => {
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',
-          res?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          res?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
       if (res?.certificates && res?.certificates.length > 0) {
         setValue(
           'certificates',
-          res?.certificates.map((certificate) => ({
+          res?.certificates?.map((certificate) => ({
             label: certificate.name,
             value: certificate._id,
           })),
@@ -466,7 +487,7 @@ const Educational = () => {
       if (res?.skills && res?.skills.length > 0) {
         setValue(
           'skills',
-          res?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          res?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -475,17 +496,25 @@ const Educational = () => {
 
   useEffect(() => {
     if (parseResume) {
-      if (parsedResumeData != null) {
+      if (parsedUploaded) {
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
-      } else {
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+      } else if (!parsedUploaded && parsedResumeData === null) {
+        dispatch(
+          getResumeParsedDetails(
+            setResumeParsedDetails,
+            setParseResume,
+            savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
+          ),
+        );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getCustomerSupportCount());
-  }, [parseResume, parsedResumeData]);
+  }, [parseResume, parsedResumeData, parsedUploaded]);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
   const [feedbackModal, setFeedbackSupportModal] = useState(false);
@@ -535,24 +564,16 @@ const Educational = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody>
-                  {fields.map((item, index) => (
-                    <Row key={item.id} className="mt-1 d-flex align-items-center">
+                  {fields?.length === 0 ? (
+                    <Row className="mt-1 d-flex align-items-center">
                       <Col sm="12" md="12" lg="5">
-                        <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
+                        <Label className="form-label" for="educationInstitution">
                           Name of College or University<span className="label-asterisk me-50">*</span>
                         </Label>
                         <Controller
-                          id={`educationDetails.${index}.educationInstitution`}
-                          name={`educationDetails.${index}.educationInstitution`}
+                          id="educationInstitution"
+                          name="educationInstitution"
                           control={control}
-                          invalid={
-                            errors &&
-                            errors.educationDetails &&
-                            errors.educationDetails.length > 0 &&
-                            errors.educationDetails[index] &&
-                            errors.educationDetails[index].educationInstitution &&
-                            true
-                          }
                           render={({ field }) => (
                             <AsyncPaginate
                               debounceTimeout={1000}
@@ -562,43 +583,24 @@ const Educational = () => {
                               placeholder="Select your college or university"
                               theme={selectThemeColors}
                               className={classNames('react-select', {
-                                'is-invalid':
-                                  errors &&
-                                  errors.educationDetails &&
-                                  errors.educationDetails.length > 0 &&
-                                  errors.educationDetails[index] &&
-                                  errors.educationDetails[index].educationInstitution,
+                                'is-invalid': errors && errors.educationInstitution,
                               })}
                               {...field}
                             />
                           )}
                         />
-                        {errors &&
-                          errors.educationDetails &&
-                          errors.educationDetails.length > 0 &&
-                          errors.educationDetails[index] && (
-                            <FormFeedback>
-                              {errors.educationDetails[index].educationInstitution &&
-                                errors.educationDetails[index].educationInstitution.label.message}
-                            </FormFeedback>
-                          )}
+                        {errors && errors.educationInstitution && (
+                          <FormFeedback>{errors.educationInstitution?.message}</FormFeedback>
+                        )}
                       </Col>
                       <Col sm="12" md="12" lg="5">
-                        <Label className="form-label" for={`educationDetails.${index}.education`}>
+                        <Label className="form-label" for="education">
                           Degree<span className="label-asterisk me-50">*</span>
                         </Label>
                         <Controller
-                          id={`educationDetails.${index}.education`}
-                          name={`educationDetails.${index}.education`}
+                          id="education"
+                          name="education"
                           control={control}
-                          invalid={
-                            errors &&
-                            errors.educationDetails &&
-                            errors.educationDetails.length > 0 &&
-                            errors.educationDetails[index] &&
-                            errors.educationDetails[index].education &&
-                            true
-                          }
                           render={({ field }) => (
                             <AsyncPaginate
                               loadOptions={loadEducationsOptions}
@@ -606,41 +608,124 @@ const Educational = () => {
                               placeholder="Select your degree"
                               theme={selectThemeColors}
                               className={classNames('react-select', {
-                                'is-invalid':
-                                  errors &&
-                                  errors.educationDetails &&
-                                  errors.educationDetails.length > 0 &&
-                                  errors.educationDetails[index] &&
-                                  errors.educationDetails[index].education,
+                                'is-invalid': errors && errors.education,
                               })}
                               {...field}
                             />
                           )}
                         />
-                        {errors &&
-                          errors.educationDetails &&
-                          errors.educationDetails.length > 0 &&
-                          errors.educationDetails[index] && (
-                            <FormFeedback>
-                              {errors.educationDetails[index].education &&
-                                errors.educationDetails[index].education.label.message}
-                            </FormFeedback>
-                          )}
-                      </Col>
-                      <Col sm="12" md="12" lg="2">
-                        {getValues('educationDetails') && getValues('educationDetails')?.length > 1 && (
-                          <Button
-                            type="button"
-                            color="flat-danger"
-                            className="mt-2"
-                            onClick={() => handleRemoveEducation(index)}
-                          >
-                            Remove
-                          </Button>
-                        )}
+                        {errors && errors.education && <FormFeedback>{errors.education?.message}</FormFeedback>}
                       </Col>
                     </Row>
-                  ))}
+                  ) : (
+                    fields?.map((item, index) => (
+                      <Row key={item.id} className="mt-1 d-flex align-items-center">
+                        <Col sm="12" md="12" lg="5">
+                          <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
+                            Name of College or University<span className="label-asterisk me-50">*</span>
+                          </Label>
+                          <Controller
+                            id={`educationDetails.${index}.educationInstitution`}
+                            name={`educationDetails.${index}.educationInstitution`}
+                            control={control}
+                            invalid={
+                              errors &&
+                              errors.educationDetails &&
+                              errors.educationDetails.length > 0 &&
+                              errors.educationDetails[index] &&
+                              errors.educationDetails[index].educationInstitution &&
+                              true
+                            }
+                            render={({ field }) => (
+                              <AsyncPaginate
+                                debounceTimeout={1000}
+                                additional={{ page: 1 }}
+                                loadOptions={loadInstitutesOptions}
+                                classNamePrefix="select"
+                                placeholder="Select your college or university"
+                                theme={selectThemeColors}
+                                className={classNames('react-select', {
+                                  'is-invalid':
+                                    errors &&
+                                    errors.educationDetails &&
+                                    errors.educationDetails.length > 0 &&
+                                    errors.educationDetails[index] &&
+                                    errors.educationDetails[index].educationInstitution,
+                                })}
+                                {...field}
+                              />
+                            )}
+                          />
+                          {errors &&
+                            errors.educationDetails &&
+                            errors.educationDetails.length > 0 &&
+                            errors.educationDetails[index] && (
+                              <FormFeedback>
+                                {errors?.educationDetails[index]?.educationInstitution &&
+                                  errors?.educationDetails[index]?.educationInstitution?.label?.message}
+                              </FormFeedback>
+                            )}
+                        </Col>
+                        <Col sm="12" md="12" lg="5">
+                          <Label className="form-label" for={`educationDetails.${index}.education`}>
+                            Degree<span className="label-asterisk me-50">*</span>
+                          </Label>
+                          <Controller
+                            id={`educationDetails.${index}.education`}
+                            name={`educationDetails.${index}.education`}
+                            control={control}
+                            invalid={
+                              errors &&
+                              errors.educationDetails &&
+                              errors.educationDetails.length > 0 &&
+                              errors.educationDetails[index] &&
+                              errors.educationDetails[index].education &&
+                              true
+                            }
+                            render={({ field }) => (
+                              <AsyncPaginate
+                                loadOptions={loadEducationsOptions}
+                                classNamePrefix="select"
+                                placeholder="Select your degree"
+                                theme={selectThemeColors}
+                                className={classNames('react-select', {
+                                  'is-invalid':
+                                    errors &&
+                                    errors.educationDetails &&
+                                    errors.educationDetails.length > 0 &&
+                                    errors.educationDetails[index] &&
+                                    errors.educationDetails[index].education,
+                                })}
+                                {...field}
+                              />
+                            )}
+                          />
+                          {errors &&
+                            errors.educationDetails &&
+                            errors.educationDetails.length > 0 &&
+                            errors.educationDetails[index] && (
+                              <FormFeedback>
+                                {errors?.educationDetails[index]?.education &&
+                                  errors?.educationDetails[index]?.education?.label?.message}
+                              </FormFeedback>
+                            )}
+                        </Col>
+                        <Col sm="12" md="12" lg="2">
+                          {getValues('educationDetails') && getValues('educationDetails')?.length > 1 && (
+                            <Button
+                              type="button"
+                              color="flat-danger"
+                              className="mt-2"
+                              onClick={() => handleRemoveEducation(index)}
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </Col>
+                      </Row>
+                    ))
+                  )}
+
                   <Row className="mt-2 mb-3">
                     <div
                       className="d-flex align-items-center upload-button cursor-pointer"
@@ -696,7 +781,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
+                      {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="certificates">
@@ -723,7 +808,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.certificates && <FormFeedback>{errors.certificates.message}</FormFeedback>}
+                      {errors.certificates && <FormFeedback>{errors.certificates?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   <Row className="mb-2">
@@ -753,7 +838,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
+                      {errors.skills && <FormFeedback>{errors.skills?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   {supportData?.tools_and_skills?.pending_requests > 0 && (
@@ -809,6 +894,7 @@ const Educational = () => {
                                   type="switch"
                                   checked={parseResume}
                                   onClick={() => {
+                                    setParsedUploaded(false);
                                     setParseResume(!parseResume);
                                     dispatch(setResumeParsed(!parseResume));
                                   }}

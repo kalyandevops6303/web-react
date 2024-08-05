@@ -28,7 +28,7 @@ const DisputesTimeline = (props) => {
         [className]: className,
       })}
     >
-      {data.map((item, i) => {
+      {data?.map((item, i) => {
         const ItemTag = item.tag ? item.tag : 'li';
 
         return (

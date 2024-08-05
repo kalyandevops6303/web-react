@@ -41,7 +41,6 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
   });
 
   const dispatch = useDispatch();
-
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [loading, setLoading] = useState(false);
 

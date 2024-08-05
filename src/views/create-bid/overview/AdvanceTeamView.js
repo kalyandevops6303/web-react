@@ -321,9 +321,9 @@ const AdvanceTeamView = ({ setDraftSavedModal }) => {
           modal={createBidModal}
           toggleModal={toggleCreateBidModal}
           selectedProject={{
-            _id: params.projectId,
-            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
-            bidType: params.bidType.split('-')[1].toUpperCase(),
+            _id: params?.projectId,
+            pay_type: { variable_cost: params?.bidType?.split('-')[0] === 'variable' },
+            bidType: params?.bidType?.split('-')[1]?.toUpperCase(),
           }}
         />
       )}

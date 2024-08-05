@@ -6,7 +6,15 @@ import {
   registerClubEmailService,
   changeMemberTypeService,
 } from '../../services/clubServices';
-import { createTeamService, updateTeamService } from '../../services/teamServices';
+import {
+  checkDraftTeamService,
+  createDraftTeamService,
+  createTeamService,
+  deleteDraftTeamService,
+  getTeamInfoById,
+  updateDraftTeamService,
+  updateTeamService,
+} from '../../services/teamServices';
 import {
   getClubCreated,
   registerClubEmailFailure,
@@ -20,8 +28,20 @@ import {
   getListReq,
   storeSuccessData,
   clearClubCreateData,
+  saveDraftClubRequest,
+  saveDraftClubSuccess,
+  saveDraftClubError,
+  checkDraftClubRequest,
+  checkDraftClubError,
+  checkDraftClubSuccess,
+  deleteDraftClubRequest,
+  deleteDraftClubSuccess,
+  deleteDraftClubError,
+  getDraftClubRequest,
+  getDraftClubSuccess,
+  getDraftClubError,
 } from '../reducers/clubs';
-import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
+import { getTeamError, updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
 import { scanAndProcessFiles } from '../../utility/Utils';
 import { getTeams } from './teamsActions';
 
@@ -96,12 +116,91 @@ const createClub =
           isPrivate: false,
         });
       } else {
-       await handleCreateClub();
-       await dispatch(getTeams({ onSuccess: () => {} }));
+        await handleCreateClub();
+        await dispatch(getTeams({ onSuccess: () => {} }));
       }
-
     } catch (error) {
       errorHandler(error);
+    }
+  };
+
+const createDraftClub =
+  ({ data, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(saveDraftClubRequest());
+      const res = await createDraftTeamService(data);
+      await dispatch(saveDraftClubSuccess(res));
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(saveDraftClubError());
+      errorHandler(error);
+    }
+  };
+
+const updateDraftClub =
+  ({ id, data, onSuccess, onError }) =>
+  async (dispatch) => {
+    dispatch(saveDraftClubRequest());
+    try {
+      const res = await updateDraftTeamService(id, data);
+      await dispatch(saveDraftClubSuccess(res));
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(saveDraftClubError());
+      errorHandler(error);
+    }
+  };
+
+const checkDraftClub =
+  ({ setSavedDraftsAvailableModal, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(checkDraftClubRequest());
+      const res = await checkDraftTeamService();
+      if (res?.data?.data?.has_draft_team) {
+        setSavedDraftsAvailableModal(true);
+      }
+      dispatch(checkDraftClubSuccess());
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(checkDraftClubError());
+      errorHandler(error);
+    }
+  };
+
+const deleteDraftClub =
+  ({ id, onSuccess, onError }) =>
+  async (dispatch) => {
+    try {
+      dispatch(deleteDraftClubRequest());
+      await deleteDraftTeamService(id);
+      await dispatch(deleteDraftClubSuccess());
+      onSuccess();
+    } catch (error) {
+      onError();
+      dispatch(deleteDraftClubError());
+      errorHandler(error);
+    }
+  };
+
+  const getDraftClubById =
+  ({ id, onSuccess, onError, onGetDraftClubDetails }) =>
+  async (dispatch) => {
+    try {
+      dispatch(getDraftClubRequest());
+      const res = await getTeamInfoById(id);
+      const data = res?.data?.data;
+      await onGetDraftClubDetails(data);
+      onSuccess();
+      dispatch(getDraftClubSuccess(res?.data?.data));
+    } catch (error) {
+      dispatch(getDraftClubError());
+      onError();
+      errorHandler(error, getTeamError);
     }
   };
 
@@ -130,8 +229,8 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
         isPrivate: false,
       });
     } else {
-     await handleUpdateClub();
-     await dispatch(getTeams({ onSuccess: () => {} }));
+      await handleUpdateClub();
+      await dispatch(getTeams({ onSuccess: () => {} }));
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
@@ -147,4 +246,9 @@ export {
   getClubCardInfo,
   changeMemberType,
   updateClub,
+  createDraftClub,
+  updateDraftClub,
+  checkDraftClub,
+  deleteDraftClub,
+  getDraftClubById
 };

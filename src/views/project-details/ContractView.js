@@ -318,7 +318,8 @@ const ContractView = () => {
                         isFreshDoc === false ||
                         userType !== userTypes.client ||
                         document?.is_contract_sent ||
-                        document?.is_nda_sent
+                        document?.is_nda_sent || 
+                        !checked
                       }
                       onClick={() =>
                         handleOpenAcceptModal({
@@ -386,7 +387,7 @@ const ContractView = () => {
                               });
                             }
                           }}
-                          disabled={isFreshDoc === false || worker?.is_signed}
+                          disabled={isFreshDoc === false || worker?.is_signed || !checked}
                           color="primary"
                           className="btn-sm-block mb-25 mt-1"
                         >
