@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Badge,
   Button,
@@ -81,9 +81,11 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const dispatch = useDispatch();
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteData, setDeleteData] = useState(false);
+  const [isStartDateSame, setIsStartDateSame] = useState(false);
   const [deleteFeedbackModal, setDeleteFeedbackModal] = useState(false);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const userDataLocal = useSelector(selectAuthUserData);
+  const savedUserData = useSelector(selectSavedUserData);
   const isMilestoneSubmitting = useSelector((state) => state.milestone.isMilestoneSubmitting);
   const {
     control,
@@ -218,6 +220,14 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     onDrop,
   });
 
+  useEffect(()=>{
+    const presentTime = convertUnixTimestampToDate(DateTime.now());
+    const startDate = convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name);
+   if(presentTime === startDate){
+    setIsStartDateSame(true);
+   }
+  },[selectedMilestone.start_date]);
+
   const isEditable =
     userDataLocal?.user_type !== userTypes.client &&
     (selectedMilestone?.status === 'ON_GOING' || selectedMilestone?.status === 'IN_REVIEW');
@@ -244,7 +254,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       window.open(`https://${URL}`, '_blank');
     }
   };
-  const savedUserData = useSelector(selectSavedUserData);
+
   const isEmptyLink = allLinks?.some((item) => item.link === '');
   const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
 
@@ -312,7 +322,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       <Card className="gray-card pt-2">
         <div className="mb-2 d-flex gap-1">
           <CardText className="fs-5 fw-bold">Milestone {selectedMilestone?.seq}</CardText>
-          {selectedMilestone?.status !== 'YET_TO_START' && (
+          {!isStartDateSame && (
             <CustomBadge bordered>
               <Badge className={`${selectedMilestone?.status}`} color="badge">
                 {statusEnum[selectedMilestone?.status]}
