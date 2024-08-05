@@ -151,7 +151,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
         yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
     weekends: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
@@ -180,7 +180,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -192,7 +192,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -303,7 +303,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
         options: skillsOptions.filter(
           (skill) =>
             skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            skill.label.toLowerCase().includes(search.toLowerCase()),
+            skill.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -328,7 +328,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
         options: toolsOptions.filter(
           (tool) =>
             tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            tool.label.toLowerCase().includes(search.toLowerCase()),
+            tool.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -353,7 +353,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
         options: timezonesOptions.filter(
           (timezone) =>
             timezone.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            timezone.label.toLowerCase().includes(search.toLowerCase()),
+            timezone.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -381,7 +381,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
         options: countriesOptions.filter(
           (country) =>
             country.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            country.label.toLowerCase().includes(search.toLowerCase()),
+            country.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -406,7 +406,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
         options: currenciesOptions.filter(
           (currency) =>
             currency.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            currency.label.toLowerCase().includes(search.toLowerCase()),
+            currency.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -658,7 +658,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
               </div>
             </Col>
             <Col sm="6" md="2" lg="2">
-              {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+              {uploadingFiles?.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
               {getFileSize(file.file.size)}
@@ -670,7 +670,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
               <Button
                 color="flat-danger"
                 className="btn-left-margin"
-                disabled={uploadingFiles.includes(file)}
+                disabled={uploadingFiles?.includes(file)}
                 onClick={() => handleRemoveFile(file)}
               >
                 Remove
@@ -1111,7 +1111,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                             type="checkbox"
                             {...field}
                             id="weekends"
-                            checked={field.value.includes('weekends')}
+                            checked={field.value?.includes('weekends')}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               const value = 'weekends';
@@ -1134,7 +1134,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                 </Row>
                 <Row>
                   {availabilityDays &&
-                    (availabilityDays?.includes('weekdays') || availabilityDays.includes('weekends')) && (
+                    (availabilityDays?.includes('weekdays') || availabilityDays?.includes('weekends')) && (
                       <>
                         {availabilityDays?.includes('weekdays') && (
                           <div>
@@ -1238,7 +1238,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                                         type="checkbox"
                                         {...field}
                                         id="MONDAY"
-                                        checked={field.value.includes('MONDAY')}
+                                        checked={field.value?.includes('MONDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'MONDAY';
@@ -1259,7 +1259,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                                         type="checkbox"
                                         {...field}
                                         id="TUESDAY"
-                                        checked={field.value.includes('TUESDAY')}
+                                        checked={field.value?.includes('TUESDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'TUESDAY';
@@ -1280,7 +1280,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                                         type="checkbox"
                                         {...field}
                                         id="WEDNESDAY"
-                                        checked={field.value.includes('WEDNESDAY')}
+                                        checked={field.value?.includes('WEDNESDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'WEDNESDAY';
@@ -1301,7 +1301,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                                         type="checkbox"
                                         {...field}
                                         id="THURSDAY"
-                                        checked={field.value.includes('THURSDAY')}
+                                        checked={field.value?.includes('THURSDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'THURSDAY';
@@ -1322,7 +1322,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                                         type="checkbox"
                                         {...field}
                                         id="FRIDAY"
-                                        checked={field.value.includes('FRIDAY')}
+                                        checked={field.value?.includes('FRIDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'FRIDAY';
@@ -1346,7 +1346,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                           </div>
                         )}
 
-                        {availabilityDays.includes('weekends') && (
+                        {availabilityDays?.includes('weekends') && (
                           <div>
                             <Row className="mb-1 mt-2">
                               <div className="d-flex align-items-center">
@@ -1448,7 +1448,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                                         type="checkbox"
                                         {...field}
                                         id="SATURDAY"
-                                        checked={field.value.includes('SATURDAY')}
+                                        checked={field.value?.includes('SATURDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'SATURDAY';
@@ -1469,7 +1469,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                                         type="checkbox"
                                         {...field}
                                         id="SUNDAY"
-                                        checked={field.value.includes('SUNDAY')}
+                                        checked={field.value?.includes('SUNDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'SUNDAY';
