@@ -194,7 +194,6 @@ const Profile = ({ setDraftSavedModal }) => {
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
       onEmailVerifySuccess(formDetails.clubEmailID);
-      dispatch(deleteDraftClub({ id: params?.id, onSuccess: () => {}, onError: () => {} }));
     }
   };
   const onGetDraftClubDetails = async (data) => {
@@ -558,7 +557,7 @@ const Profile = ({ setDraftSavedModal }) => {
                 {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
               </Button>
             )}
-            {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' ? (
+            {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' || !isUniversityApprovalValue ? (
               <Button disabled={!isValid || disableBtn} color="primary" type="submit">
                 {loading ? (
                   <Spinner size="sm" />
