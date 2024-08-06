@@ -62,6 +62,9 @@ body #root .wrapper .ps__rail-y {
         .dropdown-menu {
           top: 4rem !important;
         }
+        &.width-480 {
+           width: 480px;
+         }
       }
     }
   }
