@@ -284,6 +284,13 @@ const Account = ({ setDraftSavedModal }) => {
     }
   };
 
+  useEffect(() => {
+    if (!location.pathname.includes('/create-club')) {
+     // When navigating away from the '/create-club' route, remove the localStorage item
+     localStorage.removeItem('clubCreateData');
+    }
+  }, [location.pathname]);
+
   const handleSelectChange = (option, field) => {
     setSelectedOption(option);
     const selectedOptionValue = option?.value;
