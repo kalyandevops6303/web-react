@@ -35,6 +35,9 @@ import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal'
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
 import DelegateNameCard from '../../../../views/cards/DelegateNameCard';
+import { checkIsInviteDelegateModalVisible } from '../../../../redux/selectors/delegateSelectors';
+import { toggleAddDelegateModal } from '../../../../redux/reducers/delegate';
+import AddDelegateModal from '../../../../views/modals/AddDelegateModal';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -42,6 +45,8 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const savedUserDetails = useSelector(selectSavedUserData);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const teams = useSelector(selectTeamData);
+  const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
+
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -52,6 +57,8 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const [supportModal, setSupportModal] = useState(false);
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
   const isDelegateProfileCreated = getItem('isDelegateProfileCreated');
+
+  const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
 
   const handleEdit = () => {
     const talentOrClientProfile =
@@ -168,33 +175,25 @@ const UserDropdown = ({ setNavBarLoading }) => {
       style={!userName ? { minWidth: '10rem' } : {}}
       className={`dropdown-user nav-item ${!userName ? 'invisible' : ''}`}
     >
+      {isInviteDelegateModalVisible && (
+        <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
+      )}
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
           <span className="user-name truncate-1 fw-bold" id="username">
-            {isDelegate ? `${userDetailsData?.client_info?.company_name}` : userName}
+            {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
           </span>
           {userName?.length > 15 && (
             <UncontrolledTooltip placement="right" target="username">
               <div className="d-flex flex-column align-items-start">
-                <p className="m-0">{isDelegate ? `${userDetailsData?.client_info?.company_name}` : userName}</p>
+                <p className="m-0">{isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}</p>
               </div>
             </UncontrolledTooltip>
           )}
           {isDelegate ? (
-            <>
-              <span className="user-name truncate-1" id="delegateUsername">
-                {isDelegateProfileCreated ? userName : `${userName}(${adminUsername})`}
-              </span>
-              {`${userName}(${adminUsername})`?.length > 15 && (
-                <UncontrolledTooltip placement="right" target="delegateUsername">
-                  <div className="d-flex flex-column align-items-start">
-                    <p className="m-0">
-                      {userName}({adminUsername})
-                    </p>
-                  </div>
-                </UncontrolledTooltip>
-              )}
-            </>
+            <span className="user-name" id="delegateUsername">
+              {`${userName} (${adminUsername})`}
+            </span>
           ) : (
             <span className="user-status">
               {userDetailsData?.team_type
@@ -215,11 +214,21 @@ const UserDropdown = ({ setNavBarLoading }) => {
             imgWidth="40"
           />
         )}
-        {userDetailsData?.user_type === userTypes.client && (
+        {userDetailsData?.user_type === userTypes.client && !isDelegate ? (
           <Avatar
             img={
               userDetailsData?.client_info?.image_uri.length > 0
                 ? userDetailsData?.client_info?.image_uri
+                : defaultAvatar
+            }
+            imgHeight="40"
+            imgWidth="40"
+          />
+        ) : (
+          <Avatar
+            img={
+              userDetailsData?.admin_client_info?.image_uri.length > 0
+                ? userDetailsData?.admin_client_info?.image_uri
                 : defaultAvatar
             }
             imgHeight="40"
@@ -239,21 +248,6 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
       <UserDropDownWrapper>
         <DropdownMenu style={{ width: '24rem' }} end>
-          {isDelegate && isDelegateProfileCreated && (
-            <div className="border-bottom border-grey-light">
-              {userDetailsData && (
-                <DelegateNameCard
-                  img={
-                    userDetailsData?.client_info?.image_uri.length > 0
-                      ? userDetailsData?.client_info?.image_uri
-                      : defaultAvatar
-                  }
-                  userType={userDetailsData?.user_type}
-                  userName={userName}
-                />
-              )}
-            </div>
-          )}
           {isDelegate && (
             <div className="mt-1">
               <span className="px-1">Delegate for:</span>

@@ -10,7 +10,7 @@ import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
 import DribbleIcon from '@src/assets/images/dribble.png';
 import BehanceIcon from '@src/assets/images/behance.png';
-import InboxIcon from '@src/assets/images/inboxIcon.svg';
+// import InboxIcon from '@src/assets/images/inboxIcon.svg';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
 import Rating from 'react-rating';
@@ -30,7 +30,7 @@ import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
-import DelegateNameCard from '../../cards/DelegateNameCard';
+// import DelegateNameCard from '../../cards/DelegateNameCard';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -84,12 +84,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
   };
-
-  // mock data
-  const otherDelegates = [
-    { id: 1, name: 'Kim Gart' },
-    { id: 2, name: 'Ronda Mary' },
-  ];
 
   return (
     <LeftSidebarProfileWrapper>
@@ -213,10 +207,10 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               <CardText className="font-small-3 mt-25">Profile Completion</CardText>
             </div>
           )}
-          <section className="user-details mt-2">
+          {/* <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Client Delegate</CardTitle>
             <DelegateNameCard img={defaultAvatar} userName="John Doe" icon={InboxIcon} />
-          </section>
+          </section> */}
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
             {data?.educational_institute?.map((item, index) => (
@@ -475,7 +469,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </section>
         </CardBody>
       </Card>
-      <Card>
+      {/* <Card>
         <CardBody>
           <div className="d-flex gap-50">
             <CardTitle>Other Delegate</CardTitle>
@@ -492,7 +486,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             ))}
           </div>
         </CardBody>
-      </Card>
+      </Card> */}
       {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
     </LeftSidebarProfileWrapper>
   );

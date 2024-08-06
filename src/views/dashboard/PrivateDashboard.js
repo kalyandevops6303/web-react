@@ -41,13 +41,9 @@ import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
-import AddDelegateModal from '../modals/AddDelegateModal';
 import DelegateModeModal from '../modals/DelegateModeModal';
-import {
-  checkIsDelegateModeModalVisible,
-  checkIsInviteDelegateModalVisible,
-} from '../../redux/selectors/delegateSelectors';
-import { toggleAddDelegateModal, toggleDelegateModeModal } from '../../redux/reducers/delegate';
+import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
+import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -88,10 +84,8 @@ const PrivateDashboard = () => {
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
-  const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
   const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
-  const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
   const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
   const markDelegateModeModalAsSeen = getItem('markDelegateModeModalAsSeen');
 
@@ -197,9 +191,6 @@ const PrivateDashboard = () => {
 
   return (
     <div>
-      {isInviteDelegateModalVisible && (
-        <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
-      )}
       {isDelegate && isDelegateModeModalVisible && (
         <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
       )}

@@ -37,11 +37,11 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
               {userDetailsData && (
                 <DelegateNameCard
                   img={
-                    userDetailsData?.client_info?.image_uri.length > 0
-                      ? userDetailsData?.client_info?.image_uri
+                    userDetailsData?.admin_client_info?.image_uri.length > 0
+                      ? userDetailsData?.admin_client_info?.image_uri
                       : userDetailsData?.default_avatar
                   }
-                  userType={userDetailsData?.user_type}
+                  companyName={userDetailsData?.admin_client_info?.company_name}
                   userName={userName}
                 />
               )}
