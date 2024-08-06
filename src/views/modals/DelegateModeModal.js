@@ -8,6 +8,7 @@ import DelegateModeGif from '../../assets/images/youDidIt.gif';
 import { DelegateModeModalWrapper } from './style';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import DelegateNameCard from '../cards/DelegateNameCard';
+import { setItem } from '../../utility/localStorageControl';
 
 const DelegateModeModal = ({ modal, toggleModal }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -15,7 +16,7 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
   const userName = `${userDetailsData?.client_info?.first_name} ${userDetailsData?.client_info?.last_name}`;
 
   const onClose = () => {
-    localStorage.setItem('markDelegateModeModalSeen', true);
+    setItem('markDelegateModeModalAsSeen', true);
     toggleModal();
   };
 

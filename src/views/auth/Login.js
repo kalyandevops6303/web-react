@@ -23,7 +23,7 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
-import { removeItem, setItem } from '../../utility/localStorageControl';
+import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import { validateUrl } from '../../redux/actions/dashboardActions';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
@@ -63,6 +63,7 @@ const Login = () => {
       const teamId = getItemFromSession('team_id');
       const teamData = getItemFromSession('team_data');
       const redirectToLocation = getItemFromSession('redirect_to_location');
+      const isDelegate = getItem('isDelegate');
       if (redirectToLocation && teamId) {
         setItemFromSession('team_id', teamId);
 
@@ -74,7 +75,7 @@ const Login = () => {
           }),
         );
         removeItemFromSession('redirect_to_location');
-      } else if (redirectToLocation) {
+      } else if (redirectToLocation && !isDelegate) {
         navigate(redirectToLocation);
         removeItemFromSession('redirect_to_location');
       } else {
@@ -191,7 +192,6 @@ const Login = () => {
                   id="password"
                   placeholder="Enter your password"
                   onCopy={(e) => {
-                    
                     // disable copy from password field
                     e.preventDefault();
                     return false;

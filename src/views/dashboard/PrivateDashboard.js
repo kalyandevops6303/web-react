@@ -93,9 +93,10 @@ const PrivateDashboard = () => {
 
   const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
   const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
+  const markDelegateModeModalAsSeen = getItem('markDelegateModeModalAsSeen');
 
   useEffect(() => {
-    if (isDelegate && !isDelegateModeModalVisible && !getItem('isDelegateModeModalVisited')) {
+    if (isDelegate && !isDelegateModeModalVisible && !markDelegateModeModalAsSeen) {
       toggleDelegateMode();
     }
   }, []);
@@ -124,7 +125,7 @@ const PrivateDashboard = () => {
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
-    } else if (profilePercentageData?.values_missing?.includes('company_name')) {
+    } else if (profilePercentageData?.values_missing?.includes('company_name') && !isDelegate) {
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');

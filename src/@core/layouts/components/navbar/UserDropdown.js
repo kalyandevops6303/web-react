@@ -280,7 +280,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {!isDelegate || isDelegateProfileCreated ? (
             <EditProfileAccordion />
           ) : (
-            <DropdownItem onClick={() => navigate('/delegate-onboarding/account-details')} className="w-100 edit">
+            <DropdownItem onClick={() => navigate('/client-onboarding/account-details')} className="w-100 edit">
               <span className="align-middle">Create My Profile</span>
             </DropdownItem>
           )}
