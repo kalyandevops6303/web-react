@@ -128,11 +128,24 @@ const Profile = ({ setDraftSavedModal }) => {
   const localFormData = useWatch({ control });
 
   useEffect(() => {
+    const savedData = localStorage.getItem('clubCreateData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      Object.keys(parsedData).forEach((key) => {
+        setValue(key, parsedData[key]);
+      });
+    }
+  }, [setValue]);
+
+  useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
+    localStorage.setItem('clubCreateData', JSON.stringify(allData));
     dispatch(setFormData(allData));
-  }, [localFormData]);
+  }, [localFormData, dispatch]);
 
   const onBackClick = () => {
+    const savedData = localStorage.getItem('clubCreateData');
+    
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.club}/account-details`);
     } else if (params?.id) {
@@ -140,6 +153,7 @@ const Profile = ({ setDraftSavedModal }) => {
     } else {
       navigate(`/create-club/account-details`);
     }
+    localStorage.setItem('clubCreateData', JSON.stringify({ ...savedFormData, ...JSON.parse(savedData) }));
   };
 
   const onSuccess = () => {

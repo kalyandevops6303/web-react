@@ -230,9 +230,20 @@ const Account = ({ setDraftSavedModal }) => {
   const localFormData = useWatch({ control });
 
   useEffect(() => {
+    const savedData = localStorage.getItem('clubCreateData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      Object.keys(parsedData).forEach((key) => {
+        setValue(key, parsedData[key]);
+      });
+    }
+  }, [setValue]);
+
+  useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
+    localStorage.setItem('clubCreateData', JSON.stringify(allData));
     dispatch(setFormData(allData));
-  }, [localFormData]);
+  }, [localFormData, dispatch]);
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -428,7 +439,6 @@ const Account = ({ setDraftSavedModal }) => {
 
           const removeEmpty = removeEmptyKeys(reqData);
           dispatch(setClubCreateDataAction(removeEmpty));
-
           dispatch(updateClub(removeEmptyKeys(removeEmpty), onApiSuccess));
         } else {
           reqData = {
