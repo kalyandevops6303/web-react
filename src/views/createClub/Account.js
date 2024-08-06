@@ -120,7 +120,6 @@ const Account = ({ setDraftSavedModal }) => {
         }),
       )
       .max(5, 'Maximum of five tools can be added')
-      .min(1, 'At least one tool is required')
       .nullable(),
     skills: yup
       .array()
