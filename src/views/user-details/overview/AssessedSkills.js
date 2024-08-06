@@ -6,7 +6,7 @@ import { selectUserAssessments } from '../../../redux/selectors/assessmentSelect
 import { getTeamAssessments, getUserAssessments } from '../../../redux/actions/assessmentActions';
 import { useParams } from 'react-router-dom';
 
-const AssessedSkills = () => {
+const AssessedSkills = ({ userId }) => {
   const param = useParams();
   const dispatch = useDispatch();
   const userAssessments = useSelector(selectUserAssessments);
@@ -14,13 +14,13 @@ const AssessedSkills = () => {
   const [showSection, setShowSection] = useState(false);
 
   useEffect(() => {
-    dispatch(getUserAssessments({id: param?.userId}));
+    dispatch(getUserAssessments({ id: userId || param?.userId }));
   }, []);
 
   useEffect(() => {
     const visibleAssessments = userAssessments?.some((assessment) => assessment.hidden === false);
     setShowSection(visibleAssessments);
-  }, []);
+  }, [userAssessments]);
 
   return (
     <div>
@@ -32,12 +32,12 @@ const AssessedSkills = () => {
                 <b>Assessed Skills</b>
               </CardTitle>
 
-              <div className="d-flex gap-1">
-                {userAssessments.map(
+              <div className="d-flex gap-3">
+                {userAssessments?.map(
                   (assessment) =>
                     assessment.completed_date &&
                     !assessment.hidden && (
-                      <div key={assessment.id} className="d-flex gap-1 h-full" style={{ width: '20%' }}>
+                      <div key={assessment.id} className="d-flex gap-1 h-full" >
                         <AssessedSkillGradeBar grade={assessment.assessment_grade} />
 
                         <div className="d-flex flex-column h-100 justify-content-between">
