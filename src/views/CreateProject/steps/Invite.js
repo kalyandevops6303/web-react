@@ -199,14 +199,14 @@ const Invite = ({ stepper }) => {
       userId = user.user_id;
     }
 
-    if (invitedIds.includes(userId)) {
+    if (invitedIds?.includes(userId)) {
       return (
         <div className="ms-3">
           <h5 className="m-0 fw-light font-medium-1">Invited!</h5>
         </div>
       );
       // eslint-disable-next-line
-    } else if (selectedIds.includes(userId)) {
+    } else if (selectedIds?.includes(userId)) {
       return (
         <div
           className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
