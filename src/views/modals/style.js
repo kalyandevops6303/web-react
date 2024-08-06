@@ -511,5 +511,4 @@ export {
   FeedbackSupportModalWrapper,
   WithdrawModalWrapper,
   DelegateModeModalWrapper,
-  WithdrawModalWrapper,
 };
