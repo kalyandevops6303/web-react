@@ -173,13 +173,13 @@ const UserDropdown = ({ setNavBarLoading }) => {
     <UncontrolledDropdown
       tag="li"
       style={!userName ? { minWidth: '10rem' } : {}}
-      className={`dropdown-user nav-item ${!userName ? 'invisible' : ''} ${isDelegate ? 'width-400': ''}`}
+      className={`dropdown-user nav-item ${!userName ? 'invisible' : ''}`}
     >
       {isInviteDelegateModalVisible && (
         <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
       )}
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
-        <div className="user-nav d-sm-flex d-none">
+        <div className={`user-nav d-sm-flex d-none ${isDelegate ? 'delegate-username' : ''}`}>
           <span className="user-name truncate-1 fw-bold" id="username">
             {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
           </span>

@@ -281,11 +281,13 @@
         a.dropdown-user-link {
           display: flex;
           align-items: center;
-          width: 290px;
           // gap: 30px;
 
           // justify-content: space-between;
 
+          .delegate-username {
+            min-width: 16rem;
+          }
           .user-name {
             display: inline-block;
             margin-bottom: 0.435rem;
