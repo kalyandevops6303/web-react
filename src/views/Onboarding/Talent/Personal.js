@@ -674,7 +674,7 @@ const Personal = () => {
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/account-details`);
     } else {
       navigate(`/${userOnboarding.talent}/account-details`);
@@ -684,7 +684,7 @@ const Personal = () => {
   const onSkipClick = () => {
     dispatch(clearAllFormData());
     dispatch(setFormDocuments(files));
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);
@@ -694,7 +694,7 @@ const Personal = () => {
   const onSuccess = () => {
     dispatch(clearAllFormData());
     dispatch(setFormDocuments(files));
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);

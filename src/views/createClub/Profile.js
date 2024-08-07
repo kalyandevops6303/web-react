@@ -128,11 +128,24 @@ const Profile = ({ setDraftSavedModal }) => {
   const localFormData = useWatch({ control });
 
   useEffect(() => {
+    const savedData = localStorage.getItem('clubCreateData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      Object.keys(parsedData).forEach((key) => {
+        setValue(key, parsedData[key]);
+      });
+    }
+  }, [setValue]);
+
+  useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
+    localStorage.setItem('clubCreateData', JSON.stringify(allData));
     dispatch(setFormData(allData));
-  }, [localFormData]);
+  }, [localFormData, dispatch]);
 
   const onBackClick = () => {
+    const savedData = localStorage.getItem('clubCreateData');
+    
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.club}/account-details`);
     } else if (params?.id) {
@@ -140,6 +153,7 @@ const Profile = ({ setDraftSavedModal }) => {
     } else {
       navigate(`/create-club/account-details`);
     }
+    localStorage.setItem('clubCreateData', JSON.stringify({ ...savedFormData, ...JSON.parse(savedData) }));
   };
 
   const onSuccess = () => {
@@ -180,7 +194,6 @@ const Profile = ({ setDraftSavedModal }) => {
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
       onEmailVerifySuccess(formDetails.clubEmailID);
-      dispatch(deleteDraftClub({ id: params?.id, onSuccess: () => {}, onError: () => {} }));
     }
   };
   const onGetDraftClubDetails = async (data) => {
@@ -544,7 +557,7 @@ const Profile = ({ setDraftSavedModal }) => {
                 {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
               </Button>
             )}
-            {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' ? (
+            {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' || !isUniversityApprovalValue ? (
               <Button disabled={!isValid || disableBtn} color="primary" type="submit">
                 {loading ? (
                   <Spinner size="sm" />

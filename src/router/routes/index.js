@@ -15,7 +15,6 @@ import { isObjEmpty } from '@utils';
 
 import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
 import UserDetails from '../../views/user-details';
-import SecondPage from '../../views/SecondPage';
 import AuthRoute from '../../views/auth/index';
 import TalentOnboarding from '../../views/Onboarding/Talent';
 import ClientOnboarding from '../../views/Onboarding/Client';
@@ -42,6 +41,7 @@ import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
 import Assessments from '../../views/assessments';
 import InternalProjects from '../../views/internal/projects';
+import NotFound from '../../views/NotFound';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -73,10 +73,6 @@ const Routes = [
   {
     path: '/profile/:userType/:userId',
     element: <UserDetails />,
-  },
-  {
-    path: '/second-page',
-    element: <SecondPage />,
   },
   {
     path: '/marketplace/*',
@@ -220,12 +216,16 @@ const Routes = [
   },
   {
     path: '/assessments',
-    element: <Assessments />
+    element: <Assessments />,
   },
   {
     path: '/internal/projects',
-    element: <InternalProjects />
-  }
+    element: <InternalProjects />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
 ];
 
 // eslint-disable-next-line consistent-return
