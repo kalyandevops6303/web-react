@@ -11,6 +11,8 @@ import { selectCurrentProfile } from '../../../redux/selectors/profileSelectors'
 import AvatarGroup from '@components/avatar-group';
 import { userTypes } from '../../../utility/constants/Constant';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import Tag from '../../../@core/components/tags';
 
 const AssessedSkillsTeam = ({ teamId }) => {
     const param = useParams();
@@ -23,7 +25,7 @@ const AssessedSkillsTeam = ({ teamId }) => {
         img: teamMember?.image_uri?.length ? teamMember?.image_uri : defaultAvatar,
     }));
 
-    const [showSection, setShowSection] = useState(false);
+    const [showSection, setShowSection] = useState(true);
     const [showViewAllModal, setShowViewAllModal] = useState(false);
 
     let assessmentsDisplayed = []
@@ -32,12 +34,11 @@ const AssessedSkillsTeam = ({ teamId }) => {
 
         if (!assessments) return <></>
 
-        let assessmentsWithResults = assessments?.filter((assessment) => assessment.hasOwnProperty("completed_date") && !assessment.hidden)
+        let assessmentsWithResults = assessments?.filter((assessment) => assessment.hasOwnProperty("completed_date") && !assessment.hidden);
         const userIdsWithAssessments = assessmentsWithResults?.map((assessment) => assessment.user_id);
-
         const teamMembersWithAssessments = teamMembers?.filter((teamMember) => userIdsWithAssessments?.includes(teamMember.user_id));
 
-        if (assessmentsDisplayed.includes(assessmentsWithResults[0].assessment_name)) return <></>
+        if (assessmentsDisplayed.includes(assessmentsWithResults[0].assessment_name) || assessmentsDisplayed.length === 5) return <></>
         else assessmentsDisplayed.push(assessmentsWithResults[0].assessment_name)
 
         return (
@@ -89,25 +90,34 @@ const AssessedSkillsTeam = ({ teamId }) => {
                     <AssessedSkillGradeBar grade={grade} />
 
                     <div className="d-flex flex-column h-100 justify-content-between" style={{ width: "200px" }}>
-                        {/* <CardText tag="h5">{assessmentsWithResults && assessmentsWithResults[0].assessment_name}</CardText> */}
-
-                        <div className='d-flex align-items-center justify-content-between gap-3'>
+                        <div className='d-flex align-items-center justify-content-between gap-1'>
                             <AssessmentResultText grade={grade}>
                                 <small>
                                     <b>{grade}</b>
                                 </small>
                             </AssessmentResultText>
                             {teamMembersWithAssessments?.length > 3 ? (
-                                <span className="d-flex avatars">
+                                <span className="d-flex">
                                     <AvatarGroup
                                         totalCount={teamMembersWithAssessments?.length}
                                         size="sm"
                                         className="mr-4"
                                         data={teamMembersWithAssessments?.slice(0, 3)}
                                     />
+                                    <Tag
+                                        hasNew={false}
+                                        count={teamMembersWithAssessments?.length || "00"}
+                                    />
                                 </span>
                             ) : (
+                                <span className='d-flex'>
                                 <AvatarGroup size="sm" data={teamMembersWithAssessments} />
+                                <Tag
+                                        hasNew={false}
+                                        count={teamMembersWithAssessments?.length || "00"}
+                                    />
+                                </span>
+                                
                             )}
                         </div>
                     </div>
@@ -119,8 +129,11 @@ const AssessedSkillsTeam = ({ teamId }) => {
     const getViewAllModalItem = (assessmentName, grades) => {
         return (
             <Card>
-                <CardBody className="d-flex gap-5 align-items-center">
-                    <div style={{ width: "100px" }}>{assessmentName}</div>
+                <CardBody className="d-flex gap-2 align-items-center">
+                    <div style={{ width: "90px" }}>
+                        <CardText tag="h5">{assessmentName}</CardText>
+                    </div>
+                    {getGradeAssessmentsForModal(grades?.Mastery, "Mastery")}
                     {getGradeAssessmentsForModal(grades?.Proficient, "Proficient")}
                     {getGradeAssessmentsForModal(grades?.Intermediate, "Intermediate")}
                     {getGradeAssessmentsForModal(grades?.Novice, "Novice")}
@@ -131,16 +144,11 @@ const AssessedSkillsTeam = ({ teamId }) => {
 
     useEffect(() => {
         dispatch(getTeamAssessments({ id: teamId || param?.userId }))
-    }, [teamAssessments]);
-
-    useEffect(() => {
-        const visibleAssessments = teamAssessments
-        setShowSection(visibleAssessments);
     }, []);
 
     return (
         <div>
-            {showSection && (
+            {showSection ? (
                 <RecentProjectsWrap>
                     <Card>
                         <CardBody>
@@ -206,7 +214,9 @@ const AssessedSkillsTeam = ({ teamId }) => {
                         </ModalBody>
                     </Modal>
                 </RecentProjectsWrap>
-            )}
+            )
+                :
+                <></>}
         </div>
     );
 };

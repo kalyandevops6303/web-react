@@ -30,13 +30,14 @@ import {
     teamAssessmentsFailure
 } from '../reducers/assessment';
 import { getCustomerSupportList } from './supportActions';
+import { isEmpty } from '../../utility/Utils';
 
 function transformData(data) {
     const result = {};
 
-    data.forEach(candidate => {
+    data?.forEach(candidate => {
         const userId = candidate.user_id;
-        if (candidate.assessments && candidate.assessments.length) {
+        if (!isEmpty(candidate.assessments)) {
             candidate.assessments.forEach(assessment => {
                 if (assessment.assessment_grade) {
                     const { assessment_name, assessment_grade } = assessment;

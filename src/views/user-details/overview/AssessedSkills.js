@@ -32,7 +32,7 @@ const AssessedSkills = ({ userId }) => {
                 <b>Assessed Skills</b>
               </CardTitle>
 
-              <div className="d-flex gap-3">
+              <div className="d-flex gap-5">
                 {userAssessments?.map(
                   (assessment) =>
                     assessment.completed_date &&
