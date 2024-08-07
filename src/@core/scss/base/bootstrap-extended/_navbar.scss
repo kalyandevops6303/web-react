@@ -32,7 +32,6 @@
   &[class*='bg-'] {
     .navbar-nav {
       .nav-item {
-        
         > a {
           color: set-navbar-text-color($theme-dark-body-color) !important;
 
@@ -123,7 +122,6 @@
     margin-left: 0;
 
     // Navbar bookmark primary color on hover
-    
 
     // Language dd style
     .dropdown-language {
@@ -283,14 +281,17 @@
         a.dropdown-user-link {
           display: flex;
           align-items: center;
+          width: 290px;
+          // gap: 30px;
+
+          // justify-content: space-between;
 
           .user-name {
             display: inline-block;
             margin-bottom: 0.435rem;
             margin-left: 0.2rem;
-            text-align: right;
+            // text-align: right;
             display: block;
-            
           }
           .truncate-1 {
             max-width: 8rem;
@@ -324,7 +325,7 @@
           .user-nav {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: flex-start;
             float: left;
             margin-right: $spacer - 0.2;
           }
