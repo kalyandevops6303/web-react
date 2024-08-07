@@ -345,7 +345,8 @@ const UserDetails = () => {
             />
           </Row>
           <Row>
-            {isTalentView ? <AssessedSkills /> : <AssessedSkillsTeam />}
+            {isTalentView && <AssessedSkills />}
+            {isTeamView && <AssessedSkillsTeam />}
           </Row>
           <Row>
             <RecentProjects isEditable={userData?._id === param?.userId} />

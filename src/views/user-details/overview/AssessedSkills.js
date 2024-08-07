@@ -37,7 +37,7 @@ const AssessedSkills = ({ userId }) => {
                   (assessment) =>
                     assessment.completed_date &&
                     !assessment.hidden && (
-                      <div key={assessment.id} className="d-flex gap-1 h-full" >
+                      <div className="d-flex gap-1 h-full mr-5">
                         <AssessedSkillGradeBar grade={assessment.assessment_grade} />
 
                         <div className="d-flex flex-column h-100 justify-content-between">
