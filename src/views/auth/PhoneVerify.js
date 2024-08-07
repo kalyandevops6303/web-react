@@ -52,7 +52,7 @@ const VerifyPhone = () => {
   }, []);
 
   useEffect(() => {
-    if (isPhoneVerified && userType) {
+    if (isPhoneVerified && userType && !isDelegate) {
       // show success message and navigate user to login page
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
       setTimeout(() => {
