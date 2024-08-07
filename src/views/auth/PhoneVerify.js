@@ -64,7 +64,7 @@ const VerifyPhone = () => {
     if (!phoneData) {
       navigate('/auth/register-phone');
     }
-    if (isDelegate) {
+    if (isDelegate && isPhoneVerified) {
       navigate('/client-onboarding/account-details');
     }
   }, [isPhoneVerified, navigate]);

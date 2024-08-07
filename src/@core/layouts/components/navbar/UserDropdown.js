@@ -173,7 +173,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
     <UncontrolledDropdown
       tag="li"
       style={!userName ? { minWidth: '10rem' } : {}}
-      className={`dropdown-user nav-item ${!userName ? 'invisible' : ''} ${isDelegate ? 'width-480': ''}`}
+      className={`dropdown-user nav-item ${!userName ? 'invisible' : ''} ${isDelegate ? 'width-400': ''}`}
     >
       {isInviteDelegateModalVisible && (
         <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
