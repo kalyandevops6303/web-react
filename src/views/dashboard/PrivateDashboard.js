@@ -374,7 +374,6 @@ const PrivateDashboard = () => {
           )}
           <Alerts />
           <Disputes handleRaiseDispute={handleRaiseDispute} />
-          <Meetings />
         </Col>
       </Row>
     </div>

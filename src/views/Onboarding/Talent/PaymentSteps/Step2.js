@@ -88,7 +88,7 @@ const Step2 = ({ setStep, step }) => {
     nsnTaxId: Yup.string().when('taxType', {
       is: (taxType) => taxType === 'NON_US',
       then: () => Yup.string().required('Tax Id is required'),
-      otherwise: () => Yup.string().optional(),
+      otherwise: () => Yup.string().nullable(),
     }),
   });
 

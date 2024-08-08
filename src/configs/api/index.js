@@ -226,6 +226,9 @@ const API = {
     myBids: `${apiOnboardingEndpoint}/api/v1/my-bids-projects`,
     listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
     listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
+
+    // internal
+    allProjectsUrl: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects/all`,
   },
   globalSearch: {
     search: `${apiOnboardingEndpoint}/api/v1/search`,
