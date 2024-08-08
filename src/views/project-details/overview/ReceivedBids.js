@@ -156,7 +156,7 @@ const ReceivedBids = ({ projectName, active }) => {
       name: 'STATUS',
       sortable: false,
       minWidth: '12%',
-      selector: (row) => (row.status === 'REJECTED' ? 'REJECTED' : row.status),
+      selector: (row) => (row?.status === 'REJECTED' ? 'REJECTED' : row?.status),
     },
 
     {
@@ -234,7 +234,7 @@ const ReceivedBids = ({ projectName, active }) => {
         <div className="position-relative">
           <CustomBadge>
             <Badge className={`${item?.status} truncate-1 rounded-corner`} color="badge">
-              {item.status}
+              {item?.status}
             </Badge>
           </CustomBadge>
           {item?.status === 'UPDATED' && <div className="red-dot" />}

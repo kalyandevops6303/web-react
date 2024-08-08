@@ -16,3 +16,6 @@ export const updateClubLoading = createSelector(clubSelector, (club) => club.upd
 export const getDraftClubLoading = createSelector(clubSelector, (club) => club.getDraftClubLoading);
 
 export const deleteDraftClubLoading = createSelector(clubSelector, (club) => club.deleteDraftClubLoading);
+
+export const clubLocalData = createSelector(clubSelector, (club) => club.clubLocalData);
+

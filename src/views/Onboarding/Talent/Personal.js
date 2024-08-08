@@ -22,7 +22,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,11 +39,13 @@ import {
   languagesLoading,
 } from '../../../redux/selectors/staticSelectors';
 import {
+  deleteResume,
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
 } from '../../../redux/actions/talentOnboardingActions';
 import {
+  deleteResumeLoading,
   profileDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
@@ -56,7 +58,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
-  getFileSize,
+  // getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
@@ -73,8 +75,20 @@ import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
-import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments, setResumeParsed } from '../../../redux/reducers/formData';
+import {
+  formData,
+  formDocuments,
+  resumeDataUploadedForPersonal,
+  resumeParsed,
+} from '../../../redux/selectors/formDataSelectors';
+import {
+  clearAllFormData,
+  setFileKey,
+  setFormData,
+  setFormDocuments,
+  setResumeDataUploadedForPersonal,
+  setResumeParsed,
+} from '../../../redux/reducers/formData';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -162,6 +176,8 @@ const Personal = () => {
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const IsresumeParsed = useSelector(resumeParsed);
+  const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForPersonal || false);
   const {
     control,
     handleSubmit,
@@ -201,7 +217,7 @@ const Personal = () => {
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [files, setFiles] = useState(savedFormDocuments || []);
+  const [files, setFiles] = useState(savedFormDocuments ?? []);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
@@ -215,8 +231,8 @@ const Personal = () => {
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-
   const localFormData = useWatch({ control });
+
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
       const allData = { ...savedFormData, ...localFormData };
@@ -225,18 +241,20 @@ const Personal = () => {
   }, [localFormData, parseResume, resumeParsedLoading]);
 
   useEffect(() => {
-    if (parseResume === false) {
-      if (savedFormData) {
-        const requiredFields = filteredFormSchema({
-          savedData: savedFormData,
-          formSchemaFields: PersonalSchema.fields,
-        });
-        reset(requiredFields);
-        const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
-        trigger(keysWithValues);
+    if (savedFormDocuments) {
+      if (parseResume === false) {
+        if (savedFormData) {
+          const requiredFields = filteredFormSchema({
+            savedData: savedFormData,
+            formSchemaFields: PersonalSchema.fields,
+          });
+          reset(requiredFields);
+          const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+          trigger(keysWithValues);
+        }
       }
+      setFiles(savedFormDocuments ?? []);
     }
-    setFiles(savedFormDocuments);
   }, [parseResume]);
 
   useEffect(() => {
@@ -244,12 +262,16 @@ const Personal = () => {
       setFiles([]);
     }
   }, [files]);
-
-  const handleRemoveFile = (file) => {
+  const isDeleteResumeLoading = useSelector(deleteResumeLoading);
+  const handleRemoveFile = async (file) => {
     const uploadedFiles = files;
-    const filtered = uploadedFiles.filter((i) => i.id !== file.id);
-    setFiles([...filtered]);
-    dispatch(setFormDocuments(null));
+    await dispatch(
+      deleteResume(() => {
+        const filtered = uploadedFiles.filter((i) => i.id !== file.id);
+        dispatch(setFormDocuments(null));
+        setFiles([...filtered]);
+      }),
+    );
   };
 
   const isFileValid = (file) => {
@@ -269,7 +291,7 @@ const Personal = () => {
         'Content-Type': file.file.type,
       });
     } catch (error) {
-      dispatch(parsedResumeData(null));
+      dispatch(resumeParsedDetailsSuccess(null));
       setParseResume(false);
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
@@ -277,10 +299,35 @@ const Personal = () => {
     }
   };
 
-  const setResumeParsedDetails = (res) => {
+  const loadLanguagesOptions = async (search) => {
+    if (search) {
+      return {
+        options: returnFilteredDropdownOptions(search, languagesOptions),
+      };
+    }
+    try {
+      const response = await languagesService();
+
+      const options = response?.data?.data?.map((language) => ({ label: language.name, value: language._id }));
+
+      setLanguagesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const setResumeParsedDetails = async (res) => {
+    const languageDetails = await loadLanguagesOptions();
     if (res) {
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
+      }
+      if (res?.professional_introduction && res?.professional_introduction.length > 0) {
+        setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
       }
       if (res?.work_experience && res?.work_experience > 0) {
         // eslint-disable-next-line no-unsafe-optional-chaining
@@ -294,7 +341,7 @@ const Personal = () => {
         setValue(
           'readLanguages',
           res.languages_read?.map((language) => ({
-            label: language?.name,
+            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
             value: language?._id,
           })),
           { shouldValidate: true },
@@ -315,7 +362,7 @@ const Personal = () => {
         setValue(
           'speakLanguages',
           res.languages_speak?.map((language) => ({
-            label: language?.name,
+            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
             value: language?._id,
           })),
           { shouldValidate: true },
@@ -336,7 +383,7 @@ const Personal = () => {
         setValue(
           'writeLanguages',
           res.languages_write?.map((language) => ({
-            label: language?.name,
+            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
             value: language?._id,
           })),
           { shouldValidate: true },
@@ -353,11 +400,68 @@ const Personal = () => {
           { shouldValidate: true },
         );
       }
-      if (res?.professional_introduction && res?.professional_introduction.length > 0) {
-        setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
-      }
-      if (res?.address && res?.address?.length > 0) {
-        setValue('streetAddress', res?.address, { shouldValidate: true });
+      // As now resume parser API is not sending any data regarding the addresses, so mapping it from the userDetailsData API for better User Experience flow
+      if (parsedUploaded) {
+        if (
+          'streetAddress' in userDetailsData?.talent_info?.current_residency ||
+          'houseNumber' in userDetailsData?.talent_info?.current_residency ||
+          'zipCode' in userDetailsData?.talent_info?.current_residency ||
+          'country' in userDetailsData?.talent_info?.current_residency ||
+          'state' in userDetailsData?.talent_info?.current_residency ||
+          'city' in userDetailsData?.talent_info?.current_residency
+        ) {
+          if (userDetailsData?.talent_info?.current_residency?.street_address.length > 0) {
+            setValue(
+              'streetAddress',
+              savedFormData?.streetAddress || userDetailsData?.talent_info?.current_residency?.street_address,
+              { shouldValidate: true },
+            );
+          }
+          if (userDetailsData?.talent_info?.current_residency?.house_number.length > 0) {
+            setValue(
+              'houseNumber',
+              savedFormData?.houseNumber || userDetailsData?.talent_info?.current_residency?.house_number,
+              {
+                shouldValidate: true,
+              },
+            );
+          }
+          if (userDetailsData?.talent_info?.current_residency?.zip_code > 0) {
+            setValue('zipCode', savedFormData?.zipCode || userDetailsData?.talent_info?.current_residency?.zip_code, {
+              shouldValidate: true,
+            });
+          }
+          if ('country' in userDetailsData?.talent_info?.current_residency) {
+            setValue(
+              'country',
+              {
+                label: savedFormData?.country?.label || userDetailsData?.talent_info?.current_residency.country.name,
+                value: savedFormData?.country?.value || userDetailsData?.talent_info?.current_residency.country._id,
+              },
+              { shouldValidate: true },
+            );
+          }
+          if ('state' in userDetailsData?.talent_info?.current_residency) {
+            setValue(
+              'state',
+              {
+                label: savedFormData?.state?.label || userDetailsData?.talent_info?.current_residency.state.name,
+                value: savedFormData?.state?.value || userDetailsData?.talent_info?.current_residency.state._id,
+              },
+              { shouldValidate: true },
+            );
+          }
+          if ('city' in userDetailsData?.talent_info?.current_residency) {
+            setValue(
+              'city',
+              {
+                label: savedFormData?.city?.label || userDetailsData?.talent_info?.current_residency.city.name,
+                value: savedFormData?.city?.value || userDetailsData?.talent_info?.current_residency.city._id,
+              },
+              { shouldValidate: true },
+            );
+          }
+        }
       }
       if (savedFormDocuments) {
         setFiles([
@@ -387,6 +491,7 @@ const Personal = () => {
     dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
+    dispatch(setFileKey(response?.data?.data?.file_key));
     if (response)
       dispatch(
         getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
@@ -415,15 +520,17 @@ const Personal = () => {
         filesRef.current = files;
         setFiles(savedFormDocuments);
         dispatch(setFormDocuments(savedFormDocuments));
+      } else {
+        setFiles([]);
       }
     };
     fileReRender();
   }, [savedFormDocuments]);
-  const formattedDate = new Date()
-    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-    .replace(',', '')
-    .split(' ');
-  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+  // const formattedDate = new Date()
+  //   .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+  //   .replace(',', '')
+  //   .split(' ');
+  // const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -445,7 +552,7 @@ const Personal = () => {
 
   const fileList = () => (
     <div className="custom-card mb-1">
-      <Card className="p-1">
+      <Card className="py-1">
         {files?.map((file, index) => (
           <Row
             key={file.id}
@@ -455,9 +562,9 @@ const Personal = () => {
                 : 'd-flex flex-column align-items-start'
             }
           >
-            <Col>
-              <div
-                className="d-flex cursor-pointer"
+            <div className="d-flex flex-wrap w-100 gap-1 gap-xl-0 justify-content-between">
+              <Col
+                className="d-flex cursor-pointer justify-content-between align-items-center  px-1 w-100"
                 style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
                 onClick={() => downloadResume(file)}
               >
@@ -466,14 +573,27 @@ const Personal = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="d-flex align-items-center w-100 ">
                     <span>{renderFilePreview(file.file)}</span>
-                    <span>{file.file.name}</span>
+                    <span className="w-75">{file.file.name}</span>
                   </div>
                 )}
-              </div>
-            </Col>
-            <Row className="mt-2">
+              </Col>
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
+                onClick={() => {
+                  handleRemoveFile(file);
+                  setParseResume(false);
+                  dispatch(resumeParsedDetailsSuccess(null));
+                  dispatch(setResumeParsed(false));
+                }}
+              >
+                {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
+              </Button>
+            </div>
+            {/* <Row className="mt-2">
               <Row>
                 <Col>{uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}</Col>
                 <Col>{getFileSize(file.file.size)}</Col>
@@ -484,19 +604,19 @@ const Personal = () => {
                   <Button
                     color="flat-danger"
                     className="btn-left-margin"
-                    disabled={uploadingFiles.includes(file)}
+                    disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
                     onClick={() => {
                       handleRemoveFile(file);
                       setParseResume(false);
-                      dispatch(parsedResumeData(null));
+                      dispatch(resumeParsedDetailsSuccess(null));
                       dispatch(setResumeParsed(false));
                     }}
                   >
-                    Remove
+                    {isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
                   </Button>
                 </Col>
               </Row>
-            </Row>
+            </Row> */}
           </Row>
         ))}
       </Card>
@@ -515,7 +635,7 @@ const Personal = () => {
       dispatch(getStates(watch('country').value));
       setCitiesOptions([]);
     }
-    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country').value) {
+    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country')?.value) {
       setValue('state', savedFormData?.state);
       if (savedFormData && savedFormData?.state != null) {
         setValue('city', savedFormData?.city);
@@ -554,7 +674,7 @@ const Personal = () => {
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/account-details`);
     } else {
       navigate(`/${userOnboarding.talent}/account-details`);
@@ -564,7 +684,7 @@ const Personal = () => {
   const onSkipClick = () => {
     dispatch(clearAllFormData());
     dispatch(setFormDocuments(files));
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);
@@ -574,11 +694,12 @@ const Personal = () => {
   const onSuccess = () => {
     dispatch(clearAllFormData());
     dispatch(setFormDocuments(files));
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);
     }
+    dispatch(setResumeDataUploadedForPersonal(parseResume));
   };
 
   const onSubmit = (data) => {
@@ -629,10 +750,12 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
-        resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
-        },
+        resume: !isEmpty(files)
+          ? {
+              file_name: files[0]?.file?.name || '',
+              file_key: files[0]?.uploadData?.file_key || '',
+            }
+          : {},
       };
     } else {
       reqData = {
@@ -643,24 +766,39 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
-        resume: {
-          file_name: !isEmpty(files) ? files[0]?.file?.name : '',
-          file_key: !isEmpty(files) ? files[0]?.uploadData?.file_key : '',
-        },
+        resume: !isEmpty(files)
+          ? {
+              file_name: files[0]?.file?.name || '',
+              file_key: files[0]?.uploadData?.file_key || '',
+            }
+          : {},
       };
     }
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     if (IsresumeParsed) {
+      const languagesWritten = watch('writeLanguages')?.map((language) => ({
+        name: language.label,
+        _id: language.value,
+      }));
+      const languagesSpoken = watch('speakLanguages')?.map((language) => ({
+        name: language.label,
+        _id: language.value,
+      }));
+      const languagesRead = watch('readLanguages')?.map((language) => ({
+        name: language.label,
+        _id: language.value,
+      }));
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
-          languages_speak,
-          languages_write,
-          languages_read,
+          languages_speak: languagesSpoken,
+          languages_write: languagesWritten,
+          languages_read: languagesRead,
           tagline,
           professional_introduction: professionalIntroduction,
         },
       };
+
       dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
@@ -677,27 +815,6 @@ const Personal = () => {
       const options = response?.data?.map((role) => ({ label: role.name, value: role._id }));
 
       setTalentRolesOptions(options);
-
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
-
-  const loadLanguagesOptions = async (search) => {
-    if (search) {
-      return {
-        options: returnFilteredDropdownOptions(search, languagesOptions),
-      };
-    }
-    try {
-      const response = await languagesService();
-
-      const options = response?.data?.data?.map((language) => ({ label: language.name, value: language._id }));
-
-      setLanguagesOptions(options);
 
       return {
         options,
@@ -774,7 +891,13 @@ const Personal = () => {
           },
           isUploaded: true,
         };
-
+        dispatch(
+          setFileKey(
+            savedFormDocuments != null
+              ? savedFormDocuments[0]?.uploadData?.file_key
+              : res?.talent_info?.resume?.file_key,
+          ),
+        );
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
@@ -925,9 +1048,12 @@ const Personal = () => {
 
   useEffect(() => {
     if (parseResume) {
-      if (parsedResumeData != null) {
+      if (parsedUploaded) {
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+
         if (savedFormDocuments) {
           setFiles([
             {
@@ -941,16 +1067,19 @@ const Personal = () => {
               isUploaded: true,
             },
           ]);
+          dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
         }
-      } else {
+      } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
             setResumeParsedDetails,
             setParseResume,
             savedFormDocuments[0]?.uploadData?.file_key,
             setFiles,
+            location?.state?.isResumeParsedUploaded || false,
           ),
         );
+
         setFiles([
           {
             file: {
@@ -963,12 +1092,13 @@ const Personal = () => {
             isUploaded: true,
           },
         ]);
+        dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getLanguages());
-  }, [parseResume, parsedResumeData]);
+  }, [parseResume, parsedResumeData, parsedUploaded]);
 
   return (
     <ProfileFormContainer>
@@ -979,7 +1109,7 @@ const Personal = () => {
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="w-100">
-            <Col className="w-75" xs="100" sm="100" lg="75">
+            <Col className="w-75" xs="100" sm="75" lg="75">
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1">About</h4>
@@ -1313,7 +1443,7 @@ const Personal = () => {
                           />
                         )}
                       />
-                      {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
+                      {errors.state && <FormFeedback>{errors?.state?.label?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   <Row className="mb-1">
@@ -1374,8 +1504,12 @@ const Personal = () => {
                 </div>
               </div>
             </Col>
-            <Col>
+            <Col className="w-25">
               <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1">Resume</h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
                 <CardBody>
                   <div className="d-flex flex-column">
                     <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
@@ -1383,28 +1517,34 @@ const Personal = () => {
                         <Info className="font-medium-3 me-50" color="#004280" />
                       </Col>
 
-                      <Col>
-                        <div className="d-flex justify-content-between">
+                      <Col className="w-100 ">
+                        <div className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between">
                           <span style={{ color: '#004280' }}>
-                            <span className="fw-bold">Auto Fill</span>
+                            <span style={{ color: '#004280' }} className="fw-bold mr-2">
+                              Auto Fill {files && files?.length > 0 && 'Profile'}
+                            </span>
 
                             {files && files.length === 0 && (
                               <span> - Upload your resume to auto fill your personal details</span>
                             )}
                           </span>
-                          {files && files?.length > 0 && (
-                            <FormGroup switch>
-                              <Input
-                                type="switch"
-                                checked={parseResume}
-                                onClick={() => {
-                                  setParseResume(!parseResume);
-                                  dispatch(setResumeParsed(!parseResume));
-                                  dispatch(setFormDocuments(files));
-                                }}
-                              />
-                            </FormGroup>
-                          )}
+                          <div>
+                            {files && files?.length > 0 && (
+                              <FormGroup switch>
+                                <Input
+                                  className='cursor-pointer'
+                                  type="switch"
+                                  checked={parseResume}
+                                  onClick={() => {
+                                    setParsedUploaded(false);
+                                    setParseResume(!parseResume);
+                                    dispatch(setResumeParsed(!parseResume));
+                                    dispatch(setFormDocuments(files));
+                                  }}
+                                />
+                              </FormGroup>
+                            )}
+                          </div>
                         </div>
 
                         {files?.length === 0 && (
@@ -1413,10 +1553,11 @@ const Personal = () => {
                               for="resume"
                               className="me-2 mt-2 d-flex flex-col align-items-center upload-button cursor-pointer"
                             >
-                              <UploadIconContainer>
+                              {/* <UploadIconContainer>
                                 <Upload size={18} color={theme.activeNavPillText} />
-                              </UploadIconContainer>
-                              <h5 className="fw-bold">Upload your resume</h5>
+                                
+                              </UploadIconContainer> */}
+                              <h5 className="fw-bold">Upload Resume</h5>
                             </Label>
                             <Controller
                               id="resume"
@@ -1441,7 +1582,7 @@ const Personal = () => {
                         )}
                       </Col>
                     </div>
-                    <Row>{files && files.length > 0 && <div className="px-1">{fileList()}</div>}</Row>
+                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
                   </div>
                 </CardBody>
               </Card>

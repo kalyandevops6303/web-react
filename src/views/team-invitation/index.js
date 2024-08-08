@@ -11,7 +11,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
 import InfoIcon from '../../assets/images/timeline-info-icon.png';
-import { getProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
+import { getMyTeam, getProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
 import { getTeams, getWhoInvited } from '../../redux/actions/teamsActions';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import theme from '../../configs/themeVariables';
@@ -79,6 +79,7 @@ const TeamInvitation = () => {
           setIsStatusUpdating(false);
           setAccpetModal(false);
           dispatch(getTeams({ onSuccess: () => {} }));
+          dispatch(getMyTeam())
         },
         onError: () => {
           setIsStatusUpdating(false);

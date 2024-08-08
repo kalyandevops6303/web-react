@@ -169,7 +169,7 @@ class CometChatConversationList extends React.Component {
     if (
       this.item &&
       Object.keys(this.item).length &&
-      this.item.hasOwnProperty('uid') &&
+      this.item?.hasOwnProperty('uid') &&
       this.getContext().type === CometChat.ACTION_TYPE.TYPE_USER &&
       this.item.uid === this.getContext().item.uid &&
       this.item.blockedByMe !== this.getContext().item.blockedByMe
@@ -203,7 +203,7 @@ class CometChatConversationList extends React.Component {
     if (
       this.item &&
       Object.keys(this.item).length &&
-      this.item.hasOwnProperty('guid') &&
+      this.item?.hasOwnProperty('guid') &&
       this.getContext().type === CometChat.ACTION_TYPE.TYPE_GROUP &&
       this.item.guid === this.getContext().item.guid &&
       this.item.membersCount !== this.getContext().item.membersCount
@@ -419,7 +419,7 @@ class CometChatConversationList extends React.Component {
     //if chat window is not open, mark message as delivered
     if (
       (this.getContext().type === '' || Object.keys(this.getContext().item).length === 0) &&
-      message.hasOwnProperty('deliveredAt') === false
+      message?.hasOwnProperty('deliveredAt') === false
     ) {
       CometChat.markAsDelivered(message).catch((error) => { });
     }
@@ -606,11 +606,11 @@ class CometChatConversationList extends React.Component {
 
     let unreadMessageCount = parseInt(conversation.unreadMessageCount);
     if (
-      (this.getContext().item.hasOwnProperty('guid') &&
-        conversation.conversationWith.hasOwnProperty('guid') &&
+      (this.getContext().item?.hasOwnProperty('guid') &&
+        conversation.conversationWith?.hasOwnProperty('guid') &&
         this.getContext().item.guid === conversation.conversationWith.guid) ||
-      (this.getContext().item.hasOwnProperty('uid') &&
-        conversation.conversationWith.hasOwnProperty('uid') &&
+      (this.getContext().item?.hasOwnProperty('uid') &&
+        conversation.conversationWith?.hasOwnProperty('uid') &&
         this.getContext().item.uid === conversation.conversationWith.uid)
     ) {
       if (this.incrementUnreadCount === true) {
@@ -713,7 +713,7 @@ class CometChatConversationList extends React.Component {
         let conversationWithObj = { ...conversationObj.conversationWith };
 
         let membersCount = parseInt(conversationWithObj.membersCount);
-        if (message.hasOwnProperty('actionFor') && message.actionFor.hasOwnProperty('membersCount')) {
+        if (message?.hasOwnProperty('actionFor') && message.actionFor?.hasOwnProperty('membersCount')) {
           membersCount = message.actionFor.membersCount;
         }
 
@@ -737,7 +737,7 @@ class CometChatConversationList extends React.Component {
           let conversationWithObj = { ...conversationObj.conversationWith };
 
           let membersCount = parseInt(conversationWithObj.membersCount);
-          if (message.hasOwnProperty('actionFor') && message.actionFor.hasOwnProperty('membersCount')) {
+          if (message?.hasOwnProperty('actionFor') && message.actionFor?.hasOwnProperty('membersCount')) {
             membersCount = message.actionFor.membersCount;
           }
           let scope = CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT;
@@ -776,7 +776,7 @@ class CometChatConversationList extends React.Component {
           let conversationWithObj = { ...conversationObj.conversationWith };
 
           let membersCount = parseInt(conversationWithObj.membersCount);
-          if (message.hasOwnProperty('actionFor') && message.actionFor.hasOwnProperty('membersCount')) {
+          if (message?.hasOwnProperty('actionFor') && message.actionFor?.hasOwnProperty('membersCount')) {
             membersCount = message.actionFor.membersCount;
           }
 
@@ -841,7 +841,7 @@ class CometChatConversationList extends React.Component {
           let conversationWithObj = { ...conversationObj.conversationWith };
 
           let membersCount = parseInt(conversationWithObj.membersCount);
-          if (message.hasOwnProperty('actionFor') && message.actionFor.hasOwnProperty('membersCount')) {
+          if (message?.hasOwnProperty('actionFor') && message.actionFor?.hasOwnProperty('membersCount')) {
             membersCount = message.actionFor.membersCount;
           }
 

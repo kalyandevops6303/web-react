@@ -23,7 +23,7 @@ const Timeline = (props) => {
     }
   `;
   const memoizedTag = useMemo(() => {
-    return data.map((item, i) => {
+    return data?.map((item, i) => {
       const ItemTag = item.tag ? item.tag : 'li';
 
       return (

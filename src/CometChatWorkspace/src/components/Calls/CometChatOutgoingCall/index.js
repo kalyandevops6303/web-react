@@ -98,7 +98,7 @@ class CometChatOutgoingCall extends React.PureComponent {
 
   outgoingCallRejected = (call) => {
     SoundManager.pause(enums.CONSTANTS.AUDIO['OUTGOING_CALL'], this.context);
-    if (call.hasOwnProperty('status') && call.status === CometChat.CALL_STATUS.BUSY) {
+    if (call?.hasOwnProperty('status') && call.status === CometChat.CALL_STATUS.BUSY) {
       //show busy message.
       const errorMessage = `${call.sender.name} ${Translator.translate('ON_ANOTHER_CALL', this.props.lang)}`;
       this.setState({ errorScreen: true, errorMessage: errorMessage });

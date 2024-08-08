@@ -13,6 +13,11 @@ jobs:
     #runs-on: [self-hosted, linux, X64, trumio-orgrunner]
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: uat
+          submodules: true
+    
       - name: Install Azure cli
         run: |
           sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg

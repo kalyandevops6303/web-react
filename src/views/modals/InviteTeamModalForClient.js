@@ -469,7 +469,10 @@ const InviteTeamModalForClient = ({
                                   styles={{
                                     path: {
                                       stroke: giveStrokeColor(item.match_percentage),
-                                      strokeLinecap: 'round',
+                                      strokeLinecap: '
+                                      
+                                      
+                                      ',
                                       transition: 'stroke-dashoffset 0.5s ease 0s',
                                       transform: 'rotate(0turn)',
                                       transformOrigin: 'center center',

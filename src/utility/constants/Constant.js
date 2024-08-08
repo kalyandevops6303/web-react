@@ -81,7 +81,6 @@ const clubStatusesOptions = [
 
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
-  { label: 'In-review', value: 'IN_REVIEW' },
 ];
 const projectTypesOptions = [
   { label: 'Fixed', value: 'FIXED' },

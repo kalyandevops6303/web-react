@@ -81,6 +81,7 @@ const ThemeNavbar = (props) => {
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
+  const saveArtifactDraftPath = /^\/project-details\/[a-zA-Z0-9_-]+\/milestone-details\/[a-zA-Z0-9_-]+$/;
   const draftTeamPath = location?.pathname.includes(
     '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details');
   const isTabDisabled = userData?.club_status === clubStatus.IN_REVIEW;
@@ -137,6 +138,12 @@ const ThemeNavbar = (props) => {
     }
 }, [location,location?.pathname]);
 
+useEffect(() => {
+  if (!location.pathname.includes('/create-club')) {
+   localStorage.removeItem('clubCreateData');
+  }
+}, [location.pathname]);
+
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
   console.log(isOpenSaveForLater)
   return (
@@ -171,7 +178,7 @@ const ThemeNavbar = (props) => {
         >
           <span className="brand-logo">
             <img src={themeConfig.app.appLogoImage} alt="logo" />
-            <span className="ms-25 mt-25">v1.1.3</span>
+            <span className="ms-25 mt-25">v1.2.0</span>
           </span>
         </div>
 
@@ -184,6 +191,7 @@ const ThemeNavbar = (props) => {
                   : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
               }
               onClick={() => {
+                console.log("dashboard clicked" + draftTeamPath)
                 if (draftTeamPath) {
                   dispatch(setConfirmSaveForLater(true));
                   dispatch(setNavigatingRoute('/dashboard'));

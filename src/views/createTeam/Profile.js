@@ -45,7 +45,13 @@ import {
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
-import { createDraftTeam, deleteDraftTeam, getDraftTeamById, updateDraftTeam, updateTeam } from '../../redux/actions/teamsActions';
+import {
+  createDraftTeam,
+  deleteDraftTeam,
+  getDraftTeamById,
+  updateDraftTeam,
+  updateTeam,
+} from '../../redux/actions/teamsActions';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
 import { getDraftTeamLoading, saveDraftTeamLoading, updateTeamLoading } from '../../redux/selectors/teamSelectors';
@@ -55,12 +61,25 @@ import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
 import TeamCreatingModal from './TeamCreatingModal';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
-import { confirmSaveForLater, formData, formDocuments, formImage, isFormImageRemoved, navigatingRoute } from '../../redux/selectors/formDataSelectors';
-import { setConfirmSaveForLater, setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
+import {
+  confirmSaveForLater,
+  formData,
+  formDocuments,
+  formImage,
+  isFormImageRemoved,
+  navigatingRoute,
+} from '../../redux/selectors/formDataSelectors';
+import {
+  setConfirmSaveForLater,
+  setFormData,
+  setFormDocuments,
+  setFormImage,
+  setIsFormImageRemoved,
+} from '../../redux/reducers/formData';
 import { getItemFromSession } from '../../utility/sessesionStorageControl';
 import TextEditor from '../CreateProject/TextEditor';
 import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
-import { clubOrTeamStatuses, CUSTOMER_SUPPORT_TYPES, teamTypes } from '../../utility/constants/Constant';
+import { clubOrTeamStatuses, CUSTOMER_SUPPORT_TYPES } from '../../utility/constants/Constant';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import NoteComponent from '../Onboarding/NoteComponent';
 import CustomerSupportModal from '../modals/CustomerSupportModal';
@@ -127,7 +146,7 @@ const Profile = ({ setDraftSavedModal }) => {
       .required('Preferred time zone is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
@@ -137,7 +156,7 @@ const Profile = ({ setDraftSavedModal }) => {
         yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -148,7 +167,7 @@ const Profile = ({ setDraftSavedModal }) => {
           .required('Start time is required'),
     }),
     weekdayEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -247,13 +266,56 @@ const Profile = ({ setDraftSavedModal }) => {
   const [openSaveLaterModal, setOpenSaveLaterModal] = useState(false);
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
   const navigatedRoute = useSelector(navigatingRoute);
+  const buttonText = selectedImage && selectedImagePreview ? 'Edit Team Logo' : 'Upload Team Logo';
+
+  const isAnyFieldNotEmpty = () => {
+    const {
+      teamName,
+      teamTagline,
+      services,
+      tools,
+      skills,
+      preferredWorkingTimeZone,
+      weekdayStartTime,
+      weekdayEndTime,
+      weekendStartTime,
+      weekendEndTime,
+      teamIntroduction,
+      availabilityDays,
+      weekdays,
+      weekends,
+    } = watch();
+
+    // Check if any field is not in its initial state
+    if (
+      teamName !== '' ||
+      teamTagline !== '' ||
+      services?.length > 0 ||
+      tools?.length > 0 ||
+      skills?.length > 0 ||
+      preferredWorkingTimeZone !== null ||
+      Object.keys(weekdayStartTime)?.length > 0 ||
+      Object.keys(weekdayEndTime)?.length > 0 ||
+      Object.keys(weekendStartTime)?.length > 0 ||
+      Object.keys(weekendEndTime)?.length > 0 ||
+      teamIntroduction !== '' ||
+      availabilityDays?.length > 0 ||
+      weekdays?.length > 0 ||
+      weekends?.length > 0
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   const toggleOpenSaveLaterModal = () => {
     setOpenSaveLaterModal(!openSaveLaterModal);
     dispatch(setConfirmSaveForLater(false));
   };
 
   useEffect(() => {
-    if(isOpenSaveForLater){
+    if (isOpenSaveForLater) {
       setOpenSaveLaterModal(true);
     }
   }, [isOpenSaveForLater]);
@@ -336,69 +398,69 @@ const Profile = ({ setDraftSavedModal }) => {
   }, [imageUrlRes]);
 
   const onDraftSubmit = () => {
-      const languages_supported = watch('languagesSupported')?.map((language) => language.value);
-      const skillsSelected = watch('skills')?.map((skill) => skill.value);
-      const servicesSelected = watch('services').map((skill) => skill.value);
-      const toolsSelected = watch('tools')?.map((skill) => skill.value);
-      const availabilityData = {
-        ...(watch('preferredWorkingTimeZone') && { timezone: watch('preferredWorkingTimeZone')?.value?._id || null }),
-        ...(watch('availabilityDays')?.includes('weekdays') && {
-          weekdays_avl: {
-            start_time: watch('weekdayStartTime')?.value || '',
-            end_time: watch('weekdayEndTime')?.value || '',
-            days: watch('weekdays') || [],
-          },
-        }),
-        ...(watch('availabilityDays')?.includes('weekends') && {
-          weekends_avl: {
-            start_time: watch('weekendStartTime')?.value || '',
-            end_time: watch('weekendEndTime')?.value || '',
-            days: watch('weekends') || [],
-          },
-        }),
-      };
-      const availability = Object.keys(availabilityData).length ? availabilityData : null;
-      const reqData = {
-        team_type: 'TEAM',
-        name: watch('teamName'),
-        team_logo: imageUrlRes?.file_key ?? null,
-        tagline: watch('teamTagline') || null,
-        introduction: watch('teamIntroduction') || null,
-        languages_supported: languages_supported || null,
-        interests: null,
-        services: servicesSelected || null,
-        tools: toolsSelected || null,
-        skills: skillsSelected || null,
-        availability: availability || null,
-        creation_status: 'DRAFT',
-      };
+    const languages_supported = watch('languagesSupported')?.map((language) => language.value);
+    const skillsSelected = watch('skills')?.map((skill) => skill.value);
+    const servicesSelected = watch('services').map((skill) => skill.value);
+    const toolsSelected = watch('tools')?.map((skill) => skill.value);
+    const availabilityData = {
+      ...(watch('preferredWorkingTimeZone') && { timezone: watch('preferredWorkingTimeZone')?.value?._id || null }),
+      ...(watch('availabilityDays')?.includes('weekdays') && {
+        weekdays_avl: {
+          start_time: watch('weekdayStartTime')?.value || '',
+          end_time: watch('weekdayEndTime')?.value || '',
+          days: watch('weekdays') || [],
+        },
+      }),
+      ...(watch('availabilityDays')?.includes('weekends') && {
+        weekends_avl: {
+          start_time: watch('weekendStartTime')?.value || '',
+          end_time: watch('weekendEndTime')?.value || '',
+          days: watch('weekends') || [],
+        },
+      }),
+    };
+    const availability = Object.keys(availabilityData).length ? availabilityData : null;
+    const reqData = {
+      team_type: 'TEAM',
+      name: watch('teamName'),
+      team_logo: imageUrlRes?.file_key ?? null,
+      tagline: watch('teamTagline') || null,
+      introduction: watch('teamIntroduction') || null,
+      languages_supported: languages_supported || null,
+      interests: null,
+      services: servicesSelected || null,
+      tools: toolsSelected || null,
+      skills: skillsSelected || null,
+      availability: availability || null,
+      creation_status: 'DRAFT',
+    };
 
-      if (params?.id) {
-        dispatch(
-          updateDraftTeam({
-            id: params?.id,
-            data: reqData,
-            onSuccess: () => setDraftSavedModal(true),
-            onError: () => {
-              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
-            },
-            redirection: ()=> navigate(navigatedRoute),
-            isOpenSaveForLater,
-          }),
-        );
-      } else {
-        dispatch(
-          createDraftTeam({
-            data: reqData,
-            onSuccess: () => setDraftSavedModal(true),
-            onError: () => {
-              ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
-            },
-            redirection: ()=> navigate(navigatedRoute),
-            isOpenSaveForLater,
-          }),
-        );
-      }
+    if (params?.id) {
+      dispatch(
+        updateDraftTeam({
+          id: params?.id,
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
+    } else {
+      dispatch(
+        createDraftTeam({
+          data: reqData,
+          onSuccess: () => setDraftSavedModal(true),
+          onError: () => {
+            ShowToastMessage(ERROR, 'Something went wrong. Please try again!');
+          },
+          redirection: () => navigate(navigatedRoute),
+          isOpenSaveForLater,
+        }),
+      );
+    }
   };
 
   const onSubmit = (data) => {
@@ -446,8 +508,8 @@ const Profile = ({ setDraftSavedModal }) => {
 
       if (imageUrlRes) {
         reqData = {
-          team_type: teamTypes.team,
-          creation_status:clubOrTeamStatuses.SAVED,
+          // team_type: teamTypes.team,
+          creation_status: clubOrTeamStatuses.SAVED,
           _id: userDetailsData._id,
           name: teamName,
           team_logo: imageUrlRes.file_key,
@@ -462,8 +524,8 @@ const Profile = ({ setDraftSavedModal }) => {
         dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
-          team_type: teamTypes.team,
-          creation_status:clubOrTeamStatuses.SAVED,
+          // team_type: teamTypes.team,
+          creation_status: clubOrTeamStatuses.SAVED,
           _id: userDetailsData._id,
           name: teamName,
           tagline: teamTagline,
@@ -486,7 +548,7 @@ const Profile = ({ setDraftSavedModal }) => {
       if (imageUrlRes) {
         reqData = {
           name: teamName,
-          creation_status:clubOrTeamStatuses.SAVED,
+          creation_status: clubOrTeamStatuses.SAVED,
           team_logo: imageUrlRes.file_key,
           tagline: teamTagline,
           introduction: teamIntroduction,
@@ -502,7 +564,7 @@ const Profile = ({ setDraftSavedModal }) => {
       } else {
         reqData = {
           name: teamName,
-          creation_status:clubOrTeamStatuses.SAVED,
+          creation_status: clubOrTeamStatuses.SAVED,
           tagline: teamTagline,
           introduction: teamIntroduction,
           services: servicesSelected,
@@ -778,6 +840,9 @@ const Profile = ({ setDraftSavedModal }) => {
 
   useEffect(() => {
     if (location.pathname.includes('profile-edit')) {
+      // const loadedToolsOptions = await loadToolsOptions();
+      // const loadedSkillsOptions = await loadSkillsOptions();
+      // const loadedServicesOptions = await loadServicesOptions();
       if (teamDetails) {
         if (savedIsFormImageRemoved) {
           setSelectedImage(null);
@@ -808,7 +873,7 @@ const Profile = ({ setDraftSavedModal }) => {
         } else {
           setValue('teamIntroduction', savedFormData?.teamIntroduction, { shouldValidate: true });
         }
-        if (teamDetails?.services?.length > 0 && !savedFormData?.services) {
+        if (teamDetails?.services?.length > 0 && (!savedFormData?.services || savedFormData?.services.length === 0)) {
           setValue(
             'services',
             teamDetails?.services.map((service) => ({
@@ -820,7 +885,7 @@ const Profile = ({ setDraftSavedModal }) => {
         } else {
           setValue('services', savedFormData?.services, { shouldValidate: true });
         }
-        if (teamDetails?.tools.length > 0 && !savedFormData?.tools) {
+        if (teamDetails?.tools.length > 0 && (!savedFormData?.tools || savedFormData?.tools.length === 0)) {
           setValue(
             'tools',
             teamDetails?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
@@ -829,7 +894,7 @@ const Profile = ({ setDraftSavedModal }) => {
         } else {
           setValue('tools', savedFormData?.tools, { shouldValidate: true });
         }
-        if (teamDetails?.skills.length > 0 && !savedFormData?.skills) {
+        if (teamDetails?.skills.length > 0 && (!savedFormData?.skills || savedFormData?.skills.length === 0)) {
           setValue(
             'skills',
             teamDetails?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
@@ -1017,6 +1082,8 @@ const Profile = ({ setDraftSavedModal }) => {
     dispatch(getCustomerSupportCount());
   };
 
+  useEffect(() => () => dispatch(setConfirmSaveForLater(false)), []);
+
   return (
     <ProfileFormContainer className="w-75">
       {teamCreatingModal && (
@@ -1053,7 +1120,15 @@ const Profile = ({ setDraftSavedModal }) => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
-          {openSaveLaterModal && <SaveForLaterModal modal={openSaveLaterModal} toggleModal={toggleOpenSaveLaterModal} draftType='TEAM' draftAction={onDraftSubmit} redirectionRoute={navigatedRoute} />}
+          {openSaveLaterModal && (
+            <SaveForLaterModal
+              modal={openSaveLaterModal}
+              toggleModal={toggleOpenSaveLaterModal}
+              draftAction={onDraftSubmit}
+              redirectionRoute={navigatedRoute}
+              loading={saveDraftTeamIsLoading}
+            />
+          )}
           <Card>
             <CardHeader>
               <h4 className="m-0 mt-1">About</h4>
@@ -1084,7 +1159,7 @@ const Profile = ({ setDraftSavedModal }) => {
                     onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
                     <Camera className="me-50" />
-                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Team Logo'}
+                    {isImageUploading ? <Spinner size="sm" /> : buttonText}
                   </Button>
                   {selectedImage && selectedImagePreview && (
                     <RemoveUploadedPicture
@@ -1334,7 +1409,7 @@ const Profile = ({ setDraftSavedModal }) => {
                           type="checkbox"
                           {...field}
                           id="weekdays"
-                          checked={field.value.includes('weekdays')}
+                          checked={field.value?.includes('weekdays')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekdays';
@@ -1738,18 +1813,20 @@ const Profile = ({ setDraftSavedModal }) => {
             </CardBody>
           </Card>
           <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
-            <Button
-              onClick={() => {
-                saveAsDraftClicked.current = true;
-                handleSubmit(onDraftSubmit());
-              }}
-              color="primary"
-              className="me-2"
-              outline
-              disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading}
-            >
-              {saveDraftTeamIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-            </Button>
+            {!location.pathname.includes('/team-profile-edit/profile-details') && (
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onDraftSubmit());
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={saveDraftTeamIsLoading || updateTeamIsLoading || isImageUploading || !isAnyFieldNotEmpty()}
+              >
+                {saveDraftTeamIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+            )}
             <div>
               <Button
                 color="primary"

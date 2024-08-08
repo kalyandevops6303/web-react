@@ -27,7 +27,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { clubOrTeamStatuses, teamTypes, userProfileEdit } from '../../utility/constants/Constant';
 import { confirmSaveForLater, formData, navigatingRoute } from '../../redux/selectors/formDataSelectors';
 import { setConfirmSaveForLater, setFormData } from '../../redux/reducers/formData';
-import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
+import { clubLocalData, saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { createDraftTeam, updateDraftTeam } from '../../redux/actions/teamsActions';
 import { ERROR } from '../../utility/constants/ToastTypes';
@@ -58,6 +58,7 @@ const Profile = ({ setDraftSavedModal }) => {
       }),
   });
   const savedFormData = useSelector(formData);
+  const clubDraftLocalData = useSelector(clubLocalData);
   const {
     control,
     handleSubmit,
@@ -80,6 +81,17 @@ const Profile = ({ setDraftSavedModal }) => {
       universityWebpage: savedFormData?.universityWebpage || '',
     },
   });
+
+  const isAnyFieldNotEmpty = () => {
+    const { isWebpage, clubEmailID, clubLinkedin, clubWebsite } = watch();
+
+    // Check if any field is not in its initial state
+    if (isWebpage !== '' || clubEmailID !== '' || clubLinkedin !== '' || clubWebsite !== '') {
+      return true;
+    }
+
+    return false;
+  };
 
   const [clubCreatedModal, setClubCreatedModal] = useState(false);
   const [emailVerifyModal, setEmailVerifyModal] = useState(false);
@@ -116,11 +128,24 @@ const Profile = ({ setDraftSavedModal }) => {
   const localFormData = useWatch({ control });
 
   useEffect(() => {
+    const savedData = localStorage.getItem('clubCreateData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      Object.keys(parsedData).forEach((key) => {
+        setValue(key, parsedData[key]);
+      });
+    }
+  }, [setValue]);
+
+  useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
+    localStorage.setItem('clubCreateData', JSON.stringify(allData));
     dispatch(setFormData(allData));
-  }, [localFormData]);
+  }, [localFormData, dispatch]);
 
   const onBackClick = () => {
+    const savedData = localStorage.getItem('clubCreateData');
+    
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.club}/account-details`);
     } else if (params?.id) {
@@ -128,6 +153,7 @@ const Profile = ({ setDraftSavedModal }) => {
     } else {
       navigate(`/create-club/account-details`);
     }
+    localStorage.setItem('clubCreateData', JSON.stringify({ ...savedFormData, ...JSON.parse(savedData) }));
   };
 
   const onSuccess = () => {
@@ -168,7 +194,6 @@ const Profile = ({ setDraftSavedModal }) => {
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
       onEmailVerifySuccess(formDetails.clubEmailID);
-      dispatch(deleteDraftClub({ id: params?.id, onSuccess: () => {}, onError: () => {} }));
     }
   };
   const onGetDraftClubDetails = async (data) => {
@@ -190,15 +215,21 @@ const Profile = ({ setDraftSavedModal }) => {
   const onDraftSubmit = () => {
     const reqData = {
       team_type: teamTypes.club,
-      name: clubDraftData?.name || null,
-      team_logo: clubDraftData?.team_logo || null,
-      tagline: clubDraftData?.tagline || null,
-      introduction: clubDraftData?.introduction || null,
-      education_institute: clubDraftData?.education_institute || null,
-      interests: clubDraftData?.interests || null,
+      name: clubDraftData?.name || clubDraftLocalData?.name || null,
+      team_logo: clubDraftData?.team_logo || clubDraftLocalData?.team_logo || null,
+      tagline: clubDraftData?.tagline || clubDraftLocalData?.tagline || null,
+      introduction: clubDraftData?.introduction || clubDraftLocalData?.introduction || null,
+      education_institute: clubDraftData?.education_institute || clubDraftLocalData?.education_institute || null,
+      interests:
+        (clubDraftData?.interests === clubDraftLocalData?.interests
+          ? clubDraftData?.interests
+          : clubDraftLocalData?.interests) || null,
       languages_supported: null,
-      tools: clubDraftData?.tools || null,
-      skills: clubDraftData?.skills || null,
+      tools:
+        (clubDraftData?.tools === clubDraftLocalData?.tools ? clubDraftData?.tools : clubDraftLocalData?.tools) || null,
+      skills:
+        (clubDraftData?.skills === clubDraftLocalData?.skills ? clubDraftData?.skills : clubDraftLocalData?.skills) ||
+        null,
       university_webpage: watch('universityWebpage') || null,
       linked_in: watch('clubLinkedin') || null,
       email: watch('clubEmailID') || null,
@@ -234,6 +265,8 @@ const Profile = ({ setDraftSavedModal }) => {
       );
     }
   };
+
+  useEffect(() => () => dispatch(setConfirmSaveForLater(false)), []);
 
   const isWebpageValue = watch('isWebpage');
   const isUniversityApprovalValue = watch('isUniversityApproval');
@@ -310,9 +343,9 @@ const Profile = ({ setDraftSavedModal }) => {
           <SaveForLaterModal
             modal={openSaveLaterModal}
             toggleModal={toggleOpenSaveLaterModal}
-            draftType="CLUB"
             draftAction={onDraftSubmit}
             redirectionRoute={navigatedRoute}
+            loading={saveDraftIsClubLoading}
           />
         )}
         <Card>
@@ -510,19 +543,21 @@ const Profile = ({ setDraftSavedModal }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button
-              onClick={() => {
-                saveAsDraftClicked.current = true;
-                handleSubmit(onDraftSubmit());
-              }}
-              color="primary"
-              className="me-2"
-              outline
-              disabled={saveDraftIsClubLoading}
-            >
-              {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-            </Button>
-            {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' ? (
+            {!location?.pathname?.includes('/club-profile-edit') && (
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onDraftSubmit());
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={saveDraftIsClubLoading || !isAnyFieldNotEmpty()}
+              >
+                {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+            )}
+            {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' || !isUniversityApprovalValue ? (
               <Button disabled={!isValid || disableBtn} color="primary" type="submit">
                 {loading ? (
                   <Spinner size="sm" />

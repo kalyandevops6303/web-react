@@ -65,7 +65,6 @@ const MarketPlaceProjectCard = ({
   const toggleDeleteDraftModal = () => setDeleteDraftModal(!deleteDraftModal);
 
   const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
-
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -95,6 +94,7 @@ const MarketPlaceProjectCard = ({
     ACTIVE: 'Active',
     UPDATED: 'Updated',
     TO_BE_LISTED: 'To Be Listed',
+    WITHDRAWN: 'Withdrawn',
   };
 
   const divRef = useRef(null);
@@ -247,9 +247,6 @@ const MarketPlaceProjectCard = ({
                       {project?.total_cost > 0 ? `${project?.total_cost} ${project?.currency_symbol}` : ''}
                     </>
                   </CardText>
-                  {/* <CardText className=" project mb-1">{`Assigned Date - ${
-                  data?.total_estimated_cost
-                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText> */}
                   <CardText className="project d-flex align-items-center">
                     <img src={Mpin} alt="Mpin" className="mpin" />
                     {project?.client?.office_address?.country?.name ||
@@ -267,7 +264,11 @@ const MarketPlaceProjectCard = ({
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {!showFullText ? (
-                      <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop:'10px' }}>
+                      <div
+                        className="my-div"
+                        ref={divRef}
+                        style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop: '10px' }}
+                      >
                         {parse(descriptionToShow)}
                       </div>
                     ) : (

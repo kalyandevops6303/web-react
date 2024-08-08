@@ -172,7 +172,7 @@ const Educational = () => {
   const onSubmit = (data) => {
     const { educationDetails, area, skills, tools } = data;
 
-    const educational_institute = educationDetails.map((educationDetail) => ({
+    const educational_institute = educationDetails?.map((educationDetail) => ({
       institution: educationDetail.educationInstitution.value,
     }));
     const project_area_of_interest = {
@@ -312,7 +312,7 @@ const Educational = () => {
         setValue(
           'educationDetails',
           savedFormData?.educationDetails ||
-            res?.client_info?.educational_institute.map((detail) => ({
+            res?.client_info?.educational_institute?.map((detail) => ({
               educationInstitution: { label: detail.institution.name, value: detail.institution._id },
             })),
           { shouldValidate: true },
@@ -322,7 +322,7 @@ const Educational = () => {
         setValue(
           'tools',
           savedFormData?.tools ||
-            res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+            res?.client_info?.project_area_of_interest?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -341,7 +341,7 @@ const Educational = () => {
         setValue(
           'skills',
           savedFormData?.skills ||
-            res?.client_info?.project_area_of_interest?.skills.map((skill) => ({
+            res?.client_info?.project_area_of_interest?.skills?.map((skill) => ({
               label: skill.name,
               value: skill._id,
             })),

@@ -70,16 +70,16 @@ class Translator {
         this.setLanguage(browserLanguage);
 
         //if the translations are not available, default to en
-        return translations.hasOwnProperty(browserLanguage) ? browserLanguage : this.defaultLanguage;
+        return translations?.hasOwnProperty(browserLanguage) ? browserLanguage : this.defaultLanguage;
       } else {
         //if the translations are not available, default to en
-        return translations.hasOwnProperty(browserLanguage) ? browserLanguage : this.defaultLanguage;
+        return translations?.hasOwnProperty(browserLanguage) ? browserLanguage : this.defaultLanguage;
       }
     } else {
       this.setLanguage(browserLanguage);
 
       //if the translations are not available, default to en
-      return translations.hasOwnProperty(browserLanguage) ? browserLanguage : this.defaultLanguage;
+      return translations?.hasOwnProperty(browserLanguage) ? browserLanguage : this.defaultLanguage;
     }
   };
 
@@ -88,16 +88,16 @@ class Translator {
   }
 
   static translate(str, language) {
-    if (translations.hasOwnProperty(language)) {
+    if (translations?.hasOwnProperty(language)) {
       const languageDb = translations[language];
-      if (languageDb.hasOwnProperty(str)) {
+      if (languageDb?.hasOwnProperty(str)) {
         return languageDb[str];
       }
 
       return str;
     } else {
       const languageDb = translations[this.defaultLanguage];
-      if (languageDb.hasOwnProperty(str)) {
+      if (languageDb?.hasOwnProperty(str)) {
         return languageDb[str];
       }
 

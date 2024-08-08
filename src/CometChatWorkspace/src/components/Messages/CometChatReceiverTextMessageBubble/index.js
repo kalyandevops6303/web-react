@@ -102,8 +102,8 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     const xssData = checkMessageForExtensionsData(this.props.message, 'xss-filter');
     if (
       xssData &&
-      xssData.hasOwnProperty('sanitized_text') &&
-      xssData.hasOwnProperty('hasXSS') &&
+      xssData?.hasOwnProperty('sanitized_text') &&
+      xssData?.hasOwnProperty('hasXSS') &&
       xssData.hasXSS === 'yes'
     ) {
       messageText = xssData.sanitized_text;
@@ -113,9 +113,9 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     const maskedData = checkMessageForExtensionsData(this.props.message, 'data-masking');
     if (
       maskedData &&
-      maskedData.hasOwnProperty('data') &&
-      maskedData.data.hasOwnProperty('sensitive_data') &&
-      maskedData.data.hasOwnProperty('message_masked') &&
+      maskedData?.hasOwnProperty('data') &&
+      maskedData.data?.hasOwnProperty('sensitive_data') &&
+      maskedData.data?.hasOwnProperty('message_masked') &&
       maskedData.data.sensitive_data === 'yes'
     ) {
       messageText = maskedData.data.message_masked;
@@ -125,8 +125,8 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     const profaneData = checkMessageForExtensionsData(this.props.message, 'profanity-filter');
     if (
       profaneData &&
-      profaneData.hasOwnProperty('profanity') &&
-      profaneData.hasOwnProperty('message_clean') &&
+      profaneData?.hasOwnProperty('profanity') &&
+      profaneData?.hasOwnProperty('message_clean') &&
       profaneData.profanity === 'yes'
     ) {
       messageText = profaneData.message_clean;
@@ -181,12 +181,12 @@ class CometChatReceiverTextMessageBubble extends React.Component {
       .then((result) => {
         if (
           result &&
-          result.hasOwnProperty('language_original') &&
+          result?.hasOwnProperty('language_original') &&
           result['language_original'] !== translateToLanguage
         ) {
-          if (result.hasOwnProperty('translations') && result.translations.length) {
+          if (result?.hasOwnProperty('translations') && result.translations.length) {
             const messageTranslation = result.translations[0];
-            if (messageTranslation.hasOwnProperty('message_translated')) {
+            if (messageTranslation?.hasOwnProperty('message_translated')) {
               translatedMessage = `\n(${messageTranslation['message_translated']})`;
             }
           } else {
@@ -311,7 +311,7 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     let messageText = this.getMessageText();
     //linkpreview extensions data
     const linkPreviewData = checkMessageForExtensionsData(this.props.message, 'link-preview');
-    if (linkPreviewData && linkPreviewData.hasOwnProperty('links') && linkPreviewData['links'].length) {
+    if (linkPreviewData && linkPreviewData?.hasOwnProperty('links') && linkPreviewData['links'].length) {
       messageText = <CometChatLinkPreview message={this.props.message} messageText={messageText} />;
     }
 

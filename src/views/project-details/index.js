@@ -111,7 +111,7 @@ const ProjectDetails = () => {
     let updatedSteps = [];
     if (projectDetailsData) {
       updatedSteps = [...steps]; // Create a copy of the original steps array
-      if (projectDetailsData.status === projectStatusEnum.COMPLETED) {
+      if (projectDetailsData?.status === projectStatusEnum.COMPLETED) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
@@ -119,13 +119,13 @@ const ProjectDetails = () => {
         const ratingIndex = 4; // Index of the 'Rating' step
         updatedSteps[ratingIndex] = { ...updatedSteps[ratingIndex], isDisabled: false };
       }
-      if (projectDetailsData.status === projectStatusEnum.ON_GOING) {
+      if (projectDetailsData?.status === projectStatusEnum.ON_GOING) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
       }
-      if (projectDetailsData.status === projectStatusEnum.ACTIVE) {
+      if (projectDetailsData?.status === projectStatusEnum.ACTIVE) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
         const paymentIndex = 3; // Index of the 'Payment' step
@@ -151,7 +151,7 @@ const ProjectDetails = () => {
   }, [invitedByData?.request_status]);
 
   useEffect(() => {
-    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates) {
+    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates && !isClient) {
       dispatch(downloadCertificate({ project_id: projectId, onSuccess }));
     }
   }, [projectDetailsData?.status]);

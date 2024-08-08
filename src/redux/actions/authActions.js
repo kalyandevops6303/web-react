@@ -181,8 +181,10 @@ const verifyEmail = (data) => async (dispatch) => {
     setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     dispatch(verifyEmailSuccess());
+    return null;
   } catch (error) {
-    errorHandler(error, verifyEmailFailure);
+    dispatch(verifyEmailFailure());
+    return error?.response?.data?.errorData?.message;
   }
 };
 const setPassword = (Password) => async (dispatch) => {
@@ -215,7 +217,7 @@ const verifyPhone = (data) => async (dispatch) => {
     dispatch(verifyPhoneSuccess());
     return null;
   } catch (error) {
-    errorHandler(error, verifyPhoneFailure);
+    dispatch(verifyPhoneFailure());
     return error?.response?.data?.errorData?.message;
   }
 };

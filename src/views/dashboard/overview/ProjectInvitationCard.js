@@ -125,8 +125,8 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
               Amount
             </p>
             <p className="mb-0 details-box">{`${
-              data?.project?.pay_type.currency?.code
-            }-${roundOfAmount(data?.project?.amount)}`}</p>
+              data?.project?.pay_type.currency?.code === 'USD' ? '$' : data?.project?.pay_type.currency?.code
+            } ${roundOfAmount(data?.project?.amount)}`}</p>
           </div>
         );
       case userTypes.client:

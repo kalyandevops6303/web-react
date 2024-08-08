@@ -94,7 +94,7 @@ const ReferralAndReward = () => {
       name: 'STATUS',
       sortable: false,
       minWidth: '25%',
-      selector: (row) => row.status,
+      selector: (row) => row?.status,
       center: true,
     },
     {

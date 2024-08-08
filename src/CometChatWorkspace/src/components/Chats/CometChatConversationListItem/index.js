@@ -66,18 +66,18 @@ class CometChatConversationListItem extends React.PureComponent {
   }
 
   getLastMessage = () => {
-    if (this.props.hasOwnProperty('conversation') === false) {
+    if (this.props?.hasOwnProperty('conversation') === false) {
       return false;
     }
 
-    if (this.props.conversation.hasOwnProperty('lastMessage') === false) {
+    if (this.props.conversation?.hasOwnProperty('lastMessage') === false) {
       return false;
     }
 
     let message = null;
     const lastMessage = this.props.conversation.lastMessage;
 
-    if (lastMessage.hasOwnProperty('deletedAt')) {
+    if (lastMessage?.hasOwnProperty('deletedAt')) {
       if (this.state.enableHideDeletedMessages) {
         message = '';
       } else {
@@ -108,17 +108,17 @@ class CometChatConversationListItem extends React.PureComponent {
   };
 
   getLastMessageTimestamp = () => {
-    if (this.props.hasOwnProperty('conversation') === false) {
+    if (this.props?.hasOwnProperty('conversation') === false) {
       return false;
     }
 
-    if (this.props.conversation.hasOwnProperty('lastMessage') === false) {
+    if (this.props.conversation?.hasOwnProperty('lastMessage') === false) {
       return false;
     }
 
     if (
-      this.props.conversation.lastMessage.hasOwnProperty('sentAt') === false &&
-      this.props.conversation.lastMessage.hasOwnProperty('_composedAt') === false
+      this.props.conversation.lastMessage?.hasOwnProperty('sentAt') === false &&
+      this.props.conversation.lastMessage?.hasOwnProperty('_composedAt') === false
     ) {
       return false;
     }
@@ -183,7 +183,7 @@ class CometChatConversationListItem extends React.PureComponent {
 
     //xss extensions data
     const xssData = checkMessageForExtensionsData(message, 'xss-filter');
-    if (xssData && xssData.hasOwnProperty('sanitized_text')) {
+    if (xssData && xssData?.hasOwnProperty('sanitized_text')) {
       messageText = xssData.sanitized_text;
     }
 
@@ -191,9 +191,9 @@ class CometChatConversationListItem extends React.PureComponent {
     const maskedData = checkMessageForExtensionsData(message, 'data-masking');
     if (
       maskedData &&
-      maskedData.hasOwnProperty('data') &&
-      maskedData.data.hasOwnProperty('sensitive_data') &&
-      maskedData.data.hasOwnProperty('message_masked') &&
+      maskedData?.hasOwnProperty('data') &&
+      maskedData.data?.hasOwnProperty('sensitive_data') &&
+      maskedData.data?.hasOwnProperty('message_masked') &&
       maskedData.data.sensitive_data === 'yes'
     ) {
       messageText = maskedData.data.message_masked;
@@ -203,8 +203,8 @@ class CometChatConversationListItem extends React.PureComponent {
     const profaneData = checkMessageForExtensionsData(message, 'profanity-filter');
     if (
       profaneData &&
-      profaneData.hasOwnProperty('profanity') &&
-      profaneData.hasOwnProperty('message_clean') &&
+      profaneData?.hasOwnProperty('profanity') &&
+      profaneData?.hasOwnProperty('message_clean') &&
       profaneData.profanity === 'yes'
     ) {
       messageText = profaneData.message_clean;
@@ -317,22 +317,22 @@ class CometChatConversationListItem extends React.PureComponent {
   getActionMessage = (message) => {
     let actionMessage = null;
 
-    if (message.hasOwnProperty('actionBy') === false || message.hasOwnProperty('actionOn') === false) {
+    if (message?.hasOwnProperty('actionBy') === false || message?.hasOwnProperty('actionOn') === false) {
       return actionMessage;
     }
 
     if (
       message.action !== CometChat.ACTION_TYPE.MEMBER_JOINED &&
       message.action !== CometChat.ACTION_TYPE.MEMBER_LEFT &&
-      (message.actionBy.hasOwnProperty('name') === false || message.actionOn.hasOwnProperty('name') === false)
+      (message.actionBy?.hasOwnProperty('name') === false || message.actionOn?.hasOwnProperty('name') === false)
     ) {
       return actionMessage;
     }
 
     if (message.action === CometChat.ACTION_TYPE.MEMBER_SCOPE_CHANGED) {
-      if (message.hasOwnProperty('data') && message.data.hasOwnProperty('extras')) {
-        if (message.data.extras.hasOwnProperty('scope')) {
-          if (message.data.extras.scope.hasOwnProperty('new') === false) {
+      if (message?.hasOwnProperty('data') && message.data?.hasOwnProperty('extras')) {
+        if (message.data.extras?.hasOwnProperty('scope')) {
+          if (message.data.extras.scope?.hasOwnProperty('new') === false) {
             return actionMessage;
           }
         } else {
@@ -345,14 +345,14 @@ class CometChatConversationListItem extends React.PureComponent {
 
     if (
       message.action === CometChat.ACTION_TYPE.MEMBER_SCOPE_CHANGED &&
-      message.data.extras.hasOwnProperty('scope') === false
+      message.data.extras?.hasOwnProperty('scope') === false
     ) {
       return actionMessage;
     }
 
     if (
       message.action === CometChat.ACTION_TYPE.MEMBER_SCOPE_CHANGED &&
-      message.data.extras.scope.hasOwnProperty('new') === false
+      message.data.extras.scope?.hasOwnProperty('new') === false
     ) {
       return actionMessage;
     }

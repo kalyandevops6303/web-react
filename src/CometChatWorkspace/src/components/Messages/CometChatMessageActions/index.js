@@ -86,7 +86,7 @@ class CometChatMessageActions extends React.PureComponent {
     /**
      * If threaded chats are open, return false
      */
-    if (this.props.message.hasOwnProperty('parentMessageId') === true) {
+    if (this.props.message?.hasOwnProperty('parentMessageId') === true) {
       return false;
     }
 
@@ -225,7 +225,7 @@ class CometChatMessageActions extends React.PureComponent {
 
   render() {
     //don't show the tooltip while the message is being sent
-    if (this.props.message.hasOwnProperty('sentAt') === false) {
+    if (this.props.message?.hasOwnProperty('sentAt') === false) {
       return false;
     }
 
@@ -276,7 +276,7 @@ class CometChatMessageActions extends React.PureComponent {
       (this.props.message.sender?.uid === this.state.loggedInUser?.uid && this.state.enableDeleteMessage) ||
       (this.context.type === CometChat.ACTION_TYPE.TYPE_GROUP &&
         this.props.message.sender?.uid !== this.state.loggedInUser?.uid &&
-        this.context.item.hasOwnProperty('scope') &&
+        this.context.item?.hasOwnProperty('scope') &&
         this.context.item.scope !== CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT &&
         this.state.enableDeleteMessageForModerator &&
         this.state.enableDeleteMessage)

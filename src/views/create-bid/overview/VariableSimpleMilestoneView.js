@@ -42,6 +42,7 @@ import {
   downloadUploadedFile,
   formatDateWithDash,
   getFileSize,
+  isEmpty,
   renderFilePreview,
 } from '../../../utility/Utils';
 import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
@@ -106,6 +107,16 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
       }),
     ),
   });
+
+  const validateDate = (dateString) => {
+    const date = new Date(dateString);
+    const currentDate = new Date();
+    if (date < currentDate) {
+      return currentDate.toString();
+    } else {
+      return dateString;
+    }
+  }
 
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
@@ -419,7 +430,10 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
       .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
       .replace(',', '')
       .split(' ');
-    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    if (!isEmpty(formattedDate)) {
+      return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    }
+    return '';
   };
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
@@ -492,13 +506,18 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
     </div>
   );
 
+  useEffect(() => {
+    if (savedFormData?.estimatedStartDate)
+    setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
+  }, [savedFormData])
+
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
       setBidData(res);
       if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
       } else if (savedFormData?.estimatedStartDate) {
-        setValue('estimatedStartDate', new Date(savedFormData?.estimatedStartDate), { shouldValidate: true });
+        setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
       }
       if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
@@ -568,9 +587,9 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
           modal={createBidModal}
           toggleModal={toggleCreateBidModal}
           selectedProject={{
-            _id: params.projectId,
-            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
-            bidType: params.bidType.split('-')[1].toUpperCase(),
+            _id: params?.projectId,
+            pay_type: { variable_cost: params?.bidType?.split('-')[0] === 'variable' },
+            bidType: params?.bidType?.split('-')[1]?.toUpperCase(),
           }}
         />
       )}
@@ -619,7 +638,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
                             />
                           )}
                         />
-                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
+                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate?.message}</FormFeedback>}
                       </div>
                     </Col>
                     <Col sm="12" md="12" lg="8" className="d-flex justify-content-end me-1">
@@ -636,7 +655,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
                           <Label className="form-label m-0">Bid Type</Label>
                           <div className="d-flex align-items-center mt-50">
                             <p className="fw-bold font-medium-1 mb-0">
-                              {capitalize(params.bidType.split('-')[1])} Flow
+                              {capitalize(params?.bidType?.split('-')[1])} Flow
                             </p>
                             <ChangeBidTypeButton
                               className="d-flex align-items-center cursor-pointer ms-1"
@@ -716,7 +735,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones.length > 0 &&
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].duration && (
-                                      <FormFeedback>{errors.milestones[milestoneIndex].duration.message}</FormFeedback>
+                                      <FormFeedback>{errors.milestones[milestoneIndex].duration?.message}</FormFeedback>
                                     )}
                                 </div>
                               </Col>
@@ -771,7 +790,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].talentCost && (
                                       <FormFeedback>
-                                        {errors.milestones[milestoneIndex].talentCost.message}
+                                        {errors.milestones[milestoneIndex].talentCost?.message}
                                       </FormFeedback>
                                     )}
                                 </div>
@@ -820,7 +839,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones.length > 0 &&
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].name && (
-                                      <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
+                                      <FormFeedback>{errors.milestones[milestoneIndex].name?.message}</FormFeedback>
                                     )}
                                   <div className="d-flex mt-2">
                                     <Label className="form-label" for="description">
@@ -866,7 +885,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                     errors.milestones[milestoneIndex] &&
                                     errors.milestones[milestoneIndex].description && (
                                       <FormFeedback>
-                                        {errors.milestones[milestoneIndex].description.message}
+                                        {errors.milestones[milestoneIndex].description?.message}
                                       </FormFeedback>
                                     )}
                                 </CardBody>
@@ -920,7 +939,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
                                           errors.milestones[milestoneIndex].deliverables.length > 0 &&
                                           errors.milestones[milestoneIndex].deliverables[index] && (
                                             <FormFeedback>
-                                              {errors.milestones[milestoneIndex].deliverables[index].message}
+                                              {errors.milestones[milestoneIndex].deliverables[index]?.message}
                                             </FormFeedback>
                                           )}
                                       </Col>

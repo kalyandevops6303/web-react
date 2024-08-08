@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { ProjectWrapper } from './style';
-import DateTime from '../../../lib/date-time';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const ProjectBidCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
+  const savedUserData = useSelector(selectSavedUserData);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
 
@@ -87,14 +89,20 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                 <div className="design-planning-wrapper mb-0 w-50">
                   <div className="design-planning mb-0">
                     <CardText className="mb-25">Expired Date</CardText>
-                    <h6 className="mb-0 expired-listing-text">{`${
-                      DateTime.fromMillis(data?.exipiry_date).toFormat('MMM dd, yy') || '-'
-                    }`}</h6>
+                    <h6 className="mb-0 expired-listing-text">
+                     {`${
+                      convertUnixTimestampToDate(data?.exipiry_date, savedUserData?.availability?.timezone?.name ) || '-'
+                    }`}
+                    </h6>
                   </div>
                 </div>
-                <div className="d-flex flex-column justify-content-center align-items-center bids-count-wrapper w-50">
-                  <p className="mb-0 text-center bid-label">Bids</p>
-                  <p className="mb-0 text-center bid-count">{data?.total_bids}</p>
+                <div className="design-planning-wrapper mb-0 w-50">
+                  <div className="design-planning mb-0 w-100">
+                    <CardText className="mb-25">Bids</CardText>
+                    <h6 className="mb-0 expired-listing-text">
+                    {data?.total_bids}
+                    </h6>
+                  </div>
                 </div>
               </div>
               <div
@@ -110,13 +118,21 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                 <div className="design-planning-wrapper mb-0 w-50">
                   <div className="design-planning mb-0">
                     <CardText className="mb-25">Posted Date</CardText>
-                    <h6 className="mb-0">{`${DateTime.fromMillis(data?.created_at).toFormat('MMM dd, yy') || '-'}`}</h6>
+                    <h6 className="mb-0">
+                      {/* {`${DateTime.fromMillis(data?.created_at).toFormat('MMM dd, yy') || '-'}`} */}
+                      {`${convertUnixTimestampToDate(data?.created_at, savedUserData?.availability?.timezone?.name ) || '-'}`}
+                    </h6>
                   </div>
                 </div>
-                <div className="d-flex flex-column justify-content-center align-items-center bids-count-wrapper w-50">
-                  <p className="mb-0 text-center bid-label">Bids</p>
-                  <p className="mb-0 text-center bid-count">{data?.total_bids}</p>
+                <div className="design-planning-wrapper mb-0 w-50">
+                  <div className="design-planning mb-0 w-100">
+                    <CardText className="mb-25">Bids</CardText>
+                    <h6 className="mb-0">
+                      {data?.total_bids}
+                    </h6>
+                  </div>
                 </div>
+
               </div>
               <div
                 onClick={viewDetails}

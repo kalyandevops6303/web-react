@@ -64,12 +64,17 @@ const CustomBadge = styled.span`
   .TO_BE_LISTED {
     background: ${theme.badgeBlueColor} !important;
     color: ${theme.darkBlueColor};
-    border: ${`1px solid ${theme.lighGreenColor}`};
+    border: ${`2px solid ${theme.darkBlueColor}`};
   }
   .ON_GOING {
     background: ${theme.lightGreenBatchColor};
     color: ${theme.green};
     border: ${`2px solid ${theme.green}`};
+  }
+  .WITHDRAWN {
+    background: ${theme.lightOrangeColor};
+    color: ${theme.orangeColor};
+    border: ${`2px solid ${theme.orangeColor}`};
   }
   .REVIEWED,
   .IN_PROGRESS,
@@ -533,5 +538,5 @@ export {
   Elevate,
   CircularBackButtonContainer,
   TooltipWrapper,
-  DisputeCount
+  DisputeCount,
 };

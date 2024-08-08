@@ -85,7 +85,7 @@ const BidChangeRequestModal = ({ modal, toggleModal }) => {
                 <span>
                   <Info size={18} color={theme.activeColor} className="me-50 mb-25" />
                   <span className="fw-bolder font-medium-1">Note:&nbsp; </span>
-                  Any signed NDA & contracts will be null and void once bid change request is initiated.
+                  Any signed NDA & Contracts will be null and void once bid change request is initiated.
                 </span>
               </p>
             </div>

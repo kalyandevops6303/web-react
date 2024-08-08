@@ -42,7 +42,7 @@ class CometChatAvatar extends React.Component {
     if (this.props.image.trim().length) {
       this.getImage(this.props.image);
     } else if (Object.keys(this.props.user).length) {
-      if (this.props.user.hasOwnProperty('avatar')) {
+      if (this.props.user?.hasOwnProperty('avatar')) {
         const avatarImage = this.props.user.avatar;
         this.getImage(avatarImage);
       } else {
@@ -53,7 +53,7 @@ class CometChatAvatar extends React.Component {
         this.getImage(avatarImage);
       }
     } else if (Object.keys(this.props.group).length) {
-      if (this.props.group.hasOwnProperty('icon')) {
+      if (this.props.group?.hasOwnProperty('icon')) {
         const avatarImage = this.props.group.icon;
         this.getImage(avatarImage);
       } else {

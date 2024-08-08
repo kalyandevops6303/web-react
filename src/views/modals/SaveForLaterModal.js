@@ -1,18 +1,12 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import Saved from '../../assets/images/gifs/saveForLater.gif';
 import { RelistModalWrapper } from './style';
-import { saveDraftTeamLoading } from '../../redux/selectors/teamSelectors';
-import { saveDraftClubLoading } from '../../redux/selectors/clubSelectors';
 
-const SaveForLaterModal = ({ modal, toggleModal, draftAction, redirectionRoute, draftType }) => {
-  const saveDraftTeamIsLoading = useSelector(saveDraftTeamLoading);
-  const saveDraftClubIsLoading = useSelector(saveDraftClubLoading);
-  const saveDraftLoading = draftType === 'TEAM' ? saveDraftTeamIsLoading : saveDraftClubIsLoading;
+const SaveForLaterModal = ({ modal, toggleModal, draftAction, redirectionRoute, loading }) => {
   const navigate = useNavigate();
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
@@ -41,7 +35,7 @@ const SaveForLaterModal = ({ modal, toggleModal, draftAction, redirectionRoute, 
                 draftAction();
               }}
             >
-              {saveDraftLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              {loading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
             </Button>
           </div>
         </RelistModalWrapper>
@@ -57,7 +51,7 @@ SaveForLaterModal.propTypes = {
   toggleModal: Proptypes.func,
   draftAction: Proptypes.func,
   redirectionRoute: Proptypes.string,
-  draftType: Proptypes.string,
+  loading: Proptypes.bool,
 };
 
 SaveForLaterModal.defaultProps = {
@@ -65,5 +59,5 @@ SaveForLaterModal.defaultProps = {
   toggleModal: () => {},
   draftAction: () => {},
   redirectionRoute: '',
-  draftType: '',
+  loading: false,
 };
