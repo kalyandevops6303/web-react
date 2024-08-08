@@ -115,7 +115,7 @@ class CometChatCreatePoll extends React.Component {
       receiverType: receiverType,
     })
       .then((response) => {
-        if (response && response.hasOwnProperty('success') && response['success'] === true) {
+        if (response && response?.hasOwnProperty('success') && response['success'] === true) {
           this.setState({ creatingPoll: false });
           this.props.actionGenerated(enums.ACTIONS['POLL_CREATED']);
         } else {

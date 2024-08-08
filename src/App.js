@@ -75,7 +75,7 @@ const App = () => {
           dispatch(fcmSubscribeNotification(data));
           loginUser({ cometToken: cometAuthToken, fcm: data });
           setItem('fcmToken', data);
-        } else {
+        } else if (cometAuthToken) {
           loginUser({ cometToken: cometAuthToken });
         }
         return data;

@@ -974,7 +974,7 @@ class CustomGroupProfileSidebar extends React.Component {
     let messageKey = messageList.findIndex((m) => m.id === receivedMessage.parentMessageId);
     if (messageKey > -1) {
       const messageObj = messageList[messageKey];
-      let replyCount = messageObj.hasOwnProperty('replyCount') ? messageObj.replyCount : 0;
+      let replyCount = messageObj?.hasOwnProperty('replyCount') ? messageObj.replyCount : 0;
       replyCount = replyCount + 1;
       const newMessageObj = Object.assign({}, messageObj, {
         replyCount: replyCount,
@@ -999,7 +999,7 @@ class CustomGroupProfileSidebar extends React.Component {
       .then((response) => {
         if (response === true) {
           const smartReplyData = checkMessageForExtensionsData(message, 'smart-reply');
-          if (smartReplyData && smartReplyData.hasOwnProperty('error') === false) {
+          if (smartReplyData && smartReplyData?.hasOwnProperty('error') === false) {
             this.setState({ replyPreview: message });
           } else {
             this.setState({ replyPreview: null });

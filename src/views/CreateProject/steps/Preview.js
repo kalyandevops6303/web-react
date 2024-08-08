@@ -385,7 +385,7 @@ const Preview = ({
             <Col sm="12" md="12" lg="6">
               <TimeWrapper>
                 <section className="weekdays">
-                  {projectDetails?.availabilityDays.includes('weekdays') ? (
+                  {projectDetails?.availabilityDays?.includes('weekdays') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayEndTime?.value, 10))}{' '}
@@ -399,8 +399,8 @@ const Preview = ({
                       <li key={day}>
                         <span
                           className={`dot ${
-                            projectDetails?.availabilityDays.includes('weekdays') &&
-                            projectDetails?.weekdays.includes(day)
+                            projectDetails?.availabilityDays?.includes('weekdays') &&
+                            projectDetails?.weekdays?.includes(day)
                               ? 'active'
                               : ''
                           }`}
@@ -411,7 +411,7 @@ const Preview = ({
                   </ul>
                 </section>
                 <section className="weekends">
-                  {projectDetails?.availabilityDays.includes('weekends') ? (
+                  {projectDetails?.availabilityDays?.includes('weekends') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendEndTime?.value, 10))}{' '}
@@ -425,8 +425,8 @@ const Preview = ({
                       <li key={day}>
                         <span
                           className={`dot ${
-                            projectDetails?.availabilityDays.includes('weekends') &&
-                            projectDetails?.weekends.includes(day)
+                            projectDetails?.availabilityDays?.includes('weekends') &&
+                            projectDetails?.weekends?.includes(day)
                               ? 'active'
                               : ''
                           }`}

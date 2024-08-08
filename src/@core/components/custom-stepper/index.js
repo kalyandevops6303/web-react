@@ -79,7 +79,7 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
 
   return (
     <CustomStepWrap>
-      {steps.map((item) => (
+      {steps?.map((item) => (
         <div
           onClick={item?.isDisabled ? () => {} : () => handleChangeStep(item.title.toLowerCase())}
           key={item.title}

@@ -12,7 +12,7 @@ import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { clubStatus, userTypes } from '../../utility/constants/Constant';
+import { clubStatus, teamTypes, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
@@ -59,6 +59,7 @@ const PrivateDashboard = () => {
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
 
   const [optionsModal, setOptionsModal] = useState(null);
+  const [createTeamSelected, setCreateTeamSelected] = useState(true);
   const [inviteClubMembersModal, setInviteClubMembersModal] = useState(false);
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
@@ -138,6 +139,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModalInfoText('create club');
       setCompleteProfileModal(true);
     } else {
+      setCreateTeamSelected(false);
       setOptionsModal(true);
     }
   };
@@ -151,6 +153,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModalInfoText('create team');
       setCompleteProfileModal(true);
     } else {
+      setCreateTeamSelected(true);
       setOptionsModal(true);
     }
   };
@@ -221,7 +224,7 @@ const PrivateDashboard = () => {
         <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
       {optionsModal && (
-        <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} />
+        <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} defaultSelectedGroup={createTeamSelected ? teamTypes.team : teamTypes.club}/>
       )}
       {inviteClubMembersModal && (
         <InviteClubMemberModal
@@ -371,7 +374,6 @@ const PrivateDashboard = () => {
           )}
           <Alerts />
           <Disputes handleRaiseDispute={handleRaiseDispute} />
-          <Meetings />
         </Col>
       </Row>
     </div>

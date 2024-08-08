@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { Button } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -88,7 +88,7 @@ const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
                 Raise Dispute
               </Button>
               {selectedMilestone?.status === 'IN_REVIEW' && userData?.user_type === userTypes.client && (
-                <Button onClick={handleAccept} className="d-contents" color="primary">
+                <Button onClick={handleAccept} className="d-contents" color="primary" disabled={projectDetailsData?.status === "DISPUTED"}>
                   Accept & Pay
                 </Button>
               )}

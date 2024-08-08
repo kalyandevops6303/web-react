@@ -538,5 +538,5 @@ export {
   Elevate,
   CircularBackButtonContainer,
   TooltipWrapper,
-  DisputeCount
+  DisputeCount,
 };

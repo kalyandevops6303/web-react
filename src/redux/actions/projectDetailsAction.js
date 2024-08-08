@@ -323,12 +323,16 @@ const rejectBidChange =
   };
 
 const acceptBidChange =
-  ({ snapshot_id, project_id, onSuccess }) =>
+  ({ snapshot_id, project_id, onSuccess, bid_id }) =>
   async (dispatch) => {
     dispatch(acceptBidChangeRequest());
     try {
       await acceptBidChangeService({ snapshot_id });
-      dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
+      await dispatch(getBidDetails({ project_id, bid_id }));
+      await dispatch(
+        getReceivedBids({ metadata: { page: 1, page_size: 10 }, search_text: '', bid_status: '', project_id }),
+      );
+      await dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
       onSuccess();
       dispatch(acceptBidChangeSuccess());
     } catch (error) {
@@ -613,6 +617,8 @@ const relistProjectByDate = (projectId, startDate, endDate, onSuccess) => async 
     dispatch(relistProjectByDateSuccess(res.data.data));
     dispatch(
       getListProjects({
+        metaData: { page: 1, page_size: 10 },
+        searchText: '',
         is_my_listings: true,
         is_recommended: false,
         is_favourite: false,

@@ -222,7 +222,7 @@ class CometChatMessageHeader extends React.Component {
       /**
        * if metadata is available, show live reactions else show typing
        */
-      // if (item.hasOwnProperty("metadata") && item.metadata && item.metadata.hasOwnProperty("type") && item.metadata.type === enums.CONSTANTS["METADATA_TYPE_LIVEREACTION"]) {
+      // if (item?.hasOwnProperty("metadata") && item.metadata && item.metadata?.hasOwnProperty("type") && item.metadata.type === enums.CONSTANTS["METADATA_TYPE_LIVEREACTION"]) {
       // 	this.props.actionGenerated(enums.ACTIONS["SHOW_LIVE_REACTION"], item);
       // } else {
 
@@ -254,7 +254,7 @@ class CometChatMessageHeader extends React.Component {
       /**
        * if metadata is available, end live reactions else end typing
        */
-      // if (item.hasOwnProperty("metadata") && item.metadata && item.metadata.hasOwnProperty("type") && item.metadata.type === enums.CONSTANTS["METADATA_TYPE_LIVEREACTION"]) {
+      // if (item?.hasOwnProperty("metadata") && item.metadata && item.metadata?.hasOwnProperty("type") && item.metadata.type === enums.CONSTANTS["METADATA_TYPE_LIVEREACTION"]) {
       // 	this.props.actionGenerated(enums.ACTIONS["STOP_LIVE_REACTION"], item);
       // } else {
 

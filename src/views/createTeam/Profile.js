@@ -146,7 +146,7 @@ const Profile = ({ setDraftSavedModal }) => {
       .required('Preferred time zone is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
@@ -156,7 +156,7 @@ const Profile = ({ setDraftSavedModal }) => {
         yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -167,7 +167,7 @@ const Profile = ({ setDraftSavedModal }) => {
           .required('Start time is required'),
     }),
     weekdayEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -1409,7 +1409,7 @@ const Profile = ({ setDraftSavedModal }) => {
                           type="checkbox"
                           {...field}
                           id="weekdays"
-                          checked={field.value.includes('weekdays')}
+                          checked={field.value?.includes('weekdays')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekdays';

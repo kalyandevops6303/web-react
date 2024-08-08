@@ -47,7 +47,7 @@ const VerifyPhone = () => {
     if (!userType) {
       dispatch(getUserData());
     }
-  }, []);
+  }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
 
   useEffect(() => {
     if (isPhoneVerified && userType) {
@@ -62,7 +62,7 @@ const VerifyPhone = () => {
     if (!phoneData) {
       navigate('/auth/register-phone');
     }
-  }, [isPhoneVerified, navigate]);
+  }, [isPhoneVerified, userType, phoneData, navigate]); // added dependencies to avoid infinite re-rendering
 
   const [selectedCountry, setSelectedCountry] = useState({
     label: 'United States',
@@ -72,8 +72,10 @@ const VerifyPhone = () => {
   });
 
   const handleChange = (value) => {
-    dispatch(setFormData({ code: value }));
-    setCode(value);
+    if (value !== code) {
+      dispatch(setFormData({ code: value }));
+      setCode(value);
+    }
   };
 
   // Function to handle dropdown change
@@ -146,13 +148,13 @@ const VerifyPhone = () => {
               border: `1px solid ${theme.primary}`,
               outline: 'none',
             }}
-          />          
+          />
           {error && (
             <Label className="mt-2 text-danger text-xl-left">
               <b>{error}</b>
             </Label>
           )}
-          <Button color="primary" block className="mt-2" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
+          <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             Submit
           </Button>
         </Form>

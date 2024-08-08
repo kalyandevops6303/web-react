@@ -229,12 +229,12 @@ const Educational = () => {
   const onSubmit = (data) => {
     const { educationDetails, skills, tools, certificates } = data;
 
-    const educational_institute = educationDetails.map((educationDetail) => ({
+    const educational_institute = educationDetails?.map((educationDetail) => ({
       institution: educationDetail.educationInstitution.value,
       education: educationDetail.education.value,
     }));
     const expertise = {
-      skills: skills.map((skill) => skill.value),
+      skills: skills?.map((skill) => skill.value),
       tools: tools?.map((tool) => tool.value),
       certificates: certificates?.map((certificate) => certificate.value),
     };
@@ -396,7 +396,7 @@ const Educational = () => {
           'educationDetails',
           savedFormData?.educationDetails?.length > 0
             ? savedFormData?.educationDetails
-            : res?.talent_info?.educational_institute.map((detail) => ({
+            : res?.talent_info?.educational_institute?.map((detail) => ({
                 educationInstitution: { label: detail.institution.name, value: detail.institution._id },
                 education: { label: detail.education.name, value: detail.education._id },
               })),
@@ -409,7 +409,7 @@ const Educational = () => {
         setValue(
           'tools',
           savedFormData?.tools ||
-            res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+            res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -417,7 +417,7 @@ const Educational = () => {
         setValue(
           'certificates',
           savedFormData?.certificates ||
-            res?.talent_info?.expertise?.certificates.map((certificate) => ({
+            res?.talent_info?.expertise?.certificates?.map((certificate) => ({
               label: certificate.name,
               value: certificate._id,
             })),
@@ -428,7 +428,7 @@ const Educational = () => {
         setValue(
           'skills',
           savedFormData?.skills ||
-            res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+            res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -458,7 +458,7 @@ const Educational = () => {
       if (res?.talent_info?.educational_institute?.length > 0) {
         setValue(
           'educationDetails',
-          res?.talent_info?.educational_institute.map((detail) => ({
+          res?.talent_info?.educational_institute?.map((detail) => ({
             educationInstitution: { label: detail.institution.name, value: detail.institution._id },
             education: { label: detail.education.name, value: detail.education._id },
           })),
@@ -470,14 +470,14 @@ const Educational = () => {
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',
-          res?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          res?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
       if (res?.certificates && res?.certificates.length > 0) {
         setValue(
           'certificates',
-          res?.certificates.map((certificate) => ({
+          res?.certificates?.map((certificate) => ({
             label: certificate.name,
             value: certificate._id,
           })),
@@ -487,7 +487,7 @@ const Educational = () => {
       if (res?.skills && res?.skills.length > 0) {
         setValue(
           'skills',
-          res?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          res?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -590,7 +590,7 @@ const Educational = () => {
                           )}
                         />
                         {errors && errors.educationInstitution && (
-                          <FormFeedback>{errors.educationInstitution.message}</FormFeedback>
+                          <FormFeedback>{errors.educationInstitution?.message}</FormFeedback>
                         )}
                       </Col>
                       <Col sm="12" md="12" lg="5">
@@ -614,11 +614,11 @@ const Educational = () => {
                             />
                           )}
                         />
-                        {errors && errors.education && <FormFeedback>{errors.education.message}</FormFeedback>}
+                        {errors && errors.education && <FormFeedback>{errors.education?.message}</FormFeedback>}
                       </Col>
                     </Row>
                   ) : (
-                    fields.map((item, index) => (
+                    fields?.map((item, index) => (
                       <Row key={item.id} className="mt-1 d-flex align-items-center">
                         <Col sm="12" md="12" lg="5">
                           <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
@@ -781,7 +781,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
+                      {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="certificates">
@@ -808,7 +808,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.certificates && <FormFeedback>{errors.certificates.message}</FormFeedback>}
+                      {errors.certificates && <FormFeedback>{errors.certificates?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   <Row className="mb-2">
@@ -838,7 +838,7 @@ const Educational = () => {
                           />
                         )}
                       />
-                      {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
+                      {errors.skills && <FormFeedback>{errors.skills?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   {supportData?.tools_and_skills?.pending_requests > 0 && (

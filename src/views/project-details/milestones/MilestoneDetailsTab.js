@@ -383,7 +383,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       window.open(`https://${URL}`, '_blank');
     }
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   const isEmptyLink = allLinks?.some((item) => item.link === '');
   const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
 
@@ -717,24 +717,26 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                                 if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
                                   handleLinkOpen(allLinks?.[index]?.link);
                                 }
-                              }}
-                            >
-                              <span className="mail-bg">
-                                <ExternalLink
-                                  size={20}
-                                  className="mail-icon"
-                                  color={
-                                    allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
-                                      ? theme.activeColor
-                                      : `${theme.activeColor}5f`
-                                  }
-                                />
-                              </span>
-                            </MessageIconWrap>
-                            <MessageIconWrap
-                              onClick={() => {
-                                if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
-                                  handleRemove({ item: allLinks?.[index], index });
+                              />
+                            </span>
+                          </MessageIconWrap>
+                          <MessageIconWrap
+                            onClick={() => {
+                              if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
+                                handleRemove({ item: allLinks?.[index], index });
+                              }else{
+                                linksRemove(index);
+                              }
+                            }}
+                          >
+                            <span className="trash-bg">
+                              <Trash2
+                                size={20}
+                                className="mail-icon"
+                                color={
+                                   !errors?.links?.[index]
+                                    ? theme.red
+                                    : `${theme.red}5f`
                                 }
                               }}
                             >

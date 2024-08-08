@@ -208,12 +208,12 @@ class CometChatMessageList extends React.PureComponent {
 
         messageList.forEach((message) => {
           //if the sender of the message is not the loggedin user
-          if (!isEmpty(message.getSender()) && message.getSender().getUid() !== this.state.loggedInUser?.uid) {
+          if (!isEmpty(message?.getSender()) && message?.getSender()?.getUid() !== this.state?.loggedInUser?.uid) {
             //mark the message as delivered
             this.markMessageAsDelivered(message);
 
             //mark the message as read
-            if (message.hasOwnProperty('readAt') === false) {
+            if (message?.hasOwnProperty('readAt') === false) {
               CometChat.markAsRead(message).catch((error) => {});
               this.props.actionGenerated(enums.ACTIONS['MESSAGE_READ'], message);
             }
@@ -224,11 +224,11 @@ class CometChatMessageList extends React.PureComponent {
 
         //abort(don't return messagelist), when the chat window changes
         if (
-          (item.hasOwnProperty('uid') &&
-            this.context.item.hasOwnProperty('uid') &&
+          (item?.hasOwnProperty('uid') &&
+            this.context.item?.hasOwnProperty('uid') &&
             item.uid === this.context.item.uid) ||
-          (item.hasOwnProperty('guid') &&
-            this.context.item.hasOwnProperty('guid') &&
+          (item?.hasOwnProperty('guid') &&
+            this.context.item?.hasOwnProperty('guid') &&
             item.guid === this.context.item.guid)
         ) {
           this.props.actionGenerated(actionGenerated, messageList);
@@ -239,7 +239,7 @@ class CometChatMessageList extends React.PureComponent {
           this.setState({ decoratorMessage: 'SOMETHING_WRONG' });
         }
 
-        if (error && error.hasOwnProperty('code') && error.code === 'ERR_GUID_NOT_FOUND') {
+        if (error && error?.hasOwnProperty('code') && error.code === 'ERR_GUID_NOT_FOUND') {
           //this.context.setDeletedGroupId(this.context.item.guid);
         }
       });
@@ -259,12 +259,12 @@ class CometChatMessageList extends React.PureComponent {
 
         messageList.forEach((message) => {
           //if the sender of the message is not the loggedin user
-          if (!isEmpty(message.getSender()) && message.getSender().getUid() !== this.state.loggedInUser?.uid) {
+          if (!isEmpty(message?.getSender()) && message?.getSender()?.getUid() !== this.state?.loggedInUser?.uid) {
             //mark the message as delivered
             this.markMessageAsDelivered(message);
 
             //mark the message as read
-            if (message.hasOwnProperty('readAt') === false) {
+            if (message?.hasOwnProperty('readAt') === false) {
               CometChat.markAsRead(message).catch((error) => {});
               this.props.actionGenerated(enums.ACTIONS['MESSAGE_READ'], message);
             }
@@ -281,8 +281,8 @@ class CometChatMessageList extends React.PureComponent {
 
         //abort(don't return messagelist), when the chat window changes
         if (
-          item.hasOwnProperty('guid') &&
-          this.context.item.hasOwnProperty('guid') &&
+          item?.hasOwnProperty('guid') &&
+          this.context.item?.hasOwnProperty('guid') &&
           item.guid === this.context.item.guid
         ) {
           this.props.actionGenerated('NEXT_MESSAGES_FETCHED', messageList);
@@ -293,7 +293,7 @@ class CometChatMessageList extends React.PureComponent {
           this.setState({ decoratorMessage: 'SOMETHING_WRONG' });
         }
 
-        if (error && error.hasOwnProperty('code') && error.code === 'ERR_GUID_NOT_FOUND') {
+        if (error && error?.hasOwnProperty('code') && error.code === 'ERR_GUID_NOT_FOUND') {
           //this.context.setDeletedGroupId(this.context.item.guid);
         }
       });
@@ -411,8 +411,8 @@ class CometChatMessageList extends React.PureComponent {
     //read receipts
     if (
       message.getReceiverType() === CometChat.RECEIVER_TYPE.USER &&
-      !isEmpty(message.getSender()) &&
-      message.getSender().getUid() === this.context.item.uid &&
+      !isEmpty(message?.getSender()) &&
+      message?.getSender()?.getUid() === this.context?.item?.uid &&
       message.getReceiver() === this.state.loggedInUser?.uid
     ) {
       let messageList = [...this.props.messages];
@@ -454,7 +454,7 @@ class CometChatMessageList extends React.PureComponent {
   };
 
   reInitializeMessageBuilder = () => {
-    if (this.props.hasOwnProperty('parentMessageId') === false) {
+    if (this.props?.hasOwnProperty('parentMessageId') === false) {
       this.messageCount = 0;
     }
 
@@ -481,13 +481,13 @@ class CometChatMessageList extends React.PureComponent {
 
   //mark the message as delivered
   markMessageAsDelivered = (message) => {
-    if (message.sender?.uid !== this.state.loggedInUser?.uid && message.hasOwnProperty('deliveredAt') === false) {
+    if (message.sender?.uid !== this.state.loggedInUser?.uid && message?.hasOwnProperty('deliveredAt') === false) {
       CometChat.markAsDelivered(message).catch((error) => { });
     }
   };
 
   markMessageAsRead = (message, type) => {
-    if (message.hasOwnProperty('readAt') === false) {
+    if (message?.hasOwnProperty('readAt') === false) {
       CometChat.markAsRead(message).catch((error) => { });
     }
   };
@@ -526,7 +526,7 @@ class CometChatMessageList extends React.PureComponent {
 
   messageReceivedHandler = (message, type) => {
     //handling dom lag - increment count only for main message list
-    if (message.hasOwnProperty('parentMessageId') === false && this.props.hasOwnProperty('parentMessageId') === false) {
+    if (message?.hasOwnProperty('parentMessageId') === false && this.props?.hasOwnProperty('parentMessageId') === false) {
       ++this.messageCount;
       //if the user has not scrolled in chat window(scroll is at the bottom of the chat window)
       if (this.messagesEnd.scrollHeight - this.messagesEnd.scrollTop - this.messagesEnd.clientHeight <= 1) {
@@ -541,8 +541,8 @@ class CometChatMessageList extends React.PureComponent {
         this.props.actionGenerated(enums.ACTIONS['NEW_MESSAGES'], [message]);
       }
     } else if (
-      message.hasOwnProperty('parentMessageId') === true &&
-      this.props.hasOwnProperty('parentMessageId') === true
+      message?.hasOwnProperty('parentMessageId') === true &&
+      this.props?.hasOwnProperty('parentMessageId') === true
     ) {
       if (message.parentMessageId === this.props.parentMessageId) {
         this.markMessageAsRead(message, type);
@@ -599,7 +599,7 @@ class CometChatMessageList extends React.PureComponent {
 
   customMessageReceivedHandler = (message, type) => {
     //handling dom lag - increment count only for main message list
-    if (message.hasOwnProperty('parentMessageId') === false && this.props.hasOwnProperty('parentMessageId') === false) {
+    if (message?.hasOwnProperty('parentMessageId') === false && this.props?.hasOwnProperty('parentMessageId') === false) {
       ++this.messageCount;
 
       //if the user has not scrolled in chat window(scroll is at the bottom of the chat window)
@@ -616,8 +616,8 @@ class CometChatMessageList extends React.PureComponent {
         this.props.actionGenerated(enums.ACTIONS['NEW_MESSAGES'], [message]);
       }
     } else if (
-      message.hasOwnProperty('parentMessageId') === true &&
-      this.props.hasOwnProperty('parentMessageId') === true
+      message?.hasOwnProperty('parentMessageId') === true &&
+      this.props?.hasOwnProperty('parentMessageId') === true
     ) {
       if (message.parentMessageId === this.props.parentMessageId) {
         this.markMessageAsRead(message, type);
@@ -694,7 +694,7 @@ class CometChatMessageList extends React.PureComponent {
     let component;
     const messageKey = message._id ? message._id : message.id;
 
-    if (message.hasOwnProperty('deletedAt')) {
+    if (message?.hasOwnProperty('deletedAt')) {
       component = <CometChatDeleteMessageBubble key={messageKey} message={message} />;
     } else {
       switch (message.type) {
@@ -756,7 +756,7 @@ class CometChatMessageList extends React.PureComponent {
     let component;
     const messageKey = message._id ? message._id : message.id;
 
-    if (message.hasOwnProperty('deletedAt')) {
+    if (message?.hasOwnProperty('deletedAt')) {
       component = <CometChatDeleteMessageBubble key={messageKey} message={message} />;
     } else {
       switch (message.type) {
@@ -817,7 +817,7 @@ class CometChatMessageList extends React.PureComponent {
     let component;
     const messageKey = message._id ? message._id : message.id;
 
-    if (message.hasOwnProperty('deletedAt')) {
+    if (message?.hasOwnProperty('deletedAt')) {
       component = <CometChatDeleteMessageBubble key={messageKey} message={message} />;
     } else {
       switch (message.type) {
@@ -878,7 +878,7 @@ class CometChatMessageList extends React.PureComponent {
     let component;
     const messageKey = message._id ? message._id : message.id;
 
-    if (message.hasOwnProperty('deletedAt')) {
+    if (message?.hasOwnProperty('deletedAt')) {
       component = <CometChatDeleteMessageBubble key={messageKey} message={message} />;
     } else {
       switch (message.type) {

@@ -19,7 +19,7 @@ const ChangeBidTypeConfirmationModal = ({ modal, toggleModal, toggleCreateBidMod
           <div className="d-flex pe-1">
             <img src={Notepad} alt="notepad" width={189} height={189} className="notepad-gif me-2" />
             <div>
-              <p className="fw-bold modal-custom-heading">Are you sure you want to change Bid Type?</p>
+              <p className="fw-bold modal-custom-heading">Are you sure you want to Change Bid Type?</p>
               <p className="mt-75 modal-custom-sub-heading mb-0">
                 Changing Bid Type may result in loss of unsaved milestone data.
               </p>

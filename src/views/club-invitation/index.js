@@ -19,6 +19,7 @@ import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import AcceptRequestModal from '../modals/AcceptRequestModal';
 import RejectRequestModal from '../modals/RejectRequestModal';
+import { getMyTeam } from '../../redux/actions/dashboardActions';
 
 const ClubInvitation = () => {
   const dispatch = useDispatch();
@@ -79,6 +80,7 @@ const ClubInvitation = () => {
           setIsStatusUpdating(false);
           setAccpetModal(false);
           dispatch(getTeams({ onSuccess: () => {} }));
+          dispatch(getMyTeam())
         },
         onError: () => {
           setIsStatusUpdating(false);
