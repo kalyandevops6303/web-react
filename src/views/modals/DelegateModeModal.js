@@ -13,13 +13,14 @@ import { setItem } from '../../utility/localStorageControl';
 const DelegateModeModal = ({ modal, toggleModal }) => {
   const userDetailsData = useSelector(selectUserData);
 
-  const userName = `${userDetailsData?.client_info?.first_name} ${userDetailsData?.client_info?.last_name}`;
+  // const userName = `${userDetailsData?.client_info?.first_name} ${userDetailsData?.client_info?.last_name}`;
+const adminUserName = `${userDetailsData?.admin_client_info?.first_name} ${userDetailsData?.admin_client_info?.last_name}`;
 
   const onClose = () => {
     setItem('markDelegateModeModalAsSeen', true);
     toggleModal();
   };
-
+//  console.log('userDetailsData', userDetailsData);
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style delete-modal" className="modal-dialog-centered">
       <ModalHeader toggle={onClose} />
@@ -42,7 +43,7 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
                       : userDetailsData?.default_avatar
                   }
                   companyName={userDetailsData?.admin_client_info?.company_name}
-                  userName={userName}
+                  userName={adminUserName}
                 />
               )}
             </div>

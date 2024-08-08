@@ -85,7 +85,7 @@ const AddDelegateModal = ({ modal, toggleModal }) => {
   }, [localFormData]);
 
   const onSuccess = () => {
-    ShowToastMessage(SUCCESS, 'Email with sign up link is shared with delegate successfully.');
+    ShowToastMessage(SUCCESS, 'The email containing the sign-up link has been successfully sent to the delegate');
     toggleModal();
   };
 

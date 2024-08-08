@@ -44,6 +44,7 @@ const VerifyPhone = () => {
 
   const userType = useSelector(selectUserType);
   const isDelegate = getItem('isDelegate');
+  const localUserType = getItem('user_type');
 
   useEffect(() => {
     if (!userType && !isDelegate) {
@@ -52,9 +53,17 @@ const VerifyPhone = () => {
   }, []);
 
   useEffect(() => {
-    if (isPhoneVerified && userType && !isDelegate) {
+    if (isPhoneVerified && userType) {
       // show success message and navigate user to login page
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 2000);
+    } else if (isPhoneVerified && isDelegate && localUserType) {
+      ShowToastMessage(
+        SUCCESS,
+        'Your account has been created successfully. Please log in to start the onboarding process for the delegate.',
+      );
       setTimeout(() => {
         navigate('/auth/login');
       }, 2000);
@@ -63,9 +72,6 @@ const VerifyPhone = () => {
     }
     if (!phoneData) {
       navigate('/auth/register-phone');
-    }
-    if (isDelegate && isPhoneVerified) {
-      navigate('/client-onboarding/account-details');
     }
   }, [isPhoneVerified, navigate]);
 

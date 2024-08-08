@@ -41,9 +41,6 @@ import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
-import DelegateModeModal from '../modals/DelegateModeModal';
-import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
-import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -84,16 +81,6 @@ const PrivateDashboard = () => {
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
-  const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
-
-  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
-  const markDelegateModeModalAsSeen = getItem('markDelegateModeModalAsSeen');
-
-  useEffect(() => {
-    if (isDelegate && !isDelegateModeModalVisible && !markDelegateModeModalAsSeen) {
-      toggleDelegateMode();
-    }
-  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -191,9 +178,9 @@ const PrivateDashboard = () => {
 
   return (
     <div>
-      {isDelegate && isDelegateModeModalVisible && (
+      {/* {isDelegate && isDelegateModeModalVisible && (
         <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
-      )}
+      )} */}
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}

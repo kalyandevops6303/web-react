@@ -1,6 +1,6 @@
 // ** React Imports
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ShowToastMessage from '../../../../@core/components/toast';
 
 // ** Custom Components
@@ -35,9 +35,13 @@ import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal'
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { setFormDocuments } from '../../../../redux/reducers/formData';
 import DelegateNameCard from '../../../../views/cards/DelegateNameCard';
-import { checkIsInviteDelegateModalVisible } from '../../../../redux/selectors/delegateSelectors';
-import { toggleAddDelegateModal } from '../../../../redux/reducers/delegate';
+import {
+  checkIsDelegateModeModalVisible,
+  checkIsInviteDelegateModalVisible,
+} from '../../../../redux/selectors/delegateSelectors';
+import { toggleAddDelegateModal, toggleDelegateModeModal } from '../../../../redux/reducers/delegate';
 import AddDelegateModal from '../../../../views/modals/AddDelegateModal';
+import DelegateModeModal from '../../../../views/modals/DelegateModeModal';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -59,6 +63,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const isDelegateProfileCreated = getItem('isDelegateProfileCreated');
 
   const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
+  const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
   const handleEdit = () => {
     const talentOrClientProfile =
@@ -168,13 +173,28 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const adminUsername =
     userDetailsData?.admin_client_info &&
     userDetailsData?.admin_client_info?.first_name + ' ' + userDetailsData?.admin_client_info?.last_name;
+  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
+  const markDelegateModeModalAsSeen = getItem('markDelegateModeModalAsSeen');
 
+  useEffect(() => {
+    if (isDelegate && !isDelegateModeModalVisible && !markDelegateModeModalAsSeen) {
+      let timer;
+      clearTimeout(timer);
+
+      timer = setTimeout(() => {
+        toggleDelegateMode();
+      }, 10000);
+    }
+  }, []);
   return (
     <UncontrolledDropdown
       tag="li"
       style={!userName ? { minWidth: '10rem' } : {}}
       className={`dropdown-user nav-item ${!userName ? 'invisible' : ''}`}
     >
+      {isDelegate && isDelegateModeModalVisible && (
+        <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
+      )}
       {isInviteDelegateModalVisible && (
         <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
       )}
