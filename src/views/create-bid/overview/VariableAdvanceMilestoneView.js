@@ -403,7 +403,7 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       deliverables: [...milestoneDeliverables, defaultValue],
     };
 
-    if (milestoneDeliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
+    if (milestoneDeliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
       milestonesUpdate(milestoneIndex, newData);
     } else {
       ShowToastMessage(ERROR, 'Please fill all deliverables before adding a new one.');
@@ -421,15 +421,15 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const handleAddMilestone = () => {
-    const allMilestonesValid = getValues('milestones').every(
+    const allMilestonesValid = getValues('milestones')?.every(
       (milestone) =>
         milestone.name?.trim() !== '' &&
         milestone.workers.length > 0 &&
         milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
         milestone.workers
           .filter((worker) => worker.isChecked)
-          .every((worker) => worker.duration > 0 && worker.hours > 0) &&
-        milestone.deliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
+          ?.every((worker) => worker.duration > 0 && worker.hours > 0) &&
+        milestone.deliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
     );
 
     if (allMilestonesValid) {
@@ -1359,14 +1359,14 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                   !isValid ||
                   draftSetMilestonesIsLoading ||
                   uploadingFiles.length > 0 ||
-                  !getValues('milestones').every(
+                  !getValues('milestones')?.every(
                     (milestone) =>
                       milestone.name?.trim() !== '' &&
                       milestone.workers.length > 0 &&
                       milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
                       milestone.workers
                         .filter((worker) => worker.isChecked)
-                        .every((worker) => worker.duration > 0 && worker.hours > 0),
+                        ?.every((worker) => worker.duration > 0 && worker.hours > 0),
                   )
                 }
               >
@@ -1379,14 +1379,14 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                   !isValid ||
                   setMilestonesIsLoading ||
                   uploadingFiles.length > 0 ||
-                  !getValues('milestones').every(
+                  !getValues('milestones')?.every(
                     (milestone) =>
                       milestone.name?.trim() !== '' &&
                       milestone.workers.length > 0 &&
                       milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
                       milestone.workers
                         .filter((worker) => worker.isChecked)
-                        .every((worker) => worker.duration > 0 && worker.hours > 0),
+                        ?.every((worker) => worker.duration > 0 && worker.hours > 0),
                   )
                 }
               >

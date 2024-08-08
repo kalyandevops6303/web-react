@@ -308,7 +308,7 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
       deliverables: [...milestoneDeliverables, defaultValue],
     };
 
-    if (milestoneDeliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
+    if (milestoneDeliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
       milestonesUpdate(milestoneIndex, newData);
     } else {
       ShowToastMessage(ERROR, 'Please fill all deliverables before adding a new one.');
@@ -326,12 +326,12 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const handleAddMilestone = () => {
-    const allMilestonesValid = getValues('milestones').every(
+    const allMilestonesValid = getValues('milestones')?.every(
       (milestone) =>
         milestone.duration > 0 &&
         milestone.talentCost > 0 &&
         milestone.name?.trim() !== '' &&
-        milestone.deliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
+        milestone.deliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
     );
 
     if (allMilestonesValid) {
