@@ -178,9 +178,7 @@ const PrivateDashboard = () => {
 
   return (
     <div>
-      {/* {isDelegate && isDelegateModeModalVisible && (
-        <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
-      )} */}
+      
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
