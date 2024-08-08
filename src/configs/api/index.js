@@ -1,10 +1,13 @@
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/user`;
-const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
-const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
-const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
-const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
-const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
-const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
+// const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+const apiOnboardingEndpoint = `http://localhost:8000`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
+// const apiCreateProjectEndpoint = `http://localhost:8000`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
+// const apiPaymentEndPoint = `http://localhost:5050`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const API = {
   auth: {
     login: `${apiAuthEndpoint}/api/v1/user/sign-in`,
@@ -226,6 +229,9 @@ const API = {
     myBids: `${apiOnboardingEndpoint}/api/v1/my-bids-projects`,
     listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
     listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
+
+    // internal
+    allProjectsUrl: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects/all`,
   },
   globalSearch: {
     search: `${apiOnboardingEndpoint}/api/v1/search`,

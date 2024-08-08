@@ -41,6 +41,7 @@ import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
 import Assessments from '../../views/assessments';
+import InternalProjects from '../../views/internal/projects';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -219,8 +220,12 @@ const Routes = [
   },
   {
     path: '/assessments',
-    element: <Assessments />
-  }
+    element: <Assessments />,
+  },
+  {
+    path: '/internal/projects',
+    element: <InternalProjects />,
+  },
 ];
 
 // eslint-disable-next-line consistent-return
@@ -257,7 +262,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-                LayoutWrapper
+              LayoutWrapper
               : Fragment;
 
           // eslint-disable-next-line no-param-reassign
