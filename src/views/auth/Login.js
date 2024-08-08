@@ -78,7 +78,7 @@ const Login = () => {
       } else if (redirectToLocation && !isDelegate) {
         navigate(redirectToLocation);
         removeItemFromSession('redirect_to_location');
-      } else {
+      } else if (!isDelegate) {
         navigate('/dashboard');
       }
     }

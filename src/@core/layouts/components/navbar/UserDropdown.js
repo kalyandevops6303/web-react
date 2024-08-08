@@ -183,7 +183,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
       timer = setTimeout(() => {
         toggleDelegateMode();
-      }, 10000);
+      }, 1000);
     }
   }, []);
   return (
