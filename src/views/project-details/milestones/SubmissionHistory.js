@@ -180,7 +180,7 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                                     id={`tooltip-username-${file?._id}`}
                                   />
                                   <UncontrolledTooltip placement="bottom" target={`tooltip-username-${file?._id}`}>
-                                    {file?.talent_details?.full_name || 'Data unavailble'}
+                                    {file?.talent_details?.full_name || 'Data unavailable'}
                                   </UncontrolledTooltip>
                                 </div>
                               </td>
@@ -218,6 +218,8 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                                 <MessageIconWrap onClick={() => handleChat({ file })}>
                                   <span className="mail-bg">
                                     <MessageSquare size={20} className="mail-icon" color={theme.activeColor} />
+                                    {/* TODO: To add isNew flag for new messages from BE */}
+                                    {/* {file?.isNew && <span className="dot" />} */}
                                   </span>
                                 </MessageIconWrap>
                               </div>
