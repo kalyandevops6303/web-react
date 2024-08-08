@@ -1,10 +1,11 @@
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/user`;
-const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
-const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
-const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
-const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
-const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
-const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
+const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+
 const API = {
   auth: {
     login: `${apiAuthEndpoint}/api/v1/user/sign-in`,
@@ -48,6 +49,7 @@ const API = {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
     resumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parse-resume`,
     updateResumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parsed`,
+    deleteResume: `${apiAuthEndpoint}/api/v1/talent/resume`,
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     deleteResume: `${apiAuthEndpoint}/api/v1/talent/resume`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,

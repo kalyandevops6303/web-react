@@ -103,6 +103,7 @@ export const OnBoardWrap = styled.div`
     margin-left: 0.3rem;
   }
   .mobile-input {
+    width: 100%;
     margin-left: 1rem;
   }
   .btn.disabled {

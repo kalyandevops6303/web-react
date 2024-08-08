@@ -30,6 +30,7 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
   const savedFormData = useSelector(formData);
   const [code, setCode] = useState((savedFormData && savedFormData.code) || '');
+  const [error, setError] = useState('');
   const isEmailVerified = useSelector(selectIsEmailVerified);
   const userType = useSelector(selectUserType);
   const isLoading = useSelector(selectAuthLoading);
@@ -50,8 +51,9 @@ const VerifyEmail = () => {
     setOtpError(false);
   };
 
-  const verifyOtp = () => {
-    dispatch(verifyEmail({ email: emailId, user_type: userType, code }));
+  const verifyOtp = async () => {
+    const response = await dispatch(verifyEmail({ email: emailId, user_type: userType, code }));
+    setError(response);
     dispatch(clearAllFormData());
   };
 
@@ -106,7 +108,12 @@ const VerifyEmail = () => {
             }}
           />
           {otpError && <FormFeedback className="mt-1">Invalid code</FormFeedback>}
-          <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
+          {error && (
+            <Label className="mt-2 text-danger text-xl-left">
+              <b>{error}</b>
+            </Label>
+          )}
+          <Button color="primary" block className="mt-2" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>

@@ -61,7 +61,7 @@ pipeline {
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml	  
-	      	      	    sed -i "s/3012/${targetPort}/g" Dockerfile
+	      	      	    sed -i "s/5000/${targetPort}/g" Dockerfile
 	     		    sed -i "s/'test'/'${mode}'/g" vite.config.js
 	                    sed -i "s/1443/${apiAuthEndpoint}/g" src/configs/api/index.js
 		     	    sed -i "s/3443/${apiOnboardingEndpoint}/g" src/configs/api/index.js
