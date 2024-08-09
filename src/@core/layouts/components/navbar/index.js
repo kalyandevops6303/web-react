@@ -138,6 +138,12 @@ const ThemeNavbar = (props) => {
     }
 }, [location,location?.pathname]);
 
+useEffect(() => {
+  if (!location.pathname.includes('/create-club')) {
+   localStorage.removeItem('clubCreateData');
+  }
+}, [location.pathname]);
+
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
   console.log(isOpenSaveForLater)
   return (

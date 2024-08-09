@@ -120,7 +120,6 @@ const Account = ({ setDraftSavedModal }) => {
         }),
       )
       .max(5, 'Maximum of five tools can be added')
-      .min(1, 'At least one tool is required')
       .nullable(),
     skills: yup
       .array()
@@ -230,9 +229,20 @@ const Account = ({ setDraftSavedModal }) => {
   const localFormData = useWatch({ control });
 
   useEffect(() => {
+    const savedData = localStorage.getItem('clubCreateData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      Object.keys(parsedData).forEach((key) => {
+        setValue(key, parsedData[key]);
+      });
+    }
+  }, [setValue]);
+
+  useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
+    localStorage.setItem('clubCreateData', JSON.stringify(allData));
     dispatch(setFormData(allData));
-  }, [localFormData]);
+  }, [localFormData, dispatch]);
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -273,6 +283,13 @@ const Account = ({ setDraftSavedModal }) => {
       e.target.value = '';
     }
   };
+
+  useEffect(() => {
+    if (!location.pathname.includes('/create-club')) {
+     // When navigating away from the '/create-club' route, remove the localStorage item
+     localStorage.removeItem('clubCreateData');
+    }
+  }, [location.pathname]);
 
   const handleSelectChange = (option, field) => {
     setSelectedOption(option);
@@ -428,7 +445,6 @@ const Account = ({ setDraftSavedModal }) => {
 
           const removeEmpty = removeEmptyKeys(reqData);
           dispatch(setClubCreateDataAction(removeEmpty));
-
           dispatch(updateClub(removeEmptyKeys(removeEmpty), onApiSuccess));
         } else {
           reqData = {
