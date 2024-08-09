@@ -61,7 +61,7 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
     };
 
     if (allEmails.find((email) => email === userDetailsData.email)) {
-      ShowToastMessage(ERROR, 'Can not invite yourself to bid');
+      ShowToastMessage(ERROR, 'You can not invite your own email to the project');
       return;
     }
     if (allEmails.length) {
