@@ -3,8 +3,8 @@ import { toast } from 'react-hot-toast';
 const ShowToastMessage = (type, message) => {
   const options = {
     position: 'top-center',
+    duration: 6000,
   };
-
   switch (type) {
     case 'error':
       toast.error(message, options);

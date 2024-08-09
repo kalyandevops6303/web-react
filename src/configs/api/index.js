@@ -1,10 +1,10 @@
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
-const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
-const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
-const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
-const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
-const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:8443`;
-const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/user`;
+const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/admin`;
 
 const API = {
   auth: {
@@ -115,6 +115,11 @@ const API = {
 
     // files
     downloadUrl: `${apiCreateProjectEndpoint}/api/v1/download/url`,
+  },
+  delegate: {
+    inviteDelegate: `${apiAuthEndpoint}/api/v1/invitation/delegate`,
+    signUpDelegate: `${apiAuthEndpoint}/api/v1/user/delegate/signup`,
+    delegateInvitationStatus: `${apiAuthEndpoint}/api/v1/invitation/delegate/status`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
@@ -344,13 +349,13 @@ const API = {
     add_assessment: `${apiAssessmentsEndpoint}/api/v1/add/candidate/assessment/list`,
     get_assessment_link: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/link`,
     delete_non_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/non-assessment`,
-    prepopulate: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/prepopulate`
+    prepopulate: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/prepopulate`,
   },
   support: {
     create: `${apiAuthEndpoint}/api/v1/support-request`,
     count: `${apiAuthEndpoint}/api/v1/support-request/count`,
     list: `${apiAuthEndpoint}/api/v1/support-requests/paginated`,
-    delete: `${apiAuthEndpoint}/api/v1/support-request`
+    delete: `${apiAuthEndpoint}/api/v1/support-request`,
   },
 };
 

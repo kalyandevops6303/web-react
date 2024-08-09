@@ -112,12 +112,18 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     setItem('user_id', res.data.data.user_id);
+    if (res.data.data.is_delegate) {
+      setItem('isDelegate', res.data.data.is_delegate);
+    }
     window.dataLayer.push({ user_id: res.data.data.user_id });
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
       dispatch(cometChatLogin(res.data.data.comet_chat_token));
       setItemFromSession('isUserVisited', true);
+      if (res.data?.data?.is_delegate) {
+        setItem('isDelegateProfileCreated', true);
+      }
     } else {
       dispatch(loginSuccess(false));
     }

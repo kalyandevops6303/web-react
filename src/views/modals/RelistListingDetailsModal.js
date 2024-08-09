@@ -60,7 +60,6 @@ const RelistListingDetailsModal = ({
   });
 
   const dispatch = useDispatch();
-
   const relistProjectByDateIsLoading = useSelector(relistProjectByDateLoading);
 
   const onSuccess = () => {

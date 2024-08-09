@@ -103,7 +103,6 @@ export const UserDropDownWrapper = styled.div`
   }
   .edit-accordion {
     border-bottom: 1px solid ${theme.cardHeaderBorderColor};
-    margin-bottom: 1rem;
   }
   .accordion-button {
     font-size: 14px !important;
