@@ -185,6 +185,13 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
 `;
 
 const BidDetailsWrap = styled.div`
+  .wrapper {
+    @media (max-width: 991px) {
+      display: flex;
+      align-items: center;
+      flex-direction: column-reverse;
+    }
+  }
   .content-header-left {
     margin-bottom: 0 !important;
   }

@@ -126,13 +126,9 @@ const BidDetails = () => {
 
   const BidDetailsHeaderSection = styled.div`
     .fixed-head {
-      z-index: 20;
-      margin-top: -5rem;
-      padding-top: 1rem;
-      position: fixed;
-      width: 74%;
+      width: 100%;
       background: ${theme.bodyBgColor};
-      padding-bottom: 0.8rem;
+      // padding-bottom: 0.8rem;
       padding-left: 0;
       .inner-head {
         display: flex;
@@ -144,7 +140,7 @@ const BidDetails = () => {
       }
     }
     .details-card {
-      margin-top: 3.6rem;
+      margin-top: 1.6rem;
     }
   `;
 
@@ -201,7 +197,7 @@ const BidDetails = () => {
         />
       )}
 
-      <Row className="pt-1">
+      <Row className="pt-1 wrapper">
         <Col lg="3">
           <LeftSidebarProfile
             isProjectDetailsView
