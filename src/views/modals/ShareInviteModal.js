@@ -12,12 +12,16 @@ import { RequirementsFormContainer } from '../CreateProject/style';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
 import { inviteTalentsLoading } from '../../redux/selectors/inviteTalentSelector';
 import getTeamId from '../../utility/commonUtils';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
 
 const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, projectId }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
+  const userDetailsData = useSelector(selectUserData);
   const [validEmailError, setValidEmailError] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [customEmailsValue, setCustomEmailsValue] = useState([]);
@@ -56,6 +60,10 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
       },
     };
 
+    if (allEmails.find((email) => email === userDetailsData.email)) {
+      ShowToastMessage(ERROR, 'Can not invite yourself to bid');
+      return;
+    }
     if (allEmails.length) {
       dispatch(inviteTalents({ data: newPostData, onSuccess }));
     } else {

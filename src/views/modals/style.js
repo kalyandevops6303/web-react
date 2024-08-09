@@ -211,6 +211,16 @@ const MessageIconWrap = styled.div`
       margin: auto;
     }
   }
+  .dot {
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background: red;
+    display: block;
+    margin-top: -1px;
+    margin-left: -7px;
+    outline: 1.5px solid white;
+  }
 `;
 
 const MakePaymentModalWrapper = styled.div`
