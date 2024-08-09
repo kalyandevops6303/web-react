@@ -176,7 +176,7 @@ const SimpleTeamView = ({ setDraftSavedModal }) => {
   };
 
   const handleAddRole = () => {
-    const isFilled = watch('projectRolesDetails').every((item) => {
+    const isFilled = watch('projectRolesDetails')?.every((item) => {
       const { role } = item;
       return role;
     });
@@ -534,7 +534,7 @@ const SimpleTeamView = ({ setDraftSavedModal }) => {
                 disabled={
                   !isValid ||
                   fields.length === 0 ||
-                  !watch('projectRolesDetails').every((field) => field.role) ||
+                  !watch('projectRolesDetails')?.every((field) => field.role) ||
                   draftSetWorkersIsLoading
                 }
               >
@@ -546,7 +546,7 @@ const SimpleTeamView = ({ setDraftSavedModal }) => {
                 disabled={
                   !isValid ||
                   fields.length === 0 ||
-                  !watch('projectRolesDetails').every((field) => field.role) ||
+                  !watch('projectRolesDetails')?.every((field) => field.role) ||
                   setWorkersIsLoading
                 }
               >
