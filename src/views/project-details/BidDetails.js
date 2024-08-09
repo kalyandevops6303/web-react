@@ -67,7 +67,7 @@ const BidDetails = () => {
     navigate(-1);
   };
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
-  
+
   const isLoading = useSelector((state) => state.projectDetails.getBidInfoLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const bidView = location?.pathname?.split('/')?.slice(0, -1)?.join('/');
@@ -126,15 +126,11 @@ const BidDetails = () => {
   };
   const BidDetailsHeaderSection = styled.div`
     .fixed-head {
-      // z-index: 20;
-      // margin-top: -rem;
-      // padding-top: 1rem;
-      // position: fixed;
       width: 100%;
       background: ${theme.bodyBgColor};
       // padding-bottom: 0.8rem;
       padding-left: 0;
-      
+
       .inner-head {
         display: flex;
         justify-content: space-between;
