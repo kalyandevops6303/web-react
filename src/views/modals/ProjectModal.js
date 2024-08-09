@@ -151,7 +151,8 @@ const ProjectModal = ({
       } else if (location.pathname.split('/').includes('completed')) {
         navigate(`/project-details/${data?._id}/rating`);
       } else {
-        navigate(`/project-details/${data?._id}/bid`);
+        // TODO: to pass request_id 
+        navigate(`/project-details/${data?._id}/project/project-invitation-by-client/${data?.request_id}`);
       }
     } else if (isDashboard) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {

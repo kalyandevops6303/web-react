@@ -487,7 +487,7 @@ const Profile = ({ setDraftSavedModal }) => {
     const servicesSelected = services.map((skill) => skill.value);
     const toolsSelected = tools?.map((skill) => skill.value);
     const availability = {
-      timezone: preferredWorkingTimeZone.value._id,
+      timezone: preferredWorkingTimeZone.value?._id,
       weekdays_avl: {
         start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
         end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
@@ -510,7 +510,7 @@ const Profile = ({ setDraftSavedModal }) => {
         reqData = {
           // team_type: teamTypes.team,
           creation_status: clubOrTeamStatuses.SAVED,
-          _id: userDetailsData._id,
+          _id: userDetailsData?._id,
           name: teamName,
           team_logo: imageUrlRes.file_key,
           tagline: teamTagline,
@@ -526,7 +526,7 @@ const Profile = ({ setDraftSavedModal }) => {
         reqData = {
           // team_type: teamTypes.team,
           creation_status: clubOrTeamStatuses.SAVED,
-          _id: userDetailsData._id,
+          _id: userDetailsData?._id,
           name: teamName,
           tagline: teamTagline,
           introduction: teamIntroduction,
@@ -594,7 +594,7 @@ const Profile = ({ setDraftSavedModal }) => {
     }
     try {
       const response = await servicesService();
-      const options = response?.data?.data?.map((service) => ({ label: service.name, value: service._id }));
+      const options = response?.data?.data?.map((service) => ({ label: service.name, value: service?._id }));
 
       const otherIndex = options.findIndex((option) => option.label === 'Other');
 
@@ -621,7 +621,7 @@ const Profile = ({ setDraftSavedModal }) => {
     try {
       const response = await languagesService();
 
-      const options = response?.data?.data?.map((language) => ({ label: language.name, value: language._id }));
+      const options = response?.data?.data?.map((language) => ({ label: language.name, value: language?._id }));
 
       setLanguagesOptions(options);
 
@@ -641,7 +641,7 @@ const Profile = ({ setDraftSavedModal }) => {
     }
     try {
       const response = await toolsService();
-      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
+      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool?._id }));
       setToolsOptions(options);
 
       return {
@@ -661,7 +661,7 @@ const Profile = ({ setDraftSavedModal }) => {
     try {
       const response = await skillsService();
 
-      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill._id }));
+      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill?._id }));
 
       setSkillsOptions(options);
 
@@ -717,7 +717,7 @@ const Profile = ({ setDraftSavedModal }) => {
         })) ||
           languagesData?.map((language) => ({
             label: language.name,
-            value: language._id,
+            value: language?._id,
           })),
         { shouldValidate: true },
       );
@@ -825,7 +825,7 @@ const Profile = ({ setDraftSavedModal }) => {
   const availabilityDays = watch('availabilityDays');
 
   const getTeamDetails = async () => {
-    const res = await getTeamById(userDetailsData._id);
+    const res = await getTeamById(userDetailsData?._id);
     if (res) {
       setTeamDetails(res.data.data);
     }
@@ -878,7 +878,7 @@ const Profile = ({ setDraftSavedModal }) => {
             'services',
             teamDetails?.services.map((service) => ({
               label: service.name,
-              value: service._id,
+              value: service?._id,
             })),
             { shouldValidate: true },
           );
@@ -888,7 +888,7 @@ const Profile = ({ setDraftSavedModal }) => {
         if (teamDetails?.tools.length > 0 && (!savedFormData?.tools || savedFormData?.tools.length === 0)) {
           setValue(
             'tools',
-            teamDetails?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+            teamDetails?.tools.map((tool) => ({ label: tool.name, value: tool?._id })),
             { shouldValidate: true },
           );
         } else {
@@ -897,7 +897,7 @@ const Profile = ({ setDraftSavedModal }) => {
         if (teamDetails?.skills.length > 0 && (!savedFormData?.skills || savedFormData?.skills.length === 0)) {
           setValue(
             'skills',
-            teamDetails?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+            teamDetails?.skills.map((skill) => ({ label: skill.name, value: skill?._id })),
             { shouldValidate: true },
           );
         } else {
@@ -983,7 +983,7 @@ const Profile = ({ setDraftSavedModal }) => {
         'languagesSupported',
         languagesData?.map((language) => ({
           label: language.name,
-          value: language._id,
+          value: language?._id,
         })),
         { shouldValidate: true },
       );
