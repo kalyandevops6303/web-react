@@ -55,10 +55,12 @@ const ViewProjectDetailModalWrap = styled.div`
     font-size: 16px;
     line-height: 24px;
   }
+
   .badge {
     width: fit-content !important;
     display: initial !important;
   }
+
   .total-count {
     border-radius: 17px;
     border: 1px solid ${theme.newTagColor};
