@@ -117,10 +117,10 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
     const currentDate = new Date();
     if (date < currentDate) {
       return currentDate.toString();
-    } else {
+    } 
       return dateString;
-    }
-  }
+    
+  };
 
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
@@ -533,7 +533,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
   useEffect(() => {
     if (savedFormData?.estimatedStartDate)
     setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
-  }, [savedFormData])
+  }, [savedFormData]);
 
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
@@ -1056,7 +1056,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
             <CardBody>
               <Row className="mb-1">
                 <Label className="form-label">
-                  Upload detailed requirements document (optional){' '}
+                  Upload detailed submission document (optional){' '}
                   <Info size={18} color={theme.infoIcon} id="document" />
                   <UncontrolledTooltip placement="right" target="document">
                     <div className="d-flex flex-column align-items-start">

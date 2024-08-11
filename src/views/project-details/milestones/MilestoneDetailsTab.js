@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Badge,
   Button,
@@ -81,11 +81,9 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const dispatch = useDispatch();
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteData, setDeleteData] = useState(false);
-  const [isStartDateSame, setIsStartDateSame] = useState(false);
   const [deleteFeedbackModal, setDeleteFeedbackModal] = useState(false);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const userDataLocal = useSelector(selectAuthUserData);
-  const savedUserData = useSelector(selectSavedUserData);
   const isMilestoneSubmitting = useSelector((state) => state.milestone.isMilestoneSubmitting);
   const {
     control,
@@ -220,14 +218,6 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     onDrop,
   });
 
-  useEffect(()=>{
-    const presentTime = convertUnixTimestampToDate(DateTime.now());
-    const startDate = convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name);
-   if(presentTime === startDate){
-    setIsStartDateSame(true);
-   }
-  },[selectedMilestone.start_date]);
-
   const isEditable =
     userDataLocal?.user_type !== userTypes.client &&
     (selectedMilestone?.status === 'ON_GOING' || selectedMilestone?.status === 'IN_REVIEW');
@@ -254,7 +244,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       window.open(`https://${URL}`, '_blank');
     }
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   const isEmptyLink = allLinks?.some((item) => item.link === '');
   const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
 
@@ -322,21 +312,17 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       <Card className="gray-card pt-2">
         <div className="mb-2 d-flex gap-1">
           <CardText className="fs-5 fw-bold">Milestone {selectedMilestone?.seq}</CardText>
-          {!isStartDateSame && (
-            <CustomBadge bordered>
-              <Badge className={`${selectedMilestone?.status}`} color="badge">
-                {statusEnum[selectedMilestone?.status]}
-              </Badge>
-            </CustomBadge>
-          )}
+          <CustomBadge bordered>
+            <Badge className={`${selectedMilestone?.status}`} color="badge">
+              {statusEnum[selectedMilestone?.status]}
+            </Badge>
+          </CustomBadge>
         </div>
         <div className="mb-3 d-flex gap-5">
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
-              {selectedMilestone.start_date
-                ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name)
-                : '-'}
+            {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
             </CardText>
           </div>
           <div>
@@ -580,7 +566,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             onClick={() => {
                               if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
                                 handleRemove({ item: allLinks?.[index], index });
-                              } else {
+                              }else{
                                 linksRemove(index);
                               }
                             }}
@@ -589,7 +575,11 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                               <Trash2
                                 size={20}
                                 className="mail-icon"
-                                color={!errors?.links?.[index] ? theme.red : `${theme.red}5f`}
+                                color={
+                                   !errors?.links?.[index]
+                                    ? theme.red
+                                    : `${theme.red}5f`
+                                }
                               />
                             </span>
                           </MessageIconWrap>
