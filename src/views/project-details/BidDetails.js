@@ -67,6 +67,7 @@ const BidDetails = () => {
     navigate(-1);
   };
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+
   const isLoading = useSelector((state) => state.projectDetails.getBidInfoLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const bidView = location?.pathname?.split('/')?.slice(0, -1)?.join('/');
@@ -123,17 +124,13 @@ const BidDetails = () => {
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
   };
-
   const BidDetailsHeaderSection = styled.div`
     .fixed-head {
-      z-index: 20;
-      margin-top: -5rem;
-      padding-top: 1rem;
-      position: fixed;
-      width: 74%;
+      width: 100%;
       background: ${theme.bodyBgColor};
-      padding-bottom: 0.8rem;
+      // padding-bottom: 0.8rem;
       padding-left: 0;
+
       .inner-head {
         display: flex;
         justify-content: space-between;
@@ -144,12 +141,11 @@ const BidDetails = () => {
       }
     }
     .details-card {
-      margin-top: 3.6rem;
+      margin-top: 1.6rem;
     }
   `;
 
   if (isLoading) return <ComponentSpinner />;
-
   return (
     <BidDetailsWrap>
       <div className="d-flex justify-content-between mb-2 pb-2 rounded top-head">
@@ -201,7 +197,7 @@ const BidDetails = () => {
         />
       )}
 
-      <Row className="pt-1">
+      <Row className="pt-1 wrapper">
         <Col lg="3">
           <LeftSidebarProfile
             isProjectDetailsView

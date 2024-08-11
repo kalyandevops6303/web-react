@@ -142,6 +142,16 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
     ),
   });
 
+  const validateDate = (dateString) => {
+    const date = new Date(dateString);
+    const currentDate = new Date();
+    if (date < currentDate) {
+      return currentDate.toString();
+    } else {
+      return dateString;
+    }
+  }
+
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const {
@@ -421,7 +431,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       deliverables: [...milestoneDeliverables, defaultValue],
     };
 
-    if (milestoneDeliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
+    if (milestoneDeliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
       milestonesUpdate(milestoneIndex, newData);
     } else {
       ShowToastMessage(ERROR, 'Please fill all deliverables before adding a new one.');
@@ -439,15 +449,15 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const handleAddMilestone = () => {
-    const allMilestonesValid = getValues('milestones').every(
+    const allMilestonesValid = getValues('milestones')?.every(
       (milestone) =>
         milestone.name?.trim() !== '' &&
         milestone.workers.length > 0 &&
         milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
         milestone.workers
           .filter((worker) => worker.isChecked)
-          .every((worker) => worker.duration > 0 && worker.hours > 0) &&
-        milestone.deliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
+          ?.every((worker) => worker.duration > 0 && worker.hours > 0) &&
+        milestone.deliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
     );
 
     if (!allMilestonesValid) {
@@ -621,13 +631,18 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
     </div>
   );
 
+  useEffect(() => {
+    if (savedFormData?.estimatedStartDate)
+    setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
+  }, [savedFormData])
+
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
       setBidData(res);
       if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
       } else if (savedFormData?.estimatedStartDate) {
-        setValue('estimatedStartDate', new Date(savedFormData?.estimatedStartDate), { shouldValidate: true });
+        setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
       }
       if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
@@ -1412,14 +1427,14 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                   !isValid ||
                   draftSetMilestonesIsLoading ||
                   uploadingFiles.length > 0 ||
-                  !getValues('milestones').every(
+                  !getValues('milestones')?.every(
                     (milestone) =>
                       milestone.name?.trim() !== '' &&
                       milestone.workers.length > 0 &&
                       milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
                       milestone.workers
                         .filter((worker) => worker.isChecked)
-                        .every((worker) => worker.duration > 0 && worker.hours > 0),
+                        ?.every((worker) => worker.duration > 0 && worker.hours > 0),
                   )
                 }
               >
@@ -1433,14 +1448,14 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                   !isValid ||
                   setMilestonesIsLoading ||
                   uploadingFiles.length > 0 ||
-                  !getValues('milestones').every(
+                  !getValues('milestones')?.every(
                     (milestone) =>
                       milestone.name?.trim() !== '' &&
                       milestone.workers.length > 0 &&
                       milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
                       milestone.workers
                         .filter((worker) => worker.isChecked)
-                        .every((worker) => worker.duration > 0 && worker.hours > 0),
+                        ?.every((worker) => worker.duration > 0 && worker.hours > 0),
                   )
                 }
               >

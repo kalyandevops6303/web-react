@@ -186,7 +186,7 @@ const AdvanceTeamView = ({ setDraftSavedModal }) => {
   };
 
   const handleAddRole = () => {
-    const isFilled = watch('projectRolesDetails').every((item) => {
+    const isFilled = watch('projectRolesDetails')?.every((item) => {
       const { role, rate } = item;
       return role && rate;
     });
@@ -601,7 +601,7 @@ const AdvanceTeamView = ({ setDraftSavedModal }) => {
                 disabled={
                   !isValid ||
                   fields.length === 0 ||
-                  !watch('projectRolesDetails').every((field) => field.role) ||
+                  !watch('projectRolesDetails')?.every((field) => field.role) ||
                   draftSetWorkersIsLoading
                 }
               >
@@ -613,7 +613,7 @@ const AdvanceTeamView = ({ setDraftSavedModal }) => {
                 disabled={
                   !isValid ||
                   fields.length === 0 ||
-                  !watch('projectRolesDetails').every((field) => field.role && field.rate) ||
+                  !watch('projectRolesDetails')?.every((field) => field.role && field.rate) ||
                   setWorkersIsLoading
                 }
               >

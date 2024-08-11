@@ -400,7 +400,7 @@ const Preview = ({
                         <span
                           className={`dot ${
                             projectDetails?.availabilityDays?.includes('weekdays') &&
-                            projectDetails?.weekdays.includes(day)
+                            projectDetails?.weekdays?.includes(day)
                               ? 'active'
                               : ''
                           }`}
@@ -411,7 +411,7 @@ const Preview = ({
                   </ul>
                 </section>
                 <section className="weekends">
-                  {projectDetails?.availabilityDays.includes('weekends') ? (
+                  {projectDetails?.availabilityDays?.includes('weekends') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendEndTime?.value, 10))}{' '}
@@ -425,8 +425,8 @@ const Preview = ({
                       <li key={day}>
                         <span
                           className={`dot ${
-                            projectDetails?.availabilityDays.includes('weekends') &&
-                            projectDetails?.weekends.includes(day)
+                            projectDetails?.availabilityDays?.includes('weekends') &&
+                            projectDetails?.weekends?.includes(day)
                               ? 'active'
                               : ''
                           }`}
