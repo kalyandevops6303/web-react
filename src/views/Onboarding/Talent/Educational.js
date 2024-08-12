@@ -502,13 +502,13 @@ const Educational = () => {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
       } else if (!parsedUploaded && parsedResumeData === null) {
-        dispatch(
-          getResumeParsedDetails(
-            setResumeParsedDetails,
-            setParseResume,
-            savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
-          ),
-        );
+        // dispatch(
+        //   getResumeParsedDetails(
+        //     setResumeParsedDetails,
+        //     setParseResume,
+        //     savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
+        //   ),
+        // );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
@@ -874,7 +874,7 @@ const Educational = () => {
                 </div>
               </div>
             </Col>
-            {!isEmpty(files) && (
+            {/* {!isEmpty(files) && (
               <Col>
                 <Card>
                   <CardBody>
@@ -908,7 +908,7 @@ const Educational = () => {
                   </CardBody>
                 </Card>
               </Col>
-            )}
+            )} */}
           </Row>
         </Form>
       )}
