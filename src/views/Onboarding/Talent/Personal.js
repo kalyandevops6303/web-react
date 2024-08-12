@@ -799,7 +799,7 @@ const Personal = () => {
         },
       };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+      // dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
 

@@ -220,7 +220,7 @@ const Social = () => {
         },
       };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+      // dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
 

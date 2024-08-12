@@ -268,7 +268,7 @@ const Educational = () => {
         },
       };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+      // dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
 
