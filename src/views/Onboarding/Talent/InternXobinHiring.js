@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, CardBody, CardHeader, CardSubtitle, CardTitle } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, CardSubtitle, CardTitle, CardText } from 'reactstrap';
 import { ChevronRight } from 'react-feather';
 import { ProfileFormContainer } from '../style';
 
@@ -23,13 +23,18 @@ const InternXobinHiring = () => {
     <ProfileFormContainer>
       <Card className="w-75">
         <CardHeader>
-          <h4 className="m-0 mt-1">Intern Hiring For Full Stack Engineers</h4>
+          <h4 className="m-0 mt-1">Full Stack Engineer (Intern)</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
-          <CardTitle>Want to get an internship at HackerRank</CardTitle>
-          <CardSubtitle>Click on below button to apply</CardSubtitle>
-
+          <CardText>Thank you for showing interest in Trumio. Click on <b>Take Assessment</b> and answer the questions within this assessment to the best of your ability.</CardText>
+          <CardText>Before you start with the assessment, make sure to:</CardText>
+          <ul>
+            <li>Take up this assessment on a laptop or desktop rather than on a mobile phone.</li>
+            <li>Close all other applications and browser tabs to ensure no distractions.</li>
+            <li>Block time to start and finish the assessment in one go. Please make sure you are not interrupted.</li>
+            <li>Please take up the test in Incognito window to avoid browser extensions/plugins interference and ensure a seamless test experience.</li>
+          </ul>
           <Button color="primary" className="ml-2 mr-1" onClick={redirectToFullStackAssessment}>
             Take Assessment
           </Button>
@@ -37,30 +42,43 @@ const InternXobinHiring = () => {
       </Card>
       <Card className="w-75">
         <CardHeader>
-          <h4 className="m-0 mt-1">Intern Hiring for AI/ML engineers</h4>
+          <h4 className="m-0 mt-1">AI-ML Engineer (Intern)</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
-          <CardTitle>Want to get an internship at HackerRank</CardTitle>
-          <CardSubtitle>Click on below button to apply</CardSubtitle>
-          <Button color="primary" className="ml-2 mr-1" onClick={redirectToAIMLAssessment}>
+          <CardText>Thank you for showing interest in Trumio. Click on <b>Take Assessment</b> and answer the questions within this assessment to the best of your ability.</CardText>
+          <CardText>Before you start with the assessment, make sure to:</CardText>
+          <ul>
+            <li>Take up this assessment on a laptop or desktop rather than on a mobile phone.</li>
+            <li>Close all other applications and browser tabs to ensure no distractions.</li>
+            <li>Block time to start and finish the assessment in one go. Please make sure you are not interrupted.</li>
+            <li>Please take up the test in Incognito window to avoid browser extensions/plugins interference and ensure a seamless test experience.</li>
+          </ul>
+          <Button color="primary" className="ml-2 mr-1" onClick={redirectToFullStackAssessment}>
             Take Assessment
           </Button>
         </CardBody>
       </Card>
       <Card className="w-75">
         <CardHeader>
-          <h4 className="m-0 mt-1">Intern Hiring for Product Managers</h4>
+          <h4 className="m-0 mt-1">Product Manager (Intern)</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
-          <CardTitle>Want to get an internship at HackerRank</CardTitle>
-          <CardSubtitle>Click on below button to apply</CardSubtitle>
-          <Button color="primary" className="ml-2 mr-1" onClick={redirectToPMAssessment}>
+          <CardText>Thank you for showing interest in Trumio. Click on <b>Take Assessment</b> and answer the questions within this assessment to the best of your ability.</CardText>
+          <CardText>Before you start with the assessment, make sure to:</CardText>
+          <ul>
+            <li>Take up this assessment on a laptop or desktop rather than on a mobile phone.</li>
+            <li>Close all other applications and browser tabs to ensure no distractions.</li>
+            <li>Block time to start and finish the assessment in one go. Please make sure you are not interrupted.</li>
+            <li>Please take up the test in Incognito window to avoid browser extensions/plugins interference and ensure a seamless test experience.</li>
+          </ul>
+          <Button color="primary" className="ml-2 mr-1" onClick={redirectToFullStackAssessment}>
             Take Assessment
           </Button>
         </CardBody>
       </Card>
+      
       <div className="d-flex justify-content-end w-75">
         <Button
           onClick={() => window.open('https://www.hackerrank.com/careers/', '_block')}
