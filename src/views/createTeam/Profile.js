@@ -582,7 +582,11 @@ const Profile = ({ setDraftSavedModal }) => {
           setTeamCreatingModal(true);
         }
       }
-      dispatch(deleteDraftTeam({ id: draftTeamId, onSuccess: () => {}, onError: () => {} }));
+      const editDraftPath = /^\/create-team\/profile-details\/[a-f0-9]{24}$/;
+      if(editDraftPath.test(location.pathname)) {
+        dispatch(deleteDraftTeam({ id: draftTeamId, onSuccess: () => {}, onError: () => {} }));
+      }
+      
     }
   };
 
