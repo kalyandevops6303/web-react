@@ -44,6 +44,8 @@ const EditProfileAccordion = () => {
       navigate(`/${userProfileEdit.talent}/availability-details`);
     } else if (tab === 'social') {
       navigate(`/${userProfileEdit.talent}/social-details`);
+    } else if (tab === 'internHiring') {
+      navigate(`/${userProfileEdit.talent}/intern-hiring`);
     } else {
       navigate(`/${userProfileEdit.talent}/payment-details`);
     }
@@ -107,6 +109,9 @@ const EditProfileAccordion = () => {
                   </DropdownItem>
                   <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Payment</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleEditProfileForTalent('internHiring')} className="w-100 edit-link ">
+                    <span className="align-middle p-1">Hiring</span>
                   </DropdownItem>
                 </>
               )}

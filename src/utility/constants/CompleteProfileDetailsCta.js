@@ -22,6 +22,11 @@ const CompleteProfileDetailsCta = {
       label: 'Add Payment Details',
       path: `/${userProfileEdit.talent}/payment-details`,
     },
+    {
+      keyToMatch: 'intern-hiring',
+      label: 'Get Hired',
+      path: `/${userProfileEdit.talent}/intern-hiring`,
+    },
     { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userProfileEdit.talent}/social-details` },
     { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/account-details` },
     {

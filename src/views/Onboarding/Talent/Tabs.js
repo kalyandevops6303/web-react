@@ -2,7 +2,7 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Clock, Home, Link, User, Shield } from 'react-feather';
+import { Clock, Home, Link, User, Shield, Crosshair } from 'react-feather';
 import { TabsContainer } from '../style';
 import Account from '../Account';
 import Personal from './Personal';
@@ -13,6 +13,7 @@ import Payment from './Payment';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
+import InternHiring from './InternHiring';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -134,6 +135,23 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Payment</span>
           </NavLink>
         </NavItem>
+        <NavItem
+          onClick={() => {
+            if (location.pathname.includes('profile-edit')) {
+              onTabClick(`/${userProfileEdit.talent}/intern-hiring`);
+            }
+          }}
+        >
+          <NavLink
+            active={
+              location.pathname.includes(`/intern-hiring`) ||
+              location.pathname === `/${userProfileEdit.talent}/intern-hiring`
+            }
+          >
+            <Crosshair className="font-medium-3 me-50" />
+            <span className="fw-bold">Get Hired</span>
+          </NavLink>
+        </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
@@ -160,6 +178,12 @@ const Tabs = ({ tabNames, active }) => {
           {location.pathname.includes('payment-details') ||
           location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
             <Payment />
+          ) : null}
+        </TabPane>
+        <TabPane tabId={tabNames.InternHiring}>
+          {location.pathname.includes('intern-hiring') ||
+          location.pathname === `/${userProfileEdit.talent}/intern-hiring` ? (
+            <InternHiring />
           ) : null}
         </TabPane>
       </TabContent>
