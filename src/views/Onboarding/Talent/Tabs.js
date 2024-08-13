@@ -14,7 +14,7 @@ import { userOnboarding, userProfileEdit } from '../../../utility/constants/Cons
 import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import InternHiring from './InternHiring';
-import InternHiringXobin from './InternHiringXobin';
+import InternXobinHiring from './InternXobinHiring';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -199,14 +199,12 @@ const Tabs = ({ tabNames, active }) => {
           ) : null}
         </TabPane>
         <TabPane tabId={tabNames.InternHiring}>
+          {location.pathname === `/${userProfileEdit.talent}/intern-hiring` ? <InternHiring /> : null}
+        </TabPane>
+        <TabPane tabId={tabNames.InternXobinHiring}>
           {location.pathname.includes('intern-xobin-hiring') ||
           location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` ? (
-            <InternHiringXobin />
-          ) : null}
-        </TabPane>
-        <TabPane tabId={tabNames.InternHiring}>
-          {location.pathname === `/${userProfileEdit.talent}/intern-hiring` ? (
-            <InternHiring />
+            <InternXobinHiring />
           ) : null}
         </TabPane>
       </TabContent>
