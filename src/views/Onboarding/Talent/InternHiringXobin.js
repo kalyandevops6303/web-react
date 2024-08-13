@@ -7,7 +7,7 @@ const FULL_STACK_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL
 const AI_ML_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
 const PRODUCT_MANAGER_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
 
-const InternHiring = () => {
+const InternHiringXobin = () => {
 
   const redirectToFullStackAssessment = () => {
     window.open(FULL_STACK_DEV_ASSESSMENT, "_blank");
@@ -75,4 +75,4 @@ const InternHiring = () => {
   );
 };
 
-export default InternHiring;
+export default InternHiringXobin;

@@ -27,6 +27,11 @@ const CompleteProfileDetailsCta = {
       label: 'Get Hired',
       path: `/${userProfileEdit.talent}/intern-hiring`,
     },
+    {
+      keyToMatch: 'intern-xobin-hiring',
+      label: 'Get Hired (I)',
+      path: `/${userProfileEdit.talent}/intern-xobin-hiring`,
+    },
     { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userProfileEdit.talent}/social-details` },
     { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/account-details` },
     {

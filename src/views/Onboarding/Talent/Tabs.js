@@ -14,6 +14,7 @@ import { userOnboarding, userProfileEdit } from '../../../utility/constants/Cons
 import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import InternHiring from './InternHiring';
+import InternHiringXobin from './InternHiringXobin';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -152,6 +153,23 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Get Hired</span>
           </NavLink>
         </NavItem>
+        <NavItem
+          onClick={() => {
+            if (location.pathname.includes('profile-edit')) {
+              onTabClick(`/${userProfileEdit.talent}/intern-xobin-hiring`);
+            }
+          }}
+        >
+          <NavLink
+            active={
+              location.pathname.includes(`/intern-xobin-hiring`) ||
+              location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring`
+            }
+          >
+            <Crosshair className="font-medium-3 me-50" />
+            <span className="fw-bold">Get Hired (I)</span>
+          </NavLink>
+        </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
@@ -181,8 +199,13 @@ const Tabs = ({ tabNames, active }) => {
           ) : null}
         </TabPane>
         <TabPane tabId={tabNames.InternHiring}>
-          {location.pathname.includes('intern-hiring') ||
-          location.pathname === `/${userProfileEdit.talent}/intern-hiring` ? (
+          {location.pathname.includes('intern-xobin-hiring') ||
+          location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` ? (
+            <InternHiringXobin />
+          ) : null}
+        </TabPane>
+        <TabPane tabId={tabNames.InternHiring}>
+          {location.pathname === `/${userProfileEdit.talent}/intern-hiring` ? (
             <InternHiring />
           ) : null}
         </TabPane>
