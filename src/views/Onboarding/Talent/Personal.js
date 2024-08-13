@@ -22,7 +22,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -87,7 +87,7 @@ import {
   setFormData,
   setFormDocuments,
   setResumeDataUploadedForPersonal,
-  setResumeParsed,
+  // setResumeParsed,
 } from '../../../redux/reducers/formData';
 
 const Personal = () => {
@@ -492,12 +492,12 @@ const Personal = () => {
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
-    if (response)
-      dispatch(
-        getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
-      );
-    dispatch(setResumeParsed(true));
-    setParseResume(true);
+    // if (response)
+    //   dispatch(
+    //     getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
+    //   );
+    // dispatch(setResumeParsed(true));
+    // setParseResume(true);
   };
 
   const handleFileChange = async (e) => {
@@ -505,8 +505,8 @@ const Personal = () => {
       if (isFileValid(e.target.files[0])) {
         dispatch(clearAllFormData());
         await fetchUploadUrl(e.target.files[0]);
-        setParseResume(true);
-        dispatch(setResumeParsed(true));
+        // setParseResume(true);
+        // dispatch(setResumeParsed(true));
       }
     } else {
       e.target.value = '';
@@ -585,9 +585,9 @@ const Personal = () => {
                 disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
                 onClick={() => {
                   handleRemoveFile(file);
-                  setParseResume(false);
-                  dispatch(resumeParsedDetailsSuccess(null));
-                  dispatch(setResumeParsed(false));
+                  // setParseResume(false);
+                  // dispatch(resumeParsedDetailsSuccess(null));
+                  // dispatch(setResumeParsed(false));
                 }}
               >
                 {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
@@ -799,7 +799,7 @@ const Personal = () => {
         },
       };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+      // dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
 
@@ -1525,10 +1525,12 @@ const Personal = () => {
                             </span>
 
                             {files && files.length === 0 && (
-                              <span> - Upload your resume to auto fill your personal details</span>
+                              <span> - Upload your resume
+                                 {/* to auto fill your personal details */}
+                                 </span>
                             )}
                           </span>
-                          <div>
+                          {/* <div>
                             {files && files?.length > 0 && (
                               <FormGroup switch>
                                 <Input
@@ -1544,19 +1546,19 @@ const Personal = () => {
                                 />
                               </FormGroup>
                             )}
-                          </div>
+                          </div> */}
                         </div>
 
                         {files?.length === 0 && (
                           <>
                             <Label
                               for="resume"
-                              className="me-2 mt-2 d-flex flex-col align-items-center upload-button cursor-pointer"
+                              className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
                             >
-                              {/* <UploadIconContainer>
+                              <UploadIconContainer>
                                 <Upload size={18} color={theme.activeNavPillText} />
                                 
-                              </UploadIconContainer> */}
+                              </UploadIconContainer>
                               <h5 className="fw-bold">Upload Resume</h5>
                             </Label>
                             <Controller
