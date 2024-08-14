@@ -17,6 +17,7 @@ import { clubStatus } from '../../../../utility/constants/Constant';
 import { getNotificationsPolling } from '../../../../redux/actions/notificationsActions';
 import { notificationsPolling } from '../../../../redux/selectors/notificationsSelectors';
 import styled from 'styled-components';
+import { clearAllFormData } from '../../../../redux/reducers/formData';
 
 const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
@@ -30,6 +31,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
   const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
   const notificationsPollingData = useSelector(notificationsPolling);
+  const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
 
   const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading;
   const isChatView = location.pathname.includes('/chat');
@@ -56,6 +58,10 @@ const NavbarUser = ({ setNavBarLoading }) => {
     }
   }, [location, userDetailsData]);
 
+  useEffect(() => {
+    dispatch(clearAllFormData());
+  }, [location.pathname]);
+
   const LineWrapper = styled.div`
     position: relative;
     .line {
@@ -76,7 +82,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
         ''
       ) : (
         <>
-          {isTabDisabled ? (
+          {isTabDisabled || !isCometChatLoggedIn ? (
             <MessageIconContainer>
               <div className="text-muted cursor-not-allowed mb-auto mt-75">
                 <MessageSquare size={20} color={theme.bodyColor} />

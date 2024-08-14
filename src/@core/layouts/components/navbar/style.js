@@ -66,3 +66,54 @@ export const InreviewButton = styled.button`
   border: none;
   outline: none;
 `;
+
+export const UserDropDownWrapper = styled.div`
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .isActive {
+    background: ${theme.primary}1f;
+    color: ${theme.primary};
+  }
+  .customer-support {
+    padding: 1rem 1.2rem;
+    display: block;
+    border-top: 1px solid ${theme.cardHeaderBorderColor};
+    margin-top: 1rem;
+  }
+  .logout {
+    color: ${theme.red};
+    padding: 1rem 1.2rem;
+    display: block;
+    border-top: 1px solid ${theme.cardHeaderBorderColor};
+  }
+  .edit {
+    color: ${theme.primary};
+    padding: 1rem 1.2rem;
+    display: block;
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+    &:active {
+      color: white;
+    }
+  }
+
+  .dropdown-item {
+    width: 100%;
+  }
+  .edit-accordion {
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+    margin-bottom: 1rem;
+  }
+  .accordion-button {
+    font-size: 14px !important;
+    font-weight: normal !important;
+  }
+  .accordion-body {
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+  .edit-link {
+    padding: 1rem 1.2rem;
+  }
+`;

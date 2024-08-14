@@ -15,6 +15,8 @@ import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import ViewFilesModal from '../../modals/ViewFilesModal';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -63,7 +65,7 @@ const LeftSidebarProjectDetails = () => {
       state: { targetId: projectDetailsData?.client_details?.user_id },
     });
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   return (
     <LeftSidebarProjectDetailsWrapper>
       {viewFilesModal && (
@@ -135,7 +137,7 @@ const LeftSidebarProjectDetails = () => {
               <span className="info-key">Posted date:</span>
               <CardText className="info-value ">
                 {' '}
-                {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
+                {convertUnixTimestampToDate(projectDetailsData?.listing_details?.start_date_epoch, savedUserData?.availability?.timezone?.name )}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (

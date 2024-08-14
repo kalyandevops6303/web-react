@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Row } from 'reactstrap';
+import { Button, Col, Row, Spinner } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
 import RewardsCard from './overview/Reward';
@@ -11,8 +11,8 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { clubStatus, userTypes } from '../../utility/constants/Constant';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { clubStatus, teamTypes, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
@@ -24,6 +24,7 @@ import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 import OpenListing from './overview/OpenListing';
+import RecommendedTeamsListing from './overview/RecommendedTeamsListing';
 import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
@@ -33,9 +34,13 @@ import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
 import InviteClubMemberModal from '../modals/InviteClubMemberModal';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 import InviteListing from './overview/InviteListing';
 import PaymentListing from './overview/PaymentListing';
+import AssessmentsOverview from './overview/AssessmentsOverview';
+import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
+import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
+import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -54,7 +59,9 @@ const PrivateDashboard = () => {
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
 
   const [optionsModal, setOptionsModal] = useState(null);
+  const [createTeamSelected, setCreateTeamSelected] = useState(true);
   const [inviteClubMembersModal, setInviteClubMembersModal] = useState(false);
+  const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const query = useSelector((state) => state.search.query);
 
@@ -67,9 +74,11 @@ const PrivateDashboard = () => {
     dispatch(clearModalData());
   };
 
+  const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
+
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
-  const checkBidsAcceptedData = useSelector(checkBidsAccepted);
+  const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
 
@@ -94,17 +103,20 @@ const PrivateDashboard = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
-  const onCreateProjectClick = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+  const onDraftProjectsCheckSuccess = (res) => {
+    if (res?.has_draft_project) {
+      setSavedDraftsAvailableModal(true);
+    } else if (
+      profilePercentageData?.values_missing?.includes('company_name')
     ) {
-      setCompleteProfileModalInfoText('create project');
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');
     }
+  };
+
+  const onCreateProjectClick = () => {
+    dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
   };
 
   const onClubInvite = () => {
@@ -127,6 +139,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModalInfoText('create club');
       setCompleteProfileModal(true);
     } else {
+      setCreateTeamSelected(false);
       setOptionsModal(true);
     }
   };
@@ -140,6 +153,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModalInfoText('create team');
       setCompleteProfileModal(true);
     } else {
+      setCreateTeamSelected(true);
       setOptionsModal(true);
     }
   };
@@ -168,6 +182,23 @@ const PrivateDashboard = () => {
 
   return (
     <div>
+      {savedDraftsAvailableModal && (
+        <SavedDraftsAvailableModal
+          modal={savedDraftsAvailableModal}
+          toggleModal={toggleSavedDraftsAvailableModal}
+          modalText="You have project(s) in draft mode. Would you like to continue where you left off?"
+          firstBtnText="Create New Project"
+          secondBtnText="View Drafts"
+          firstBtnAction={() => navigate('/create-project')}
+          secondBtnAction={() =>
+            navigate('/marketplace/my_listings', {
+              state: {
+                isDraftProjects: true,
+              },
+            })
+          }
+        />
+      )}
       {completeProfileModal && (
         <CompleteProfileModal
           modal={completeProfileModal}
@@ -193,7 +224,7 @@ const PrivateDashboard = () => {
         <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
       {optionsModal && (
-        <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} />
+        <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} defaultSelectedGroup={createTeamSelected ? teamTypes.team : teamTypes.club}/>
       )}
       {inviteClubMembersModal && (
         <InviteClubMemberModal
@@ -204,8 +235,8 @@ const PrivateDashboard = () => {
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
-          <Button as="link" color="primary" onClick={onCreateProjectClick}>
-            Create Project
+          <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
+            {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
           </Button>
         </DashboardHeaderWrapper>
       )}
@@ -273,7 +304,7 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
-          {userDetailsData?.user_type === userTypes.team ? null : (
+          {userDetailsData?.team_type === userTypes.team ? null : (
             <section className="mb-2">
               <Header className="mb-1">Payments</Header>
               <PaymentListing />
@@ -283,6 +314,12 @@ const PrivateDashboard = () => {
             <section className="mb-2">
               <Header className="mb-1">Open Listings</Header>
               <OpenListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              <RecommendedTeamsListing />
             </section>
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
@@ -312,24 +349,31 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.team_type !== userTypes.club && <AvailableTime />}
+          {userDetailsData?.team_type !== userTypes.club &&
+            <div>
+              {
+                userDetailsData?.user_type === "CLIENT" ?
+                  <AvailableTime />
+                  :
+                  <AssessmentsOverview />
+              }
+            </div>}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />
-          {checkBidsAcceptedData?.data?.length > 0 && <Disputes handleRaiseDispute={handleRaiseDispute} />}
-          <Meetings />
+          <Disputes handleRaiseDispute={handleRaiseDispute} />
         </Col>
       </Row>
     </div>

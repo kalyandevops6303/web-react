@@ -12,9 +12,10 @@ import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
 import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/projectDetailsSelectors';
 import DateTime from '../../../lib/date-time';
+
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { clearModalData } from '../../../redux/reducers/createProject';
@@ -23,6 +24,24 @@ import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
 import ViewFilesModal from '../../modals/ViewFilesModal';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import WithdrawModal from '../../modals/WithdrawModal';
+
+const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay) => {
+  // checking whether the project has secondary status or not
+  const secondary_status_text = projectDetailsData?.secondary_status
+    ? projectDetailsData?.secondary_status[localStorage.getItem('user_id')]?.next
+    : projectDetailsData?.status;
+
+  // checking whether the secondary status is present in the statusEnum or not
+  if (Object.keys(statusDisplay)?.includes(secondary_status_text)) {
+    return statusDisplay[secondary_status_text].state;
+  }
+  if (Object.keys(statusEnum)?.includes(secondary_status_text)) {
+    return statusEnum[secondary_status_text];
+  }
+  return secondary_status_text;
+};
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -40,7 +59,8 @@ const LeftSidebarProjectDetails = () => {
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
   const [viewFilesModal, setViewFilesModal] = useState(null);
-
+  const [confirmWithdrawModal, setConfirmWithdrawModal] = useState(false);
+  const savedUserData = useSelector(selectSavedUserData);
   const toggleViewFilesModal = () => {
     setViewFilesModal(!viewFilesModal);
   };
@@ -57,6 +77,7 @@ const LeftSidebarProjectDetails = () => {
   const toggleRelistSuccessModal = () => setRelistSuccessModal(!relistSuccessModal);
 
   const projectDetailsData = useSelector(projectDetails);
+  // const {secondary_status} = projectDetailsData;
 
   const statusEnum = {
     OPEN: 'Open',
@@ -67,8 +88,59 @@ const LeftSidebarProjectDetails = () => {
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
     ACTIVE: 'Active',
+    BID_SUBMITTED: 'Bid Submitted',
+    BID_IN_REVIEW: 'Bid In Review',
+    BID_ACCEPTED: 'Bid Accepted',
+    BID_CHANGE_REQUEST: 'Change Request',
+    SIGN_CONTRACT: 'Sign Contract',
+    SIGN_NDA: 'Sign NDA',
+    PAYMENT_PENDING: 'Payment Pending',
+    WITHDRAWN: 'Withdrawn',
+    DISPUTED: 'Disputed',
   };
+  const statusDisplay = {
+    ACTIVE: {
+      state: 'Sign Contract',
+      bgcolor: 'light-blue',
+      text: 'light-blue',
+    },
+    ON_GOING: {
+      state: 'Milestone 1',
+      bgcolor: 'warning',
+      text: 'warning',
+    },
 
+    LISTING_EXPIRED: {
+      state: 'In Review',
+      bgcolor: 'warning',
+      text: 'danger',
+    },
+    WITHDRAWN: {
+      state: 'In Review',
+      bgcolor: 'warning',
+      text: 'danger',
+    },
+    TERMINATED: {
+      state: 'Ternminated',
+      bgcolor: 'light-blue',
+      text: 'light-blue',
+    },
+    COMPLETED: {
+      state: 'COMPLETED',
+      bgcolor: 'light-blue',
+      text: 'dark-blue',
+    },
+    ON_HOLD: {
+      state: 'COMPLETED',
+      bgcolor: 'success',
+      text: 'success',
+    },
+    DISPUTED: {
+      state: 'Disputed',
+      bgcolor: 'DISPUTED',
+      text: 'Disputed',
+    },
+  };
   const isLoading = useSelector(projectDetailsLoading);
   const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
 
@@ -106,6 +178,13 @@ const LeftSidebarProjectDetails = () => {
   const handleInvite = () => {
     setInviteModal(true);
     setInviteTalentToTeamModal(true);
+  };
+  const handleWithdraw = () => {
+    setConfirmWithdrawModal(true);
+  };
+
+  const handleReList = () => {
+    setRelistConfirmationModal(true);
   };
 
   const onMessageClick = () => {
@@ -177,7 +256,6 @@ const LeftSidebarProjectDetails = () => {
             )}
           </div>
           <CardTitle className="title">{projectDetailsData?.details?.name}</CardTitle>
-
           {projectDetailsData?.worker_details?.entity_type && userData?.user_type === userTypes.client ? (
             <div className="d-flex">
               <Avatar
@@ -280,7 +358,10 @@ const LeftSidebarProjectDetails = () => {
               <span className="info-key">Posted date:</span>
               <CardText className="info-value ">
                 {' '}
-                {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
+                {convertUnixTimestampToDate(
+                  projectDetailsData?.listing_details?.start_date_epoch,
+                  savedUserData?.availability?.timezone?.name,
+                )}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (
@@ -294,6 +375,22 @@ const LeftSidebarProjectDetails = () => {
             )}
           </div>
 
+          <div className="d-flex">
+            {projectDetailsData &&
+              projectDetailsData?.status !== 'OPEN' &&
+              projectDetailsData?.status !== 'TO_BE_LISTED' && (
+                <BadgeGroup
+                  title="Status"
+                  data={[
+                    {
+                      name: displaySecondaryStatusTextOnSideBar(projectDetailsData, statusEnum, statusDisplay),
+                    },
+                  ]}
+                  color={statusDisplay[projectDetailsData?.status]?.bgcolor}
+                  id={`tooltip-${projectDetailsData?._id}`}
+                />
+              )}
+          </div>
           <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
               <BadgeGroup
@@ -324,9 +421,7 @@ const LeftSidebarProjectDetails = () => {
           {userData?.user_type === userTypes.client && (
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                {(projectDetailsData?.status === 'OPEN' ||
-                  projectDetailsData?.status === 'IN_REVIEW' ||
-                  projectDetailsData?.status === 'ACTIVE') && (
+                {(projectDetailsData?.status === 'ACTIVE' || projectDetailsData?.status === 'ON_GOING') && (
                   <Button className="w-50" color="danger" onClick={handleDelete}>
                     Terminate
                   </Button>
@@ -339,6 +434,16 @@ const LeftSidebarProjectDetails = () => {
                 {(projectDetailsData?.status === 'ON_GOING' || projectDetailsData?.status === 'COMPLETED') && (
                   <Button className="w-50" outline color="primary" onClick={onMessageClick}>
                     Message
+                  </Button>
+                )}
+                {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'TO_BE_LISTED') && (
+                  <Button className="w-50" color="danger" onClick={handleWithdraw}>
+                    Withdraw
+                  </Button>
+                )}
+                {projectDetailsData?.status === 'WITHDRAWN' && (
+                  <Button className="w-50" color="primary" onClick={handleReList}>
+                    Re-List
                   </Button>
                 )}
               </div>
@@ -361,6 +466,15 @@ const LeftSidebarProjectDetails = () => {
           toggleInviteTeamMemberModal={toggleModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           projectId={params.projectId}
+        />
+      )}
+      {confirmWithdrawModal && (
+        <WithdrawModal
+          modal={confirmWithdrawModal}
+          toggleModal={() => {
+            setConfirmWithdrawModal(false);
+          }}
+          projectDetailsData={projectDetailsData}
         />
       )}
     </LeftSidebarProjectDetailsWrapper>

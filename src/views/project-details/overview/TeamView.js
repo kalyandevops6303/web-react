@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useParams } from 'react-router';
 import Rating from 'react-rating';
-import { DateTime } from 'luxon';
 import { Mail } from 'react-feather';
 
 import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
@@ -21,9 +20,10 @@ import { selectSavedUserData, selectUserData } from '../../../redux/selectors/au
 import { userTypes } from '../../../utility/constants/Constant';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
-import { getTeamId, returnFormattedRating } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, returnFormattedRating } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import getTeamId from '../../../utility/commonUtils';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);
@@ -35,6 +35,7 @@ const InvitedMemberComponent = () => {
 
   const selectInvitedMembersMetadata = useSelector((state) => state.projectDetails.invitedMemberMetaData);
   const selectInvitedMembercurrentPreview = useSelector((state) => state.projectDetails.invitedMemberCurrentPreview);
+  const savedUserData = useSelector(selectSavedUserData);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const userDetailsData = useSelector(selectUserData);
   const metadata = { page: 1, page_size: 10 };
@@ -147,7 +148,7 @@ const InvitedMemberComponent = () => {
                         <div style={{ flex: '2' }} className="me-2">
                           <span className="key">Invited on</span>
                           <CardText className="value">
-                            {data?.created_at ? DateTime.fromMillis(data?.created_at).toFormat('MMM dd, yy') : '-'}
+                            {data?.created_at ? convertUnixTimestampToDate(data?.created_at, savedUserData?.availability?.timezone?.name ) : '-'}
                           </CardText>
                         </div>
                         <div style={{ flex: '1' }} className="me-1 d-none">

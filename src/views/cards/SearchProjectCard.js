@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import parse from 'html-react-parser';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
-import ProjectModal from '../modals/ProjectModal';
+
 import RelistConfirmationModal from '../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../modals/RelistSuccessModal';
@@ -20,6 +20,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { getReadType } from '../../utility/Utils';
+import ProjectModal from '../modals/ProjectModalMarkeplace';
 
 const SearchProjectCard = ({
   primaryFilter,
@@ -126,6 +127,8 @@ const SearchProjectCard = ({
     }
   };
 
+  const descriptionToShow = data?.details?.description ?? data?.description;
+
   return (
     <ProjectCardWrap>
       {relistConfirmationModal && (
@@ -201,14 +204,19 @@ const SearchProjectCard = ({
                   </CardText>
                 </div>
 
-                {!showFullText ? (
-                  <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                    {data?.details?.description ?? data?.description}
-                  </div>
-                ) : (
-                  <div className="my-div" ref={divRef}>
-                    {data?.details?.description ?? data?.description}
-                  </div>
+                {descriptionToShow && (
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  <>
+                    {!showFullText ? (
+                      <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                        {parse(descriptionToShow)}
+                      </div>
+                    ) : (
+                      <div className="my-div" ref={divRef}>
+                        {parse(descriptionToShow)}
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {isContentOverflowing && (

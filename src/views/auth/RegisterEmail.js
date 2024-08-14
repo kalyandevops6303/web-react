@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
 // ** Reactstrap Imports
@@ -12,7 +12,7 @@ import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner } from 're
 
 // ** Custom Components
 import { OnBoardWrap } from './style';
-import { validations } from '../../utility/Utils';
+import { filteredFormSchema, validations } from '../../utility/Utils';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
@@ -23,6 +23,8 @@ import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
 import TermsModal from '../modals/TermsModal';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ const RegisterEmail = () => {
   const isLoading = useSelector(selectAuthLoading);
   const emailData = useSelector(selectEmail);
   const userType = useSelector(selectUserType);
+  const savedFormData = useSelector(formData);
 
   useEffect(() => {
     if (!userType) {
@@ -37,7 +40,7 @@ const RegisterEmail = () => {
     }
   }, [userType, navigate]);
 
-  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(savedFormData?.agreeTerms || false);
   const [privacyPolicyModal, setPrivacyPolicyModal] = useState(null);
   const [termsModal, setTermsModal] = useState(null);
 
@@ -55,15 +58,35 @@ const RegisterEmail = () => {
     formState: { errors },
     control,
     watch,
+    reset,
+    trigger,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: emailData || '',
-      agreeTerms: false,
+      email: savedFormData?.email || emailData || '',
+      agreeTerms: savedFormData?.agreeTerms || false,
     },
   });
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: schema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     navigate('/auth/email-verify');
   };
 
@@ -176,9 +199,9 @@ const RegisterEmail = () => {
 
         <div className="d-flex justify-content-center sign-info">
           <Label>
-            <small>Already have an account?</small>
+            <small>Already have a trumio account?</small>
           </Label>
-          <Label tag={Link} to="/auth/login" className="primary">
+          <Label onClick={()=>dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>

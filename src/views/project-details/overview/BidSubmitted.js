@@ -19,14 +19,14 @@ import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 
 import Empty from './Empty';
-import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
+import { acceptBidChange, getBidDetails, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { bidStages, bidStatus, userTypes } from '../../../utility/constants/Constant';
 import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
 import AcceptBidModal from '../../modals/AcceptBidModal';
 import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
-import { getBidAction, getStatusColor } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, getBidAction, getStatusColor } from '../../../utility/Utils';
 import { Elevate } from '../../styled';
 
 const BidSubmitted = () => {
@@ -34,6 +34,7 @@ const BidSubmitted = () => {
   const userData = useSelector(selectUserData);
   const param = useParams();
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const snapshotData = useSelector((state) => state.projectDetails.snapshotData);
   const loading = useSelector((state) => state.projectDetails.getBidInfoLoading);
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
@@ -82,7 +83,7 @@ const BidSubmitted = () => {
       );
     }
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   const bidUpdatesDataSet = [];
   bidTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
@@ -94,7 +95,8 @@ const BidSubmitted = () => {
               {getBidAction(item?.action)}
             </h6>
             <span className="d-block mb-1">
-              {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'}
+              {/* {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'} */}
+              {convertUnixTimestampToDate(item?.time, savedUserData?.availability?.timezone?.name)}
             </span>
             <NameInfo name={item?.by_entity?.name} info={item?.by_entity?.role} img={item?.by_entity?.image} />
             {item?.description && <CardText className="mt-1 word-wrap">{item?.description}</CardText>}{' '}
@@ -138,6 +140,8 @@ const BidSubmitted = () => {
   };
   const onAcceptSuccess = () => {
     toggleAccepetModal();
+    dispatch(getBidDetails({project_id: param?.projectId}));
+    dispatch(getBidTimeline({project_id: param?.projectId}));
   };
   const onAccept = () => {
     dispatch(
@@ -145,6 +149,7 @@ const BidSubmitted = () => {
         snapshot_id: selectedTimeline?.snapshot_id,
         project_id: param?.projectId,
         onSuccess: onAcceptSuccess,
+        bid_id: bidInfo?._id,
       }),
     );
   };
@@ -190,7 +195,7 @@ const BidSubmitted = () => {
                     <span className="key">Updated at</span>
 
                     <CardText className="value text-end">
-                      {bidInfo?.updated_at ? DateTime.fromMillis(bidInfo?.updated_at).toFormat('MMM dd, yy') : ''}
+                      {convertUnixTimestampToDate(bidInfo?.updated_at, savedUserData?.availability?.timezone?.name)}
                     </CardText>
                   </div>
                 </div>
@@ -238,7 +243,7 @@ const BidSubmitted = () => {
             modalData={{
               name: bidInfo?.bid_by?.name,
               role: bidInfo?.bid_by?.user_type === userTypes.team ? 'Team Name' : bidInfo?.bid_by?.role,
-              value: bidInfo?.total_estimated_cost,
+              value: snapshotData?.bid?.total_estimated_cost,
             }}
             modal={acceptBidModal}
             toggleModal={handleCancel}

@@ -1,6 +1,6 @@
-import { Card, CardBody, CardText, CardTitle, Badge } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, Badge, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
@@ -8,6 +8,7 @@ import hat from '@src/assets/images/hat.svg';
 import { Heart } from 'react-feather';
 import { useState } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import parse from 'html-react-parser';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { TeamCardWrap } from './style';
@@ -17,13 +18,18 @@ import { userTypes } from '../../utility/constants/Constant';
 import { Elevate } from '../styled';
 import NewTag from '../../@core/components/new-tag';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
+import DeleteDraftTeamModal from '../modals/DeleteTeamDraftModal';
+import { deleteDraftTeam } from '../../redux/actions/teamsActions';
+import { deleteDraftClubLoading } from '../../redux/selectors/clubSelectors';
 
 const ClubCard = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const users = [];
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
-
+  const isDeleteDraftLoading = useSelector(deleteDraftClubLoading);
+  const [deleteDraftModal, setDeleteDraftModal] = useState(false);
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   data?.team_members?.map((user) =>
     users.push({
@@ -58,6 +64,21 @@ const ClubCard = ({ data, isSearchPage }) => {
     }
   };
 
+  const toggleDeleteDraftModal = () => setDeleteDraftModal(!deleteDraftModal);
+
+  const onDeleteDraftClubSuccess = () => {
+    toggleDeleteDraftModal();
+    if (location?.state?.isDraftClubs) {
+      navigate('/clubs/my_clubs', {
+        state: {
+          isDraftClubs: true,
+        },
+      });
+    } else {
+      navigate('/clubs/my_clubs');
+    }
+  };
+
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
       return theme.red;
@@ -75,6 +96,26 @@ const ClubCard = ({ data, isSearchPage }) => {
 
   return (
     <TeamCardWrap>
+      {deleteDraftModal && (
+        <DeleteDraftTeamModal
+          modal={deleteDraftModal}
+          toggleModal={toggleDeleteDraftModal}
+          teamName={data?.name}
+          onDeleteDraft={() => {
+            dispatch(
+              deleteDraftTeam({
+                id: data?._id,
+                onSuccess: () => {
+                  onDeleteDraftClubSuccess();
+                },
+                onError: () => {},
+              }),
+            );
+          }}
+          teamType={data?.team_type}
+          isDeleteDraftLoading={isDeleteDraftLoading}
+        />
+      )}
       <Card onClick={handleCard} className="cursor-pointer">
         <NewTag />
 
@@ -82,15 +123,18 @@ const ClubCard = ({ data, isSearchPage }) => {
           <CardBody>
             <div className="d-flex teamcard-flex-cloumn">
               <div className="w-75">
-                <div className="d-flex justify-content-between">
+                <div className="d-flex flex-column gap-1 justify-content-between">
+                  {data?.creation_status === 'DRAFT' && <div className="draft-badge">Draft</div>}
                   <CardTitle className="card-title mb-1 d-flex justify-space-between">
-                    <span>{data?.name}</span>
+                  <span>{data?.name || <b className='text-secondary'>(Untitled Club)</b>}</span>
                   </CardTitle>
                   {/* <span className="me-3">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
                 </span> */}
                 </div>
-                <CardText className="team-desc mb-1">{data?.introduction} </CardText>
+                <CardText className="team-desc mb-1">
+                  {data?.introduction ? parse(data?.introduction) : <i> ( Add Description )</i>}{' '}
+                </CardText>
 
                 <div className="avatar-wrap mb-1">
                   {users.length > 3 ? (
@@ -165,14 +209,52 @@ const ClubCard = ({ data, isSearchPage }) => {
                   </div>
                 </div>
                 <div className="">
-                  <BadgeGroup
-                    title="Skills"
-                    data={data?.skills}
-                    color="light-blue"
-                    id={`tooltip-skills-${data?._id}`}
-                  />
-                  <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} />
+                  {data?.skills && (
+                    <BadgeGroup
+                      title="Skills"
+                      data={data?.skills}
+                      color="light-blue"
+                      id={`tooltip-skills-${data?._id}`}
+                      isDraft={data?.creation_status === 'DRAFT'}
+                    />
+                  )}
+                  {data?.tools && (
+                    <BadgeGroup
+                      title="Tools"
+                      data={data?.tools}
+                      color="light-blue"
+                      id={`tooltip-tools-${data?._id}`}
+                      isDraft={data?.creation_status === 'DRAFT'}
+                    />
+                  )}
                 </div>
+                {data?.creation_status === 'DRAFT' && (
+                  <div className="d-flex justify-content-end mt-3">
+                    <Button
+                      color="flat-danger"
+                      className="me-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteDraftModal(true);
+                      }}
+                    >
+                      Delete Draft
+                    </Button>
+                    <div className="relist-btn-wrapper">
+                      <Button
+                        color="primary"
+                        outline
+                        className="relist-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/create-club/account-details/${data?._id}`);
+                        }}
+                      >
+                        Edit Draft
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </CardBody>

@@ -69,7 +69,7 @@ export const contactHeaderCloseStyle = (img, theme) => {
 
 export const contactHeaderTitleStyle = (props) => {
   const alignment =
-    props.hasOwnProperty('enableCloseMenu') && props.enableCloseMenu.length > 0
+    props?.hasOwnProperty('enableCloseMenu') && props.enableCloseMenu.length > 0
       ? {
           width: '33%',
           textAlign: 'center',

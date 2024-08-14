@@ -160,7 +160,7 @@ class CometChatIncomingCall extends React.PureComponent {
       })
       .catch((error) => {
         this.setState({ incomingCall: null, callInProgress: null });
-        const errorCode = error && error.hasOwnProperty('code') ? error.code : 'ERROR';
+        const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'ERROR';
         this.context.setToastMessage('error', errorCode);
       });
   };
@@ -184,12 +184,12 @@ class CometChatIncomingCall extends React.PureComponent {
             }
             this.setState({ incomingCall: null, callInProgress: null });
 
-            const errorCode = error && error.hasOwnProperty('code') ? error.code : 'ERROR';
+            const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'ERROR';
             this.context.setToastMessage('error', errorCode);
           });
       })
       .catch((error) => {
-        const errorCode = error && error.hasOwnProperty('code') ? error.code : 'ERROR';
+        const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'ERROR';
         this.context.setToastMessage('error', errorCode);
       });
   };

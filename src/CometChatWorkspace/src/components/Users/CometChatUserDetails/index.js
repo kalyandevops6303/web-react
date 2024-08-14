@@ -207,8 +207,8 @@ class CometChatUserDetails extends React.Component {
       .then((response) => {
         if (
           response &&
-          response.hasOwnProperty(uid) &&
-          response[uid].hasOwnProperty('success') &&
+          response?.hasOwnProperty(uid) &&
+          response[uid]?.hasOwnProperty('success') &&
           response[uid]['success'] === true
         ) {
           const newType = CometChat.ACTION_TYPE.TYPE_USER;
@@ -230,8 +230,8 @@ class CometChatUserDetails extends React.Component {
       .then((response) => {
         if (
           response &&
-          response.hasOwnProperty(uid) &&
-          response[uid].hasOwnProperty('success') &&
+          response?.hasOwnProperty(uid) &&
+          response[uid]?.hasOwnProperty('success') &&
           response[uid]['success'] === true
         ) {
           const newType = CometChat.ACTION_TYPE.TYPE_USER;
@@ -263,7 +263,7 @@ class CometChatUserDetails extends React.Component {
     let viewProfile = null;
     if (
       this.state.enableViewProfile === true &&
-      this.context.item.hasOwnProperty('link') &&
+      this.context.item?.hasOwnProperty('link') &&
       this.context.item.link &&
       this.context.item.link.trim().length
     ) {

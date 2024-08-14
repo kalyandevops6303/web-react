@@ -22,7 +22,6 @@ import { useNavigate, useLocation } from 'react-router';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import styled from 'styled-components';
-import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
@@ -34,7 +33,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
+import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -209,7 +208,7 @@ const ProjectModal = ({
         imgWidth: 33,
       }))
     : [];
-
+     
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -247,15 +246,16 @@ const ProjectModal = ({
                   {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' ? (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                        {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                       </CardTitle>
                       <CardText className="project-name">Expired Date</CardText>
                     </div>
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
-                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                        {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                         to{' '}
+                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>
@@ -331,10 +331,11 @@ const ProjectModal = ({
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc" style={{ whiteSpace: 'pre-line' }}>
-                {' '}
-                {data?.details?.description}{' '}
-              </CardText>
+              <CardText
+                className="fw-300 ms-75 project-desc"
+                style={{ whiteSpace: 'pre-line' }}
+                dangerouslySetInnerHTML={{ __html: data?.details?.description }}
+              />
             </CardBody>
           </Card>
 
@@ -367,7 +368,7 @@ const ProjectModal = ({
                       {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}
+                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name )}
                     </Col>
                   </Row>
                 ))}

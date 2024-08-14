@@ -1,5 +1,6 @@
 /* eslint-disable no-else-return */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
@@ -42,10 +43,15 @@ import {
   downloadUploadedFile,
   formatDateWithDash,
   getFileSize,
+  isEmpty,
   renderFilePreview,
 } from '../../../utility/Utils';
-import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
-import { bidDetailsLoading, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
+import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
+import {
+  bidDetailsLoading,
+  draftSetMilestonesLoading,
+  setMilestonesLoading,
+} from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
@@ -55,8 +61,10 @@ import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors'
 import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
 import CreateBidModal from '../../modals/CreateBidModal';
 import capitalize from '../../../lib/capitalize';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 
-const VariableAdvanceMilestoneView = () => {
+const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   const MilestoneDetailsSchema = yup.object().shape({
     estimatedStartDate: yup.date().typeError('Start date is required').required('Start date is required'),
     milestones: yup.array().of(
@@ -130,6 +138,18 @@ const VariableAdvanceMilestoneView = () => {
     ),
   });
 
+  const validateDate = (dateString) => {
+    const date = new Date(dateString);
+    const currentDate = new Date();
+    if (date < currentDate) {
+      return currentDate.toString();
+    } else {
+      return dateString;
+    }
+  }
+
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const {
     control,
     handleSubmit,
@@ -141,7 +161,7 @@ const VariableAdvanceMilestoneView = () => {
     mode: 'onChange',
     resolver: yupResolver(MilestoneDetailsSchema),
     defaultValues: {
-      milestones: [
+      milestones: savedFormData?.milestones || [
         {
           milestoneId: uuidv4(),
           name: undefined,
@@ -172,7 +192,9 @@ const VariableAdvanceMilestoneView = () => {
   const selectUserDetailsData = useSelector(selectUserData);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+  const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
 
+  const saveAsDraftClicked = useRef();
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
@@ -184,6 +206,13 @@ const VariableAdvanceMilestoneView = () => {
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
   const [createBidModal, setCreateBidModal] = useState(null);
   const [bidData, setBidData] = useState(null);
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const toggle = (id) => {
     if (open === id) {
@@ -271,6 +300,7 @@ const VariableAdvanceMilestoneView = () => {
     });
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`);
   };
 
@@ -363,7 +393,16 @@ const VariableAdvanceMilestoneView = () => {
       removed_milestone_ids,
     };
 
-    dispatch(saveSetMilestones(params.projectId, params.bidId, reqData, onSuccess));
+    if (saveAsDraftClicked.current) {
+      dispatch(
+        saveDraftSetMilestones(params.projectId, params.bidId, reqData, () => {
+          saveAsDraftClicked.current = false;
+          setDraftSavedModal(true);
+        }),
+      );
+    } else {
+      dispatch(saveSetMilestones(params.projectId, params.bidId, reqData, onSuccess));
+    }
   };
 
   const handleAddDeliverable = (milestoneIndex, defaultValue = '') => {
@@ -374,7 +413,7 @@ const VariableAdvanceMilestoneView = () => {
       deliverables: [...milestoneDeliverables, defaultValue],
     };
 
-    if (milestoneDeliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
+    if (milestoneDeliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
       milestonesUpdate(milestoneIndex, newData);
     } else {
       ShowToastMessage(ERROR, 'Please fill all deliverables before adding a new one.');
@@ -392,15 +431,15 @@ const VariableAdvanceMilestoneView = () => {
   };
 
   const handleAddMilestone = () => {
-    const allMilestonesValid = getValues('milestones').every(
+    const allMilestonesValid = getValues('milestones')?.every(
       (milestone) =>
         milestone.name?.trim() !== '' &&
         milestone.workers.length > 0 &&
         milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
         milestone.workers
           .filter((worker) => worker.isChecked)
-          .every((worker) => worker.duration > 0 && worker.hours > 0) &&
-        milestone.deliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
+          ?.every((worker) => worker.duration > 0 && worker.hours > 0) &&
+        milestone.deliverables?.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
     );
 
     if (allMilestonesValid) {
@@ -435,6 +474,7 @@ const VariableAdvanceMilestoneView = () => {
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {
@@ -493,7 +533,10 @@ const VariableAdvanceMilestoneView = () => {
       .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
       .replace(',', '')
       .split(' ');
-    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    if (!isEmpty(formattedDate)) {
+      return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+    }
+    return '';
   };
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
@@ -566,13 +609,20 @@ const VariableAdvanceMilestoneView = () => {
     </div>
   );
 
+  useEffect(() => {
+    if (savedFormData?.estimatedStartDate)
+    setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
+  }, [savedFormData])
+
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
       setBidData(res);
-      if (res?.project_start_date > 0) {
+      if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
+      } else if (savedFormData?.estimatedStartDate) {
+        setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
       }
-      if (res?.milestones?.length > 0) {
+      if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
           milestoneId: uuidv4(),
           name: milestone?.name,
@@ -604,7 +654,7 @@ const VariableAdvanceMilestoneView = () => {
 
         setValue('milestones', reqData, { shouldValidate: true });
         trigger('milestones');
-      } else if (res?.workers?.length > 0) {
+      } else if (res?.workers?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = [
           {
             milestoneId: uuidv4(),
@@ -623,8 +673,10 @@ const VariableAdvanceMilestoneView = () => {
         ];
 
         setValue('milestones', reqData, { shouldValidate: true });
+      } else {
+        setValue('milestones', savedFormData?.milestones, { shouldValidate: true });
       }
-      if (res?.documents?.length > 0) {
+      if (res?.documents?.length > 0 && !savedFormDocuments?.length) {
         const reqFiles = res?.documents?.map((file) => ({
           file,
           id: uuidv4(),
@@ -634,6 +686,8 @@ const VariableAdvanceMilestoneView = () => {
           isUploaded: true,
         }));
         setFiles(reqFiles);
+      } else if (savedFormDocuments?.length) {
+        setFiles(savedFormDocuments);
       }
       if (res?.workers?.length > 0) {
         setAllWorkers(res?.workers);
@@ -661,9 +715,9 @@ const VariableAdvanceMilestoneView = () => {
           modal={createBidModal}
           toggleModal={toggleCreateBidModal}
           selectedProject={{
-            _id: params.projectId,
-            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
-            bidType: params.bidType.split('-')[1].toUpperCase(),
+            _id: params?.projectId,
+            pay_type: { variable_cost: params?.bidType?.split('-')[0] === 'variable' },
+            bidType: params?.bidType?.split('-')[1]?.toUpperCase(),
           }}
         />
       )}
@@ -706,7 +760,7 @@ const VariableAdvanceMilestoneView = () => {
                             />
                           )}
                         />
-                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
+                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate?.message}</FormFeedback>}
                       </div>
                     </Col>
                     <Col sm="12" md="12" lg="8" className="d-flex justify-content-end me-2">
@@ -727,7 +781,7 @@ const VariableAdvanceMilestoneView = () => {
                           <Label className="form-label m-0">Bid Type</Label>
                           <div className="d-flex align-items-center mt-50">
                             <p className="fw-bold font-medium-1 mb-0">
-                              {capitalize(params.bidType.split('-')[1])} Flow
+                              {capitalize(params?.bidType?.split('-')[1])} Flow
                             </p>
                             <ChangeBidTypeButton
                               className="d-flex align-items-center cursor-pointer ms-1"
@@ -814,7 +868,7 @@ const VariableAdvanceMilestoneView = () => {
                                       errors.milestones.length > 0 &&
                                       errors.milestones[milestoneIndex] &&
                                       errors.milestones[milestoneIndex].name && (
-                                        <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
+                                        <FormFeedback>{errors.milestones[milestoneIndex].name?.message}</FormFeedback>
                                       )}
                                     <div className="d-flex mt-2">
                                       <Label className="form-label" for="description">
@@ -860,7 +914,7 @@ const VariableAdvanceMilestoneView = () => {
                                       errors.milestones[milestoneIndex] &&
                                       errors.milestones[milestoneIndex].description && (
                                         <FormFeedback>
-                                          {errors.milestones[milestoneIndex].description.message}
+                                          {errors.milestones[milestoneIndex].description?.message}
                                         </FormFeedback>
                                       )}
                                   </CardBody>
@@ -1044,7 +1098,7 @@ const VariableAdvanceMilestoneView = () => {
                                                         <FormFeedback>
                                                           {
                                                             errors.milestones[milestoneIndex].workers[workerIndex]
-                                                              .duration.message
+                                                              .duration?.message
                                                           }
                                                         </FormFeedback>
                                                       )}
@@ -1119,7 +1173,7 @@ const VariableAdvanceMilestoneView = () => {
                                                         <FormFeedback>
                                                           {
                                                             errors.milestones[milestoneIndex].workers[workerIndex].hours
-                                                              .message
+                                                              ?.message
                                                           }
                                                         </FormFeedback>
                                                       )}
@@ -1184,7 +1238,7 @@ const VariableAdvanceMilestoneView = () => {
                                             errors.milestones[milestoneIndex].deliverables.length > 0 &&
                                             errors.milestones[milestoneIndex].deliverables[index] && (
                                               <FormFeedback>
-                                                {errors.milestones[milestoneIndex].deliverables[index].message}
+                                                {errors.milestones[milestoneIndex].deliverables[index]?.message}
                                               </FormFeedback>
                                             )}
                                         </Col>
@@ -1260,7 +1314,7 @@ const VariableAdvanceMilestoneView = () => {
                     </div>
                   </UncontrolledTooltip>
                 </Label>
-                {files.length ? (
+                {files?.length ? (
                   <>
                     <div className="px-1 mt-50">{fileList()}</div>
                     <div {...getRootProps({ className: 'dropzone' })}>
@@ -1307,33 +1361,60 @@ const VariableAdvanceMilestoneView = () => {
               </UploadIconContainer>
               <h5 className="fw-bold">Back</h5>
             </div>
-            <Button
-              color="primary"
-              type="submit"
-              disabled={
-                !isValid ||
-                setMilestonesIsLoading ||
-                uploadingFiles.length > 0 ||
-                !getValues('milestones').every(
-                  (milestone) =>
-                    milestone.name?.trim() !== '' &&
-                    milestone.workers.length > 0 &&
-                    milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
-                    milestone.workers
-                      .filter((worker) => worker.isChecked)
-                      .every((worker) => worker.duration > 0 && worker.hours > 0),
-                )
-              }
-            >
-              {setMilestonesIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
+            <div className="d-flex justify-content-end">
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onSubmit)();
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={
+                  !isValid ||
+                  draftSetMilestonesIsLoading ||
+                  uploadingFiles.length > 0 ||
+                  !getValues('milestones')?.every(
+                    (milestone) =>
+                      milestone.name?.trim() !== '' &&
+                      milestone.workers.length > 0 &&
+                      milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
+                      milestone.workers
+                        .filter((worker) => worker.isChecked)
+                        ?.every((worker) => worker.duration > 0 && worker.hours > 0),
+                  )
+                }
+              >
+                {draftSetMilestonesIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+              <Button
+                color="primary"
+                type="submit"
+                disabled={
+                  !isValid ||
+                  setMilestonesIsLoading ||
+                  uploadingFiles.length > 0 ||
+                  !getValues('milestones')?.every(
+                    (milestone) =>
+                      milestone.name?.trim() !== '' &&
+                      milestone.workers.length > 0 &&
+                      milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
+                      milestone.workers
+                        .filter((worker) => worker.isChecked)
+                        ?.every((worker) => worker.duration > 0 && worker.hours > 0),
+                  )
+                }
+              >
+                {setMilestonesIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </Form>
       )}
@@ -1342,3 +1423,11 @@ const VariableAdvanceMilestoneView = () => {
 };
 
 export default VariableAdvanceMilestoneView;
+
+VariableAdvanceMilestoneView.propTypes = {
+  setDraftSavedModal: Proptypes.func,
+};
+
+VariableAdvanceMilestoneView.defaultProps = {
+  setDraftSavedModal: () => {},
+};

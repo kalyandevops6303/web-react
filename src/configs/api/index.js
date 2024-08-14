@@ -1,9 +1,10 @@
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
-const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
-const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
-const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
-const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
-
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/user`;
+const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
+const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
 const API = {
   auth: {
     login: `${apiAuthEndpoint}/api/v1/user/sign-in`,
@@ -41,10 +42,14 @@ const API = {
     services: `${apiAuthEndpoint}/api/v1/static/services/all`,
     disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
     ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
+    issueTypes: `${apiAuthEndpoint}/api/v1/support-issue-types`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
+    resumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parse-resume`,
+    updateResumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parsed`,
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
+    deleteResume: `${apiAuthEndpoint}/api/v1/talent/resume`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
     profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
@@ -118,6 +123,9 @@ const API = {
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
+    saveDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft/save`,
+    draftProjectsCheck: `${apiCreateProjectEndpoint}/api/v1/project/draft/check`,
+    deleteDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft`,
   },
   projectDetails: {
     getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
@@ -135,6 +143,7 @@ const API = {
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
     requests: `${apiAuthEndpoint}/api/v1/requests`,
     terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
+    withdrawProject: `${apiCreateProjectEndpoint}/api/v1/withdraw-project`,
     relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     relistProjectByDate: `${apiCreateProjectEndpoint}/api/v1/project/relist-by-date`,
     requestChange: `${apiCreateProjectEndpoint}/api/v1/request-bid-changes`,
@@ -142,6 +151,7 @@ const API = {
     acceptBidChange: `${apiCreateProjectEndpoint}/api/v1/accept-bid-changes`,
     getBidTimeline: `${apiCreateProjectEndpoint}/api/v1/bid-timeline`,
     getBidSnapshot: `${apiCreateProjectEndpoint}/api/v1/bid-snapshot`,
+    downloadCertificate: `${apiCreateProjectEndpoint}/api/v1/project/certificate`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
@@ -157,6 +167,11 @@ const API = {
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
+    // Project Infrastructure
+    verifyInfraAccess: `${apiProjectInfraEndpoint}/api/v1/infra/verify-access`,
+    getInfraData: `${apiProjectInfraEndpoint}/api/v1/infra`,
+    createInfra: `${apiProjectInfraEndpoint}/api/v1/infra/create`,
+    terminateInfra: `${apiProjectInfraEndpoint}/api/v1/infra/decommission`,
 
     getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
   },
@@ -173,6 +188,9 @@ const API = {
     markComplete: `${apiCreateProjectEndpoint}/api/v1/project/milestones/complete`,
     getSingleMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestone`,
     getDisputes: `${apiCreateProjectEndpoint}/api/v1/project/disputes`,
+    saveDraftMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts/save`,
+    getDraftMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts/draft`,
+    deleteDraftMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts/delete`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
@@ -208,6 +226,9 @@ const API = {
     myBids: `${apiOnboardingEndpoint}/api/v1/my-bids-projects`,
     listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
     listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
+
+    // internal
+    allProjectsUrl: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects/all`,
   },
   globalSearch: {
     search: `${apiOnboardingEndpoint}/api/v1/search`,
@@ -232,12 +253,17 @@ const API = {
     milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/bid/file`,
     submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
     changeBidType: `${apiCreateProjectEndpoint}/api/v1/bid-type`,
+    deleteDraftBid: `${apiCreateProjectEndpoint}/api/v1/bid/remove`,
   },
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
+    teamInfoById: `${apiAuthEndpoint}/api/v1/team`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     update: `${apiAuthEndpoint}/api/v1/team/update`,
+    createDraft: `${apiAuthEndpoint}/api/v1/team/draft/save`,
+    checkDraft: `${apiAuthEndpoint}/api/v1/team/draft/check`,
+    deleteDraft: `${apiAuthEndpoint}/api/v1/team/draft`,
     memberType: `${apiAuthEndpoint}/api/v1/team/member_type`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
@@ -288,6 +314,7 @@ const API = {
     transferFunds: `${apiPaymentEndPoint}/api/v1/transfer-funds`,
     spendingDetails: `${apiOnboardingEndpoint}/api/v1/users/payments`,
     upcomingPayments: `${apiOnboardingEndpoint}/api/v1/users/upcoming-payments`,
+    updatePaymentStatus: `${apiPaymentEndPoint}/api/v1/checkout-session-cancel`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
@@ -305,6 +332,22 @@ const API = {
   },
   fileUpload: {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
+  },
+  assessments: {
+    user_assessments: `${apiAssessmentsEndpoint}/api/v1/candidate/assessments`,
+    all_assessments: `${apiAssessmentsEndpoint}/api/v1/all/assessment/dropdown`,
+    delete_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment`,
+    toggle_assessment_hidden: `${apiAssessmentsEndpoint}/api/v1/candidate/hide/assessment`,
+    add_assessment: `${apiAssessmentsEndpoint}/api/v1/add/candidate/assessment/list`,
+    get_assessment_link: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/link`,
+    delete_non_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/non-assessment`,
+    prepopulate: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/prepopulate`
+  },
+  support: {
+    create: `${apiAuthEndpoint}/api/v1/support-request`,
+    count: `${apiAuthEndpoint}/api/v1/support-request/count`,
+    list: `${apiAuthEndpoint}/api/v1/support-requests/paginated`,
+    delete: `${apiAuthEndpoint}/api/v1/support-request`
   },
 };
 

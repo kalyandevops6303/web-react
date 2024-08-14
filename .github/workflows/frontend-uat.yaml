@@ -1,0 +1,64 @@
+name: frontend-uat
+on:
+  workflow_dispatch:
+  push:
+    # branches:
+    #   - uat
+    tags:
+      - 'uat_v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    #runs-on: [self-hosted, linux, X64, trumio-orgrunner]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: uat
+          submodules: true
+    
+      - name: Install Azure cli
+        run: |
+          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+          AZ_REPO=$(lsb_release -cs)
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+          sudo apt-get update
+          sudo apt-get install azure-cli
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_UAT }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
+      - name: Set environment variable
+        run: echo "VITE_ENV_MODE=uat" >> $GITHUB_ENV
+        
+      - name: Install Dependencies and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload to blob storage
+        run: |
+          today=$(date +%d-%m-%Y-%H.%M)
+          az storage blob upload-batch --account-name azusctruatwebsa --auth-mode login -d "uat-frontend-backup/frontend-$today" --source ./dist
+
+      - name: Delete blob storage
+        run: az storage blob delete-batch --account-name azusctruatwebsa --auth-mode login --source '$web' --pattern '*'
+
+      - name: Upload to blob storage
+        run: az storage blob upload-batch --account-name azusctruatwebsa --auth-mode login -d '$web' --source ./dist
+
+      - name: Purge CDN endpoint
+        run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name trumiouatfdcdn --domains uat.trumio.ai --content-paths '/*'
+
+      # Azure logout
+      - name: logout
+        run: |
+          az logout
+        if: always()

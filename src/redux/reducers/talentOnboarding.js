@@ -2,10 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   userDetails: null,
+  resumeParsedDetails: null,
   userDetailsLoading: false,
+  resumeParsedDetailsLoading: false,
   accountDetailsLoading: false,
   profileDetailsLoading: false,
   checkpointCompleteLoading: false,
+  deleteResumeLoading:false,
   error: null,
 };
 
@@ -26,6 +29,38 @@ const talentOnboardingSlice = createSlice({
     userDetailsFailure: (state, action) => ({
       ...state,
       userDetailsLoading: false,
+      error: action.payload,
+    }),
+
+    resumeParsedDetailsRequest: (state) => ({
+      ...state,
+      resumeParsedDetailsLoading: true,
+      error: null,
+    }),
+    resumeParsedDetailsSuccess: (state, action) => ({
+      ...state,
+      resumeParsedDetails: action.payload,
+      resumeParsedDetailsLoading: false,
+    }),
+    resumeParsedDetailsFailure: (state, action) => ({
+      ...state,
+      error: action.payload,
+      resumeParsedDetailsLoading: false,
+    }),
+
+    deleteResumeRequest: (state) => ({
+      ...state,
+      deleteResumeLoading: true,
+      error: null,
+    }),
+    deleteResumeSuccess: (state) => ({
+      ...state,
+      deleteResumeLoading: false,
+      error: null,
+    }),
+    deleteResumeFailure: (state, action) => ({
+      ...state,
+      deleteResumeLoading: false,
       error: action.payload,
     }),
 
@@ -80,6 +115,9 @@ export const {
   userDetailsRequest,
   userDetailsSuccess,
   userDetailsFailure,
+  resumeParsedDetailsRequest,
+  resumeParsedDetailsSuccess,
+  resumeParsedDetailsFailure,
   accountDetailsRequest,
   accountDetailsSuccess,
   accountDetailsFailure,
@@ -89,6 +127,9 @@ export const {
   checkpointCompleteRequest,
   checkpointCompleteSuccess,
   checkpointCompleteFailure,
+  deleteResumeRequest,
+  deleteResumeSuccess,
+  deleteResumeFailure,
 } = talentOnboardingSlice.actions;
 
 export default talentOnboardingSlice.reducer;

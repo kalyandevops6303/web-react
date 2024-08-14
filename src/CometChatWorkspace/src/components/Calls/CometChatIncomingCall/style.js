@@ -11,20 +11,20 @@ export const incomingCallWrapperStyle = (props, keyframes) => {
   let bottomPos = 'unset';
   let zIndexValue = '998';
 
-  if (props.hasOwnProperty('widgetsettings')) {
-    if (props.widgetsettings.hasOwnProperty('dockedview') && props.widgetsettings.dockedview) {
+  if (props?.hasOwnProperty('widgetsettings')) {
+    if (props.widgetsettings?.hasOwnProperty('dockedview') && props.widgetsettings.dockedview) {
       //if chat window is open
-      if (props.widgetsettings.hasOwnProperty('launched') && props.widgetsettings.launched) {
+      if (props.widgetsettings?.hasOwnProperty('launched') && props.widgetsettings.launched) {
         zIndexValue = '2147483000';
         positionValue = 'fixed';
         topPos = 'unset';
         bottomPos = '100px';
 
-        if (props.widgetsettings.hasOwnProperty('alignment') && props.widgetsettings.alignment === 'left') {
+        if (props.widgetsettings?.hasOwnProperty('alignment') && props.widgetsettings.alignment === 'left') {
           rightPos = 'unset';
           leftPos = '20px';
 
-          if (props.widgetsettings.hasOwnProperty('width')) {
+          if (props.widgetsettings?.hasOwnProperty('width')) {
             if (props.widgetsettings.width.includes('px')) {
               const widgetWidth = props.widgetsettings.width.replace('px', '');
               rightPos = parseInt(widgetWidth) - 250 - 15;
@@ -32,7 +32,7 @@ export const incomingCallWrapperStyle = (props, keyframes) => {
             }
           }
 
-          if (props.widgetsettings.hasOwnProperty('height')) {
+          if (props.widgetsettings?.hasOwnProperty('height')) {
             if (props.widgetsettings.height.includes('px')) {
               const widgetHeight = props.widgetsettings.height.replace('px', '');
               bottomPos = parseInt(widgetHeight) - 140 + 100;
@@ -43,7 +43,7 @@ export const incomingCallWrapperStyle = (props, keyframes) => {
           leftPos = 'unset';
           rightPos = '20px';
 
-          if (props.widgetsettings.hasOwnProperty('width')) {
+          if (props.widgetsettings?.hasOwnProperty('width')) {
             if (props.widgetsettings.width.includes('px')) {
               const widgetWidth = props.widgetsettings.width.replace('px', '');
               rightPos = parseInt(widgetWidth) - 250 - 15;
@@ -51,7 +51,7 @@ export const incomingCallWrapperStyle = (props, keyframes) => {
             }
           }
 
-          if (props.widgetsettings.hasOwnProperty('height')) {
+          if (props.widgetsettings?.hasOwnProperty('height')) {
             if (props.widgetsettings.height.includes('px')) {
               const widgetHeight = props.widgetsettings.height.replace('px', '');
               bottomPos = parseInt(widgetHeight) - 140 + 100;

@@ -44,12 +44,25 @@ class CometChatUI extends React.Component {
   deleteUserInfoFromLocalStorage = () => {
     let userDetailsKey = `${CometChat.appId}:common_store/user`;
     let userDetails = localStorage.getItem(userDetailsKey);
-
-    let userDetailsParsed = JSON.parse(JSON.parse(userDetails));
-    delete userDetailsParsed['metadata'];
-
-    let stringifiedUserDetails = `${JSON.stringify(JSON.stringify(userDetailsParsed))}`;
-    localStorage.setItem(userDetailsKey, stringifiedUserDetails);
+    if (!userDetails) {
+      console.warn('User details not found in localStorage.');
+      return;
+    }
+    try{
+      let userDetailsParsed = JSON.parse(JSON.parse(userDetails));
+      console.log(typeof userDetailsParsed)
+      if (userDetailsParsed && typeof userDetailsParsed === 'object') {
+        delete userDetailsParsed['metadata'];
+  
+        let stringifiedUserDetails = JSON.stringify(JSON.stringify(userDetailsParsed));
+        localStorage.setItem(userDetailsKey, stringifiedUserDetails);
+      } else {
+        console.warn('Parsed user details are not an object.');
+      }
+    }
+    catch(error){
+      console.warn('Error parsing user details:', error);
+    }
   };
 
   navBarAction = (action, type, item) => {

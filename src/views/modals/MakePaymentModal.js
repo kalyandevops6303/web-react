@@ -17,11 +17,15 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
+import classnames from 'classnames';
 import { PropTypes } from 'prop-types';
 import { MakePaymentModalWrapper } from './style';
 import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
-import { PAYMENT_STATUS, paymentText } from '../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText, userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { CustomBadge } from '../styled';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import theme from '../../configs/themeVariables';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
@@ -42,6 +46,9 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
   const totalPending = totalAmount + trumioFee;
 
+  const user = useSelector(selectAuthUserData);
+  const isClient = user?.user_type === userTypes.client;
+
   const onGetApplicationFee = (data) => {
     setFeeStructure(data);
   };
@@ -51,19 +58,27 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   }, []);
 
   const getTagSettings = (tag) => {
-    if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
+    const { payment_status = '', status = '' } = tag;
+    if (payment_status === PAYMENT_STATUS.PAYMENT_FAILED || payment_status === PAYMENT_STATUS.FAILED) {
+      return { theme: 'light-danger', text: paymentText.RETRY_PAYMENT };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
+    if (payment_status === PAYMENT_STATUS.PAYMENT_DUE || payment_status === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: paymentText.PAYMENT_DUE };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
+    if (payment_status === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
+    if (payment_status === PAYMENT_STATUS.INITIATED) {
+      return { theme: 'light-primary', text: paymentText.PAYMENT_INITIATED };
     }
-    return { theme: 'light-primary', text: tag };
+    if (payment_status === PAYMENT_STATUS.PAID) {
+      return {
+        theme: 'light-success',
+        text: status !== 'COMPLETED' ? paymentText.FUNDED : paymentText.PAID,
+      };
+    }
+
+    return { theme: 'light-primary', text: payment_status };
   };
   const handleMilestoneSelect = (evt, id) => {
     const isSelected = selectedIds.find((item) => item === id);
@@ -88,10 +103,15 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   const currentURL = window.location.href;
 
   const handlePayment = () => {
+    const url = new URL(currentURL);
+
+    // Remove the query parameters
+    const baseURL = url.origin + url.pathname;
+
     const payload = {
       milestones: [...selectedIds],
-      success_url: currentURL,
-      cancel_url: currentURL,
+      success_url: baseURL,
+      cancel_url: baseURL,
     };
     dispatch(makeMilestonePayment(payload, onSuccess));
   };
@@ -110,6 +130,13 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
 
     return false;
   };
+
+  const getCardStyle = (isSelected) => ({
+    height: '55px',
+    backgroundColor: isSelected ? theme.selectedBlugBg : 'white',
+    border: isSelected ? `1.5px solid ${theme.activeNavPillText}` : '',
+    borderRadius: '5px',
+  });
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={onClose} />
@@ -127,8 +154,8 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
             {milestoneData?.length > 0 &&
               milestoneData.map((item) => (
                 <Card
-                  style={{ height: '55px', backgroundColor: selectedIds.includes(item._id) ? '#0185E41F' : 'white' }}
-                  className="d-flex justify-content-center"
+                  style={getCardStyle(selectedIds.includes(item._id))}
+                  className="d-flex justify-content-center mb-1"
                   key={item._id}
                 >
                   <CardBody className="d-flex justify-content-between pe-0">
@@ -147,15 +174,26 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
                           />
                           <div className="d-flex flex-column w-100" style={{ marginTop: '-2px' }}>
                             <Label for={item._id} className="text-truncate truncated-milestone-name">
-                              {item.name}
+                              Milestone #{item?.seq}
                             </Label>
                           </div>
                         </div>
                       </Col>
                       <Col sm="12" md="5" lg="4">
-                        <Badge color={getTagSettings(item.payment_status).theme} className="payment-status-badge">
-                          {getTagSettings(item.payment_status).text}
-                        </Badge>
+                        <CustomBadge bordered rounded>
+                          <Badge
+                            className={classnames({
+                              RETRY_PAYMENT:
+                                isClient &&
+                                (item?.payment_status === 'PAYMENT_FAILED' || item?.payment_status === 'FAILED'),
+                              PAID_AMOUNT: item?.payment_status === 'PAID' && item?.status === 'COMPLETED',
+                              FUNDED: item?.payment_status === 'PAID' && item?.status !== 'COMPLETED',
+                              [item?.payment_status]: item?.payment_status !== 'PAID',
+                            })}
+                          >
+                            {getTagSettings(item).text}
+                          </Badge>
+                        </CustomBadge>
                       </Col>
                       <Col sm="12" md="5" lg="3">
                         <div

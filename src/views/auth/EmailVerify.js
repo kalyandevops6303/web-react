@@ -20,13 +20,16 @@ import {
 import OtpInput from '../../lib/otp-input';
 import ResendOTPComp from './components/ResendOTP';
 import LogoComp from './components/LogoComp';
-import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
+import SpeechEmoji from '../../assets/images/logo/speech_baloon.png';
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { formData } from '../../redux/selectors/formDataSelectors';
 
 const VerifyEmail = () => {
   const dispatch = useDispatch();
   const [otpError, setOtpError] = useState(false);
   const navigate = useNavigate();
-  const [code, setCode] = useState('');
+  const savedFormData = useSelector(formData);
+  const [code, setCode] = useState((savedFormData && savedFormData.code) || '');
   const isEmailVerified = useSelector(selectIsEmailVerified);
   const userType = useSelector(selectUserType);
   const isLoading = useSelector(selectAuthLoading);
@@ -42,12 +45,14 @@ const VerifyEmail = () => {
   }, [isEmailVerified, navigate]);
 
   const handleChange = (value) => {
+    dispatch(setFormData({ code: value }));
     setCode(value);
     setOtpError(false);
   };
 
   const verifyOtp = () => {
     dispatch(verifyEmail({ email: emailId, user_type: userType, code }));
+    dispatch(clearAllFormData());
   };
 
   return (
@@ -55,12 +60,12 @@ const VerifyEmail = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard title-with-emoij">
-        Two Step Verification <img className='speech-emoji' src={SpeechEmoji} alt='' />
+          Two Step Verification <img className="speech-emoji" src={SpeechEmoji} alt="" />
         </CardTitle>
         <CardText className="mb-2 card-text">
           We sent a verification code to your email. Enter it in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Go back
+            Edit Email
           </span>
         </CardText>
         <Form className="auth-login-form" onSubmit={(e) => e.preventDefault()}>
@@ -88,11 +93,11 @@ const VerifyEmail = () => {
             inputStyle={{
               border: `1px solid #DCDBE2`,
               borderRadius: '8px',
-              width: '50px',
+              width: '55px',
               height: '50px',
-              fontSize: '12px',
+              fontSize: '18px',
               color: '#000',
-              fontWeight: '400',
+              fontWeight: '500',
               caretColor: 'blue',
             }}
             focusStyle={{

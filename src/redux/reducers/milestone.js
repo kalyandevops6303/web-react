@@ -16,6 +16,8 @@ const initialState = {
   milestoneDisputeMetadata: null,
   isMilestoneDisputeLoading: false,
   error: null,
+  draftMilestonesData: null,
+  draftMilestoneLoading: false,
 };
 
 const milestoneSlice = createSlice({
@@ -34,6 +36,24 @@ const milestoneSlice = createSlice({
     submitMilestoneFailure: (state, action) => ({
       ...state,
       isMilestoneSubmitting: false,
+      error: action.payload,
+    }),
+    draftMilestoneRequest: (state) => ({
+      ...state,
+      draftMilestoneLoading: true,
+      error: null,
+    }),
+
+    draftMilestoneSuccess: (state, action) => ({
+      ...state,
+      draftMilestonesData: action.payload,
+      draftMilestoneLoading: false,
+    }),
+
+    draftMilestoneFailure: (state, action) => ({
+      ...state,
+      draftMilestonesData: null,
+      draftMilestoneLoading: false,
       error: action.payload,
     }),
 

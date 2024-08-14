@@ -108,7 +108,7 @@ const PaymentHistory = () => {
       name: 'Status',
       sortable: false,
       minWidth: '10%',
-      selector: (row) => row.status,
+      selector: (row) => row?.status,
     },
     {
       name: 'AMOUNT',
@@ -154,7 +154,7 @@ const PaymentHistory = () => {
       name: 'Status',
       sortable: false,
       minWidth: '10%',
-      selector: (row) => row.status,
+      selector: (row) => row?.status,
     },
     {
       name: 'Pay Type',
@@ -206,7 +206,7 @@ const PaymentHistory = () => {
       name: 'Status',
       sortable: false,
       minWidth: '10%',
-      selector: (row) => row.status,
+      selector: (row) => row?.status,
     },
     {
       name: 'Amount',
@@ -395,15 +395,8 @@ const PaymentHistory = () => {
                   <p className="m-0">Platform Fee</p>
                 </div>
                 <div className="text-end">
-                  <p className="mb-50">
-                    ${milestone?.amount % 1 !== 0 ? milestone?.amount?.toFixed(2) : milestone?.amount?.toFixed(0)}
-                  </p>
-                  <p className="m-0">
-                    $
-                    {milestone?.platform_fee % 1 !== 0
-                      ? milestone?.platform_fee?.toFixed(2)
-                      : milestone?.platform_fee?.toFixed(0)}
-                  </p>
+                  <p className="mb-50">${roundOfAmount(milestone?.amount)} </p>
+                  <p className="m-0">${roundOfAmount(milestone?.platform_fee)}</p>
                 </div>
               </div>
             </div>

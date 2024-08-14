@@ -1,33 +1,48 @@
 import React from 'react';
 import { Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { PAYMENT_STATUS, paymentText } from '../../../utility/constants/Constant';
+import classnames from 'classnames';
+import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText } from '../../../utility/constants/Constant';
+import { CustomBadge } from '../../styled';
 
-function PaymentStatusForRow({ paymentStatus = [], isClient }) {
+function PaymentStatusForRow({ isClient, milestoneTransactionDetails = [] }) {
   const getTagSettings = (tag) => {
-    if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
+    const { status = '', payment_type = '' } = tag;
+    if (status === PAYMENT_STATUS.PAYMENT_FAILED || status === PAYMENT_STATUS.FAILED) {
       return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
+    if (status === PAYMENT_STATUS.PAYMENT_DUE || status === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.FUNDS_UNAVAILABLE };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
+    if (status === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
     }
-    if (tag === PAYMENT_STATUS.INITIATED) {
+    if (status === PAYMENT_STATUS.INITIATED) {
       return { theme: 'light-primary', text: paymentText.PAYMENT_INITIATED };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: paymentText.PAID };
+    if (status === PAYMENT_STATUS.PAID) {
+      return {
+        theme: 'light-success',
+        text: payment_type === PAYMENT_TYPES.CHECKOUT ? paymentText.FUNDED : paymentText.PAID,
+      };
     }
-    return { theme: 'light-primary', text: tag };
+    return { theme: 'light-primary', text: status };
   };
 
   return (
     <div className="d-flex flex-column" style={{ gap: '60px' }}>
-      {paymentStatus.map((status) => (
+      {milestoneTransactionDetails?.map((item) => (
         <div key={Math.random()}>
-          <Badge color={getTagSettings(status).theme}>{getTagSettings(status).text}</Badge>
+          <CustomBadge rounded>
+            <Badge
+              className={classnames({
+                [`${item?.payment_type}_${item?.status}`]: item?.status === PAYMENT_STATUS.PAID,
+                [item?.status]: true,
+              })}
+            >
+              {getTagSettings(item).text}
+            </Badge>
+          </CustomBadge>
         </div>
       ))}
     </div>
@@ -35,12 +50,12 @@ function PaymentStatusForRow({ paymentStatus = [], isClient }) {
 }
 
 PaymentStatusForRow.propTypes = {
-  paymentStatus: PropTypes.array,
+  milestoneTransactionDetails: PropTypes.array,
   isClient: PropTypes.bool,
 };
 
 PaymentStatusForRow.defaultProps = {
-  paymentStatus: [],
+  milestoneTransactionDetails: [],
   isClient: false,
 };
 export default PaymentStatusForRow;

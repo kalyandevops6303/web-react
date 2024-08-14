@@ -148,8 +148,8 @@ class CometChatMessageComposer extends React.PureComponent {
         const xssData = checkMessageForExtensionsData(messageToBeEdited, 'xss-filter');
         if (
           xssData &&
-          xssData.hasOwnProperty('sanitized_text') &&
-          xssData.hasOwnProperty('hasXSS') &&
+          xssData?.hasOwnProperty('sanitized_text') &&
+          xssData?.hasOwnProperty('hasXSS') &&
           xssData.hasXSS === 'yes'
         ) {
           messageText = xssData.sanitized_text;
@@ -665,7 +665,7 @@ class CometChatMessageComposer extends React.PureComponent {
         const newMessageObj = { ...textMessage, error: error };
         this.props.actionGenerated(enums.ACTIONS['ERROR_IN_SENDING_MESSAGE'], [newMessageObj]);
 
-        if (error && error.hasOwnProperty('code') && error.code === 'ERR_GUID_NOT_FOUND') {
+        if (error && error?.hasOwnProperty('code') && error.code === 'ERR_GUID_NOT_FOUND') {
           //this.context.setDeletedGroupId(this.context.item.guid);
         }
       });
@@ -774,7 +774,7 @@ class CometChatMessageComposer extends React.PureComponent {
     })
       .then((response) => {
         // Response with document url
-        if (response && response.hasOwnProperty('document_url')) {
+        if (response && response?.hasOwnProperty('document_url')) {
           this.context.setToastMessage('success', 'DOCUMENT_SUCCESS');
         } else {
           this.context.setToastMessage('error', 'DOCUMENT_FAIL');
@@ -791,7 +791,7 @@ class CometChatMessageComposer extends React.PureComponent {
     })
       .then((response) => {
         // Response with board_url
-        if (response && response.hasOwnProperty('board_url')) {
+        if (response && response?.hasOwnProperty('board_url')) {
           this.context.setToastMessage('success', 'WHITEBOARD_SUCCESS');
         } else {
           this.context.setToastMessage('error', 'WHITEBOARD_FAIL');
@@ -982,19 +982,19 @@ class CometChatMessageComposer extends React.PureComponent {
         };
       }
     } else {
-      if (messageObject.hasOwnProperty('metadata') === false) {
+      if (messageObject?.hasOwnProperty('metadata') === false) {
         messageObject['metadata'] = {};
       }
 
-      if (messageObject['metadata'].hasOwnProperty('@injected') === false) {
+      if (messageObject['metadata']?.hasOwnProperty('@injected') === false) {
         messageObject['metadata']['@injected'] = {};
       }
 
-      if (messageObject['metadata']['@injected'].hasOwnProperty('extensions') === false) {
+      if (messageObject['metadata']['@injected']?.hasOwnProperty('extensions') === false) {
         messageObject['metadata']['@injected']['extensions'] = {};
       }
 
-      if (messageObject['metadata']['@injected']['extensions'].hasOwnProperty('reactions') === false) {
+      if (messageObject['metadata']['@injected']['extensions']?.hasOwnProperty('reactions') === false) {
         messageObject['metadata']['@injected']['extensions']['reactions'] = {};
       }
 
@@ -1045,7 +1045,7 @@ class CometChatMessageComposer extends React.PureComponent {
   render() {
     let liveReactionBtn = null;
     const liveReactionText = Translator.translate('LIVE_REACTION', this.context.language);
-    if (enums.CONSTANTS['LIVE_REACTIONS'].hasOwnProperty(this.props.reaction)) {
+    if (enums.CONSTANTS['LIVE_REACTIONS']?.hasOwnProperty(this.props.reaction)) {
       const reactionName = this.props.reaction;
       liveReactionBtn = (
         <div
@@ -1289,8 +1289,8 @@ class CometChatMessageComposer extends React.PureComponent {
       const xssData = checkMessageForExtensionsData(this.state.messageToBeEdited, 'xss-filter');
       if (
         xssData &&
-        xssData.hasOwnProperty('sanitized_text') &&
-        xssData.hasOwnProperty('hasXSS') &&
+        xssData?.hasOwnProperty('sanitized_text') &&
+        xssData?.hasOwnProperty('hasXSS') &&
         xssData.hasXSS === 'yes'
       ) {
         messageText = xssData.sanitized_text;
@@ -1300,9 +1300,9 @@ class CometChatMessageComposer extends React.PureComponent {
       const maskedData = checkMessageForExtensionsData(this.state.messageToBeEdited, 'data-masking');
       if (
         maskedData &&
-        maskedData.hasOwnProperty('data') &&
-        maskedData.data.hasOwnProperty('sensitive_data') &&
-        maskedData.data.hasOwnProperty('message_masked') &&
+        maskedData?.hasOwnProperty('data') &&
+        maskedData.data?.hasOwnProperty('sensitive_data') &&
+        maskedData.data?.hasOwnProperty('message_masked') &&
         maskedData.data.sensitive_data === 'yes'
       ) {
         messageText = maskedData.data.message_masked;
@@ -1312,8 +1312,8 @@ class CometChatMessageComposer extends React.PureComponent {
       const profaneData = checkMessageForExtensionsData(this.state.messageToBeEdited, 'profanity-filter');
       if (
         profaneData &&
-        profaneData.hasOwnProperty('profanity') &&
-        profaneData.hasOwnProperty('message_clean') &&
+        profaneData?.hasOwnProperty('profanity') &&
+        profaneData?.hasOwnProperty('message_clean') &&
         profaneData.profanity === 'yes'
       ) {
         messageText = profaneData.message_clean;
@@ -1335,7 +1335,7 @@ class CometChatMessageComposer extends React.PureComponent {
       const message = this.state.replyPreview;
 
       const smartReplyData = checkMessageForExtensionsData(message, 'smart-reply');
-      if (smartReplyData && smartReplyData.hasOwnProperty('error') === false) {
+      if (smartReplyData && smartReplyData?.hasOwnProperty('error') === false) {
         const options = [
           smartReplyData['reply_positive'],
           smartReplyData['reply_neutral'],

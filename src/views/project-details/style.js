@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
+import CertificateFrame from '../../assets/images/certificate_frame.png';
 
 const TableWrapper = styled.div`
   border-radius: 6px;
@@ -751,7 +752,49 @@ const PaymentInfoBanner = styled.div`
     color: ${theme.activeNavPillText};
   }
 `;
+const CertificateInfo = styled.div`
+  background-color: ${theme.primary};
+  background-image: url(${CertificateFrame});
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: ${theme.white};
+  border-radius: 0.5rem;
+  border: 1px solid #000;
+  box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
 
+  .title {
+    color: #fff;
+    font-family: Montserrat;
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.3125rem; /* 131.25% */
+    margin-top: 2.6rem;
+  }
+  .desc {
+    flex: 1;
+    color: #fff;
+    font-family: Montserrat;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5rem;
+    margin-bottom: 0;
+    margin-right: 0.2rem;
+  }
+  .avatar-bg {
+    background-color: #fff;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    aspect-ratio: auto 40 / 40;
+  }
+  .spinner {
+    color: ${theme.primary};
+  }
+`;
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -767,4 +810,5 @@ export {
   TableWrapper,
   SubmissionHistoryWrapper,
   PaymentInfoBanner,
+  CertificateInfo,
 };

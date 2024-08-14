@@ -1,7 +1,8 @@
 /* eslint-disable no-else-return */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as yup from 'yup';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import Proptypes from 'prop-types';
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Row, Spinner } from 'reactstrap';
 import Select from 'react-select';
@@ -11,14 +12,15 @@ import { useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChangeBidTypeButton, TeamSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
-import { selectThemeColors } from '../../../utility/Utils';
+import { filteredFormSchema, selectThemeColors } from '../../../utility/Utils';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { UploadIconContainer } from '../../Onboarding/style';
-import { getBidDetails, getRoles, saveSetWorkers } from '../../../redux/actions/createBidActions';
+import { getBidDetails, getRoles, saveDraftSetWorkers, saveSetWorkers } from '../../../redux/actions/createBidActions';
 import {
   allTeamMembers,
   bidDetailsLoading,
+  draftSetWorkersLoading,
   recommendedRoles,
   rolesLoading,
   setWorkersLoading,
@@ -26,8 +28,10 @@ import {
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
 import CreateBidModal from '../../modals/CreateBidModal';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
-const SimpleTeamView = () => {
+const SimpleTeamView = ({ setDraftSavedModal }) => {
   const EducationalSchema = yup.object().shape({
     projectRolesDetails: yup
       .array()
@@ -46,18 +50,20 @@ const SimpleTeamView = () => {
       )
       .min(1, 'At least one role should be added'),
   });
-
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      projectRolesDetails: [{}],
+      projectRolesDetails: savedFormData?.projectRolesDetails || [{}],
     },
   });
 
@@ -75,7 +81,9 @@ const SimpleTeamView = () => {
   const allTeamMembersData = useSelector(allTeamMembers);
   const setWorkersIsLoading = useSelector(setWorkersLoading);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
+  const draftSetWorkersIsLoading = useSelector(draftSetWorkersLoading);
 
+  const saveAsDraftClicked = useRef();
   const [bidData, setBidData] = useState(null);
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
   const [createBidModal, setCreateBidModal] = useState(null);
@@ -90,6 +98,25 @@ const SimpleTeamView = () => {
       }
     }),
   );
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: EducationalSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const toggleChangeBidTypeConfirmationModal = () => {
     setChangeBidTypeConfirmationModal(!changeBidTypeConfirmationModal);
@@ -110,6 +137,7 @@ const SimpleTeamView = () => {
     );
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/milestone`);
   };
 
@@ -134,12 +162,21 @@ const SimpleTeamView = () => {
         role: item?.role,
       }));
 
-      dispatch(saveSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), onSuccess));
+      if (saveAsDraftClicked.current) {
+        dispatch(
+          saveDraftSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), () => {
+            saveAsDraftClicked.current = false;
+            setDraftSavedModal(true);
+          }),
+        );
+      } else {
+        dispatch(saveSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), onSuccess));
+      }
     }
   };
 
   const handleAddRole = () => {
-    const isFilled = watch('projectRolesDetails').every((item) => {
+    const isFilled = watch('projectRolesDetails')?.every((item) => {
       const { role } = item;
       return role;
     });
@@ -224,7 +261,7 @@ const SimpleTeamView = () => {
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
       setBidData(res);
-      if (res?.workers?.length > 0) {
+      if (res?.workers?.length > 0 && !savedFormData?.projectRolesDetails?.length) {
         const data = res?.workers?.map((worker) => {
           if (worker?.user_id?.length > 0) {
             return {
@@ -243,6 +280,8 @@ const SimpleTeamView = () => {
         });
 
         setValue('projectRolesDetails', data, { shouldValidate: true });
+      } else {
+        setValue('projectRolesDetails', savedFormData?.projectRolesDetails, { shouldValidate: true });
       }
     }
   };
@@ -268,9 +307,9 @@ const SimpleTeamView = () => {
           modal={createBidModal}
           toggleModal={toggleCreateBidModal}
           selectedProject={{
-            _id: params.projectId,
-            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
-            bidType: params.bidType.split('-')[1].toUpperCase(),
+            _id: params?.projectId,
+            pay_type: { variable_cost: params?.bidType?.split('-')[0] === 'variable' },
+            bidType: params?.bidType?.split('-')[1]?.toUpperCase(),
           }}
         />
       )}
@@ -483,25 +522,44 @@ const SimpleTeamView = () => {
               </UploadIconContainer>
               <h5 className="fw-bold">Back</h5>
             </div>
-            <Button
-              color="primary"
-              type="submit"
-              disabled={
-                !isValid ||
-                fields.length === 0 ||
-                !watch('projectRolesDetails').every((field) => field.role) ||
-                setWorkersIsLoading
-              }
-            >
-              {setWorkersIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
+            <div className="d-flex justify-content-end">
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onSubmit)();
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={
+                  !isValid ||
+                  fields.length === 0 ||
+                  !watch('projectRolesDetails')?.every((field) => field.role) ||
+                  draftSetWorkersIsLoading
+                }
+              >
+                {draftSetWorkersIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+              <Button
+                color="primary"
+                type="submit"
+                disabled={
+                  !isValid ||
+                  fields.length === 0 ||
+                  !watch('projectRolesDetails')?.every((field) => field.role) ||
+                  setWorkersIsLoading
+                }
+              >
+                {setWorkersIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </Form>
       )}
@@ -510,3 +568,11 @@ const SimpleTeamView = () => {
 };
 
 export default SimpleTeamView;
+
+SimpleTeamView.propTypes = {
+  setDraftSavedModal: Proptypes.func,
+};
+
+SimpleTeamView.defaultProps = {
+  setDraftSavedModal: () => {},
+};

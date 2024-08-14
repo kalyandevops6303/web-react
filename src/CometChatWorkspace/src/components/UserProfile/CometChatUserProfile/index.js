@@ -97,7 +97,7 @@ class CometChatUserProfile extends React.Component {
               </div>
             </div>
             <div css={optionTitleStyle(this.props)} className="options__title">
-              {Translator.translate('OTHER', this.props.lang)}
+              {Translator.translate(CITIZEN_TYPES.OTHER, this.props.lang)}
             </div>
             <div css={optionListStyle()} className="options_list">
               <div css={optionStyle(helpIcon)} className="option option-help">

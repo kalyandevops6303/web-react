@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
 // ** Reactstrap Imports
@@ -17,16 +17,17 @@ import InputPasswordToggle from '@components/input-password-toggle';
 // ** Styles
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import { validations } from '../../utility/Utils';
+import { checkPointRedirection, filteredFormSchema, validations } from '../../utility/Utils';
 import { loginUser, switchProfile } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
 import { removeItem, setItem } from '../../utility/localStorageControl';
-import { checkPoints } from '../../utility/constants/Constant';
 import { validateUrl } from '../../redux/actions/dashboardActions';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { formData } from '../../redux/selectors/formDataSelectors';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -92,31 +93,45 @@ const Login = () => {
 
   useEffect(() => {
     dispatch(clearDataSuccess());
+    removeItem('google_id_token');
   }, []);
-
+  const savedFormData = useSelector(formData);
   const {
     handleSubmit,
     formState: { errors },
     control,
     watch,
+    trigger,
+    reset,
   } = useForm({
+    mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: savedFormData?.email || '',
+      password: savedFormData?.password || '',
     },
   });
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
-  const onSuccess = (resp) => {
-    if (resp?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
-      navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
-    } else if (resp?.checkpoint === checkPoints.PROFILE_DETAILS) {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/personal-details`);
-    } else if (resp?.checkpoint === checkPoints.COMPLETE) {
-      navigate('/dashboard');
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: schema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
     }
+  }, []);
+
+  const onSuccess = (response) => {
+    dispatch(clearAllFormData());
+    checkPointRedirection({ response, navigate });
   };
 
   const onSubmit = (values) => {
@@ -175,7 +190,9 @@ const Login = () => {
                   className="input-group-merge"
                   id="password"
                   placeholder="Enter your password"
-                  onCopy={(e) => {// disable copy from password field
+                  onCopy={(e) => {
+                    
+                    // disable copy from password field
                     e.preventDefault();
                     return false;
                   }}
@@ -215,7 +232,15 @@ const Login = () => {
           <Label>
             <small>New to Trumio?</small>
           </Label>
-          <Label tag={Link} to="/auth" className="primary" onClick={() => removeItem('isUserVisited')}>
+          <Label
+            tag={Link}
+            to="/auth"
+            className="primary"
+            onClick={() => {
+              removeItem('isUserVisited');
+              dispatch(clearAllFormData());
+            }}
+          >
             <small>Create an account</small>
           </Label>
         </div>

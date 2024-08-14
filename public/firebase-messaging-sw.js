@@ -4,13 +4,13 @@ importScripts('https://www.gstatic.com/firebasejs/8.0.0/firebase-messaging.js');
 
 //Initialize the Firebase app in the service worker by passing the generated config
 let firebaseConfig = {
-  apiKey: 'AIzaSyDzWx2l1iq8TegujD84BYRA8WcM_x4clWU',
-  authDomain: 'trumiop-testing.firebaseapp.com',
-  projectId: 'trumiop-testing',
-  storageBucket: 'trumiop-testing.appspot.com',
-  messagingSenderId: '368642913301',
-  appId: '1:368642913301:web:8e6caec720fa2b23d14a1c',
-  measurementId: 'G-0G7XD1SSSR',
+  apiKey: 'AIzaSyCFjJUyT_4xUUc1sOmj54MHnahvgAor-rU',
+  authDomain: 'trumio-inc.firebaseapp.com',
+  projectId: 'trumio-inc',
+  storageBucket: 'trumio-inc.appspot.com',
+  messagingSenderId: '1079858550340',
+  appId: '1:1079858550340:web:22dc530ee7dff738274e11',
+  measurementId: 'G-N0QV5ZFL2L',
 };
 firebase.initializeApp(firebaseConfig);
 
@@ -64,7 +64,7 @@ self.addEventListener('push', (e) => {
 
 const messaging = firebase.messaging();
 
-let testUrl = 'https://test.trumio.ai/';
+let testUrl = 'https://app.trumio.ai/';
 
 messaging.onBackgroundMessage((payload) => {
   const { data } = payload;

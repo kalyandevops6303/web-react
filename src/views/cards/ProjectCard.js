@@ -1,9 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
+import parse from 'html-react-parser';
 import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -13,10 +15,10 @@ import BaseInfoUI from './BaseInfoCardUI';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
-import { getPath, getReadType } from '../../utility/Utils';
+import { convertUnixTimestampToDate, getPath, getReadType } from '../../utility/Utils';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 
 const ProjectCard = ({
@@ -35,6 +37,8 @@ const ProjectCard = ({
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const userdata = useSelector(selectUserData);
+  const location = useLocation();
+  const pathname = location.pathname.split('/').pop();
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -58,6 +62,28 @@ const ProjectCard = ({
     COMPLETED: 'Completed',
     ON_GOING: 'On Going',
     ACTIVE: 'Active',
+    BID_SUBMITTED: 'Bid Submitted',
+    BID_IN_REVIEW: 'Bid In Review',
+    BID_ACCEPTED: 'Bid Accepted',
+    BID_CHANGE_REQUEST: 'Change Request',
+    SIGN_CONTRACT: 'Sign Contract',
+    SIGN_NDA: 'Sign NDA',
+    PAYMENT_PENDING: 'Payment Pending',
+    WITHDRAWN: 'Withdrawn',
+    DISPUTED: 'Disputed',
+  };
+
+  const primaryStatus = {
+    OPEN: 'Open Listing',
+    IN_REVIEW: 'In Review',
+    TERMINATED: 'Terminated',
+    CLOSED: 'Closed',
+    LISTING_EXPIRED: 'Listing Expired',
+    COMPLETED: 'Completed',
+    ON_GOING: 'On Going',
+    ACTIVE: 'Active',
+    WITHDRAWN: 'Withdrawn',
+    DISPUTED: 'Disputed',
   };
 
   const divRef = useRef(null);
@@ -71,7 +97,7 @@ const ProjectCard = ({
 
   const [createBidModal, setCreateBidModal] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-
+  const savedUserData = useSelector(selectSavedUserData);
   const toggleCreateBidModal = () => {
     setCreateBidModal(!createBidModal);
   };
@@ -114,8 +140,13 @@ const ProjectCard = ({
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
-                    <Badge className={`${data?.status} truncate-1`} color="badge">
-                      {statusEnum[data?.status]}
+                    <Badge
+                      className={`${
+                        Object.keys(primaryStatus)?.includes(data?.status) ? data?.status : pathname
+                      } truncate-1`}
+                      color="badge"
+                    >
+                      {`${statusEnum[data?.status] ? statusEnum[data?.status] : data?.status}`}
                     </Badge>
                   </CustomBadge>
                 </div>
@@ -139,21 +170,33 @@ const ProjectCard = ({
                       {data?.assigned_date && (
                         <span className="me-1">
                           {data?.assigned_date
-                            ? `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}    `
+                            ?
+                              `Assigned Date: ${convertUnixTimestampToDate(
+                                data?.assigned_date,
+                                savedUserData?.availability?.timezone?.name ,
+                              )}    `
                             : ''}
                         </span>
                       )}
                       {data?.completed_date && (
                         <span className="me-1">
                           {data?.completed_date
-                            ? `Completed Date: ${DateTime?.fromMillis(data?.completed_date).toFormat('dd-MM-yy')}   `
+                            ?
+                              `Completed Date: ${convertUnixTimestampToDate(
+                                data?.completed_date,
+                                savedUserData?.availability?.timezone?.name ,
+                              )}   `
                             : ''}
                         </span>
                       )}
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
-                            ? `Invite Date: ${DateTime?.fromMillis(data?.invite_date).toFormat('dd-MM-yy')}`
+                            ? 
+                            `Invite Date: ${convertUnixTimestampToDate(
+                              data?.invite_date,
+                              savedUserData?.availability?.timezone?.name ,
+                            )}`
                             : ''}
                         </span>
                       )}
@@ -168,18 +211,23 @@ const ProjectCard = ({
                   </CardText>
                 </div>
 
-                {!showFullText ? (
-                  <div
-                    className="my-div"
-                    ref={divRef}
-                    style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
-                  >
-                    {data?.details?.description}
-                  </div>
-                ) : (
-                  <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
-                    {data?.details?.description}
-                  </div>
+                {data?.details?.description && (
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  <>
+                    {!showFullText ? (
+                      <div
+                        className="my-div"
+                        ref={divRef}
+                        style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                      >
+                        {parse(data?.details?.description)}
+                      </div>
+                    ) : (
+                      <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
+                        {parse(data?.details?.description)}
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {isContentOverflowing && (

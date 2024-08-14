@@ -157,7 +157,7 @@ class CometChatReceiverFileMessageBubble extends React.Component {
     }
 
     let fileMessage = null;
-    if (this.state.fileData.hasOwnProperty('fileUrl')) {
+    if (this.state.fileData?.hasOwnProperty('fileUrl')) {
       fileMessage = (
         <a
           css={messageFileStyle()}

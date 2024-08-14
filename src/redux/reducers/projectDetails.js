@@ -423,7 +423,21 @@ const projectDetails = createSlice({
       terminateProjectLoading: false,
       error: action.payload,
     }),
+    withdrawProjectRequest: (state) => ({
+      ...state,
+      withdrawProjectLoading: true,
+      error:null,
+    }),
 
+    withdrawProjectSuccess: (state) => ({
+      ...state,
+      withdrawProjectLoading: false,
+    }),
+    withdrawProjectFailure: (state, action) => ({
+      ...state,
+      withdrawProjectLoading: false,
+      error: action.payload,
+    }),  
     relistProjectRequest: (state) => ({
       ...state,
       relistProjectLoading: true,
@@ -556,6 +570,20 @@ const projectDetails = createSlice({
       error: action.payload,
       activeStage: null,
     }),
+    downloadCertificateRequest: (state) => ({
+      ...state,
+      downloadCertificateLoading: true,
+      error: null,
+    }),
+    downloadCertificateSuccess: (state) => ({
+      ...state,
+      downloadCertificateLoading: false,
+    }),
+    downloadCertificateFailure: (state, action) => ({
+      ...state,
+      downloadCertificateLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -624,6 +652,9 @@ export const {
   terminateProjectRequest,
   terminateProjectSuccess,
   terminateProjectFailure,
+  withdrawProjectRequest,
+  withdrawProjectSuccess,
+  withdrawProjectFailure,
   relistProjectRequest,
   relistProjectSuccess,
   relistProjectFailure,
@@ -654,6 +685,9 @@ export const {
   getAppConfigRequest,
   getAppConfigSuccess,
   getAppConfigFailure,
+  downloadCertificateRequest,
+  downloadCertificateSuccess,
+  downloadCertificateFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

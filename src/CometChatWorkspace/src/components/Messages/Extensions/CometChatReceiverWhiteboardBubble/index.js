@@ -63,7 +63,7 @@ class CometChatReceiverWhiteboardBubble extends React.Component {
   launchCollaborativeWhiteboard = () => {
     let whiteboardUrl = null;
     let whiteboardData = checkMessageForExtensionsData(this.props.message, 'whiteboard');
-    if (whiteboardData && whiteboardData.hasOwnProperty('board_url') && whiteboardData.board_url.length) {
+    if (whiteboardData && whiteboardData?.hasOwnProperty('board_url') && whiteboardData.board_url.length) {
       let username = this.loggedInUser?.name.split(' ').join('_');
       // Appending the username to the board_url
       whiteboardUrl = whiteboardData.board_url + '&username=' + username;

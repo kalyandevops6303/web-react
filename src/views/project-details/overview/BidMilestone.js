@@ -21,7 +21,6 @@ import Avatar from '@components/avatar';
 import { BidDetailsWrap } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getBidMilestone } from '../../../redux/actions/projectDetailsAction';
-import DateTime from '../../../lib/date-time';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { getWhoInvited, getTeams } from '../../../redux/actions/teamsActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
@@ -39,6 +38,9 @@ import { SUCCESS } from '../../../utility/constants/ToastTypes';
 import { clearInitedByData } from '../../../redux/reducers/projectDetails';
 import { AccordionBodyContent } from '../../create-bid/style';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
+import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { getMyTeam } from '../../../redux/actions/dashboardActions';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -114,6 +116,7 @@ const BidMilestone = () => {
   // const projectDetailsData = useSelector(projectDetails);
   const [status, setStatus] = useState(invitedByData?.request_status);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const savedUserData = useSelector(selectSavedUserData);
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
   const toggle = useCallback(
     (id) => (openedAccordion === id ? setOpenedAccordion() : setOpenedAccordion(id)),
@@ -201,6 +204,7 @@ const BidMilestone = () => {
           setIsStatusUpdating(false);
           ShowToastMessage(SUCCESS, 'Request accepted');
           dispatch(getTeams({ onSuccess: onGetTeams }));
+          dispatch(getMyTeam())
         },
         onError: () => {
           setIsStatusUpdating(false);
@@ -281,8 +285,8 @@ const BidMilestone = () => {
           <CardBody className="main-card-body details">
             <div>
               <CardText className="value">
-                {bidData?.project_start_date
-                  ? DateTime.fromMillis(bidData?.project_start_date).toFormat('MMM dd, yy')
+                  {bidData?.project_start_date
+                  ? convertUnixTimestampToDate(bidData?.project_start_date , savedUserData?.availability?.timezone?.name )
                   : '-'}
               </CardText>
               <div className="d-flex align-items-center m-0">
@@ -403,7 +407,7 @@ const BidMilestone = () => {
                             <p className="font-small-3 fw-bold content-description">{worker?.number_of_weeks} week</p>
                           </Col>
                           <Col sm="12" md="12" lg="2" className="d-none">
-                            <p className="content-description text-end me-3">${worker?.amount || 0}</p>
+                            <p className="content-description text-end me-3">${roundOfAmount(worker?.amount)}</p>{' '}
                           </Col>
                         </Row>
                       ))}

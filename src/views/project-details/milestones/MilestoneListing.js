@@ -3,14 +3,16 @@ import React from 'react';
 import { ChevronRight } from 'react-feather';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 
-import { formatDate } from '../../../utility/Utils';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
 import MilestoneInfo from './MilestoneInfo';
 import { userTypes } from '../../../utility/constants/Constant';
 import { CustomBadge } from '../../styled';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const getTagSettings = (tag) => {
   if (tag === 'COMPLETED') {
@@ -34,15 +36,15 @@ const getTagSettings = (tag) => {
   return { theme: 'light-primary', text: tag };
 };
 
-const getCompletedDate = (mile) => {
+const getCompletedDate = (mile, savedUserData) => {
   let result;
   switch (true) {
     // To set the completed date for older milestones, since it was blank
-    case mile.end_date === 0 && mile.status === 'COMPLETED':
-      result = formatDate(mile.updated_at);
+    case mile.end_date === 0 && mile?.status === 'COMPLETED':
+      result = convertUnixTimestampToDate(mile.updated_at, savedUserData?.availability?.timezone?.name );
       break;
     case mile.end_date > 0:
-      result = formatDate(mile.end_date);
+      result = convertUnixTimestampToDate(mile.end_date, savedUserData?.availability?.timezone?.name );
       break;
     default:
       result = '-';
@@ -53,6 +55,7 @@ const getCompletedDate = (mile) => {
 const MilestoneListing = ({ milestonesData }) => {
   const params = useParams();
   const navigate = useNavigate();
+  const savedUserData = useSelector(selectSavedUserData);
   return (
     <div>
       {milestonesData.map((mile, index) => (
@@ -63,7 +66,7 @@ const MilestoneListing = ({ milestonesData }) => {
         >
           <CardBody className="py-1 basic-title">
             <div className="d-flex align-items-center justify-content-between">
-              <CardText className="fw-bold mb-0">{mile.name}</CardText>
+              <CardText className="fw-bold mb-0">Milestone #{mile?.seq}</CardText>
               <div style={{ width: '60%' }} className="d-flex align-items-center justify-content-between">
                 <div className="me-2">
                   {mile.workers.length > 3 ? (
@@ -122,12 +125,12 @@ const MilestoneListing = ({ milestonesData }) => {
                   <div className="ms-2">
                     <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
                     <CardText className="fw-bolder fs-5 mb-0">
-                      {mile.start_date ? formatDate(mile.start_date) : '-'}
+                      { mile.start_date ? convertUnixTimestampToDate(mile.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
                     </CardText>
                   </div>
                   <div className="mx-2">
                     <CardText className="fw-normal mb-0 fs-6">Completed On</CardText>
-                    <CardText className="fw-bolder fs-5 mb-0">{getCompletedDate(mile)}</CardText>
+                    <CardText className="fw-bolder fs-5 mb-0">{getCompletedDate(mile, savedUserData)}</CardText>
                   </div>
                   <ChevronRight color="#B9B9C3" />
                 </section>

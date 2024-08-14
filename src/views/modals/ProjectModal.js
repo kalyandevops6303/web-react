@@ -22,19 +22,16 @@ import { useNavigate, useLocation } from 'react-router';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import styled from 'styled-components';
-import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
-import { userTypes } from '../../utility/constants/Constant';
+import { projectStatusEnum, userTypes } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
-import ShowToastMessage from '../../@core/components/toast';
-import { ERROR } from '../../utility/constants/ToastTypes';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
+import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 
 const ViewProjectDetailModalWrap = styled.div`
@@ -93,6 +90,7 @@ const ProjectModal = ({
   toggleCompleteProfileModal,
   setSwitchProfileModal,
   setRelistConfirmationModal,
+  setSavedDraftsAvailableModal,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -114,44 +112,19 @@ const ProjectModal = ({
     }
   }, []);
 
-  const onNoBidFound = () => {
-    toggleModal();
-    setCreateBidModal(true);
-  };
-
-  const onBidFound = (bidData) => {
-    const { bid_id, bid_type, project_type, entity, workers, milestones, status } = bidData;
-
-    if (status !== 'DRAFT') {
-      ShowToastMessage(ERROR, 'You have already submitted a bid for this project');
-    } else {
-      toggleModal();
-      if (entity === userTypes.talent) {
-        if (milestones) {
-          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
-        } else {
-          navigate(
-            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
-          );
-        }
-      } else {
-        // eslint-disable-next-line no-lonely-if
-        if (milestones && workers) {
-          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
-        } else if (workers && !milestones) {
-          navigate(
-            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
-          );
-        } else if (!workers && !milestones) {
-          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`);
-        }
-      }
-    }
-  };
-
   const isViewable =
     location.pathname.split('/').includes('my_bids') || location.pathname.split('/').includes('my_listings');
   const isDashboard = location.pathname.split('/').includes('dashboard');
+
+  const onCheckBidSuccess = (res) => {
+    if (res?.has_bid_draft) {
+      toggleModal();
+      setSavedDraftsAvailableModal(true);
+    } else {
+      toggleModal();
+      setCreateBidModal(true);
+    }
+  };
 
   const handleCreateBid = () => {
     if (
@@ -161,7 +134,7 @@ const ProjectModal = ({
     ) {
       toggleCompleteProfileModal();
     } else {
-      dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
+      dispatch(getCheckBid(data._id, onCheckBidSuccess));
     }
   };
 
@@ -214,6 +187,7 @@ const ProjectModal = ({
         imgWidth: 33,
       }))
     : [];
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -251,15 +225,16 @@ const ProjectModal = ({
                   {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' ? (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                        {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                       </CardTitle>
                       <CardText className="project-name">Expired Date</CardText>
                     </div>
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
-                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                        {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                        {' '} to{' '}
+                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>
@@ -337,10 +312,11 @@ const ProjectModal = ({
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc" style={{ whiteSpace: 'pre-line' }}>
-                {' '}
-                {data?.details?.description}{' '}
-              </CardText>
+              <CardText
+                className="fw-300 ms-75 project-desc"
+                style={{ whiteSpace: 'pre-line' }}
+                dangerouslySetInnerHTML={{ __html: data?.details?.description }}
+              />
             </CardBody>
           </Card>
 
@@ -388,7 +364,7 @@ const ProjectModal = ({
                       {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}
+                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name )}
                     </Col>
                   </Row>
                 ))}
@@ -426,16 +402,18 @@ const ProjectModal = ({
                   Re-list
                 </Button>
               )}
-              <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
-                {checkBidLoadingIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <>
-                    <span className="me-50">View Project</span>
-                    <ChevronRight size={14} />
-                  </>
-                )}
-              </Button>
+              {data?.status !== projectStatusEnum.CLOSED && (
+                <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
+                  {checkBidLoadingIsLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <>
+                      <span className="me-50">View Project</span>
+                      <ChevronRight size={14} />
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           ) : (
             <div>
@@ -446,7 +424,7 @@ const ProjectModal = ({
                     Report
                   </Button>
 
-                  {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') &&
+                  {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
                       ? showCreateBidButton
                       : true) && (
@@ -485,6 +463,7 @@ ProjectModal.propTypes = {
   isActiveProject: Proptypes.bool,
   isUpcomingProject: Proptypes.bool,
   setRelistConfirmationModal: Proptypes.func,
+  setSavedDraftsAvailableModal: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
@@ -499,4 +478,5 @@ ProjectModal.defaultProps = {
   isActiveProject: false,
   isUpcomingProject: false,
   setRelistConfirmationModal: () => {},
+  setSavedDraftsAvailableModal: () => {},
 };

@@ -6,10 +6,9 @@ import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
 import { removeTeamFromList } from '../redux/reducers/team';
 import { store } from '../redux/store';
-import { fcmUnsubscribeService } from '../services/authServices';
 import { ERROR_CODES } from './constants/Constant';
 import { ERROR } from './constants/ToastTypes';
-import { getItem } from './localStorageControl';
+import { getItem, setItem } from './localStorageControl';
 import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
 import { messaging } from '../configs/api/firebase';
 
@@ -34,31 +33,38 @@ const handleError = (err, callBack) => {
   showErrorNotification(err?.response?.data?.errorData?.message || err?.message || 'Operation could not be completed');
 };
 
-const cometChatToken = getItem('cometChatToken');
-const fcmToken = getItem('fcmToken');
-const accessToken = getItem('access_token');
 const handleErrorCode = async (err, callBack) => {
+  const cometChatToken = getItem('cometChatToken');
+  const fcmToken = getItem('fcmToken');
+  const accessToken = getItem('access_token');
+  const expiredError = getItem('expiredError');
   if (err?.response?.status === 401) {
-    if (accessToken) {
-      showErrorNotification('Session expired!');
-    }
-    if (fcmToken) {
-      try {
-        await fcmUnsubscribeService(fcmToken);
-      } catch (error) {
-        console.error(error);
+    if (!expiredError) {
+      setItem('expiredError', true);
+      if (accessToken) {
+        showErrorNotification('Session expired!');
       }
-    }
-    await messaging.deleteToken();
-    if (cometChatToken) {
-      CometChat.disconnect();
-      await CometChat.logout();
+      if (fcmToken) {
+        try {
+          // Not needed because access token is already expried and unsubscribed API need valid token
+          // await fcmUnsubscribeService(fcmToken);
+          await messaging?.deleteToken();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      if (cometChatToken) {
+        CometChat?.disconnect();
+        await CometChat?.logout();
+      }
+
+      window.location.href = '/auth/login';
+      localStorage.clear();
+      sessionStorage.clear();
     }
     const teamId = getItemFromSession('team_id');
     const teamData = getItemFromSession('team_data');
-    window.location.href = '/auth/login';
-    localStorage.clear();
-    sessionStorage.clear();
     if (teamId) {
       setItemFromSession('redirect_to_location', window.location.pathname + window.location.search);
       setItemFromSession('team_id', teamId);
@@ -88,7 +94,6 @@ const handleErrorCode = async (err, callBack) => {
 };
 
 const errorHandler = (err, callBack) => {
-  console.error(err);
   if (window.navigator.onLine) {
     if (
       err?.response?.status === 502 ||

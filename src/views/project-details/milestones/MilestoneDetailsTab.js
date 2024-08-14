@@ -23,13 +23,13 @@ import { useDropzone } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import {
+  convertUnixTimestampToDate,
   downloadUploadedFile,
-  formatDate,
   isFileValid,
   isUrlWithoutProtocol,
   renderFilePreview,
 } from '../../../utility/Utils';
-import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -220,7 +220,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
 
   const isEditable =
     userDataLocal?.user_type !== userTypes.client &&
-    (selectedMilestone.status === 'ON_GOING' || selectedMilestone.status === 'IN_REVIEW');
+    (selectedMilestone?.status === 'ON_GOING' || selectedMilestone?.status === 'IN_REVIEW');
 
   const statusEnum = {
     OPEN: 'Open',
@@ -244,7 +244,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       window.open(`https://${URL}`, '_blank');
     }
   };
-
+  const savedUserData = useSelector(selectSavedUserData);
   const isEmptyLink = allLinks?.some((item) => item.link === '');
   const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
 
@@ -322,7 +322,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
-              {selectedMilestone.start_date ? formatDate(selectedMilestone.start_date) : '-'}
+            {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
             </CardText>
           </div>
           <div>
@@ -566,6 +566,8 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             onClick={() => {
                               if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
                                 handleRemove({ item: allLinks?.[index], index });
+                              }else{
+                                linksRemove(index);
                               }
                             }}
                           >
@@ -574,7 +576,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                                 size={20}
                                 className="mail-icon"
                                 color={
-                                  allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                   !errors?.links?.[index]
                                     ? theme.red
                                     : `${theme.red}5f`
                                 }

@@ -94,7 +94,20 @@ const newTagColor = '#093682';
 const darkGreyBorderColor = '#C2C2C2';
 const inputDisabledBg = '#efefef';
 const accordionHeaderActiveBg = '#F2F8FF';
-
+const draftStatusBadgeBg = '#E0E0E0';
+const draftStatusBadgeColor = '#424242';
+const modalLeftBorderColor = '#ebebeb';
+const pendingOrangeColor = '#FF5F05';
+const fundedBlueColor = '#00ACC1';
+const selectedBlugBg = '#EDF7FF';
+const lightOrangeColor = '#FFF3E8';
+const darkOrangeColor = '#FF9F43';
+const badgeBlueColor = '#E0F6FF';
+const darkBlueColor = "#00B0FF";
+const lightGreenBatchColor = "#E5F8EE";
+const lightRedColor = "#FCEAEB";
+const disputeBorderRedColor = "#E05152";
+const disputeCountBackgroundColor = "#FFF8F8";
 const theme = {
   primary: primaryColor, // primary color for all components
   headerShadow: headerShadowColor, // color for header shadow
@@ -111,8 +124,8 @@ const theme = {
   bodyBgColor,
   inputBorderColor: themeInputBorderColor, // color for theme input borders
   textMuted: textMutedColor, // color for theme input borders
-  toastBacgroundColor,// color for notification toast background
-  toastBorderColor,// color for notification toast border
+  toastBacgroundColor, // color for notification toast background
+  toastBorderColor, // color for notification toast border
   uploadIconBackground: uploadIconBackgroundColor, // color for upload icon background
   white: whiteColor, // white color for all components
   checkboxShadow: checkboxShadowColor, // checkbox shadow color
@@ -194,5 +207,19 @@ const theme = {
   darkGreyBorderColor,
   inputDisabledBg,
   accordionHeaderActiveBg,
+  draftStatusBadgeBg,
+  draftStatusBadgeColor,
+  modalLeftBorderColor,
+  pendingOrangeColor,
+  fundedBlueColor,
+  selectedBlugBg,
+  lightOrangeColor,
+  darkOrangeColor,
+  badgeBlueColor,
+  darkBlueColor,
+  lightGreenBatchColor,
+  lightRedColor,
+  disputeBorderRedColor,
+  disputeCountBackgroundColor
 };
 export default theme;

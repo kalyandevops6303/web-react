@@ -1,16 +1,31 @@
+/* eslint-disable react/no-danger */
 import Proptypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat, downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import {
+  convertTo12HourFormat,
+  convertUnixTimestampToDate,
+  downloadUploadedFile,
+  getFileSize,
+  removeEmptyKeys,
+  renderFilePreview,
+} from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
-import { createNewProject } from '../../../redux/actions/createProjectActions';
+import {
+  createProjectLoading,
+  saveDraftProjectId,
+  saveDraftProjectLoading,
+} from '../../../redux/selectors/createProjectSelectors';
+import { createNewProject, saveDraftProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
+import { clearAllFormData } from '../../../redux/reducers/formData';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const Preview = ({
   stepper,
@@ -20,13 +35,17 @@ const Preview = ({
   youDidItModal,
   setYouDidItModal,
   toggleYouDidItModal,
+  setDraftSavedModal,
 }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
   const dispatch = useDispatch();
-
+  const params = useParams();
+  const savedUserData = useSelector(selectSavedUserData);
   const createProjectIsLoading = useSelector(createProjectLoading);
+  const draftProjectId = useSelector(saveDraftProjectId);
+  const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
 
   const renderFormattedDate = (date) => {
     const formattedDate = date
@@ -35,15 +54,6 @@ const Preview = ({
       .split(' ');
 
     return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
-  };
-
-  const renderFormattedListingDate = (date) => {
-    const formattedDate = date
-      .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-      .replace(',', '')
-      .split(' ');
-
-    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
   };
 
   const fileList = () => (
@@ -108,56 +118,8 @@ const Preview = ({
     </TagsContainer>
   );
 
-  const isEmpty = (value) => {
-    if (value === undefined || value === null) {
-      return true;
-    }
-
-    if (typeof value === 'string' || Array.isArray(value)) {
-      return value.length === 0;
-    }
-
-    if (typeof value === 'object') {
-      return Object.keys(value).length === 0;
-    }
-
-    return false;
-  };
-
-  const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
-
-  const removeEmptyKeys = (obj) => {
-    if (typeof obj !== 'object' || obj === null) {
-      return obj;
-    }
-
-    if (Array.isArray(obj)) {
-      const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
-
-      return filteredArray.map((item) => removeEmptyKeys(item));
-    }
-
-    const filteredObj = {};
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key];
-      if (typeof value === 'object') {
-        const cleanedValue = removeEmptyKeys(value);
-        if (!isEmpty(cleanedValue)) {
-          filteredObj[key] = cleanedValue;
-        }
-      } else if (!isEmpty(value)) {
-        filteredObj[key] = value;
-      }
-    });
-
-    if (isEmpty(filteredObj)) {
-      return undefined;
-    }
-
-    return filteredObj;
-  };
-
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     toggleYouDidItModal();
     stepper.next();
   };
@@ -172,7 +134,7 @@ const Preview = ({
       }));
 
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,
@@ -182,7 +144,7 @@ const Preview = ({
       };
     } else {
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,
@@ -245,7 +207,123 @@ const Preview = ({
       listing_details,
     };
 
-    dispatch(createNewProject(removeEmptyKeys(requiredData), onSuccess));
+    dispatch(
+      createNewProject({
+        projectId: params?.projectId || draftProjectId,
+        data: removeEmptyKeys(requiredData),
+        onSuccess,
+      }),
+    );
+  };
+
+  const onSaveDraftSuccess = () => setDraftSavedModal(true);
+
+  const handleSaveDraft = () => {
+    let details;
+    const {
+      projectName,
+      projectDescription,
+      expectedDuration,
+      expectedDurationPeriod,
+      skills,
+      tools,
+      preferredWorkingTimeZone,
+      minTimeOverlapHr,
+      availabilityDays,
+      weekdayStartTime,
+      weekdayEndTime,
+      weekendStartTime,
+      weekendEndTime,
+      includedCountriesSelection,
+      excludedCountriesSelection,
+      currencyType,
+      projectPayType,
+      projectFixedCost,
+      nda: ndaValue,
+    } = projectDetails;
+    const { startDate, endDate } = listingDetails;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      details = {
+        name: projectName?.trim(),
+        description: projectDescription,
+        expected_duration: {
+          duration: expectedDuration,
+          duration_type: expectedDurationPeriod?.value,
+        },
+        documents,
+      };
+    } else {
+      details = {
+        name: projectName?.trim(),
+        description: projectDescription,
+        expected_duration: {
+          duration: expectedDuration,
+          duration_type: expectedDurationPeriod?.value,
+        },
+      };
+    }
+
+    const proficiency = {
+      skills: skills.map((skill) => skill.value),
+      tools: tools?.map((tool) => tool.value),
+    };
+    const availability = {
+      timezone: preferredWorkingTimeZone.value._id,
+      time_overlap: minTimeOverlapHr,
+      weekdays_avl: {
+        start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
+        days: availabilityDays?.includes('weekdays') ? weekdays : null,
+      },
+      weekends_avl: {
+        start_time: availabilityDays?.includes('weekends') ? weekendStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekends') ? weekendEndTime?.value : null,
+        days: availabilityDays?.includes('weekends') ? weekends : null,
+      },
+    };
+    const countries = {
+      included: includedCountriesSelection?.map((country) => country.value),
+      excluded: excludedCountriesSelection?.map((country) => country.value),
+    };
+    const pay_type = {
+      currency: currencyType?.value?._id,
+      variable_cost: projectPayType !== 'fixed-price',
+      fixed_cost: projectPayType === 'fixed-price' ? parseInt(projectFixedCost, 10) : 0,
+    };
+    const nda = {
+      is_nda: ndaValue === 'yes',
+    };
+    const start_date = Date.parse(startDate);
+    const end_date = Date.parse(endDate);
+
+    const listing_details = {
+      start_date,
+      end_date,
+    };
+
+    const requiredData = {
+      details,
+      proficiency,
+      availability,
+      countries,
+      pay_type,
+      nda,
+      listing_details,
+    };
+
+    dispatch(
+      saveDraftProject({
+        projectId: params?.projectId || draftProjectId,
+        data: removeEmptyKeys(requiredData),
+        onSuccess: onSaveDraftSuccess,
+      }),
+    );
   };
 
   return (
@@ -278,9 +356,8 @@ const Preview = ({
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {listingDetails?.listingOption === 'select-duration'
-                  ? `${renderFormattedListingDate(listingDetails?.startDate)} - ${renderFormattedListingDate(
-                      listingDetails?.endDate,
-                    )}`
+                  ? 
+                  `${convertUnixTimestampToDate(listingDetails?.startDate, savedUserData?.availability?.timezone?.name )} - ${convertUnixTimestampToDate(listingDetails?.endDate, savedUserData?.availability?.timezone?.name )}`
                   : `${listingDetails?.duration}d`}
               </h4>
               <p className="font-medium-1 fw-normal">Listing Duration</p>
@@ -308,7 +385,7 @@ const Preview = ({
             <Col sm="12" md="12" lg="6">
               <TimeWrapper>
                 <section className="weekdays">
-                  {projectDetails?.availabilityDays.includes('weekdays') ? (
+                  {projectDetails?.availabilityDays?.includes('weekdays') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayEndTime?.value, 10))}{' '}
@@ -322,8 +399,8 @@ const Preview = ({
                       <li key={day}>
                         <span
                           className={`dot ${
-                            projectDetails?.availabilityDays.includes('weekdays') &&
-                            projectDetails?.weekdays.includes(day)
+                            projectDetails?.availabilityDays?.includes('weekdays') &&
+                            projectDetails?.weekdays?.includes(day)
                               ? 'active'
                               : ''
                           }`}
@@ -334,7 +411,7 @@ const Preview = ({
                   </ul>
                 </section>
                 <section className="weekends">
-                  {projectDetails?.availabilityDays.includes('weekends') ? (
+                  {projectDetails?.availabilityDays?.includes('weekends') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendEndTime?.value, 10))}{' '}
@@ -348,8 +425,8 @@ const Preview = ({
                       <li key={day}>
                         <span
                           className={`dot ${
-                            projectDetails?.availabilityDays.includes('weekends') &&
-                            projectDetails?.weekends.includes(day)
+                            projectDetails?.availabilityDays?.includes('weekends') &&
+                            projectDetails?.weekends?.includes(day)
                               ? 'active'
                               : ''
                           }`}
@@ -373,7 +450,9 @@ const Preview = ({
           <h4 className="m-0 mt-1">Project Description</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
-        <CardBody style={{ whiteSpace: 'pre-line' }}>{projectDetails?.projectDescription}</CardBody>
+        <CardBody style={{ whiteSpace: 'pre-line' }}>
+          <div dangerouslySetInnerHTML={{ __html: projectDetails?.projectDescription }} />
+        </CardBody>
       </Card>
       {files && files.length > 0 && fileList()}
       <Card>
@@ -415,16 +494,27 @@ const Preview = ({
           </UploadIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
         </div>
-        <Button color="primary" disabled={createProjectIsLoading} onClick={() => setYouDidItModal(true)}>
-          {createProjectIsLoading ? (
-            <Spinner size="sm" />
-          ) : (
-            <>
-              <span className="me-50">Post</span>
-              <ChevronRight size={14} />
-            </>
-          )}
-        </Button>
+        <div className="d-flex">
+          <Button
+            color="primary"
+            className="me-2"
+            outline
+            disabled={saveDraftProjectIsLoading}
+            onClick={handleSaveDraft}
+          >
+            {saveDraftProjectIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+          </Button>
+          <Button color="primary" disabled={createProjectIsLoading} onClick={() => setYouDidItModal(true)}>
+            {createProjectIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Post</span>
+                <ChevronRight size={14} />
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </>
   );
@@ -440,6 +530,7 @@ Preview.propTypes = {
   youDidItModal: Proptypes.bool,
   setYouDidItModal: Proptypes.func,
   toggleYouDidItModal: Proptypes.func,
+  setDraftSavedModal: Proptypes.func,
 };
 
 Preview.defaultProps = {
@@ -450,4 +541,5 @@ Preview.defaultProps = {
   youDidItModal: false,
   setYouDidItModal: () => {},
   toggleYouDidItModal: () => {},
+  setDraftSavedModal: () => {},
 };

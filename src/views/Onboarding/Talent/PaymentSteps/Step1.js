@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
-import { userOnboarding, userProfileEdit } from '../../../../utility/constants/Constant';
+import { CITIZEN_TYPES, userOnboarding, userProfileEdit } from '../../../../utility/constants/Constant';
 
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
@@ -17,21 +17,27 @@ import {
   updatePaymentDetails,
 } from '../../../../redux/actions/paymentActions';
 import { handleEmailClick } from '../../../../utility/Utils';
+import { formData } from '../../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
 
 // eslint-disable-next-line react/prop-types
-const Step1 = ({ setStep }) => {
+const Step1 = ({ setStep , step }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const savedFormData = useSelector(formData);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
-  const [isWorkingInUS, setIsWorkingInUS] = useState(false);
-  const [taxUserType, setTaxUserType] = useState('US');
+  const [isWorkingInUS, setIsWorkingInUS] = useState(savedFormData?.isWorkingInUS || false);
+  const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || CITIZEN_TYPES.US);
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
-  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(savedFormData?.isPaymentOnboardingDone || false);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
+  useEffect(()=>{
+    dispatch(setFormData({...savedFormData,step}));
+  },[step]);
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       if (res?.created_at) setIsTaxInfoExists(true);
@@ -50,6 +56,7 @@ const Step1 = ({ setStep }) => {
   }, []);
 
   const onBackClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
@@ -58,14 +65,30 @@ const Step1 = ({ setStep }) => {
   };
 
   const handlePrePaymentChange = (e) => {
+    if (e.target.name === CITIZEN_TYPES.US || e.target.name === CITIZEN_TYPES.OTHER) {
+      dispatch(setFormData({ taxUserType: e.target.name }));
+    } else {
+      dispatch(setFormData({ ...savedFormData, taxUserType: e.target.name }));
+    }
+
     setTaxUserType(e.target.name);
   };
+
+  useEffect(()=>{
+    const allData = {...savedFormData, isPaymentOnboardingDone };
+    dispatch(setFormData(allData));
+  },[isPaymentOnboardingDone]);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const handleWorkOptionChange = (e) => {
-    if (e.target.name === 'in_us') setIsWorkingInUS(true);
-    else setIsWorkingInUS(false);
+    if (e.target.name === 'in_us') {
+      dispatch(setFormData({ ...savedFormData, isWorkingInUS: true }));
+      setIsWorkingInUS(true);
+    } else {
+      dispatch(setFormData({ ...savedFormData, isWorkingInUS: false }));
+      setIsWorkingInUS(false);
+    }
   };
 
   const onSuccess = () => {
@@ -79,7 +102,8 @@ const Step1 = ({ setStep }) => {
     }
   };
   const handleNextClick = (e) => {
-    if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
+    
+    if (taxUserType === CITIZEN_TYPES.OTHER || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       handleEmailClick();
       e.preventDefault();
@@ -104,6 +128,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const onSkipSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
@@ -112,6 +137,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
@@ -123,7 +149,7 @@ const Step1 = ({ setStep }) => {
     if (isPaymentOnboardingDone) {
       return 'Stripe Linked Account';
     }
-    if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
+    if (taxUserType === CITIZEN_TYPES.OTHER || (taxUserType === 'NON_US' && isWorkingInUS)) {
       return 'Email Support Team';
     }
     return 'STEP 2 - Taxpayer Identification';
@@ -147,7 +173,7 @@ const Step1 = ({ setStep }) => {
               <Col className="d-flex gap-50">
                 <Input
                   type="radio"
-                  checked={taxUserType === 'US'}
+                  checked={taxUserType === CITIZEN_TYPES.US}
                   name="US"
                   disabled={isPaymentOnboardingDone}
                   onChange={handlePrePaymentChange}
@@ -171,7 +197,7 @@ const Step1 = ({ setStep }) => {
                   type="radio"
                   name="OTHER"
                   disabled={isPaymentOnboardingDone}
-                  checked={taxUserType === 'OTHER'}
+                  checked={taxUserType === CITIZEN_TYPES.OTHER}
                   onChange={handlePrePaymentChange}
                 />
                 <div className="w-75">All other tax situations</div>
@@ -179,7 +205,7 @@ const Step1 = ({ setStep }) => {
             </div>
           </CardBody>
         </Card>
-        {taxUserType === 'OTHER' || taxUserType === 'US' ? null : (
+        {taxUserType === CITIZEN_TYPES.OTHER || taxUserType === CITIZEN_TYPES.US ? null : (
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Working</h4>

@@ -34,7 +34,6 @@ import {
   bidStatusesOptions,
   projectTypesOptions,
   sortingOptions,
-  statusForAllListing,
   statusesOptions,
   userTypes,
 } from '../../../utility/constants/Constant';
@@ -44,11 +43,13 @@ import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
 import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
+import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
-  const [searchText, setSearchText] = useState('');
-  const dispatch = useDispatch();
   const location = useLocation();
+  const [searchText, setSearchText] = useState(location?.state?.clientName ?? '');
+  const [inputText, setInputText] = useState(location?.state?.clientName ?? '');
+  const dispatch = useDispatch();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
   const inputRef = useRef();
@@ -63,15 +64,29 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const selectCardData = useSelector((state) => state?.marketPlace?.cardData);
 
   const metaData = { page: 1, page_size: 10 };
+
+  const getStatusFromLocationState = () => {
+    if (location?.state?.isOpenListing) {
+      return [{ label: 'Open', value: 'OPEN' }];
+    }
+    if (location?.state?.isDraftProjects) {
+      return [{ label: 'Drafts', value: 'DRAFT' }];
+    }
+    return [];
+  };
+
   const [secondFilterState, setSecondFilterState] = useState({
-    statuses: location?.state?.isOpenListing ? [{ label: 'Open', value: 'OPEN' }] : [],
-    bid_statuses: [],
+    statuses: getStatusFromLocationState(),
+    bid_statuses: location?.state?.isDraftBids ? [{ label: 'Drafts', value: 'DRAFT' }] : [],
     project_types: [],
     skills: [],
     tools: [],
     sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMENDED' }] : [],
     industries: [],
     project_areas: [],
+    project_ids: location?.state?.draftBidProjectId
+      ? [{ label: location?.state?.draftBidProjectId, value: location?.state?.draftBidProjectId }]
+      : [],
   });
   const { sort_by } = secondFilterState;
 
@@ -119,7 +134,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [currentPreview]);
 
-  const getCardComp = () => {
+  const getCardComp = (projectStatus) => {
     if (primaryFilter === 'talents') {
       return TalentCard;
     }
@@ -129,18 +144,25 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (primaryFilter === 'teams') {
       return TeamCard;
     }
+    if (primaryFilter === 'my_listings' && projectStatus === 'DRAFT') {
+      return MarketPlaceDraftProjectCard;
+    }
     return ProjectCard;
   };
-
   const onSuccess = () => {};
   const onError = () => {
     setHasMore(false);
   };
+
   useEffect(() => {
     dispatch(clearData());
     const valuesOnly = {};
     Object.keys(secondFilterState).forEach((key) => {
-      if (key === 'statuses' && secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED')) {
+      if (
+        key === 'statuses' &&
+        (secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED') ||
+          secondFilterState?.statuses?.map((item) => item.value)?.includes('TO_BE_LISTED'))
+      ) {
         valuesOnly[key] = [];
       } else {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
@@ -167,6 +189,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             isMyListing: primaryFilter === 'my_listings',
             isMyBids: primaryFilter === 'my_bids',
             show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
+            show_to_be_listed: secondFilterState?.statuses?.map((item) => item.value)?.includes('TO_BE_LISTED'),
             isRecommanded,
             isFavorite,
             metaData,
@@ -180,21 +203,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       }
     }
   }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite, userType]);
-
-  useEffect(() => {
-    if (location?.state?.isRecommended) {
-      setSecondFilterState({
-        ...secondFilterState,
-        sort_by: [{ label: 'Recommended', value: 'RECOMMENDED' }],
-      });
-    }
-    if (location?.state?.isOpenListing) {
-      setSecondFilterState({
-        ...secondFilterState,
-        statuses: [{ label: 'Open', value: 'OPEN' }],
-      });
-    }
-  }, [location]);
 
   // Function to toggle the popover
   const togglePopover = () => {
@@ -321,8 +329,21 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   };
 
+  useEffect(() => {
+    const debouncedHandleSearchTextChange = debounce((value) => {
+      setSearchText(value);
+    }, 300);
+
+    debouncedHandleSearchTextChange(inputText);
+
+    // Cleanup the debounce function
+    return () => {
+      debouncedHandleSearchTextChange.cancel();
+    };
+  }, [inputText]);
+
   const handleSearchTextChange = (e) => {
-    setSearchText(e.target.value);
+    setInputText(e.target.value);
     e.preventDefault();
   };
 
@@ -361,6 +382,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
           show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
+          show_to_be_listed: secondFilterState?.statuses?.map((item) => item.value)?.includes('TO_BE_LISTED'),
           isRecommanded,
           isFavorite,
           metaData: newMeteData,
@@ -390,10 +412,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const setStatusOptions = () => {
-    if (primaryFilter === 'all_listings') {
-      return statusForAllListing;
-    } else if (primaryFilter === 'my_listings') {
-      return [...statusesOptions, { label: 'Expired', value: 'LISTING_EXPIRED' }];
+   if (primaryFilter === 'my_listings') {
+      return [
+        ...statusesOptions,
+        { label: 'Expired', value: 'LISTING_EXPIRED' },
+        { label: 'To Be Listed', value: 'TO_BE_LISTED' },
+        { label: 'Drafts', value: 'DRAFT' },
+      ];
     } else {
       return statusesOptions;
     }
@@ -452,11 +477,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <InputGroupText>
                 <Search size={14} />
               </InputGroupText>
-              <Input
-                innerRef={inputRef}
-                onChange={debounce(handleSearchTextChange, 300)}
-                placeholder={getSearchPlaceholder()}
-              />
+              <Input value={inputText} onChange={handleSearchTextChange} placeholder={getSearchPlaceholder()} />
             </InputGroup>
           </div>
           <Row>
@@ -516,7 +537,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               </Col>
             ) : (
               <span className="w-auto">
-                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'all_listings' && primaryFilter !== 'teams' && (
                   <Col>
                     <Label className="form-label">Status</Label>
                     <Select
@@ -698,7 +719,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             }
           >
             {selectMarketPlaceData?.map((item) => {
-              const CardComponent = getCardComp();
+              const CardComponent = getCardComp(item?.project?.status);
 
               return (
                 <CardComponent

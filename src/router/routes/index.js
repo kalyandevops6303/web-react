@@ -15,7 +15,6 @@ import { isObjEmpty } from '@utils';
 
 import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
 import UserDetails from '../../views/user-details';
-import SecondPage from '../../views/SecondPage';
 import AuthRoute from '../../views/auth/index';
 import TalentOnboarding from '../../views/Onboarding/Talent';
 import ClientOnboarding from '../../views/Onboarding/Client';
@@ -40,6 +39,9 @@ import CreateClub from '../../views/createClub';
 import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
+import Assessments from '../../views/assessments';
+import InternalProjects from '../../views/internal/projects';
+import NotFound from '../../views/NotFound';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -71,10 +73,6 @@ const Routes = [
   {
     path: '/profile/:userType/:userId',
     element: <UserDetails />,
-  },
-  {
-    path: '/second-page',
-    element: <SecondPage />,
   },
   {
     path: '/marketplace/*',
@@ -152,6 +150,10 @@ const Routes = [
     element: <CreateProject />,
   },
   {
+    path: '/create-project/:projectId',
+    element: <CreateProject />,
+  },
+  {
     path: '/notifications',
     element: <Notifications />,
   },
@@ -177,6 +179,10 @@ const Routes = [
     element: <CreateTeam />,
   },
   {
+    path: '/create-team/:section-details/:id',
+    element: <CreateTeam />,
+  },
+  {
     path: `/${userProfileEdit.team}/:section-details`,
     element: <CreateTeam />,
   },
@@ -186,6 +192,10 @@ const Routes = [
   },
   {
     path: `/${userProfileEdit.club}/:section-details`,
+    element: <CreateClub />,
+  },
+  {
+    path: '/create-club/:section-details/:id',
     element: <CreateClub />,
   },
   {
@@ -203,6 +213,18 @@ const Routes = [
   {
     path: '/payments',
     element: <PaymentFullView />,
+  },
+  {
+    path: '/assessments',
+    element: <Assessments />,
+  },
+  {
+    path: '/internal/projects',
+    element: <InternalProjects />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ];
 
@@ -240,7 +262,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-                LayoutWrapper
+              LayoutWrapper
               : Fragment;
 
           // eslint-disable-next-line no-param-reassign

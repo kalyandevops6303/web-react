@@ -1,23 +1,25 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
+import { Badge, Card, CardBody, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
-import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
+import DurationSegment from './DurationSegment';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
 
 const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
   const dispatch = useDispatch();
-
+  const savedUserData = useSelector(selectSavedUserData);
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
@@ -145,16 +147,22 @@ const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
               </div>
             </div>
           </div>
+          <p className="active-project-simple-heading">Project</p>
+          <DurationSegment start_date={data?.start_date} end_date={data?.end_date} />
           <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
           <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper justify-content-between w-100">
+            <div className="design-planning-wrapper">
               <div className="design-planning">
-                <CardText className="mb-25">Due Date</CardText>
-                <h6 className="mb-0">{`${
-                  DateTime.fromMillis(data?.current_milestone?.due_date).toFormat('MMM dd, yy') || '-'
-                }`}</h6>
+                <p className="mb-25 details-box-title">
+                  Due Date
+                </p>
+                <p className="mb-0 details-box">
+                {`${
+                  convertUnixTimestampToDate(data?.current_milestone?.due_date, savedUserData?.availability?.timezone?.name ) || '-'
+                }`}
+                </p>
               </div>
-              <p className="active-project-milestone-name">{data?.current_milestone?.name}</p>
+              <h4 className="active-project-milestone-name">{data?.current_milestone?.name}</h4>
             </div>
           </div>
           <div

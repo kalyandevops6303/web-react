@@ -16,6 +16,7 @@ import { getAllDisputes, getDisputesCount, raiseNewDispute } from '../../../redu
 import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { disputeStatuses } from '../../../utility/constants/Constant';
 import ShowToastMessage from '../../../@core/components/toast';
+import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 
 const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail, fetchMilestoneDisutes }) => {
   const DisputeSchema = yup.object().shape({
@@ -35,7 +36,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail, f
       .required('Dispute Type is required'),
     disputeDetails: yup
       .string()
-      .min(100, 'Dispute details must be at least 100 characters')
+      .min(50, 'Dispute details must be at least 50 characters')
       .max(2000, 'Dispute details must be 2000 characters or less')
       .required('Dispute details is required'),
   });
@@ -69,6 +70,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail, f
       fetchMilestoneDisutes();
     }
     dispatch(getDisputesCount());
+    dispatch(getProjectDetails({projectId: projectDetail?.value, isBidView: false}));
     toggleModal();
   };
 

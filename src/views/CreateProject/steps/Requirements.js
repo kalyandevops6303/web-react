@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { ChevronRight, Info, Minus, Upload } from 'react-feather';
 import 'react-quill/dist/quill.snow.css';
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -24,9 +25,10 @@ import {
   Badge,
   CardText,
   CardTitle,
+  Spinner,
 } from 'reactstrap';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useDropzone from '../../../lib/react-dropzone';
 import { DropzoneContainer, RequirementsFormContainer } from '../style';
@@ -51,9 +53,19 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import { downloadUploadedFile, filteredFormSchema, getFileSize, removeEmptyKeys, renderFilePreview } from '../../../utility/Utils';
+import { saveDraftProject } from '../../../redux/actions/createProjectActions';
+import {
+  draftProjectDetailsLoading,
+  saveDraftProjectId,
+  saveDraftProjectLoading,
+} from '../../../redux/selectors/createProjectSelectors';
+import SaveForLaterModal from '../../modals/SaveForLaterModal';
+import { setFormData, setFormDocuments } from '../../../redux/reducers/formData';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
+import TextEditor from '../TextEditor';
 
-const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
+const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSavedModal, draftRequirementDetails }) => {
   const ProjectDetailsSchema = yup.object().shape({
     projectName: yup
       .string()
@@ -93,7 +105,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .required('Period is required'),
     projectDescription: yup
       .string()
-      .min(100, 'Project description must be at least 100 characters')
+      .min(50, 'Project description must be at least 50 characters')
       .max(3000, 'Project description must be 3000 characters or less')
       .required('Project description is required'),
     skills: yup
@@ -134,17 +146,17 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .required('Desired time overlap is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
     weekends: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -156,7 +168,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           .required('Start time is required'),
     }),
     weekdayEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
       then: () =>
         yup
           .object()
@@ -168,7 +180,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -180,7 +192,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
+      is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -232,6 +244,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     setValue,
     clearErrors,
     trigger,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -253,13 +266,29 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
   const [tryAIModal, setTryAIModal] = useState(null);
+  const [saveForLaterModal, setSaveForLaterModal] = useState(null);
 
   const skillsFromAI = useSelector(skillsListAI);
   const toolsFromAI = useSelector(toolsListAI);
   const currenciesData = useSelector(currencies);
   const currenciesIsLoading = useSelector(currenciesLoading);
+  const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
+  const draftProjectId = useSelector(saveDraftProjectId);
+  const draftProjectDetailsIsLoading = useSelector(draftProjectDetailsLoading);
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
 
   const dispatch = useDispatch();
+  const params = useParams();
+
+  const localFormData = useWatch({ control });
+
+  const toggleSaveForLaterModal = () => setSaveForLaterModal(!saveForLaterModal);
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   useEffect(() => {
     clearErrors('expectedDuration');
@@ -274,7 +303,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         options: skillsOptions.filter(
           (skill) =>
             skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            skill.label.toLowerCase().includes(search.toLowerCase()),
+            skill.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -299,7 +328,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         options: toolsOptions.filter(
           (tool) =>
             tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            tool.label.toLowerCase().includes(search.toLowerCase()),
+            tool.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -324,7 +353,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         options: timezonesOptions.filter(
           (timezone) =>
             timezone.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            timezone.label.toLowerCase().includes(search.toLowerCase()),
+            timezone.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -352,7 +381,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         options: countriesOptions.filter(
           (country) =>
             country.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            country.label.toLowerCase().includes(search.toLowerCase()),
+            country.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -377,7 +406,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         options: currenciesOptions.filter(
           (currency) =>
             currency.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            currency.label.toLowerCase().includes(search.toLowerCase()),
+            currency.label.toLowerCase()?.includes(search.toLowerCase()),
         ),
       };
     }
@@ -394,6 +423,92 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     } catch (error) {
       return { options: [] };
     }
+  };
+
+  const onSaveDraftSuccess = () => setDraftSavedModal(true);
+
+  const handleSaveDraft = () => {
+    setProjectDetails(localFormData);
+
+    let details;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      details = {
+        name: localFormData?.projectName.trim(),
+        description: localFormData?.projectDescription,
+        expected_duration: {
+          duration: localFormData?.expectedDuration,
+          duration_type: localFormData?.expectedDurationPeriod?.value,
+        },
+        documents,
+      };
+    } else {
+      details = {
+        name: localFormData?.projectName.trim(),
+        description: localFormData?.projectDescription,
+        expected_duration: {
+          duration: localFormData?.expectedDuration,
+          duration_type: localFormData?.expectedDurationPeriod?.value,
+        },
+      };
+    }
+
+    const proficiency = {
+      skills: localFormData?.skills.map((skill) => skill.value),
+      tools: localFormData?.tools?.map((tool) => tool.value),
+    };
+    const availability = {
+      timezone: localFormData?.preferredWorkingTimeZone.value._id,
+      time_overlap: localFormData?.minTimeOverlapHr,
+      weekdays_avl: {
+        start_time: localFormData?.availabilityDays?.includes('weekdays')
+          ? localFormData?.weekdayStartTime?.value
+          : null,
+        end_time: localFormData?.availabilityDays?.includes('weekdays') ? localFormData?.weekdayEndTime?.value : null,
+        days: localFormData?.availabilityDays?.includes('weekdays') ? localFormData?.weekdays : null,
+      },
+      weekends_avl: {
+        start_time: localFormData?.availabilityDays?.includes('weekends')
+          ? localFormData?.weekendStartTime?.value
+          : null,
+        end_time: localFormData?.availabilityDays?.includes('weekends') ? localFormData?.weekendEndTime?.value : null,
+        days: localFormData?.availabilityDays?.includes('weekends') ? localFormData?.weekends : null,
+      },
+    };
+    const countries = {
+      included: localFormData?.includedCountriesSelection?.map((country) => country.value),
+      excluded: localFormData?.excludedCountriesSelection?.map((country) => country.value),
+    };
+    const pay_type = {
+      currency: localFormData?.currencyType?.value?._id,
+      variable_cost: localFormData?.projectPayType !== 'fixed-price',
+      fixed_cost: localFormData?.projectPayType === 'fixed-price' ? parseInt(localFormData?.projectFixedCost, 10) : 0,
+    };
+    const nda = {
+      is_nda: localFormData?.nda === 'yes',
+    };
+
+    const requiredData = {
+      details,
+      proficiency,
+      availability,
+      countries,
+      pay_type,
+      nda,
+    };
+
+    dispatch(
+      saveDraftProject({
+        projectId: params?.projectId || draftProjectId,
+        data: removeEmptyKeys(requiredData),
+        onSuccess: onSaveDraftSuccess,
+      }),
+    );
   };
 
   const onSubmit = (data) => {
@@ -421,6 +536,12 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       dispatch(clearAIToolsAndSkills());
     };
   }, []);
+
+  useEffect(() => {
+    if (params?.projectId) {
+      reset(draftRequirementDetails);
+    }
+  }, [draftRequirementDetails]);
 
   useEffect(() => {
     if (skillsFromAI && skillsFromAI?.length > 0) {
@@ -456,6 +577,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {
@@ -536,7 +658,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </div>
             </Col>
             <Col sm="6" md="2" lg="2">
-              {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+              {uploadingFiles?.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
               {getFileSize(file.file.size)}
@@ -548,7 +670,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               <Button
                 color="flat-danger"
                 className="btn-left-margin"
-                disabled={uploadingFiles.includes(file)}
+                disabled={uploadingFiles?.includes(file)}
                 onClick={() => handleRemoveFile(file)}
               >
                 Remove
@@ -594,7 +716,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const userDetailsData = useSelector(userData);
 
   useEffect(() => {
-    if (userDetailsData) {
+    if (userDetailsData && !params?.projectId) {
       // eslint-disable-next-line no-unsafe-optional-chaining
       if ('timezone' in userDetailsData?.availability) {
         setValue(
@@ -656,13 +778,29 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     }
   }, [currenciesData]);
 
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ProjectDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+    if (savedFormDocuments) {
+      setFiles(savedFormDocuments);
+    }
+  }, []);
+
   return (
     <>
       {tryAIModal && (
         <TryAIModal modal={tryAIModal} toggleModal={() => setTryAIModal(!tryAIModal)} onSuccess={onSuccess} />
       )}
+      {saveForLaterModal && <SaveForLaterModal modal={saveForLaterModal} toggleModal={toggleSaveForLaterModal} />}
       <RequirementsFormContainer>
-        {currenciesIsLoading ? (
+        {currenciesIsLoading || draftProjectDetailsIsLoading ? (
           <ComponentSpinner className="mt-5" />
         ) : (
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -751,16 +889,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       id="projectDescription"
                       name="projectDescription"
                       control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          type="textarea"
-                          placeholder="Add background and requirements"
-                          rows="5"
-                          invalid={errors.projectDescription && true}
-                        />
-                      )}
+                      render={({ field }) => {
+                        return (
+                          <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Add background and requirements"
+                          />
+                        );
+                      }}
                     />
+
                     {errors.projectDescription && <FormFeedback>{errors.projectDescription.message}</FormFeedback>}
                   </Col>
                 </Row>
@@ -950,7 +1090,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             type="checkbox"
                             {...field}
                             id="weekdays"
-                            checked={field.value.includes('weekdays')}
+                            checked={field.value?.includes('weekdays')}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               const value = 'weekdays';
@@ -971,7 +1111,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             type="checkbox"
                             {...field}
                             id="weekends"
-                            checked={field.value.includes('weekends')}
+                            checked={field.value?.includes('weekends')}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               const value = 'weekends';
@@ -994,9 +1134,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 </Row>
                 <Row>
                   {availabilityDays &&
-                    (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
+                    (availabilityDays?.includes('weekdays') || availabilityDays?.includes('weekends')) && (
                       <>
-                        {availabilityDays.includes('weekdays') && (
+                        {availabilityDays?.includes('weekdays') && (
                           <div>
                             <Row className="mb-1 mt-2">
                               <div className="d-flex align-items-center">
@@ -1098,7 +1238,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                         type="checkbox"
                                         {...field}
                                         id="MONDAY"
-                                        checked={field.value.includes('MONDAY')}
+                                        checked={field.value?.includes('MONDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'MONDAY';
@@ -1119,7 +1259,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                         type="checkbox"
                                         {...field}
                                         id="TUESDAY"
-                                        checked={field.value.includes('TUESDAY')}
+                                        checked={field.value?.includes('TUESDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'TUESDAY';
@@ -1140,7 +1280,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                         type="checkbox"
                                         {...field}
                                         id="WEDNESDAY"
-                                        checked={field.value.includes('WEDNESDAY')}
+                                        checked={field.value?.includes('WEDNESDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'WEDNESDAY';
@@ -1161,7 +1301,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                         type="checkbox"
                                         {...field}
                                         id="THURSDAY"
-                                        checked={field.value.includes('THURSDAY')}
+                                        checked={field.value?.includes('THURSDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'THURSDAY';
@@ -1182,7 +1322,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                         type="checkbox"
                                         {...field}
                                         id="FRIDAY"
-                                        checked={field.value.includes('FRIDAY')}
+                                        checked={field.value?.includes('FRIDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'FRIDAY';
@@ -1206,7 +1346,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           </div>
                         )}
 
-                        {availabilityDays.includes('weekends') && (
+                        {availabilityDays?.includes('weekends') && (
                           <div>
                             <Row className="mb-1 mt-2">
                               <div className="d-flex align-items-center">
@@ -1308,7 +1448,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                         type="checkbox"
                                         {...field}
                                         id="SATURDAY"
-                                        checked={field.value.includes('SATURDAY')}
+                                        checked={field.value?.includes('SATURDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'SATURDAY';
@@ -1329,7 +1469,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                         type="checkbox"
                                         {...field}
                                         id="SUNDAY"
-                                        checked={field.value.includes('SUNDAY')}
+                                        checked={field.value?.includes('SUNDAY')}
                                         onChange={(e) => {
                                           const isChecked = e.target.checked;
                                           const value = 'SUNDAY';
@@ -1759,8 +1899,17 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </CardBody>
             </Card>
             <div className="d-flex justify-content-end">
+              <Button
+                onClick={handleSaveDraft}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={uploadingFiles.length > 0 || !isValid || saveDraftProjectIsLoading}
+              >
+                {saveDraftProjectIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
               <Button onClick={handleSave} color="primary" disabled={uploadingFiles.length > 0 || !isValid}>
-                <span className="me-50">Save & Continue</span>
+                <span className="me-50">Continue</span>
                 <ChevronRight size={14} />
               </Button>
             </div>
@@ -1778,6 +1927,8 @@ Requirements.propTypes = {
   setProjectDetails: Proptypes.func,
   files: Proptypes.array,
   setFiles: Proptypes.func,
+  setDraftSavedModal: Proptypes.func,
+  draftRequirementDetails: Proptypes.object,
 };
 
 Requirements.defaultProps = {
@@ -1785,4 +1936,6 @@ Requirements.defaultProps = {
   setProjectDetails: () => {},
   files: [],
   setFiles: () => {},
+  setDraftSavedModal: () => {},
+  draftRequirementDetails: {},
 };

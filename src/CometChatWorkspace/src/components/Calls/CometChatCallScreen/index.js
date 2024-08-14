@@ -320,7 +320,7 @@ class CometChatCallScreen extends React.PureComponent {
           }
 
           this.props.actionGenerated(enums.ACTIONS['DIRECT_CALL_ERROR']);
-          const errorCode = error && error.hasOwnProperty('code') ? error.code : 'ERROR';
+          const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'ERROR';
           this.context.setToastMessage('error', errorCode);
         },
       }),

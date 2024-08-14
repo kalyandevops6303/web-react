@@ -344,7 +344,7 @@ class CometChatGroupList extends React.PureComponent {
           }
         })
         .catch((error) => {
-          if (error.hasOwnProperty('code') && error.code && error.code === 'ERR_WRONG_GROUP_PASS') {
+          if (error?.hasOwnProperty('code') && error.code && error.code === 'ERR_WRONG_GROUP_PASS') {
             this.toastRef.setError('WRONG_PASSWORD');
           } else {
             this.toastRef.setError('SOMETHING_WRONG');

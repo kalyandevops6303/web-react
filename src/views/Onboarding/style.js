@@ -255,6 +255,35 @@ export const ProfileFormContainer = styled.div`
   .form-control.is-invalid {
     background-image: none;
   }
+  .primary {
+    color: ${theme.primary};
+  }
+
+  .error-banner {
+    background: ${theme.errorBannerBg};
+    p {
+      color: ${theme.red};
+    }
+  }
+
+  .info-banner {
+    background: ${theme.infoBannerBg};
+    p,
+    a {
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .success-banner {
+    background: ${theme.green}1f;
+    p,
+    a {
+      color: ${theme.green};
+    }
+  }
+  .info {
+    margin-bottom: 0.1rem;
+  }
 `;
 
 export const UploadIconContainer = styled.div`

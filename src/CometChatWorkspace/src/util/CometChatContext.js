@@ -86,7 +86,7 @@ export class CometChatContextProvider extends React.Component {
           this.setItem(user);
         })
         .catch((error) => {
-          const errorCode = error && error.hasOwnProperty('code') ? error.code : 'uid not available';
+          const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'uid not available';
           this.toastRef.setError(errorCode);
         });
     } else if (this.props.group.trim().length) {
@@ -96,7 +96,7 @@ export class CometChatContextProvider extends React.Component {
           this.setItem(group);
         })
         .catch((error) => {
-          const errorCode = error && error.hasOwnProperty('code') ? error.code : 'guid not available';
+          const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'guid not available';
           this.toastRef.setError(errorCode);
         });
     } else if (
@@ -119,7 +119,7 @@ export class CometChatContextProvider extends React.Component {
           //this.setClearedUnreadMessages(false);
         })
         .catch((error) => {
-          const errorCode = error && error.hasOwnProperty('code') ? error.code : 'uid not available';
+          const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'uid not available';
           this.toastRef.setError(errorCode);
         });
     } else if (this.props.group.trim().length && prevProps.group !== this.props.group) {
@@ -131,7 +131,7 @@ export class CometChatContextProvider extends React.Component {
           //this.setClearedUnreadMessages(false);
         })
         .catch((error) => {
-          const errorCode = error && error.hasOwnProperty('code') ? error.code : 'guid not available';
+          const errorCode = error && error?.hasOwnProperty('code') ? error.code : 'guid not available';
           this.toastRef.setError(errorCode);
         });
     }
@@ -403,7 +403,7 @@ export class CometChatContextProvider extends React.Component {
   };
 
   hasKeyValue = (data, key) => {
-    if (data.hasOwnProperty(key) === false || data[key] === null || data[key] === undefined) {
+    if (data?.hasOwnProperty(key) === false || data[key] === null || data[key] === undefined) {
       return false;
     }
 
