@@ -234,21 +234,11 @@ const UserDropdown = ({ setNavBarLoading }) => {
             imgWidth="40"
           />
         )}
-        {userDetailsData?.user_type === userTypes.client && !isDelegate ? (
+        {userDetailsData?.user_type === userTypes.client && (
           <Avatar
             img={
               userDetailsData?.client_info?.image_uri.length > 0
                 ? userDetailsData?.client_info?.image_uri
-                : defaultAvatar
-            }
-            imgHeight="40"
-            imgWidth="40"
-          />
-        ) : (
-          <Avatar
-            img={
-              userDetailsData?.admin_client_info?.image_uri.length > 0
-                ? userDetailsData?.admin_client_info?.image_uri
                 : defaultAvatar
             }
             imgHeight="40"
