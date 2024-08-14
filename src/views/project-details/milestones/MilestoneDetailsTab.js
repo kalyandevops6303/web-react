@@ -206,7 +206,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             size: file?.fileData?.file?.size,
             created_at: file?.fileData?.file?.lastModified,
             description: file?.description ?? '',
-            doc_id : file?.fileData?.id,
+            doc_id: file?.fileData?.id,
           };
 
           if (file?.filedata?.id) {
@@ -383,7 +383,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       window.open(`https://${URL}`, '_blank');
     }
   };
-  const savedUserData = useSelector(selectSavedUserData);
+
   const isEmptyLink = allLinks?.some((item) => item.link === '');
   const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
 
@@ -472,7 +472,9 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
-              {selectedMilestone.start_date ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
+              {selectedMilestone.start_date
+                ? convertUnixTimestampToDate(selectedMilestone.start_date, savedUserData?.availability?.timezone?.name)
+                : '-'}
             </CardText>
           </div>
           <div>
@@ -717,26 +719,26 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                                 if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
                                   handleLinkOpen(allLinks?.[index]?.link);
                                 }
-                              />
-                            </span>
-                          </MessageIconWrap>
-                          <MessageIconWrap
-                            onClick={() => {
-                              if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
-                                handleRemove({ item: allLinks?.[index], index });
-                              }else{
-                                linksRemove(index);
-                              }
-                            }}
-                          >
-                            <span className="trash-bg">
-                              <Trash2
-                                size={20}
-                                className="mail-icon"
-                                color={
-                                   !errors?.links?.[index]
-                                    ? theme.red
-                                    : `${theme.red}5f`
+                              }}
+                            >
+                              <span className="mail-bg">
+                                <ExternalLink
+                                  size={20}
+                                  className="mail-icon"
+                                  color={
+                                    allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                      ? theme.activeColor
+                                      : `${theme.activeColor}5f`
+                                  }
+                                />
+                              </span>
+                            </MessageIconWrap>
+                            <MessageIconWrap
+                              onClick={() => {
+                                if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
+                                  handleRemove({ item: allLinks?.[index], index });
+                                } else {
+                                  linksRemove(index);
                                 }
                               }}
                             >
@@ -744,11 +746,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                                 <Trash2
                                   size={20}
                                   className="mail-icon"
-                                  color={
-                                    allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
-                                      ? theme.red
-                                      : `${theme.red}5f`
-                                  }
+                                  color={!errors?.links?.[index] ? theme.red : `${theme.red}5f`}
                                 />
                               </span>
                             </MessageIconWrap>
