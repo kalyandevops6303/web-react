@@ -8,6 +8,7 @@ import { AcceptModalWrapper } from '../../modals/style';
 import Notepad from '../../../assets/images/youDidIt.gif';
 import { useDispatch, useSelector } from 'react-redux';
 import { getQuestionsLink } from '../../../redux/actions/hiringActions';
+import { useNavigate } from 'react-router-dom';
 
 const FULL_STACK_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
 const AI_ML_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
@@ -147,6 +148,9 @@ const InternHiringItem = ({ listing }) => {
 }
 
 const InternHiring = () => {
+
+  const navigate = useNavigate();
+
   return (
     <ProfileFormContainer>
       {listings?.map((listing) => (
@@ -155,7 +159,7 @@ const InternHiring = () => {
 
       <div className="d-flex justify-content-end w-75">
         <Button
-          onClick={() => window.open('https://www.hackerrank.com/careers/', '_block')}
+          onClick={() => navigate("/dashboard")}
           color="primary"
           type="submit"
         >
