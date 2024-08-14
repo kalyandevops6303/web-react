@@ -93,7 +93,8 @@ const Profile = ({ setDraftSavedModal }) => {
     teamTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     teamIntroduction: yup
       .string()
-      .max(500, 'Introduction must be 500 characters or less')
+      .min(300, 'Introduction must be 300 characters or more')
+      .max(2500, 'Introduction must be 2500 characters or less')
       .required('Introduction is required'),
     services: yup
       .array()
