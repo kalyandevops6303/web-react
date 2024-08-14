@@ -349,6 +349,9 @@ const API = {
     list: `${apiAuthEndpoint}/api/v1/support-requests/paginated`,
     delete: `${apiAuthEndpoint}/api/v1/support-request`
   },
+  hiring: {
+    show_hiring_tab: `${apiAuthEndpoint}/api/v1/talent/check-mandatory-onboarding-details`
+  }
 };
 
 export default API;

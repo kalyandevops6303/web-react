@@ -18,6 +18,8 @@ const TalentOnboarding = () => {
     Availability: '4',
     Social: '5',
     Payment: '6',
+    InternHiring: '7',
+    InternXobinHiring: '8',
   };
 
   const [active, setActive] = useState(tabNames.Account);
@@ -52,6 +54,16 @@ const TalentOnboarding = () => {
       location.pathname === `/${userProfileEdit.talent}/social-details`
     )
       setActive(tabNames.Social);
+    else if (
+      location.pathname === `/${userOnboarding.talent}/intern-hiring` ||
+      location.pathname === `/${userProfileEdit.talent}/intern-hiring`
+    )
+      setActive(tabNames.InternHiring);
+    else if (
+      location.pathname === `/${userOnboarding.talent}/intern-xobin-hiring` ||
+      location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring`
+    )
+      setActive(tabNames.InternXobinHiring);
     else if (
       location.pathname.includes('/payment-details') ||
       location.pathname === `/${userProfileEdit.talent}/payment-details`
