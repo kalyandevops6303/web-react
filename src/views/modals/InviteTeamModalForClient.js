@@ -455,10 +455,7 @@ const InviteTeamModalForClient = ({
                             </Col>
                             <Col sm="2" md="3" lg="2">
                               <div className="d-flex align-items-center gap-1">
-                                <Tag 
-                                hasNew={false}
-                                count={item.exam_counter || "00"}
-                                />
+                                <Tag hasNew={false} count={item.exam_counter || '00'} />
                                 <div>Assessed Skills</div>
                               </div>
                             </Col>
@@ -469,10 +466,7 @@ const InviteTeamModalForClient = ({
                                   styles={{
                                     path: {
                                       stroke: giveStrokeColor(item.match_percentage),
-                                      strokeLinecap: '
-                                      
-                                      
-                                      ',
+                                      strokeLinecap: 'round',
                                       transition: 'stroke-dashoffset 0.5s ease 0s',
                                       transform: 'rotate(0turn)',
                                       transformOrigin: 'center center',
@@ -558,10 +552,7 @@ const InviteTeamModalForClient = ({
                             </Col>
                             <Col sm="2" md="3" lg="2">
                               <div className="d-flex align-items-center gap-1">
-                                <Tag 
-                                hasNew={false}
-                                count={item.exam_counter || "00"}
-                                />
+                                <Tag hasNew={false} count={item.exam_counter || '00'} />
                                 <div>Assessed Skills</div>
                               </div>
                             </Col>
