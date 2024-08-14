@@ -350,7 +350,8 @@ const API = {
     delete: `${apiAuthEndpoint}/api/v1/support-request`
   },
   hiring: {
-    show_hiring_tab: `${apiAuthEndpoint}/api/v1/talent/check-mandatory-onboarding-details`
+    show_hiring_tab: `${apiAuthEndpoint}/api/v1/talent/check-mandatory-onboarding-details`,
+    questions_link: `${apiOnboardingEndpoint}/api/v1/coding-test/questions`
   }
 };
 

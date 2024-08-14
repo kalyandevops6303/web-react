@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     showHiringTab: false,
     showHiringTabLoading: false,
+    questionsLink: null,
+    questionsLinkLoading: false,
     error: null
 }
 
@@ -26,13 +28,32 @@ const hiringSlice = createSlice({
             showHiringTabLoading: false,
             error: action.payload
         }),
+        questionsLinkRequest: (state) => ({
+            ...state,
+            questionsLinkLoading: true,
+            error: null,
+        }),
+        questionsLinkSuccess: (state, action) => ({
+            ...state,
+            questionsLinkLoading: false,
+            questionsLink: action.payload,
+            error: null,
+        }),
+        questionsLinkFailure: (state, action) => ({
+            ...state,
+            questionsLinkLoading: false,
+            error: action.payload
+        }),
     }
 })
 
 export const {
     showHiringTabRequest,
     showHiringTabSuccess,
-    showHiringTabFailure
+    showHiringTabFailure,
+    questionsLinkRequest,
+    questionsLinkSuccess,
+    questionsLinkFailure
 } = hiringSlice.actions;
 
 export default hiringSlice.reducer;
