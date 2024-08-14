@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
@@ -15,16 +15,25 @@ import EducationTabInactiveImg from '../../../assets/images/educationTabInactive
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
+import { useDispatch, useSelector } from 'react-redux';
+import { getShowHiringTab } from "../../../redux/actions/hiringActions";
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
 
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
     }
   };
+
+  useEffect(() => {
+    dispatch(getShowHiringTab())
+  }, [])
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
@@ -77,7 +86,7 @@ const Tabs = ({ tabNames, active }) => {
             }
           >
             {location.pathname === `/${userOnboarding.talent}/educational-details` ||
-            location.pathname === `/${userProfileEdit.talent}/educational-details` ? (
+              location.pathname === `/${userProfileEdit.talent}/educational-details` ? (
               <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
             ) : (
               <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />
@@ -136,10 +145,13 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Payment</span>
           </NavLink>
         </NavItem>
-        <NavItem
+        {showHiringTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/intern-hiring`);
+            }
+            else {
+              onTabClick(`/${userOnboarding.talent}/intern-hiring`);
             }
           }}
         >
@@ -152,8 +164,8 @@ const Tabs = ({ tabNames, active }) => {
             <Crosshair className="font-medium-3 me-50" />
             <span className="fw-bold">Get Hired</span>
           </NavLink>
-        </NavItem>
-        <NavItem
+        </NavItem>}
+        {showHiringTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/intern-xobin-hiring`);
@@ -169,7 +181,7 @@ const Tabs = ({ tabNames, active }) => {
             <Crosshair className="font-medium-3 me-50" />
             <span className="fw-bold">Get Hired (I)</span>
           </NavLink>
-        </NavItem>
+        </NavItem>}
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
@@ -194,16 +206,20 @@ const Tabs = ({ tabNames, active }) => {
         </TabPane>
         <TabPane tabId={tabNames.Payment}>
           {location.pathname.includes('payment-details') ||
-          location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
+            location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
             <Payment />
           ) : null}
         </TabPane>
         <TabPane tabId={tabNames.InternHiring}>
-          {location.pathname === `/${userProfileEdit.talent}/intern-hiring` ? <InternHiring /> : null}
+          {(location.pathname === `/${userProfileEdit.talent}/intern-hiring` || 
+            location.pathname === `/${userOnboarding.talent}/intern-hiring`
+          )? <InternHiring /> : null}
         </TabPane>
         <TabPane tabId={tabNames.InternXobinHiring}>
           {location.pathname.includes('intern-xobin-hiring') ||
-          location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` ? (
+            location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` || 
+            location.pathname === `/${userOnboarding.talent}/intern-xobin-hiring`
+            ? (
             <InternXobinHiring />
           ) : null}
         </TabPane>

@@ -145,6 +145,24 @@ const Step1 = ({ setStep , step }) => {
     }
   };
 
+  const onGetHiredClick = () => {
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/intern-xobin-hiring`)
+    }
+    else {
+      navigate(`/${userOnboarding.talent}/intern-xobin-hiring`)
+    }
+  }
+
+  const onGetHiredClick2 = () => {
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/intern-hiring`)
+    }
+    else {
+      navigate(`/${userOnboarding.talent}/intern-hiring`)
+    }
+  }
+
   const getCTAText = () => {
     if (isPaymentOnboardingDone) {
       return 'Stripe Linked Account';
@@ -245,11 +263,12 @@ const Step1 = ({ setStep , step }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
+            
             <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
-            <Button color="primary" onClick={handleNextClick}>
+            <Button color="primary" className="me-2" onClick={handleNextClick}>
               {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (
@@ -259,6 +278,14 @@ const Step1 = ({ setStep , step }) => {
                 </>
               )}
             </Button>
+            <Button color="danger" className="me-2" onClick={onGetHiredClick}>
+              <span className="me-50">Get Hired (Xobin) </span>
+              <ChevronRight size={14} />
+            </Button> 
+            <Button color="danger" className="me-2" onClick={onGetHiredClick2}>
+              <span className="me-50">Get Hired</span>
+              <ChevronRight size={14} />
+            </Button> 
           </div>
         </div>
       </Form>

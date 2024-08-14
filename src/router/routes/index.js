@@ -231,6 +231,14 @@ const Routes = [
     element: <TalentOnboarding />,
   },
   {
+    path: `/${userOnboarding.talent}/intern-hiring`,
+    element: <TalentOnboarding />,
+  },
+  {
+    path: `/${userOnboarding.talent}/intern-xobin-hiring`,
+    element: <TalentOnboarding />,
+  },
+  {
     path: '*',
     element: <NotFound />,
   },
