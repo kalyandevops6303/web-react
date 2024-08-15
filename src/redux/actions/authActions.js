@@ -107,6 +107,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
   dispatch(loginRequest());
   try {
     const res = await loginService({ email: username, password });
+    dispatch(setUserTypeSuccess(res?.data?.data?.user_type));
     setItem('access_token', res.data.data.access_token);
     setItem('access_token_expires', res.data.data.access_token_expires);
     setItem('refresh_token', res.data.data.refresh_token);
