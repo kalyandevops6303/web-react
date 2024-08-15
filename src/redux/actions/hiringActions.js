@@ -1,9 +1,12 @@
 import errorHandler from '../../utility/errorHandler';
-import { showHiringTabService } from '../../services/hiringServices';
+import { questionsLinkService, showHiringTabService } from '../../services/hiringServices';
 import {
     showHiringTabRequest, 
     showHiringTabSuccess, 
-    showHiringTabFailure
+    showHiringTabFailure,
+    questionsLinkRequest,
+    questionsLinkSuccess,
+    questionsLinkFailure
 } from '../reducers/hiring';
 
 const getShowHiringTab = () => async (dispatch) => {
@@ -16,7 +19,18 @@ const getShowHiringTab = () => async (dispatch) => {
     }
 }
 
+const getQuestionsLink = () => async (dispatch) => {
+    dispatch(questionsLinkRequest());
+    try {
+        const res = await questionsLinkService();
+        dispatch(questionsLinkSuccess(res.data.data));
+    } catch (error) {
+        errorHandler(error, questionsLinkFailure);
+    }
+}
+
 
 export {
-    getShowHiringTab
+    getShowHiringTab,
+    getQuestionsLink
 }
