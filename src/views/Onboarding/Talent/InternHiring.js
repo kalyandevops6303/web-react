@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Card, CardBody, CardHeader, CardSubtitle, CardTitle, CardText, Label, NavLink, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
 import { ChevronRight, Link } from 'react-feather';
@@ -6,6 +6,9 @@ import { ProfileFormContainer } from '../style';
 import { Input } from 'reactstrap';
 import { AcceptModalWrapper } from '../../modals/style';
 import Notepad from '../../../assets/images/youDidIt.gif';
+import { useDispatch, useSelector } from 'react-redux';
+import { getQuestionsLink } from '../../../redux/actions/hiringActions';
+import { useNavigate } from 'react-router-dom';
 
 const FULL_STACK_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
 const AI_ML_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
@@ -29,9 +32,13 @@ const listings = [
 
 const InternHiringItem = ({ listing }) => {
 
+  const dispatch = useDispatch();
+
   const [githubLink, setGithubLink] = useState('');
   const [file, setFile] = useState(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+
+  const questionsLink = useSelector((state) => state.hiring.questionsLink?.question_id?.link);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,6 +48,10 @@ const InternHiringItem = ({ listing }) => {
 
     setShowSubmitModal(true)
   };
+
+  useEffect(() => {
+    dispatch(getQuestionsLink());
+  }, [])
 
   return (
     <Card className="w-75">
@@ -69,8 +80,7 @@ const InternHiringItem = ({ listing }) => {
         <CardBody>
           <CardText>Thank you for showing interest in Trumio. Find your problem statement below, and build a solution to the best of your ability.  </CardText>
           <CardText className="d-flex">Find your problem statement here:  &nbsp;
-            <NavLink href="#" className="text-primary d-flex align-items-center gap-1 ">
-              {/* <Link size="15px"/> */}
+            <NavLink href={questionsLink || "#"} target="_blank" className="text-primary d-flex align-items-center gap-1 ">
               <b>Problem Statement</b>
             </NavLink>
           </CardText>
@@ -138,6 +148,9 @@ const InternHiringItem = ({ listing }) => {
 }
 
 const InternHiring = () => {
+
+  const navigate = useNavigate();
+
   return (
     <ProfileFormContainer>
       {listings?.map((listing) => (
@@ -146,7 +159,7 @@ const InternHiring = () => {
 
       <div className="d-flex justify-content-end w-75">
         <Button
-          onClick={() => window.open('https://www.hackerrank.com/careers/', '_block')}
+          onClick={() => navigate("/dashboard")}
           color="primary"
           type="submit"
         >
