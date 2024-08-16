@@ -145,7 +145,7 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Payment</span>
           </NavLink>
         </NavItem>
-        {showHiringTab && <NavItem
+        {/* {showHiringTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/intern-hiring`);
@@ -164,7 +164,7 @@ const Tabs = ({ tabNames, active }) => {
             <Crosshair className="font-medium-3 me-50" />
             <span className="fw-bold">Get Hired</span>
           </NavLink>
-        </NavItem>}
+        </NavItem>} */}
         {showHiringTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
@@ -179,7 +179,7 @@ const Tabs = ({ tabNames, active }) => {
             }
           >
             <Crosshair className="font-medium-3 me-50" />
-            <span className="fw-bold">Get Hired (I)</span>
+            <span className="fw-bold">Get Hired</span>
           </NavLink>
         </NavItem>}
       </Nav>

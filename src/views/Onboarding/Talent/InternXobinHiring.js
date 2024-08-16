@@ -6,6 +6,7 @@ import { ProfileFormContainer } from '../style';
 import { Input } from 'reactstrap';
 import { AcceptModalWrapper } from '../../modals/style';
 import Notepad from '../../../assets/images/youDidIt.gif';
+import { useNavigate } from 'react-router-dom';
 
 const FULL_STACK_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
 const AI_ML_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
@@ -130,6 +131,9 @@ const InternXobinHiringItem = ({listing}) => {
 }
 
 const InternXobinHiring = () => {
+
+  const navigate = useNavigate();
+
   return (
     <ProfileFormContainer>
       {listings?.map((listing) => ( 
@@ -138,7 +142,7 @@ const InternXobinHiring = () => {
 
       <div className="d-flex justify-content-end w-75">
         <Button
-          onClick={() => window.open('https://www.hackerrank.com/careers/', '_block')}
+          onClick={() => navigate("/dashboard")}
           color="primary"
           type="submit"
         >

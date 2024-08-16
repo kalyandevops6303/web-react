@@ -19,6 +19,8 @@ import {
 import { handleEmailClick } from '../../../../utility/Utils';
 import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
+import { getShowHiringTab } from '../../../../redux/actions/hiringActions';
+import { UncontrolledTooltip } from 'reactstrap';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep , step }) => {
@@ -173,6 +175,12 @@ const Step1 = ({ setStep , step }) => {
     return 'STEP 2 - Taxpayer Identification';
   };
 
+  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
+
+  useEffect(() => {
+    dispatch(getShowHiringTab())
+  }, [])
+
   return (
     <ProfileFormContainer>
       {accountCreatedModal && (
@@ -278,14 +286,22 @@ const Step1 = ({ setStep , step }) => {
                 </>
               )}
             </Button>
-            <Button color="danger" className="me-2" onClick={onGetHiredClick}>
-              <span className="me-50">Get Hired (Xobin) </span>
+            <span id="get-hired-cta">
+            <Button disabled={!showHiringTab} color="danger" className="me-2" onClick={onGetHiredClick}>
+              <span className="me-50">Get Hired </span>
               <ChevronRight size={14} />
+
+              {!showHiringTab && 
+              <UncontrolledTooltip target="get-hired-cta">
+                Enter the required fields on previous tabs
+              </UncontrolledTooltip>
+              }
             </Button> 
-            <Button color="danger" className="me-2" onClick={onGetHiredClick2}>
+            </span>
+            {/* <Button color="danger" className="me-2" onClick={onGetHiredClick2}>
               <span className="me-50">Get Hired</span>
               <ChevronRight size={14} />
-            </Button> 
+            </Button>  */}
           </div>
         </div>
       </Form>
