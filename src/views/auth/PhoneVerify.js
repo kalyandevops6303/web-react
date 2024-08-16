@@ -43,11 +43,11 @@ const VerifyPhone = () => {
 
   const userType = useSelector(selectUserType);
 
-  useEffect(() => {
-    if (!userType) {
-      dispatch(getUserData());
-    }
-  }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
+  // useEffect(() => {
+  //   if (!userType) {
+  //     dispatch(getUserData());
+  //   }
+  // }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
 
   useEffect(() => {
     if (isPhoneVerified && userType) {
