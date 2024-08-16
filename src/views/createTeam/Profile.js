@@ -93,7 +93,8 @@ const Profile = ({ setDraftSavedModal }) => {
     teamTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     teamIntroduction: yup
       .string()
-      .max(500, 'Introduction must be 500 characters or less')
+      .min(300, 'Introduction must be 300 characters or more')
+      .max(2500, 'Introduction must be 2500 characters or less')
       .required('Introduction is required'),
     services: yup
       .array()
@@ -582,7 +583,11 @@ const Profile = ({ setDraftSavedModal }) => {
           setTeamCreatingModal(true);
         }
       }
-      dispatch(deleteDraftTeam({ id: draftTeamId, onSuccess: () => {}, onError: () => {} }));
+      const editDraftPath = /^\/create-team\/profile-details\/[a-f0-9]{24}$/;
+      if(editDraftPath.test(location.pathname)) {
+        dispatch(deleteDraftTeam({ id: draftTeamId, onSuccess: () => {}, onError: () => {} }));
+      }
+      
     }
   };
 

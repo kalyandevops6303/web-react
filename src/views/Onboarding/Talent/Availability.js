@@ -37,6 +37,7 @@ import { currencies, currenciesLoading } from '../../../redux/selectors/staticSe
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
+import { saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -241,8 +242,10 @@ const Availability = () => {
       currency_preference,
       hourly_rate,
     };
-
+    
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveCheckpointComplete(() => {}));
+    
   };
 
   const loadTimezonesOptions = async (search) => {
@@ -935,10 +938,10 @@ const Availability = () => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div>
-              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+              {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
                 <span className="me-50">Skip</span>
                 <ChevronRight size={14} />
-              </Button>
+              </Button> */}
               <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
                 {profileDetailsIsLoading ? (
                   <Spinner size="sm" />

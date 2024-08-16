@@ -268,7 +268,7 @@ const Educational = () => {
         },
       };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+      // dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
 
@@ -502,13 +502,13 @@ const Educational = () => {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
       } else if (!parsedUploaded && parsedResumeData === null) {
-        dispatch(
-          getResumeParsedDetails(
-            setResumeParsedDetails,
-            setParseResume,
-            savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
-          ),
-        );
+        // dispatch(
+        //   getResumeParsedDetails(
+        //     setResumeParsedDetails,
+        //     setParseResume,
+        //     savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
+        //   ),
+        // );
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
@@ -857,10 +857,10 @@ const Educational = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                  {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button>
+                  </Button> */}
                   <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
@@ -874,7 +874,7 @@ const Educational = () => {
                 </div>
               </div>
             </Col>
-            {!isEmpty(files) && (
+            {/* {!isEmpty(files) && (
               <Col>
                 <Card>
                   <CardBody>
@@ -908,7 +908,7 @@ const Educational = () => {
                   </CardBody>
                 </Card>
               </Col>
-            )}
+            )} */}
           </Row>
         </Form>
       )}

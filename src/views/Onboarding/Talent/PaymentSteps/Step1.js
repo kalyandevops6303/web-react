@@ -19,6 +19,8 @@ import {
 import { handleEmailClick } from '../../../../utility/Utils';
 import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
+import { getShowHiringTab } from '../../../../redux/actions/hiringActions';
+import { UncontrolledTooltip } from 'reactstrap';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep , step }) => {
@@ -145,6 +147,24 @@ const Step1 = ({ setStep , step }) => {
     }
   };
 
+  const onGetHiredClick = () => {
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/intern-xobin-hiring`)
+    }
+    else {
+      navigate(`/${userOnboarding.talent}/intern-xobin-hiring`)
+    }
+  }
+
+  const onGetHiredClick2 = () => {
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/intern-hiring`)
+    }
+    else {
+      navigate(`/${userOnboarding.talent}/intern-hiring`)
+    }
+  }
+
   const getCTAText = () => {
     if (isPaymentOnboardingDone) {
       return 'Stripe Linked Account';
@@ -154,6 +174,12 @@ const Step1 = ({ setStep , step }) => {
     }
     return 'STEP 2 - Taxpayer Identification';
   };
+
+  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
+
+  useEffect(() => {
+    dispatch(getShowHiringTab())
+  }, [])
 
   return (
     <ProfileFormContainer>
@@ -245,11 +271,12 @@ const Step1 = ({ setStep , step }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+            
+            {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
-            </Button>
-            <Button color="primary" onClick={handleNextClick}>
+            </Button> */}
+            <Button color="primary" className="me-2" onClick={handleNextClick}>
               {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (
@@ -259,6 +286,22 @@ const Step1 = ({ setStep , step }) => {
                 </>
               )}
             </Button>
+            <span id="get-hired-cta">
+            <Button disabled={!showHiringTab} color="danger" className="me-2" onClick={onGetHiredClick}>
+              <span className="me-50">Get Hired </span>
+              <ChevronRight size={14} />
+
+              {!showHiringTab && 
+              <UncontrolledTooltip target="get-hired-cta">
+                Enter the required fields on previous tabs
+              </UncontrolledTooltip>
+              }
+            </Button> 
+            </span>
+            {/* <Button color="danger" className="me-2" onClick={onGetHiredClick2}>
+              <span className="me-50">Get Hired</span>
+              <ChevronRight size={14} />
+            </Button>  */}
           </div>
         </div>
       </Form>
