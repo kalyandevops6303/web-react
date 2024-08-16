@@ -37,6 +37,7 @@ import { currencies, currenciesLoading } from '../../../redux/selectors/staticSe
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
+import { saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -241,8 +242,10 @@ const Availability = () => {
       currency_preference,
       hourly_rate,
     };
-
+    
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveCheckpointComplete(() => {}));
+    
   };
 
   const loadTimezonesOptions = async (search) => {
