@@ -4,7 +4,7 @@ const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
 const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
-const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/admin`;
+const apiAdminEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/admin`;
 
 const API = {
   auth: {
@@ -340,15 +340,15 @@ const API = {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
   },
   assessments: {
-    user_assessments: `${apiAssessmentsEndpoint}/api/v1/candidate/assessments`,
-    team_assessments: `${apiAssessmentsEndpoint}/api/v1/assessment/teams-info`,
-    all_assessments: `${apiAssessmentsEndpoint}/api/v1/all/assessment/dropdown`,
-    delete_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment`,
-    toggle_assessment_hidden: `${apiAssessmentsEndpoint}/api/v1/candidate/hide/assessment`,
-    add_assessment: `${apiAssessmentsEndpoint}/api/v1/add/candidate/assessment/list`,
-    get_assessment_link: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/link`,
-    delete_non_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/non-assessment`,
-    prepopulate: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/prepopulate`,
+    user_assessments: `${apiOnboardingEndpoint}/api/v1/candidate/assessments`,
+    team_assessments: `${apiOnboardingEndpoint}/api/v1/assessment/teams-info`,
+    all_assessments: `${apiOnboardingEndpoint}/api/v1/all/assessment/dropdown`,
+    delete_assessment: `${apiOnboardingEndpoint}/api/v1/candidate/assessment`,
+    toggle_assessment_hidden: `${apiOnboardingEndpoint}/api/v1/candidate/hide/assessment`,
+    add_assessment: `${apiOnboardingEndpoint}/api/v1/add/candidate/assessment/list`,
+    get_assessment_link: `${apiOnboardingEndpoint}/api/v1/candidate/assessment/link`,
+    delete_non_assessment: `${apiOnboardingEndpoint}/api/v1/candidate/non-assessment`,
+    prepopulate: `${apiOnboardingEndpoint}/api/v1/candidate/assessment/prepopulate`,
   },
   support: {
     create: `${apiAuthEndpoint}/api/v1/support-request`,

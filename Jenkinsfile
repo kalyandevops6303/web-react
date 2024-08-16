@@ -21,7 +21,7 @@ pipeline {
 		    def apiCreateProjectAIEndpoint=5443
 		    def apiPaymentEndPoint=4443
 		    def apiProjectInfraEndpoint=8443	
-		    def apiAssessmentsEndpoint=3443
+		    def apiAdminEndpoint=6443
 			
                     // Docker Compose file & Credential ID based on selected environment
                     switch (params.ENVIRONMENT) {
@@ -46,7 +46,7 @@ pipeline {
 			    apiCreateProjectAIEndpoint=5553
 			    apiPaymentEndPoint-4553
 			    apiProjectInfraEndpoint=8553
-			    apiAssessmentsEndpoint=3553
+			    apiAdminEndpoint=6553
                             break
                         default:
                             composeFile = 'docker-compose.yml'
@@ -69,7 +69,7 @@ pipeline {
 	   		    sed -i "s/4443/${apiPaymentEndPoint}/g" src/configs/api/index.js
 	 		    sed -i "s/5443/${apiCreateProjectAIEndpoint}/g" src/configs/api/index.js
 			    sed -i "s/8443/${apiProjectInfraEndpoint}/g" src/configs/api/index.js
-       			    sed -i "s/3443/${apiAssessmentsEndpoint}/g" src/configs/api/index.js
+       			    sed -i "s/3443/${apiAdminEndpoint}/g" src/configs/api/index.js
 	                    cat src/configs/api/index.js
                             docker compose build
                             docker compose up -d
