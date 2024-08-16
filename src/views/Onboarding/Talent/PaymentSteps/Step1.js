@@ -272,10 +272,10 @@ const Step1 = ({ setStep , step }) => {
           </div>
           <div>
             
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+            {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
-            </Button>
+            </Button> */}
             <Button color="primary" className="me-2" onClick={handleNextClick}>
               {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />

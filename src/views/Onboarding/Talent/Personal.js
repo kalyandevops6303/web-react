@@ -1479,7 +1479,7 @@ const Personal = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
+              <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
                 <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
                   <UploadIconContainer>
                     <ChevronLeft size={18} color={theme.activeNavPillText} />
@@ -1487,10 +1487,10 @@ const Personal = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                  {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button>
+                  </Button> */}
                   <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
@@ -1504,7 +1504,7 @@ const Personal = () => {
                 </div>
               </div>
             </Col>
-            <Col className="w-25">
+            {/* <Col className="w-25">
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1">Resume</h4>
@@ -1526,27 +1526,11 @@ const Personal = () => {
 
                             {files && files.length === 0 && (
                               <span> - Upload your resume
-                                 {/* to auto fill your personal details */}
+                                 
                                  </span>
                             )}
                           </span>
-                          {/* <div>
-                            {files && files?.length > 0 && (
-                              <FormGroup switch>
-                                <Input
-                                  className='cursor-pointer'
-                                  type="switch"
-                                  checked={parseResume}
-                                  onClick={() => {
-                                    setParsedUploaded(false);
-                                    setParseResume(!parseResume);
-                                    dispatch(setResumeParsed(!parseResume));
-                                    dispatch(setFormDocuments(files));
-                                  }}
-                                />
-                              </FormGroup>
-                            )}
-                          </div> */}
+                          
                         </div>
 
                         {files?.length === 0 && (
@@ -1588,7 +1572,7 @@ const Personal = () => {
                   </div>
                 </CardBody>
               </Card>
-            </Col>
+            </Col> */}
           </Row>
         </Form>
       )}

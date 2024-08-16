@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, CardSubtitle, CardTitle, CardText, Label, NavLink, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
 import { ChevronRight, Link } from 'react-feather';
@@ -7,6 +7,8 @@ import { Input } from 'reactstrap';
 import { AcceptModalWrapper } from '../../modals/style';
 import Notepad from '../../../assets/images/youDidIt.gif';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getQuestionsLink } from '../../../redux/actions/hiringActions';
 
 const FULL_STACK_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
 const AI_ML_DEV_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/LL2EG743EAR';
@@ -133,6 +135,13 @@ const InternXobinHiringItem = ({listing}) => {
 const InternXobinHiring = () => {
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const questionsLink = useSelector((state) => state.hiring?.questionsLink);
+
+  useEffect(() => {
+    dispatch(getQuestionsLink());
+  }, [])
 
   return (
     <ProfileFormContainer>
