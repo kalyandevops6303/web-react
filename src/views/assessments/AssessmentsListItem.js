@@ -70,7 +70,7 @@ const AssessmentsListItem = ({ open, assessment }) => {
     }
 
     const handleDeleteConfirmed = () => {
-        const strType = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0].str_type
+        const strType = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]?.str_type
         const id = dropdownOptions.filter((item) => item.assessment_id == assessment.assessment_id)[0]._id
         dispatch(deleteAssessment({ assessmentId: assessment.assessment_id, strType, id }))
     }
