@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
@@ -16,7 +16,7 @@ import EducationTabActiveImg from '../../../assets/images/educationTabActive.png
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShowHiringTab } from "../../../redux/actions/hiringActions";
+import { getQuestionsLink, getShowHiringTab } from "../../../redux/actions/hiringActions";
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -25,14 +25,21 @@ const Tabs = ({ tabNames, active }) => {
   const dispatch = useDispatch();
   const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
 
+  const [showTab, setShowTab] = useState(true);
+
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
     }
   };
 
+  const onFailure = () => {
+    setShowTab(false);
+  }
+
   useEffect(() => {
-    dispatch(getShowHiringTab())
+    dispatch(getShowHiringTab());
+    dispatch(getQuestionsLink(onFailure));
   }, [])
 
   return (
@@ -165,7 +172,7 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Get Hired</span>
           </NavLink>
         </NavItem>} */}
-        {showHiringTab && <NavItem
+        {showHiringTab && showTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/intern-xobin-hiring`);
