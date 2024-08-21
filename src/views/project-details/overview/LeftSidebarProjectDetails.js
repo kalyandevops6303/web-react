@@ -49,6 +49,7 @@ const LeftSidebarProjectDetails = () => {
   const location = useLocation();
   const params = useParams();
   const userData = useSelector(selectUserData);
+  const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const [inviteModal, setInviteModal] = useState(false);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -197,7 +198,12 @@ const LeftSidebarProjectDetails = () => {
     setDeleteModal(true);
     setDeleteModalData(projectDetailsData);
   };
-
+  
+   const onMessageClientClick = () => {
+    navigate(`/chat`, {
+      state: { targetId: projectDetailsData?.client_details?.user_id },
+    });
+   };
   return (
     <LeftSidebarProjectDetailsWrapper>
       {viewFilesModal && (
@@ -458,6 +464,11 @@ const LeftSidebarProjectDetails = () => {
                 </Button>
               </div>
             )}
+           {userData?.user_type === userTypes.talent && invitedByData && <div className="d-flex gap-1 mt-3 justify-content-center">
+                <Button className="w-50" color="primary" onClick={onMessageClientClick}>
+                  Message
+                </Button>
+              </div>}
         </CardBody>
       </Card>
       {inviteTalentToTeamModal && (
