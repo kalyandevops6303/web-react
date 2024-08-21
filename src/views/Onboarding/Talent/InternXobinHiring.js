@@ -51,7 +51,7 @@ const InternXobinHiring = () => {
   const listingsLoading = useSelector((state) => state.hiring?.questionsLinkLoading);
 
   useEffect(() => {
-    dispatch(getQuestionsLink());
+    dispatch(getQuestionsLink(() => {}));
   }, [])
 
   return (
