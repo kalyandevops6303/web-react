@@ -27,6 +27,7 @@ import { DetailsHeaderSection, DetailsWrap } from './overview/style';
 import PublicTeamMembersListingModal from '../modals/PublicTeamMembersListingModal';
 import MembersListingCard from './overview/MembersListingCard';
 import AssessedSkills from './overview/AssessedSkills';
+import AssessedSkillsTeam from './overview/AssessedSkillsTeam';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -344,7 +345,8 @@ const UserDetails = () => {
             />
           </Row>
           <Row>
-            <AssessedSkills />
+            {isTalentView && <AssessedSkills />}
+            {isTeamView && <AssessedSkillsTeam />}
           </Row>
           <Row>
             <RecentProjects isEditable={userData?._id === param?.userId} />

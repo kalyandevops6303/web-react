@@ -50,7 +50,7 @@ import { profileImageUploadService, profileImageUploadToAzureService } from '../
 import ResetPasswordModal from './ResetPasswordModal';
 import { checkPoints, maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
 import { convertReferral } from '../../redux/actions/referralAndRewardActions';
-import { getItem, removeItem } from '../../utility/localStorageControl';
+import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 import { formData, formImage } from '../../redux/selectors/formDataSelectors';
@@ -77,6 +77,7 @@ const Account = () => {
   });
 
   const savedFormData = useSelector(formData);
+  const isDelegate = getItem('isDelegate');
 
   const {
     control,
@@ -155,6 +156,11 @@ const Account = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
+    if (isDelegate) {
+      setItem('isDelegateProfileCreated', true);
+      navigate('/dashboard');
+      return;
+    }
     if (location.pathname.includes('profile-edit')) {
       userDetailsData?.user_type === 'TALENT'
         ? navigate(`/${userProfileEdit.talent}/personal-details`)
@@ -301,7 +307,7 @@ const Account = () => {
   };
   const savedFormImage = useSelector(formImage);
   const fetchFile = async (file) => {
-    if(!file) return;
+    if (!file) return;
     const thumbnail = URL.createObjectURL(file);
     setSelectedImage(file);
     dispatch(setFormImage(file));
@@ -521,7 +527,7 @@ const Account = () => {
           <div className="d-flex justify-content-end w-75">
             {location.pathname.includes('profile-edit') && userDetailsData?.oauth_type !== 'google' && (
               <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
-                Reset Password
+                {isDelegate ? 'Change Password' : 'Reset Password'}
               </Button>
             )}
             <Button
@@ -544,7 +550,7 @@ const Account = () => {
               ) : (
                 <>
                   <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
+                  {!isDelegate && <ChevronRight size={14} />}
                 </>
               )}
             </Button>

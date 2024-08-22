@@ -38,3 +38,4 @@ export const deleteResumeLoading = createSelector(
   talentOnboardingSelector,
   (talentOnboarding) => talentOnboarding.deleteResumeLoading,
 );
+

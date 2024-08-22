@@ -32,6 +32,7 @@ import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import InfiniteScroll from '../../lib/infinite-scroll';
 import { giveStrokeColor, returnFormattedRating } from '../../utility/Utils';
 import { getAlmaMaterTalents, getBestTalents, getFavoriteTeams } from '../../redux/actions/createProjectActions';
+import Tag from '../../@core/components/tags';
 
 import {
   almaMaterTalents,
@@ -42,6 +43,7 @@ import {
   favoriteTeamsLoading,
 } from '../../redux/selectors/createProjectSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import round from '../../lib/round';
 
 const InviteTeamModalForClient = ({
   invitedIds,
@@ -234,7 +236,7 @@ const InviteTeamModalForClient = ({
   };
 
   return (
-    <Modal isOpen={modal} contentClassName="invite-talent-listing-modal-style" className="modal-dialog-centered">
+    <Modal isOpen={modal} contentClassName="" className="modal-dialog-centered w-75">
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="p-0">
         <InviteHeadContainer className="px-2">
@@ -420,7 +422,7 @@ const InviteTeamModalForClient = ({
                       {bestTalentsData?.data?.length > 0 ? (
                         bestTalentsData?.data?.map((item) => (
                           <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
-                            <Col sm="2" md="3" lg="4">
+                            <Col sm="2" md="3" lg="3">
                               <div className="d-flex align-items-center">
                                 <Avatar
                                   img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
@@ -433,7 +435,7 @@ const InviteTeamModalForClient = ({
                                 </Link>
                               </div>
                             </Col>
-                            <Col sm="2" md="3" lg="4">
+                            <Col sm="2" md="3" lg="2">
                               <div className="d-flex align-items-center">
                                 <Badge>
                                   <div className="d-flex align-items-center">
@@ -443,12 +445,18 @@ const InviteTeamModalForClient = ({
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
+                                    <p className="m-0 fw-bolder rating-text">{round(item.rating)}</p>
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
                                   {item.projects_worked_on_count} Projects
                                 </p>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              <div className="d-flex align-items-center gap-1">
+                                <Tag hasNew={false} count={item.exam_counter || '00'} />
+                                <div>Assessed Skills</div>
                               </div>
                             </Col>
                             <Col sm="2" md="3" lg="2">
@@ -511,7 +519,7 @@ const InviteTeamModalForClient = ({
                       {almaMaterTalentsData?.data?.length > 0 ? (
                         almaMaterTalentsData?.data?.map((item) => (
                           <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
-                            <Col sm="2" md="3" lg="4">
+                            <Col sm="2" md="3" lg="3">
                               <div className="d-flex align-items-center">
                                 <Avatar
                                   img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
@@ -524,7 +532,7 @@ const InviteTeamModalForClient = ({
                                 </Link>
                               </div>
                             </Col>
-                            <Col sm="2" md="3" lg="4">
+                            <Col sm="2" md="3" lg="2">
                               <div className="d-flex align-items-center">
                                 <Badge>
                                   <div className="d-flex align-items-center">
@@ -534,12 +542,18 @@ const InviteTeamModalForClient = ({
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
+                                    <p className="m-0 fw-bolder rating-text">{round(item.rating)}</p>
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
                                   {item.projects_worked_on_count} Projects
                                 </p>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              <div className="d-flex align-items-center gap-1">
+                                <Tag hasNew={false} count={item.exam_counter || '00'} />
+                                <div>Assessed Skills</div>
                               </div>
                             </Col>
                             <Col sm="2" md="3" lg="2">

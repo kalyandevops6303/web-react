@@ -140,6 +140,22 @@ const TerminateModalWrapper = styled.div`
     gap: 1rem; /* Adjust the gap as needed */
   }
 `;
+const DelegateModeModalWrapper = styled.div`
+  padding-bottom: 1.2rem;
+  .gif {
+    margin: 1rem 0.5rem 0px 0rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+    padding-right: 1.5rem;
+  }
+  .grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 40% 60%; /* Two columns, each taking 50% */
+    gap: 1rem; /* Adjust the gap as needed */
+  }
+`;
 
 const RemoveMemberModalWrapper = styled.div`
   padding-bottom: 1.2rem;
@@ -504,4 +520,5 @@ export {
   SupportModalWrapper,
   FeedbackSupportModalWrapper,
   WithdrawModalWrapper,
+  DelegateModeModalWrapper,
 };

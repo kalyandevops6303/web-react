@@ -30,6 +30,7 @@ import { formData } from '../../redux/selectors/formDataSelectors';
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { getItem } from '../../utility/localStorageControl';
 
 const VerifyPhone = () => {
   const dispatch = useDispatch();
@@ -42,12 +43,13 @@ const VerifyPhone = () => {
   const phoneData = useSelector(selectMobile);
 
   const userType = useSelector(selectUserType);
+  const isDelegate = getItem('isDelegate');
 
-  // useEffect(() => {
-  //   if (!userType) {
-  //     dispatch(getUserData());
-  //   }
-  // }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
+//  useEffect(() => {
+//    if (!userType && !isDelegate) {
+//      dispatch(getUserData());
+//    }
+//  }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
 
   useEffect(() => {
     if (isPhoneVerified && userType) {
@@ -55,7 +57,7 @@ const VerifyPhone = () => {
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
       setTimeout(() => {
         navigate('/auth/login');
-      }, 2000);
+      }, 6000);
     } else if (isPhoneVerified && !userType) {
       navigate('/auth');
     }

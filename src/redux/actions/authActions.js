@@ -113,12 +113,18 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     setItem('user_id', res.data.data.user_id);
+    if (res.data.data.is_delegate) {
+      setItem('isDelegate', res.data.data.is_delegate);
+    }
     window.dataLayer.push({ user_id: res.data.data.user_id });
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
       dispatch(cometChatLogin(res.data.data.comet_chat_token));
       setItemFromSession('isUserVisited', true);
+      if (res.data?.data?.is_delegate) {
+        setItem('isDelegateProfileCreated', true);
+      }
     } else {
       dispatch(loginSuccess(false));
     }
@@ -182,8 +188,10 @@ const verifyEmail = (data) => async (dispatch) => {
     setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     dispatch(verifyEmailSuccess());
+    return null;
   } catch (error) {
-    errorHandler(error, verifyEmailFailure);
+    dispatch(verifyEmailFailure());
+    return error?.response?.data?.errorData?.message;
   }
 };
 const setPassword = (Password) => async (dispatch) => {
@@ -216,7 +224,7 @@ const verifyPhone = (data) => async (dispatch) => {
     dispatch(verifyPhoneSuccess());
     return null;
   } catch (error) {
-    errorHandler(error, verifyPhoneFailure);
+    dispatch(verifyPhoneFailure());
     return error?.response?.data?.errorData?.message;
   }
 };

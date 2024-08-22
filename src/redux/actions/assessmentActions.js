@@ -1,5 +1,5 @@
 import errorHandler from '../../utility/errorHandler';
-import { userAssessmentsService, allAssessmentsService, deleteAssessmentService, toggleAssessmentHiddenService, addAssessmentService, assessmentLinkService, deleteNonAssessmentService, prepopulateService } from '../../services/assessmentServices';
+import { userAssessmentsService, allAssessmentsService, deleteAssessmentService, toggleAssessmentHiddenService, addAssessmentService, assessmentLinkService, deleteNonAssessmentService, prepopulateService, teamAssessmentsService } from '../../services/assessmentServices';
 import {
     userAssessmentsRequest,
     userAssessmentsFailure,
@@ -24,17 +24,61 @@ import {
     deleteNonAssessmentsSuccess,
     prepopulateRequest,
     prepopulateSuccess,
-    prepopulateFailure
+    prepopulateFailure,
+    teamAssessmentsRequest,
+    teamAssessmentsSuccess,
+    teamAssessmentsFailure
 } from '../reducers/assessment';
 import { getCustomerSupportList } from './supportActions';
+import { isEmpty } from '../../utility/Utils';
 
-const getUserAssessments = () => async (dispatch) => {
+function transformData(data) {
+    const result = {};
+
+    data?.forEach(candidate => {
+        const userId = candidate.user_id;
+        if (!isEmpty(candidate.assessments)) {
+            candidate.assessments.forEach(assessment => {
+                if (assessment.assessment_grade) {
+                    const { assessment_name, assessment_grade } = assessment;
+                    if (!result[assessment_name]) {
+                        result[assessment_name] = {};
+                    }
+                    if (!result[assessment_name][assessment_grade]) {
+                        result[assessment_name][assessment_grade] = [];
+                    }
+                    // Add user_id to the assessment object
+                    result[assessment_name][assessment_grade].push({
+                        ...assessment,
+                        user_id: userId
+                    });
+                }
+            });
+        }
+    });
+
+    return result;
+}
+
+
+const getUserAssessments = ({ id } = {}) => async (dispatch) => {
     dispatch(userAssessmentsRequest());
     try {
-        const res = await userAssessmentsService();
+        const res = await userAssessmentsService({ id });
         dispatch(userAssessmentsSuccess(res.data.data));
     } catch (error) {
         errorHandler(error, userAssessmentsFailure);
+    }
+}
+
+const getTeamAssessments = ({ id }) => async (dispatch) => {
+    dispatch(teamAssessmentsRequest());
+    try {
+        const res = await teamAssessmentsService({ id });
+        const transformedRes = transformData(res.data.data);
+        dispatch(teamAssessmentsSuccess(transformedRes));
+    } catch (error) {
+        errorHandler(error, teamAssessmentsFailure);
     }
 }
 
@@ -168,5 +212,6 @@ export {
     addAssessment,
     getAssessmentLink,
     deleteNonAssessment,
-    prepopulateAssessments
+    prepopulateAssessments,
+    getTeamAssessments
 }

@@ -42,6 +42,11 @@ import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style'
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
+import AssessedSkillsTeam from '../user-details/overview/AssessedSkillsTeam';
+import AssessedSkills from '../user-details/overview/AssessedSkills';
+import { getPublicTeamMembers } from '../../redux/actions/profileActions';
+import { getProfile } from '../../redux/actions/profileActions';
+
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -69,12 +74,33 @@ const BidDetails = () => {
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
 
   const isLoading = useSelector((state) => state.projectDetails.getBidInfoLoading);
+  const entity = useSelector((state) => state.projectDetails.bidInfo?.bid_by?.entity);
+  const entity_id = useSelector((state) => state.projectDetails.bidInfo?.user_details?.user_id || state.projectDetails.bidInfo?.user_details?.team_id)
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const bidView = location?.pathname?.split('/')?.slice(0, -1)?.join('/');
 
   useEffect(() => {
     dispatch(getBidDetails({ bid_id: param?.bidId }));
   }, []);
+
+  useEffect(() => {
+    console.log(entity_id)
+
+    if (entity_id && (entity === userTypes.team) || (entity === userTypes.club))
+      dispatch(getPublicTeamMembers({ teamId: entity_id, page: 1, pageSize: 10, oldData: [] }));
+  }, [entity_id, entity])
+
+  useEffect(() => {
+    if (entity && entity_id)
+      dispatch(
+        getProfile({
+          id: entity_id,
+          user_type: entity,
+          isEditable: false,
+          currentUserType: "CLIENT"
+        }),
+      );
+  }, [entity, entity_id])
 
   const handleUpadteStatus = (status) => {
     setIsBidStatusUpating(true);
@@ -294,6 +320,14 @@ const BidDetails = () => {
             </Card>
           </BidDetailsHeaderSection>
 
+          {entity && entity_id &&
+            <>
+              {(entity === userTypes.team || entity === userTypes.club) && <AssessedSkillsTeam teamId={entity_id} />}
+              {entity === userTypes.talent && <AssessedSkills userId={entity_id} />}
+            </>}
+
+
+
           <Card>
             <CardBody className="main-card-body">
               <CardText className="milestone-title d-block mb-1 fw-bold">Milestones</CardText>
@@ -342,7 +376,7 @@ const BidDetails = () => {
                               <Col sm="12" md="12" lg="2" className="ps-1">
                                 <p className="fw-light m-0 font-small-4 ps-50">
                                   {filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length >
-                                  3 ? (
+                                    3 ? (
                                     <AvatarGroup
                                       totalCount={
                                         filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))

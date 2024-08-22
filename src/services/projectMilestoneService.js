@@ -58,7 +58,7 @@ const saveDraftMilestoneService = (milestone_id, data) => DataService.post(`${AP
 
 const getDraftMilestoneService = (milestone_id) => DataService.get(`${API.projectMilestones.getDraftMilestone}?milestone_id=${milestone_id}`);
 
-const deleteDraftMilestoneService = (milestone_id) => DataService.delete(`${API.projectMilestones.deleteDraftMilestone}?milestone_id=${milestone_id}`);
+const deleteDraftMilestoneService = (milestone_id,data) => DataService.delete(`${API.projectMilestones.deleteDraftMilestone}?milestone_id=${milestone_id}`,data);
 
 export {
   markCompelteService,
