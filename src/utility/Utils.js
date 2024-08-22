@@ -864,6 +864,8 @@ export const checkPointRedirection = ({ response, navigate }) => {
     navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
   } else if (response?.checkpoint === checkPoints.COMPLETE) {
     navigate('/dashboard');
+  } else if(response?.checkpoint === checkPoints?.CREATE_PASSWORD){
+    navigate('/auth/set-password');
   }
 };
 

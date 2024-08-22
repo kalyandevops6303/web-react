@@ -37,6 +37,7 @@ import { currencies, currenciesLoading } from '../../../redux/selectors/staticSe
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
+import { saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -166,7 +167,7 @@ const Availability = () => {
         formSchemaFields: AvailabilitySchema.fields,
       });
       reset(requiredFields);
-      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      const keysWithValues = Object.keys(requiredFields)?.filter((key) => requiredFields[key]);
       trigger(keysWithValues);
     }
   }, []);
@@ -221,7 +222,7 @@ const Availability = () => {
     } = data;
 
     const availability = {
-      timezone: preferredWorkingTimeZone.value._id,
+      timezone: preferredWorkingTimeZone?.value?._id,
       weekdays_avl: {
         start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
         end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
@@ -233,7 +234,7 @@ const Availability = () => {
         days: availabilityDays?.includes('weekends') ? weekends : null,
       },
     };
-    const currency_preference = currencyPreference.value;
+    const currency_preference = currencyPreference?.value;
     const hourly_rate = hourlyRate;
 
     const reqData = {
@@ -241,8 +242,10 @@ const Availability = () => {
       currency_preference,
       hourly_rate,
     };
-
+    
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveCheckpointComplete(() => {}));
+    
   };
 
   const loadTimezonesOptions = async (search) => {
@@ -324,14 +327,14 @@ const Availability = () => {
             'weekdayStartTime',
             savedFormData?.weekdayStartTime?.length > 0
               ? savedFormData?.weekdayStartTime
-              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+              : timeOptions.find((time) => parseInt(time?.value, 10) === res?.availability?.weekdays_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekdayEndTime',
             savedFormData?.weekdayEndTime?.length > 0
               ? savedFormData?.weekdayEndTime
-              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+              : timeOptions.find((time) => parseInt(time?.value, 10) === res?.availability?.weekdays_avl?.end_time),
             { shouldValidate: true },
           );
         }
@@ -346,14 +349,14 @@ const Availability = () => {
             'weekendStartTime',
             savedFormData?.weekendStartTime?.length > 0
               ? savedFormData?.weekendStartTime
-              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+              : timeOptions.find((time) => parseInt(time?.value, 10) === res?.availability?.weekends_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekendEndTime',
             savedFormData?.weekendEndTime?.length > 0
               ? savedFormData?.weekendEndTime
-              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+              : timeOptions.find((time) => parseInt(time?.value, 10) === res?.availability?.weekends_avl?.end_time),
             { shouldValidate: true },
           );
         }
@@ -460,15 +463,15 @@ const Availability = () => {
                           type="checkbox"
                           {...field}
                           id="weekdays"
-                          checked={field && field.value?.includes('weekdays')}
+                          checked={field && field?.value?.includes('weekdays')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekdays';
 
                             if (isChecked) {
-                              field.onChange([...field.value, value]);
+                              field.onChange([...field?.value, value]);
                             } else {
-                              field.onChange(field.value.filter((v) => v !== value));
+                              field.onChange(field?.value?.filter((v) => v !== value));
                             }
                           }}
                         />
@@ -481,15 +484,15 @@ const Availability = () => {
                           type="checkbox"
                           {...field}
                           id="weekends"
-                          checked={field.value?.includes('weekends')}
+                          checked={field?.value?.includes('weekends')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekends';
 
                             if (isChecked) {
-                              field.onChange([...field.value, value]);
+                              field.onChange([...field?.value, value]);
                             } else {
-                              field.onChange(field.value.filter((v) => v !== value));
+                              field.onChange(field?.value?.filter((v) => v !== value));
                             }
                           }}
                         />
@@ -570,9 +573,9 @@ const Availability = () => {
                                   <Select
                                     options={
                                       watch('weekdayStartTime')
-                                        ? timeOptions.filter(
+                                        ? timeOptions?.filter(
                                             (t) =>
-                                              parseInt(t.value, 10) > parseInt(watch('weekdayStartTime').value, 10),
+                                              parseInt(t?.value, 10) > parseInt(watch('weekdayStartTime')?.value, 10),
                                           )
                                         : timeOptions
                                     }
@@ -608,15 +611,15 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="MONDAY"
-                                      checked={field.value?.includes('MONDAY')}
+                                      checked={field?.value?.includes('MONDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'MONDAY';
 
                                         if (isChecked) {
-                                          field.onChange([...field.value, value]);
+                                          field?.onChange([...field?.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field?.onChange(field?.value?.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -629,15 +632,15 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="TUESDAY"
-                                      checked={field.value?.includes('TUESDAY')}
+                                      checked={field?.value?.includes('TUESDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'TUESDAY';
 
                                         if (isChecked) {
-                                          field.onChange([...field.value, value]);
+                                          field?.onChange([...field?.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field?.onChange(field?.value?.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -650,15 +653,15 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="WEDNESDAY"
-                                      checked={field.value?.includes('WEDNESDAY')}
+                                      checked={field?.value?.includes('WEDNESDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'WEDNESDAY';
 
                                         if (isChecked) {
-                                          field.onChange([...field.value, value]);
+                                          field?.onChange([...field?.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field?.onChange(field?.value?.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -677,9 +680,9 @@ const Availability = () => {
                                         const value = 'THURSDAY';
 
                                         if (isChecked) {
-                                          field.onChange([...field.value, value]);
+                                          field?.onChange([...field?.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field?.onChange(field?.value?.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -698,9 +701,9 @@ const Availability = () => {
                                         const value = 'FRIDAY';
 
                                         if (isChecked) {
-                                          field.onChange([...field.value, value]);
+                                          field?.onChange([...field?.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field?.onChange(field?.value?.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -757,7 +760,7 @@ const Availability = () => {
                                       'is-invalid': errors && errors.weekendStartTime,
                                     })}
                                     onChange={(selectedOption) => {
-                                      field.onChange(selectedOption);
+                                      field?.onChange(selectedOption);
                                       setValue('weekendEndTime', null);
                                     }}
                                   />
@@ -780,9 +783,9 @@ const Availability = () => {
                                   <Select
                                     options={
                                       watch('weekendStartTime')
-                                        ? timeOptions.filter(
+                                        ? timeOptions?.filter(
                                             (t) =>
-                                              parseInt(t.value, 10) > parseInt(watch('weekendStartTime').value, 10),
+                                              parseInt(t?.value, 10) > parseInt(watch('weekendStartTime')?.value, 10),
                                           )
                                         : timeOptions
                                     }
@@ -824,9 +827,9 @@ const Availability = () => {
                                         const value = 'SATURDAY';
 
                                         if (isChecked) {
-                                          field.onChange([...field.value, value]);
+                                          field?.onChange([...field?.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field?.onChange(field?.value?.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -839,15 +842,15 @@ const Availability = () => {
                                       type="checkbox"
                                       {...field}
                                       id="SUNDAY"
-                                      checked={field.value?.includes('SUNDAY')}
+                                      checked={field?.value?.includes('SUNDAY')}
                                       onChange={(e) => {
                                         const isChecked = e.target.checked;
                                         const value = 'SUNDAY';
 
                                         if (isChecked) {
-                                          field.onChange([...field.value, value]);
+                                          field?.onChange([...field?.value, value]);
                                         } else {
-                                          field.onChange(field.value.filter((v) => v !== value));
+                                          field?.onChange(field?.value?.filter((v) => v !== value));
                                         }
                                       }}
                                     />
@@ -935,10 +938,10 @@ const Availability = () => {
               <h5 className="fw-bold">Back</h5>
             </div>
             <div>
-              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+              {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
                 <span className="me-50">Skip</span>
                 <ChevronRight size={14} />
-              </Button>
+              </Button> */}
               <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
                 {profileDetailsIsLoading ? (
                   <Spinner size="sm" />

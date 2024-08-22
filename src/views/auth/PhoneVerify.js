@@ -45,11 +45,11 @@ const VerifyPhone = () => {
   const userType = useSelector(selectUserType);
   const isDelegate = getItem('isDelegate');
 
-  useEffect(() => {
-    if (!userType && !isDelegate) {
-      dispatch(getUserData());
-    }
-  }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
+//  useEffect(() => {
+//    if (!userType && !isDelegate) {
+//      dispatch(getUserData());
+//    }
+//  }, [userType, dispatch]); // added dependencies to avoid infinite re-rendering
 
   useEffect(() => {
     if (isPhoneVerified && userType) {

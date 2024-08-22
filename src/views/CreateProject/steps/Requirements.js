@@ -906,7 +906,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                 </Row>
                 <Row>
                   <Label className="form-label">
-                    Upload detailed requirements document (optional){' '}
+                    Upload detailed submission document (optional){' '}
                     <Info size={18} color={theme.infoIcon} id="document" />
                     <UncontrolledTooltip placement="right" target="document">
                       <div className="d-flex flex-column align-items-start">

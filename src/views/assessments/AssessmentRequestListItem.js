@@ -26,7 +26,7 @@ const AssessmentsRequestListItem = ({ request }) => {
 
     const customerSupportModalSuccess = () => {
         setCustomerSupportModal(false)
-        dispatch(deleteNonAssessment({ strType: request.str_type, id: request.str_id }))
+        dispatch(deleteNonAssessment({ strType: request?.str_type, id: request?.str_id }))
         dispatch(getCustomerSupportList({
             data: {
                 issue_types: [

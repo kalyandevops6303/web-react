@@ -223,6 +223,22 @@ const Routes = [
     element: <InternalProjects />,
   },
   {
+    path: `/${userProfileEdit.talent}/intern-hiring`,
+    element: <TalentOnboarding />,
+  },
+  {
+    path: `/${userProfileEdit.talent}/intern-xobin-hiring`,
+    element: <TalentOnboarding />,
+  },
+  {
+    path: `/${userOnboarding.talent}/intern-hiring`,
+    element: <TalentOnboarding />,
+  },
+  {
+    path: `/${userOnboarding.talent}/intern-xobin-hiring`,
+    element: <TalentOnboarding />,
+  },
+  {
     path: '*',
     element: <NotFound />,
   },

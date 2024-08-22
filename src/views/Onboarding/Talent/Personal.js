@@ -22,7 +22,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,9 +47,9 @@ import {
 import {
   deleteResumeLoading,
   profileDetailsLoading,
-  resumeParsedDetails,
-  resumeParsedDetailsLoading,
   // resumeParsedDetails,
+  resumeParsedDetailsLoading,
+  resumeParsedDetails,
   userDetails,
   userDetailsLoading,
 } from '../../../redux/selectors/talentOnboardingSelectors';
@@ -58,7 +58,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
-  // getFileSize,
+  getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
@@ -89,6 +89,15 @@ import {
   setResumeDataUploadedForPersonal,
   setResumeParsed,
 } from '../../../redux/reducers/formData';
+
+
+const customDropdownStyles = {
+  menuList: (provided) => ({
+    ...provided,
+    maxHeight: '150px', // Set the height you want
+    overflowY: 'auto',
+  }),
+};
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -526,11 +535,11 @@ const Personal = () => {
     };
     fileReRender();
   }, [savedFormDocuments]);
-  // const formattedDate = new Date()
-  //   .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-  //   .replace(',', '')
-  //   .split(' ');
-  // const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+  const formattedDate = new Date()
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -1404,6 +1413,7 @@ const Personal = () => {
                         invalid={errors.country && true}
                         render={({ field }) => (
                           <AsyncPaginate
+                            styles={customDropdownStyles}
                             loadOptions={loadCountriesOptions}
                             classNamePrefix="select"
                             placeholder="Select your country"
@@ -1479,7 +1489,7 @@ const Personal = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
+              <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
                 <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
                   <UploadIconContainer>
                     <ChevronLeft size={18} color={theme.activeNavPillText} />
@@ -1487,10 +1497,10 @@ const Personal = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                  {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button>
+                  </Button> */}
                   <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
@@ -1525,38 +1535,24 @@ const Personal = () => {
                             </span>
 
                             {files && files.length === 0 && (
-                              <span> - Upload your resume to auto fill your personal details</span>
+                              <span> - Upload your resume
+                                 
+                                 </span>
                             )}
                           </span>
-                          <div>
-                            {files && files?.length > 0 && (
-                              <FormGroup switch>
-                                <Input
-                                  className='cursor-pointer'
-                                  type="switch"
-                                  checked={parseResume}
-                                  onClick={() => {
-                                    setParsedUploaded(false);
-                                    setParseResume(!parseResume);
-                                    dispatch(setResumeParsed(!parseResume));
-                                    dispatch(setFormDocuments(files));
-                                  }}
-                                />
-                              </FormGroup>
-                            )}
-                          </div>
+                          
                         </div>
 
                         {files?.length === 0 && (
                           <>
                             <Label
                               for="resume"
-                              className="me-2 mt-2 d-flex flex-col align-items-center upload-button cursor-pointer"
+                              className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
                             >
-                              {/* <UploadIconContainer>
+                              <UploadIconContainer>
                                 <Upload size={18} color={theme.activeNavPillText} />
                                 
-                              </UploadIconContainer> */}
+                              </UploadIconContainer>
                               <h5 className="fw-bold">Upload Resume</h5>
                             </Label>
                             <Controller

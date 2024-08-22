@@ -34,6 +34,7 @@ import favUnfav from './reducers/favUnfav';
 import assessments from './reducers/assessment';
 import support from './reducers/support';
 import formData from './reducers/formData';
+import hiring from './reducers/hiring';
 import delegate from './reducers/delegate';
 
 const rootReducer = combineReducers({
@@ -70,6 +71,7 @@ const rootReducer = combineReducers({
   assessments,
   support,
   formData,
+  hiring,
   delegate,
   // Add more reducers if needed
 });
