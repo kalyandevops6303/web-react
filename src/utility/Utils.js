@@ -869,6 +869,10 @@ export const checkPointRedirection = ({ response, navigate }) => {
   }
 };
 
+export function areObjectsEqual(obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
+
 export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
   const filteredObj = Object.fromEntries(
     Object.keys(savedData) // Get all keys from savedData

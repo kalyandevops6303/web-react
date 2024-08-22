@@ -38,6 +38,7 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
 import {
+  areObjectsEqual,
   downloadFile,
   downloadUploadedFile,
   formatDateWithDash,
@@ -180,7 +181,9 @@ const VariableSimpleMilestoneView = ({ setDraftSavedModal }) => {
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
-    dispatch(setFormData(allData));
+    if (!areObjectsEqual(savedFormData, allData)) {
+      dispatch(setFormData(allData));
+    }
   }, [localFormData]);
 
   const toggle = (id) => {
