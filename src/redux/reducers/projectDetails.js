@@ -14,6 +14,7 @@ const initialState = {
   contractTimeline: null,
   relistProjectByDateLoading: false,
   error: null,
+  invitedBy: null,
 };
 
 const projectDetails = createSlice({
