@@ -29,10 +29,12 @@ const EarningCard = () => {
     const currentMonth = {
       total: data?.total_amount?.current_month ?? 0,
       completed: data?.completed_amount?.current_month ?? 0,
+      upcoming:data?.upcoming_amount?.current_month ?? 0,
     };
     const currentYear = {
       total: data?.total_amount?.current_year ?? 0,
       completed: data?.completed_amount?.current_year ?? 0,
+      upcoming: data?.upcoming_amount?.current_year ?? 0,
     };
     const spendingsPerDate = {
       currentMonth,
@@ -116,9 +118,9 @@ const EarningCard = () => {
                 projects
               </UncontrolledTooltip>
               <span className="title">
-                Completed <Info size={14} id="completed_spendings" />
+                Upcoming <Info size={14} id="completed_spendings" />
               </span>
-              <span className="amount">$ {round(spendingsPer?.completed ?? 0, 2)}</span>
+              <span className="amount">$ {round(spendingsPer?.upcoming ?? 0, 2)}</span>
               {/* <span className="change">+0%</span> */}
             </EarningAmount>
           </div>
