@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
@@ -16,14 +16,17 @@ import EducationTabActiveImg from '../../../assets/images/educationTabActive.png
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShowHiringTab } from "../../../redux/actions/hiringActions";
+import { getQuestionsLink, getShowHiringTab } from "../../../redux/actions/hiringActions";
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
+  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
+  const questions = useSelector((state) => state.hiring?.questionsLink);
+
+  const [hasQuestions, setHasQuestions] = useState(true);
 
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
@@ -32,8 +35,13 @@ const Tabs = ({ tabNames, active }) => {
   };
 
   useEffect(() => {
-    dispatch(getShowHiringTab())
+    dispatch(getShowHiringTab());
+    dispatch(getQuestionsLink());
   }, [])
+
+  useEffect(() => {
+    if (questions?.length === 0) setHasQuestions(false);
+  }, [questions])
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
@@ -165,7 +173,7 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Get Hired</span>
           </NavLink>
         </NavItem>} */}
-        {showHiringTab && <NavItem
+        {showHiringTab && hasQuestions && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/intern-xobin-hiring`);
