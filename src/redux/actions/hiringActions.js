@@ -25,7 +25,7 @@ const getQuestionsLink = () => async (dispatch) => {
         const res = await questionsLinkService();
         dispatch(questionsLinkSuccess(res.data.data));
     } catch (error) {
-        errorHandler(error, questionsLinkFailure);
+        // errorHandler(error, questionsLinkFailure);
     }
 }
 
