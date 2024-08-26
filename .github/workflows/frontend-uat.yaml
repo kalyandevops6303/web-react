@@ -13,6 +13,11 @@ jobs:
     #runs-on: [self-hosted, linux, X64, trumio-orgrunner]
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: uat
+          submodules: true
+    
       - name: Install Azure cli
         run: |
           sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
@@ -30,7 +35,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '14.x'
-
+      - name: Set environment variable
+        run: echo "VITE_ENV_MODE=uat" >> $GITHUB_ENV
+        
       - name: Install Dependencies and Build
         run: |
           npm install
