@@ -575,7 +575,7 @@ const Personal = () => {
               <Row className="mb-1 mt-1">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="companyName">
-                    Organization<span className="label-asterisk me-50">*</span>
+                    Company Name<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id="companyName"
@@ -609,7 +609,7 @@ const Personal = () => {
               <Row className="mb-1">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="companyTagline">
-                    Tagline<span className="label-asterisk me-50">*</span>
+                    Company Tagline<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id="companyTagline"
@@ -627,7 +627,7 @@ const Personal = () => {
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="companyIndustry">
-                    Industry<span className="label-asterisk me-50">*</span>
+                    Company Industry<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id="companyIndustry"
@@ -651,7 +651,7 @@ const Personal = () => {
                 </Col>
               </Row>
               <Row className="mt-2">
-                <h5 className="m-0">Number of employees or members</h5>
+                <h5 className="m-0">What is the total strength of your company?</h5>
               </Row>
               <Row className="mb-3">
                 <div className="demo-inline-spacing m-0">
@@ -819,28 +819,32 @@ const Personal = () => {
               </Row>
               <Row className="mb-1">
                 <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="country">
-                    Country<span className="label-asterisk me-50">*</span>
+                  <Label className="form-label" for="city">
+                    City<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
-                    id="country"
-                    name="country"
+                    id="city"
+                    name="city"
                     control={control}
-                    invalid={errors.country && true}
+                    invalid={errors.city && true}
                     render={({ field }) => (
-                      <AsyncPaginate
-                        loadOptions={loadCountriesOptions}
+                      <Select
+                        isDisabled={!watch('country') || !watch('state')}
+                        isLoading={citiesIsLoading}
+                        options={citiesOptions}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
                         classNamePrefix="select"
-                        placeholder="Select your country"
+                        placeholder="Select your city"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
-                          'is-invalid': errors && errors.country,
+                          'is-invalid': errors && errors.city,
                         })}
                         {...field}
                       />
                     )}
                   />
-                  {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
+                  {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="state">
@@ -873,32 +877,28 @@ const Personal = () => {
               </Row>
               <Row className="mb-1">
                 <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="city">
-                    City<span className="label-asterisk me-50">*</span>
+                  <Label className="form-label" for="country">
+                    Country<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
-                    id="city"
-                    name="city"
+                    id="country"
+                    name="country"
                     control={control}
-                    invalid={errors.city && true}
+                    invalid={errors.country && true}
                     render={({ field }) => (
-                      <Select
-                        isDisabled={!watch('country') || !watch('state')}
-                        isLoading={citiesIsLoading}
-                        options={citiesOptions}
-                        menuPosition="fixed"
-                        minMenuHeight={200}
+                      <AsyncPaginate
+                        loadOptions={loadCountriesOptions}
                         classNamePrefix="select"
-                        placeholder="Select your city"
+                        placeholder="Select your country"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
-                          'is-invalid': errors && errors.city,
+                          'is-invalid': errors && errors.country,
                         })}
                         {...field}
                       />
                     )}
                   />
-                  {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
+                  {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
                 </Col>
               </Row>
             </CardBody>

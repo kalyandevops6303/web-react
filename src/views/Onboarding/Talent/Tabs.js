@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
@@ -28,16 +28,17 @@ const Tabs = ({ tabNames, active }) => {
 
   const [hasQuestions, setHasQuestions] = useState(true);
 
+  const [showTab, setShowTab] = useState(true);
+
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
     }
   };
 
-  useEffect(() => {
-    dispatch(getShowHiringTab());
-    dispatch(getQuestionsLink());
-  }, [])
+  const onFailure = () => {
+    setShowTab(false);
+  }
 
   useEffect(() => {
     if (questions?.length === 0) setHasQuestions(false);
@@ -173,7 +174,7 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Get Hired</span>
           </NavLink>
         </NavItem>} */}
-        {showHiringTab && hasQuestions && <NavItem
+        {showHiringTab && showTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/intern-xobin-hiring`);

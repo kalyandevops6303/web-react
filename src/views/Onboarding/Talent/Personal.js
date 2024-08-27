@@ -47,9 +47,9 @@ import {
 import {
   deleteResumeLoading,
   profileDetailsLoading,
-  resumeParsedDetails,
-  resumeParsedDetailsLoading,
   // resumeParsedDetails,
+  resumeParsedDetailsLoading,
+  resumeParsedDetails,
   userDetails,
   userDetailsLoading,
 } from '../../../redux/selectors/talentOnboardingSelectors';
@@ -58,7 +58,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
-  // getFileSize,
+  getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
@@ -87,8 +87,17 @@ import {
   setFormData,
   setFormDocuments,
   setResumeDataUploadedForPersonal,
-  // setResumeParsed,
+  setResumeParsed,
 } from '../../../redux/reducers/formData';
+
+
+const customDropdownStyles = {
+  menuList: (provided) => ({
+    ...provided,
+    maxHeight: '150px', // Set the height you want
+    overflowY: 'auto',
+  }),
+};
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -492,12 +501,12 @@ const Personal = () => {
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
-    // if (response)
-    //   dispatch(
-    //     getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
-    //   );
-    // dispatch(setResumeParsed(true));
-    // setParseResume(true);
+    if (response)
+      dispatch(
+        getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
+      );
+    dispatch(setResumeParsed(true));
+    setParseResume(true);
   };
 
   const handleFileChange = async (e) => {
@@ -505,8 +514,8 @@ const Personal = () => {
       if (isFileValid(e.target.files[0])) {
         dispatch(clearAllFormData());
         await fetchUploadUrl(e.target.files[0]);
-        // setParseResume(true);
-        // dispatch(setResumeParsed(true));
+        setParseResume(true);
+        dispatch(setResumeParsed(true));
       }
     } else {
       e.target.value = '';
@@ -526,11 +535,11 @@ const Personal = () => {
     };
     fileReRender();
   }, [savedFormDocuments]);
-  // const formattedDate = new Date()
-  //   .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-  //   .replace(',', '')
-  //   .split(' ');
-  // const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+  const formattedDate = new Date()
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -585,9 +594,9 @@ const Personal = () => {
                 disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
                 onClick={() => {
                   handleRemoveFile(file);
-                  // setParseResume(false);
-                  // dispatch(resumeParsedDetailsSuccess(null));
-                  // dispatch(setResumeParsed(false));
+                  setParseResume(false);
+                  dispatch(resumeParsedDetailsSuccess(null));
+                  dispatch(setResumeParsed(false));
                 }}
               >
                 {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
@@ -799,7 +808,7 @@ const Personal = () => {
         },
       };
 
-      // dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
     }
   };
 
@@ -1404,6 +1413,7 @@ const Personal = () => {
                         invalid={errors.country && true}
                         render={({ field }) => (
                           <AsyncPaginate
+                            styles={customDropdownStyles}
                             loadOptions={loadCountriesOptions}
                             classNamePrefix="select"
                             placeholder="Select your country"
@@ -1487,10 +1497,10 @@ const Personal = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div>
-                  {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button> */}
+                  </Button>
                   <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
@@ -1504,7 +1514,7 @@ const Personal = () => {
                 </div>
               </div>
             </Col>
-            {/* <Col className="w-25">
+            <Col className="w-25">
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1">Resume</h4>
@@ -1572,7 +1582,7 @@ const Personal = () => {
                   </div>
                 </CardBody>
               </Card>
-            </Col> */}
+            </Col>
           </Row>
         </Form>
       )}

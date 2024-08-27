@@ -19,13 +19,13 @@ const getShowHiringTab = () => async (dispatch) => {
     }
 }
 
-const getQuestionsLink = () => async (dispatch) => {
+const getQuestionsLink = (onFailure) => async (dispatch) => {
     dispatch(questionsLinkRequest());
     try {
         const res = await questionsLinkService();
         dispatch(questionsLinkSuccess(res.data.data));
     } catch (error) {
-        // errorHandler(error, questionsLinkFailure);
+        onFailure();
     }
 }
 

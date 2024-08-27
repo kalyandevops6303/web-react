@@ -15,7 +15,6 @@ import { clubStatus, userProfileEdit, userTypes } from '../../../../utility/cons
 import { selectUserData, checkAdmin } from '../../../../redux/selectors/authSelectors';
 import { getItemFromSession, setItemFromSession } from '../../../../utility/sessesionStorageControl';
 import { checkIsAdmin } from '../../../../redux/actions/authActions';
-import { getShowHiringTab, getQuestionsLink } from '../../../../redux/actions/hiringActions';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -26,11 +25,6 @@ const EditProfileAccordion = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-
-  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
-  const questions = useSelector((state) => state.hiring?.questionsLink);
-
-  const [hasQuestions, setHasQuestions] = useState(true);
 
   const handleEditProfileForTeam = () => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
@@ -50,10 +44,6 @@ const EditProfileAccordion = () => {
       navigate(`/${userProfileEdit.talent}/availability-details`);
     } else if (tab === 'social') {
       navigate(`/${userProfileEdit.talent}/social-details`);
-    } else if (tab === 'internHiring') {
-      navigate(`/${userProfileEdit.talent}/intern-hiring`);
-    } else if (tab === 'internXobinHiring') {
-      navigate(`/${userProfileEdit.talent}/intern-xobin-hiring`);
     } else {
       navigate(`/${userProfileEdit.talent}/payment-details`);
     }
@@ -88,16 +78,6 @@ const EditProfileAccordion = () => {
     }
   };
 
-  useEffect(() => {
-    dispatch(getShowHiringTab());
-    dispatch(getQuestionsLink());
-  }, [])
-
-  useEffect(() => {
-    if (questions?.length === 0) setHasQuestions(false);
-  }, [questions])
-
-
   return (
     <div className="edit-accordion">
       <Accordion open={open} toggle={toggle}>
@@ -128,9 +108,6 @@ const EditProfileAccordion = () => {
                   <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Payment</span>
                   </DropdownItem>
-                  {showHiringTab && hasQuestions && <DropdownItem onClick={() => handleEditProfileForTalent('internXobinHiring')} className="w-100 edit-link ">
-                    <span className="align-middle p-1">Get Hired</span>
-                  </DropdownItem>}
                 </>
               )}
               {userDetailsData?.user_type === userTypes.client && (
