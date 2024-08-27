@@ -47,7 +47,7 @@ const NDATimeline = () => {
             <span className="d-block mb-1">
               {item?.signed_on ? DateTime.fromMillis(item?.signed_on).toFormat('MMM dd, yy') : '-'}
             </span>
-            {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
+            {item?.status !== 'PROJECT_FUNDED' && item?.status !== 'PROJECT_COMPLETED' && (
               <NameInfo name={item.name} info={item.role} img={item?.image_uri} />
             )}
           </div>

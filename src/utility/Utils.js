@@ -398,8 +398,8 @@ export const getProjectStatus = ({ status, type }) => {
       return `Signed - ${type === 'CONTRACT' ? 'Contract' : 'NDA'} Document`;
     case 'TERMINATED':
       return `Terminated - Early Termination of ${type === 'CONTRACT' ? 'contract' : 'NDA'}`;
-    case 'PROJECT_STARTED':
-      return 'Project Started';
+    case 'PROJECT_FUNDED':
+      return 'Project Funded';
     case 'PROJECT_COMPLETED':
       return 'Project Completed';
     default:
@@ -412,7 +412,7 @@ export const getTimeLineDotColor = (status) => {
       return theme.orangeColor;
     case 'TERMINATED':
       return theme.red;
-    case 'PROJECT_STARTED':
+    case 'PROJECT_FUNDED':
       return theme.timelineSuccessColor;
     case 'PROJECT_COMPLETED':
       return theme.purpleColor;
