@@ -52,7 +52,7 @@ const ContractTimeline = () => {
             <span className="d-block mb-1">
               {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name ) : '-'}
             </span>
-            {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
+            {item?.status !== 'PROJECT_FUNDED' && item?.status !== 'PROJECT_COMPLETED' && (
               <NameInfo name={item.name} info={item.role} img={item?.image_uri} />
             )}
           </div>
@@ -60,7 +60,7 @@ const ContractTimeline = () => {
             <span className="time ms-auto">
               {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name ) : '-'}
             </span>
-            {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
+            {item?.status !== 'PROJECT_FUNDED' && item?.status !== 'PROJECT_COMPLETED' && (
               <span onClick={() => navigate(`doc/contract/${item?.document_id}`)} className="d-none card-cta">
                 View submitted document
               </span>

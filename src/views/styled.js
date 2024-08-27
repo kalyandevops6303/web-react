@@ -48,9 +48,9 @@ const CustomBadge = styled.span`
     border: ${`2px solid ${theme.green}`};
   }
   .OPEN {
-    background: ${theme.lightGreenBg} !important;
-    color: ${theme.lighGreenColor};
-    border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
+    background: ${theme.badgeBlueColor} !important;
+    color: ${theme.darkBlueColor};
+    border: ${`1px solid ${theme.darkBlueColor}`};
   }
   .DISPUTED {
     background: ${theme.lightRedColor} !important;
@@ -62,9 +62,9 @@ const CustomBadge = styled.span`
   .CREATED,
   .YET_TO_START,
   .TO_BE_LISTED {
-    background: ${theme.badgeBlueColor} !important;
-    color: ${theme.darkBlueColor};
-    border: ${`2px solid ${theme.darkBlueColor}`};
+    background: ${theme.lightOrangeColor} !important;
+    color: ${theme.progressBarOrange};
+    border: ${`2px solid ${theme.progressBarOrange}`};
   }
   .ON_GOING {
     background: ${theme.lightGreenBatchColor};
