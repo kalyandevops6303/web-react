@@ -23,7 +23,10 @@ const Tabs = ({ tabNames, active }) => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
+  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
+  const questions = useSelector((state) => state.hiring?.questionsLink);
+
+  const [hasQuestions, setHasQuestions] = useState(true);
 
   const [showTab, setShowTab] = useState(true);
 
@@ -36,6 +39,10 @@ const Tabs = ({ tabNames, active }) => {
   const onFailure = () => {
     setShowTab(false);
   }
+
+  useEffect(() => {
+    if (questions?.length === 0) setHasQuestions(false);
+  }, [questions])
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
