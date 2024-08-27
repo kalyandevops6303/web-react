@@ -857,10 +857,10 @@ const Educational = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div>
-                  {/* <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button> */}
+                  </Button>
                   <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />

@@ -24,7 +24,9 @@ const InternXobinHiringItem = ({ listing }) => {
       </CardHeader>
       <hr className="m-0 card-header-border" />
       <CardBody>
-        <CardText>Thank you for showing interest in Trumio. Click on <b>Take Assessment</b> and answer the questions within this assessment to the best of your ability.</CardText>
+        <CardText>Thank you for showing interest in Trumio. Click on
+          <b> Take Assessment, </b>
+          it will take you the Assessment platform where you need to provide your same email used to register Trumio, Name and Roll No. It will then take you to the assessment page.</CardText>
         <CardText>Before you start with the assessment, make sure to:</CardText>
         <ul>
           <li>Take up this assessment on a laptop or desktop rather than on a mobile phone.</li>
@@ -56,25 +58,25 @@ const InternXobinHiring = () => {
 
   return (
     <>
-    {listingsLoading ? 
-    <ComponentSpinner />  
-    :
-    <ProfileFormContainer>
-      {listings?.map((listing) => (
-        <InternXobinHiringItem listing={listing} />
-      ))}
+      {listingsLoading ?
+        <ComponentSpinner />
+        :
+        <ProfileFormContainer>
+          {listings?.map((listing) => (
+            <InternXobinHiringItem listing={listing} />
+          ))}
 
-      <div className="d-flex justify-content-end w-75">
-        <Button
-          onClick={() => navigate("/dashboard")}
-          color="primary"
-          type="submit"
-        >
-          <span className="me-50">Continue</span>
-          <ChevronRight size={14} />
-        </Button>
-      </div>
-    </ProfileFormContainer>}
+          <div className="d-flex justify-content-end w-75">
+            <Button
+              onClick={() => navigate("/dashboard")}
+              color="primary"
+              type="submit"
+            >
+              <span className="me-50">Continue</span>
+              <ChevronRight size={14} />
+            </Button>
+          </div>
+        </ProfileFormContainer>}
     </>
   );
 };

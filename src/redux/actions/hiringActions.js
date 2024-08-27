@@ -15,7 +15,7 @@ const getShowHiringTab = () => async (dispatch) => {
         const res = await showHiringTabService();
         dispatch(showHiringTabSuccess(res.data.data?.profile_details_present));
     } catch (error) {
-        errorHandler(error, showHiringTabFailure);
+        // errorHandler(error, showHiringTabFailure);
     }
 }
 
