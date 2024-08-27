@@ -112,9 +112,6 @@ const EditProfileAccordion = () => {
                   <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Payment</span>
                   </DropdownItem>
-                  <DropdownItem onClick={() => handleEditProfileForTalent('internXobinHiring')} className="w-100 edit-link ">
-                    <span className="align-middle p-1">Get Hired</span>
-                  </DropdownItem>
                 </>
               )}
               {userDetailsData?.user_type === userTypes.client && (

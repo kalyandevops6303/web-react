@@ -177,10 +177,6 @@ const Step1 = ({ setStep , step }) => {
 
   const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
 
-  useEffect(() => {
-    dispatch(getShowHiringTab())
-  }, [])
-
   return (
     <ProfileFormContainer>
       {accountCreatedModal && (

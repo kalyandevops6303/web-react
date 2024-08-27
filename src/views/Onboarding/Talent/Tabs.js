@@ -37,11 +37,6 @@ const Tabs = ({ tabNames, active }) => {
     setShowTab(false);
   }
 
-  useEffect(() => {
-    dispatch(getShowHiringTab());
-    dispatch(getQuestionsLink(onFailure));
-  }, [])
-
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       <Nav pills className="mb-2">
