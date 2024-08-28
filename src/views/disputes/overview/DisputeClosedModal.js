@@ -14,7 +14,7 @@ import { disputeStatuses } from '../../../utility/constants/Constant';
 const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetailsModal, primaryFilter, onClose }) => {
   const dispatch = useDispatch();
 
-  const { _id, dispute_type, created_by, description } = selectedDispute;
+  const { _id, dispute_type, created_by, project } = selectedDispute;
 
   const resolveDisputeIsLoading = useSelector(resolveDisputeLoading);
 
@@ -46,9 +46,10 @@ const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetails
           <img src={DisputeClosedGif} alt="closed" height={174} width={174} className="mt-2" />
           <div>
             <h2 className="modal-heading text-blue">Dispute Closed</h2>
-            <h4 className="my-1">{dispute_type?.name}</h4>
             <div className="description-container">
-              <p className="modal-body-text">{description || ''}</p>
+              <p className="modal-body-text">Your project dispute is successfully closed</p>
+              <h4 className="my-1"><b>Dispute Type: </b> {dispute_type?.name}</h4>
+              <h4 className="my-1"><b>Project: </b> {project?.details?.name}</h4>
             </div>
             <div className="d-flex align-items-center mt-1">
               <Avatar

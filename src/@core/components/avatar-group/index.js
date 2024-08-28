@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/prop-types */
 // ** React Imports
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // ** Third Party Components
@@ -30,19 +30,17 @@ const AvatarGroup = (props) => {
       navigate(`/profile/${item?.user_type}/${item?.user_id}`);
     }
   };
+
   // ** Render Data
   const renderData = () =>
     props?.data?.map((item, i) => {
       const ItemTag = item.tag || 'div';
       const tooltipId =
-        (item?.tooltipId || item.title) && `tooltip-${item?.tooltipId ?? item.title?.split(' ').join('-')}`;
+        (item?.tooltipId || item.title) &&
+        `tooltip-${(item?.tooltipId ?? item.title)?.split(' ').join('-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
+
       return (
         <Fragment key={i}>
-          {tooltipId ? (
-            <UncontrolledTooltip placement={item.placement} target={tooltipId}>
-              {item.title}
-            </UncontrolledTooltip>
-          ) : null}
           {!item.meta ? (
             <Avatar
               size={size}
@@ -50,13 +48,18 @@ const AvatarGroup = (props) => {
               className={classnames('pull-up', {
                 [item.className]: item.className,
               })}
-              {...(item.title ? { id: tooltipId } : {})}
+              {...(tooltipId ? { id: tooltipId } : {})}
               {...item}
               title={undefined}
               meta={undefined}
               onClick={(evt) => handleProfileNavigate(evt, item)}
             />
           ) : null}
+          {tooltipId && (
+            <UncontrolledTooltip placement={item.placement} target={tooltipId}>
+              {item.title}
+            </UncontrolledTooltip>
+          )}
           {item.meta ? <ItemTag className="d-flex align-items-center ps-1">{item.meta}</ItemTag> : null}
         </Fragment>
       );
@@ -69,7 +72,7 @@ const AvatarGroup = (props) => {
           [className]: className,
         })}
       >
-        {props?.data && renderData()}
+        {renderData()}
         {totalCount && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
       </Tag>
     );
