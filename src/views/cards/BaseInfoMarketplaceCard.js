@@ -1,5 +1,6 @@
 /* eslint-disable no-else-return */
 import React, { useState } from 'react';
+import { isEmpty } from 'lodash';
 import { CardText, CardTitle, Badge, Button } from 'reactstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import hat from '@src/assets/images/hat.svg';
@@ -25,6 +26,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
+  const delegateDetails = data.client_delegate ?? {};
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const userData = useSelector(selectUserData);
   const location = useLocation();
@@ -78,19 +80,21 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         secondary: fromLocationSecondary() || fromLocationSearch(),
       },
     };
-    if (data?.bidders) {
+    if (!isEmpty(data?.bidders)) {
       if (data?.bidders?.user_type === userTypes.team) {
         navigate(`/profile/team/${data?.bidders?.team_id}`, { state });
       } else {
         navigate(`/profile/talent/${data?.bidders?.talent_id}`, { state });
       }
-    } else {
-      navigate(`/profile/client/${clientDetails?._id}`, { state });
-    }
+    } else if (!isEmpty(delegateDetails)) {
+        navigate(`/profile/client/${clientDetails?._id}?project_id=${project?._id}`, { state });
+      } else {
+        navigate(`/profile/client/${clientDetails?._id}`, { state });
+      }
   };
 
   const getImage = () => {
-    if (data?.bidders) {
+    if (!isEmpty(data?.bidders)) {
       if (data?.bidders?.user_type === userTypes.team) {
         return data?.bidders?.team_logo?.length ? data?.bidders?.team_logo : defaultAvatar;
       } else {
@@ -101,7 +105,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
     }
   };
 
-  const avatarGroup = data?.bidders?.length
+  const avatarGroup = !isEmpty(data?.bidders)
     ? data?.bidders?.map((bidder) => ({
         user_id: bidder?.talent_id || bidder?.team_id,
         user_type: bidder?.team_id ? userTypes.team : userTypes.talent,
@@ -113,7 +117,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
       }))
     : [];
 
-  const bidsReceivedAvatarGroup = data?.bidders?.length
+  const bidsReceivedAvatarGroup = !isEmpty(data?.bidders)
     ? data?.bidders?.map((bidder) => ({
         user_id: bidder?.talent_id || bidder?.team_id,
         user_type: bidder?.team_id ? userTypes.team : userTypes.talent,
@@ -187,9 +191,9 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           ) : null}
         </div>
       </IconWrapper>
-      {!location.pathname.split('/').includes('my_listings') && (
+      {(!location.pathname.split('/').includes('my_listings') || !isEmpty(delegateDetails)) && (
         <div className="d-flex mb-25 align-items-center">
-          {data?.bidders ? (
+          {!isEmpty(data?.bidders) ? (
             <div>
               {data?.bidders?.user_type === userTypes.talent && (
                 <img
@@ -218,8 +222,24 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                 <span>{clientDetails?.title ?? clientDetails?.company_name}</span>
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                {clientDetails?.first_name}&nbsp;
-                {clientDetails?.last_name}
+                {!isEmpty(delegateDetails) ? (
+                  <>
+                    <span>
+                      {delegateDetails?.first_name}&nbsp;
+                      {delegateDetails?.last_name}
+                    </span>
+                    {' '}
+                    <span>
+                      ({clientDetails?.first_name}&nbsp;
+                      {clientDetails?.last_name})
+                    </span>
+                  </>
+                ) : (
+                  <span>
+                    {clientDetails?.first_name}&nbsp;
+                    {clientDetails?.last_name}
+                  </span>
+                )}
               </CardText>
             </div>
             <div className="d-flex flex-grow-1">
@@ -231,7 +251,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           </div>
         </div>
       )}
-      {data?.bidders && data?.bidders?.user_type === userTypes.team ? (
+      {!isEmpty(data?.bidders) && data?.bidders?.user_type === userTypes.team ? (
         <div className="mb-2">
           {avatarGroup?.length > 3 ? (
             <AvatarGroup
