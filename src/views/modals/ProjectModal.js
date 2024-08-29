@@ -33,6 +33,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
+import ReportModal from './ReportModal';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -101,8 +102,16 @@ const ProjectModal = ({
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-
   const [selectedFileKey, setSelectedFileKey] = useState(null);
+  const [reportModal, setReportModal] = useState(false);
+
+  const onReportSuccess = ()=>{
+    setReportModal(false);
+  }
+
+  const toggleReportModal = ()=>{
+    setReportModal(!reportModal);
+  }
 
   const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
 
@@ -420,7 +429,7 @@ const ProjectModal = ({
               {(selectUserDetailsData?.user_type === userTypes.talent ||
                 selectUserDetailsData?.user_type === userTypes.team) && (
                 <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-                  <Button color="flat-danger" className="d-none me-1">
+                  <Button onClick={toggleReportModal} color="flat-danger" className=" me-1">
                     Report
                   </Button>
 
@@ -443,6 +452,17 @@ const ProjectModal = ({
               )}
             </div>
           )}
+          {reportModal && (
+        <ReportModal
+          onSuccess={onReportSuccess}
+          modal={reportModal}
+          toggleModal={toggleReportModal}
+          issueType={'Issue'}
+          reportTargetName={`${selectUserDetailsData?.talent_info?.first_name} ${selectUserDetailsData?.talent_info?.last_name}`}
+          reportTargetImage={selectUserDetailsData?.talent_info?.image_uri}
+          reportTargetDetails={selectUserDetailsData?.talent_info?.role?.name}
+        />
+      )}
         </ViewProjectDetailModalWrap>
       </ModalBody>
     </Modal>
