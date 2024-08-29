@@ -153,7 +153,7 @@ const RegisterDelegateForm = React.memo(
         </div>
         {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
       </div>
-      <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
+      <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading || !agreeTerms}>
         {isLoading ? <Spinner size="sm" /> : 'Create Account'}
       </Button>
     </Form>
