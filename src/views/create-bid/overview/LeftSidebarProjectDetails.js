@@ -27,6 +27,7 @@ const LeftSidebarProjectDetails = () => {
 
   const statusEnum = {
     OPEN: 'Open',
+    TO_BE_LISTED: 'To Be Listed',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
