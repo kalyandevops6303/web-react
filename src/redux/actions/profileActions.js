@@ -37,7 +37,7 @@ import {
 import { getRequestStatus } from './inviteTalent';
 
 const getProfile =
-  ({ id, user_type, isEditable, currentUserType }) =>
+  ({ id, user_type, isEditable, currentUserType, projectId }) =>
   async (dispatch) => {
     dispatch(getProfileRequest());
     let res;
@@ -46,7 +46,7 @@ const getProfile =
         res = await getTalentService(id);
       }
       if (user_type === userTypes.client) {
-        res = await getClientService(id);
+        res = await getClientService(id, projectId);
       }
       if (user_type === userTypes.team) {
         res = await getTeamById(id);
