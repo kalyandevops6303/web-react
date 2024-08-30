@@ -104,16 +104,16 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 />
                 <div className="d-flex flex-column" style={{ width: '70%' }}>
                   <CardTitle className="text-decoration-none marketplace-card-title mb-0 text-truncate">
-                    {data?.first_name}&nbsp;
-                    {data?.last_name}
+                    {data?.user_type === userTypes.client
+                      ? data?.company_name || 'Company Name'
+                      : data?.role?.name || 'Role'}
                   </CardTitle>
                   <p
                     className="font-small-3 fw-300 mb-25 marketplace-card-role"
                     style={{ width: '80%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                   >
-                    {data?.user_type === userTypes.client
-                      ? data?.company_name || 'Company Name'
-                      : data?.role?.name || 'Role'}
+                    {data?.first_name}&nbsp;
+                    {data?.last_name}
                   </p>
 
                   <div className="d-flex w-100" style={{ marginLeft: '-2px' }}>
