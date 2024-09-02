@@ -15,7 +15,6 @@ import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 import Nobidgif from '@src/assets/images/gifs/no_bids.gif';
 import Tag from '../../../@core/components/tags';
 import ViewAllCard from './ExtraCardWithCount';
-import RecommendedTeamsCardForClient from './RecommendedTeamsCardForClient';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
 
@@ -28,7 +27,6 @@ import {
   projectsBidsForClient,
   projectsBidsForClientLoading,
   recommendedTeamsForClient,
-  recommendedTeamsForClientLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
 import { getProjectsBidsForClient} from '../../../redux/actions/dashboardActions';
@@ -162,7 +160,6 @@ const OpenListing = () => {
   const projectsBidsForClientIsLoading = useSelector(projectsBidsForClientLoading);
 
   const recommendedTeamsForClientData = useSelector(recommendedTeamsForClient);
-  const recommendedTeamsForClientIsLoading = useSelector(recommendedTeamsForClientLoading);
 
   const handleViewAll = (e, path) => {
     e.stopPropagation();
@@ -181,11 +178,6 @@ const OpenListing = () => {
       setIsSliderLoading(false);
     }, 150);
   }, [open]);
-  const handleViewAllRecommendedTeam = (e, path) => {
-    e.stopPropagation();
-    navigate(path, { state: { isRecommended: true } });
-    dispatch(setActiveNavTab('marketplace'));
-  };
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -203,7 +195,8 @@ const OpenListing = () => {
                     count={projectsBidsForClientData?.metadata?.total_records}
                   />
                 </span>
-                {projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length > 0 && (
+         
+                {projectsBidsForClientData?.data?.filter((bid) => !!bid?.is_expired).length > 0 && (
                   <CardText onClick={handleReceivedBids} className="view-all-cta">
                     View All
                   </CardText>
@@ -365,105 +358,6 @@ const OpenListing = () => {
                       receivedBid
                       recommended
                       payment={false}
-                    />
-                  )}
-                </ProjectsListingWrap>
-              )}
-            </AccordionBody>
-          </>
-        )}
-      </AccordionItem>
-      <AccordionItem>
-        {userDetailsData?.user_type === userTypes.client && (
-          <>
-            <AccordionHeader targetId="3">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Recommended Teams
-                  <Tag
-                    hasNew={
-                      recommendedTeamsForClientData?.unreadCount > 0
-                        ? recommendedTeamsForClientData?.unreadCount
-                        : false
-                    }
-                    count={recommendedTeamsForClientData?.metadata?.total_records}
-                  />
-                </span>
-                {recommendedTeamsForClientData?.data?.length > 0 && (
-                  <CardText
-                    onClick={(e) => handleViewAllRecommendedTeam(e, '/marketplace/teams')}
-                    className="view-all-cta"
-                  >
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="3">
-              {isSliderLoading || recommendedTeamsForClientIsLoading ? (
-                <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
-                  <img style={{ width: '32%', height: '210px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '210px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '210px' }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {recommendedTeamsForClientData?.data?.length > 0 && isTab ? (
-                    recommendedTeamsForClientData?.data?.map((team) => (
-                      <RecommendedTeamsCardForClient
-                        accordionName={AccordionName.recommendedTeams}
-                        isRecommendedTeam
-                        key={team._id}
-                        data={team}
-                      />
-                    ))
-                  ) : recommendedTeamsForClientData?.data?.length > 0 ? (
-                    <>
-                      {recommendedTeamsForClientData?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {recommendedTeamsForClientData?.data?.map((team, index) => (
-                            <RecommendedTeamsCardForClient
-                              accordionName={AccordionName.recommendedTeams}
-                              isRecommendedTeam
-                              className={`slide-${index}`}
-                              key={team.id}
-                              data={team}
-                            />
-                          ))}
-
-                          {recommendedTeamsForClientData?.metadata?.total_records > 10 && (
-                            <ViewAllCard
-                              accordionName={AccordionName.recommendedTeams}
-                              height={217}
-                              onViewAll={(e) => handleViewAllRecommendedTeam(e, '/marketplace/teams')}
-                              count={calculateRemainingBidsCount(recommendedTeamsForClientData)}
-                            />
-                          )}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {recommendedTeamsForClientData?.data?.map((team) => (
-                            <RecommendedTeamsCardForClient
-                              accordionName={AccordionName.recommendedTeams}
-                              isRecommendedTeam
-                              className="custom-slider-project"
-                              key={team.id}
-                              data={team}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Empty
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      isTeam
-                      payment={false}
-                      recommended
                     />
                   )}
                 </ProjectsListingWrap>
