@@ -10,7 +10,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'prod'], description: 'Select deployment environment')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'qa-auto'], description: 'Select deployment environment')
     }
 
     stages {
@@ -24,6 +24,9 @@ pipeline {
                             break
                         case 'qa':
                             filename = 'env-qa'
+                            break
+                        case 'qa-auto':
+                            filename = 'env-qa-auto'
                             break
                         default:
                             error("Unknown environment: ${params.ENVIRONMENT}")
@@ -97,6 +100,13 @@ pipeline {
                             servicePort = '9012'
                             targetPort = '9012'
 			    mode='qa'
+                            break
+                        case 'qa-auto':
+                            composeFile = 'docker-compose.qa-auto.yml'
+                            serviceName = 'qa-auto'
+                            servicePort = '7012'
+                            targetPort = '7012'
+			    mode='qa-auto'
                             break
                         default:
                             composeFile = 'docker-compose.yml'
