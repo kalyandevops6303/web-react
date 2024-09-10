@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './customslider.scss';
+import './customSlider.scss';
 
 const CustomSlider = ({ sliderValue, onChange, max = 12 }) => {
   const [value, setValue] = useState(sliderValue ?? 0);
