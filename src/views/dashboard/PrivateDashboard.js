@@ -10,7 +10,6 @@ import Alerts from './overview/Alerts';
 import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
-import Meetings from './overview/Meetings';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { clubStatus, teamTypes, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';

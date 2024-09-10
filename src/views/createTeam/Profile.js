@@ -379,7 +379,7 @@ const Profile = ({ setDraftSavedModal }) => {
     try {
       const res = await profileImageUploadToAzureService(uploadUrl, selectedImage, {
         'x-ms-blob-type': 'BlockBlob',
-        'Content-Type': selectedImage.type,
+        'Content-Type': 'multipart/form-data',
       });
 
       if (res) {
