@@ -407,7 +407,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
 
       await milestoneFileUploadToAzureService(file.uploadData.upload_url, file.file, {
         'x-ms-blob-type': 'BlockBlob',
-        'Content-Type': file.file.type,
+        'Content-Type': 'multipart/form-data',
       });
     } catch (error) {
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
