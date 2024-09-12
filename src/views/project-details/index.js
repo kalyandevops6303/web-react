@@ -143,12 +143,12 @@ const ProjectDetails = () => {
             if(ndaData?.is_signed) { // checking whether the nda is signed by the current user or not 
                // check whether the current user is client or a talent 
                if(isClient && contractData) {
-                  signedBooleanForMilestoneTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made;// checks whether the document is signed by both the talent and client party the contract and nda and the payment has been made or not
-                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent &&  contractData?.is_documents_signed && ndaData?.is_documents_signed;
+                  signedBooleanForMilestoneTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made && contractData?.is_signed;// checks whether the document is signed by both the talent and client party the contract and nda and the payment has been made or not
+                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent &&  contractData?.is_documents_signed && ndaData?.is_documents_signed && contractData?.is_signed;
                   // checks whether the document is signed by both the talent and client party the contract and nda
                } else if (!isClient && contractData) {
                   signedBooleanForMilestoneTab = ndaData?.is_documents_signed && ndaData?.is_signed && ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_signed; 
-                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_documents_signed && ndaData?.is_documents_signed;
+                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_documents_signed && ndaData?.is_documents_signed && contractData?.is_signed;
                }
             } else {
               signedBooleanForMilestoneTab = false;
@@ -157,10 +157,10 @@ const ProjectDetails = () => {
           }
         } else if(contractData) {
             if(isClient) {
-              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made;
-              signedBooleanForPaymentTab = contractData?.is_documents_sent && contractData?.is_documents_signed; 
+              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_signed ;
+              signedBooleanForPaymentTab = contractData?.is_documents_sent && contractData?.is_documents_signed && contractData?.is_signed; 
             } else {
-              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made;
+              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made && contractData?.is_signed;
               signedBooleanForPaymentTab = contractData?.is_documents_sent && contractData?.is_documents_signed && contractData?.is_signed;
             }
           }
