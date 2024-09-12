@@ -1,0 +1,31 @@
+name: delete-tags
+on:
+  workflow_dispatch:
+ 
+jobs:
+  delete-tags:
+    runs-on: [self-hosted, Linux, X64, trumio-uat-orgrunner]
+    concurrency: release
+    permissions:
+      id-token: write
+      contents: write
+ 
+    steps:
+      # Checkout the repository to access git commands
+      - name: Checkout repository
+        uses: actions/checkout@v3
+ 
+      - name: Delete old tags
+        run: |
+          # Fetch all tags
+          git fetch --tags
+          # List all tags that match the pattern uat_v*
+          TAGS=$(git tag -l "uat_vdr*")
+          # Loop through the tags and delete each one
+          for TAG in $TAGS; do
+            # Delete the tag locally
+            git tag -d $TAG
+            # Delete the tag from the remote repository
+            git push origin :refs/tags/$TAG
+          done
+          echo "Old tags deleted: $TAGS"
