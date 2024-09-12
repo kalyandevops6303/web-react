@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { AsyncPaginate } from 'react-select-async-paginate';
 import '../custom-styles.scss';
 import * as yup from 'yup';
-import classNames from 'classnames';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -22,19 +19,28 @@ import {
   CardText,
   CardTitle,
 } from 'reactstrap';
+import defaultAvatar from '../../assets/images/portrait/small/avatar-s-11.jpg';
 import { SupportModalWrapper } from './style';
-import { getMissingName, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
-import { getIssueTypeService } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
-import { customerSupport } from '../../redux/actions/supportActions';
-import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { reportEntity } from '../../redux/actions/reportActions';
+import { selectReportLoading } from '../../redux/selectors/reportSelectors';
 
-const ReportModal = ({ modal, issueType, toggleModal, onSuccess, reportTargetName, reportTargetImage, reportTargetDetails }) => {
-    console.log(reportTargetName)
-//   const isLoading = useSelector((state) => state.support.loading);
+const ReportModal = ({
+  modal,
+  toggleModal,
+  onSuccess,
+  reportTargetId,
+  reportTargetName,
+  reportTargetImage,
+  reportTargetDetails,
+  entityType,
+}) => {
+  //   const isLoading = useSelector((state) => state.support.loading);
   const userData = useSelector(selectSavedUserData);
-    const userEmail = userData?.email;
+  const reportLoading = useSelector(selectReportLoading);
+  const userEmail = userData?.email;
   const CustomerSupportSchema = yup.object().shape({
     reasonOfReport: yup
       .string()
@@ -45,15 +51,13 @@ const ReportModal = ({ modal, issueType, toggleModal, onSuccess, reportTargetNam
 
   const {
     control,
-    watch,
     handleSubmit,
-    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(CustomerSupportSchema),
     defaultValues: {
-    reasonOfReport: ''
+      reasonOfReport: '',
     },
   });
 
@@ -63,42 +67,54 @@ const ReportModal = ({ modal, issueType, toggleModal, onSuccess, reportTargetNam
     const postData = {
       to_email: SUPPORT_EMAIL,
       cc_email: [userEmail],
-      reason: values?.reasonOfReport,
+      description: values?.reasonOfReport,
+      issue_type: `report`,
+      missing_name: '',
+      support_metadata: {
+        reported_entity_type: entityType,
+        reported_entity_id: reportTargetId,
+      },
     };
-
-    // dispatch(customerSupport({ data: postData, onSuccess }));
+    dispatch(reportEntity({ data: postData, onSuccess }));
   };
-
-  
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered">
       {/* <ModalHeader toggle={isLoading ? null : toggleModal} /> */}
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="pt-0 px-5">
-        <h2 className="font-large-1 text-center mb-2">Report</h2>
-        <div className='py-2'>
-            <h4>Are you sure you want to report this project?</h4>
+        <h2 className="font-large-1 text-center mb-2 text-danger">Report</h2>
+        <div className="py-2">
+          <h4>Are you sure you want to report this {entityType === 'PROJECT' ? 'project' : 'profile'} ?</h4>
 
-            <div className="d-flex mb-25 align-items-center">
-            <img
-              className="market-place-card-photo me-75"
-              src={reportTargetImage}
-              alt="avatar"
-              width={40}
-              height={50}
-              style={{ objectFit: 'cover' }}
-            />
-          <div onClick={(e) => handleNavigate(e)} className="d-flex w-100 align-items-center">
-            <div className="flex-grow-1">
-              <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                <span>{reportTargetName}</span>
-              </CardTitle>
-              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                {reportTargetDetails}
-              </CardText>
+          <div className="d-flex mb-25 align-items-center">
+            {reportTargetImage ? (
+              <img
+                className="market-place-card-photo me-75 rounded-circle"
+                src={(reportTargetImage?.length > 0 && reportTargetImage) || defaultAvatar}
+                alt="user"
+                width={40}
+                height={50}
+                style={{ objectFit: 'cover' }}
+              />
+            ) : (
+              <img
+                className="market-place-card-photo me-75 rounded-circle"
+                src={defaultAvatar}
+                alt="user"
+                width={40}
+                height={50}
+                style={{ objectFit: 'cover' }}
+              />
+            )}
+            <div className="d-flex w-100 align-items-center">
+              <div className="flex-grow-1">
+                <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
+                  <span>{reportTargetName}</span>
+                </CardTitle>
+                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{reportTargetDetails}</CardText>
+              </div>
             </div>
           </div>
-        </div>
         </div>
         <SupportModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -156,11 +172,8 @@ const ReportModal = ({ modal, issueType, toggleModal, onSuccess, reportTargetNam
               <Button outline color="primary" className="me-2" onClick={toggleModal}>
                 Cancel
               </Button>
-              <Button color="danger" type="submit" disabled={!isValid 
-            //   || isLoading
-                 }>
-                {/* {isLoading ? <Spinner size="sm" /> : 'Report'} */}
-                Report
+              <Button color="danger" type="submit" disabled={!isValid || reportLoading}>
+                {reportLoading ? <Spinner size="sm" /> : 'Report'}
               </Button>
             </div>
           </Form>
@@ -176,7 +189,8 @@ ReportModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   onSuccess: Proptypes.func,
-  issueType: Proptypes.string,
+  entityType: Proptypes.string,
+  reportTargetId: Proptypes.string.isRequired,
   reportTargetName: Proptypes.string.isRequired,
   reportTargetImage: Proptypes.string,
   reportTargetDetails: Proptypes.string.isRequired,
@@ -184,8 +198,8 @@ ReportModal.propTypes = {
 
 ReportModal.defaultProps = {
   modal: false,
-  toggleModal: () => { },
-  onSuccess: () => { },
-  issueType: '',
-  reportTargetImage: ''
+  toggleModal: () => {},
+  onSuccess: () => {},
+  entityType: '',
+  reportTargetImage: '',
 };

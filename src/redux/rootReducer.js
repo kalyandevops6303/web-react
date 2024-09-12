@@ -36,6 +36,7 @@ import support from './reducers/support';
 import formData from './reducers/formData';
 import hiring from './reducers/hiring';
 import delegate from './reducers/delegate';
+import reportReducer from './reducers/report';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -73,6 +74,7 @@ const rootReducer = combineReducers({
   formData,
   hiring,
   delegate,
+  reports: reportReducer,
   // Add more reducers if needed
 });
 

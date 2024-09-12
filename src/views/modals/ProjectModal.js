@@ -26,7 +26,7 @@ import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
-import { projectStatusEnum, userTypes } from '../../utility/constants/Constant';
+import { projectStatusEnum, REPORT_ENTITIES, userTypes } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
@@ -34,6 +34,7 @@ import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/das
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import ReportModal from './ReportModal';
+import FeedbackForCustomerSupportModal from './CustomerSupportFeedbackModal';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -104,14 +105,16 @@ const ProjectModal = ({
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const [selectedFileKey, setSelectedFileKey] = useState(null);
   const [reportModal, setReportModal] = useState(false);
+  const [successReportModal, setSuccessReportModal] = useState(false);
 
-  const onReportSuccess = ()=>{
+  const onReportSuccess = () => {
     setReportModal(false);
-  }
+    setSuccessReportModal(true);
+  };
 
-  const toggleReportModal = ()=>{
+  const toggleReportModal = () => {
     setReportModal(!reportModal);
-  }
+  };
 
   const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
 
@@ -234,16 +237,25 @@ const ProjectModal = ({
                   {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' ? (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                        {convertUnixTimestampToDate(
+                          data?.listing_details?.end_date_epoch,
+                          selectSavedUserDetailsData?.availability?.timezone?.name,
+                        )}
                       </CardTitle>
                       <CardText className="project-name">Expired Date</CardText>
                     </div>
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
-                        {' '} to{' '}
-                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                        {convertUnixTimestampToDate(
+                          data?.listing_details?.start_date_epoch,
+                          selectSavedUserDetailsData?.availability?.timezone?.name,
+                        )}{' '}
+                        to{' '}
+                        {convertUnixTimestampToDate(
+                          data?.listing_details?.end_date_epoch,
+                          selectSavedUserDetailsData?.availability?.timezone?.name,
+                        )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>
@@ -373,7 +385,10 @@ const ProjectModal = ({
                       {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                      {convertUnixTimestampToDate(
+                        document?.created_at,
+                        selectSavedUserDetailsData?.availability?.timezone?.name,
+                      )}
                     </Col>
                   </Row>
                 ))}
@@ -453,16 +468,27 @@ const ProjectModal = ({
             </div>
           )}
           {reportModal && (
-        <ReportModal
-          onSuccess={onReportSuccess}
-          modal={reportModal}
-          toggleModal={toggleReportModal}
-          issueType={'Issue'}
-          reportTargetName={`${selectUserDetailsData?.talent_info?.first_name} ${selectUserDetailsData?.talent_info?.last_name}`}
-          reportTargetImage={selectUserDetailsData?.talent_info?.image_uri}
-          reportTargetDetails={selectUserDetailsData?.talent_info?.role?.name}
-        />
-      )}
+            <ReportModal
+              onSuccess={onReportSuccess}
+              modal={reportModal}
+              toggleModal={toggleReportModal}
+              reportTargetId={data?._id}
+              reportTargetName={data?.details?.name}
+              reportTargetDetails="Project Name"
+              entityType={REPORT_ENTITIES?.PROJECT}
+            />
+          )}
+
+          {
+            successReportModal && (
+              <FeedbackForCustomerSupportModal
+              modal={successReportModal}
+              toggleModal={() => setSuccessReportModal(false)}
+              modalHeading="Thanks for your feedback !"
+              modalText="Your feedback has reached our team. We’ll be working towards providing you the best possible experience."
+              />
+            )
+          }
         </ViewProjectDetailModalWrap>
       </ModalBody>
     </Modal>

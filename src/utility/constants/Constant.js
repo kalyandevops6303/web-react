@@ -226,6 +226,14 @@ const TEAM_STATUS = {
   DRAFT: 'DRAFT',
 };
 
+const REPORT_ENTITIES = {
+  PROJECT: 'PROJECT',
+  TEAM: 'TEAM',
+  CLIENT: 'CLIENT',
+  TALENT: 'TALENT',
+  CLUB: 'CLUB',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -265,4 +273,5 @@ export {
   TEAM_STATUS,
   teamTypes,
   clubOrTeamStatuses,
+  REPORT_ENTITIES,
 };
