@@ -9,7 +9,7 @@ import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import { InviteView, stepName, steps, infrastructureStep } from './overview/constants';
 import BidView from './overview/BidView';
 import TeamView from './overview/TeamView';
-import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
+import { projectDetails,selectContractData,selectNDAData } from '../../redux/selectors/projectDetailsSelectors';
 import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import Milestone from './milestones/Milestone';
@@ -57,6 +57,8 @@ const ProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const user = useSelector(userData);
+  const ndaData = useSelector(selectNDAData);
+  const contractData = useSelector(selectContractData);
 
   const [stepsArray, setStepsArray] = useState(steps);
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
@@ -111,6 +113,7 @@ const ProjectDetails = () => {
     let updatedSteps = [];
     if (projectDetailsData) {
       updatedSteps = [...steps]; // Create a copy of the original steps array
+      
       if (projectDetailsData?.status === projectStatusEnum.COMPLETED) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
@@ -131,7 +134,42 @@ const ProjectDetails = () => {
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
       }
+      if(projectDetailsData?.status !== projectStatusEnum.COMPLETED){
+        let signedBooleanForMilestoneTab;
+        let signedBooleanForPaymentTab; 
+        if(projectDetailsData?.nda?.is_nda) {
+          // if nda is signed then ndaData and contractData both will be there if nda is not is not signed then only ndaData will be there check the action 
+          if(ndaData) {
+            if(ndaData?.is_signed) { // checking whether the nda is signed by the current user or not 
+               // check whether the current user is client or a talent 
+               if(isClient && contractData) {
+                  signedBooleanForMilestoneTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made;// checks whether the document is signed by both the talent and client party the contract and nda and the payment has been made or not
+                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent &&  contractData?.is_documents_signed && ndaData?.is_documents_signed;
+                  // checks whether the document is signed by both the talent and client party the contract and nda
+               } else if (!isClient && contractData) {
+                  signedBooleanForMilestoneTab = ndaData?.is_documents_signed && ndaData?.is_signed && ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_signed; 
+                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_documents_signed && ndaData?.is_documents_signed;
+               }
+            } else {
+              signedBooleanForMilestoneTab = false;
+              signedBooleanForPaymentTab = false;
+            }
+          }
+        } else if(contractData) {
+            if(isClient) {
+              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made;
+              signedBooleanForPaymentTab = contractData?.is_documents_sent && contractData?.is_documents_signed; 
+            } else {
+              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made;
+              signedBooleanForPaymentTab = contractData?.is_documents_sent && contractData?.is_documents_signed && contractData?.is_signed;
+            }
+          }
 
+        const milestoneIndex = 2; // Index of the 'Milestone' step
+        updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: !signedBooleanForMilestoneTab };
+        const paymentIndex = 3; // Index of the 'Payment' step
+        updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: !signedBooleanForPaymentTab };
+      }
       // Append irrespective of the status
       if (infrastructureAccess && isClient) { // Checks if the user is client and has infrastructure access
         updatedSteps.push({ ...infrastructureStep, isDisabled: false }); // add a new step
@@ -139,7 +177,7 @@ const ProjectDetails = () => {
 
       setStepsArray(updatedSteps);
     }
-  }, [projectDetailsData?.status, infrastructureAccess]);
+  }, [projectDetailsData?.status, infrastructureAccess,ndaData,contractData]);
 
   useEffect(() => {
     let updatedInviteSteps = [];
