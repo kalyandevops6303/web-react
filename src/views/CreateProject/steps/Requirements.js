@@ -64,6 +64,7 @@ import SaveForLaterModal from '../../modals/SaveForLaterModal';
 import { setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import TextEditor from '../TextEditor';
+import CustomSlider from '../../../@core/components/custom-slider/Index';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSavedModal, draftRequirementDetails }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -138,12 +139,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
     minTimeOverlapHr: yup
       .number()
       .min(0, 'Desired time overlap should be greater than or equal to 0')
-      .max(24, 'Desired time overlap should not be greater than 24')
+      .max(12, 'Desired time overlap should not be greater than 12')
       .test('maxDigitsAfterDecimal', 'Desired time overlap should be upto one decimal place', (number) =>
         /^\d+(\.\d{1,1})?$/.test(number),
       )
       .typeError('Please enter a number')
-      .required('Desired time overlap is required'),
+      .required('Desired time overlap is required')
+      .default(0),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays?.includes('weekdays'),
@@ -1043,32 +1045,15 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                     {errors.preferredWorkingTimeZone && (
                       <FormFeedback>{errors.preferredWorkingTimeZone.label.message}</FormFeedback>
                     )}
-                  </Col>
-                  <Col sm="12" md="6" lg="3">
-                    <Label className="form-label" for="minTimeOverlapHr">
-                      Desired Time Overlap<span className="label-asterisk">*</span>
+                    <Label className="form-label-lg h6 mt-2" for="minTimeOverlapHr">
+                    Select the minimum project time overlap hour,<br/>that you want with your project team.<span className="label-asterisk">*</span>
                     </Label>
-                    <Info size={18} color={theme.infoIcon} id="desired-time" className="ms-25" />
-                    <UncontrolledTooltip placement="right" target="desired-time">
-                      <div className="d-flex flex-column align-items-start">
-                        For collaboration with <br /> project team
-                      </div>
-                    </UncontrolledTooltip>
-
                     <Controller
                       id="minTimeOverlapHr"
                       name="minTimeOverlapHr"
                       control={control}
                       render={({ field }) => (
-                        <Input
-                          {...field}
-                          type="number"
-                          min={0}
-                          step={0.1}
-                          onWheel={(e) => e.target.blur()}
-                          placeholder="Enter number of hours"
-                          invalid={errors.minTimeOverlapHr && true}
-                        />
+                        <CustomSlider sliderValue={field.value} onChange={field.onChange}/>
                       )}
                     />
                     {errors.minTimeOverlapHr && <FormFeedback>{errors.minTimeOverlapHr.message}</FormFeedback>}
