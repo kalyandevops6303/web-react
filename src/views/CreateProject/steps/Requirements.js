@@ -64,7 +64,7 @@ import SaveForLaterModal from '../../modals/SaveForLaterModal';
 import { setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import TextEditor from '../TextEditor';
-import CustomSlider from '../../../@core/components/custom-slider/Index';
+import CustomSlider from '../../../@core/components/custom-slider/index';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSavedModal, draftRequirementDetails }) => {
   const ProjectDetailsSchema = yup.object().shape({
