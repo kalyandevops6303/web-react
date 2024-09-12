@@ -55,6 +55,10 @@ const UserDetails = () => {
   const showProfilePercent = param?.userId === userDataSelector?._id;
 
   const isEditable = userData?._id === param?.userId;
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const projectId = queryParams.get('project_id');
+  
   useEffect(() => {
     dispatch(clearData());
     dispatch(getRequestStatusSuccess(null));
@@ -69,6 +73,7 @@ const UserDetails = () => {
         user_type: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
         isEditable,
         currentUserType: userData?.user_type,
+        projectId: projectId || undefined
       }),
     );
 

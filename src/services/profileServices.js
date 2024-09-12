@@ -5,7 +5,13 @@ const getTalentService = (data) => DataService.get(`${API.profile.talent}/${data
 
 const getTalentProjectService = (data) => DataService.get(API.profile.talentProjects, data);
 
-const getClientService = (data) => DataService.get(`${API.profile.client}/${data}`);
+const getClientService = (data, projectId) => {
+  if (projectId) {
+    return DataService.get(`${API.profile.client}/${data}?project_id=${projectId}`);
+  }
+
+  return DataService.get(`${API.profile.client}/${data}`);
+};
 
 const getClientProjectService = (data) => DataService.get(API.profile.clientProjects, data);
 

@@ -1,0 +1,105 @@
+name: Tag Dispatch & Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Target branch to push the tag'
+        required: true
+        type: choice
+        options:
+          - uat
+          - prod
+      version_type:
+        description: 'Release version'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  tag-dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.inputs.branch }}
+        submodules: true
+
+    - name: Fetch tags
+      run: git fetch --tags
+          
+    - name: Current branch
+      run: git branch
+
+    - name: Get Latest Tag
+      id: get_latest_tag
+      run: |
+        TAG=$(git tag -l "uat_*" | sort -V --reverse | sed -n 1p)
+        echo "::set-output name=latest_tag::${TAG}"
+        [[ -z "${TAG}" ]] && echo "No tag found..." || echo "Tag found: ${TAG}"
+
+    - name: Increment Tag
+      id: increment_tag
+      run: |
+        latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
+        version_type=${{ github.event.inputs.version_type }}
+        
+        # Extract the prefix and version number
+        prefix="${latest_tag%%v*}"  # Extract everything before 'v'
+        version="${latest_tag#${prefix}v}"  # Extract everything after 'prefixv'
+        
+        IFS='.' read -r -a version_parts <<< "$version"
+        
+        major=${version_parts[0]}
+        minor=${version_parts[1]}
+        patch=${version_parts[2]}
+        
+        case $version_type in
+          major)
+            major=$((major + 1))
+            minor=0
+            patch=0
+            ;;
+          minor)
+            minor=$((minor + 1))
+            patch=0
+            ;;
+          patch)
+            patch=$((patch + 1))
+            ;;
+        esac
+        
+        new_tag="${prefix}v${major}.${minor}.${patch}"
+        
+        echo "Next tag: $new_tag"
+        echo "::set-output name=next_tag::$new_tag"
+
+        
+    - name: Push new tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.TAG_TOKEN }}
+      run: |
+        new_tag=${{ steps.increment_tag.outputs.next_tag }}
+        git tag $new_tag
+        git push origin $new_tag
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TAG_TOKEN }}
+      with:
+          tag_name: ${{ steps.increment_tag.outputs.next_tag }}
+          release_name: ${{ steps.increment_tag.outputs.next_tag }}
+          body: 'Description of the release'
+          draft: false
+          prerelease: false
+
