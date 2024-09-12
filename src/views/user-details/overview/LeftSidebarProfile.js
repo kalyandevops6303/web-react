@@ -477,7 +477,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   param?.userType?.toUpperCase() === userTypes.talent ||
                   param?.userType?.toUpperCase() === userTypes.client) && (
                   <div className="d-flex justify-content-center">
-                    <Button color="danger" onClick={() => setReportModal(true)}>
+                    <Button color="flat-danger" onClick={() => setReportModal(true)}>
                       Report
                     </Button>
                   </div>
