@@ -216,7 +216,7 @@ const CreateProject = () => {
       dispatch(clearCreateProjectData());
       dispatch(clearSaveDraftProjectId());
     };
-  }, []);
+  }, [params]);
 
   return (
     <>
