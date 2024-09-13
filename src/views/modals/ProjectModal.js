@@ -147,7 +147,7 @@ const ProjectModal = ({
         toggleModal();
         setSwitchProfileModal(true);
       } else if (location.pathname.split('/').includes('ongoing')) {
-        if(data?.worker_details?.user_type === userTypes.team) {
+        if(data?.worker_details?.user_type === userTypes.team && selectSavedUserDetailsData?.user_type === userTypes.talent) {
             
             const isCurrentUserWorker = data?.worker_details?.workers.some((worker) => worker?.user_id === selectSavedUserDetailsData?._id);
             if(!isCurrentUserWorker) {
