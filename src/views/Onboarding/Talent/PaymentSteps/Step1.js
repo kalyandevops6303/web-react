@@ -23,7 +23,7 @@ import { getShowHiringTab } from '../../../../redux/actions/hiringActions';
 import { UncontrolledTooltip } from 'reactstrap';
 
 // eslint-disable-next-line react/prop-types
-const Step1 = ({ setStep , step }) => {
+const Step1 = ({ setStep, step }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -34,12 +34,13 @@ const Step1 = ({ setStep , step }) => {
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
   const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(savedFormData?.isPaymentOnboardingDone || false);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
-
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
-  useEffect(()=>{
-    dispatch(setFormData({...savedFormData,step}));
-  },[step]);
+  const [stripeAccountText, setStripeAccountText] = useState("");
+
+  useEffect(() => {
+    dispatch(setFormData({ ...savedFormData, step }));
+  }, [step]);
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       if (res?.created_at) setIsTaxInfoExists(true);
@@ -56,6 +57,25 @@ const Step1 = ({ setStep , step }) => {
   useEffect(() => {
     dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
   }, []);
+
+  useEffect(() => {
+    if (isPaymentOnboardingDone) {
+      dispatch(linkStripeAccount((res) => {
+        const acctSegment = res.url.split('/').find(segment => segment.startsWith('acct'));
+
+        if (acctSegment) {
+          const prefix = acctSegment.slice(0, 4);  // 'acct'
+          const visiblePart = acctSegment.slice(-3);  // Last 3 characters
+          const hiddenPart = 'x'.repeat(acctSegment.length - 8);  // Replace the rest with 'x'
+
+          const formattedSegment = `${prefix} ${hiddenPart} ${visiblePart}`;
+
+          console.log(formattedSegment); // Output: acct_ xxxxxxxxxxx PrD
+          setStripeAccountText(formattedSegment);
+        }
+      }));
+    }
+  }, [isPaymentOnboardingDone])
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
@@ -76,10 +96,10 @@ const Step1 = ({ setStep , step }) => {
     setTaxUserType(e.target.name);
   };
 
-  useEffect(()=>{
-    const allData = {...savedFormData, isPaymentOnboardingDone };
+  useEffect(() => {
+    const allData = { ...savedFormData, isPaymentOnboardingDone };
     dispatch(setFormData(allData));
-  },[isPaymentOnboardingDone]);
+  }, [isPaymentOnboardingDone]);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
@@ -104,7 +124,7 @@ const Step1 = ({ setStep , step }) => {
     }
   };
   const handleNextClick = (e) => {
-    
+
     if (taxUserType === CITIZEN_TYPES.OTHER || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       handleEmailClick();
@@ -267,7 +287,7 @@ const Step1 = ({ setStep , step }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            
+
             <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
