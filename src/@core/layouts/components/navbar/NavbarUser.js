@@ -83,13 +83,13 @@ const NavbarUser = ({ setNavBarLoading }) => {
       ) : (
         <>
           {isTabDisabled || !isCometChatLoggedIn ? (
-            <MessageIconContainer>
-              <div className="text-muted cursor-not-allowed mb-auto mt-75">
+            <MessageIconContainer className="d-flex align-items-center">
+              <div className="text-muted cursor-not-allowed">
                 <MessageSquare size={20} color={theme.bodyColor} />
               </div>
             </MessageIconContainer>
           ) : (
-            <MessageIconContainer className="mb-auto mt-75">
+            <MessageIconContainer className="d-flex align-items-center">
               <div onClick={handleChatNavigate}>
                 {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
                 <MessageSquare size={20} color={isChatView ? theme.activeColor : theme.bodyColor} />
@@ -102,13 +102,13 @@ const NavbarUser = ({ setNavBarLoading }) => {
             </MessageIconContainer>
           )}
           {isTabDisabled ? (
-            <div className="text-muted cursor-not-allowed mb-auto mt-75">
+            <div className="text-muted cursor-not-allowed d-flex align-items-center">
               <NotificationIconContainer>
                 <Bell size={20} color={theme.bodyColor} />
               </NotificationIconContainer>
             </div>
           ) : (
-            <NotificationIconContainer onClick={handleNotificaionClick} className=" mb-auto mt-75">
+            <NotificationIconContainer onClick={handleNotificaionClick} className="d-flex align-items-center">
               <Link to="/notifications">
                 {(isNotificationCount || notificationsPollingData?.unread_notifications_count > 0) && (
                   <span className="notification-dot" />

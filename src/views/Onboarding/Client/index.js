@@ -10,6 +10,8 @@ import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { BackButtonContainer } from '../style';
 import { getItemFromSession, removeItemFromSession } from '../../../utility/sessesionStorageControl';
 import { clearAllFormData } from '../../../redux/reducers/formData';
+import DelegateOnboarding from '../Delegate';
+import { getItem } from '../../../utility/localStorageControl';
 
 const ClientOnboarding = () => {
   const tabNames = {
@@ -20,6 +22,7 @@ const ClientOnboarding = () => {
     Social: '5',
     Payment: '6',
   };
+  const isDelegate = getItem('isDelegate');
 
   const [active, setActive] = useState(tabNames.Account);
 
@@ -61,7 +64,7 @@ const ClientOnboarding = () => {
   }, [location]);
 
   const onBackClick = () => {
-    if(location?.pathname.includes('/client-profile-edit/account-details')){
+    if (location?.pathname.includes('/client-profile-edit/account-details')) {
       dispatch(clearAllFormData());
     }
     navigate(getItemFromSession('backRouteForProfileEdit'));
@@ -71,6 +74,10 @@ const ClientOnboarding = () => {
   useEffect(() => {
     dispatch(setActiveNavTab(''));
   }, []);
+
+  if (isDelegate) {
+    return <DelegateOnboarding />;
+  }
 
   return (
     <>

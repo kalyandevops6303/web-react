@@ -2,10 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     userAssessments: [],
+    teamAssessments: [],
     notUserAssessments: [],
     deleteNonAssessmentLoading: false,
     userAssessmentsCount: 0, 
     userAssessmentsLoading: false,
+    teamAssessmentsLoading: false,
     allAssessments: [],
     allAssessmentsLoading: false,
     deleteAssessment: [],
@@ -38,6 +40,22 @@ const assessmentSlice = createSlice({
         userAssessmentsFailure: (state, action) => ({
             ...state,
             userAssessmentsLoading: false,
+            error: action.payload,
+        }),
+        teamAssessmentsRequest: (state) => ({
+            ...state,
+            teamAssessmentsLoading: true,
+            error: null,
+        }),
+        teamAssessmentsSuccess: (state, action) => ({
+            ...state,
+            teamAssessments: action.payload,
+            teamAssessmentsLoading: false,
+            error: null
+        }),
+        teamAssessmentsFailure: (state, action) => ({
+            ...state,
+            teamAssessmentsLoading: false,
             error: action.payload,
         }),
         allAssessmentsRequest: (state) => ({
@@ -152,6 +170,9 @@ export const {
     userAssessmentsRequest,
     userAssessmentsSuccess,
     userAssessmentsFailure,
+    teamAssessmentsRequest, 
+    teamAssessmentsSuccess, 
+    teamAssessmentsFailure,
     allAssessmentsRequest, 
     allAssessmentsSuccess, 
     allAssessmentsFailure,

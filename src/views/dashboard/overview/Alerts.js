@@ -16,6 +16,7 @@ import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { getAlertsNotifications, markNotificationAsRead } from '../../../redux/actions/notificationsActions';
 import getTeamId from '../../../utility/commonUtils';
+import { getItem } from '../../../utility/localStorageControl';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const Alerts = () => {
     userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
+  const isDelegate = getItem('isDelegate');
 
   useEffect(() => {
     dispatch(getAlertsNotifications({ priority: [1, 2], page: 1, pageSize: 4, oldData: [] }));
@@ -119,7 +121,7 @@ const Alerts = () => {
             </Link>
           )}
         </CardHeader>
-        {!isProfileCompleted && (
+        {!isProfileCompleted && !isDelegate && (
           <Card className="card-inside">
             <CardHeader>
               <CardTitle tag="h4">Profile Completion!</CardTitle>

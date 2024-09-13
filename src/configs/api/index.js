@@ -4,7 +4,8 @@ const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
 const apiProjectInfraEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/infrastructure`;
-const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
+const apiAdminEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/admin`;
+
 const API = {
   auth: {
     login: `${apiAuthEndpoint}/api/v1/user/sign-in`,
@@ -48,8 +49,8 @@ const API = {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
     resumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parse-resume`,
     updateResumeParsedDetails: `${apiCreateProjectAIEndpoint}/api/v1/parsed`,
-    accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     deleteResume: `${apiAuthEndpoint}/api/v1/talent/resume`,
+    accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
     profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
@@ -113,6 +114,11 @@ const API = {
 
     // files
     downloadUrl: `${apiCreateProjectEndpoint}/api/v1/download/url`,
+  },
+  delegate: {
+    inviteDelegate: `${apiAuthEndpoint}/api/v1/invitation/delegate`,
+    signUpDelegate: `${apiAuthEndpoint}/api/v1/user/delegate/signup`,
+    delegateInvitationStatus: `${apiAuthEndpoint}/api/v1/invitation/delegate/status`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
@@ -334,20 +340,21 @@ const API = {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
   },
   assessments: {
-    user_assessments: `${apiAssessmentsEndpoint}/api/v1/candidate/assessments`,
-    all_assessments: `${apiAssessmentsEndpoint}/api/v1/all/assessment/dropdown`,
-    delete_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment`,
-    toggle_assessment_hidden: `${apiAssessmentsEndpoint}/api/v1/candidate/hide/assessment`,
-    add_assessment: `${apiAssessmentsEndpoint}/api/v1/add/candidate/assessment/list`,
-    get_assessment_link: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/link`,
-    delete_non_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/non-assessment`,
-    prepopulate: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/prepopulate`
+    user_assessments: `${apiOnboardingEndpoint}/api/v1/candidate/assessments`,
+    team_assessments: `${apiOnboardingEndpoint}/api/v1/assessment/teams-info`,
+    all_assessments: `${apiOnboardingEndpoint}/api/v1/all/assessment/dropdown`,
+    delete_assessment: `${apiOnboardingEndpoint}/api/v1/candidate/assessment`,
+    toggle_assessment_hidden: `${apiOnboardingEndpoint}/api/v1/candidate/hide/assessment`,
+    add_assessment: `${apiOnboardingEndpoint}/api/v1/add/candidate/assessment/list`,
+    get_assessment_link: `${apiOnboardingEndpoint}/api/v1/candidate/assessment/link`,
+    delete_non_assessment: `${apiOnboardingEndpoint}/api/v1/candidate/non-assessment`,
+    prepopulate: `${apiOnboardingEndpoint}/api/v1/candidate/assessment/prepopulate`,
   },
   support: {
     create: `${apiAuthEndpoint}/api/v1/support-request`,
     count: `${apiAuthEndpoint}/api/v1/support-request/count`,
     list: `${apiAuthEndpoint}/api/v1/support-requests/paginated`,
-    delete: `${apiAuthEndpoint}/api/v1/support-request`
+    delete: `${apiAuthEndpoint}/api/v1/support-request`,
   },
   hiring: {
     show_hiring_tab: `${apiAuthEndpoint}/api/v1/talent/check-mandatory-onboarding-details`,

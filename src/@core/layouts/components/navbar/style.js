@@ -8,7 +8,7 @@ export const NotificationIconContainer = styled.div`
   padding-right: 16px;
   .notification-dot {
     position: absolute;
-    top: -10px;
+    top: 0px;
     left: 6px;
     display: block;
     margin: auto;
@@ -103,7 +103,6 @@ export const UserDropDownWrapper = styled.div`
   }
   .edit-accordion {
     border-bottom: 1px solid ${theme.cardHeaderBorderColor};
-    margin-bottom: 1rem;
   }
   .accordion-button {
     font-size: 14px !important;

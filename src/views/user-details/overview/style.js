@@ -418,6 +418,12 @@ const AssessmentResultText = styled.div`
   color: ${({ grade }) => gradeColors[grade] || 'gray'};
 `
 
+const ModalCardItem = styled.div`
+  box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  margin-bottom: 30px;
+`
+
 export {
   ActionButtonWrapper,
   StatboxWrap,
@@ -431,5 +437,6 @@ export {
   DetailsWrap,
   DetailsHeaderSection,
   AssessedSkillGradeBar,
-  AssessmentResultText
+  AssessmentResultText,
+  ModalCardItem
 };

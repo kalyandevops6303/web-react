@@ -27,22 +27,6 @@ export const useLayout = () => {
       if (window.innerWidth < breakpoint) {
         setLayout("vertical");
       }
-
-      window.addEventListener("resize", () => {
-        if (
-          window.innerWidth <= breakpoint &&
-          store.lastLayout !== "vertical" &&
-          store.layout !== "vertical"
-        ) {
-          setLayout("vertical");
-        }
-        if (
-          window.innerWidth >= breakpoint &&
-          store.lastLayout !== store.layout
-        ) {
-          setLayout(store.lastLayout);
-        }
-      });
     }, [store.layout]);
   }
 

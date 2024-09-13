@@ -27,6 +27,7 @@ import { DetailsHeaderSection, DetailsWrap } from './overview/style';
 import PublicTeamMembersListingModal from '../modals/PublicTeamMembersListingModal';
 import MembersListingCard from './overview/MembersListingCard';
 import AssessedSkills from './overview/AssessedSkills';
+import AssessedSkillsTeam from './overview/AssessedSkillsTeam';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,10 @@ const UserDetails = () => {
   const showProfilePercent = param?.userId === userDataSelector?._id;
 
   const isEditable = userData?._id === param?.userId;
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const projectId = queryParams.get('project_id');
+  
   useEffect(() => {
     dispatch(clearData());
     dispatch(getRequestStatusSuccess(null));
@@ -68,6 +73,7 @@ const UserDetails = () => {
         user_type: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
         isEditable,
         currentUserType: userData?.user_type,
+        projectId: projectId || undefined
       }),
     );
 
@@ -344,7 +350,8 @@ const UserDetails = () => {
             />
           </Row>
           <Row>
-            <AssessedSkills />
+            {isTalentView && <AssessedSkills />}
+            {isTeamView && <AssessedSkillsTeam />}
           </Row>
           <Row>
             <RecentProjects isEditable={userData?._id === param?.userId} />

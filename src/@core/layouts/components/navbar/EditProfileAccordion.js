@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   DropdownItem,
@@ -8,23 +8,23 @@ import {
   AccordionBody,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clubStatus, userProfileEdit, userTypes } from '../../../../utility/constants/Constant';
-import { selectUserData, checkAdmin } from '../../../../redux/selectors/authSelectors';
-import { getItemFromSession, setItemFromSession } from '../../../../utility/sessesionStorageControl';
-import { checkIsAdmin } from '../../../../redux/actions/authActions';
+import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
+import { getItem } from '../../../../utility/localStorageControl';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
+  const isDelegate = getItem('isDelegate');
 
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const handleEditProfileForTeam = () => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
@@ -110,7 +110,7 @@ const EditProfileAccordion = () => {
                   </DropdownItem>
                 </>
               )}
-              {userDetailsData?.user_type === userTypes.client && (
+              {userDetailsData?.user_type === userTypes.client && !isDelegate ? (
                 <>
                   <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Account</span>
@@ -128,6 +128,10 @@ const EditProfileAccordion = () => {
                     <span className="align-middle p-1">Social</span>
                   </DropdownItem>
                 </>
+              ) : (
+                <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
+                  <span className="align-middle p-1">Account</span>
+                </DropdownItem>
               )}
               {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'CLUB' && (
                 <>

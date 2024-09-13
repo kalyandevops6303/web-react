@@ -28,7 +28,7 @@ import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
-import { removeItem, setItem } from '../../utility/localStorageControl';
+import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
@@ -63,6 +63,7 @@ const PrivateDashboard = () => {
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const query = useSelector((state) => state.search.query);
+  const isDelegate = getItem('isDelegate');
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
@@ -105,9 +106,7 @@ const PrivateDashboard = () => {
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
-    } else if (
-      profilePercentageData?.values_missing?.includes('company_name')
-    ) {
+    } else if (profilePercentageData?.values_missing?.includes('company_name') && !isDelegate) {
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');
@@ -181,6 +180,7 @@ const PrivateDashboard = () => {
 
   return (
     <div>
+      
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
@@ -348,27 +348,21 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.team_type !== userTypes.club &&
-            <div>
-              {
-                userDetailsData?.user_type === "CLIENT" ?
-                  <AvailableTime />
-                  :
-                  <AssessmentsOverview />
-              }
-            </div>}
+          {userDetailsData?.team_type !== userTypes.club && (
+            <div>{userDetailsData?.user_type === 'CLIENT' ? <AvailableTime /> : <AssessmentsOverview />}</div>
+          )}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />

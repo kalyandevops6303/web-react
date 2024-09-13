@@ -3,22 +3,24 @@ import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { AssessedSkillGradeBar, AssessmentResultText, RecentProjectsWrap } from './style';
 import { selectUserAssessments } from '../../../redux/selectors/assessmentSelectors';
-import { getUserAssessments } from '../../../redux/actions/assessmentActions';
+import { getTeamAssessments, getUserAssessments } from '../../../redux/actions/assessmentActions';
+import { useParams } from 'react-router-dom';
 
-const AssessedSkills = () => {
+const AssessedSkills = ({ userId }) => {
+  const param = useParams();
   const dispatch = useDispatch();
   const userAssessments = useSelector(selectUserAssessments);
 
   const [showSection, setShowSection] = useState(false);
 
   useEffect(() => {
-    dispatch(getUserAssessments());
+    dispatch(getUserAssessments({ id: userId || param?.userId }));
   }, []);
 
   useEffect(() => {
     const visibleAssessments = userAssessments?.some((assessment) => assessment.hidden === false);
     setShowSection(visibleAssessments);
-  }, []);
+  }, [userAssessments]);
 
   return (
     <div>
@@ -30,12 +32,12 @@ const AssessedSkills = () => {
                 <b>Assessed Skills</b>
               </CardTitle>
 
-              <div className="d-flex gap-1">
-                {userAssessments.map(
+              <div className="d-flex gap-5">
+                {userAssessments?.map(
                   (assessment) =>
                     assessment.completed_date &&
                     !assessment.hidden && (
-                      <div key={assessment.id} className="d-flex gap-1 h-full" style={{ width: '20%' }}>
+                      <div className="d-flex gap-1 h-full mr-5">
                         <AssessedSkillGradeBar grade={assessment.assessment_grade} />
 
                         <div className="d-flex flex-column h-100 justify-content-between">

@@ -9,6 +9,7 @@ import { userTypes } from '../../../utility/constants/Constant';
 import { draftProjectsCheck } from '../../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
+import { getItem } from '../../../utility/localStorageControl';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
@@ -17,6 +18,7 @@ const CreateProjectButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const isDelegate = getItem('isDelegate');
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
@@ -30,9 +32,7 @@ const CreateProjectButton = () => {
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
-    } else if (
-      profilePercentageData?.values_missing?.includes('company_name')
-    ) {
+    } else if (profilePercentageData?.values_missing?.includes('company_name') && !isDelegate) {
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');

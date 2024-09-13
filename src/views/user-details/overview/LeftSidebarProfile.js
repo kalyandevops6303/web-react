@@ -4,12 +4,13 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { unionBy } from 'lodash';
+import { unionBy , isEmpty } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
 import DribbleIcon from '@src/assets/images/dribble.png';
 import BehanceIcon from '@src/assets/images/behance.png';
+import InboxIcon from '@src/assets/images/inboxIcon.svg';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
 import Rating from 'react-rating';
@@ -29,6 +30,7 @@ import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import DelegateNameCard from '../../cards/DelegateNameCard';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -111,7 +113,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                 <Heart className="cursor-pointer d-flex ms-auto heart" onClick={favUnfavLoading ? null : handleLike} />
               ))}
           </div>
-
           <div className="user-image">
             {isClient && (
               <img
@@ -142,7 +143,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               />
             )}
           </div>
-
           {isEditable && isTalentView && (
             <div className="private">
               <CardText className="text-center user-name mb-50">{`${data?.first_name || '-'} ${
@@ -158,7 +158,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
             </div>
           )}
-
           {isClient && (
             <div className="public mt-50 mb-1">
               <CardText className="text-center user-name fw-bold mb-1">{`${
@@ -186,7 +185,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               <CardText className="text-center mb-50 fw-300">{`${data?.created_by?.first_name} ${data?.created_by?.last_name}`}</CardText>
             </div>
           )}
-
           <div className="projects-rating projects-rating-public">
             <Rating
               initialRating={returnFormattedRating(data?.rating)}
@@ -199,7 +197,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               {data?.total_reviews || 0} Review(s)
             </CardText>
           </div>
-
           {showProfilePercent && (
             <div className="profile-completion mt-2">
               <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
@@ -211,7 +208,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               <CardText className="font-small-3 mt-25">Profile Completion</CardText>
             </div>
           )}
-
+          {!isEmpty(data.client_delegate) && (
+            <section className="user-details mt-2">
+              <CardTitle className="info-detail-title main mb-75">Client Delegate</CardTitle>
+              <DelegateNameCard
+                img={data.client_delegate.image_uri}
+                userName={`${data.client_delegate.first_name} ${data.client_delegate.last_name}`}
+                icon={InboxIcon}
+              />
+            </section>
+          )}
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
             {data?.educational_institute?.map((item, index) => (
@@ -470,7 +476,26 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </section>
         </CardBody>
       </Card>
-
+      {!isEmpty(data.delegates) && (
+        <Card style={{ maxHeight: '400px', overflowY: 'scroll' }}>
+          <CardBody>
+            <div className="d-flex gap-50">
+              <CardTitle>Other Delegate</CardTitle>
+              <CardText className="fw-light font-small-2 mt-25">({data.delegates?.length} Members)</CardText>
+            </div>
+            <div className="d-flex flex-wrap gap-50">
+              {data.delegates.map((delegate) => (
+                <DelegateNameCard
+                  key={delegate.id}
+                  img={delegate.image_uri}
+                  userName={`${delegate.first_name} ${delegate.last_name}`}
+                  userType={delegate.userType}
+                />
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      )}
       {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
     </LeftSidebarProfileWrapper>
   );
