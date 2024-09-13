@@ -46,7 +46,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   const applicationFee = feeStructre?.application_fee;
   // eslint-disable-next-line no-unsafe-optional-chaining
 
-  const trumioFeeBeforeDiscount = (totalAmount * applicationFee?.percentage) / 100;
+  const trumioFeeBeforeDiscount = Math.max((totalAmount * applicationFee?.percentage) / 100, applicationFee?.min_fee);
   const trumioFeeDiscount = (trumioFeeBeforeDiscount * (applicationFee?.discount_coupon?.percent_off ?? 0)) / 100;
   const trumioFeeAfterDiscount = trumioFeeBeforeDiscount - trumioFeeDiscount;
 
@@ -220,7 +220,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
               <>
                 <div className="d-flex justify-content-between px-1">
                   <CardText style={{ fontSize: '16px' }}>
-                    {`${applicationFee?.name ?? ''} (${applicationFee?.percentage ?? 0}%)`}
+                    {`${applicationFee?.name ?? ''} ${(trumioFeeBeforeDiscount!==applicationFee?.min_fee) ? `(${applicationFee?.percentage ?? 0}%)`:''}`}
                   </CardText>
                   <CardText style={{ fontSize: '16px' }}>{`$ ${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}</CardText>
                 </div>
