@@ -73,8 +73,6 @@ const Step1 = ({ setStep, step }) => {
           const hiddenPart = 'x'.repeat(acctSegment.length - 8);  // Replace the rest with 'x'
 
           const formattedSegment = `${prefix} ${hiddenPart} ${visiblePart}`;
-
-          console.log(formattedSegment); // Output: acct_ xxxxxxxxxxx PrD
           setStripeAccountText(formattedSegment);
         }
       }));
