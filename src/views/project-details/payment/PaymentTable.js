@@ -113,10 +113,10 @@ const PaymentTable = () => {
   };
 
   useEffect(() => {
-    if (isClient) {
-      dispatch(getApplicationFee(onGetApplicationFee));
+    if (isClient && projectDetailsData?._id) {
+      dispatch(getApplicationFee(projectDetailsData?._id, onGetApplicationFee));
     }
-  }, []);
+  }, [isClient, projectDetailsData?._id]);
 
   useEffect(() => {
     if (projectDetailsData?._id) {

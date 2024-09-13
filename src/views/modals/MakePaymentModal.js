@@ -25,6 +25,8 @@ import { PAYMENT_STATUS, paymentText, userTypes } from '../../utility/constants/
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { CustomBadge } from '../styled';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
+
 import theme from '../../configs/themeVariables';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
@@ -51,6 +53,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   const totalPending = parseFloat(totalAmount + trumioFeeAfterDiscount).toFixed(2);
 
   const user = useSelector(selectAuthUserData);
+  const projectDetailsData = useSelector(projectDetails);
   const isClient = user?.user_type === userTypes.client;
 
   const onGetApplicationFee = (data) => {
@@ -58,8 +61,10 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   };
 
   useEffect(() => {
-    dispatch(getApplicationFee(onGetApplicationFee));
-  }, []);
+    if (projectDetailsData?._id) {
+      dispatch(getApplicationFee(projectDetailsData?._id, onGetApplicationFee));
+    }
+  }, [projectDetailsData?._id]);
 
   const getTagSettings = (tag) => {
     const { payment_status = '', status = '' } = tag;
