@@ -21,9 +21,11 @@ import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
 import { getShowHiringTab } from '../../../../redux/actions/hiringActions';
 import { UncontrolledTooltip } from 'reactstrap';
+import { SuccessInfoBanner } from '../../../assessments/style';
+import { Info } from 'react-feather';
 
 // eslint-disable-next-line react/prop-types
-const Step1 = ({ setStep , step }) => {
+const Step1 = ({ setStep, step }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -34,12 +36,14 @@ const Step1 = ({ setStep , step }) => {
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
   const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(savedFormData?.isPaymentOnboardingDone || false);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
-
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
-  useEffect(()=>{
-    dispatch(setFormData({...savedFormData,step}));
-  },[step]);
+  const [stripeAccountText, setStripeAccountText] = useState("");
+  const [stripeAccountLink, setStripeAccountLink] = useState("");
+
+  useEffect(() => {
+    dispatch(setFormData({ ...savedFormData, step }));
+  }, [step]);
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       if (res?.created_at) setIsTaxInfoExists(true);
@@ -56,6 +60,24 @@ const Step1 = ({ setStep , step }) => {
   useEffect(() => {
     dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
   }, []);
+
+  useEffect(() => {
+    if (isPaymentOnboardingDone) {
+      dispatch(linkStripeAccount((res) => {
+        setStripeAccountLink(res.url);
+        const acctSegment = res.url.split('/').find(segment => segment.startsWith('acct'));
+
+        if (acctSegment) {
+          const prefix = acctSegment.slice(0, 4);  // 'acct'
+          const visiblePart = acctSegment.slice(-3);  // Last 3 characters
+          const hiddenPart = 'x'.repeat(acctSegment.length - 8);  // Replace the rest with 'x'
+
+          const formattedSegment = `${prefix} ${hiddenPart} ${visiblePart}`;
+          setStripeAccountText(formattedSegment);
+        }
+      }));
+    }
+  }, [isPaymentOnboardingDone])
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
@@ -76,10 +98,10 @@ const Step1 = ({ setStep , step }) => {
     setTaxUserType(e.target.name);
   };
 
-  useEffect(()=>{
-    const allData = {...savedFormData, isPaymentOnboardingDone };
+  useEffect(() => {
+    const allData = { ...savedFormData, isPaymentOnboardingDone };
     dispatch(setFormData(allData));
-  },[isPaymentOnboardingDone]);
+  }, [isPaymentOnboardingDone]);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
@@ -104,7 +126,7 @@ const Step1 = ({ setStep , step }) => {
     }
   };
   const handleNextClick = (e) => {
-    
+
     if (taxUserType === CITIZEN_TYPES.OTHER || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       handleEmailClick();
@@ -182,51 +204,73 @@ const Step1 = ({ setStep , step }) => {
       {accountCreatedModal && (
         <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
       )}
+      {isPaymentOnboardingDone && <SuccessInfoBanner className="d-flex px-1 py-1 mb-1 w-75">
+        <Info size={18} color={theme.succesGreenColor} className="me-50 info-banner-icon" />
+        <p className="font-medium-1 m-0 info">
+        Congratulations! You have completed setting up your Stripe account.
+        </p>
+      </SuccessInfoBanner>}
+
       <h2 className="m-0 mt-1 mb-2">STEP 1 - Tax Situation Assessment</h2>
+      
       <Form>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">Pre-Payment Set Up</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <h5 className="m-0 mt-1 mb-1 fs-5">Select from below</h5>
-            <div className="d-flex">
-              <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  checked={taxUserType === CITIZEN_TYPES.US}
-                  name="US"
-                  disabled={isPaymentOnboardingDone}
-                  onChange={handlePrePaymentChange}
-                />
-                <div className="w-75">US Person - Permanent residents or Citizens with US Tax Identification</div>
-              </Col>
-              <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  name="NON_US"
-                  disabled={isPaymentOnboardingDone}
-                  checked={taxUserType === 'NON_US'}
-                  onChange={handlePrePaymentChange}
-                />
-                <div className="w-75">
-                  Non-US Persons with no US Tax Identification studying / working outside the US
-                </div>
-              </Col>
-              <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  name="OTHER"
-                  disabled={isPaymentOnboardingDone}
-                  checked={taxUserType === CITIZEN_TYPES.OTHER}
-                  onChange={handlePrePaymentChange}
-                />
-                <div className="w-75">All other tax situations</div>
-              </Col>
-            </div>
-          </CardBody>
-        </Card>
+        <div className='d-flex gap-3'>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">Pre-Payment Set Up</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <h5 className="m-0 mt-1 mb-1 fs-5">Select from below</h5>
+              <div className="d-flex">
+                <Col className="d-flex gap-50">
+                  <Input
+                    type="radio"
+                    checked={taxUserType === CITIZEN_TYPES.US}
+                    name="US"
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handlePrePaymentChange}
+                  />
+                  <div className="w-75">US Person - Permanent residents or Citizens with US Tax Identification</div>
+                </Col>
+                <Col className="d-flex gap-50">
+                  <Input
+                    type="radio"
+                    name="NON_US"
+                    disabled={isPaymentOnboardingDone}
+                    checked={taxUserType === 'NON_US'}
+                    onChange={handlePrePaymentChange}
+                  />
+                  <div className="w-75">
+                    Non-US Persons with no US Tax Identification studying / working outside the US
+                  </div>
+                </Col>
+                <Col className="d-flex gap-50">
+                  <Input
+                    type="radio"
+                    name="OTHER"
+                    disabled={isPaymentOnboardingDone}
+                    checked={taxUserType === CITIZEN_TYPES.OTHER}
+                    onChange={handlePrePaymentChange}
+                  />
+                  <div className="w-75">All other tax situations</div>
+                </Col>
+              </div>
+            </CardBody>
+          </Card>
+          {isPaymentOnboardingDone && <Card className="w-25">
+            <CardHeader className="d-flex align-items-center">
+              <h4 className="m-0 mt-1">Stripe Account Details</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <div className='d-flex flex-column rounded gap-1' style={{ backgroundColor: '#0185E426', padding: 20 }}>
+                <b>{stripeAccountText}</b>
+                <a href={stripeAccountLink || "#"}>Go to Stripe</a>
+              </div>
+            </CardBody>
+          </Card>}
+        </div>
         {taxUserType === CITIZEN_TYPES.OTHER || taxUserType === CITIZEN_TYPES.US ? null : (
           <Card className="w-75">
             <CardHeader>
@@ -267,21 +311,12 @@ const Step1 = ({ setStep , step }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            
+
             <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
-            <Button color="primary" className="me-2" onClick={handleNextClick}>
-              {paymentDetailsLoading || stripeDetailsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">{getCTAText()}</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
+            
             {/* <span id="get-hired-cta">
             <Button disabled={!showHiringTab} color="danger" className="me-2" onClick={onGetHiredClick}>
               <span className="me-50">Get Hired </span>
