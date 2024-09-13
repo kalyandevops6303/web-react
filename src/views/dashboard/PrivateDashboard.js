@@ -49,7 +49,7 @@ const PrivateDashboard = () => {
   const permissions = {
     dashboard: {
       alerts: true,
-      'upcoming-payments': false,
+      'upcoming-payments': true,
     },
     'project-management': {
       tabs: {

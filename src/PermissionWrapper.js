@@ -3,9 +3,9 @@
 import React from 'react';
 import PropTypes from 'prop-types'; 
 
-
 const PermissionWrapper = ({ permissions, permissionName, children }) => {
   const hasPermission = (permissions, permissionName) => {
+    if(!permissions) return true;
     const parts = permissionName[0].split(".");
     let current = permissions;
 
@@ -25,7 +25,7 @@ const PermissionWrapper = ({ permissions, permissionName, children }) => {
 export default PermissionWrapper;
 
 PermissionWrapper.propTypes = {
-  permissions: PropTypes.object.isRequired,
+  permissions: PropTypes.object,
   permissionName: PropTypes.array.isRequired,
   children: PropTypes.node.isRequired,
 };
