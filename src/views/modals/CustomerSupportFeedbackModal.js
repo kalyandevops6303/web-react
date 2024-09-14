@@ -5,7 +5,7 @@ import '../custom-styles.scss';
 import GreatJobTick from '../../assets/images/greatJobGif.gif';
 import { RelistModalWrapper } from './style';
 
-const FeedbackForCustomerSupportModal = ({ modal, toggleModal }) => (
+const FeedbackForCustomerSupportModal = ({ modal, toggleModal, modalHeading, modalText }) => (
   <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
     <ModalHeader toggle={toggleModal} />
     <ModalBody className="pt-0">
@@ -15,8 +15,8 @@ const FeedbackForCustomerSupportModal = ({ modal, toggleModal }) => (
             <img src={GreatJobTick} alt="project-relisted" width={120} height={120} />
           </div>
           <div>
-            <h2 className="mb-1">Thanks for contacting us!</h2>
-            <p className="note-text font-medium-3 mt-75">We’ll get back to you soon.</p>
+            <h2 className="mb-1">{modalHeading}</h2>
+            <p className="note-text font-medium-3 mt-75">{modalText}</p>
           </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mb-2 mt-1">
@@ -34,9 +34,13 @@ export default FeedbackForCustomerSupportModal;
 FeedbackForCustomerSupportModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  modalHeading: Proptypes.string,
+  modalText: Proptypes.string,
 };
 
 FeedbackForCustomerSupportModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  modalHeading: 'Thanks for contacting us!',
+  modalText: 'We’ll get back to you soon.'
 };

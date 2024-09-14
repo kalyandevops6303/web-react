@@ -75,6 +75,8 @@ const updateCardStatusService = ({ data, switch_team_id }) => {
 
 const downloadUrlService = (fileKey) => DataService.get(`${API.dashboard.downloadUrl}?file_key=${fileKey}`);
 
+const reportEntityService = (data) => DataService.post(API.dashboard.reportEntity, data);
+
 export {
   alertService,
   getModalDataService,
@@ -107,4 +109,5 @@ export {
   updateCardStatusService,
   getProjectInvitationService,
   downloadUrlService,
+  reportEntityService,
 };

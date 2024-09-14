@@ -82,6 +82,9 @@ const API = {
     checkBidsAccepted: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
     getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
 
+    // report
+    reportEntity: `${apiAuthEndpoint}/api/v1/support-request`,
+
     // team
     getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
     getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members-new`,
