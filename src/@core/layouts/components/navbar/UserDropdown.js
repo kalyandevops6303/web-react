@@ -42,6 +42,7 @@ import {
 import { toggleAddDelegateModal, toggleDelegateModeModal } from '../../../../redux/reducers/delegate';
 import AddDelegateModal from '../../../../views/modals/AddDelegateModal';
 import DelegateModeModal from '../../../../views/modals/DelegateModeModal';
+import { truncateSentence } from '../../../../utility/Utils';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -199,7 +200,9 @@ const UserDropdown = ({ setNavBarLoading }) => {
         <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
       )}
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
-        <div className={`user-nav d-sm-flex d-none ${isDelegate ? 'delegate-username' : ''}`}>
+        <div className={`user-nav d-sm-flex d-none 
+          ${isDelegate ? 'delegate-username' : ''}
+          `}>
           <span className="user-name truncate-1 fw-bold" id="username">
             {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
           </span>
@@ -212,7 +215,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
           )}
           {isDelegate ? (
             <span className="user-name" id="delegateUsername">
-              {`${userName} (${adminUsername})`}
+              {truncateSentence({ sentence: `${userName} (${adminUsername})`, maxCharacters: 15 })}
             </span>
           ) : (
             <span className="user-status">
