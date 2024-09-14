@@ -10,7 +10,7 @@ import Alerts from './overview/Alerts';
 import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
-import Meetings from './overview/Meetings';
+// import Meetings from './overview/Meetings';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { clubStatus, teamTypes, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
@@ -41,10 +41,25 @@ import AssessmentsOverview from './overview/AssessmentsOverview';
 import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
+import PermissionWrapper from '../../PermissionWrapper';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+ 
+  // Mock response of permissions for role based actions
+  // const permissions = {
+  //   dashboard: {
+  //     alerts: true,
+  //     'upcoming-payments': true,
+  //   },
+  //   'project-management': {
+  //     tabs: {
+  //       team: true,
+  //       payment: true,
+  //     },
+  //   },
+  // };
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
@@ -181,7 +196,6 @@ const PrivateDashboard = () => {
 
   return (
     <div>
-      
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
@@ -224,7 +238,11 @@ const PrivateDashboard = () => {
         <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
       {optionsModal && (
-        <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} defaultSelectedGroup={createTeamSelected ? teamTypes.team : teamTypes.club}/>
+        <CreateClubOrTeamModal
+          modal={optionsModal}
+          toggleModal={() => setOptionsModal(!optionsModal)}
+          defaultSelectedGroup={createTeamSelected ? teamTypes.team : teamTypes.club}
+        />
       )}
       {inviteClubMembersModal && (
         <InviteClubMemberModal
@@ -303,12 +321,15 @@ const PrivateDashboard = () => {
           <section className="mb-2">
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
-          </section>
+          </section> 
+          {/* Syntax for Permission Wrapper for role based wrapper  */}
           {userDetailsData?.team_type === userTypes.team ? null : (
-            <section className="mb-2">
-              <Header className="mb-1">Payments</Header>
-              <PaymentListing />
-            </section>
+            <PermissionWrapper permissions={[]} permissionName={[""]}> 
+              <section className="mb-2">
+                <Header className="mb-1">Payments</Header>
+                <PaymentListing />
+              </section>
+            </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.client && (
             <section className="mb-2">
