@@ -46,18 +46,20 @@ import PermissionWrapper from '../../PermissionWrapper';
 const PrivateDashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const permissions = {
-    dashboard: {
-      alerts: true,
-      'upcoming-payments': true,
-    },
-    'project-management': {
-      tabs: {
-        team: true,
-        payment: true,
-      },
-    },
-  };
+ 
+  // Mock response of permissions for role based actions
+  // const permissions = {
+  //   dashboard: {
+  //     alerts: true,
+  //     'upcoming-payments': true,
+  //   },
+  //   'project-management': {
+  //     tabs: {
+  //       team: true,
+  //       payment: true,
+  //     },
+  //   },
+  // };
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
@@ -319,9 +321,10 @@ const PrivateDashboard = () => {
           <section className="mb-2">
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
-          </section>
+          </section> 
+          {/* Syntax for Permission Wrapper for role based wrapper  */}
           {userDetailsData?.team_type === userTypes.team ? null : (
-            <PermissionWrapper permissions={permissions} permissionName={['dashboard.upcoming-payments']}>
+            <PermissionWrapper permissions={[]} permissionName={[""]}> 
               <section className="mb-2">
                 <Header className="mb-1">Payments</Header>
                 <PaymentListing />

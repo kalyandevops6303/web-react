@@ -1,11 +1,12 @@
 /*eslint-disable */
 
 import React from 'react';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types'; 
 
 const PermissionWrapper = ({ permissions, permissionName, children }) => {
   const hasPermission = (permissions, permissionName) => {
-    if(!permissions) return true;
+    if(isEmpty(permissions)) return true;
     const parts = permissionName[0].split(".");
     let current = permissions;
 
