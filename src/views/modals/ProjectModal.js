@@ -26,7 +26,7 @@ import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
-import { projectStatusEnum, REPORT_ENTITIES, userTypes } from '../../utility/constants/Constant';
+import { projectStatusEnum, userTypes ,PROJECT_INVITATION_STATUS , REPORT_ENTITIES } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
@@ -93,6 +93,7 @@ const ProjectModal = ({
   setSwitchProfileModal,
   setRelistConfirmationModal,
   setSavedDraftsAvailableModal,
+  setSwitchData
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -152,27 +153,56 @@ const ProjectModal = ({
 
   const isMyProjectMyTeam =
     location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
-
+  // http://localhost:3000/project-details/66e33094b6ee531398719031/project/project-invitation/66e3323ced5d53114e4c783c
   const handleViewProject = () => {
     if (location.pathname.split('/').includes('projects')) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
+        // const url = new URL(`${window.location.protocol}//${window.location.host}${location.pathname}`);
+        // handling the when the invite is from team
+        if((data?.invitation_status === PROJECT_INVITATION_STATUS.PENDING) && (location.pathname.split('/').includes('invited'))) {
+          setSwitchData({
+            entity: data?.switch_team_id ? 'TEAM' : 'TALENT',
+            navigateTo: `/project-details/${data?._id}/project/project-invitation/${data?.request_id}`,
+            switchTeamId: data?.switch_team_id,
+          });
+
+        } else if(data?.invitation_status === PROJECT_INVITATION_STATUS.ACCEPTED) {
+          setSwitchData({
+            entity: data?.switch_team_id ? 'TEAM' : 'TALENT',
+            navigateTo: `/project-details/${data?._id}/bid`,
+            switchTeamId: data?.switch_team_id,
+          });          
+        }
         toggleModal();
         setSwitchProfileModal(true);
       } else if (location.pathname.split('/').includes('ongoing')) {
-        if(data?.worker_details?.user_type === userTypes.team && selectSavedUserDetailsData?.user_type === userTypes.talent) {
-            
-            const isCurrentUserWorker = data?.worker_details?.workers.some((worker) => worker?.user_id === selectSavedUserDetailsData?._id);
-            if(!isCurrentUserWorker) {
-                navigate(`/project-details/${data?._id}/bid`);
-                return;
-            }
+        if (
+          data?.worker_details?.user_type === userTypes.team &&
+          selectSavedUserDetailsData?.user_type === userTypes.talent
+        ) {
+          const isCurrentUserWorker = data?.worker_details?.workers.some(
+            (worker) => worker?.user_id === selectSavedUserDetailsData?._id,
+          );
+          if (!isCurrentUserWorker) {
+            navigate(`/project-details/${data?._id}/bid`);
+            return;
+          }
         }
         navigate(`/project-details/${data?._id}/milestone`);
       } else if (location.pathname.split('/').includes('completed')) {
         navigate(`/project-details/${data?._id}/rating`);
-      } else {
-        navigate(`/project-details/${data?._id}/bid`);
+      } 
+      else if (location.pathname.split('/').includes('invited')) {
+        // this case is for when client invites the talent to the project
+        if(data?.invitation_status === PROJECT_INVITATION_STATUS.READ_ONLY) {
+          navigate(`/project-details/${data?._id}/project/project-invitation/${data?.request_id}`);
+        } else {
+          navigate(`/project-details/${data?._id}/bid`);
+        }
       }
+      else {
+        navigate(`/project-details/${data?._id}/bid`);
+      } 
     } else if (isDashboard) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         toggleModal();
@@ -514,6 +544,7 @@ ProjectModal.propTypes = {
   setCreateBidModal: Proptypes.func,
   toggleCompleteProfileModal: Proptypes.func,
   setSwitchProfileModal: Proptypes.func,
+  setSwitchData: Proptypes.func,
   isActiveProject: Proptypes.bool,
   isUpcomingProject: Proptypes.bool,
   setRelistConfirmationModal: Proptypes.func,
@@ -529,6 +560,7 @@ ProjectModal.defaultProps = {
   setCreateBidModal: () => {},
   toggleCompleteProfileModal: () => {},
   setSwitchProfileModal: () => {},
+  setSwitchData: () => {},    
   isActiveProject: false,
   isUpcomingProject: false,
   setRelistConfirmationModal: () => {},

@@ -233,6 +233,12 @@ const REPORT_ENTITIES = {
   TALENT: 'TALENT',
   CLUB: 'CLUB',
 };
+const PROJECT_INVITATION_STATUS = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  READ_ONLY: 'READ_ONLY',
+};
 
 export {
   ERROR_CODES,
@@ -270,6 +276,7 @@ export {
   projectStatusEnum,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
+  PROJECT_INVITATION_STATUS,
   TEAM_STATUS,
   teamTypes,
   clubOrTeamStatuses,
