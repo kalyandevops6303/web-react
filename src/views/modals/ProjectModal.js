@@ -171,6 +171,14 @@ const ProjectModal = ({
         toggleModal();
         setSwitchProfileModal(true);
       } else if (location.pathname.split('/').includes('ongoing')) {
+        if(data?.worker_details?.user_type === userTypes.team && selectSavedUserDetailsData?.user_type === userTypes.talent) {
+            
+            const isCurrentUserWorker = data?.worker_details?.workers.some((worker) => worker?.user_id === selectSavedUserDetailsData?._id);
+            if(!isCurrentUserWorker) {
+                navigate(`/project-details/${data?._id}/bid`);
+                return;
+            }
+        }
         navigate(`/project-details/${data?._id}/milestone`);
       } else if (location.pathname.split('/').includes('completed')) {
         navigate(`/project-details/${data?._id}/rating`);

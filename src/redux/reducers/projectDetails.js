@@ -167,6 +167,7 @@ const projectDetails = createSlice({
     checkDocumentActivatedSuccess: (state, action) => ({
       ...state,
       checkDocumentActivatedLoading: false,
+      contractData: action.payload,
       ...action.payload,
     }),
     checkDocumentActivatedFailure: (state, action) => ({
@@ -585,6 +586,11 @@ const projectDetails = createSlice({
       downloadCertificateLoading: false,
       error: action.payload,
     }),
+    getContractData: (state,action) => ({
+      ...state,
+      contractData: action.payload,
+      error: null,
+    })
   },
 });
 

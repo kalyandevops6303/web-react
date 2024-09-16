@@ -87,10 +87,10 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         navigate(`/profile/talent/${data?.bidders?.talent_id}`, { state });
       }
     } else if (!isEmpty(delegateDetails)) {
-        navigate(`/profile/client/${clientDetails?._id}?project_id=${project?._id}`, { state });
-      } else {
-        navigate(`/profile/client/${clientDetails?._id}`, { state });
-      }
+      navigate(`/profile/client/${clientDetails?._id}?project_id=${project?._id}`, { state });
+    } else {
+      navigate(`/profile/client/${clientDetails?._id}`, { state });
+    }
   };
 
   const getImage = () => {
@@ -191,7 +191,8 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           ) : null}
         </div>
       </IconWrapper>
-      {(!location.pathname.split('/').includes('my_listings') || !isEmpty(delegateDetails)) && (
+      {(!location.pathname.split('/').includes('my_listings') ||
+        (!location.pathname.split('/').includes('my_listings') && !isEmpty(delegateDetails))) && (
         <div className="d-flex mb-25 align-items-center">
           {!isEmpty(data?.bidders) ? (
             <div>
@@ -227,8 +228,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                     <span>
                       {delegateDetails?.first_name}&nbsp;
                       {delegateDetails?.last_name}
-                    </span>
-                    {' '}
+                    </span>{' '}
                     <span>
                       ({clientDetails?.first_name}&nbsp;
                       {clientDetails?.last_name})

@@ -82,6 +82,7 @@ const LeftSidebarProjectDetails = () => {
 
   const statusEnum = {
     OPEN: 'Open',
+    TO_BE_LISTED: 'To Be Listed',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
@@ -110,7 +111,11 @@ const LeftSidebarProjectDetails = () => {
       bgcolor: 'warning',
       text: 'warning',
     },
-
+    TO_BE_LISTED: {
+      state: 'To Be Listed',
+      bgcolor: 'light-blue',
+      text: 'light-blue',
+    },
     LISTING_EXPIRED: {
       state: 'In Review',
       bgcolor: 'warning',
