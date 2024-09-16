@@ -35,6 +35,9 @@ import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePrevie
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import ReportModal from './ReportModal';
 import FeedbackForCustomerSupportModal from './CustomerSupportFeedbackModal';
+import { selectAlreadyReported } from '../../redux/selectors/reportSelectors';
+import { checkIfReported } from '../../redux/actions/reportActions';
+import { checkReportSuccess } from '../../redux/reducers/report';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -106,6 +109,15 @@ const ProjectModal = ({
   const [selectedFileKey, setSelectedFileKey] = useState(null);
   const [reportModal, setReportModal] = useState(false);
   const [successReportModal, setSuccessReportModal] = useState(false);
+  const alreadyReported = useSelector(selectAlreadyReported);
+  // const checkReportLoading = useSelector(selectCheckReportLoading);
+
+  useEffect(()=>{
+      dispatch(checkIfReported({data:{
+        reported_entity_id : data?._id,
+        reported_entity_type : REPORT_ENTITIES.PROJECT
+      }, onSuccess : checkReportSuccess}));
+  },[cardData]);
 
   const onReportSuccess = () => {
     setReportModal(false);
@@ -444,9 +456,9 @@ const ProjectModal = ({
               {(selectUserDetailsData?.user_type === userTypes.talent ||
                 selectUserDetailsData?.user_type === userTypes.team) && (
                 <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-                  <Button onClick={toggleReportModal} color="flat-danger" className=" me-1">
+                  {!alreadyReported &&  <Button onClick={toggleReportModal} color="flat-danger" className=" me-1">
                     Report
-                  </Button>
+                  </Button>}
 
                   {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'

@@ -7,3 +7,7 @@ export const selectReportLoading = createSelector(reportSelector, (reports) => r
 export const selectReportDetails = createSelector(reportSelector, (reports) => reports.reportDetails);
 
 export const selectReportError = createSelector(reportSelector, (reports) => reports.reportError);
+
+export const selectCheckReportLoading = createSelector(reportSelector, (reports) => reports.checkReportLoading);
+
+export const selectAlreadyReported = createSelector(reportSelector, (reports) => reports.alreadyReported);
