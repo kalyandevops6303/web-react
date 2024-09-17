@@ -228,6 +228,7 @@ const checkDocumentActivated =
         // if (resNDA.data.data.show_document) {
         //   dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
         // }
+        
         dispatch(checkDocumentActivatedSuccess({ ndaData: resNDA.data.data }));
 
         if (resNDA.data.data.is_signed) {
@@ -260,8 +261,8 @@ const getProjectDetails =
     dispatch(projectDetailsRequest());
     try {
       const res = await projectDetailsService(projectId);
+      dispatch(checkDocumentActivated({ isNDA: res?.data.data.nda?.is_nda, project_id: projectId }));
       if (isBidView) {
-        dispatch(checkDocumentActivated({ isNDA: res?.data.data.nda?.is_nda, project_id: projectId }));
         dispatch(getActiveStage({ project_id: projectId }));
       }
       dispatch(projectDetailsSuccess(res.data.data));

@@ -111,7 +111,11 @@ const LeftSidebarProjectDetails = () => {
       bgcolor: 'warning',
       text: 'warning',
     },
-
+    TO_BE_LISTED: {
+      state: 'To Be Listed',
+      bgcolor: 'light-blue',
+      text: 'light-blue',
+    },
     LISTING_EXPIRED: {
       state: 'In Review',
       bgcolor: 'warning',

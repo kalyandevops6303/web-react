@@ -113,10 +113,10 @@ const PaymentTable = () => {
   };
 
   useEffect(() => {
-    if (isClient) {
-      dispatch(getApplicationFee(onGetApplicationFee));
+    if (isClient && projectDetailsData?._id) {
+      dispatch(getApplicationFee(projectDetailsData?._id, onGetApplicationFee));
     }
-  }, []);
+  }, [isClient, projectDetailsData?._id]);
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -232,7 +232,7 @@ const PaymentTable = () => {
   // eslint-disable-next-line no-unsafe-optional-chaining
 
   // eslint-disable-next-line no-unsafe-optional-chaining
-  const trumioFeeBeforeDiscount = (totalAmount * applicationFee?.percentage) / 100;
+  const trumioFeeBeforeDiscount = Math.max((totalAmount * applicationFee?.percentage) / 100, applicationFee?.min_fee);
   const trumioFeeDiscount = (trumioFeeBeforeDiscount * (applicationFee?.discount_coupon?.percent_off ?? 0)) / 100;
   const trumioFeeAfterDiscount = trumioFeeBeforeDiscount - trumioFeeDiscount;
 
@@ -471,7 +471,7 @@ const PaymentTable = () => {
               <>
                 <div className="d-flex w-100 mt-2 justify-content-between">
                   <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
-                    {`${applicationFee?.name ?? ''} (${applicationFee?.percentage ?? 0}%)`}
+                    {`${applicationFee?.name ?? ''} ${(trumioFeeBeforeDiscount!==applicationFee?.min_fee) ? `(${applicationFee?.percentage ?? 0}%)`:''}`}
                   </CardText>
                   <CardText>
                     {`$${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}

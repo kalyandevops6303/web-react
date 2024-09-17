@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { unionBy , isEmpty } from 'lodash';
+import { unionBy, isEmpty } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -26,11 +26,17 @@ import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constan
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
-import ReportUserModal from './ReportUserModal';
+// import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import DelegateNameCard from '../../cards/DelegateNameCard';
+import { publicTeamMembers } from '../../../redux/selectors/profileSelectors';
+import ReportModal from '../../modals/ReportModal';
+import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbackModal';
+import { checkIfReported } from '../../../redux/actions/reportActions';
+import { checkReportSuccess } from '../../../redux/reducers/report';
+import { selectAlreadyReported, selectCheckReportLoading } from '../../../redux/selectors/reportSelectors';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -41,14 +47,50 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const favUnfavLoading = useSelector((state) => state.currentProfile.favUnfavLoading);
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
+  const [successReportModal, setSuccessReportModal] = useState(false);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+  const publicTeamMembersData = useSelector(publicTeamMembers);
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const [reportModal, setReportModal] = useState(false);
+  const [isMember, setIsMember] = useState(false);
+  const [userType, setUserType] = useState(param?.userType.toUpperCase());
   const toggleReportModal = () => setReportModal(!reportModal);
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
+  const alreadyReported = useSelector(selectAlreadyReported);
+  const checkReportLoading = useSelector(selectCheckReportLoading);
+
+  useEffect(() => {
+    if(param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club){
+      setUserType(userTypes.team);
+    }else{
+      setUserType(param?.userType.toUpperCase());
+    }
+  }, [param?.userType]);
+
+  useEffect(()=>{
+    if(param?.userType){
+      let entityType = param?.userType.toUpperCase();
+      if(param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club){
+        entityType = userTypes.team;
+      }
+      dispatch(checkIfReported({data:{
+        reported_entity_id : data?._id,
+        reported_entity_type : entityType
+      }, onSuccess : checkReportSuccess}));
+    }
+   
+},[data,userType]);
+
+  // It is used to check if the user is a member of the team or not, if yes then it will disable the report button
+  useEffect(() => {
+    if (publicTeamMembersData?.data) {
+      const memberConfirm = publicTeamMembersData.data.some((member) => member?.user_id === userDataSelector?._id);
+      setIsMember(memberConfirm);
+    }
+  }, [publicTeamMembersData]);
 
   const handleLike = () => {
     setIsFavourite(true);
@@ -453,25 +495,31 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                 </Button>
               </div>
             )}
-            <div>
+            <div className="d-flex gap-2 justify-content-center align-items-center flex-wrap">
+              {!alreadyReported && !checkReportLoading && (userDataSelector?.user_type === userTypes.client ||
+                userDataSelector?.user_type === userTypes.team ||
+                userDataSelector?.user_type === userTypes.talent) &&
+                // param?.userType.toUpperCase() === userTypes.talent &&
+                (((param?.userType.toUpperCase() === userTypes.team ||
+                  param?.userType.toUpperCase() === userTypes.club) &&
+                  !isMember) ||
+                  param?.userType?.toUpperCase() === userTypes.talent ||
+                  param?.userType?.toUpperCase() === userTypes.client) && (
+                  <div className="d-flex justify-content-center">
+                    <Button color="flat-danger" onClick={() => setReportModal(true)}>
+                      Report
+                    </Button>
+                  </div>
+                )}
               <ActionButtonWrapper>
-                <div className="d-flex gap-1 mt-3 justify-content-center flex-wrap">
+                <div className="d-flex gap-1  justify-content-center flex-wrap">
                   {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
-                    <Button className="w-47" color="primary" onClick={onMessageClick}>
+                    <Button className="w-100" color="primary" onClick={onMessageClick}>
                       Message
                     </Button>
                   )}
                 </div>
               </ActionButtonWrapper>
-
-              {(userDataSelector?.user_type === userTypes.client || userDataSelector?.user_type === userTypes.team) &&
-                param?.userType.toUpperCase() === userTypes.talent && (
-                  <div className="d-flex justify-content-center">
-                    <Button color="flat-danger" className="mt-1" onClick={() => setReportModal(true)}>
-                      Report
-                    </Button>
-                  </div>
-                )}
             </div>
           </section>
         </CardBody>
@@ -496,7 +544,39 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </CardBody>
         </Card>
       )}
-      {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
+      {/* {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}  */}
+
+      {reportModal && (
+        <ReportModal
+          onSuccess={() => {
+            setReportModal(false);
+            setSuccessReportModal(true);
+          }}
+          modal={reportModal}
+          toggleModal={toggleReportModal}
+          reportTargetId={data?._id}
+          reportTargetName={
+            // param?.userType.toUpperCase() === (userTypes?.team || userTypes?.club) ? data?.name : data?.details?.name
+            data?.name || data?.company_name || data?.details?.name
+          }
+          reportTargetImage={data?.company_logo || data?.team_logo}
+          reportTargetDetails={`${data?.created_by?.first_name || data?.first_name} ${
+            data?.created_by?.last_name || data?.last_name
+          }`}
+          entityType={
+            userType
+          }
+        />
+      )}
+
+      {successReportModal && (
+        <FeedbackForCustomerSupportModal
+          modal={successReportModal}
+          toggleModal={() => setSuccessReportModal(false)}
+          modalHeading="Thanks for your feedback !"
+          modalText="Your feedback has reached our team. We’ll be working towards providing you the best possible experience."
+        />
+      )}
     </LeftSidebarProfileWrapper>
   );
 };

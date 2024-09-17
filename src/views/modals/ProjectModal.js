@@ -26,13 +26,18 @@ import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
-import { projectStatusEnum, userTypes } from '../../utility/constants/Constant';
+import { projectStatusEnum, userTypes ,PROJECT_INVITATION_STATUS , REPORT_ENTITIES } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
+import ReportModal from './ReportModal';
+import FeedbackForCustomerSupportModal from './CustomerSupportFeedbackModal';
+import { selectAlreadyReported } from '../../redux/selectors/reportSelectors';
+import { checkIfReported } from '../../redux/actions/reportActions';
+import { checkReportSuccess } from '../../redux/reducers/report';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -91,6 +96,7 @@ const ProjectModal = ({
   setSwitchProfileModal,
   setRelistConfirmationModal,
   setSavedDraftsAvailableModal,
+  setSwitchData
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -101,8 +107,27 @@ const ProjectModal = ({
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-
   const [selectedFileKey, setSelectedFileKey] = useState(null);
+  const [reportModal, setReportModal] = useState(false);
+  const [successReportModal, setSuccessReportModal] = useState(false);
+  const alreadyReported = useSelector(selectAlreadyReported);
+  // const checkReportLoading = useSelector(selectCheckReportLoading);
+
+  useEffect(()=>{
+      dispatch(checkIfReported({data:{
+        reported_entity_id : data?._id,
+        reported_entity_type : REPORT_ENTITIES.PROJECT
+      }, onSuccess : checkReportSuccess}));
+  },[cardData]);
+
+  const onReportSuccess = () => {
+    setReportModal(false);
+    setSuccessReportModal(true);
+  };
+
+  const toggleReportModal = () => {
+    setReportModal(!reportModal);
+  };
 
   const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
 
@@ -140,19 +165,56 @@ const ProjectModal = ({
 
   const isMyProjectMyTeam =
     location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
-
+  // http://localhost:3000/project-details/66e33094b6ee531398719031/project/project-invitation/66e3323ced5d53114e4c783c
   const handleViewProject = () => {
     if (location.pathname.split('/').includes('projects')) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
+        // const url = new URL(`${window.location.protocol}//${window.location.host}${location.pathname}`);
+        // handling the when the invite is from team
+        if((data?.invitation_status === PROJECT_INVITATION_STATUS.PENDING) && (location.pathname.split('/').includes('invited'))) {
+          setSwitchData({
+            entity: data?.switch_team_id ? 'TEAM' : 'TALENT',
+            navigateTo: `/project-details/${data?._id}/project/project-invitation/${data?.request_id}`,
+            switchTeamId: data?.switch_team_id,
+          });
+
+        } else if(data?.invitation_status === PROJECT_INVITATION_STATUS.ACCEPTED) {
+          setSwitchData({
+            entity: data?.switch_team_id ? 'TEAM' : 'TALENT',
+            navigateTo: `/project-details/${data?._id}/bid`,
+            switchTeamId: data?.switch_team_id,
+          });          
+        }
         toggleModal();
         setSwitchProfileModal(true);
       } else if (location.pathname.split('/').includes('ongoing')) {
+        if (
+          data?.worker_details?.user_type === userTypes.team &&
+          selectSavedUserDetailsData?.user_type === userTypes.talent
+        ) {
+          const isCurrentUserWorker = data?.worker_details?.workers.some(
+            (worker) => worker?.user_id === selectSavedUserDetailsData?._id,
+          );
+          if (!isCurrentUserWorker) {
+            navigate(`/project-details/${data?._id}/bid`);
+            return;
+          }
+        }
         navigate(`/project-details/${data?._id}/milestone`);
       } else if (location.pathname.split('/').includes('completed')) {
         navigate(`/project-details/${data?._id}/rating`);
-      } else {
-        navigate(`/project-details/${data?._id}/bid`);
+      } 
+      else if (location.pathname.split('/').includes('invited')) {
+        // this case is for when client invites the talent to the project
+        if(data?.invitation_status === PROJECT_INVITATION_STATUS.READ_ONLY) {
+          navigate(`/project-details/${data?._id}/project/project-invitation/${data?.request_id}`);
+        } else {
+          navigate(`/project-details/${data?._id}/bid`);
+        }
       }
+      else {
+        navigate(`/project-details/${data?._id}/bid`);
+      } 
     } else if (isDashboard) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         toggleModal();
@@ -225,16 +287,25 @@ const ProjectModal = ({
                   {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' ? (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                        {convertUnixTimestampToDate(
+                          data?.listing_details?.end_date_epoch,
+                          selectSavedUserDetailsData?.availability?.timezone?.name,
+                        )}
                       </CardTitle>
                       <CardText className="project-name">Expired Date</CardText>
                     </div>
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
-                        {' '} to{' '}
-                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                        {convertUnixTimestampToDate(
+                          data?.listing_details?.start_date_epoch,
+                          selectSavedUserDetailsData?.availability?.timezone?.name,
+                        )}{' '}
+                        to{' '}
+                        {convertUnixTimestampToDate(
+                          data?.listing_details?.end_date_epoch,
+                          selectSavedUserDetailsData?.availability?.timezone?.name,
+                        )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>
@@ -364,7 +435,10 @@ const ProjectModal = ({
                       {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                      {convertUnixTimestampToDate(
+                        document?.created_at,
+                        selectSavedUserDetailsData?.availability?.timezone?.name,
+                      )}
                     </Col>
                   </Row>
                 ))}
@@ -420,9 +494,9 @@ const ProjectModal = ({
               {(selectUserDetailsData?.user_type === userTypes.talent ||
                 selectUserDetailsData?.user_type === userTypes.team) && (
                 <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-                  <Button color="flat-danger" className="d-none me-1">
+                  {!alreadyReported &&  <Button onClick={toggleReportModal} color="flat-danger" className=" me-1">
                     Report
-                  </Button>
+                  </Button>}
 
                   {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
@@ -443,6 +517,28 @@ const ProjectModal = ({
               )}
             </div>
           )}
+          {reportModal && (
+            <ReportModal
+              onSuccess={onReportSuccess}
+              modal={reportModal}
+              toggleModal={toggleReportModal}
+              reportTargetId={data?._id}
+              reportTargetName={data?.details?.name}
+              reportTargetDetails="Project Name"
+              entityType={REPORT_ENTITIES?.PROJECT}
+            />
+          )}
+
+          {
+            successReportModal && (
+              <FeedbackForCustomerSupportModal
+              modal={successReportModal}
+              toggleModal={() => setSuccessReportModal(false)}
+              modalHeading="Thanks for your feedback !"
+              modalText="Your feedback has reached our team. We’ll be working towards providing you the best possible experience."
+              />
+            )
+          }
         </ViewProjectDetailModalWrap>
       </ModalBody>
     </Modal>
@@ -460,6 +556,7 @@ ProjectModal.propTypes = {
   setCreateBidModal: Proptypes.func,
   toggleCompleteProfileModal: Proptypes.func,
   setSwitchProfileModal: Proptypes.func,
+  setSwitchData: Proptypes.func,
   isActiveProject: Proptypes.bool,
   isUpcomingProject: Proptypes.bool,
   setRelistConfirmationModal: Proptypes.func,
@@ -475,6 +572,7 @@ ProjectModal.defaultProps = {
   setCreateBidModal: () => {},
   toggleCompleteProfileModal: () => {},
   setSwitchProfileModal: () => {},
+  setSwitchData: () => {},    
   isActiveProject: false,
   isUpcomingProject: false,
   setRelistConfirmationModal: () => {},

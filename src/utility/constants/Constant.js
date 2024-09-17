@@ -226,6 +226,20 @@ const TEAM_STATUS = {
   DRAFT: 'DRAFT',
 };
 
+const REPORT_ENTITIES = {
+  PROJECT: 'PROJECT',
+  TEAM: 'TEAM',
+  CLIENT: 'CLIENT',
+  TALENT: 'TALENT',
+  CLUB: 'CLUB',
+};
+const PROJECT_INVITATION_STATUS = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  READ_ONLY: 'READ_ONLY',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -262,7 +276,9 @@ export {
   projectStatusEnum,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
+  PROJECT_INVITATION_STATUS,
   TEAM_STATUS,
   teamTypes,
   clubOrTeamStatuses,
+  REPORT_ENTITIES,
 };
