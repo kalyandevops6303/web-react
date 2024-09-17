@@ -34,6 +34,9 @@ import DelegateNameCard from '../../cards/DelegateNameCard';
 import { publicTeamMembers } from '../../../redux/selectors/profileSelectors';
 import ReportModal from '../../modals/ReportModal';
 import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbackModal';
+import { checkIfReported } from '../../../redux/actions/reportActions';
+import { checkReportSuccess } from '../../../redux/reducers/report';
+import { selectAlreadyReported, selectCheckReportLoading } from '../../../redux/selectors/reportSelectors';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -53,7 +56,32 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const [reportModal, setReportModal] = useState(false);
   const [isMember, setIsMember] = useState(false);
+  const [userType, setUserType] = useState(param?.userType.toUpperCase());
   const toggleReportModal = () => setReportModal(!reportModal);
+  const alreadyReported = useSelector(selectAlreadyReported);
+  const checkReportLoading = useSelector(selectCheckReportLoading);
+
+  useEffect(() => {
+    if(param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club){
+      setUserType(userTypes.team);
+    }else{
+      setUserType(param?.userType.toUpperCase());
+    }
+  }, [param?.userType]);
+
+  useEffect(()=>{
+    if(param?.userType){
+      let entityType = param?.userType.toUpperCase();
+      if(param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club){
+        entityType = userTypes.team;
+      }
+      dispatch(checkIfReported({data:{
+        reported_entity_id : data?._id,
+        reported_entity_type : entityType
+      }, onSuccess : checkReportSuccess}));
+    }
+   
+},[data,userType]);
 
   // It is used to check if the user is a member of the team or not, if yes then it will disable the report button
   useEffect(() => {
@@ -467,7 +495,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               </div>
             )}
             <div className="d-flex gap-2 justify-content-center align-items-center flex-wrap">
-              {(userDataSelector?.user_type === userTypes.client ||
+              {!alreadyReported && !checkReportLoading && (userDataSelector?.user_type === userTypes.client ||
                 userDataSelector?.user_type === userTypes.team ||
                 userDataSelector?.user_type === userTypes.talent) &&
                 // param?.userType.toUpperCase() === userTypes.talent &&
@@ -535,11 +563,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             data?.created_by?.last_name || data?.last_name
           }`}
           entityType={
-            param?.userType.toUpperCase() === userTypes.team
-              ? 'TEAM'
-              : param?.userType.toUpperCase() === userTypes.talent
-              ? 'TALENT'
-              : 'CLIENT'
+            userType
           }
         />
       )}
