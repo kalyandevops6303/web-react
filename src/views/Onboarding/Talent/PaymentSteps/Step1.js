@@ -316,6 +316,17 @@ const Step1 = ({ setStep, step }) => {
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
+
+            {!isPaymentOnboardingDone && <Button color="primary" className="me-2" onClick={handleNextClick}>
+              {paymentDetailsLoading || stripeDetailsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">{getCTAText()}</span>
+                  <ChevronRight size={14} />
+                </>
+              )}
+            </Button>}
             
             {/* <span id="get-hired-cta">
             <Button disabled={!showHiringTab} color="danger" className="me-2" onClick={onGetHiredClick}>
