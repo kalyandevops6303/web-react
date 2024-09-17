@@ -58,6 +58,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const [isMember, setIsMember] = useState(false);
   const [userType, setUserType] = useState(param?.userType.toUpperCase());
   const toggleReportModal = () => setReportModal(!reportModal);
+  const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
   const alreadyReported = useSelector(selectAlreadyReported);
   const checkReportLoading = useSelector(selectCheckReportLoading);
 
@@ -234,7 +235,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               readonly
             />
             <CardText className="mt-50 font-small-3">
-              {data?.projects_worked_on_count || 0} Project(s)<span className="ms-50 me-25 fw-300">|</span>
+              {recentProjectsMetadata?.total_records || 0} Project(s)<span className="ms-50 me-25 fw-300">|</span>
               {data?.total_reviews || 0} Review(s)
             </CardText>
           </div>

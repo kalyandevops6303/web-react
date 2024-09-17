@@ -100,7 +100,7 @@ const Social = () => {
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname?.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/availability-details`);
     } else {
       navigate(`/${userOnboarding.client}/availability-details`);
@@ -109,7 +109,7 @@ const Social = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname?.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       setAccountCreatedModal(true);
@@ -118,7 +118,7 @@ const Social = () => {
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
+    if (location?.pathname?.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       dispatch(saveCheckpointComplete(onSuccess));
@@ -153,14 +153,14 @@ const Social = () => {
     };
 
     if (removeEmptyKeys(reqData)) {
-      if (location.pathname.includes('profile-edit')) {
+      if (location?.pathname?.includes('profile-edit')) {
         dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
       } else {
         dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
       }
     } else {
       // eslint-disable-next-line no-lonely-if
-      if (location.pathname.includes('profile-edit')) {
+      if (location?.pathname?.includes('profile-edit')) {
         navigate('/dashboard');
       } else {
         dispatch(saveCheckpointComplete(onSuccess));

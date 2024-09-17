@@ -417,6 +417,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         ...statusesOptions,
         { label: 'Expired', value: 'LISTING_EXPIRED' },
         { label: 'To Be Listed', value: 'TO_BE_LISTED' },
+        { label: 'Withdrawn', value: 'WITHDRAWN' },
         { label: 'Drafts', value: 'DRAFT' },
       ];
     } else {

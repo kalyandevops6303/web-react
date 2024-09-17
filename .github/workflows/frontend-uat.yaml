@@ -1,14 +1,22 @@
 name: frontend-uat
+# on:
+#   workflow_dispatch:
+#   push:
+#     # branches:
+#     #   - uat
+#     tags:
+#       - 'uat_v*'
+
 on:
-  workflow_dispatch:
-  push:
-    # branches:
-    #   - uat
-    tags:
-      - 'uat_v*'
+  release:
+    types: 
+      - published
 
 jobs:
   build:
+    if: |
+      startsWith(github.ref, 'refs/tags/uat_v') ||
+      github.event.release.target_commitish == 'uat'
     runs-on: ubuntu-latest
     #runs-on: [self-hosted, linux, X64, trumio-orgrunner]
     steps:

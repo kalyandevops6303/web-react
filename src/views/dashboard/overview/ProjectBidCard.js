@@ -109,7 +109,7 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                 onClick={() => setRelistConfirmationModal(true)}
                 className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1"
               >
-                Re-list
+                Relist
               </div>
             </>
           ) : (

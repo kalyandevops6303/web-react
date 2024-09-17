@@ -25,7 +25,7 @@ const Project = ({ data, rating, role, userType, title, desc }) => {
             </div>
           )}
           <RatingGroup rating={rating} />
-          <CardText className="mt-50 mb-25 project-desc truncate-4">{desc}</CardText>
+          <CardText className="mt-50 mb-25 project-desc truncate-4" dangerouslySetInnerHTML={{ __html: desc }}></CardText>
           <CardText
             onClick={handleToggle}
             className="cursor-pointer text-center text-decoration-underline card-text me-25 mb-0 text-primary"

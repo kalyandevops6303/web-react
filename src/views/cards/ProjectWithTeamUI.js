@@ -285,10 +285,10 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <div>
                   <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                      {data?.client?.first_name} {data?.client?.last_name}
+                      {data?.client?.company_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {data?.client?.company_name}
+                      {data?.client?.first_name} {data?.client?.last_name}
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 mt-25">

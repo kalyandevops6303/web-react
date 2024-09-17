@@ -209,8 +209,9 @@ const Social = () => {
     const reqData = {
       social_links,
     };
-
-    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    if(reqData){
+      dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    }
 
     if (IsresumeParsed) {
       const resumeUpdatedData = {
