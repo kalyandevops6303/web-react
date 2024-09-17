@@ -218,7 +218,7 @@ const ProjectWrapper = styled.div`
     text-align: center;
     background-color: #f8f8f8;
     border-radius: 0.357rem;
-}
+    }
   }
 
   .truncate-2 {
@@ -235,6 +235,10 @@ const ProjectWrapper = styled.div`
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .project-amount {
+    width:97px;
   }
 
   .user-section {

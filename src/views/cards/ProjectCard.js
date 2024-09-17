@@ -36,6 +36,7 @@ const ProjectCard = ({
   const dispatch = useDispatch();
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const [switchData, setSwitchData] = useState();
   const userdata = useSelector(selectUserData);
   const location = useLocation();
   const pathname = location.pathname.split('/').pop();
@@ -128,6 +129,14 @@ const ProjectCard = ({
     if (postData?.type && data?.is_read === false) {
       dispatch(updateCardStatus({ data: postData, onSuccess }));
     }
+  };
+
+  const handleSwitchProfileModalNavigation = () => {
+    if(!location.pathname.split('/').includes('invited')) {
+      return getPath({ isActiveProject: false, projectId: data?._id });
+    }
+
+    return switchData?.navigateTo;
   };
 
   return (
@@ -265,13 +274,14 @@ const ProjectCard = ({
           setSelectedProject={setSelectedProject}
           toggleCompleteProfileModal={toggleCompleteProfileModal}
           setSwitchProfileModal={setSwitchProfileModal}
+          setSwitchData={setSwitchData}
         />
       )}
       {switchProfileModal && (
         <SwitchConfirmModal
           onUpdateCard={updateCard}
           entity={data?.switch_team_id ? 'TEAM' : 'TALENT'}
-          navigateTo={getPath({ isActiveProject: false, projectId: data?._id })}
+          navigateTo={handleSwitchProfileModalNavigation()}
           switchTeamId={data?.switch_team_id}
           modal={switchProfileModal}
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
