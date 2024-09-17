@@ -22,7 +22,24 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
   const [openSwitchModal, setOpenSwitchModal] = useState(false);
   const savedUserData = useSelector(selectSavedUserData);
   const dispatch = useDispatch();
-
+  const paymentStatusEnum = {
+    PENDING : {
+      label: 'Payment Pending',
+      className : 'PENDING'
+    },
+    FAILED : {
+      label: 'Retry Payment',
+      className : 'RETRY_PAYMENT'
+    },
+    INTIATED : {
+      label: 'Payment Initiated',
+      className : 'INITIATED'
+    },
+    PROCESSING : {
+      label: 'Payment Processing',
+      className : 'PROCESSING',
+    }
+  };
   const updateCard = () => {
     const postData = {
       metadata: {
@@ -58,10 +75,10 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
       <Card className="card-app-design new-tag-relative-card">
         {!data?.is_read && <NewTag />}
         <CardBody>
-          {data?.payment_status?.length > 0 ? (
-            <CustomBadge>
-              <Badge className="status" color="badge">
-                status
+          {savedUserData?.user_type === userTypes.client && data?.payment_status ? (
+            <CustomBadge >
+              <Badge className={`${paymentStatusEnum[data?.payment_status].className}`} color="badge">
+                {paymentStatusEnum[data?.payment_status].label}
               </Badge>
             </CustomBadge>
           ) : null}
@@ -124,11 +141,9 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
             <div className="bottom-detail d-flex mt-1">
               <div className="design-planning-wrapper">
                 <div className="design-planning">
-                  <p className="mb-25 details-box-title">
-                    Due Date
-                  </p>
+                  <p className="mb-25 details-box-title">Due Date</p>
                   <p className="mb-0 details-box">
-                  {convertUnixTimestampToDate(data?.project_start_date, savedUserData?.availability?.timezone?.name )}
+                    {convertUnixTimestampToDate(data?.project_start_date, savedUserData?.availability?.timezone?.name)}
                   </p>
                 </div>
               </div>
@@ -136,12 +151,8 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
             <div className="bottom-detail d-flex mt-1">
               <div className="design-planning-wrapper">
                 <div className="design-planning">
-                  <p className="mb-25 details-box-title">
-                    Payment Due
-                  </p>
-                  <p className="mb-0 details-box">
-                    ${roundOfAmount(data?.amount)}
-                  </p>
+                  <p className="mb-25 details-box-title">Payment Due</p>
+                  <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
                 </div>
               </div>
             </div>
