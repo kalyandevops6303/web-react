@@ -13,37 +13,48 @@ import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { formData } from '../../redux/selectors/formDataSelectors';
 
-const AddDelegateForm = React.memo(({ onSubmit, control, errors, emailValue, delegateLoading }) => (
-  <Form onSubmit={onSubmit}>
-    <div className="mb-2">
-      <Label className="form-label text-muted" htmlFor="email">
-        Delegate Email
-      </Label>
+const AddDelegateForm = React.memo(
+  ({ onSubmit, control, errors, emailValue, delegateLoading, setDelegateEmail }) => (
+    <Form onSubmit={onSubmit}>
+      <div className="mb-2">
+        <Label className="form-label text-muted" htmlFor="email">
+          Delegate Email
+        </Label>
 
-      <Controller
-        type="email"
-        id="email"
-        name="email"
-        placeholder="Enter email ID"
-        autoFocus
-        control={control}
-        render={({ field }) => (
-          <Input {...field} value={field.value || ''} placeholder="Enter email ID" invalid={errors.email && true} />
-        )}
-      />
-      {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
-    </div>
-    <p className="text-muted">
-      <strong>Note: </strong>
-      An invitation link will be sent to the above mention email id.
-    </p>
-    <div className="d-flex w-100 justify-content-end mb-3 mt-1">
-      <Button color="primary" type="submit" disabled={!emailValue || delegateLoading}>
-        {delegateLoading ? <Spinner size="sm" /> : 'Send Invite'}
-      </Button>
-    </div>
-  </Form>
-));
+        <Controller
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Enter email ID"
+          autoFocus
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              value={field.value}
+              onChange={(e) => {
+                field.onChange(e);
+                setDelegateEmail(e.target.value);
+              }}
+              placeholder="Enter email ID"
+              invalid={errors.email && true}
+            />
+          )}
+        />
+        {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
+      </div>
+      <p className="text-muted">
+        <strong>Note: </strong>
+        An invitation link will be sent to the above mention email id.
+      </p>
+      <div className="d-flex w-100 justify-content-end mb-3 mt-1">
+        <Button color="primary" type="submit" disabled={!emailValue || delegateLoading}>
+          {delegateLoading ? <Spinner size="sm" /> : 'Send Invite'}
+        </Button>
+      </div>
+    </Form>
+  ),
+);
 
 AddDelegateForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -51,9 +62,10 @@ AddDelegateForm.propTypes = {
   errors: PropTypes.object.isRequired,
   emailValue: PropTypes.string.isRequired,
   delegateLoading: PropTypes.bool.isRequired,
+  setDelegateEmail: PropTypes.func.isRequired,
 };
 
-const AddDelegateModal = ({ modal, toggleModal }) => {
+const AddDelegateModal = ({ modal, toggleModal, delegateEmail, setDelegateEmail }) => {
   const dispatch = useDispatch();
   const delegateLoading = useSelector(selectDelegateLoading);
   const savedFormData = useSelector(formData);
@@ -65,11 +77,12 @@ const AddDelegateModal = ({ modal, toggleModal }) => {
     formState: { errors },
     control,
     watch,
+    setValue,
   } = useForm({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: savedFormData?.email || '',
+      email: delegateEmail ||savedFormData?.email || '',
     },
   });
 
@@ -81,9 +94,13 @@ const AddDelegateModal = ({ modal, toggleModal }) => {
 
     return () => {
       dispatch(clearAllFormData());
+      // setDelegateEmail('');
     };
   }, [localFormData]);
 
+ useEffect(() => {
+    setValue('email', delegateEmail);
+  }, [delegateEmail]);
   const onSuccess = () => {
     ShowToastMessage(SUCCESS, 'The email containing the sign-up link has been successfully sent to the delegate');
     toggleModal();
@@ -91,6 +108,7 @@ const AddDelegateModal = ({ modal, toggleModal }) => {
 
   const onSubmit = (values) => {
     const { email } = values;
+    setDelegateEmail('');
     dispatch(inviteDelegate({ email, onSuccess }));
   };
 
@@ -114,6 +132,7 @@ const AddDelegateModal = ({ modal, toggleModal }) => {
             errors={errors}
             emailValue={emailValue}
             delegateLoading={delegateLoading}
+            setDelegateEmail={setDelegateEmail}
           />
         </div>
       </ModalBody>
@@ -126,4 +145,6 @@ export default AddDelegateModal;
 AddDelegateModal.propTypes = {
   modal: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  delegateEmail: PropTypes.string.isRequired,
+  setDelegateEmail: PropTypes.func.isRequired,
 };
