@@ -1046,7 +1046,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                       <FormFeedback>{errors.preferredWorkingTimeZone.label.message}</FormFeedback>
                     )}
                     <Label className="form-label-lg h6 mt-2" for="minTimeOverlapHr">
-                    Select the minimum project time overlap hour,<br/>that you want with your project team.<span className="label-asterisk">*</span>
+                    Select the minimum project time overlap.<span className="label-asterisk">*</span>
                     </Label>
                     <Controller
                       id="minTimeOverlapHr"
