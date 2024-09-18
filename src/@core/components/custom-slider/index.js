@@ -44,12 +44,6 @@ const CustomSlider = ({ sliderValue, onChange, max = 12 }) => {
     setShowTooltip(true);
   };
 
-  const handleMouseLeave = () => {
-    if (!isDragging) {
-      setShowTooltip(false);
-    }
-  };
-
   const renderMarks = () => {
     const marks = [];
     for (let i = 0; i <= max; i++) {
@@ -90,9 +84,8 @@ const CustomSlider = ({ sliderValue, onChange, max = 12 }) => {
           className="slider__thumb"
           style={{ left: `${(value / max) * 100}%` }}
           onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
         >
-          <div className={`slider__tooltip ${showTooltip ? 'slider__tooltip--visible' : ''}`}>
+          <div className={`slider__tooltip ${showTooltip || sliderValue > 0 ? 'slider__tooltip--visible' : ''}`}>
             {value.toString().padStart(2, '0')} Hrs
           </div>
         </div>
