@@ -440,7 +440,6 @@ const Account = ({ setDraftSavedModal }) => {
             interests: interestsSelected,
             tools: toolsSelected,
             skills: skillsSelected,
-            selectedImagePreview,
           };
 
           const removeEmpty = removeEmptyKeys(reqData);
