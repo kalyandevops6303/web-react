@@ -110,7 +110,7 @@ const EditProfileAccordion = () => {
                   </DropdownItem>
                 </>
               )}
-              {userDetailsData?.user_type === userTypes.client && !isDelegate ? (
+              {userDetailsData?.user_type === userTypes.client && !isDelegate && (
                 <>
                   <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Account</span>
@@ -128,11 +128,15 @@ const EditProfileAccordion = () => {
                     <span className="align-middle p-1">Social</span>
                   </DropdownItem>
                 </>
-              ) : (
-                <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
-                  <span className="align-middle p-1">Account</span>
-                </DropdownItem>
               )}
+              {userDetailsData?.user_type === userTypes.client && isDelegate && (
+                <>
+                  <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
+                    <span className="align-middle p-1">Account</span>
+                  </DropdownItem>
+                </>
+              )}
+
               {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'CLUB' && (
                 <>
                   <div id="account-edit">
