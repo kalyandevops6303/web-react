@@ -45,7 +45,7 @@ import {
   clientAccountDetailsLoading,
   profileDetailsLoading as clientProfileDetailsLoading,
 } from '../../redux/selectors/clientOnboardingSelectors';
-import { ERROR } from '../../utility/constants/ToastTypes';
+import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
 import { checkPoints, maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
@@ -56,6 +56,7 @@ import RemoveUploadedPicture from '../../@core/components/remove-uploaded-pictur
 import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
+import { getUserData } from '../../redux/actions/authActions';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -156,8 +157,10 @@ const Account = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
+    dispatch(getUserData());
     if (isDelegate) {
       setItem('isDelegateProfileCreated', true);
+      ShowToastMessage(SUCCESS, 'Delegate profile updated successfully');
       navigate('/dashboard');
       return;
     }
