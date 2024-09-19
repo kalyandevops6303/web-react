@@ -307,9 +307,9 @@ const ContractView = () => {
                 <h6 className="fw-bolder">Client</h6>
                 <div className="d-flex justify-content-between mb-1">
                   <NameInfo
-                    img={projectInfo?.client_details?.image_uri}
-                    name={`${projectInfo?.client_details?.first_name} ${projectInfo?.client_details?.last_name}`}
-                    info={projectInfo?.client_details?.company_name}
+                    img={document?.client_details?.image_uri}
+                    name={document?.client_details?.name}
+                    info={document?.client_details?.role}
                   />
                   <div>
                     <Button
