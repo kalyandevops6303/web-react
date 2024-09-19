@@ -63,7 +63,8 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
   const isDelegateProfileCreated = getItem('isDelegateProfileCreated');
 
-  const toggleAddDelegate = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
+  const toggleAddDelegate = () => {setDelegateEmail('');dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible))};
+  const [delegateEmail, setDelegateEmail] = useState('');
   const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
   const handleEdit = () => {
@@ -178,7 +179,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const markDelegateModeModalAsSeen = getItem('markDelegateModeModalAsSeen');
 
   useEffect(() => {
-    if (isDelegate && !isDelegateModeModalVisible && !markDelegateModeModalAsSeen) {
+    if (isDelegate && !isDelegateModeModalVisible && !markDelegateModeModalAsSeen ) {
       let timer;
       clearTimeout(timer);
 
@@ -197,7 +198,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
         <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
       )}
       {isInviteDelegateModalVisible && (
-        <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} />
+        <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} delegateEmail={delegateEmail} setDelegateEmail={setDelegateEmail}/>
       )}
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
         <div className={`user-nav d-sm-flex d-none 
@@ -374,7 +375,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               ))}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.client && !isDelegate && <DelegateAccordion />}
+          {savedUserDetails?.user_type === userTypes.client && !isDelegate && <DelegateAccordion setDelegateEmail={setDelegateEmail}/>}
           <DropdownItem onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
             <span className="align-middle ">Customer support</span>
           </DropdownItem>

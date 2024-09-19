@@ -25,7 +25,7 @@ import { getDelegateInvitationStatus } from '../../../../redux/actions/delegateA
 import theme from '../../../../configs/themeVariables';
 import ComponentSpinner from '../../../components/spinner/Loading-spinner';
 
-const DelegateAccordion = () => {
+const DelegateAccordion = ({ setDelegateEmail }) => {
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen('') : setOpen(id)), [open]);
 
@@ -33,8 +33,15 @@ const DelegateAccordion = () => {
   const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
   const delegateInvitationStatus = useSelector(delegateInvitationStatusData);
   const isLoading = useSelector(selectDelegateLoading);
+  const handleOpenAddDelegateModal = (status, delegate_name) => {
+    setDelegateEmail(status === 'EXPIRED' ? delegate_name : '');
+    dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
+  };
 
-  const openAddDelegateModal = () => dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
+  const openAddDelegateModal = () => {
+    setDelegateEmail('');
+    dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
+  };
 
   const getDelegateInvitationStatusData = useCallback(() => {
     if (open === '') {
@@ -87,7 +94,12 @@ const DelegateAccordion = () => {
                       )}
                     </div>
                     {delegate.status === 'EXPIRED' ? (
-                      <CardText className="text-center card-text fw-bold font-small-3 mt-20 text-primary earn-more cursor-pointer">
+                      <CardText
+                        className="text-center card-text fw-bold font-small-3 mt-20 text-primary earn-more cursor-pointer"
+                        onClick={() => {
+                          handleOpenAddDelegateModal(delegate.status, delegate.delegate_name);
+                        }}
+                      >
                         Resend Invite
                       </CardText>
                     ) : (
