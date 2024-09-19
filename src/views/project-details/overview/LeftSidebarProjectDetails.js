@@ -99,6 +99,7 @@ const LeftSidebarProjectDetails = () => {
     PAYMENT_PENDING: 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
     DISPUTED: 'Disputed',
+    INITIATE_FUNDS: 'Initiate Funds'
   };
   const statusDisplay = {
     ACTIVE: {
