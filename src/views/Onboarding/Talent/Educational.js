@@ -756,32 +756,33 @@ const Educational = () => {
                 <hr className="m-0 card-header-border" />
                 <CardBody>
                   <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="tools">
-                        Tools <i>(Top 5)</i>
+                  <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="skills">
+                        Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
                       </Label>
                       <Controller
-                        id="tools"
-                        name="tools"
+                        id="skills"
+                        name="skills"
                         control={control}
-                        invalid={errors.tools && true}
+                        invalid={errors.skills && true}
                         render={({ field }) => (
                           <AsyncPaginate
                             isMulti
-                            loadOptions={loadToolsOptions}
+                            loadOptions={loadSkillsOptions}
                             menuPosition="fixed"
                             minMenuHeight={200}
+                            menuPlacement="top"
                             classNamePrefix="select"
-                            placeholder="Select up to 5 tools"
+                            placeholder="Select up to 5 skills"
                             theme={selectThemeColors}
                             className={classNames('react-select', {
-                              'is-invalid': errors && errors.tools,
+                              'is-invalid': errors && errors.skills,
                             })}
                             {...field}
                           />
                         )}
                       />
-                      {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
+                      {errors.skills && <FormFeedback>{errors.skills?.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="certificates">
@@ -812,33 +813,33 @@ const Educational = () => {
                     </Col>
                   </Row>
                   <Row className="mb-2">
+                    
                     <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="skills">
-                        Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
+                      <Label className="form-label" for="tools">
+                        Tools <i>(Top 5)</i>
                       </Label>
                       <Controller
-                        id="skills"
-                        name="skills"
+                        id="tools"
+                        name="tools"
                         control={control}
-                        invalid={errors.skills && true}
+                        invalid={errors.tools && true}
                         render={({ field }) => (
                           <AsyncPaginate
                             isMulti
-                            loadOptions={loadSkillsOptions}
+                            loadOptions={loadToolsOptions}
                             menuPosition="fixed"
                             minMenuHeight={200}
-                            menuPlacement="top"
                             classNamePrefix="select"
-                            placeholder="Select up to 5 skills"
+                            placeholder="Select up to 5 tools"
                             theme={selectThemeColors}
                             className={classNames('react-select', {
-                              'is-invalid': errors && errors.skills,
+                              'is-invalid': errors && errors.tools,
                             })}
                             {...field}
                           />
                         )}
                       />
-                      {errors.skills && <FormFeedback>{errors.skills?.message}</FormFeedback>}
+                      {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
                     </Col>
                   </Row>
                   {supportData?.tools_and_skills?.pending_requests > 0 && (

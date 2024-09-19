@@ -111,7 +111,7 @@ const LeftSidebarProjectDetails = () => {
     DISPUTED: 'Disputed',
     SIGN_REQUESTED: 'Sign Requested',
     NOT_FUNDED: 'Not Funded',
-    INITIATE_FUND: 'Initiate Fund',
+    INITIATE_FUND: 'Initiate Funds',
   };
   const statusDisplay = {
     ACTIVE: {

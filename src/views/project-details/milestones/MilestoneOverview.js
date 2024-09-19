@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { Button } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import theme from '../../../configs/themeVariables';
 import { BackButtonContainer, BackIconContainer } from '../../CreateProject/style';
@@ -29,10 +29,14 @@ const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
   const [feedbackCompleteModal, setFeedbackCompleteModal] = useState(false);
   const submissionHistory = useSelector((state) => state.milestone.submissionHistory);
   const param = useParams();
+  const navigate = useNavigate();
 
   const handleBack = () => {
-    dispatch(setConfirmSaveForLater(true));
-    dispatch(setNavigatingRoute(`/project-details/${param?.projectId}/milestone`));
+    if (selectedMilestone?.status === 'IN_REVIEW') navigate(`/project-details/${param?.projectId}/milestone`);
+    else {
+      dispatch(setConfirmSaveForLater(true));
+      dispatch(setNavigatingRoute(`/project-details/${param?.projectId}/milestone`));
+    }
   };
   const handleDispute = () => {
     setRaiseDisputeModal(true);

@@ -280,7 +280,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   };
 
   useEffect(() => {
-    if (selectedMilestone?._id) {
+    if (selectedMilestone?._id && userDataLocal?.user_type !== userTypes.client) {
       dispatch(getDraftMilestone({ milestoneId: selectedMilestone._id, onGetSavedMilestone, onSuccess: () => {} }));
     }
   }, [selectedMilestone?._id]);
