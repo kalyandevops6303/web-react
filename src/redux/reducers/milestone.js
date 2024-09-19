@@ -20,6 +20,7 @@ const initialState = {
   draftMilestoneLoading: false,
   isDeleteDraftMilestoneLoading: false,
   draftArtifactsLoading: false,
+  showSaveForLater: false,
 };
 
 const milestoneSlice = createSlice({
@@ -203,6 +204,10 @@ const milestoneSlice = createSlice({
       milestoneDisputeCurrentPreview: null,
       milestoneDisputeMetadata: null,
     }),
+    setShowSaveForLater: (state, action) => ({
+      ...state, 
+      showSaveForLater: action.payload,
+    })
   },
 });
 
@@ -237,6 +242,7 @@ export const {
   getDraftArtifactsRequest,
   getDraftArtifactsSuccess,
   getDraftArtifactsFailure,
+  setShowSaveForLater
 } = milestoneSlice.actions;
 
 export default milestoneSlice.reducer;

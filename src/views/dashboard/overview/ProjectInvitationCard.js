@@ -120,7 +120,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
     switch (data?.request_entity) {
       case userTypes.team:
         return (
-          <div className="design-planning mt-1 bottom-detail-elements">
+          <div className="design-planning mt-1 bottom-detail-elements project-amount">
             <p className="mb-25 details-box-title">
               Amount
             </p>
@@ -226,6 +226,23 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
                   ]}
                   projectName={data?.project?.details?.name}
                 />
+              </div>
+              <div>
+                {
+                  data?.request_entity === userTypes.team && (                  
+                  <UserSection
+                    totalCount={
+                      data?.invitation_by?.team_members_count || data?.invitation_by?.workers_count || data?.workers_count
+                    }
+                    tagName={userTypes.team}
+                    name={data?.invitation_by?.name}
+                    users={users}
+                    projectName={data?.project?.details?.name}
+                  />)
+                }
+              </div>
+            </div>
+              <div className='d-flex justify-content-between'>
                 <div className="design-planning mt-1 bottom-detail-elements">
                   <p className="mb-25 details-box-title">
                     Start date
@@ -234,20 +251,8 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
                     DateTime.fromMillis(data?.project?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
                   }`}</p>
                 </div>
-              </div>
-              <div>
-                <UserSection
-                  totalCount={
-                    data?.invitation_by?.team_members_count || data?.invitation_by?.workers_count || data?.workers_count
-                  }
-                  tagName={userTypes.team}
-                  name={data?.invitation_by?.name}
-                  users={users}
-                  projectName={data?.project?.details?.name}
-                />
                 {renderAmountBasedOnRequestEntity()}
               </div>
-            </div>
           </div>
           <div
             onClick={handleRedirect}

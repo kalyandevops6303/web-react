@@ -56,10 +56,10 @@ const makeMilestonePayment = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-const getApplicationFee = (onSuccess) => async (dispatch) => {
+const getApplicationFee = (projectId, onSuccess) => async (dispatch) => {
   dispatch(paymentFeeRequest());
   try {
-    const res = await applicationFeeService();
+    const res = await applicationFeeService(projectId);
     dispatch(paymentFeeSuccess());
     onSuccess(res.data);
   } catch (error) {

@@ -180,7 +180,7 @@ export const RequirementsFormContainer = styled.div`
   
   .form-label-lg {
     color: ${theme.checkboxLabel};
-    font-size: 20px !important;
+    font-size: 16px !important;
   }
 
   .checkbox-custom-margin {

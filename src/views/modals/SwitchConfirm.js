@@ -41,6 +41,8 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, 
 
   const handleSwitch = () => {
     if (entity === 'TALENT') {
+      if(navigateTo)
+        navigate(navigateTo);
       dispatch(switchProfile({ data: selectSavedUserDetailsData, onSuccess, selected: false }));
     } else if (entity === 'TEAM' && switchTeamId === getTeamId()) {
       navigate(navigateTo);

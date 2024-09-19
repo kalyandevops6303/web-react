@@ -420,7 +420,7 @@ const Profile = ({ setDraftSavedModal }) => {
         },
       }),
     };
-    const availability = Object.keys(availabilityData).length ? availabilityData : null;
+    const availability = Object.keys(availabilityData)?.length ? availabilityData : null;
     const reqData = {
       team_type: 'TEAM',
       name: watch('teamName'),
@@ -852,7 +852,7 @@ const Profile = ({ setDraftSavedModal }) => {
         if (savedIsFormImageRemoved) {
           setSelectedImage(null);
           setSelectedImagePreview(null);
-        } else if (teamDetails?.team_logo.length > 0 && !savedFormDocuments) {
+        } else if (teamDetails?.team_logo?.length > 0 && !savedFormDocuments) {
           setSelectedImage(teamDetails.team_logo);
           setSelectedImagePreview(teamDetails.team_logo);
         } else {
@@ -878,7 +878,7 @@ const Profile = ({ setDraftSavedModal }) => {
         } else {
           setValue('teamIntroduction', savedFormData?.teamIntroduction, { shouldValidate: true });
         }
-        if (teamDetails?.services?.length > 0 && (!savedFormData?.services || savedFormData?.services.length === 0)) {
+        if (teamDetails?.services?.length > 0 && (!savedFormData?.services || savedFormData?.services?.length === 0)) {
           setValue(
             'services',
             teamDetails?.services.map((service) => ({
@@ -890,7 +890,7 @@ const Profile = ({ setDraftSavedModal }) => {
         } else {
           setValue('services', savedFormData?.services, { shouldValidate: true });
         }
-        if (teamDetails?.tools.length > 0 && (!savedFormData?.tools || savedFormData?.tools.length === 0)) {
+        if (teamDetails?.tools?.length > 0 && (!savedFormData?.tools || savedFormData?.tools?.length === 0)) {
           setValue(
             'tools',
             teamDetails?.tools.map((tool) => ({ label: tool.name, value: tool?._id })),
@@ -899,7 +899,7 @@ const Profile = ({ setDraftSavedModal }) => {
         } else {
           setValue('tools', savedFormData?.tools, { shouldValidate: true });
         }
-        if (teamDetails?.skills.length > 0 && (!savedFormData?.skills || savedFormData?.skills.length === 0)) {
+        if (teamDetails?.skills?.length > 0 && (!savedFormData?.skills || savedFormData?.skills?.length === 0)) {
           setValue(
             'skills',
             teamDetails?.skills.map((skill) => ({ label: skill.name, value: skill?._id })),
@@ -948,7 +948,7 @@ const Profile = ({ setDraftSavedModal }) => {
             setValue('weekdayEndTime', savedFormData?.weekdayEndTime, { shouldValidate: true });
           }
           if ('weekends_avl' in teamDetails?.availability && !savedFormData?.availabilityDays?.includes('weekends')) {
-            if ('days' in teamDetails?.availability?.weekends_avl) {
+            if (teamDetails?.availability?.weekends_avl && 'days' in teamDetails?.availability?.weekends_avl) {
               talentAvailabilityDays = [...talentAvailabilityDays, 'weekends'];
               setValue('weekends', teamDetails?.availability?.weekends_avl?.days, { shouldValidate: true });
               setValue(
@@ -1006,7 +1006,7 @@ const Profile = ({ setDraftSavedModal }) => {
   };
 
   const handleClick = () => {
-    if (Object.keys(errors).length === 0) {
+    if (Object.keys(errors)?.length === 0) {
       handleSubmit(onSubmit)();
     } else {
       ShowToastMessage(ERROR, 'Please fill the mandatory fields');
@@ -1037,7 +1037,7 @@ const Profile = ({ setDraftSavedModal }) => {
       });
       reset(requiredFields);
       const cleanedRequiredFields = Object.entries(requiredFields)
-        .filter(([, value]) => !(Array.isArray(value) && value.length === 0)) // Filter out keys with empty arrays
+        .filter(([, value]) => !(Array.isArray(value) && value?.length === 0)) // Filter out keys with empty arrays
         .reduce((acc, [key, value]) => {
           acc[key] = value; // Recreate the object with remaining keys
           return acc;

@@ -44,9 +44,9 @@ const getCustomerSupportList = ({ data }) => async (dispatch) => {
     const res = await getRequestsService(data);
     dispatch(supportListSuccess(res.data.data));
   } catch (error) {
-    errorHandler(error, supportListFailure)
+    errorHandler(error, supportListFailure);
   }
-}
+};
 
 const deleteRequest = ({data}) => async (dispatch) => {
   dispatch(deleteRequestInitiate());
@@ -54,8 +54,8 @@ const deleteRequest = ({data}) => async (dispatch) => {
     await deleteRequestService(data);
     dispatch(deleteRequestSuccess());
   } catch (error) {
-    errorHandler(error, deleteRequestFailure)
+    errorHandler(error, deleteRequestFailure);
   }
-}
+};
 
 export { customerSupport, getCustomerSupportCount, getCustomerSupportList, deleteRequest };

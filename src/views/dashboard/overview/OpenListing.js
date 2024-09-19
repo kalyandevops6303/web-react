@@ -29,7 +29,7 @@ import {
   recommendedTeamsForClient,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
-import { getProjectsBidsForClient} from '../../../redux/actions/dashboardActions';
+import { getProjectsBidsForClient } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import ProjectBidCard from './ProjectBidCard';
@@ -142,7 +142,6 @@ const OpenListing = () => {
 
   useEffect(() => {
     dispatch(getProjectsBidsForClient());
-
   }, []);
 
   const settings = {
@@ -192,7 +191,7 @@ const OpenListing = () => {
                     hasNew={
                       projectsBidsForClientData?.unreadCount > 0 ? recommendedTeamsForClientData?.unreadCount : false
                     }
-                    count={projectsBidsForClientData?.metadata?.total_records}
+                    count={projectsBidsForClientData?.data?.filter((bid) => !bid?.is_expired).length}
                   />
                 </span>
          
