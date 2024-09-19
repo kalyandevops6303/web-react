@@ -29,9 +29,7 @@ import WithdrawModal from '../../modals/WithdrawModal';
 
 const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay, savedUserData) => {
   // checking whether the project has secondary status or not
-  // const secondary_status_text = projectDetailsData?.secondary_status
-  //   ? projectDetailsData?.secondary_status[localStorage.getItem('user_id')]?.next
-  //   : projectDetailsData?.status;
+ 
   let secondary_status_text;
   if (savedUserData?.user_type === 'CLIENT') {
     secondary_status_text = projectDetailsData?.secondary_status
