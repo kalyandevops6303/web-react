@@ -27,11 +27,19 @@ import ViewFilesModal from '../../modals/ViewFilesModal';
 import { convertUnixTimestampToDate } from '../../../utility/Utils';
 import WithdrawModal from '../../modals/WithdrawModal';
 
-const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay) => {
+const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay, savedUserData) => {
   // checking whether the project has secondary status or not
-  const secondary_status_text = projectDetailsData?.secondary_status
-    ? projectDetailsData?.secondary_status[localStorage.getItem('user_id')]?.next
-    : projectDetailsData?.status;
+ 
+  let secondary_status_text;
+  if (savedUserData?.user_type === 'CLIENT') {
+    secondary_status_text = projectDetailsData?.secondary_status
+      ? projectDetailsData?.secondary_status[savedUserData.client_info.org_slug_id]?.next
+      : projectDetailsData?.status;
+  } else if (savedUserData?.user_type === 'TALENT') {
+    secondary_status_text = projectDetailsData?.secondary_status
+      ? projectDetailsData?.secondary_status[localStorage.getItem('user_id')]?.next
+      : projectDetailsData?.status;
+  }
 
   // checking whether the secondary status is present in the statusEnum or not
   if (Object.keys(statusDisplay)?.includes(secondary_status_text)) {
@@ -99,7 +107,9 @@ const LeftSidebarProjectDetails = () => {
     PAYMENT_PENDING: 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
     DISPUTED: 'Disputed',
-    INITIATE_FUNDS: 'Initiate Funds'
+    SIGN_REQUESTED: 'Sign Requested',
+    NOT_FUNDED: 'Not Funded',
+    INITIATE_FUND: 'Initiate Funds',
   };
   const statusDisplay = {
     ACTIVE: {
@@ -147,6 +157,13 @@ const LeftSidebarProjectDetails = () => {
       bgcolor: 'DISPUTED',
       text: 'Disputed',
     },
+  };
+
+  const entityTextEnum = {
+    TALENT: 'Talent',
+    TEAM: 'Team',
+    CLUB: 'Club',
+    CLIENT: 'Client',
   };
   const isLoading = useSelector(projectDetailsLoading);
   const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
@@ -204,12 +221,12 @@ const LeftSidebarProjectDetails = () => {
     setDeleteModal(true);
     setDeleteModalData(projectDetailsData);
   };
-  
-   const onMessageClientClick = () => {
+
+  const onMessageClientClick = () => {
     navigate(`/chat`, {
       state: { targetId: projectDetailsData?.client_details?.user_id },
     });
-   };
+  };
   return (
     <LeftSidebarProjectDetailsWrapper>
       {viewFilesModal && (
@@ -269,55 +286,101 @@ const LeftSidebarProjectDetails = () => {
           </div>
           <CardTitle className="title">{projectDetailsData?.details?.name}</CardTitle>
           {projectDetailsData?.worker_details?.entity_type && userData?.user_type === userTypes.client ? (
-            <div className="d-flex">
-              <Avatar
-                img={
-                  // eslint-disable-next-line no-nested-ternary
-                  projectDetailsData?.worker_details?.entity_type === userTypes.talent
-                    ? projectDetailsData?.worker_details?.image_uri || defaultAvatar
-                    : projectDetailsData?.worker_details?.entity_type === userTypes.team
-                    ? projectDetailsData?.worker_details?.team_logo || defaultAvatar
-                    : defaultAvatar
-                }
-                imgHeight="35"
-                imgWidth="35"
-                className="project-details-card-photo me-1 mt-50"
-              />
-              <div>
+            <div className="d-flex flex-column">
+              <div className="d-flex align-items-center">
+                <Avatar
+                  img={
+                    // eslint-disable-next-line no-nested-ternary
+                    projectDetailsData?.worker_details?.entity_type === userTypes.talent
+                      ? projectDetailsData?.worker_details?.image_uri || defaultAvatar
+                      : projectDetailsData?.worker_details?.entity_type === userTypes.team
+                      ? projectDetailsData?.worker_details?.team_logo || defaultAvatar
+                      : defaultAvatar
+                  }
+                  imgHeight="35"
+                  imgWidth="35"
+                  className="project-details-card-photo me-1 mt-50"
+                />
                 <CardText className="mb-0 ms-25">
                   {projectDetailsData?.worker_details?.entity_type === userTypes.talent
                     ? `${projectDetailsData?.worker_details?.first_name} 
-                      ${projectDetailsData?.worker_details?.last_name}`
+                    ${projectDetailsData?.worker_details?.last_name}`
                     : projectDetailsData?.worker_details?.name}
                 </CardText>
-                <div className="d-flex flex-wrap">
-                  <RatingBadge number={projectDetailsData?.worker_details?.rating || 0} />
-                  <CardText className="ps-75 font-small-2 fw-300 rating-label">
-                    {projectDetailsData?.worker_details?.projects_worked_on_count || 0} Projects
-                  </CardText>
-                </div>
+              </div>
+
+              <div
+                className="d-flex flex-wrap  align-items-center"
+                style={{
+                  marginTop: '5px',
+                  gap: '5px',
+                }}
+              >
+                {projectDetailsData?.worker_details?.entity_type === userTypes.team ||
+                projectDetailsData?.worker_details?.entity_type === userTypes.club ? (
+                  <CustomBadge className="">
+                    <Badge className={`${userTypes.team} rounded-corner`} color="badge">
+                      {entityTextEnum[projectDetailsData?.worker_details?.entity_type]}
+                    </Badge>
+                  </CustomBadge>
+                ) : null}
+                <RatingBadge number={projectDetailsData?.worker_details?.rating || 0} />
+                <CardText className="ps-75 font-small-2 fw-300 rating-label">
+                  {projectDetailsData?.worker_details?.projects_worked_on_count || 0} Projects
+                </CardText>
               </div>
             </div>
           ) : (
-            <div className="d-flex">
-              <Avatar
-                img={
-                  projectDetailsData?.client_details?.company_logo?.length > 0
-                    ? projectDetailsData?.client_details?.company_logo
-                    : defaultAvatar
-                }
-                imgHeight="35"
-                imgWidth="35"
-                className="project-details-card-photo me-1 mt-50"
-              />
-              <div>
-                <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
-                <div className="d-flex flex-wrap">
-                  <RatingBadge number={projectDetailsData?.client_details?.rating || 0} />
-                  <CardText className="ps-75 font-small-2 fw-300 rating-label">
-                    {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
+            <div className="d-flex flex-column">
+              <div className="d-flex align-items-center">
+                <Avatar
+                  img={
+                    projectDetailsData?.client_details?.company_logo?.length > 0
+                      ? projectDetailsData?.client_details?.company_logo
+                      : defaultAvatar
+                  }
+                  imgHeight="35"
+                  imgWidth="35"
+                  className="project-details-card-photo me-1 mt-50"
+                />
+                <div>
+                  <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
+                  <CardText className="mb-0 ms-25">
+                    {projectDetailsData?.client_delegate
+                      ? `${
+                          `${projectDetailsData?.client_delegate?.first_name 
+                          } ${ 
+                          projectDetailsData?.client_delegate?.last_name}`
+                        } (${
+                          `${projectDetailsData?.client_details?.first_name 
+                          } ${ 
+                          projectDetailsData?.client_details?.last_name}`
+                        })`
+                      : `${
+                          `${projectDetailsData?.client_details?.first_name 
+                          } ${ 
+                          projectDetailsData?.client_details?.last_name}`
+                        }`}
                   </CardText>
                 </div>
+              </div>
+
+              <div
+                className="d-flex flex-wrap align-items-center"
+                style={{
+                  marginTop: '5px',
+                  gap: '5px',
+                }}
+              >
+                <CustomBadge>
+                  <Badge className={userTypes.client} color="badge">
+                    {entityTextEnum[userTypes.client]}
+                  </Badge>
+                </CustomBadge>
+                <RatingBadge number={projectDetailsData?.client_details?.rating || 0} />
+                <CardText className="ps-75 font-small-2 fw-300 rating-label">
+                  {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
+                </CardText>
               </div>
             </div>
           )}
@@ -395,7 +458,12 @@ const LeftSidebarProjectDetails = () => {
                   title="Status"
                   data={[
                     {
-                      name: displaySecondaryStatusTextOnSideBar(projectDetailsData, statusEnum, statusDisplay),
+                      name: displaySecondaryStatusTextOnSideBar(
+                        projectDetailsData,
+                        statusEnum,
+                        statusDisplay,
+                        savedUserData,
+                      ),
                     },
                   ]}
                   color={statusDisplay[projectDetailsData?.status]?.bgcolor}
@@ -470,11 +538,13 @@ const LeftSidebarProjectDetails = () => {
                 </Button>
               </div>
             )}
-           {userData?.user_type === userTypes.talent && invitedByData && <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button className="w-50" color="primary" onClick={onMessageClientClick}>
-                  Message
-                </Button>
-              </div>}
+          {userData?.user_type === userTypes.talent && invitedByData && (
+            <div className="d-flex gap-1 mt-3 justify-content-center">
+              <Button className="w-50" color="primary" onClick={onMessageClientClick}>
+                Message
+              </Button>
+            </div>
+          )}
         </CardBody>
       </Card>
       {inviteTalentToTeamModal && (

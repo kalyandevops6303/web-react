@@ -186,6 +186,17 @@ const CustomBadge = styled.span`
     color: ${theme.disabledGrayColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.disabledGrayColor}` : 'none')};
   }
+  .CLIENT {
+    background: ${(props) => (props.bordered ? '#fff' : `#005EFF1f`)} !important;
+    color: #005EFF;
+    border: ${(props) => (props.bordered ? `1px solid #005EFF` : 'none')};
+  }
+  .CLUB,
+  .TEAM {
+    background: ${(props) => (props.bordered ? '#fff' : `#30D6D21f`)} !important;
+    color: #30D6D2;
+    border: ${(props) => (props.bordered ? `1px solid #30D6D2` : 'none')};
+  }
 
   .P {
     background: ${(props) => (props.bordered ? '#fff' : `${theme.royalBlueColor}1f`)} !important;

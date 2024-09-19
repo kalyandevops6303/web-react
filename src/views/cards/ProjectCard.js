@@ -72,6 +72,9 @@ const ProjectCard = ({
     PAYMENT_PENDING: 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
     DISPUTED: 'Disputed',
+    SIGN_REQUESTED : "Sign Requested",
+    NOT_FUNDED:"Not Funded",
+    INTIATE_FUNDS:"Initiate Funds",
   };
 
   const primaryStatus = {
