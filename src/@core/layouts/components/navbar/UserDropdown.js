@@ -63,7 +63,10 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
   const isDelegateProfileCreated = getItem('isDelegateProfileCreated');
 
-  const toggleAddDelegate = () => {setDelegateEmail('');dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible))};
+  const toggleAddDelegate = () => {
+    setDelegateEmail('');
+    dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
+  };
   const [delegateEmail, setDelegateEmail] = useState('');
   const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
@@ -133,6 +136,9 @@ const UserDropdown = ({ setNavBarLoading }) => {
     }
   `;
 
+  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
+  const markDelegateModeModalAsSeen = getItem('markDelegateModeModalAsSeen');
+
   const handleShowModal = (selected) => {
     !selected && ShowToastMessage('success', `Profile switched successfully`);
     navigate('/dashboard');
@@ -175,35 +181,30 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const adminUsername =
     userDetailsData?.admin_client_info &&
     userDetailsData?.admin_client_info?.first_name + ' ' + userDetailsData?.admin_client_info?.last_name;
-  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
-  const markDelegateModeModalAsSeen = getItem('markDelegateModeModalAsSeen');
 
-  useEffect(() => {
-    if (isDelegate && !isDelegateModeModalVisible && !markDelegateModeModalAsSeen ) {
-      let timer;
-      clearTimeout(timer);
-
-      timer = setTimeout(() => {
-        toggleDelegateMode();
-      }, 1000);
-    }
-  }, []);
   return (
     <UncontrolledDropdown
       tag="li"
       style={!userName ? { minWidth: '10rem' } : {}}
       className={`dropdown-user nav-item ${!userName ? 'invisible' : ''}`}
     >
-      {isDelegate && isDelegateModeModalVisible && (
+      {isDelegate && !markDelegateModeModalAsSeen && isDelegateModeModalVisible && (
         <DelegateModeModal modal={isDelegateModeModalVisible} toggleModal={toggleDelegateMode} />
       )}
       {isInviteDelegateModalVisible && (
-        <AddDelegateModal modal={isInviteDelegateModalVisible} toggleModal={toggleAddDelegate} delegateEmail={delegateEmail} setDelegateEmail={setDelegateEmail}/>
+        <AddDelegateModal
+          modal={isInviteDelegateModalVisible}
+          toggleModal={toggleAddDelegate}
+          delegateEmail={delegateEmail}
+          setDelegateEmail={setDelegateEmail}
+        />
       )}
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
-        <div className={`user-nav d-sm-flex d-none 
+        <div
+          className={`user-nav d-sm-flex d-none 
           ${isDelegate ? 'delegate-username' : ''}
-          `}>
+          `}
+        >
           <span className="user-name truncate-1 fw-bold" id="username">
             {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
           </span>
@@ -375,7 +376,9 @@ const UserDropdown = ({ setNavBarLoading }) => {
               ))}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.client && !isDelegate && <DelegateAccordion setDelegateEmail={setDelegateEmail}/>}
+          {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
+            <DelegateAccordion setDelegateEmail={setDelegateEmail} />
+          )}
           <DropdownItem onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
             <span className="align-middle ">Customer support</span>
           </DropdownItem>
