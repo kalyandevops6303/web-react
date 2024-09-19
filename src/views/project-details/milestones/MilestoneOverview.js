@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { Button } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ import { setConfirmSaveForLater, setNavigatingRoute } from '../../../redux/reduc
 const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
   const userData = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
+  const showSaveForLater = useSelector((state) => state?.milestone?.showSaveForLater);
   const dispatch = useDispatch();
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [markCompleteModal, setMarkCompleteModal] = useState(false);
@@ -32,7 +33,8 @@ const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (selectedMilestone?.status === 'IN_REVIEW') navigate(`/project-details/${param?.projectId}/milestone`);
+    if (userData?.user_type === userTypes.client || !showSaveForLater) 
+      navigate(`/project-details/${param?.projectId}/milestone`);
     else {
       dispatch(setConfirmSaveForLater(true));
       dispatch(setNavigatingRoute(`/project-details/${param?.projectId}/milestone`));
