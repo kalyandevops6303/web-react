@@ -109,7 +109,7 @@ const LeftSidebarProjectDetails = () => {
     DISPUTED: 'Disputed',
     SIGN_REQUESTED: 'Sign Requested',
     NOT_FUNDED: 'Not Funded',
-    INITIATE_FUND: 'Initiate Funds',
+    INITIATE_FUNDS: 'Initiate Funds',
   };
   const statusDisplay = {
     ACTIVE: {
