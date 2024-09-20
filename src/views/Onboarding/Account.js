@@ -64,13 +64,13 @@ const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
     firstName: yup
       .string()
-      .min(3, 'First name must be at least 3 characters')
+      .min(1, 'First name must be at least 1 characters')
       .max(25, 'First name must be at most 25 characters')
       .matches(/^[a-zA-Z _]+$/, 'First name should not contain special characters')
       .required('First name is required'),
     lastName: yup
       .string()
-      .min(3, 'Last name must be at least 3 characters')
+      .min(1, 'Last name must be at least 1 characters')
       .max(25, 'Last name must be at most 25 characters')
       .matches(/^[a-zA-Z _]+$/, 'Last name should not contain special characters')
       .required('Last name is required'),
