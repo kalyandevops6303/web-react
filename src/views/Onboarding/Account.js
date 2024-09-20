@@ -57,6 +57,8 @@ import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
 import { getUserData } from '../../redux/actions/authActions';
+import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
+import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -79,6 +81,8 @@ const Account = () => {
 
   const savedFormData = useSelector(formData);
   const isDelegate = getItem('isDelegate');
+  const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
+  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
 
   const {
     control,
@@ -161,6 +165,7 @@ const Account = () => {
     if (isDelegate) {
       setItem('isDelegateProfileCreated', true);
       ShowToastMessage(SUCCESS, 'Delegate profile updated successfully');
+      toggleDelegateMode();
       navigate('/dashboard');
       return;
     }
