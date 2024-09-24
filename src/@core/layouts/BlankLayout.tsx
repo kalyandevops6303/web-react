@@ -1,22 +1,14 @@
-// ** React Imports
 import { Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
-
-// ** Custom Hooks
-import useSkin from '@hooks/useSkin';
-
-// ** Third Party Components
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { clearAllFormData } from '../../redux/reducers/formData';
+import useSkin from '@src/utility/hooks/useSkin';
+import { AppDispatch } from '@src/redux/store';
 
 const BlankLayout = () => {
-  const dispatch = useDispatch();
-  
-  // ** States
-  // const [isMounted, setIsMounted] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
-  // ** Hooks
   const { skin } = useSkin();
 
   // useEffect(() => {

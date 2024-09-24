@@ -75,7 +75,6 @@ const rootReducer = combineReducers({
   hiring,
   delegate,
   reports: reportReducer,
-  // Add more reducers if needed
 });
 
 // Configure Redux Persist for the 'auth' reducer only
