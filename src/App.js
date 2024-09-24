@@ -1,18 +1,13 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
-
 import Hotjar from '@hotjar/browser';
 import { getToken, messaging } from './configs/api/firebase';
-
-// ** Hotjar Import
-
-// ** Router Import
 import Router from './router/Router';
 import { getItem, setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
@@ -50,7 +45,7 @@ const App = () => {
     },
   );
 
-  const loginUser = async ({ cometToken, fcm }) => {
+  const loginUser = useCallback(async ({ cometToken, fcm }) => {
     await CometChat.login(cometToken);
     dispatch(cometloginSuccess());
     setItem('cometChatToken', cometToken);
@@ -64,22 +59,23 @@ const App = () => {
       const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
       dispatch(setUnreadMsgCount(totalCount));
     });
-  };
+  }, []);
+
+  const tokenFunc = useCallback(async () => {
+    if (isLoggedIn && !fcmToken && !cometAuthToken) {
+      const data = await getToken();
+      if (data) {
+        dispatch(fcmSubscribeNotification(data));
+        loginUser({ cometToken: cometAuthToken, fcm: data });
+        setItem('fcmToken', data);
+      } else if (cometAuthToken) {
+        loginUser({ cometToken: cometAuthToken });
+      }
+    }
+  }, [dispatch, isLoggedIn, fcmToken, cometAuthToken]);
 
   useEffect(() => {
-    if (isLoggedIn && !fcmToken) {
-      let data;
-      const tokenFunc = async () => {
-        data = await getToken();
-        if (data) {
-          dispatch(fcmSubscribeNotification(data));
-          loginUser({ cometToken: cometAuthToken, fcm: data });
-          setItem('fcmToken', data);
-        } else if (cometAuthToken) {
-          loginUser({ cometToken: cometAuthToken });
-        }
-        return data;
-      };
+    if (isLoggedIn && !fcmToken && !cometAuthToken) {
       tokenFunc();
     }
   }, [isLoggedIn, cometAuthToken, fcmToken]);
