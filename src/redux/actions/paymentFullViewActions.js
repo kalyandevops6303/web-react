@@ -20,13 +20,13 @@ const getPaymentMetrics = () => async (dispatch) => {
 };
 
 const getPaymentHistory =
-  ({ page, pageSize, oldData }) =>
+  ({ page, pageSize, oldData, filters }) =>
   async (dispatch) => {
     if (page === 1) {
       dispatch(paymentHistoryRequest());
     }
     try {
-      const res = await paymentHistoryService(page, pageSize);
+      const res = await paymentHistoryService(page, pageSize, filters);
       dispatch(paymentHistorySuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
     } catch (error) {
       errorHandler(error, paymentHistoryFailure);

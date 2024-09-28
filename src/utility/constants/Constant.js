@@ -75,6 +75,19 @@ const teamStatusesOptions = [
   { label: 'Drafts', value: 'DRAFT' },
 ];
 
+const PaymentStatusOptions = [
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Initiated', value: 'INITIATED' },
+  { label: 'Processing', value: 'PROCESSING' },
+  { label: 'Failed', value: 'FAILED' },
+  { label: 'Paid', value: 'PAID' },
+];
+
+const PayTypeOptions = [
+  { label: 'Credit', value: 'CREDIT' },
+  { label: 'Debit', value: 'DEBIT' },
+];
+
 const clubStatusesOptions = [
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Drafts', value: 'DRAFT' },
@@ -281,4 +294,6 @@ export {
   teamTypes,
   clubOrTeamStatuses,
   REPORT_ENTITIES,
+  PaymentStatusOptions,
+  PayTypeOptions,
 };
