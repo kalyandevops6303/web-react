@@ -16,7 +16,7 @@ import { filteredFormSchema, validations } from '../../utility/Utils';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
-import { registerEmail } from '../../redux/actions/authActions';
+import { registerEmail, verifyEmailForFlextern } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
@@ -25,6 +25,7 @@ import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
 import TermsModal from '../modals/TermsModal';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { userTypes } from '../../utility/constants/Constant';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
@@ -90,10 +91,49 @@ const RegisterEmail = () => {
     navigate('/auth/email-verify');
   };
 
-  const onSubmit = (values) => {
-    const { email } = values;
+  const onFlexternInviteNotFoundHandler = () => {
+    const { email } = watch();
     dispatch(registerEmail({ email, userType, onSuccess }));
   };
+
+  const onFlexternEmailVerifySuccess = () => {
+    dispatch(clearAllFormData());
+    navigate('/auth/register-phone-talent');
+  };
+
+  const checkFlexTernorTalent = (email) => {
+    const data = { email };
+    data.user_type = userTypes.talent;
+    dispatch(
+      verifyEmailForFlextern({
+        data,
+        onSuccess: onFlexternEmailVerifySuccess,
+        errorHandlerInviteNotFound: onFlexternInviteNotFoundHandler,
+      }),
+    );
+  };
+
+  const onSubmit = (values) => {
+    const { email } = values;
+    // call a function to first check whether the email entered is for flextern or a talent this will be only valide for talent usertype other
+    if (userType === userTypes.client) {
+      dispatch(registerEmail({ email, userType, onSuccess }));
+    } else {
+      checkFlexTernorTalent(email);
+    }
+  };
+
+  function getButtonContent() {
+    if (isLoading) {
+      return <Spinner size="sm" />;
+    }
+
+    if (userType === userTypes.client) {
+      return 'Submit';
+    }
+
+    return 'Verify';
+  }
 
   const emailValue = watch('email'); // track the value of the mobile field
 
@@ -183,7 +223,7 @@ const RegisterEmail = () => {
             type="submit"
             disabled={!emailValue || isLoading || !agreeTerms}
           >
-            {isLoading ? <Spinner size="sm" /> : 'Submit'}
+            {getButtonContent()}
           </Button>
         </Form>
         {/* <div className="divider my-2 custom-divider">
@@ -201,7 +241,7 @@ const RegisterEmail = () => {
           <Label>
             <small>Already have a trumio account?</small>
           </Label>
-          <Label onClick={()=>dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
+          <Label onClick={() => dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>
