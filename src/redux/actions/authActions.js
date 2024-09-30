@@ -203,7 +203,7 @@ const verifyEmail = (data) => async (dispatch) => {
   }
 };
 
-const verifyEmailForFlextern = ({data,onSuccess}) => async (dispatch) => {
+const verifyEmailForFlextern = ({data,onSuccess ,errorHandlerInviteNotFound}) => async (dispatch) => {
   dispatch(verifyEmailForFlexternRequest());
   try {
     const res = await verifyEmailForFlexternService(data);
@@ -216,7 +216,11 @@ const verifyEmailForFlextern = ({data,onSuccess}) => async (dispatch) => {
       onSuccess();
     }
   } catch (error) {
-    errorHandler(error,verifyEmailForFlexternFailure);
+    if(error?.response?.data?.errorData?.message === "Flextern invitation not found for this email" && errorHandlerInviteNotFound) {
+      errorHandlerInviteNotFound();
+    } else {
+      errorHandler(error,verifyEmailForFlexternFailure);
+    }
   }
 };
 const setPassword = (Password) => async (dispatch) => {
