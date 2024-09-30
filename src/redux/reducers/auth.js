@@ -103,6 +103,43 @@ const authSlice = createSlice({
       error: action.payload,
     }),
 
+    // Verify Email for  Flextern
+    verifyEmailForFlexternRequest : (state) => ({
+      ...state,
+      loading:true,
+      error: null,
+    }),
+
+    verifyEmailForFlexternSuccess : (state) => ({
+      ...state,
+      loading:false,
+      isEmailVerified: true,
+    }),
+
+    verifyEmailForFlexternFailure : (state,action) => ({
+      ...state,
+      loading:false,
+      error: action.payload,
+    }),
+    // verify request invitation token
+
+    verifyRequestInvitationFlexternToken: (state) => ({
+      ...state,
+      loading: true,
+      error:null,
+    }),
+
+    verifyRequestInvitationFlexternTokenSuccess: (state,action) => ({
+      ...state,
+      loading: false,
+      email: action.payload,
+    }),
+
+    verifyRequestInvitationFlexternTokenFailure: (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.payload,
+    }),
     // Register Phone
     registerPhoneRequest: (state) => ({
       ...state,
@@ -360,6 +397,12 @@ export const {
   verifyEmailFPRequest,
   verifyEmailFPSuccess,
   verifyEmailFPFailure,
+  verifyEmailForFlexternRequest,
+  verifyEmailForFlexternSuccess,
+  verifyEmailForFlexternFailure,
+  verifyRequestInvitationFlexternToken,
+  verifyRequestInvitationFlexternTokenSuccess,
+  verifyRequestInvitationFlexternTokenFailure,
   registerPhoneRequest,
   registerPhoneSuccess,
   registerPhoneFailure,

@@ -6,6 +6,7 @@ import {
   loginService,
   registerEmailService,
   verifyEmailService,
+  verifyEmailForFlexternService,
   registerPhoneService,
   verifyPhoneService,
   forgotPasswordService,
@@ -18,6 +19,7 @@ import {
   resetPasswordService,
   checkAdminService,
   getAppPermissionService,
+  checkRequestValidation,
 } from '../../services/authServices';
 
 import {
@@ -31,6 +33,12 @@ import {
   verifyEmailRequest,
   verifyEmailSuccess,
   verifyEmailFailure,
+  verifyEmailForFlexternRequest,
+  verifyEmailForFlexternSuccess,
+  verifyEmailForFlexternFailure,
+  verifyRequestInvitationFlexternToken,
+  verifyRequestInvitationFlexternTokenSuccess,
+  verifyRequestInvitationFlexternTokenFailure,
   registerPhoneRequest,
   registerPhoneSuccess,
   registerPhoneFailure,
@@ -201,6 +209,23 @@ const verifyEmail = (data) => async (dispatch) => {
     return error?.response?.data?.errorData?.message;
   }
 };
+
+const verifyEmailForFlextern = ({data,onSuccess}) => async (dispatch) => {
+  dispatch(verifyEmailForFlexternRequest());
+  try {
+    const res = await verifyEmailForFlexternService(data);
+    setItem('access_token', res.data.data.access_token);
+    setItem('access_token_expires', res.data.data.access_token_expires);
+    setItem('refresh_token', res.data.data.refresh_token);
+    setItem('refresh_token_expires', res.data.data.refresh_token_expires);
+    dispatch(verifyEmailForFlexternSuccess());
+    if(onSuccess) {
+      onSuccess();
+    }
+  } catch (error) {
+    errorHandler(error,verifyEmailForFlexternFailure);
+  }
+};
 const setPassword = (Password) => async (dispatch) => {
   dispatch(setPasswordRequest());
   try {
@@ -224,11 +249,14 @@ const registerPhone =
     }
   };
 
-const verifyPhone = (data) => async (dispatch) => {
+const verifyPhone = (data,onVerifyOtpSuccess) => async (dispatch) => {
   dispatch(verifyPhoneRequest());
   try {
     await verifyPhoneService(data);
     dispatch(verifyPhoneSuccess());
+    if(onVerifyOtpSuccess) {
+      onVerifyOtpSuccess();  
+    }
     return null;
   } catch (error) {
     dispatch(verifyPhoneFailure());
@@ -416,6 +444,16 @@ const getAppPermissions = () => async (dispatch) => {
   } catch (error) {
     errorHandler(error, getAppPermissionsFailure);
   }
+}
+
+const validateRequestFlexTernToken = ({ requestToken}) => async (dispatch) => {
+    dispatch(verifyRequestInvitationFlexternToken());
+    try {
+      const res = await checkRequestValidation(requestToken);
+      dispatch(verifyRequestInvitationFlexternTokenSuccess(res.data?.data?.email_invited));
+    } catch(error) {
+      errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
+    }
 };
 
 export {
@@ -427,6 +465,7 @@ export {
   registerEmail,
   setPassword,
   verifyEmail,
+  verifyEmailForFlextern,
   registerPhone,
   verifyPhone,
   forgotPassword,
@@ -439,4 +478,5 @@ export {
   resetPassword,
   checkIsAdmin,
   getAppPermissions,
+  validateRequestFlexTernToken,
 };

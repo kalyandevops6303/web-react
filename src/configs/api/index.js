@@ -20,7 +20,9 @@ const API = {
     verifyOtp: `${apiAuthEndpoint}/api/v1/user/forgot-password/verify`,
     setNewPassword: `${apiAuthEndpoint}/api/v1/user/forgot-password/change`,
     resetPassword: `${apiAuthEndpoint}/api/v1/user/reset-password`,
+    requestValidation: `${apiAuthEndpoint}/api/v1/requests/validation`,
     checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
+    validateFlexTernEmail: `${apiAuthEndpoint}/api/v1/talent/email/check`
   },
   static: {
     talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,
