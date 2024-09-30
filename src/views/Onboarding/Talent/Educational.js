@@ -37,7 +37,7 @@ import {
   resumeParsedDetailsLoading,
 } from '../../../redux/selectors/talentOnboardingSelectors';
 import {
-  certificatesService,
+  // certificatesService,
   educationsService,
   paginatedInstitutesService,
   skillsService,
@@ -190,7 +190,7 @@ const Educational = () => {
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
-  const [certificatesOptions, setCertificatesOptions] = useState(null);
+  // const [certificatesOptions, setCertificatesOptions] = useState(null);
   const [files, setFiles] = useState(savedFormDocuments || []);
   const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
@@ -330,26 +330,26 @@ const Educational = () => {
     }
   };
 
-  const loadCertificatesOptions = async (search) => {
-    if (search) {
-      return {
-        options: returnFilteredDropdownOptions(search, certificatesOptions),
-      };
-    }
-    try {
-      const response = await certificatesService();
+  // const loadCertificatesOptions = async (search) => {
+  //   if (search) {
+  //     return {
+  //       options: returnFilteredDropdownOptions(search, certificatesOptions),
+  //     };
+  //   }
+  //   try {
+  //     const response = await certificatesService();
 
-      const options = response?.data?.data?.map((certificate) => ({ label: certificate.name, value: certificate._id }));
+  //     const options = response?.data?.data?.map((certificate) => ({ label: certificate.name, value: certificate._id }));
 
-      setCertificatesOptions(options);
+  //     setCertificatesOptions(options);
 
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
+  //     return {
+  //       options,
+  //     };
+  //   } catch (error) {
+  //     return { options: [] };
+  //   }
+  // };
 
   const loadSkillsOptions = async (search) => {
     if (search) {
@@ -785,36 +785,6 @@ const Educational = () => {
                       {errors.skills && <FormFeedback>{errors.skills?.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="certificates">
-                        Certificates
-                      </Label>
-                      <Controller
-                        id="certificates"
-                        name="certificates"
-                        control={control}
-                        invalid={errors.certificates && true}
-                        render={({ field }) => (
-                          <AsyncPaginate
-                            isMulti
-                            loadOptions={loadCertificatesOptions}
-                            menuPosition="fixed"
-                            minMenuHeight={200}
-                            classNamePrefix="select"
-                            placeholder="Select certificates"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.certificates,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.certificates && <FormFeedback>{errors.certificates?.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-2">
-                    
-                    <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="tools">
                         Tools <i>(Top 5)</i>
                       </Label>
@@ -841,6 +811,63 @@ const Educational = () => {
                       />
                       {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
                     </Col>
+                    {/* <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="certificates">
+                        Certificates
+                      </Label>
+                      <Controller
+                        id="certificates"
+                        name="certificates"
+                        control={control}
+                        invalid={errors.certificates && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            isMulti
+                            loadOptions={loadCertificatesOptions}
+                            menuPosition="fixed"
+                            minMenuHeight={200}
+                            classNamePrefix="select"
+                            placeholder="Select certificates"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.certificates,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.certificates && <FormFeedback>{errors.certificates?.message}</FormFeedback>}
+                    </Col> */}
+                  </Row>
+                  <Row className="mb-2">
+                    
+                    {/* <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="tools">
+                        Tools <i>(Top 5)</i>
+                      </Label>
+                      <Controller
+                        id="tools"
+                        name="tools"
+                        control={control}
+                        invalid={errors.tools && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            isMulti
+                            loadOptions={loadToolsOptions}
+                            menuPosition="fixed"
+                            minMenuHeight={200}
+                            classNamePrefix="select"
+                            placeholder="Select up to 5 tools"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.tools,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
+                    </Col> */}
                   </Row>
                   {supportData?.tools_and_skills?.pending_requests > 0 && (
                     <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
