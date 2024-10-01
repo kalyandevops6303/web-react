@@ -106,7 +106,6 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
     "*.css": "stylelint --fix"
   },
   "config": {
