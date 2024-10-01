@@ -51,8 +51,8 @@ const TalentOnboarding = () => {
     )
       setActive(tabNames.Social);
     else if (
-        location.pathname === `/${userOnboarding.talent}/additional-information-details` ||
-        location.pathname === `/${userProfileEdit.talent}/additional-information-details`
+        location.pathname === `/${userOnboarding.talent}/additional-details` ||
+        location.pathname === `/${userProfileEdit.talent}/additional-details`
     )
       setActive(tabNames.Additional);
     else if (
