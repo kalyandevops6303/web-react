@@ -15,11 +15,12 @@ const TalentOnboarding = () => {
     Account: '1',
     Personal: '2',
     Educational: '3',
-    Availability: '4',
-    Social: '5',
-    Payment: '6',
-    InternHiring: '7',
-    InternXobinHiring: '8',
+    Social: '4',
+    Additional: '5',
+    Availability: '6',
+    Payment: '7',
+    InternHiring: '8',
+    InternXobinHiring: '9',
   };
 
   const [active, setActive] = useState(tabNames.Account);
@@ -45,15 +46,20 @@ const TalentOnboarding = () => {
     )
       setActive(tabNames.Educational);
     else if (
+        location.pathname === `/${userOnboarding.talent}/social-details` ||
+        location.pathname === `/${userProfileEdit.talent}/social-details`
+    )
+      setActive(tabNames.Social);
+    else if (
+        location.pathname === `/${userOnboarding.talent}/additional-information-details` ||
+        location.pathname === `/${userProfileEdit.talent}/additional-information-details`
+    )
+      setActive(tabNames.Additional);
+    else if (
       location.pathname === `/${userOnboarding.talent}/availability-details` ||
       location.pathname === `/${userProfileEdit.talent}/availability-details`
     )
       setActive(tabNames.Availability);
-    else if (
-      location.pathname === `/${userOnboarding.talent}/social-details` ||
-      location.pathname === `/${userProfileEdit.talent}/social-details`
-    )
-      setActive(tabNames.Social);
     else if (
       location.pathname === `/${userOnboarding.talent}/intern-hiring` ||
       location.pathname === `/${userProfileEdit.talent}/intern-hiring`
