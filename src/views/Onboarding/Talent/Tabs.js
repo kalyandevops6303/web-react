@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Clock, Home, Link, User, Shield, Crosshair } from 'react-feather';
+import { Nav, NavItem, NavLink, TabContent, TabPane , FormGroup , Label,Input } from 'reactstrap';
+import { Clock, Home, Link, User, Shield,FileText } from 'react-feather';
 import { TabsContainer } from '../style';
 import Account from '../Account';
 import Personal from './Personal';
@@ -15,37 +15,43 @@ import EducationTabInactiveImg from '../../../assets/images/educationTabInactive
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
-import { useDispatch, useSelector } from 'react-redux';
-import { getQuestionsLink, getShowHiringTab } from "../../../redux/actions/hiringActions";
+import Additional from './Additional';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const dispatch = useDispatch();
-  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
-  const questions = useSelector((state) => state.hiring?.questionsLink);
-
-  const [hasQuestions, setHasQuestions] = useState(true);
-
-  const [showTab, setShowTab] = useState(true);
-
+  // const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
+  
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
     }
   };
 
-  const onFailure = () => {
-    setShowTab(false);
-  }
-
-  useEffect(() => {
-    if (questions?.length === 0) setHasQuestions(false);
-  }, [questions])
-
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
+      <div className="mb-2 d-flex justify-content-center">
+        <FormGroup check inline>
+          <Label check>
+            <Input
+              type="checkbox"
+              // checked={isFlexternship}
+              // onChange={handleFlexternshipChange}
+            />{' '}
+            Flexternship
+          </Label>
+        </FormGroup>
+        <FormGroup check inline>
+          <Label check>
+            <Input
+              type="checkbox"
+              // checked={isProject}
+              // onChange={handleProjectChange}
+            />{' '}
+            Project
+          </Label>
+        </FormGroup>
+      </div>
       <Nav pills className="mb-2">
         <NavItem
           onClick={() => {
@@ -106,23 +112,6 @@ const Tabs = ({ tabNames, active }) => {
         <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/availability-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/availability-details` ||
-              location.pathname === `/${userProfileEdit.talent}/availability-details`
-            }
-          >
-            <Clock className="font-medium-3 me-50" />
-            <span className="fw-bold">Availability</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/social-details`);
             }
           }}
@@ -135,6 +124,40 @@ const Tabs = ({ tabNames, active }) => {
           >
             <Link className="font-medium-3 me-50" />
             <span className="fw-bold">Social</span>
+          </NavLink>
+        </NavItem>
+        <NavItem
+          onClick={() => {
+            if (location.pathname.includes('profile-edit')) {
+              onTabClick(`/${userProfileEdit.talent}/additional-infomation-details`);
+            }
+          }}
+        >
+          <NavLink
+            active={
+              location.pathname === `/${userOnboarding.talent}/additional-information-details` ||
+              location.pathname === `/${userProfileEdit.talent}/additional-information-details`
+            }
+          >
+            <FileText className="font-medium-3 me-50" />
+            <span className="fw-bold">Additional Information</span>
+          </NavLink>
+        </NavItem>
+        <NavItem
+          onClick={() => {
+            if (location.pathname.includes('profile-edit')) {
+              onTabClick(`/${userProfileEdit.talent}/availability-details`);
+            }
+          }}
+        >
+          <NavLink
+            active={
+              location.pathname === `/${userOnboarding.talent}/availability-details` ||
+              location.pathname === `/${userProfileEdit.talent}/availability-details`
+            }
+          >
+            <Clock className="font-medium-3 me-50" />
+            <span className="fw-bold">Availability</span>
           </NavLink>
         </NavItem>
         <NavItem
@@ -174,7 +197,7 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Get Hired</span>
           </NavLink>
         </NavItem>} */}
-        {showHiringTab && showTab && <NavItem
+        {/* {showHiringTab && showTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/intern-xobin-hiring`);
@@ -190,7 +213,7 @@ const Tabs = ({ tabNames, active }) => {
             <Crosshair className="font-medium-3 me-50" />
             <span className="fw-bold">Get Hired</span>
           </NavLink>
-        </NavItem>}
+        </NavItem>} */}
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
@@ -205,13 +228,17 @@ const Tabs = ({ tabNames, active }) => {
           {(location.pathname === `/${userOnboarding.talent}/educational-details` ||
             location.pathname === `/${userProfileEdit.talent}/educational-details`) && <Educational />}
         </TabPane>
-        <TabPane tabId={tabNames.Availability}>
-          {(location.pathname === `/${userOnboarding.talent}/availability-details` ||
-            location.pathname === `/${userProfileEdit.talent}/availability-details`) && <Availability />}
+        <TabPane tabId={tabNames.Additional}>
+          {(location.pathname === `/${userOnboarding.talent}/additional-information-details` ||
+            location.pathname === `/${userProfileEdit.talent}/additional-information-details`) && <Additional />}
         </TabPane>
         <TabPane tabId={tabNames.Social}>
           {(location.pathname === `/${userOnboarding.talent}/social-details` ||
             location.pathname === `/${userProfileEdit.talent}/social-details`) && <Social />}
+        </TabPane>
+        <TabPane tabId={tabNames.Availability}>
+          {(location.pathname === `/${userOnboarding.talent}/availability-details` ||
+            location.pathname === `/${userProfileEdit.talent}/availability-details`) && <Availability />}
         </TabPane>
         <TabPane tabId={tabNames.Payment}>
           {location.pathname.includes('payment-details') ||
