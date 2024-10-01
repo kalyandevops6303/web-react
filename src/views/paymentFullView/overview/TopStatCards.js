@@ -79,26 +79,7 @@ const TopStatCards = () => {
 
   return (
     <Row>
-      <Col>
-        <StatboxWrap isMarketPlaceTab>
-          <CardBody>
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="my-auto">
-                <h3 className="fw-bolder">${firstStatCardData}</h3>
-                <CardText className="mb-0 stat-desc">
-                  {userData?.user_type === userTypes.client ? 'Paid' : 'Earned'}
-                  <Info size={16} color={theme.infoIcon} id="firstStat" className="ms-25" />
-                  <UncontrolledTooltip target="firstStat" placement="bottom">
-                    <p className="mb-0 text-start">{firstStatCardTooltipText()}</p>
-                  </UncontrolledTooltip>
-                </CardText>
-              </div>
-              <Avatar color="light-green" icon={<CheckSquare size={24} />} className="stat-avatar" />
-            </div>
-          </CardBody>
-        </StatboxWrap>
-      </Col>
-      <Col>
+       <Col>
         <StatboxWrap isMarketPlaceTab>
           <CardBody>
             <div className="d-flex align-items-center justify-content-between">
@@ -123,6 +104,25 @@ const TopStatCards = () => {
                 }
                 className="stat-avatar"
               />
+            </div>
+          </CardBody>
+        </StatboxWrap>
+      </Col>
+      <Col>
+        <StatboxWrap isMarketPlaceTab>
+          <CardBody>
+            <div className="d-flex align-items-center justify-content-between">
+              <div className="my-auto">
+                <h3 className="fw-bolder">${firstStatCardData}</h3>
+                <CardText className="mb-0 stat-desc">
+                  {userData?.user_type === userTypes.client ? 'Paid' : 'Earned'}
+                  <Info size={16} color={theme.infoIcon} id="firstStat" className="ms-25" />
+                  <UncontrolledTooltip target="firstStat" placement="bottom">
+                    <p className="mb-0 text-start">{firstStatCardTooltipText()}</p>
+                  </UncontrolledTooltip>
+                </CardText>
+              </div>
+              <Avatar color="light-green" icon={<CheckSquare size={24} />} className="stat-avatar" />
             </div>
           </CardBody>
         </StatboxWrap>

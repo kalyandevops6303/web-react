@@ -6,14 +6,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import DataTable from 'react-data-table-component';
-import { Badge, UncontrolledTooltip } from 'reactstrap';
-import { ChevronDown, ChevronUp, Copy } from 'react-feather';
+import { Badge, Col, Input, Label, Row, UncontrolledTooltip } from 'reactstrap';
+import * as yup from 'yup';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { ChevronDown, ChevronUp, Copy, RefreshCcw } from 'react-feather';
 import Avatar from '@components/avatar';
+import classNames from 'classnames';
+import Flatpickr from 'react-flatpickr';
+import Select from 'react-select';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import '../../custom-styles.scss';
 import DateTime from '../../../lib/date-time';
 import CopyToClipboard from '../../../lib/copy-clipboard';
 import InfiniteScroll from '../../../lib/infinite-scroll';
-import { userTypes } from '../../../utility/constants/Constant';
+import { PaymentStatusOptions, PayTypeOptions, userTypes } from '../../../utility/constants/Constant';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import theme from '../../../configs/themeVariables';
 import { TableContainer, ExpandRowDisabled, ClientTableContainer } from '../style';
@@ -25,7 +32,7 @@ import { setItem } from '../../../utility/localStorageControl';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import ShowToastMessage from '../../../@core/components/toast';
 import { SUCCESS } from '../../../utility/constants/ToastTypes';
-import { roundOfAmount } from '../../../utility/Utils';
+import { roundOfAmount, selectThemeColors } from '../../../utility/Utils';
 
 const PaymentHistory = () => {
   const dispatch = useDispatch();
@@ -221,8 +228,8 @@ const PaymentHistory = () => {
     collapsed: <ChevronDown size={24} color={theme.gray} className="mt-50" />,
     expanded: <ChevronUp size={24} color={theme.gray} className="mt-50" />,
   };
-
   const paymentHistoryDataset = [];
+
   paymentHistoryData?.data
     ?.map((cell) => {
       let disabled = true;
@@ -425,9 +432,50 @@ const PaymentHistory = () => {
     );
   };
 
+  const PaymentHistorySearchSchema = yup.object().shape({
+    paymentDate: yup.date().nullable(),
+    projectName: yup.string().nullable(),
+    paymentStatus: yup.string().nullable(),
+    payType: yup.string().nullable(),
+  });
+
+  const {
+    control,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(PaymentHistorySearchSchema),
+    defaultValues: {
+      paymentDate: null,
+      projectName: '',
+      paymentStatus: null,
+      payType: null,
+    },
+  });
+
   useEffect(() => {
-    dispatch(getPaymentHistory({ page: 1, pageSize: 10, oldData: [] }));
-  }, []);
+    const dateObject = new Date(watch('paymentDate'));
+    const timestamp = dateObject.getTime();
+    const filters = {
+      payment_date: timestamp || null,
+      project_name: watch('projectName'),
+      payment_status: watch('paymentStatus')?.value,
+      payment_type: watch('payType')?.value,
+    };
+    const debounceTimeout = 500;
+    const handler = setTimeout(() => {
+      dispatch(getPaymentHistory({ page: 1, pageSize: 10, oldData: [], filters }));
+    }, debounceTimeout);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [watch('paymentDate'), watch('projectName'), watch('paymentStatus'), watch('payType')]);
+
+  const handleReset = () => {
+    reset();
+  };
 
   return (
     <>
@@ -440,7 +488,104 @@ const PaymentHistory = () => {
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
         />
       )}
-      <p className="fw-bold font-medium-3 mt-1">Payment History</p>
+      <Row className="d-flex w-100 justify-content-between align-items-center">
+        <Col sm="12" md="12" lg="4" className="ps-50 mt-1">
+          <p className="fw-bold font-medium-3 mt-1">Payment History</p>
+        </Col>
+
+        <Col>
+          <Row className="d-flex justify-content-center flex-wrap align-items-center">
+            <Col sm="12" md="12" lg="3" className="ps-50">
+              <Label className="form-label">Filter By Date</Label>
+              <Controller
+                control={control}
+                id="paymentDate"
+                name="paymentDate"
+                render={({ field }) => (
+                  <Flatpickr
+                    {...field}
+                    placeholder="Select Payment Date"
+                    options={{
+                      dateFormat: 'M d, Y',
+                    }}
+                    className={classNames('form-control', {
+                      'is-invalid': errors && errors.paymentDate,
+                    })}
+                  />
+                )}
+              />
+            </Col>
+            <Col sm="12" md="12" lg="3">
+              <Label className="form-label" for="projectName">
+                Project Name
+              </Label>
+              <Controller
+                id="projectName"
+                name="projectName"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} type="text" placeholder="Enter project name" invalid={errors.projectName && true} />
+                )}
+              />
+            </Col>
+
+            <Col sm="12" md="12" lg="2">
+              <Label className="form-label">Status</Label>
+              <Controller
+                id="paymentStatus"
+                name="paymentStatus"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    isClearable
+                    options={PaymentStatusOptions}
+                    classNamePrefix="select"
+                    placeholder="Select status"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                  />
+                )}
+              />
+            </Col>
+
+            {userData?.user_type === userTypes?.client && (
+              <Col sm="12" md="12" lg="2">
+                <Label className="form-label">Pay Type</Label>
+                <Controller
+                  id="payType"
+                  name="payType"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      isClearable
+                      options={PayTypeOptions}
+                      classNamePrefix="select"
+                      placeholder="Select pay type"
+                      theme={selectThemeColors}
+                      className={classNames('react-select')}
+                    />
+                  )}
+                />
+              </Col>
+            )}
+            <Col
+              sm="12"
+              md="12"
+              lg="2"
+              className="reset-btn d-flex gap-1 pt-50 mt-2 cursor-pointer"
+              onClick={handleReset}
+            >
+              <div className="reset-icon">
+                <RefreshCcw size={18} color={theme.activeNavPillText} />
+              </div>
+              <span className="reset-label">Reset</span>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+
       {paymentHistoryIsLoading ? (
         <ComponentSpinner />
       ) : (
