@@ -4,10 +4,9 @@ import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { clearAllFormData } from '../../redux/reducers/formData';
 import useSkin from '@src/utility/hooks/useSkin';
-import { AppDispatch } from '@src/redux/store';
 
 const BlankLayout = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const { skin } = useSkin();
 
