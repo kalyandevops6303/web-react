@@ -21,6 +21,13 @@ export const HeaderContainer = styled.div`
   }
 `;
 
+export const ProgramCheckBox = styled.div`
+  padding: 10px 16px;
+  border-radius: 5px;
+  background: ${(props) => (props.active ? `${theme.checkboxGradientActive}` : `${theme.checkboxGradient}`)};
+
+`;
+
 export const TabsContainer = styled.div`
   .nav-pills .nav-link.active {
     background: ${theme.activeNavPillBackground};

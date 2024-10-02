@@ -79,6 +79,9 @@ import {
   getAppPermissionsSuccess,
   getAppPermissionsRequest,
   getAppPermissionsFailure,
+  setTalentBooleanTrumioTalent,
+  setTalentBooleansFlextern,
+  setTalentBooleanIsFlextern
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -133,6 +136,13 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     }
     window.dataLayer.push({ user_id: res.data.data.user_id });
     onSuccess(res.data.data);
+    if(res.data?.data?.user_type === userTypes.talent) {
+      if(res.data?.data?.is_flextern) {
+        dispatch(setTalentBooleanIsFlextern(res.data?.data?.is_flextern));
+      }
+      dispatch(setTalentBooleanTrumioTalent(res.data?.data?.trumio_talent));
+      dispatch(setTalentBooleansFlextern(res.data?.data?.flextern));
+    }
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
       dispatch(cometChatLogin(res.data.data.comet_chat_token));
