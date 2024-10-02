@@ -20,6 +20,9 @@ const initialState = {
   cometChatToken: '',
   checkAdmin: null,
   checkAdminLoading: false,
+  flextern : null,
+  trumio_talent:null,
+  is_flextern: null,
 };
 
 const authSlice = createSlice({
@@ -155,7 +158,7 @@ const authSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
-
+    
     // Set  Password
     setPasswordRequest: (state) => ({
       ...state,
@@ -266,6 +269,18 @@ const authSlice = createSlice({
       loading: false,
       googleAuthLoading: false,
       error: action.payload,
+    }),
+    setTalentBooleansFlextern: (state,action) => ({
+      ...state,
+      flextern: action.payload,
+    }),
+    setTalentBooleanTrumioTalent : (state,action) => ({
+      ...state,
+      trumio_talent: action.payload,
+    }),
+    setTalentBooleanIsFlextern : (state,action) => ({
+      ...state,
+      is_flextern: action.payload,
     }),
 
     // CometChat Login
@@ -421,6 +436,9 @@ export const {
   checkAdminSuccess,
   checkAdminFailure,
   googleLoginRequest,
+  setTalentBooleanTrumioTalent,
+  setTalentBooleansFlextern,
+  setTalentBooleanIsFlextern
 } = authSlice.actions;
 
 export default authSlice.reducer;

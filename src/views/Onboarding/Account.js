@@ -59,6 +59,8 @@ import { filteredFormSchema } from '../../utility/Utils';
 import { getUserData } from '../../redux/actions/authActions';
 import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
 import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
+import ProgramFlexternorProjectModal from '../modals/ProgramFlexternOrProjectModal';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -80,10 +82,10 @@ const Account = () => {
   });
 
   const savedFormData = useSelector(formData);
+  const userAuthData = useSelector(selectUserData);
   const isDelegate = getItem('isDelegate');
   const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
-  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
-
+  
   const {
     control,
     handleSubmit,
@@ -110,12 +112,13 @@ const Account = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
+  
+  const toggleDelegateMode = () => dispatch(toggleDelegateModeModal(!isDelegateModeModalVisible));
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
   }, [localFormData]);
-
+  
   useEffect(() => {
     if (savedFormData) {
       const requiredFields = filteredFormSchema({
@@ -137,6 +140,8 @@ const Account = () => {
   const convertReferralIsLoading = useSelector(convertReferralLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(savedFormData?.resetPasswordModal || null);
+  const [flexternOrProjectModal,setFlexternOrProjectModal] = useState(false);
+
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [selectedImage, setSelectedImage] = useState(savedFormData?.selectedImage || null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(savedFormData?.selectedImagePreview || null);
@@ -146,6 +151,9 @@ const Account = () => {
 
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
+  };
+  const toggleFlexternOrProjectModal = () => {
+    setFlexternOrProjectModal(!flexternOrProjectModal);
   };
 
   useEffect(() => {
@@ -281,6 +289,11 @@ const Account = () => {
       userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS
     ) {
       if (userDetailsData.user_type === userTypes.talent) {
+        if(location.pathname.includes('profile-edit')) {
+          reqData = {...reqData, flextern: userAuthData?.talent_info?.flextern, trumio_talent: userAuthData?.talent_info?.trumio_talent};
+        } else if(location.pathname.includes('talent-onboarding')) {
+          reqData =  {...reqData, flextern : userDetailsData?.talent_info?.flextern, trumio_talent: userDetailsData?.talent_info?.trumio_talent};
+        }
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
         dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else {
@@ -299,6 +312,12 @@ const Account = () => {
   useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
   }, []);
+
+  useEffect(() => {
+    if(userDetailsData?.user_type === userTypes.talent && userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS && !userDetailsData?.talent_info){
+      setFlexternOrProjectModal(true);
+    }
+  },[userDetailsData]);
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -565,6 +584,7 @@ const Account = () => {
           </div>
         </Form>
       )}
+      {flexternOrProjectModal && <ProgramFlexternorProjectModal modal={flexternOrProjectModal} toggleModal={toggleFlexternOrProjectModal} />}
     </AccountDetailsFormContainer>
   );
 };

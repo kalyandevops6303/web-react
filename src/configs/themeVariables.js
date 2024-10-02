@@ -108,6 +108,8 @@ const lightGreenBatchColor = "#E5F8EE";
 const lightRedColor = "#FCEAEB";
 const disputeBorderRedColor = "#E05152";
 const disputeCountBackgroundColor = "#FFF8F8";
+const checkboxGradient = 'linear-gradient(0deg, rgba(255, 183, 1, 0.12) 0%, rgba(255, 183, 1, 0.12) 100%), #FFF;';
+const checkboxGradientActive = 'linear-gradient(0deg, rgba(0, 178, 255, 0.12) 0%, rgba(0, 178, 255, 0.12) 100%), #FFF;';
 const theme = {
   primary: primaryColor, // primary color for all components
   headerShadow: headerShadowColor, // color for header shadow
@@ -220,6 +222,8 @@ const theme = {
   lightGreenBatchColor,
   lightRedColor,
   disputeBorderRedColor,
-  disputeCountBackgroundColor
+  disputeCountBackgroundColor,
+  checkboxGradient,
+  checkboxGradientActive,
 };
 export default theme;
