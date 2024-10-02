@@ -219,9 +219,9 @@ const Educational = () => {
   const onSuccess = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
+      navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
-      navigate(`/${userOnboarding.talent}/availability-details`);
+      navigate(`/${userOnboarding.talent}/social-details`);
     }
     dispatch(setResumeDataUploadedForEducation(parseResume));
   };
