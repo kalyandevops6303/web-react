@@ -65,6 +65,38 @@ const Tabs = ({ tabNames, active }) => {
       dispatch(setTalentBooleanTrumioTalent(checked));
     }
   };
+  const isTabDisabled = (tabName) => {
+    if (selectProgram?.flextern && selectProgram?.trumio_talent) return false;
+    if (selectProgram?.flextern && !selectProgram?.trumio_talent) {
+      return tabName === 'Availability' || tabName === 'Payment';
+    }
+    if (!selectProgram?.flextern && selectProgram?.trumio_talent) {
+      return tabName === 'Additional';
+    }
+    return false;
+  };
+  
+  const renderNavItem = (onboardingPath, editPath, icon, text, tabName) => {
+    const isActive = location.pathname === onboardingPath || location.pathname === editPath;
+    const isDisabled = isTabDisabled(tabName);
+    return (
+      <NavItem
+        onClick={() => {
+          if (!isDisabled) {
+            onTabClick(location.pathname.includes('profile-edit') ? editPath : onboardingPath);
+          }
+        }}
+      >
+        <NavLink
+          active={isActive}
+          className={isDisabled ? 'disabled-tab' : ''}
+        >
+          {React.cloneElement(icon, { className: `font-medium-3 me-50 ${isDisabled ? 'text-muted' : ''}` })}
+          <span className={`fw-bold ${isDisabled ? 'text-muted' : ''}`}>{text}</span>
+        </NavLink>
+      </NavItem>
+    );
+  };
   useEffect(() => {
     if (location.pathname.includes('profile-edit')) {
       dispatch(setTalentBooleansFlextern(userData?.talent_info?.flextern));
@@ -97,7 +129,7 @@ const Tabs = ({ tabNames, active }) => {
         trumio_talent: trumioTalent,
       }));
     }
-  }, [location.pathname, userData, talentOnboardingUserDetails, flexternBoolean, trumioTalent]);
+  }, [location.pathname, userData, talentOnboardingUserDetails]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
@@ -121,130 +153,60 @@ const Tabs = ({ tabNames, active }) => {
         </ProgramCheckBox>
       </div>
       <Nav pills className="mb-2">
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/account-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/account-details` ||
-              location.pathname === `/${userProfileEdit.talent}/account-details`
-            }
-          >
-            <Home className="font-medium-3 me-50" />
-            <span className="fw-bold">Account</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/personal-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/personal-details` ||
-              location.pathname === `/${userProfileEdit.talent}/personal-details`
-            }
-          >
-            <User className="font-medium-3 me-50" />
-            <span className="fw-bold">Personal</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/educational-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/educational-details` ||
-              location.pathname === `/${userProfileEdit.talent}/educational-details`
-            }
-          >
-            {location.pathname === `/${userOnboarding.talent}/educational-details` ||
-            location.pathname === `/${userProfileEdit.talent}/educational-details` ? (
-              <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
-            ) : (
-              <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />
-            )}
-            <span className="fw-bold">Education</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/social-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/social-details` ||
-              location.pathname === `/${userProfileEdit.talent}/social-details`
-            }
-          >
-            <Link className="font-medium-3 me-50" />
-            <span className="fw-bold">Social</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/additional-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/additional-details` ||
-              location.pathname === `/${userProfileEdit.talent}/additional-details`
-            }
-          >
-            <FileText className="font-medium-3 me-50" />
-            <span className="fw-bold">Additional Information</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/availability-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/availability-details` ||
-              location.pathname === `/${userProfileEdit.talent}/availability-details`
-            }
-          >
-            <Clock className="font-medium-3 me-50" />
-            <span className="fw-bold">Availability</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/payment-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname.includes('payment-details') ||
-              location.pathname === `/${userProfileEdit.talent}/payment-details`
-            }
-          >
-            <Shield className="font-medium-3 me-50" />
-            <span className="fw-bold">Payment</span>
-          </NavLink>
-        </NavItem>
+      {renderNavItem(
+          `/${userOnboarding.talent}/account-details`,
+          `/${userProfileEdit.talent}/account-details`,
+          <Home />,
+          'Account',
+          'Account'
+        )}
+        {renderNavItem(
+          `/${userOnboarding.talent}/personal-details`,
+          `/${userProfileEdit.talent}/personal-details`,
+          <User />,
+          'Personal',
+          'Personal'
+        )}
+        {renderNavItem(
+          `/${userOnboarding.talent}/educational-details`,
+          `/${userProfileEdit.talent}/educational-details`,
+          <img
+            src={location.pathname.includes('/educational-details') ? EducationTabActiveImg : EducationTabInactiveImg}
+            alt="education"
+            width={20}
+            height={20}
+          />,
+          'Education',
+          'Educational'
+        )}
+        {renderNavItem(
+          `/${userOnboarding.talent}/social-details`,
+          `/${userProfileEdit.talent}/social-details`,
+          <Link />,
+          'Social',
+          'Social'
+        )}
+        {renderNavItem(
+          `/${userOnboarding.talent}/additional-details`,
+          `/${userProfileEdit.talent}/additional-details`,
+          <FileText />,
+          'Additional Information',
+          'Additional'
+        )}
+        {renderNavItem(
+          `/${userOnboarding.talent}/availability-details`,
+          `/${userProfileEdit.talent}/availability-details`,
+          <Clock />,
+          'Availability',
+          'Availability'
+        )}
+        {renderNavItem(
+          `/${userOnboarding.talent}/payment-details`,
+          `/${userProfileEdit.talent}/payment-details`,
+          <Shield />,
+          'Payment',
+          'Payment'
+        )}
         {/* {showHiringTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {

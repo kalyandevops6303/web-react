@@ -158,9 +158,9 @@ const Social = () => {
   const onBackClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
+      navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
-      navigate(`/${userOnboarding.talent}/availability-details`);
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
