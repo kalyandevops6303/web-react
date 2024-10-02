@@ -21,7 +21,6 @@ const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
   const navigate = useNavigate();
   // const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
-  
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
@@ -129,14 +128,14 @@ const Tabs = ({ tabNames, active }) => {
         <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/additional-infomation-details`);
+              onTabClick(`/${userProfileEdit.talent}/additional-details`);
             }
           }}
         >
           <NavLink
             active={
-              location.pathname === `/${userOnboarding.talent}/additional-information-details` ||
-              location.pathname === `/${userProfileEdit.talent}/additional-information-details`
+              location.pathname === `/${userOnboarding.talent}/additional-details` ||
+              location.pathname === `/${userProfileEdit.talent}/additional-details`
             }
           >
             <FileText className="font-medium-3 me-50" />
@@ -229,8 +228,8 @@ const Tabs = ({ tabNames, active }) => {
             location.pathname === `/${userProfileEdit.talent}/educational-details`) && <Educational />}
         </TabPane>
         <TabPane tabId={tabNames.Additional}>
-          {(location.pathname === `/${userOnboarding.talent}/additional-information-details` ||
-            location.pathname === `/${userProfileEdit.talent}/additional-information-details`) && <Additional />}
+          {(location.pathname === `/${userOnboarding.talent}/additional-details` ||
+            location.pathname === `/${userProfileEdit.talent}/additional-details`) && <Additional />}
         </TabPane>
         <TabPane tabId={tabNames.Social}>
           {(location.pathname === `/${userOnboarding.talent}/social-details` ||
