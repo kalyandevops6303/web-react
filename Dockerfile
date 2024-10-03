@@ -17,7 +17,7 @@ RUN npm run build
 
 FROM node:14.18-alpine3.12
 RUN ls -lrt
-COPY --from=module-install-stage ./dist/ /app/dist
+COPY --from=module-install-stage /app/dist/ /app/dist
 
 # Install and configure `serve`.
 RUN npm install -g serve
