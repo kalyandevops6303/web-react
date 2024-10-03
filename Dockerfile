@@ -1,4 +1,4 @@
-FROM node:14.18-alpine3.12 as module-install-stage
+FROM node:20.17.0-alpine3.20 as module-install-stage
 
 RUN apk --no-cache add --virtual native-deps \
     g++ gcc libgcc libstdc++ linux-headers make python2 && \
@@ -15,9 +15,9 @@ RUN npm install && npm install --save env-cmd
 
 RUN npm run build
 
-FROM node:14.18-alpine3.12
+FROM node:20.17.0-alpine3.20
 WORKDIR /app
-RUN ls -lrt
+
 COPY --from=module-install-stage /app/dist/ /app/dist
 
 # Install and configure `serve`.
