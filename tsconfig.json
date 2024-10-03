@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    "useDefineForClassFields": true,
+    "allowJs": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsxImportSource": "@emotion/react",
+    "types": ["@emotion/react/types/css-prop", "jest", "node", "react"],
+    "outDir": "build",
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@lib": ["src/lib/*"],
+      "@store/*": ["src/redux/*"],
+      "@configs": ["src/configs/*"],
+      "@styles": ["src/@core/scss/*"],
+      "@utils": ["src/utility/Utils/*"],
+      "@hooks": ["src/utility/hooks/*"],
+      "@assets": ["src/@core/assets/*"],
+      "@layouts": ["src/@core/layouts/*"],
+      "@components": ["src/@core/components/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
+  "exclude": ["node_modules"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
