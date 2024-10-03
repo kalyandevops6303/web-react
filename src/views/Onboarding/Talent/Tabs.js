@@ -20,9 +20,9 @@ import InternXobinHiring from './InternXobinHiring';
 import Additional from './Additional';
 import { selectFlexternBoolean, selectTrumioTalent, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
-
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../../redux/reducers/auth';
-import { saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getUserData } from '../../../redux/actions/authActions';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -58,19 +58,21 @@ const Tabs = ({ tabNames, active }) => {
       ...prev,
       [name]: checked,
     }));
-    dispatch(saveProfileDetails(reqData));
     if (name === 'flextern') {
       dispatch(setTalentBooleansFlextern(checked));
     } else if (name === 'trumio_talent') {
       dispatch(setTalentBooleanTrumioTalent(checked));
     }
+    dispatch(saveProfileDetails(reqData));
+    dispatch(getUserDetails());
+    dispatch(getUserData());
   };
   const isTabDisabled = (tabName) => {
-    if (selectProgram?.flextern && selectProgram?.trumio_talent) return false;
-    if (selectProgram?.flextern && !selectProgram?.trumio_talent) {
+    if (selectProgram.flextern && selectProgram.trumio_talent) return false;
+    if (selectProgram.flextern && !selectProgram.trumio_talent) {
       return tabName === 'Availability' || tabName === 'Payment';
     }
-    if (!selectProgram?.flextern && selectProgram?.trumio_talent) {
+    if (!selectProgram.flextern && selectProgram.trumio_talent) {
       return tabName === 'Additional';
     }
     return false;
@@ -129,7 +131,7 @@ const Tabs = ({ tabNames, active }) => {
         trumio_talent: trumioTalent,
       }));
     }
-  }, [location.pathname, userData, talentOnboardingUserDetails]);
+  }, [location.pathname,talentOnboardingUserDetails,userData]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
