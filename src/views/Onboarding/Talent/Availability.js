@@ -37,6 +37,7 @@ import { currencies, currenciesLoading } from '../../../redux/selectors/staticSe
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
+import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -121,8 +122,10 @@ const Availability = () => {
       .typeError('Hourly rate must be a number')
       .required('Hourly rate is required'),
   });
-
+  
   const savedFormData = useSelector(formData);
+  const flexternBoolean = useSelector(selectFlexternBoolean);
+  const trumioTalent = useSelector(selectTrumioTalent);
   const {
     control,
     handleSubmit,
@@ -182,18 +185,24 @@ const Availability = () => {
   const onBackClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname?.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/educational-details`);
-    } else {
-      navigate(`/${userOnboarding.talent}/educational-details`);
-    }
+      if(flexternBoolean) {
+        navigate(`/${userProfileEdit.talent}/additional-details`);
+      } else if(trumioTalent) {
+        navigate(`/${userProfileEdit.talent}/social-details`);
+      }
+    } else if(flexternBoolean) {
+        navigate(`/${userOnboarding.talent}/additional-details`);
+      } else if(trumioTalent) {
+        navigate(`/${userOnboarding.talent}/social-details`);
+      }
   };
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname?.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/social-details`);
+      navigate(`/${userProfileEdit.talent}/payment-details`);
     } else {
-      navigate(`/${userOnboarding.talent}/social-details`);
+      navigate(`/${userOnboarding.talent}/payment-details`);
     }
   };
 
