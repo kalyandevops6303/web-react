@@ -1,7 +1,7 @@
 FROM node:20.17.0-alpine3.20 as module-install-stage
 
 RUN apk --no-cache add --virtual native-deps \
-    g++ gcc libgcc libstdc++ linux-headers make python2 && \
+    g++ gcc libgcc libstdc++ linux-headers make python3 && \
     npm install --quiet node-gyp -g
 
 # Create app directory
