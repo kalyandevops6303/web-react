@@ -1,4 +1,4 @@
-FROM node:20.17.0-alpine3.20 as module-install-stage
+FROM node:18-alpine3.20 as module-install-stage
 
 RUN apk --no-cache add --virtual native-deps \
     g++ gcc libgcc libstdc++ linux-headers make python3 && \
@@ -15,7 +15,7 @@ RUN npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-d
 
 RUN npm run build
 
-FROM node:20.17.0-alpine3.20
+FROM node:18-alpine3.20
 WORKDIR /app
 
 COPY --from=module-install-stage /app/dist/ /app/dist
