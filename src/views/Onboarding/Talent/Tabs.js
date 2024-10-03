@@ -131,7 +131,7 @@ const Tabs = ({ tabNames, active }) => {
         trumio_talent: trumioTalent,
       }));
     }
-  }, [location.pathname]);
+  }, [location.pathname,talentOnboardingUserDetails,userData]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
