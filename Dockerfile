@@ -26,4 +26,4 @@ RUN npm install -g serve
 # Expose port for service
 EXPOSE 5000
 
-CMD ["serve", "-l", "5000", "-s", "app/dist"]
+CMD ["serve", "-l", "5000", "-s", "/app/dist"]
