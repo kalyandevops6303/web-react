@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { ChevronLeft, ChevronRight } from 'react-feather';
+import { ChevronLeft, ChevronRight} from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import {
@@ -46,6 +46,7 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
 const customDropdownStyles = {
   menuList: (provided) => ({
@@ -110,9 +111,11 @@ const Additional = () => {
   });
 
   const savedFormData = useSelector(formData);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const location = useLocation();
+  const flexternBoolean = useSelector(selectFlexternBoolean);
+  const trumioTalent = useSelector(selectTrumioTalent);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     control,
@@ -126,11 +129,11 @@ const Additional = () => {
     mode: 'onChange',
     resolver: yupResolver(AdditionalInformationSchema),
     defaultValues: {
-      gender:  savedFormData?.gender || '',
+      gender: savedFormData?.gender || '',
       country: savedFormData?.country || null,
       startYear: savedFormData?.startYear || null,
       graduationYear: savedFormData?.graduationYear || null,
-      institutionEmail:  savedFormData?.institutionEmail || '',
+      institutionEmail: savedFormData?.institutionEmail || '',
       institution: savedFormData?.institution || null,
       education: savedFormData?.education || null,
     },
@@ -392,6 +395,24 @@ const Additional = () => {
     </div>
   );
 
+  const onSkipClick = () => {
+    dispatch(clearAllFormData());
+    dispatch(setFormDocuments(files));
+    if (location?.pathname.includes('profile-edit')) {
+      if (flexternBoolean && trumioTalent) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      } else if (flexternBoolean && !trumioTalent) {
+        navigate(`/dashboard`);
+      }
+    } else {
+      if (flexternBoolean && trumioTalent) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      } else if (flexternBoolean && !trumioTalent) {
+        navigate(`/dashboard`);
+      }
+    }
+  };
+
   const onBackClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname?.includes('profile-edit')) {
@@ -404,9 +425,17 @@ const Additional = () => {
     dispatch(clearAllFormData());
     dispatch(setFormDocuments(files));
     if (location?.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
+      if (flexternBoolean && trumioTalent) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      } else if (flexternBoolean && !trumioTalent) {
+        navigate(`/dashboard`);
+      }
     } else {
-      navigate(`/${userOnboarding.talent}/availability-details`);
+      if (flexternBoolean && trumioTalent) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      } else if (flexternBoolean && !trumioTalent) {
+        navigate(`/dashboard`);
+      }
     }
   };
 
@@ -434,63 +463,82 @@ const Additional = () => {
   const onGetUserDetailsSuccess = (res) => {
     if (res && res.additional_info) {
       if (res?.additional_info?.gender) {
-        setValue('gender', res?.additional_info?.gender,
+        setValue(
+          'gender',
+          res?.additional_info?.gender,
 
           {
             shouldValidate: true,
-          }
+          },
         );
       }
 
       if (res?.additional_info?.country_info) {
-        setValue('country', {
-          label: res?.additional_info?.country_info?.name,
-          value: res?.additional_info?.country_info?._id,
-        },
-        {
-          shouldValidate: true,
-        }
-      );
+        setValue(
+          'country',
+          {
+            label: res?.additional_info?.country_info?.name,
+            value: res?.additional_info?.country_info?._id,
+          },
+          {
+            shouldValidate: true,
+          },
+        );
       }
 
       if (res?.additional_info?.educational_institute) {
         if (res?.additional_info?.educational_institute?.institution_info) {
-          setValue('institution', {
-            label: res?.additional_info?.educational_institute?.institution_info?.name,
-            value: res?.additional_info?.educational_institute?.institution_info?._id,
-          },            {
-            shouldValidate: true,
-          });
+          setValue(
+            'institution',
+            {
+              label: res?.additional_info?.educational_institute?.institution_info?.name,
+              value: res?.additional_info?.educational_institute?.institution_info?._id,
+            },
+            {
+              shouldValidate: true,
+            },
+          );
         }
         if (res?.additional_info?.educational_institute?.degree_info) {
-          setValue('degree', {
-            label: res?.additional_info?.educational_institute?.degree_info?.name,
-            value: res?.additional_info?.educational_institute?.degree_info?._id,
-          },            {
-            shouldValidate: true,
-          });
+          setValue(
+            'degree',
+            {
+              label: res?.additional_info?.educational_institute?.degree_info?.name,
+              value: res?.additional_info?.educational_institute?.degree_info?._id,
+            },
+            {
+              shouldValidate: true,
+            },
+          );
         }
         if (res?.additional_info?.educational_institute?.institute_email) {
-          setValue('institutionEmail', res?.additional_info?.educational_institute?.institute_email,            {
+          setValue('institutionEmail', res?.additional_info?.educational_institute?.institute_email, {
             shouldValidate: true,
           });
         }
         if (res?.additional_info?.educational_institute?.start_year) {
-          setValue('startYear', {
-            label: res?.additional_info?.educational_institute?.start_year.toString(),
-            value: res?.additional_info?.educational_institute?.start_year,
-          },
-          {
-            shouldValidate: true,
-          });
+          setValue(
+            'startYear',
+            {
+              label: res?.additional_info?.educational_institute?.start_year.toString(),
+              value: res?.additional_info?.educational_institute?.start_year,
+            },
+            {
+              shouldValidate: true,
+            },
+          );
         }
         if (res?.additional_info?.educational_institute?.grad_year) {
-          setValue('graduationYear', {
-            label: res?.additional_info?.educational_institute?.grad_year.toString(),
-            value: res?.additional_info?.educational_institute?.grad_year,
-          },            {
-            shouldValidate: true,
-          });
+          setValue(
+            'graduationYear',
+            {
+              label: res?.additional_info?.educational_institute?.grad_year.toString(),
+              value: res?.additional_info?.educational_institute?.grad_year,
+            },
+            {
+              shouldValidate: true,
+            },
+          );
         }
       }
     }
@@ -502,185 +550,196 @@ const Additional = () => {
 
   return (
     <ProfileFormContainer className="w-75">
-       {(profileDetailsIsLoading) ? (
+      {profileDetailsIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
       ) : (
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row className="w-100">
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">Gender</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mt-0">
-              <h5 className="m-0">
-                How do you identify?
-                <span className="label-asterisk me-50">*</span>
-              </h5>
-              <Row className="custom-checkbox-border">
-                <Controller
-                  control={control}
-                  name="gender"
-                  id="gender"
-                  render={({ field }) => (
-                    <div className="demo-inline-spacing">
-                      <div
-                        style={{ maxWidth: '350px' }}
-                        className="form-check form-check-inline checkbox-custom-margin"
-                      >
-                        <Input type="radio" {...field} id="male" value="MALE" checked={field.value === 'MALE'} />
-                        <Label for="male" className="form-check-label">
-                          Male
-                        </Label>
-                      </div>
-                      <div
-                        style={{ maxWidth: '350px' }}
-                        className="form-check form-check-inline checkbox-custom-margin"
-                      >
-                        <Input type="radio" {...field} id="female" value="FEMALE" checked={field.value === 'FEMALE'} />
-                        <Label htmlFor="female" className="form-check-label">
-                          Female
-                        </Label>
-                      </div>
-                      <div
-                        style={{ maxWidth: '350px' }}
-                        className="form-check form-check-inline checkbox-custom-margin"
-                      >
-                        <Input type="radio" {...field} id="other" value="OTHER" checked={field.value === 'OTHER'} />
-                        <Label htmlFor="other" className="form-check-label">
-                          Prefer not to say
-                        </Label>
-                      </div>
-                    </div>
-                  )}
-                />
-                {errors.gender && <FormFeedback>{errors.gender.message}</FormFeedback>}
-              </Row>
-            </Row>
-          </CardBody>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">Location</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="country">
-                  Country<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="country"
-                  name="country"
-                  control={control}
-                  invalid={errors.country && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      styles={customDropdownStyles}
-                      loadOptions={loadCountriesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select your country"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.country,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">Current Education</h4>
-            <CustomerSupportCTA type={CUSTOMER_SUPPORT_TYPES.education} handleCustomerSupport={handleCustomerSupport} />
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1 mt-2">
-              <Col sm="6" md="6" lg="3">
-                <Label className="form-label" for="graduationYear">
-                  Start Year<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="startYear"
-                  name="startYear"
-                  control={control}
-                  invalid={errors.graduationYear && true}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={studyYears}
-                      classNamePrefix="select"
-                      placeholder="Start of education"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.graduationYear,
-                      })}
-                      onChange={(selOption) => {
-                        field.onChange(selOption);
-                        setValue('graduationYear', null);
-                        trigger('graduationYear');
-                      }}
-                    />
-                  )}
-                />
-                {errors.weekendStartTime && <FormFeedback>{errors.weekendStartTime.label.message}</FormFeedback>}
-              </Col>
-              <Col sm="6" md="6" lg="3">
-                <Label className="form-label" for="graduationYear">
-                  Graduation Year<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="graduationYear"
-                  name="graduationYear"
-                  control={control}
-                  invalid={errors.graduationYear && true}
-                  render={({ field }) => (
-                    <Select
-                      options={
-                        watch('graduationYear')
-                          ? studyYears?.filter((t) => parseInt(t?.value, 10) > parseInt(watch('startYear')?.value, 10))
-                          : studyYears
-                      }
-                      classNamePrefix="select"
-                      placeholder="End of education "
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.weekendEndTime,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.weekendEndTime && <FormFeedback>{errors.weekendEndTime.label.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="institutionEmail">
-                  Institution Email
-                </Label>
-                <Row className="d-flex align-items-center justify-content-center">
-                  <Col>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Row className="w-100">
+            <Card>
+              <CardHeader>
+                <h4 className="m-0 mt-1">Gender</h4>
+              </CardHeader>
+              <hr className="m-0 card-header-border" />
+              <CardBody>
+                <Row className="mt-0">
+                  <h5 className="m-0">
+                    How do you identify?
+                    <span className="label-asterisk me-50">*</span>
+                  </h5>
+                  <Row className="custom-checkbox-border">
                     <Controller
-                      id="institutionEmail"
-                      name="institutionEmail"
                       control={control}
+                      name="gender"
+                      id="gender"
                       render={({ field }) => (
-                        <Input {...field} placeholder="Enter URL" invalid={errors.institutionEmail && true} />
+                        <div className="demo-inline-spacing">
+                          <div
+                            style={{ maxWidth: '350px' }}
+                            className="form-check form-check-inline checkbox-custom-margin"
+                          >
+                            <Input type="radio" {...field} id="male" value="MALE" checked={field.value === 'MALE'} />
+                            <Label for="male" className="form-check-label">
+                              Male
+                            </Label>
+                          </div>
+                          <div
+                            style={{ maxWidth: '350px' }}
+                            className="form-check form-check-inline checkbox-custom-margin"
+                          >
+                            <Input
+                              type="radio"
+                              {...field}
+                              id="female"
+                              value="FEMALE"
+                              checked={field.value === 'FEMALE'}
+                            />
+                            <Label htmlFor="female" className="form-check-label">
+                              Female
+                            </Label>
+                          </div>
+                          <div
+                            style={{ maxWidth: '350px' }}
+                            className="form-check form-check-inline checkbox-custom-margin"
+                          >
+                            <Input type="radio" {...field} id="other" value="OTHER" checked={field.value === 'OTHER'} />
+                            <Label htmlFor="other" className="form-check-label">
+                              Prefer not to say
+                            </Label>
+                          </div>
+                        </div>
                       )}
                     />
-                    {errors.institutionEmail && <FormFeedback>{errors.institutionEmail.message}</FormFeedback>}
+                    {errors.gender && <FormFeedback>{errors.gender.message}</FormFeedback>}
+                  </Row>
+                </Row>
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <h4 className="m-0 mt-1">Location</h4>
+              </CardHeader>
+              <hr className="m-0 card-header-border" />
+              <CardBody>
+                <Row className="mb-1">
+                  <Col sm="12" md="12" lg="6">
+                    <Label className="form-label" for="country">
+                      Country<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id="country"
+                      name="country"
+                      control={control}
+                      invalid={errors.country && true}
+                      render={({ field }) => (
+                        <AsyncPaginate
+                          styles={customDropdownStyles}
+                          loadOptions={loadCountriesOptions}
+                          classNamePrefix="select"
+                          placeholder="Select your country"
+                          theme={selectThemeColors}
+                          className={classNames('react-select', {
+                            'is-invalid': errors && errors.country,
+                          })}
+                          {...field}
+                        />
+                      )}
+                    />
+                    {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
                   </Col>
-                  {/* <Col>
+                </Row>
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <h4 className="m-0 mt-1">Current Education</h4>
+                <CustomerSupportCTA
+                  type={CUSTOMER_SUPPORT_TYPES.education}
+                  handleCustomerSupport={handleCustomerSupport}
+                />
+              </CardHeader>
+              <hr className="m-0 card-header-border" />
+              <CardBody>
+                <Row className="mb-1 mt-2">
+                  <Col sm="6" md="6" lg="3">
+                    <Label className="form-label" for="graduationYear">
+                      Start Year<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id="startYear"
+                      name="startYear"
+                      control={control}
+                      invalid={errors.graduationYear && true}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={studyYears}
+                          classNamePrefix="select"
+                          placeholder="Start of education"
+                          theme={selectThemeColors}
+                          className={classNames('react-select', {
+                            'is-invalid': errors && errors.graduationYear,
+                          })}
+                          onChange={(selOption) => {
+                            field.onChange(selOption);
+                            setValue('graduationYear', null);
+                            trigger('graduationYear');
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.weekendStartTime && <FormFeedback>{errors.weekendStartTime.label.message}</FormFeedback>}
+                  </Col>
+                  <Col sm="6" md="6" lg="3">
+                    <Label className="form-label" for="graduationYear">
+                      Graduation Year<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id="graduationYear"
+                      name="graduationYear"
+                      control={control}
+                      invalid={errors.graduationYear && true}
+                      render={({ field }) => (
+                        <Select
+                          options={
+                            watch('graduationYear')
+                              ? studyYears?.filter(
+                                  (t) => parseInt(t?.value, 10) > parseInt(watch('startYear')?.value, 10),
+                                )
+                              : studyYears
+                          }
+                          classNamePrefix="select"
+                          placeholder="End of education "
+                          theme={selectThemeColors}
+                          className={classNames('react-select', {
+                            'is-invalid': errors && errors.weekendEndTime,
+                          })}
+                          {...field}
+                        />
+                      )}
+                    />
+                    {errors.weekendEndTime && <FormFeedback>{errors.weekendEndTime.label.message}</FormFeedback>}
+                  </Col>
+                  <Col sm="12" md="12" lg="6">
+                    <Label className="form-label" for="institutionEmail">
+                      Institution Email
+                    </Label>
+                    <Row className="d-flex align-items-center justify-content-center">
+                      <Col>
+                        <Controller
+                          id="institutionEmail"
+                          name="institutionEmail"
+                          control={control}
+                          render={({ field }) => (
+                            <Input {...field} placeholder="Enter URL" invalid={errors.institutionEmail && true} />
+                          )}
+                        />
+                        {errors.institutionEmail && <FormFeedback>{errors.institutionEmail.message}</FormFeedback>}
+                      </Col>
+                      {/* <Col>
                   <div
                     className={`upload-button cursor-pointer ${
                       !watch('institutionEmail') || errors.institutionEmail ? 'disabled' : ''
@@ -696,75 +755,75 @@ const Additional = () => {
                     </h5>
                   </div>
                 </Col> */}
+                    </Row>
+                  </Col>
                 </Row>
-              </Col>
-            </Row>
 
-            <Row className="mb-1 mt-2">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="institution">
-                  Institution<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="institution"
-                  name="institution"
-                  control={control}
-                  invalid={errors.institution && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      {...field}
-                      debounceTimeout={1000}
-                      additional={{ page: 1 }}
-                      loadOptions={loadEducationInstitutionOptions}
-                      reduceOptions={reduceGroupedOptions}
-                      onChange={(selOption) => handleSelectChange(selOption, field)}
-                      classNamePrefix="select"
-                      placeholder="Enter your institution name"
-                      theme={selectThemeColors}
-                      formatGroupLabel={formatGroupLabel}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.institution,
-                      })}
+                <Row className="mb-1 mt-2">
+                  <Col sm="12" md="12" lg="6">
+                    <Label className="form-label" for="institution">
+                      Institution<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id="institution"
+                      name="institution"
+                      control={control}
+                      invalid={errors.institution && true}
+                      render={({ field }) => (
+                        <AsyncPaginate
+                          {...field}
+                          debounceTimeout={1000}
+                          additional={{ page: 1 }}
+                          loadOptions={loadEducationInstitutionOptions}
+                          reduceOptions={reduceGroupedOptions}
+                          onChange={(selOption) => handleSelectChange(selOption, field)}
+                          classNamePrefix="select"
+                          placeholder="Enter your institution name"
+                          theme={selectThemeColors}
+                          formatGroupLabel={formatGroupLabel}
+                          className={classNames('react-select', {
+                            'is-invalid': errors && errors.institution,
+                          })}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.institution && <FormFeedback>{errors.institution.message}</FormFeedback>}
-              </Col>
+                    {errors.institution && <FormFeedback>{errors.institution.message}</FormFeedback>}
+                  </Col>
 
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="degree">
-                  Degree<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="degree"
-                  name="degree"
-                  control={control}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      loadOptions={loadEducationsOptions}
-                      classNamePrefix="select"
-                      placeholder="Select your degree"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.degree,
-                      })}
-                      {...field}
+                  <Col sm="12" md="12" lg="6">
+                    <Label className="form-label" for="degree">
+                      Degree<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id="degree"
+                      name="degree"
+                      control={control}
+                      render={({ field }) => (
+                        <AsyncPaginate
+                          loadOptions={loadEducationsOptions}
+                          classNamePrefix="select"
+                          placeholder="Select your degree"
+                          theme={selectThemeColors}
+                          className={classNames('react-select', {
+                            'is-invalid': errors && errors.degree,
+                          })}
+                          {...field}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.degree && <FormFeedback>{errors.degree.message}</FormFeedback>}
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
+                    {errors.degree && <FormFeedback>{errors.degree.message}</FormFeedback>}
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
 
-        <Card>
-          {/* <CardHeader>
+            <Card>
+              {/* <CardHeader>
             <h4 className="m-0 mt-1">Identity Verification</h4>
           </CardHeader> */}
-          {/* <hr className="m-0 card-header-border" /> */}
-          {/* <CardBody className="d-flex flex-column"> */}
-          {/* <div className="d-flex" style={{ padding: 20 }}>
+              {/* <hr className="m-0 card-header-border" /> */}
+              {/* <CardBody className="d-flex flex-column"> */}
+              {/* <div className="d-flex" style={{ padding: 20 }}>
               <Col className="w-100 ">
                 <h5>Please upload a valid government approved photo ID (like Aadhar Card, Institute ID, Passport)</h5>
 
@@ -799,36 +858,45 @@ const Additional = () => {
                 )}
               </Col>
             </div> */}
-          {/* <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row> */}
-          {/* </CardBody> */}
-        </Card>
+              {/* <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row> */}
+              {/* </CardBody> */}
+            </Card>
 
-        <div className="d-flex justify-content-between align-items-center pb-2 w-100">
-        <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-              <UploadIconContainer>
-                <ChevronLeft size={18} color={theme.activeNavPillText} />
-              </UploadIconContainer>
-              <h5 className="fw-bold">Back</h5>
+            <div className="d-flex justify-content-between align-items-center pb-2 w-100">
+              <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+                <UploadIconContainer>
+                  <ChevronLeft size={18} color={theme.activeNavPillText} />
+                </UploadIconContainer>
+                <h5 className="fw-bold">Back</h5>
+              </div>
+              <div>
+                {flexternBoolean && trumioTalent ? (
+                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                    <span className="me-50">Skip</span>
+                    <ChevronRight size={14} />
+                  </Button>
+                ) : null}
+                <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                  {profileDetailsIsLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <>
+                      <span className="me-50">Save & Continue</span>
+                      <ChevronRight size={14} />
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-          <Button color="primary" type="submit" disabled={ !isValid || profileDetailsIsLoading}>
-            {profileDetailsIsLoading ? (
-              <Spinner size="sm" />
-            ) : (
-              <>
-                <span className="me-50">Save & Continue</span>
-                <ChevronRight size={14} />
-              </>
-            )}
-          </Button>
-        </div>
-        </Row>
-      </Form>)}
+          </Row>
+        </Form>
+      )}
 
       {customerSupportModal && (
         <CustomerSupportModal
           onSuccess={onCustomerSupportSuccess}
           modal={customerSupportModal}
-          toggleModal={()=>setCustomerSupportModal(!customerSupportModal)}
+          toggleModal={() => setCustomerSupportModal(!customerSupportModal)}
           defaultSelected={defaultSelected}
         />
       )}
