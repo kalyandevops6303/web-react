@@ -1,6 +1,6 @@
 {
   "name": "trumio",
-  "version": "9.0.9",
+  "version": "9.1.0",
   "private": true,
   "type": "module",
   "dependencies": {
