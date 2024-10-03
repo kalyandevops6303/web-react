@@ -125,7 +125,7 @@ pipeline {
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
 	             	    sed -i "s/5000/${targetPort}/g" Dockerfile
-	     		    sed -i "s/'test'/'${mode}'/g" vite.config.js
+	     		    sed -i "s/'test'/'${mode}'/g" vite.config.ts
                             docker compose build
                             docker compose up -d
                      """
