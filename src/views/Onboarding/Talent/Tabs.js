@@ -1,4 +1,4 @@
-import React, { useEffect , useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
@@ -50,9 +50,19 @@ const Tabs = ({ tabNames, active }) => {
     if (name === 'flextern' && checked === false && selectProgram?.trumio_talent === false) {
       toast.error('Minimum One Program has to be selected');
       return;
-    } if (name === 'trumio_talent' && checked === false && selectProgram?.flextern === false) {
+    }
+    if (name === 'trumio_talent' && checked === false && selectProgram?.flextern === false) {
       toast.error('Minimum One Program has to be selected');
       return;
+    }
+    if(selectProgram?.flextern === true && selectProgram?.trumio_talent === true){
+      if(location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
+        toast.error('Flexternship cannot be unchecked under Additional Information');
+        return ;
+      } else if((location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) && name === 'trumio_talent' && checked === false) {
+        toast.error('Project cannot be unchecked under Additional Information');
+        return ;
+      }
     }
     setSelectProgram((prev) => ({
       ...prev,
@@ -77,7 +87,7 @@ const Tabs = ({ tabNames, active }) => {
     }
     return false;
   };
-  
+
   const renderNavItem = (onboardingPath, editPath, icon, text, tabName) => {
     const isActive = location.pathname === onboardingPath || location.pathname === editPath;
     const isDisabled = isTabDisabled(tabName);
@@ -89,10 +99,7 @@ const Tabs = ({ tabNames, active }) => {
           }
         }}
       >
-        <NavLink
-          active={isActive}
-          className={isDisabled ? 'disabled-tab' : ''}
-        >
+        <NavLink active={isActive} className={isDisabled ? 'disabled-tab' : ''}>
           {React.cloneElement(icon, { className: `font-medium-3 me-50 ${isDisabled ? 'text-muted' : ''}` })}
           <span className={`fw-bold ${isDisabled ? 'text-muted' : ''}`}>{text}</span>
         </NavLink>
@@ -131,7 +138,7 @@ const Tabs = ({ tabNames, active }) => {
         trumio_talent: trumioTalent,
       }));
     }
-  }, [location.pathname,talentOnboardingUserDetails,userData]);
+  }, [location.pathname, talentOnboardingUserDetails, userData]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
@@ -155,19 +162,19 @@ const Tabs = ({ tabNames, active }) => {
         </ProgramCheckBox>
       </div>
       <Nav pills className="mb-2">
-      {renderNavItem(
+        {renderNavItem(
           `/${userOnboarding.talent}/account-details`,
           `/${userProfileEdit.talent}/account-details`,
           <Home />,
           'Account',
-          'Account'
+          'Account',
         )}
         {renderNavItem(
           `/${userOnboarding.talent}/personal-details`,
           `/${userProfileEdit.talent}/personal-details`,
           <User />,
           'Personal',
-          'Personal'
+          'Personal',
         )}
         {renderNavItem(
           `/${userOnboarding.talent}/educational-details`,
@@ -179,35 +186,35 @@ const Tabs = ({ tabNames, active }) => {
             height={20}
           />,
           'Education',
-          'Educational'
+          'Educational',
         )}
         {renderNavItem(
           `/${userOnboarding.talent}/social-details`,
           `/${userProfileEdit.talent}/social-details`,
           <Link />,
           'Social',
-          'Social'
+          'Social',
         )}
         {renderNavItem(
           `/${userOnboarding.talent}/additional-details`,
           `/${userProfileEdit.talent}/additional-details`,
           <FileText />,
           'Additional Information',
-          'Additional'
+          'Additional',
         )}
         {renderNavItem(
           `/${userOnboarding.talent}/availability-details`,
           `/${userProfileEdit.talent}/availability-details`,
           <Clock />,
           'Availability',
-          'Availability'
+          'Availability',
         )}
         {renderNavItem(
           `/${userOnboarding.talent}/payment-details`,
           `/${userProfileEdit.talent}/payment-details`,
           <Shield />,
           'Payment',
-          'Payment'
+          'Payment',
         )}
         {/* {showHiringTab && <NavItem
           onClick={() => {

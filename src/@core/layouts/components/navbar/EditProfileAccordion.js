@@ -12,12 +12,14 @@ import { useSelector } from 'react-redux';
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clubStatus, userProfileEdit, userTypes } from '../../../../utility/constants/Constant';
-import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectTrumioTalent, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
 import { getItem } from '../../../../utility/localStorageControl';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
+  const flexternBoolean = useSelector(selectFlexternBoolean);
+  const trumioTalentBoolean = useSelector(selectTrumioTalent);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const isDelegate = getItem('isDelegate');
 
@@ -44,6 +46,8 @@ const EditProfileAccordion = () => {
       navigate(`/${userProfileEdit.talent}/availability-details`);
     } else if (tab === 'social') {
       navigate(`/${userProfileEdit.talent}/social-details`);
+    } else if (tab === 'additional') {
+      navigate(`/${userProfileEdit.talent}/additional-details`);
     } else {
       navigate(`/${userProfileEdit.talent}/payment-details`);
     }
@@ -99,13 +103,16 @@ const EditProfileAccordion = () => {
                   <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Education</span>
                   </DropdownItem>
-                  <DropdownItem onClick={() => handleEditProfileForTalent('availability')} className="w-100 edit-link ">
-                    <span className="align-middle p-1">Availability</span>
-                  </DropdownItem>
                   <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Social</span>
                   </DropdownItem>
-                  <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
+                  <DropdownItem onClick={() => handleEditProfileForTalent('additional') } disabled={!flexternBoolean} className="w-100 edit-link ">
+                    <span className="align-middle p-1">Additional Information</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleEditProfileForTalent('availability')} disabled={!trumioTalentBoolean}className="w-100 edit-link ">
+                    <span className="align-middle p-1">Availability</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleEditProfileForTalent('payment')} disabled={!trumioTalentBoolean} className="w-100 edit-link ">
                     <span className="align-middle p-1">Payment</span>
                   </DropdownItem>
                 </>
