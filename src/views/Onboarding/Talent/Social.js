@@ -55,6 +55,7 @@ import {
 } from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -70,6 +71,8 @@ const Social = () => {
   });
 
   const savedFormData = useSelector(formData);
+  const trumioTalentBoolean = useSelector(selectTrumioTalent);
+  const flexternBoolean = useSelector(selectFlexternBoolean);
   const fileKeyDetails = useSelector(fileKey);
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
@@ -167,20 +170,28 @@ const Social = () => {
   const onSuccess = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/payment-details`);
-    } else {
-      navigate(`/${userOnboarding.talent}/payment-details`);
-    }
+      if (flexternBoolean) navigate(`/${userProfileEdit.talent}/additional-details`);
+      else if (trumioTalentBoolean) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      }
+    } else if (flexternBoolean) navigate(`/${userOnboarding.talent}/additional-details`);
+      else if (trumioTalentBoolean) {
+        navigate(`/${userOnboarding.talent}/availability-details`);
+      }
     dispatch(setResumeDataUploadedForSocial(parseResume));
   };
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/payment-details`);
-    } else {
-      navigate(`/${userOnboarding.talent}/payment-details`);
-    }
+      if (flexternBoolean) navigate(`/${userProfileEdit.talent}/additional-details`);
+      else if (trumioTalentBoolean) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      }
+    } else if (flexternBoolean) navigate(`/${userOnboarding.talent}/additional-details`);
+      else if (trumioTalentBoolean) {
+        navigate(`/${userOnboarding.talent}/availability-details`);
+      }
   };
 
   const onSubmit = (data) => {
@@ -209,7 +220,7 @@ const Social = () => {
     const reqData = {
       social_links,
     };
-    if(reqData){
+    if (reqData) {
       dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     }
 
