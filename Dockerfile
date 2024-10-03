@@ -16,7 +16,7 @@ RUN npm install && npm install --save env-cmd
 RUN npm run build
 
 FROM node:14.18-alpine3.12
-COPY --from=module-install-stage /app/dist/ ./dist
+COPY --from=module-install-stage /dist/ ./dist
 
 # Install and configure `serve`.
 RUN npm install -g serve
