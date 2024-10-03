@@ -11,7 +11,7 @@ WORKDIR /app
 COPY . .
 
 # Install dependencies
-RUN npm install && npm install --save env-cmd
+RUN npm install && npm install --save env-cmd --legacy-peer-deps
 
 RUN npm run build
 
