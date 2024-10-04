@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, CardBody, CardText, Input, Table, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, Input, ModalBody, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronDown, ChevronUp, Copy, Info } from 'react-feather';
 import classnames from 'classnames';
 import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText, userTypes } from '../../../utility/constants/Constant';
@@ -24,6 +24,7 @@ import theme from '../../../configs/themeVariables';
 import { PaymentInfoBanner } from '../style';
 import { CustomBadge } from '../../styled';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { Modal } from 'reactstrap';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -33,6 +34,8 @@ const PaymentTable = () => {
   const [open, setOpen] = useState('');
   const [selectedTransactionId, setSelectedTransactionId] = useState(null);
   const [selectedAndDisabledPaymentId, setSelectedAndDisabledPaymentId] = useState([]);
+  const [showPaymentDelegateModal, setShowPaymentDelegateModal] = useState(false);
+  const [email, setEmail] = useState(null);
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
@@ -78,7 +81,7 @@ const PaymentTable = () => {
           />
         </div>
         <span>
-        {convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name )}
+          {convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name)}
         </span>
       </div>
     ),
@@ -471,7 +474,7 @@ const PaymentTable = () => {
               <>
                 <div className="d-flex w-100 mt-2 justify-content-between">
                   <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
-                    {`${applicationFee?.name ?? ''} ${(trumioFeeBeforeDiscount!==applicationFee?.min_fee) ? `(${applicationFee?.percentage ?? 0}%)`:''}`}
+                    {`${applicationFee?.name ?? ''} ${(trumioFeeBeforeDiscount !== applicationFee?.min_fee) ? `(${applicationFee?.percentage ?? 0}%)` : ''}`}
                   </CardText>
                   <CardText>
                     {`$${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}
@@ -504,7 +507,10 @@ const PaymentTable = () => {
             )}
 
             {showPaymentCalculation && !isAllMilestonePaid && selectedPaymentId?.length > 0 && (
-              <div className="d-flex justify-content-end w-100 mt-5">
+              <div className="d-flex justify-content-end w-100 mt-5 gap-1">
+                <Button onClick={() => setShowPaymentDelegateModal(true)} className="d-contents" color="primary" outline disabled={isPaymentDisabled()}>
+                  Add Payment Delegate
+                </Button>
                 <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
                 </Button>
@@ -513,6 +519,26 @@ const PaymentTable = () => {
           </CardBody>
         </Card>
       )}
+      {
+        showPaymentDelegateModal &&
+        <Modal isOpen={showPaymentDelegateModal} contentClassName="custom-modal-style" className="modal-dialog-centered">
+          <ModalBody className="pt-0 px-5">
+          <h2 className="font-large-1 text-center mb-2 mt-2">Add Payment Delegate</h2>
+          
+          <div className='flex flex-column gap-3'>
+          <Input 
+          placeholder='Enter Email ID'
+          />
+
+          <Input 
+          value={email}
+          disabled
+          />
+          </div>
+          
+          </ModalBody>
+        </Modal>
+      }
     </>
   );
 };
