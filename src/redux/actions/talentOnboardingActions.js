@@ -3,6 +3,7 @@ import {
   accountDetailsService,
   checkpointCompleteService,
   deleteResumeService,
+  identityDeleteService,
   parsedResumeService,
   profileDetailsService,
   userDetailsService,
@@ -26,6 +27,9 @@ import {
   deleteResumeRequest,
   deleteResumeSuccess,
   deleteResumeFailure,
+  identityFileRequest,
+  identityFileSuccess,
+  identityFileFailure,
 } from '../reducers/talentOnboarding';
 import { cometChatLogin } from '../reducers/auth';
 import { scanAndProcessFiles } from '../../utility/Utils';
@@ -73,6 +77,18 @@ const deleteResume = (onSuccess) => async (dispatch) => {
     onSuccess();
   } catch (error) {
     dispatch(deleteResumeFailure());
+    ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
+  }
+};
+
+const deleteIdentityFile = (onSuccess) => async (dispatch) => {
+  dispatch(identityFileRequest());
+  try {
+    await identityDeleteService();
+    dispatch(identityFileSuccess());
+    onSuccess();
+  } catch (error) {
+    dispatch(identityFileFailure());
     ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
   }
 };
@@ -154,4 +170,5 @@ export {
   saveCheckpointComplete,
   saveSocialProfileDetails,
   deleteResume,
+  deleteIdentityFile,
 };

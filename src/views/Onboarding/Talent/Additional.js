@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { ChevronLeft, ChevronRight} from 'react-feather';
+import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import {
@@ -35,16 +35,16 @@ import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
 import theme from '../../../configs/themeVariables';
 import { downloadUrlLoading, userData } from '../../../redux/selectors/dashboardSelectors';
 import { GroupLabelWrapper } from '../../createClub/style';
-import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
-import { formData } from '../../../redux/selectors/formDataSelectors';
+import { identityFileLoading, profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
-import { resumeUploadService } from '../../../services/talentOnboardingServices';
+import { identityUploadService } from '../../../services/talentOnboardingServices';
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { deleteIdentityFile, getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
@@ -111,8 +111,10 @@ const Additional = () => {
   });
 
   const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const flexternBoolean = useSelector(selectFlexternBoolean);
   const trumioTalent = useSelector(selectTrumioTalent);
+  const isIdentityFileLoading = useSelector(identityFileLoading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -160,12 +162,23 @@ const Additional = () => {
   const [countriesOptions, setCountriesOptions] = useState([]);
   const [educationsOptions, setEducationsOptions] = useState([]);
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
-  const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
   const [defaultSelected, setDefaultSelected] = useState(null);
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(savedFormDocuments ?? []);
   const [uploadingFiles, setUploadingFiles] = useState([]);
 
   const filesRef = useRef();
+  useEffect(() => {
+    const fileReRender = async () => {
+      if (savedFormDocuments != null) {
+        filesRef.current = files;
+        setFiles(savedFormDocuments);
+        dispatch(setFormDocuments(savedFormDocuments));
+      } else {
+        setFiles([]);
+      }
+    };
+    fileReRender();
+  }, [savedFormDocuments]);
 
   const userDetailsData = useSelector(userData);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
@@ -177,7 +190,6 @@ const Additional = () => {
 
   const onCustomerSupportSuccess = () => {
     setCustomerSupportModal(false);
-    setFeedbackSupportModal(true);
     dispatch(getCustomerSupportCount());
   };
 
@@ -197,7 +209,7 @@ const Additional = () => {
   };
 
   const fetchUploadUrl = async (file) => {
-    const response = await resumeUploadService(file.name);
+    const response = await identityUploadService(file.name);
     const fileWithUrl = {
       id: uuidv4(),
       file,
@@ -332,13 +344,12 @@ const Additional = () => {
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     dispatch(setFormDocuments(null));
     setFiles([...filtered]);
-    // await dispatch(
-    //   deleteResume(() => {
-    //     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
-    //     dispatch(setFormDocuments(null));
-    //     setFiles([...filtered]);
-    //   }),
-    // );
+    await dispatch(
+      deleteIdentityFile(() => {
+        dispatch(setFormDocuments(null));
+        setFiles([...filtered]);
+      }),
+    );
   };
 
   const fileList = () => (
@@ -375,7 +386,7 @@ const Additional = () => {
                   <h5>{getFileSize(file.file.size)}</h5>
                 </Col>
                 <Col>
-                  <h5>{renderFormattedListingDate(file.file.lastModifiedDate)}</h5>
+                  <h5>{renderFormattedListingDate(new Date(file.file.lastModified))}</h5>
                 </Col>
                 <Button
                   color="flat-danger"
@@ -385,7 +396,7 @@ const Additional = () => {
                     handleRemoveFile(file);
                   }}
                 >
-                  {uploadingFiles.includes(file) ? <Spinner size="sm" /> : 'Remove'}
+                  {isIdentityFileLoading || uploadingFiles.includes(file) ? <Spinner size="sm" /> : 'Remove'}
                 </Button>
               </Col>
             </div>
@@ -404,12 +415,10 @@ const Additional = () => {
       } else if (flexternBoolean && !trumioTalent) {
         navigate(`/dashboard`);
       }
-    } else {
-      if (flexternBoolean && trumioTalent) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      } else if (flexternBoolean && !trumioTalent) {
-        navigate(`/dashboard`);
-      }
+    } else if (flexternBoolean && trumioTalent) {
+      navigate(`/${userProfileEdit.talent}/availability-details`);
+    } else if (flexternBoolean && !trumioTalent) {
+      navigate(`/dashboard`);
     }
   };
 
@@ -430,12 +439,10 @@ const Additional = () => {
       } else if (flexternBoolean && !trumioTalent) {
         navigate(`/dashboard`);
       }
-    } else {
-      if (flexternBoolean && trumioTalent) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      } else if (flexternBoolean && !trumioTalent) {
-        navigate(`/dashboard`);
-      }
+    } else if (flexternBoolean && trumioTalent) {
+      navigate(`/${userProfileEdit.talent}/availability-details`);
+    } else if (flexternBoolean && !trumioTalent) {
+      navigate(`/dashboard`);
     }
   };
 
@@ -453,6 +460,13 @@ const Additional = () => {
           degree: degree?.value || null,
           start_year: parseInt(startYear?.value, 10) || 0,
           grad_year: parseInt(graduationYear?.value, 10) || 0,
+        },
+        identity_verification: {
+          file_name: files[0]?.file?.name,
+          file_key: files[0]?.uploadData?.file_key,
+          download_url: files[0]?.uploadData?.download_url,
+          size: files[0]?.file?.size,
+          created_at: files[0]?.file?.lastModified,
         },
       },
     };
@@ -540,6 +554,39 @@ const Additional = () => {
             },
           );
         }
+      }
+
+      if (res?.additional_info?.identity_verification) {
+        const file = {
+          id: uuidv4(),
+          file: {
+            name:
+              savedFormDocuments != null
+                ? savedFormDocuments[0]?.file?.name
+                : res?.additional_info?.identity_verification?.file_name,
+            size:
+              savedFormDocuments != null
+                ? savedFormDocuments[0]?.file?.size
+                : res?.additional_info?.identity_verification?.size,
+            lastModified:
+              savedFormDocuments != null
+                ? savedFormDocuments[0]?.file?.lastModified
+                : res?.additional_info?.identity_verification?.created_at,
+          },
+          uploadData: {
+            upload_url:
+              savedFormDocuments != null
+                ? savedFormDocuments[0]?.uploadData?.upload_url
+                : res?.additional_info?.identity_verification?.upload_url,
+            file_key:
+              savedFormDocuments != null
+                ? savedFormDocuments[0]?.uploadData?.file_key
+                : res?.additional_info?.identity_verification?.file_key,
+          },
+          isUploaded: true,
+        };
+        setFiles([file]);
+        dispatch(setFormDocuments([file]));
       }
     }
   };
@@ -818,48 +865,61 @@ const Additional = () => {
             </Card>
 
             <Card>
-              {/* <CardHeader>
-            <h4 className="m-0 mt-1">Identity Verification</h4>
-          </CardHeader> */}
-              {/* <hr className="m-0 card-header-border" /> */}
-              {/* <CardBody className="d-flex flex-column"> */}
-              {/* <div className="d-flex" style={{ padding: 20 }}>
-              <Col className="w-100 ">
-                <h5>Please upload a valid government approved photo ID (like Aadhar Card, Institute ID, Passport)</h5>
+              <CardHeader>
+                <h4 className="m-0 mt-1">Identity Verification</h4>
+              </CardHeader>
+              <hr className="m-0 card-header-border" />
+              <CardBody className="d-flex flex-column">
+                <div className="d-flex" style={{ padding: 20 }}>
+                  <Col className="w-100 ">
+                    <h5>
+                      Please upload a valid government approved photo ID (like Aadhar Card, Institute ID, Passport)
+                    </h5>
 
-                {files?.length === 0 && (
-                  <>
-                    <Label
-                      for="photoId"
-                      className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
-                    >
-                      <h5 className="fw-bold">Upload ID</h5>
-                    </Label>
-                    <Controller
-                      id="photoId"
-                      name="photoId"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          ref={filesRef}
+                    {files?.length === 0 && (
+                      <>
+                        <Label
+                          for="photoId"
+                          className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
+                        >
+                          <h5
+                            className="fw-bold"
+                            style={{
+                              background: '#0065c1',
+                              color: 'white',
+                              paddingBlock: '12px',
+                              borderRadius: '5px',
+                              paddingInline: '16px',
+                            }}
+                          >
+                            Upload ID
+                          </h5>
+                        </Label>
+                        <Controller
                           id="photoId"
-                          type="file"
-                          max={1}
-                          accept="application/pdf"
-                          style={{ display: 'none' }}
-                          onChange={(e) => {
-                            handleFileChange(e);
-                          }}
+                          name="photoId"
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              ref={filesRef}
+                              id="photoId"
+                              type="file"
+                              max={1}
+                              accept="application/pdf"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                handleFileChange(e);
+                              }}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  </>
-                )}
-              </Col>
-            </div> */}
-              {/* <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row> */}
-              {/* </CardBody> */}
+                      </>
+                    )}
+                  </Col>
+                </div>
+                <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
+              </CardBody>
             </Card>
 
             <div className="d-flex justify-content-between align-items-center pb-2 w-100">

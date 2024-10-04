@@ -57,6 +57,8 @@ const API = {
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
     profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
     profileResumeUpload: `${apiAuthEndpoint}/api/v1/talent/resume`,
+    identityUpload: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
+    identityDelete: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,
