@@ -8,7 +8,8 @@ const initialState = {
   accountDetailsLoading: false,
   profileDetailsLoading: false,
   checkpointCompleteLoading: false,
-  deleteResumeLoading:false,
+  deleteResumeLoading: false,
+  identityFileLoading: false,
   error: null,
 };
 
@@ -46,6 +47,21 @@ const talentOnboardingSlice = createSlice({
       ...state,
       error: action.payload,
       resumeParsedDetailsLoading: false,
+    }),
+
+    identityFileRequest: (state) => ({
+      ...state,
+      identityFileLoading: true,
+      error: null,
+    }),
+    identityFileSuccess: (state) => ({
+      ...state,
+      identityFileLoading: false,
+    }),
+    identityFileFailure: (state, action) => ({
+      ...state,
+      identityFileLoading: false,
+      error: action.payload,
     }),
 
     deleteResumeRequest: (state) => ({
@@ -130,6 +146,9 @@ export const {
   deleteResumeRequest,
   deleteResumeSuccess,
   deleteResumeFailure,
+  identityFileRequest,
+  identityFileSuccess,
+  identityFileFailure,
 } = talentOnboardingSlice.actions;
 
 export default talentOnboardingSlice.reducer;
