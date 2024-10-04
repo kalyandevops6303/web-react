@@ -21,8 +21,9 @@ import Additional from './Additional';
 import { selectFlexternBoolean, selectTrumioTalent, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../../redux/reducers/auth';
-import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getProfileCompletionFlextern, getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import { getUserData } from '../../../redux/actions/authActions';
+import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -55,13 +56,13 @@ const Tabs = ({ tabNames, active }) => {
       toast.error('Minimum One Program has to be selected');
       return;
     }
-    if(selectProgram?.flextern === true && selectProgram?.trumio_talent === true){
-      if(location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
+    if (selectProgram?.flextern === true && selectProgram?.trumio_talent === true) {
+      if (location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
         toast.error('Flexternship cannot be unchecked under Additional Information');
-        return ;
-      } else if((location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) && name === 'trumio_talent' && checked === false) {
+        return;
+      } else if ((location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) && name === 'trumio_talent' && checked === false) {
         toast.error('Project cannot be unchecked under Additional Information');
-        return ;
+        return;
       }
     }
     setSelectProgram((prev) => ({
@@ -139,6 +140,11 @@ const Tabs = ({ tabNames, active }) => {
       }));
     }
   }, [location.pathname, talentOnboardingUserDetails, userData]);
+
+  useEffect(() => {
+    if (flexternBoolean) dispatch(getProfileCompletionFlextern());
+    if (trumioTalent) dispatch(getProfilePercentage());
+  }, [flexternBoolean, trumioTalent])
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
@@ -281,20 +287,20 @@ const Tabs = ({ tabNames, active }) => {
         </TabPane>
         <TabPane tabId={tabNames.Payment}>
           {location.pathname.includes('payment-details') ||
-          location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
+            location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
             <Payment />
           ) : null}
         </TabPane>
         <TabPane tabId={tabNames.InternHiring}>
           {location.pathname === `/${userProfileEdit.talent}/intern-hiring` ||
-          location.pathname === `/${userOnboarding.talent}/intern-hiring` ? (
+            location.pathname === `/${userOnboarding.talent}/intern-hiring` ? (
             <InternHiring />
           ) : null}
         </TabPane>
         <TabPane tabId={tabNames.InternXobinHiring}>
           {location.pathname.includes('intern-xobin-hiring') ||
-          location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` ||
-          location.pathname === `/${userOnboarding.talent}/intern-xobin-hiring` ? (
+            location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` ||
+            location.pathname === `/${userOnboarding.talent}/intern-xobin-hiring` ? (
             <InternXobinHiring />
           ) : null}
         </TabPane>

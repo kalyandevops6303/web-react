@@ -40,6 +40,8 @@ const CompleteProfileDetailsCta = {
       path: `/${userProfileEdit.talent}/personal-details`,
     },
     { keyToMatch: 'languages', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/personal-details` },
+    { keyToMatch: 'additional_info', label: 'Complete Additional Info', path: `/${userProfileEdit.talent}/additional-details` },
+
   ],
   CLIENT: [
     { keyToMatch: 'company_name', label: 'Add Personal Details', path: `/${userProfileEdit.client}/personal-details` },
@@ -85,6 +87,7 @@ const CompleteProfileDetailsCta = {
 
 // eslint-disable-next-line consistent-return
 const returnCompleteProfileDetailsCta = (userType, missingValues) => {
+
   if (userType === 'CLIENT' && missingValues?.includes('company_name')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_name');
     // eslint-disable-next-line no-else-return
@@ -102,6 +105,8 @@ const returnCompleteProfileDetailsCta = (userType, missingValues) => {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'image_uri');
   } else if (userType === 'TALENT' && missingValues?.includes('work_experience')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'work_experience');
+  } else if (userType === 'TALENT' && missingValues?.includes('additional_info')) {
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'additional_info');
   } else if (
     userType === 'TALENT' &&
     (missingValues?.includes('languages_read') ||

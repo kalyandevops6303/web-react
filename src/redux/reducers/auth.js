@@ -24,6 +24,8 @@ const initialState = {
   flextern : null,
   trumio_talent:null,
   is_flextern: null,
+  profileCompletionFlextern: null,
+  profileCompletionFlexternLoading: false
 };
 
 const authSlice = createSlice({
@@ -393,6 +395,23 @@ const authSlice = createSlice({
       checkAdminLoading: false,
       error: action.payload,
     }),
+    profileCompletionFlexternRequest: (state) => ({
+      ...state, 
+      profileCompletionFlexternLoading: true, 
+      error: null 
+    }),
+    profileCompletionFlexternSuccess: (state, action) => ({
+      ...state, 
+      profileCompletionFlexternLoading: false, 
+      profileCompletionFlextern: action.payload,
+      error: null 
+    }),
+    profileCompletionFlexternFailure: (state, action) => ({
+      ...state, 
+      profileCompletionFlextern: null, 
+      profileCompletionFlexternLoading: false, 
+      error: action.payload 
+    })
   },
 });
 
@@ -461,7 +480,11 @@ export const {
   getAppPermissionsFailure,
   setTalentBooleanTrumioTalent,
   setTalentBooleansFlextern,
-  setTalentBooleanIsFlextern
+  setTalentBooleanIsFlextern,
+  profileCompletionFlexternRequest, 
+  profileCompletionFlexternSuccess, 
+  profileCompletionFlexternFailure
+
 } = authSlice.actions;
 
 export default authSlice.reducer;

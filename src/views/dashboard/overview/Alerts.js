@@ -45,6 +45,13 @@ const Alerts = () => {
     }
   }, [userDetailsData?.user_type]);
 
+  useEffect(() => {
+    returnCompleteProfileDetailsCta(
+      talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
+      profilePercentageData?.values_missing,
+    )
+  }, [])
+
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path);

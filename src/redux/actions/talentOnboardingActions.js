@@ -5,6 +5,7 @@ import {
   deleteResumeService,
   identityDeleteService,
   parsedResumeService,
+  profileCompletionFlexternService,
   profileDetailsService,
   userDetailsService,
 } from '../../services/talentOnboardingServices';
@@ -31,7 +32,7 @@ import {
   identityFileSuccess,
   identityFileFailure,
 } from '../reducers/talentOnboarding';
-import { cometChatLogin } from '../reducers/auth';
+import { cometChatLogin, profileCompletionFlexternFailure, profileCompletionFlexternRequest, profileCompletionFlexternSuccess } from '../reducers/auth';
 import { scanAndProcessFiles } from '../../utility/Utils';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
@@ -162,6 +163,16 @@ const saveSocialProfileDetails = (data, onSuccess) => async (dispatch) => {
   }
 };
 
+const getProfileCompletionFlextern = () => async (dispatch) => {
+  dispatch(profileCompletionFlexternRequest());
+  try {
+    const res = await profileCompletionFlexternService();
+    dispatch(profileCompletionFlexternSuccess(res.data?.data));
+  } catch (error) {
+    errorHandler(error, profileCompletionFlexternFailure);
+  }
+}
+
 export {
   getUserDetails,
   getResumeParsedDetails,
@@ -171,4 +182,5 @@ export {
   saveSocialProfileDetails,
   deleteResume,
   deleteIdentityFile,
+  getProfileCompletionFlextern
 };
