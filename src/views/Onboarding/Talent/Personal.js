@@ -6,38 +6,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Label,
-  Row,
-  Spinner,
-} from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
 import classNames from 'classnames';
-import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import { getStates, getCities, getLanguages } from '../../../redux/actions/staticActions';
-import {
-  states,
-  statesLoading,
-  cities,
-  citiesLoading,
-  languages,
-  languagesLoading,
-} from '../../../redux/selectors/staticSelectors';
+import { getLanguages } from '../../../redux/actions/staticActions';
+import { languages, languagesLoading } from '../../../redux/selectors/staticSelectors';
 import {
   deleteResume,
   getResumeParsedDetails,
@@ -50,15 +27,13 @@ import {
   // resumeParsedDetails,
   resumeParsedDetailsLoading,
   resumeParsedDetails,
-  userDetails,
   userDetailsLoading,
 } from '../../../redux/selectors/talentOnboardingSelectors';
-import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
+import { languagesService, talentRolesService } from '../../../services/staticServices';
 import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
-  getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
@@ -89,15 +64,6 @@ import {
   setResumeDataUploadedForPersonal,
   setResumeParsed,
 } from '../../../redux/reducers/formData';
-
-
-const customDropdownStyles = {
-  menuList: (provided) => ({
-    ...provided,
-    maxHeight: '150px', // Set the height you want
-    overflowY: 'auto',
-  }),
-};
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -222,20 +188,11 @@ const Personal = () => {
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [languagesOptions, setLanguagesOptions] = useState(null);
-  const [countriesOptions, setCountriesOptions] = useState(null);
-  const [statesOptions, setStatesOptions] = useState(null);
-  const [citiesOptions, setCitiesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [files, setFiles] = useState(savedFormDocuments ?? []);
-
-  const statesData = useSelector(states);
-  const statesIsLoading = useSelector(statesLoading);
-  const citiesData = useSelector(cities);
-  const citiesIsLoading = useSelector(citiesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
-  const userDetailsData = useSelector(userDetails);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
@@ -338,35 +295,6 @@ const Personal = () => {
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
       }
-      if (res?.work_experience && res?.work_experience > 0) {
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const years = Math.floor(res?.work_experience / 12);
-        const months = res?.work_experience % 12;
-
-        setValue('workExperienceYear', years, { shouldValidate: true });
-        setValue('workExperienceMonth', months, { shouldValidate: true });
-      }
-      if (res?.languages_read && res?.languages_read.length > 0) {
-        setValue(
-          'readLanguages',
-          res.languages_read?.map((language) => ({
-            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
-            value: language?._id,
-          })),
-          { shouldValidate: true },
-        );
-      } else {
-        setValue(
-          'readLanguages',
-          [
-            {
-              label: 'English',
-              value: '64831445a51384fb6948e678',
-            },
-          ],
-          { shouldValidate: true },
-        );
-      }
       if (res?.languages_speak && res?.languages_speak.length > 0) {
         setValue(
           'speakLanguages',
@@ -409,69 +337,7 @@ const Personal = () => {
           { shouldValidate: true },
         );
       }
-      // As now resume parser API is not sending any data regarding the addresses, so mapping it from the userDetailsData API for better User Experience flow
-      if (parsedUploaded) {
-        if (
-          'streetAddress' in userDetailsData?.talent_info?.current_residency ||
-          'houseNumber' in userDetailsData?.talent_info?.current_residency ||
-          'zipCode' in userDetailsData?.talent_info?.current_residency ||
-          'country' in userDetailsData?.talent_info?.current_residency ||
-          'state' in userDetailsData?.talent_info?.current_residency ||
-          'city' in userDetailsData?.talent_info?.current_residency
-        ) {
-          if (userDetailsData?.talent_info?.current_residency?.street_address.length > 0) {
-            setValue(
-              'streetAddress',
-              savedFormData?.streetAddress || userDetailsData?.talent_info?.current_residency?.street_address,
-              { shouldValidate: true },
-            );
-          }
-          if (userDetailsData?.talent_info?.current_residency?.house_number.length > 0) {
-            setValue(
-              'houseNumber',
-              savedFormData?.houseNumber || userDetailsData?.talent_info?.current_residency?.house_number,
-              {
-                shouldValidate: true,
-              },
-            );
-          }
-          if (userDetailsData?.talent_info?.current_residency?.zip_code > 0) {
-            setValue('zipCode', savedFormData?.zipCode || userDetailsData?.talent_info?.current_residency?.zip_code, {
-              shouldValidate: true,
-            });
-          }
-          if ('country' in userDetailsData?.talent_info?.current_residency) {
-            setValue(
-              'country',
-              {
-                label: savedFormData?.country?.label || userDetailsData?.talent_info?.current_residency.country.name,
-                value: savedFormData?.country?.value || userDetailsData?.talent_info?.current_residency.country._id,
-              },
-              { shouldValidate: true },
-            );
-          }
-          if ('state' in userDetailsData?.talent_info?.current_residency) {
-            setValue(
-              'state',
-              {
-                label: savedFormData?.state?.label || userDetailsData?.talent_info?.current_residency.state.name,
-                value: savedFormData?.state?.value || userDetailsData?.talent_info?.current_residency.state._id,
-              },
-              { shouldValidate: true },
-            );
-          }
-          if ('city' in userDetailsData?.talent_info?.current_residency) {
-            setValue(
-              'city',
-              {
-                label: savedFormData?.city?.label || userDetailsData?.talent_info?.current_residency.city.name,
-                value: savedFormData?.city?.value || userDetailsData?.talent_info?.current_residency.city._id,
-              },
-              { shouldValidate: true },
-            );
-          }
-        }
-      }
+
       if (savedFormDocuments) {
         setFiles([
           {
@@ -535,11 +401,6 @@ const Personal = () => {
     };
     fileReRender();
   }, [savedFormDocuments]);
-  const formattedDate = new Date()
-    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-    .replace(',', '')
-    .split(' ');
-  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -631,55 +492,6 @@ const Personal = () => {
       </Card>
     </div>
   );
-
-  useEffect(() => {
-    const allData = { ...savedFormData, ...localFormData, country: watch('country') };
-    dispatch(setFormData(allData));
-    if (watch('country')?.value !== userDetailsData?.talent_info?.current_residency?.country?._id) {
-      setValue('state', null);
-      setValue('city', null);
-    }
-
-    if (watch('country')) {
-      dispatch(getStates(watch('country').value));
-      setCitiesOptions([]);
-    }
-    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country')?.value) {
-      setValue('state', savedFormData?.state);
-      if (savedFormData && savedFormData?.state != null) {
-        setValue('city', savedFormData?.city);
-      }
-    }
-  }, [watch('country')]);
-
-  useEffect(() => {
-    const allData = { ...savedFormData, ...localFormData, state: watch('state') };
-    dispatch(setFormData(allData));
-    if (watch('state')?.value !== userDetailsData?.talent_info?.current_residency?.state?._id) {
-      setValue('city', null);
-    }
-
-    if (watch('state')) {
-      dispatch(getCities(watch('state').value));
-    }
-    const state = watch('state');
-    const savedState = savedFormData?.state?.value;
-    const currentState = state?.value;
-
-    if (state && savedFormData && savedState === currentState) {
-      setValue('city', savedFormData?.city ?? '');
-    }
-  }, [watch('state')]);
-
-  useEffect(() => {
-    const requiredData = statesData?.map((state) => ({ label: state.name, value: state._id }));
-    setStatesOptions(requiredData);
-  }, [statesData]);
-
-  useEffect(() => {
-    const requiredData = citiesData?.map((city) => ({ label: city.name, value: city._id }));
-    setCitiesOptions(requiredData);
-  }, [citiesData]);
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
@@ -833,41 +645,12 @@ const Personal = () => {
     }
   };
 
-  const loadCountriesOptions = async (search) => {
-    if (search) {
-      return {
-        options: returnFilteredDropdownOptions(search, countriesOptions),
-      };
-    }
-    try {
-      const response = await countriesService();
-
-      const options = response?.data?.data?.map((country) => ({ label: country.name, value: country._id }));
-
-      setCountriesOptions(options);
-
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
-
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.talent_info?.tagline.length > 0) {
         setValue('tagline', savedFormData?.tagline || res?.talent_info?.tagline, {
           shouldValidate: true,
         });
-      }
-      if (res?.talent_info?.work_experience > 0) {
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const years = Math.floor(savedFormData?.workExperienceYear || res?.talent_info?.work_experience / 12);
-        const months = savedFormData?.workExperienceMonth || res?.talent_info?.work_experience % 12;
-
-        setValue('workExperienceYear', years, { shouldValidate: true });
-        setValue('workExperienceMonth', months, { shouldValidate: true });
       }
       if (res?.talent_info?.professional_intro.length > 0) {
         setValue(
@@ -894,9 +677,7 @@ const Personal = () => {
           },
           uploadData: {
             file_key:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.file_key
-                : res?.talent_info?.resume?.file_key,
+               res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
         };
@@ -910,62 +691,6 @@ const Personal = () => {
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
-      if (
-        'streetAddress' in res?.talent_info?.current_residency ||
-        'houseNumber' in res?.talent_info?.current_residency ||
-        'zipCode' in res?.talent_info?.current_residency ||
-        'country' in res?.talent_info?.current_residency ||
-        'state' in res?.talent_info?.current_residency ||
-        'city' in res?.talent_info?.current_residency
-      ) {
-        if (res?.talent_info?.current_residency?.street_address.length > 0) {
-          setValue(
-            'streetAddress',
-            savedFormData?.streetAddress || res?.talent_info?.current_residency?.street_address,
-            { shouldValidate: true },
-          );
-        }
-        if (res?.talent_info?.current_residency?.house_number.length > 0) {
-          setValue('houseNumber', savedFormData?.houseNumber || res?.talent_info?.current_residency?.house_number, {
-            shouldValidate: true,
-          });
-        }
-        if (res?.talent_info?.current_residency?.zip_code > 0) {
-          setValue('zipCode', savedFormData?.zipCode || res?.talent_info?.current_residency?.zip_code, {
-            shouldValidate: true,
-          });
-        }
-        if ('country' in res?.talent_info?.current_residency) {
-          setValue(
-            'country',
-            {
-              label: savedFormData?.country?.label || res?.talent_info?.current_residency.country.name,
-              value: savedFormData?.country?.value || res?.talent_info?.current_residency.country._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-        if ('state' in res?.talent_info?.current_residency) {
-          setValue(
-            'state',
-            {
-              label: savedFormData?.state?.label || res?.talent_info?.current_residency.state.name,
-              value: savedFormData?.state?.value || res?.talent_info?.current_residency.state._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-        if ('city' in res?.talent_info?.current_residency) {
-          setValue(
-            'city',
-            {
-              label: savedFormData?.city?.label || res?.talent_info?.current_residency.city.name,
-              value: savedFormData?.city?.value || res?.talent_info?.current_residency.city._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-      }
       if (res?.talent_info?.languages_speak.length > 0) {
         setValue(
           'speakLanguages',
@@ -978,25 +703,6 @@ const Personal = () => {
       } else {
         setValue(
           'speakLanguages',
-          languagesData?.map((language) => ({
-            label: language.name,
-            value: language._id,
-          })),
-          { shouldValidate: true },
-        );
-      }
-      if (res?.talent_info?.languages_read.length > 0) {
-        setValue(
-          'readLanguages',
-          res?.talent_info?.languages_read?.map((language) => ({
-            label: language.name,
-            value: language._id,
-          })),
-          { shouldValidate: true },
-        );
-      } else {
-        setValue(
-          'readLanguages',
           languagesData?.map((language) => ({
             label: language.name,
             value: language._id,
@@ -1030,14 +736,6 @@ const Personal = () => {
     if (!IsresumeParsed && languagesData?.length > 0) {
       setValue(
         'speakLanguages',
-        languagesData?.map((language) => ({
-          label: language.name,
-          value: language._id,
-        })),
-        { shouldValidate: true },
-      );
-      setValue(
-        'readLanguages',
         languagesData?.map((language) => ({
           label: language.name,
           value: language._id,
@@ -1145,85 +843,6 @@ const Personal = () => {
                       {errors.tagline && <FormFeedback>{errors.tagline.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
-                      <Row>
-                        <Col sm="12" md="6" lg="6">
-                          <Label className="form-label" for="workExperienceYear">
-                            Work Experience - Years
-                          </Label>
-                          <Controller
-                            id="workExperienceYear"
-                            name="workExperienceYear"
-                            control={control}
-                            render={({ field }) => (
-                              <InputGroup className="input-group-merge">
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  min={0}
-                                  onWheel={(e) => e.target.blur()}
-                                  placeholder="Enter"
-                                  invalid={errors.workExperienceYear && true}
-                                />
-                                <InputGroupText>Year(s)</InputGroupText>
-                              </InputGroup>
-                            )}
-                          />
-                          {errors.workExperienceYear && (
-                            <FormFeedback>{errors.workExperienceYear.message}</FormFeedback>
-                          )}
-                        </Col>
-                        <Col sm="12" md="6" lg="6">
-                          <Label className="form-label" for="workExperienceMonth">
-                            Months
-                          </Label>
-                          <Controller
-                            id="workExperienceMonth"
-                            name="workExperienceMonth"
-                            control={control}
-                            render={({ field }) => (
-                              <InputGroup className="input-group-merge">
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  min={0}
-                                  onWheel={(e) => e.target.blur()}
-                                  placeholder="Enter"
-                                  invalid={errors.workExperienceMonth && true}
-                                />
-                                <InputGroupText>Month(s)</InputGroupText>
-                              </InputGroup>
-                            )}
-                          />
-                          {errors.workExperienceMonth && (
-                            <FormFeedback>{errors.workExperienceMonth.message}</FormFeedback>
-                          )}
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="professionalIntroduction">
-                        Professional Introduction<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="professionalIntroduction"
-                        name="professionalIntroduction"
-                        control={control}
-                        render={({ field }) => (
-                          <TextEditor
-                            name={field.name}
-                            onChange={field.onChange}
-                            value={field.value}
-                            placeholder="Describe in 500 characters."
-                          />
-                        )}
-                      />
-                      {errors.professionalIntroduction && (
-                        <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
-                      )}
-                    </Col>
-                    <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="role">
                         Role<span className="label-asterisk">*</span>
                       </Label>
@@ -1248,13 +867,36 @@ const Personal = () => {
                       {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
                     </Col>
                   </Row>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="professionalIntroduction">
+                        Professional Introduction<span className="label-asterisk me-50">*</span>
+                      </Label>
+                      <Controller
+                        id="professionalIntroduction"
+                        name="professionalIntroduction"
+                        control={control}
+                        render={({ field }) => (
+                          <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Describe in 500 characters."
+                          />
+                        )}
+                      />
+                      {errors.professionalIntroduction && (
+                        <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
+                      )}
+                    </Col>
+                  </Row>
                   <Row className="mb-1 mt-3">
                     <h5 className="m-0">Languages</h5>
                   </Row>
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="speakLanguages">
-                        I can speak well (Top 5)
+                        Language - I can speak well (Top 5)
                       </Label>
                       <Controller
                         id="speakLanguages"
@@ -1278,37 +920,10 @@ const Personal = () => {
                       />
                       {errors.speakLanguages && <FormFeedback>{errors.speakLanguages.message}</FormFeedback>}
                     </Col>
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="readLanguages">
-                        I can read well (Top 5)
-                      </Label>
-                      <Controller
-                        id="readLanguages"
-                        name="readLanguages"
-                        control={control}
-                        invalid={errors.readLanguages && true}
-                        render={({ field }) => (
-                          <AsyncPaginate
-                            isDisabled
-                            isMulti
-                            loadOptions={loadLanguagesOptions}
-                            classNamePrefix="select"
-                            placeholder="Select top 5 language you can read"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.readLanguages,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.readLanguages && <FormFeedback>{errors.readLanguages.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
+
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="writeLanguages">
-                        I can write well (Top 5)
+                        Language - I can write well (Top 5)
                       </Label>
                       <Controller
                         id="writeLanguages"
@@ -1331,160 +946,6 @@ const Personal = () => {
                         )}
                       />
                       {errors.writeLanguages && <FormFeedback>{errors.writeLanguages.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-1 mt-3">
-                    <h5 className="m-0">
-                      Current Address<span className="label-asterisk">*</span>
-                    </h5>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="streetAddress">
-                        Street Address
-                      </Label>
-                      <Controller
-                        id="streetAddress"
-                        name="streetAddress"
-                        control={control}
-                        render={({ field }) => (
-                          <Input
-                            {...field}
-                            placeholder="Enter street address"
-                            invalid={errors.streetAddress && true}
-                            autoComplete="none"
-                          />
-                        )}
-                      />
-                      {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
-                    </Col>
-                    <Col sm="12" md="12" lg="6">
-                      <Row>
-                        <Col sm="6" md="6" lg="6">
-                          <Label className="form-label" for="houseNumber">
-                            House Number
-                          </Label>
-                          <Controller
-                            id="houseNumber"
-                            name="houseNumber"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter house number"
-                                invalid={errors.houseNumber && true}
-                                autoComplete="none"
-                              />
-                            )}
-                          />
-                          {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
-                        </Col>
-                        <Col sm="6" md="6" lg="6">
-                          <Label className="form-label" for="zipCode">
-                            Zip Code
-                          </Label>
-                          <Controller
-                            id="zipCode"
-                            name="zipCode"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter zip code"
-                                invalid={errors.zipCode && true}
-                                autoComplete="none"
-                              />
-                            )}
-                          />
-                          {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="country">
-                        Country<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="country"
-                        name="country"
-                        control={control}
-                        invalid={errors.country && true}
-                        render={({ field }) => (
-                          <AsyncPaginate
-                            styles={customDropdownStyles}
-                            loadOptions={loadCountriesOptions}
-                            classNamePrefix="select"
-                            placeholder="Select your country"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.country,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
-                    </Col>
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="state">
-                        State<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="state"
-                        name="state"
-                        control={control}
-                        invalid={errors.state && true}
-                        value={watch('state')}
-                        render={({ field }) => (
-                          <Select
-                            isDisabled={!watch('country')}
-                            isLoading={statesIsLoading}
-                            options={statesOptions}
-                            menuPosition="fixed"
-                            classNamePrefix="select"
-                            placeholder="Select your state"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.state,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.state && <FormFeedback>{errors?.state?.label?.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="city">
-                        City<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="city"
-                        name="city"
-                        control={control}
-                        invalid={errors.city && true}
-                        value={watch('city')}
-                        render={({ field }) => (
-                          <Select
-                            isDisabled={!watch('country') || !watch('state')}
-                            isLoading={citiesIsLoading}
-                            menuPosition="fixed"
-                            minMenuHeight={200}
-                            options={citiesOptions}
-                            classNamePrefix="select"
-                            placeholder="Select your city"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.city,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
                     </Col>
                   </Row>
                 </CardBody>
@@ -1534,13 +995,8 @@ const Personal = () => {
                               Auto Fill {files && files?.length > 0 && 'Profile'}
                             </span>
 
-                            {files && files.length === 0 && (
-                              <span> - Upload your resume
-                                 
-                                 </span>
-                            )}
+                            {files && files.length === 0 && <span> - Upload your resume</span>}
                           </span>
-                          
                         </div>
 
                         {files?.length === 0 && (
@@ -1551,7 +1007,6 @@ const Personal = () => {
                             >
                               <UploadIconContainer>
                                 <Upload size={18} color={theme.activeNavPillText} />
-                                
                               </UploadIconContainer>
                               <h5 className="fw-bold">Upload Resume</h5>
                             </Label>
