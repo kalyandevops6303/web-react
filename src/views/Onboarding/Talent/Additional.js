@@ -44,11 +44,7 @@ import { projectFileUploadToAzureService } from '../../../services/createProject
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import {
-  deleteIdentityFile,
-  getUserDetails,
-  saveProfileDetails,
-} from '../../../redux/actions/talentOnboardingActions';
+import { deleteIdentityFile, getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
@@ -390,7 +386,7 @@ const Additional = () => {
                   <h5>{getFileSize(file.file.size)}</h5>
                 </Col>
                 <Col>
-                  <h5>{renderFormattedListingDate(file.file.lastModifiedDate)}</h5>
+                  <h5>{renderFormattedListingDate(new Date(file.file.lastModified))}</h5>
                 </Col>
                 <Button
                   color="flat-danger"
@@ -886,7 +882,18 @@ const Additional = () => {
                           for="photoId"
                           className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
                         >
-                          <h5 className="fw-bold" style={{background:'#0065c1',color:'white', paddingBlock:'12px', borderRadius:'5px', paddingInline:"16px"}}>Upload ID</h5>
+                          <h5
+                            className="fw-bold"
+                            style={{
+                              background: '#0065c1',
+                              color: 'white',
+                              paddingBlock: '12px',
+                              borderRadius: '5px',
+                              paddingInline: '16px',
+                            }}
+                          >
+                            Upload ID
+                          </h5>
                         </Label>
                         <Controller
                           id="photoId"
