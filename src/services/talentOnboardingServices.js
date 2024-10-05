@@ -27,6 +27,8 @@ const profileImageUploadService = (filename) =>
 
 const profileImageUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
 
+const profileCompletionFlexternService = () => DataService.get(API.talentOnboarding.profileCompletionFlextern);
+
 export {
   userDetailsService,
   accountDetailsService,
@@ -40,4 +42,5 @@ export {
   deleteResumeService,
   identityUploadService,
   identityDeleteService,
+  profileCompletionFlexternService
 };

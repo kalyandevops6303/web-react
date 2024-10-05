@@ -59,6 +59,7 @@ const API = {
     profileResumeUpload: `${apiAuthEndpoint}/api/v1/talent/resume`,
     identityUpload: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
     identityDelete: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
+    profileCompletionFlextern: `${apiAuthEndpoint}/api/v1/flextern/profile-percentage`
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,
