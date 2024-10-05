@@ -77,20 +77,6 @@ import { userTypes } from '../../../utility/constants/Constant';
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
     tagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
-    workExperienceYear: yup
-      .number()
-      .min(0, 'Year cannot be negative')
-      .max(99, 'Year must be 99 or less')
-      .integer('Year must be a number')
-      .typeError('Year must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
-    workExperienceMonth: yup
-      .number()
-      .min(0, 'Month cannot be negative')
-      .max(11, 'Month must be 11 or less')
-      .integer('Month must be a number')
-      .typeError('Month must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     professionalIntroduction: yup
       .string()
       .max(500, 'Professional introduction must be 500 characters or less')
@@ -112,15 +98,6 @@ const Personal = () => {
         }),
       )
       .max(5, 'Maximum of five languages can be added'),
-    readLanguages: yup
-      .array()
-      .of(
-        yup.object().shape({
-          label: yup.string(),
-          value: yup.string(),
-        }),
-      )
-      .max(5, 'Maximum of five languages can be added'),
     writeLanguages: yup
       .array()
       .of(
@@ -130,32 +107,6 @@ const Personal = () => {
         }),
       )
       .max(5, 'Maximum of five languages can be added'),
-    streetAddress: yup.string(),
-    houseNumber: yup.string(),
-    zipCode: yup.string(),
-    country: yup
-      .object()
-      .shape({
-        label: yup.string().required('Country is required'),
-        value: yup.string().required('Country is required'),
-      })
-      .required('Country is required'),
-    state: yup
-      .object()
-      .shape({
-        label: yup.string().required('State is required'),
-        value: yup.string().required('State is required'),
-      })
-      .transform((value) => (value === null ? undefined : value))
-      .required('State is required'),
-    city: yup
-      .object()
-      .shape({
-        label: yup.string().required('City is required'),
-        value: yup.string().required('City is required'),
-      })
-      .transform((value) => (value === null ? undefined : value))
-      .required('City is required'),
   });
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
@@ -176,15 +127,7 @@ const Personal = () => {
     defaultValues: {
       tagline: savedFormData?.tagline || '',
       professionalIntroduction: savedFormData?.professionalIntroduction || '',
-      streetAddress: savedFormData?.streetAddress || '',
-      houseNumber: savedFormData?.houseNumber || '',
-      workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
-      workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
       role: savedFormData?.role || null,
-      zipCode: savedFormData?.zipCode || '',
-      country: savedFormData?.country || null,
-      state: savedFormData?.state || null,
-      city: savedFormData?.city || null,
       resume: savedFormData?.resume || null,
       parseResume: IsresumeParsed || false,
     },
@@ -236,8 +179,6 @@ const Personal = () => {
   useEffect(() => {
     getOverallPercentageCompletion();
   }, [profileCompletionFlextern, profileCompletionProject])
-
-
 
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
@@ -566,51 +507,23 @@ const Personal = () => {
   const onSubmit = (data) => {
     const {
       tagline,
-      workExperienceYear,
-      workExperienceMonth,
       professionalIntroduction,
       role,
       speakLanguages,
-      readLanguages,
       writeLanguages,
-      streetAddress,
-      houseNumber,
-      zipCode,
-      country,
-      state,
-      city,
     } = data;
     // console.log(data)
 
-    const years = parseInt(workExperienceYear, 10) || 0;
-    const months = parseInt(workExperienceMonth, 10) || 0;
-
-    const work_experience = years * 12 + months;
     const professional_intro = professionalIntroduction;
     const languages_speak = speakLanguages?.map((language) => language.value);
-    const languages_read = readLanguages?.map((language) => language.value);
     const languages_write = writeLanguages?.map((language) => language.value);
-    const current_residency = {
-      country: country.value,
-      state: state.value,
-      city: city.value,
-      street_address: streetAddress,
-      house_number: houseNumber,
-      zip_code: zipCode,
-    };
 
-    let reqData;
-
-    if (workExperienceYear || workExperienceMonth) {
-      reqData = {
+     const reqData = {
         tagline,
-        work_experience,
         professional_intro,
         role: role.value,
         languages_speak,
-        languages_read,
         languages_write,
-        current_residency,
         resume: !isEmpty(files)
           ? {
             file_name: files[0]?.file?.name || '',
@@ -618,23 +531,7 @@ const Personal = () => {
           }
           : {},
       };
-    } else {
-      reqData = {
-        tagline,
-        professional_intro,
-        role: role.value,
-        languages_speak,
-        languages_read,
-        languages_write,
-        current_residency,
-        resume: !isEmpty(files)
-          ? {
-            file_name: files[0]?.file?.name || '',
-            file_key: files[0]?.uploadData?.file_key || '',
-          }
-          : {},
-      };
-    }
+    
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     if (IsresumeParsed) {
       const languagesWritten = watch('writeLanguages')?.map((language) => ({
@@ -645,16 +542,11 @@ const Personal = () => {
         name: language.label,
         _id: language.value,
       }));
-      const languagesRead = watch('readLanguages')?.map((language) => ({
-        name: language.label,
-        _id: language.value,
-      }));
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
           languages_speak: languagesSpoken,
           languages_write: languagesWritten,
-          languages_read: languagesRead,
           tagline,
           professional_introduction: professionalIntroduction,
         },
