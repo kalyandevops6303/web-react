@@ -29,6 +29,7 @@ import {
   studyYears,
   userOnboarding,
   userProfileEdit,
+  graduationYears
 } from '../../../utility/constants/Constant';
 import CustomerSupportModal from '../../modals/CustomerSupportModal';
 import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
@@ -180,8 +181,8 @@ const Additional = () => {
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
   const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
 
-  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
-  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
+  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
   const isFlextern = useSelector((state) => state.auth?.flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
 
@@ -793,10 +794,10 @@ const Additional = () => {
                             <Select
                               options={
                                 watch('graduationYear')
-                                  ? studyYears?.filter(
+                                  ? graduationYears?.filter(
                                     (t) => parseInt(t?.value, 10) > parseInt(watch('startYear')?.value, 10),
                                   )
-                                  : studyYears
+                                  : graduationYears
                               }
                               classNamePrefix="select"
                               placeholder="End of education "
