@@ -240,13 +240,21 @@ const PROJECT_INVITATION_STATUS = {
   READ_ONLY: 'READ_ONLY',
 };
 
-const studyYears = [
-  { label: '2020', value: 2020 },
-  { label: '2021', value: 2021 },
-  { label: '2022', value: 2022 },
-  { label: '2023', value: 2023 },
-  { label: '2024', value: 2024 },
-];
+const generateStudyYears = () => {
+  const currentYear = new Date().getFullYear();
+  const startYear = currentYear - 7;
+  
+  const years = Array.from(
+    { length: currentYear - startYear + 1 },
+    (_, index) => {
+      const year = startYear + index;
+      return { label: year.toString(), value: year };
+    }
+  );
+  
+  return years;
+};
+const studyYears = generateStudyYears();
 
 export {
   ERROR_CODES,
