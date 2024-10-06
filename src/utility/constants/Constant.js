@@ -258,21 +258,26 @@ const PROJECT_INVITATION_STATUS = {
   READ_ONLY: 'READ_ONLY',
 };
 
-const generateStudyYears = () => {
+const generateYearArrays = () => {
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 7;
-  
-  const years = Array.from(
-    { length: currentYear - startYear + 1 },
-    (_, index) => {
-      const year = startYear + index;
-      return { label: year.toString(), value: year };
-    }
-  );
-  
-  return years;
+  const endYear = currentYear + 4;
+
+  const generateYearRange = (start, end) => 
+    Array.from(
+      { length: end - start + 1 },
+      (_, index) => {
+        const year = start + index;
+        return { label: year.toString(), value: year };
+      }
+    );
+
+  return {
+    studyYears: generateYearRange(startYear, currentYear),
+    graduationYears: generateYearRange(currentYear, endYear)
+  };
 };
-const studyYears = generateStudyYears();
+const {studyYears,graduationYears} = generateYearArrays();
 
 export {
   ERROR_CODES,
@@ -319,4 +324,5 @@ export {
   PaymentStatusOptions,
   PayTypeOptions,
   studyYears,
+  graduationYears,
 };
