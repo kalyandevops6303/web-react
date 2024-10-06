@@ -6,7 +6,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  Progress,
+  CardText,
+  FormGroup,
+} from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,16 +53,17 @@ import {
   renderFilePreview,
   filteredFormSchema,
   isEmpty,
+  giveProgressBarColorClassName,
 } from '../../../utility/Utils';
-import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
+import { maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import uuidv4 from '../../../lib/uuidv4';
 import { resumeUploadService, updateParsedResumeService } from '../../../services/talentOnboardingServices';
-import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
+import { getDownloadUrl, getProfilePercentage } from '../../../redux/actions/dashboardActions';
+import { downloadUrlLoading, userData } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import {
@@ -64,33 +80,14 @@ import {
   setResumeDataUploadedForPersonal,
   setResumeParsed,
 } from '../../../redux/reducers/formData';
-import { ProgressBarWrapper } from '../../create-bid/style';
-import { Progress } from 'reactstrap';
-import { giveProgressBarColorClassName } from '../../../utility/Utils';
-import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
-import "../../../App.css";
-import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
-import { CardText } from 'reactstrap';
-import { userTypes } from '../../../utility/constants/Constant';
 
+import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
+import '../../../App.css';
+import UploadResumeModal from '../../modals/UploadResumeModal';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
     tagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
-    workExperienceYear: yup
-      .number()
-      .min(0, 'Year cannot be negative')
-      .max(99, 'Year must be 99 or less')
-      .integer('Year must be a number')
-      .typeError('Year must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
-    workExperienceMonth: yup
-      .number()
-      .min(0, 'Month cannot be negative')
-      .max(11, 'Month must be 11 or less')
-      .integer('Month must be a number')
-      .typeError('Month must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     professionalIntroduction: yup
       .string()
       .max(500, 'Professional introduction must be 500 characters or less')
@@ -112,15 +109,6 @@ const Personal = () => {
         }),
       )
       .max(5, 'Maximum of five languages can be added'),
-    readLanguages: yup
-      .array()
-      .of(
-        yup.object().shape({
-          label: yup.string(),
-          value: yup.string(),
-        }),
-      )
-      .max(5, 'Maximum of five languages can be added'),
     writeLanguages: yup
       .array()
       .of(
@@ -130,37 +118,12 @@ const Personal = () => {
         }),
       )
       .max(5, 'Maximum of five languages can be added'),
-    streetAddress: yup.string(),
-    houseNumber: yup.string(),
-    zipCode: yup.string(),
-    country: yup
-      .object()
-      .shape({
-        label: yup.string().required('Country is required'),
-        value: yup.string().required('Country is required'),
-      })
-      .required('Country is required'),
-    state: yup
-      .object()
-      .shape({
-        label: yup.string().required('State is required'),
-        value: yup.string().required('State is required'),
-      })
-      .transform((value) => (value === null ? undefined : value))
-      .required('State is required'),
-    city: yup
-      .object()
-      .shape({
-        label: yup.string().required('City is required'),
-        value: yup.string().required('City is required'),
-      })
-      .transform((value) => (value === null ? undefined : value))
-      .required('City is required'),
   });
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const IsresumeParsed = useSelector(resumeParsed);
   const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
+  const userDetailsData = useSelector(userData);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForPersonal || false);
   const {
     control,
@@ -176,15 +139,7 @@ const Personal = () => {
     defaultValues: {
       tagline: savedFormData?.tagline || '',
       professionalIntroduction: savedFormData?.professionalIntroduction || '',
-      streetAddress: savedFormData?.streetAddress || '',
-      houseNumber: savedFormData?.houseNumber || '',
-      workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
-      workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
       role: savedFormData?.role || null,
-      zipCode: savedFormData?.zipCode || '',
-      country: savedFormData?.country || null,
-      state: savedFormData?.state || null,
-      city: savedFormData?.city || null,
       resume: savedFormData?.resume || null,
       parseResume: IsresumeParsed || false,
     },
@@ -196,6 +151,7 @@ const Personal = () => {
 
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
+  const [resumeModalOpen, setResumeModalOpen] = useState(true);
   const [languagesOptions, setLanguagesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [files, setFiles] = useState(savedFormDocuments ?? []);
@@ -209,9 +165,13 @@ const Personal = () => {
   const localFormData = useWatch({ control });
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
@@ -224,20 +184,22 @@ const Personal = () => {
   const getOverallPercentageCompletion = () => {
     if (isFlextern && !isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
+    } else if (!isFlextern && isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
+    } else {
       setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
     }
-  }
+  };
 
   useEffect(() => {
     getOverallPercentageCompletion();
-  }, [profileCompletionFlextern, profileCompletionProject])
+  }, [profileCompletionFlextern, profileCompletionProject]);
 
-
+  useEffect(() => {
+    if (uploadingFiles && uploadingFiles?.length > 0) {
+      setResumeModalOpen(false);
+    }
+  }, [uploadingFiles]);
 
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
@@ -564,77 +526,27 @@ const Personal = () => {
   };
 
   const onSubmit = (data) => {
-    const {
-      tagline,
-      workExperienceYear,
-      workExperienceMonth,
-      professionalIntroduction,
-      role,
-      speakLanguages,
-      readLanguages,
-      writeLanguages,
-      streetAddress,
-      houseNumber,
-      zipCode,
-      country,
-      state,
-      city,
-    } = data;
+    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages } = data;
     // console.log(data)
 
-    const years = parseInt(workExperienceYear, 10) || 0;
-    const months = parseInt(workExperienceMonth, 10) || 0;
-
-    const work_experience = years * 12 + months;
     const professional_intro = professionalIntroduction;
     const languages_speak = speakLanguages?.map((language) => language.value);
-    const languages_read = readLanguages?.map((language) => language.value);
     const languages_write = writeLanguages?.map((language) => language.value);
-    const current_residency = {
-      country: country.value,
-      state: state.value,
-      city: city.value,
-      street_address: streetAddress,
-      house_number: houseNumber,
-      zip_code: zipCode,
+
+    const reqData = {
+      tagline,
+      professional_intro,
+      role: role.value,
+      languages_speak,
+      languages_write,
+      resume: !isEmpty(files)
+        ? {
+            file_name: files[0]?.file?.name || '',
+            file_key: files[0]?.uploadData?.file_key || '',
+          }
+        : {},
     };
 
-    let reqData;
-
-    if (workExperienceYear || workExperienceMonth) {
-      reqData = {
-        tagline,
-        work_experience,
-        professional_intro,
-        role: role.value,
-        languages_speak,
-        languages_read,
-        languages_write,
-        current_residency,
-        resume: !isEmpty(files)
-          ? {
-            file_name: files[0]?.file?.name || '',
-            file_key: files[0]?.uploadData?.file_key || '',
-          }
-          : {},
-      };
-    } else {
-      reqData = {
-        tagline,
-        professional_intro,
-        role: role.value,
-        languages_speak,
-        languages_read,
-        languages_write,
-        current_residency,
-        resume: !isEmpty(files)
-          ? {
-            file_name: files[0]?.file?.name || '',
-            file_key: files[0]?.uploadData?.file_key || '',
-          }
-          : {},
-      };
-    }
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     if (IsresumeParsed) {
       const languagesWritten = watch('writeLanguages')?.map((language) => ({
@@ -645,16 +557,11 @@ const Personal = () => {
         name: language.label,
         _id: language.value,
       }));
-      const languagesRead = watch('readLanguages')?.map((language) => ({
-        name: language.label,
-        _id: language.value,
-      }));
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
           languages_speak: languagesSpoken,
           languages_write: languagesWritten,
-          languages_read: languagesRead,
           tagline,
           professional_introduction: professionalIntroduction,
         },
@@ -716,8 +623,7 @@ const Personal = () => {
             size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
           },
           uploadData: {
-            file_key:
-              res?.talent_info?.resume?.file_key,
+            file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
         };
@@ -849,7 +755,7 @@ const Personal = () => {
 
   return (
     <ProfileFormContainer>
-      {(IsresumeParsed ? resumeParsedLoading : userDetailsIsLoading && languagesIsLoading) ? (
+      {userDetailsIsLoading && languagesIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
@@ -1022,22 +928,42 @@ const Personal = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody>
+                  {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column">
                     <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
                       <Col lg="fit">
                         <Info className="font-medium-3 me-50" color="#004280" />
                       </Col>
-
                       <Col className="w-100 ">
-                        <div className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between">
-                          <span style={{ color: '#004280' }}>
-                            <span style={{ color: '#004280' }} className="fw-bold mr-2">
+                        <Row className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between">
+                          <Row style={{ color: '#004280' }}>
+                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
                               Auto Fill {files && files?.length > 0 && 'Profile'}
-                            </span>
-
-                            {files && files.length === 0 && <span> - Upload your resume</span>}
-                          </span>
-                        </div>
+                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            </Col>
+                            <Col lg="2">
+                              {resumeParsedLoading ? (
+                                <Spinner size="sm" />
+                              ) : (
+                                !uploadingFiles.includes(files[0]) &&
+                                files &&
+                                files.length > 0 && (
+                                  <FormGroup switch>
+                                    <Input
+                                      type="switch"
+                                      checked={parseResume}
+                                      onClick={() => {
+                                        setParsedUploaded(false);
+                                        setParseResume(!parseResume);
+                                        dispatch(setResumeParsed(!parseResume));
+                                      }}
+                                    />
+                                  </FormGroup>
+                                )
+                              )}
+                            </Col>
+                          </Row>
+                        </Row>
 
                         {files?.length === 0 && (
                           <>
@@ -1081,50 +1007,136 @@ const Personal = () => {
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1">Profile Completion</h4>
-                  <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                  <CardText className="m-0 mt-1">
+                    Make it easier for others to find you by completing your profile.
+                  </CardText>
                   <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                  <Progress value={overallPercentageCompletion}
+                  <Progress
+                    value={overallPercentageCompletion}
                     style={{ height: '0.5rem' }}
                     className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                  ></Progress>
-
+                  />
                 </CardHeader>
 
                 <CardBody>
                   <hr className="m-0 card-header-border" />
 
-                  {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                    <div className="custom-checkbox-wrapper">
-                      <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                      <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                  {isTrumioTalent && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox"
+                          className="custom-checkbox-input"
+                          checked={isProjectReady}
+                        />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                ?.path || '/marketplace',
+                            )
+                          }
+                        >
+                          {isProjectReady
+                            ? 'Explore Projects'
+                            : `${
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
                     </div>
-                    <div>
-                      <CardText className="m-0">Client Projects Ready</CardText>
-                      <b className='text-primary cursor-pointer'
-                        onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                      >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                    </div>
-                  </div>}
+                  )}
 
-                  {isFlextern && <div className='d-flex gap-1 mt-1'>
-                    <div className="custom-checkbox-wrapper">
-                      <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                      <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                  {isFlextern && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox2"
+                          className="custom-checkbox-input"
+                          checked={isFlexternReady}
+                        />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                                ?.path || '/dashboard',
+                            )
+                          }
+                        >
+                          {isFlexternReady
+                            ? 'Explore Flexternships'
+                            : `${
+                                returnCompleteProfileDetailsCta(
+                                  userTypes.talent,
+                                  profileCompletionFlexternMissingValues,
+                                )?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
                     </div>
-                    <div>
-                      <CardText className="m-0">Flexternship Ready</CardText>
-                      <b className='text-primary cursor-pointer'
-                        onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                      >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                    </div>
-                  </div>}
+                  )}
                 </CardBody>
               </Card>
             </Col>
-
           </Row>
         </Form>
       )}
+      {files?.length === 0 && userDetailsData?.talent_info?.resume === undefined  && (resumeModalOpen && <UploadResumeModal
+                    modal={resumeModalOpen}
+                    toggleModal={() => setResumeModalOpen(false)}
+                    uploadButton={
+                      <div className="d-flex justify-content-center mt-1 align-items-center">
+                        <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
+                          <h5
+                            style={{
+                              background: '#0065c1',
+                              color: 'white',
+                              paddingBlock: '12px',
+                              borderRadius: '5px',
+                              paddingInline: '16px',
+                            }}
+                            className="fw-bold"
+                          >
+                            Upload Resume
+                          </h5>
+                        </Label>
+                        <Controller
+                          id="resume"
+                          name="resume"
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              ref={filesRef}
+                              id="resume"
+                              type="file"
+                              max={1}
+                              accept="application/pdf"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                handleFileChange(e);
+                              }}
+                            />
+                          )}
+                        />
+                      </div>
+                    }
+                  />)}
     </ProfileFormContainer>
   );
 };
