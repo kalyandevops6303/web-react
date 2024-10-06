@@ -3,8 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
+import {Button,
   Card,
   CardBody,
   CardHeader,
@@ -16,7 +15,7 @@ import {
   Label,
   Row,
   Spinner,
-} from 'reactstrap';
+ Progress , CardText } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
@@ -35,8 +34,8 @@ import {
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
-import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
+import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys , giveProgressBarColorClassName } from '../../../utility/Utils';
+import { userOnboarding, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import {
   fileKey,
@@ -57,16 +56,8 @@ import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboar
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
-
-import { ProgressBarWrapper } from '../../create-bid/style';
-import { Progress } from 'reactstrap';
-import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import "../../../App.css";
-import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
-import { CardText } from 'reactstrap';
-import { userTypes } from '../../../utility/constants/Constant';
-
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -155,11 +146,11 @@ const Social = () => {
     else {
       setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
     }
-  }
+  };
 
   useEffect(() => {
     getOverallPercentageCompletion();
-  }, [profileCompletionFlextern, profileCompletionProject])
+  }, [profileCompletionFlextern, profileCompletionProject]);
 
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
@@ -700,7 +691,7 @@ const Social = () => {
                     <Progress value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
                       className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                    ></Progress>
+                     />
 
                   </CardHeader>
 
@@ -710,7 +701,7 @@ const Social = () => {
                     {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
                       <div className="custom-checkbox-wrapper">
                         <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
                       </div>
                       <div>
                         <CardText className="m-0">Client Projects Ready</CardText>
@@ -723,7 +714,7 @@ const Social = () => {
                     {isFlextern && <div className='d-flex gap-1 mt-1'>
                       <div className="custom-checkbox-wrapper">
                         <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
                       </div>
                       <div>
                         <CardText className="m-0">Flexternship Ready</CardText>
@@ -746,7 +737,7 @@ const Social = () => {
                     <Progress value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
                       className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                    ></Progress>
+                     />
 
                   </CardHeader>
 
@@ -756,7 +747,7 @@ const Social = () => {
                     {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
                       <div className="custom-checkbox-wrapper">
                         <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
                       </div>
                       <div>
                         <CardText className="m-0">Client Projects Ready</CardText>
@@ -769,7 +760,7 @@ const Social = () => {
                     {isFlextern && <div className='d-flex gap-1 mt-1'>
                       <div className="custom-checkbox-wrapper">
                         <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
                       </div>
                       <div>
                         <CardText className="m-0">Flexternship Ready</CardText>
