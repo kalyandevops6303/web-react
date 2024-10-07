@@ -25,7 +25,7 @@ import { PaymentInfoBanner } from '../style';
 import { CustomBadge } from '../../styled';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { Modal } from 'reactstrap';
-import { inviteDelegate } from '@src/redux/actions/delegateActions';
+import { invitePaymentDelegate } from '@src/redux/actions/delegateActions';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -49,7 +49,7 @@ const PaymentTable = () => {
   const dispatch = useDispatch();
 
   const onSubmit = () => {
-    dispatch(inviteDelegate({ email, onSuccess }))
+    dispatch(invitePaymentDelegate({ email, onSuccess }))
   }
 
   const onSuccess = () => {

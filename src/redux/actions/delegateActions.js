@@ -86,4 +86,4 @@ const getDelegateInvitationStatus =
       }
     };
 
-export { inviteDelegate, signUpDelegate, getDelegateInvitationStatus };
+export { inviteDelegate, invitePaymentDelegate, signUpDelegate, getDelegateInvitationStatus };
