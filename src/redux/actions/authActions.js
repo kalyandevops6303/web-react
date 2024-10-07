@@ -19,6 +19,7 @@ import {
   resetPasswordService,
   checkAdminService,
   checkRequestValidation,
+  getFlexternVariablesService,
 } from '../../services/authServices';
 
 import {
@@ -157,6 +158,20 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     errorHandler(error, loginFailure);
   }
 };
+
+
+const getFlexternVariables = (onSuccessFlexternVariables) => async (dispatch) => {
+  try {
+    const res = await getFlexternVariablesService();
+    if(!isEmpty(res?.data?.data)) {
+      dispatch(setTalentBooleansFlextern(res?.data?.data?.flextern))
+      dispatch(setTalentBooleanTrumioTalent(res?.data?.data?.trumio_talent));
+      onSuccessFlexternVariables(res?.data?.data);
+    }
+  } catch (error) {
+    errorHandler(error);
+  }
+}
 
 const loginUserWithGoogle =
   ({ id_token, user_type, onError, onSuccess }) =>
@@ -485,4 +500,5 @@ export {
   resetPassword,
   checkIsAdmin,
   validateRequestFlexTernToken,
+  getFlexternVariables,
 };

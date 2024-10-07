@@ -243,7 +243,7 @@ const PROJECT_INVITATION_STATUS = {
 const generateYearArrays = () => {
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 7;
-  const endYear = currentYear + 4;
+  const endYear = currentYear + 6;
 
   const generateYearRange = (start, end) => 
     Array.from(
@@ -256,7 +256,7 @@ const generateYearArrays = () => {
 
   return {
     studyYears: generateYearRange(startYear, currentYear),
-    graduationYears: generateYearRange(currentYear, endYear)
+    graduationYears: generateYearRange(startYear, endYear)
   };
 };
 const {studyYears,graduationYears} = generateYearArrays();

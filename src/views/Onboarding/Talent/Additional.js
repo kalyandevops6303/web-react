@@ -1,5 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner , Progress , CardText } from 'reactstrap';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  Progress,
+  CardText,
+} from 'reactstrap';
 import { AsyncPaginate, reduceGroupedOptions } from 'react-select-async-paginate';
 import * as yup from 'yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -10,7 +24,8 @@ import classNames from 'classnames';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
-import {downloadFile,
+import {
+  downloadFile,
   downloadUploadedFile,
   filteredFormSchema,
   getFileSize,
@@ -20,22 +35,28 @@ import {downloadFile,
   renderFormattedListingDate,
   returnFilteredDropdownOptions,
   selectThemeColors,
- giveProgressBarColorClassName } from '../../../utility/Utils';
+  giveProgressBarColorClassName,
+} from '../../../utility/Utils';
 import { countriesService, educationsService, paginatedInstitutesService } from '../../../services/staticServices';
 import CustomerSupportCTA from '../CustomerSupportCTA';
-import {CUSTOMER_SUPPORT_TYPES,
+import {
+  CUSTOMER_SUPPORT_TYPES,
   studyYears,
   userOnboarding,
   userProfileEdit,
   graduationYears,
-  userTypes
+  userTypes,
 } from '../../../utility/constants/Constant';
 import CustomerSupportModal from '../../modals/CustomerSupportModal';
 import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
 import theme from '../../../configs/themeVariables';
 import { downloadUrlLoading, userData } from '../../../redux/selectors/dashboardSelectors';
 import { GroupLabelWrapper } from '../../createClub/style';
-import { identityFileLoading, profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import {
+  identityFileLoading,
+  profileDetailsLoading,
+  userDetails,
+} from '../../../redux/selectors/talentOnboardingSelectors';
 import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 import { identityUploadService } from '../../../services/talentOnboardingServices';
@@ -49,7 +70,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
-import "../../../App.css";
+import '../../../App.css';
 
 const customDropdownStyles = {
   menuList: (provided) => ({
@@ -118,6 +139,7 @@ const Additional = () => {
   const flexternBoolean = useSelector(selectFlexternBoolean);
   const trumioTalent = useSelector(selectTrumioTalent);
   const isIdentityFileLoading = useSelector(identityFileLoading);
+  const talentOnboardingData = useSelector(userDetails);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -170,9 +192,13 @@ const Additional = () => {
   const [uploadingFiles, setUploadingFiles] = useState([]);
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
@@ -184,11 +210,9 @@ const Additional = () => {
   const getOverallPercentageCompletion = () => {
     if (isFlextern && !isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
+    } else if (!isFlextern && isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
+    } else {
       setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
     }
   };
@@ -287,9 +311,16 @@ const Additional = () => {
   const loadEducationInstitutionOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await paginatedInstitutesService(page, search);
-      const myInstitution = userDetailsData?.talent_info?.educational_institute
-        .map((educationDetails) => educationDetails.institution)
-        .map((institute) => ({ label: institute.name, value: institute._id }));
+      let myInstitution = [];
+      if (location.pathname.includes('profile-edit')) {
+        myInstitution = userDetailsData?.talent_info?.educational_institute
+          .map((educationDetails) => educationDetails.institution)
+          .map((institute) => ({ label: institute.name, value: institute._id }));
+      } else if (location.pathname.includes('talent-onboarding')) {
+        myInstitution = talentOnboardingData?.talent_info?.educational_institute
+          .map((educationDetails) => educationDetails.institution)
+          .map((institute) => ({ label: institute.name, value: institute._id }));
+      }
 
       const newOptions = response?.data?.data?.data
         .map((data) => ({ label: data.name, value: data._id }))
@@ -634,7 +665,7 @@ const Additional = () => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className='d-flex gap-2'>
+          <div className="d-flex gap-2">
             <Row className="w-75">
               <Col>
                 <Card>
@@ -659,7 +690,13 @@ const Additional = () => {
                                 style={{ maxWidth: '350px' }}
                                 className="form-check form-check-inline checkbox-custom-margin"
                               >
-                                <Input type="radio" {...field} id="male" value="MALE" checked={field.value === 'MALE'} />
+                                <Input
+                                  type="radio"
+                                  {...field}
+                                  id="male"
+                                  value="MALE"
+                                  checked={field.value === 'MALE'}
+                                />
                                 <Label for="male" className="form-check-label">
                                   Male
                                 </Label>
@@ -683,7 +720,13 @@ const Additional = () => {
                                 style={{ maxWidth: '350px' }}
                                 className="form-check form-check-inline checkbox-custom-margin"
                               >
-                                <Input type="radio" {...field} id="other" value="OTHER" checked={field.value === 'OTHER'} />
+                                <Input
+                                  type="radio"
+                                  {...field}
+                                  id="other"
+                                  value="OTHER"
+                                  checked={field.value === 'OTHER'}
+                                />
                                 <Label htmlFor="other" className="form-check-label">
                                   Prefer not to say
                                 </Label>
@@ -771,7 +814,9 @@ const Additional = () => {
                             />
                           )}
                         />
-                        {errors.weekendStartTime && <FormFeedback>{errors.weekendStartTime.label.message}</FormFeedback>}
+                        {errors.weekendStartTime && (
+                          <FormFeedback>{errors.weekendStartTime.label.message}</FormFeedback>
+                        )}
                       </Col>
                       <Col sm="6" md="6" lg="3">
                         <Label className="form-label" for="graduationYear">
@@ -785,10 +830,10 @@ const Additional = () => {
                           render={({ field }) => (
                             <Select
                               options={
-                                watch('graduationYear')
+                                watch('startYear')
                                   ? graduationYears?.filter(
-                                    (t) => parseInt(t?.value, 10) > parseInt(watch('startYear')?.value, 10),
-                                  )
+                                      (t) => parseInt(t?.value, 10) > parseInt(watch('startYear')?.value, 10),
+                                    )
                                   : graduationYears
                               }
                               classNamePrefix="select"
@@ -988,43 +1033,93 @@ const Additional = () => {
                 <Card>
                   <CardHeader>
                     <h4 className="m-0 mt-1">Profile Completion</h4>
-                    <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                    <CardText className="m-0 mt-1">
+                      Make it easier for others to find you by completing your profile.
+                    </CardText>
                     <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                    <Progress value={overallPercentageCompletion}
+                    <Progress
+                      value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
                       className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                     />
-
+                    />
                   </CardHeader>
 
                   <CardBody>
                     <hr className="m-0 card-header-border" />
 
-                    {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                      <div className="custom-checkbox-wrapper">
-                        <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                    {isTrumioTalent && (
+                      <div className="d-flex gap-1 mt-1">
+                        <div className="custom-checkbox-wrapper">
+                          <Input
+                            type="checkbox"
+                            id="customCheckbox"
+                            className="custom-checkbox-input"
+                            checked={isProjectReady}
+                          />
+                          <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                        </div>
+                        <div>
+                          <CardText className="m-0">Client Projects Ready</CardText>
+                          <b
+                            className="text-primary cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.path || '/marketplace',
+                              )
+                            }
+                          >
+                            {isProjectReady
+                              ? 'Explore Projects'
+                              : `${
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionProjectMissingValues,
+                                  )?.label
+                                }`}{' '}
+                            <ChevronRight size="1.2em" />
+                          </b>
+                        </div>
                       </div>
-                      <div>
-                        <CardText className="m-0">Client Projects Ready</CardText>
-                        <b className='text-primary cursor-pointer'
-                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                        >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                      </div>
-                    </div>}
+                    )}
 
-                    {isFlextern && <div className='d-flex gap-1 mt-1'>
-                      <div className="custom-checkbox-wrapper">
-                        <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                    {isFlextern && (
+                      <div className="d-flex gap-1 mt-1">
+                        <div className="custom-checkbox-wrapper">
+                          <Input
+                            type="checkbox"
+                            id="customCheckbox2"
+                            className="custom-checkbox-input"
+                            checked={isFlexternReady}
+                          />
+                          <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                        </div>
+                        <div>
+                          <CardText className="m-0">Flexternship Ready</CardText>
+                          <b
+                            className="text-primary cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                returnCompleteProfileDetailsCta(
+                                  userTypes.talent,
+                                  profileCompletionFlexternMissingValues,
+                                )?.path || '/dashboard',
+                              )
+                            }
+                          >
+                            {isFlexternReady
+                              ? 'Explore Flexternships'
+                              : `${
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionFlexternMissingValues,
+                                  )?.label
+                                }`}{' '}
+                            <ChevronRight size="1.2em" />
+                          </b>
+                        </div>
                       </div>
-                      <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b className='text-primary cursor-pointer'
-                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                        >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                      </div>
-                    </div>}
+                    )}
                   </CardBody>
                 </Card>
               </Col>
