@@ -18,12 +18,15 @@ import { filteredFormSchema, validations } from '../../utility/Utils';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { setPassword } from '../../redux/actions/authActions';
-import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading, selectIsPasswordSet, selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PasswordStrengthMeter from './components/PasswordStrengthMeter';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import ShowToastMessage from '../../@core/components/toast';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
+
 
 const SetPassword = () => {
   const dispatch = useDispatch();
@@ -32,9 +35,15 @@ const SetPassword = () => {
   const isLoading = useSelector(selectAuthLoading);
   const isPasswordSet = useSelector(selectIsPasswordSet);
   const savedFormData = useSelector(formData);
-
+  const isFlextern = useSelector(selectTrumioIsFlextern);
   useEffect(() => {
-    if (isPasswordSet) {
+    if(isFlextern && isPasswordSet) {
+      ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 6000);
+    }
+    else if (isPasswordSet && !isFlextern) {
       navigate('/auth/register-phone');
     }
   }, [isPasswordSet, navigate]);

@@ -97,7 +97,7 @@ const Additional = () => {
         return schema;
       })
       .required('Graduation year is required'),
-    institutionEmail: yup.string().email('Must be a valid email').required('Institution email is required'),
+    institutionEmail: yup.string().email('Must be a valid email'),
     institution: yup
       .object()
       .shape({
@@ -180,7 +180,6 @@ const Additional = () => {
   const isFlextern = useSelector((state) => state.auth?.flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
 
-  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   const getOverallPercentageCompletion = () => {
