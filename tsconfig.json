@@ -22,18 +22,19 @@
     "jsxImportSource": "@emotion/react",
     "types": ["@emotion/react/types/css-prop", "jest", "node", "react"],
     "outDir": "build",
-    "baseUrl": "./",
+    "baseUrl": "./",  // Ensure this points to the project root
     "paths": {
-      "@src/*": ["src/*"],
-      "@lib": ["src/lib/*"],
-      "@store/*": ["src/redux/*"],
-      "@configs": ["src/configs/*"],
-      "@styles": ["src/@core/scss/*"],
-      "@utils": ["src/utility/Utils/*"],
-      "@hooks": ["src/utility/hooks/*"],
-      "@assets": ["src/@core/assets/*"],
-      "@layouts": ["src/@core/layouts/*"],
-      "@components": ["src/@core/components/*"]
+      "@/*": ["./src/*"],
+      "@src/*": ["./src/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@store/*": ["./src/redux/*"],
+      "@configs/*": ["./src/configs/*"],
+      "@styles/*": ["./src/@core/scss/*"],
+      "@utils/*": ["./src/utility/Utils/*"],
+      "@hooks/*": ["./src/utility/hooks/*"],
+      "@assets/*": ["./src/@core/assets/*"],
+      "@layouts/*": ["./src/@core/layouts/*"],
+      "@components/*": ["./src/@core/components/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
