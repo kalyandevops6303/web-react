@@ -41,7 +41,7 @@ Here's an overview of the project's folder structure:
 │   ├── App.test.js     
 │   ├── constant.js                
 │   ├── index.js                
-│   ├── index.scss                    
+│   ├── index.css                    
 │   └── serviceWorker.js             
 │   
 ├── /public/                    # Public static files
