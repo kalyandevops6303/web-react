@@ -12,6 +12,7 @@ import { selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
 import { saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../redux/reducers/auth';
 
+
 const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

@@ -4,11 +4,11 @@ const authSelector = (state) => state.auth;
 
 export const selectAuthLoading = createSelector(authSelector, (auth) => auth.loading);
 
-export const selectFlexternBoolean = createSelector(authSelector, (auth) => auth.flextern);
+export const selectFlexternBoolean = createSelector(authSelector, (auth) => auth.flextern);// selector for whether the user has enrolled for flexternship program or not 
 
-export const selectTrumioIsFlextern = createSelector(authSelector,(auth) => auth.is_flextern);
+export const selectTrumioIsFlextern = createSelector(authSelector,(auth) => auth.is_flextern);// selector for whether the user has a flextern invitation or not 
 
-export const selectTrumioTalent = createSelector(authSelector, (auth) => auth.trumio_talent);
+export const selectTrumioTalent = createSelector(authSelector, (auth) => auth.trumio_talent);// selector for whether the user has enrolled for the program program or not
  
 export const selectAuthUserData = createSelector(authSelector, (auth) => auth.userData);
 
