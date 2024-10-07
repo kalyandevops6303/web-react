@@ -37,6 +37,8 @@ const getAppPermissionService = () => DataService.get(`${API.permissions.appPerm
 
 const checkRequestValidation = (requestToken) => DataService.get(`${API.auth.requestValidation}?request_token=${requestToken}`);
 
+const getFlexternVariablesService = () => DataService.get(API.auth.flexternValues);
+
 export {
   loginService,
   loginServiceGoogle,
@@ -55,4 +57,5 @@ export {
   checkAdminService,
   getAppPermissionService,
   checkRequestValidation,
+  getFlexternVariablesService,
 };

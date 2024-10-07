@@ -18,12 +18,15 @@ import EducationTabActiveImg from '../../../assets/images/educationTabActive.png
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
 import Additional from './Additional';
-import { selectFlexternBoolean, selectTrumioTalent, selectUserData } from '../../../redux/selectors/authSelectors';
-import { userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
+import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../../redux/reducers/auth';
-import { getProfileCompletionFlextern, getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
-import { getUserData } from '../../../redux/actions/authActions';
+import {
+  getProfileCompletionFlextern,
+  saveProfileDetails,
+} from '../../../redux/actions/talentOnboardingActions';
+import { getFlexternVariables } from '../../../redux/actions/authActions';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
+import { selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -35,10 +38,11 @@ const Tabs = ({ tabNames, active }) => {
   });
   const flexternBoolean = useSelector(selectFlexternBoolean);
   const trumioTalent = useSelector(selectTrumioTalent);
-
-  const talentOnboardingUserDetails = useSelector(userDetails);
-  const userData = useSelector(selectUserData);
+  const isFlextern = useSelector(selectTrumioIsFlextern);
   // const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
+  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
+
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
@@ -60,7 +64,11 @@ const Tabs = ({ tabNames, active }) => {
       if (location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
         toast.error('Flexternship cannot be unchecked under Additional Information');
         return;
-      } else if ((location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) && name === 'trumio_talent' && checked === false) {
+      } else if (
+        (location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) &&
+        name === 'trumio_talent' &&
+        checked === false
+      ) {
         toast.error('Project cannot be unchecked under Additional Information');
         return;
       }
@@ -75,8 +83,6 @@ const Tabs = ({ tabNames, active }) => {
       dispatch(setTalentBooleanTrumioTalent(checked));
     }
     dispatch(saveProfileDetails(reqData));
-    dispatch(getUserDetails());
-    dispatch(getUserData());
   };
   const isTabDisabled = (tabName) => {
     if (selectProgram.flextern && selectProgram.trumio_talent) return false;
@@ -107,64 +113,107 @@ const Tabs = ({ tabNames, active }) => {
       </NavItem>
     );
   };
-  useEffect(() => {
-    if (location.pathname.includes('profile-edit')) {
-      dispatch(setTalentBooleansFlextern(userData?.talent_info?.flextern));
-      dispatch(setTalentBooleanTrumioTalent(userData?.talent_info?.trumio_talent));
+  // useEffect(() => {
+  //   if (location.pathname.includes('profile-edit')) {
+  //     dispatch(setTalentBooleansFlextern(userData?.talent_info?.flextern));
+  //     dispatch(setTalentBooleanTrumioTalent(userData?.talent_info?.trumio_talent));
+  //     setSelectProgram((prev) => ({
+  //       ...prev,
+  //       flextern: userData?.talent_info?.flextern,
+  //       trumio_talent: userData?.talent_info?.trumio_talent,
+  //     }));
+  //   } else if (location.pathname.includes('talent-onboarding')) {
+  //     if (talentOnboardingUserDetails?.talent_info) {
+  //       dispatch(setTalentBooleansFlextern(talentOnboardingUserDetails?.talent_info?.flextern));
+  //       dispatch(setTalentBooleanTrumioTalent(talentOnboardingUserDetails?.talent_info?.trumio_talent));
+  //       setSelectProgram((prev) => ({
+  //         ...prev,
+  //         flextern: talentOnboardingUserDetails?.talent_info?.flextern,
+  //         trumio_talent: talentOnboardingUserDetails?.talent_info?.trumio_talent,
+  //       }));
+  //     } else {
+  //       setSelectProgram((prev) => ({
+  //         ...prev,
+  //         flextern: flexternBoolean,
+  //         trumio_talent: trumioTalent,
+  //       }));
+  //     }
+  //   } else {
+  //     if(isFlextern) {
+  //       setSelectProgram((prev) => ({
+  //         ...prev,
+  //         flextern: true,
+  //         trumio_talent: false,
+  //       }))
+  //     } else {
+  //       setSelectProgram((prev) => ({
+  //         ...prev,
+  //         flextern: flexternBoolean,
+  //         trumio_talent: trumioTalent,
+  //       }));
+  //     }
+  //   }
+  // }, [location.pathname, talentOnboardingUserDetails, userData]);
+  const onSuccessFlexternVariables = (data) => {
+    if (typeof data?.flextern === 'boolean' && typeof data?.trumio_talent === 'boolean') {
       setSelectProgram((prev) => ({
         ...prev,
-        flextern: userData?.talent_info?.flextern,
-        trumio_talent: userData?.talent_info?.trumio_talent,
+        flextern: data?.flextern,
+        trumio_talent: data?.trumio_talent,
       }));
-    } else if (location.pathname.includes('talent-onboarding')) {
-      if (talentOnboardingUserDetails?.talent_info) {
-        dispatch(setTalentBooleansFlextern(talentOnboardingUserDetails?.talent_info?.flextern));
-        dispatch(setTalentBooleanTrumioTalent(talentOnboardingUserDetails?.talent_info?.trumio_talent));
-        setSelectProgram((prev) => ({
-          ...prev,
-          flextern: talentOnboardingUserDetails?.talent_info?.flextern,
-          trumio_talent: talentOnboardingUserDetails?.talent_info?.trumio_talent,
-        }));
-      } else {
-        setSelectProgram((prev) => ({
-          ...prev,
-          flextern: flexternBoolean,
-          trumio_talent: trumioTalent,
-        }));
-      }
-    } else {
+    } else if (isFlextern) {
       setSelectProgram((prev) => ({
         ...prev,
-        flextern: flexternBoolean,
-        trumio_talent: trumioTalent,
+        flextern: true,
+        trumio_talent: false,
       }));
     }
-  }, [location.pathname, talentOnboardingUserDetails, userData]);
+  };
+
+  useEffect(() => {
+    dispatch(getFlexternVariables(onSuccessFlexternVariables));
+  }, []);
 
   useEffect(() => {
     if (flexternBoolean) dispatch(getProfileCompletionFlextern());
     if (trumioTalent) dispatch(getProfilePercentage());
-  }, [flexternBoolean, trumioTalent])
+  }, [flexternBoolean, trumioTalent]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       <div className="mb-2 d-flex justify-content-center gap-2">
-        <ProgramCheckBox active={selectProgram?.flextern}>
-          <div className="form-check form-check-inline checkbox-custom-margin">
-            <Input type="checkbox" name="flextern" checked={selectProgram?.flextern} onChange={handleProgramChange} />{' '}
-            Flexternship
-          </div>
+        <ProgramCheckBox active={selectProgram?.flextern} completed={isFlexternReady}>
+          {isFlexternReady && selectProgram?.flextern ? (
+            <>
+              <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
+              <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+              Flexternship
+            </>
+          ) : (
+            <div className="form-check form-check-inline checkbox-custom-margin">
+              <Input type="checkbox" name="flextern" checked={selectProgram?.flextern} onChange={handleProgramChange} />{' '}
+              Flexternship
+            </div>
+          )}
         </ProgramCheckBox>
-        <ProgramCheckBox active={selectProgram?.trumio_talent}>
-          <div className="form-check form-check-inline checkbox-custom-margin">
-            <Input
-              type="checkbox"
-              name="trumio_talent"
-              checked={selectProgram?.trumio_talent}
-              onChange={handleProgramChange}
-            />{' '}
-            Project
-          </div>
+        <ProgramCheckBox active={selectProgram?.trumio_talent} completed={isProjectReady}>
+          {isProjectReady && selectProgram?.trumio_talent? (
+            <>
+              <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
+              <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+              Project
+            </>
+          ) : (
+            <div className="form-check form-check-inline checkbox-custom-margin">
+              <Input
+                type="checkbox"
+                name="trumio_talent"
+                checked={selectProgram?.trumio_talent}
+                onChange={handleProgramChange}
+              />{' '}
+              Project
+            </div>
+          )}
         </ProgramCheckBox>
       </div>
       <Nav pills className="mb-2">
@@ -287,20 +336,20 @@ const Tabs = ({ tabNames, active }) => {
         </TabPane>
         <TabPane tabId={tabNames.Payment}>
           {location.pathname.includes('payment-details') ||
-            location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
+          location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
             <Payment />
           ) : null}
         </TabPane>
         <TabPane tabId={tabNames.InternHiring}>
           {location.pathname === `/${userProfileEdit.talent}/intern-hiring` ||
-            location.pathname === `/${userOnboarding.talent}/intern-hiring` ? (
+          location.pathname === `/${userOnboarding.talent}/intern-hiring` ? (
             <InternHiring />
           ) : null}
         </TabPane>
         <TabPane tabId={tabNames.InternXobinHiring}>
           {location.pathname.includes('intern-xobin-hiring') ||
-            location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` ||
-            location.pathname === `/${userOnboarding.talent}/intern-xobin-hiring` ? (
+          location.pathname === `/${userProfileEdit.talent}/intern-xobin-hiring` ||
+          location.pathname === `/${userOnboarding.talent}/intern-xobin-hiring` ? (
             <InternXobinHiring />
           ) : null}
         </TabPane>

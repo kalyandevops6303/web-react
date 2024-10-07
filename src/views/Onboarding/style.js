@@ -26,6 +26,10 @@ export const ProgramCheckBox = styled.div`
   border-radius: 5px;
   background: ${(props) => (props.active ? `${theme.checkboxGradientActive}` : `${theme.checkboxGradient}`)};
 
+  display: ${(props) => (props.completed ? 'flex' : 'block')};
+  justify-content: ${(props) => (props.completed ? 'space-between' : 'center')};
+  align-items: center;
+  gap: ${(props) => (props.completed ? '4px' : '0')}
 `;
 
 export const TabsContainer = styled.div`

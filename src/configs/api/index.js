@@ -22,7 +22,8 @@ const API = {
     resetPassword: `${apiAuthEndpoint}/api/v1/user/reset-password`,
     requestValidation: `${apiAuthEndpoint}/api/v1/requests/validation`,
     checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
-    validateFlexTernEmail: `${apiAuthEndpoint}/api/v1/talent/email/check`
+    validateFlexTernEmail: `${apiAuthEndpoint}/api/v1/talent/email/check`,
+    flexternValues: `${apiAuthEndpoint}/api/v1/flextern/values`,
   },
   static: {
     talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,
