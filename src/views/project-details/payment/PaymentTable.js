@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, CardBody, CardText, Input, ModalBody, Table, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, Input, ModalBody, ModalHeader, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronDown, ChevronUp, Copy, Info } from 'react-feather';
 import classnames from 'classnames';
 import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText, userTypes } from '../../../utility/constants/Constant';
@@ -25,6 +25,7 @@ import { PaymentInfoBanner } from '../style';
 import { CustomBadge } from '../../styled';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { Modal } from 'reactstrap';
+import { inviteDelegate } from '@src/redux/actions/delegateActions';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -46,6 +47,14 @@ const PaymentTable = () => {
   const savedUserData = useSelector(selectSavedUserData);
 
   const dispatch = useDispatch();
+
+  const onSubmit = () => {
+    dispatch(inviteDelegate({ email, onSuccess }))
+  }
+
+  const onSuccess = () => {
+    setShowPaymentDelegateModal(false)
+  }
 
   const handleCopyToClipboard = (text) => {
     // eslint-disable-next-line no-undef
@@ -281,6 +290,8 @@ const PaymentTable = () => {
     border: isSelected ? `1.5px solid ${theme.activeNavPillText}` : '',
     background: isSelected ? theme.selectedBlugBg : '',
   });
+
+
 
   return (
     <>
@@ -522,18 +533,40 @@ const PaymentTable = () => {
       {
         showPaymentDelegateModal &&
         <Modal isOpen={showPaymentDelegateModal} contentClassName="custom-modal-style" className="modal-dialog-centered">
+          <ModalHeader toggle={() => setShowPaymentDelegateModal(!showPaymentDelegateModal)} />
           <ModalBody className="pt-0 px-5">
           <h2 className="font-large-1 text-center mb-2 mt-2">Add Payment Delegate</h2>
           
-          <div className='flex flex-column gap-3'>
+          <div className='d-flex flex-column gap-2'>
+
+          <div>
+          <label>Delegate Email</label>
           <Input 
           placeholder='Enter Email ID'
-          />
-
-          <Input 
+          onChange={(e) => setEmail(e.target.value)}
           value={email}
+          />
+          </div>
+
+
+          <div className='mobile-input'>
+          <label>Project Name</label>
+          <Input 
+          defaultValue={projectDetailsData?.details?.name}
+          className="filled-form-control"
           disabled
           />
+          </div>
+
+          <div>
+          <b>Note:</b> An invitation link will be sent to the above mention email id.
+          </div>
+          </div>
+
+          <div className='d-flex justify-content-end mt-2'>
+            <Button color='primary'
+            onClick={onSubmit}
+            >Send Invite</Button>
           </div>
           
           </ModalBody>
