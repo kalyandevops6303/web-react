@@ -1096,7 +1096,7 @@ const Personal = () => {
           </Row>
         </Form>
       )}
-      {files?.length === 0 && userDetailsData?.talent_info?.resume === undefined  && (resumeModalOpen && <UploadResumeModal
+      {files?.length === 0 && (!userDetailsData?.talent_info?.resume || Object.keys(userDetailsData?.talent_info?.resume).length === 0) && (resumeModalOpen && <UploadResumeModal
                     modal={resumeModalOpen}
                     toggleModal={() => setResumeModalOpen(false)}
                     uploadButton={
