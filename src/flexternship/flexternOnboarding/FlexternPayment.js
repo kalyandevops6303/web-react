@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TaxSituationAssessment, TaxpayerIdentification, USW9Form } from './PaymentSteps';
+import { TaxSituationAssessment, TaxpayerIdentification, USW9Form } from './FlexternPaymentSteps';
 
-import { formData } from '../../../redux/selectors/formDataSelectors';
-import { setFormData } from '../../../redux/reducers/formData';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../redux/reducers/formData';
 
-const Payment = () => {
+const FlexternPayment = () => {
   const savedFormData = useSelector(formData);
   const dispatch = useDispatch();
   const [step, setStep] = useState(savedFormData?.step || 1);
@@ -26,4 +26,4 @@ const Payment = () => {
   return <StepComp setStep={setStep} step={step} />;
 };
 
-export default Payment;
+export default FlexternPayment;

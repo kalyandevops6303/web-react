@@ -60,13 +60,14 @@ import { filteredFormSchema } from '../../utility/Utils';
 import { getUserData } from '../../redux/actions/authActions';
 import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
 import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { selectTrumioIsFlextern, selectUserData } from '../../redux/selectors/authSelectors';
 import { ProgressBarWrapper } from '../create-bid/style';
 import { Progress } from 'reactstrap';
 import { giveProgressBarColorClassName } from '../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import "../../App.css";
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
+
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -89,6 +90,7 @@ const Account = () => {
 
   const savedFormData = useSelector(formData);
   const userAuthData = useSelector(selectUserData);
+  const isFlexternInvited = useSelector(selectTrumioIsFlextern);
   const isDelegate = getItem('isDelegate');
   const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
@@ -303,9 +305,9 @@ const Account = () => {
       userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS
     ) {
       if (userDetailsData.user_type === userTypes.talent) {
-        if (location.pathname.includes('profile-edit')) {
+        if (location.pathname.includes('profile-edit') && isFlexternInvited) {
           reqData = { ...reqData, flextern: userAuthData?.talent_info?.flextern, trumio_talent: userAuthData?.talent_info?.trumio_talent };
-        } else if (location.pathname.includes('talent-onboarding')) {
+        } else if (location.pathname.includes('talent-onboarding') && isFlexternInvited) {
           reqData = { ...reqData, flextern: userDetailsData?.talent_info?.flextern, trumio_talent: userDetailsData?.talent_info?.trumio_talent };
         }
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
@@ -610,7 +612,7 @@ const Account = () => {
             </div>
           </div>
           <div className='w-25'>
-            {userType != userTypes.client && <Card>
+            {userType != userTypes.client && isFlexternInvited && <Card>
               <CardHeader>
                 <h4 className="m-0 mt-1">Profile Completion</h4>
                 <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>

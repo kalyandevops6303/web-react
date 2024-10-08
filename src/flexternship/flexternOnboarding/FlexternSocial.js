@@ -3,8 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
+import {Button,
   Card,
   CardBody,
   CardHeader,
@@ -16,35 +15,35 @@ import {
   Label,
   Row,
   Spinner,
-} from 'reactstrap';
+ Progress , CardText } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
-import { ProfileFormContainer, UploadIconContainer } from '../style';
-import theme from '../../../configs/themeVariables';
+import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
+import theme from '../../configs/themeVariables';
 import {
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
-} from '../../../redux/actions/talentOnboardingActions';
+} from '../../redux/actions/talentOnboardingActions';
 import {
   profileDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
   userDetailsLoading,
-} from '../../../redux/selectors/talentOnboardingSelectors';
-import AccountCreatedModal from '../AccountCreatedModal';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
-import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
-import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
-import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+} from '../../redux/selectors/talentOnboardingSelectors';
+import AccountCreatedModal from '../../views/Onboarding/AccountCreatedModal';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
+import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys , giveProgressBarColorClassName } from '../../utility/Utils';
+import { userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
   fileKey,
   formData,
   formDocuments,
   resumeDataUploadedForSocial,
   resumeParsed,
-} from '../../../redux/selectors/formDataSelectors';
+} from '../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
   setFileKey,
@@ -52,11 +51,15 @@ import {
   setFormDocuments,
   setResumeDataUploadedForSocial,
   setResumeParsed,
-} from '../../../redux/reducers/formData';
-import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
-import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+} from '../../redux/reducers/formData';
+import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
+import { updateParsedResumeService } from '../../services/talentOnboardingServices';
+import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
 
-const Social = () => {
+import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
+import "../../App.css";
+
+const FlexternSocial = () => {
   const SocialSchema = yup.object().shape({
     linkedInLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
     twitterLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
@@ -70,6 +73,8 @@ const Social = () => {
   });
 
   const savedFormData = useSelector(formData);
+  const trumioTalentBoolean = useSelector(selectTrumioTalent);
+  const flexternBoolean = useSelector(selectFlexternBoolean);
   const fileKeyDetails = useSelector(fileKey);
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
@@ -118,6 +123,35 @@ const Social = () => {
 
   const localFormData = useWatch({ control });
 
+  const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
+  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
+  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
+  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
+  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
+
+  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
+  const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
+
+  const getOverallPercentageCompletion = () => {
+    if (isFlextern && !isTrumioTalent) {
+      setOverallPercentageCompletion(profileCompletionFlextern);
+    }
+    else if (!isFlextern && isTrumioTalent) {
+      setOverallPercentageCompletion(profileCompletionProject);
+    }
+    else {
+      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
+    }
+  };
+
+  useEffect(() => {
+    getOverallPercentageCompletion();
+  }, [profileCompletionFlextern, profileCompletionProject]);
+
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
       const allData = { ...savedFormData, ...localFormData };
@@ -158,18 +192,22 @@ const Social = () => {
   const onBackClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
+      navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
-      navigate(`/${userOnboarding.talent}/availability-details`);
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/payment-details`);
-    } else {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      if (flexternBoolean) navigate(`/${userProfileEdit.talent}/additional-details`);
+      else if (trumioTalentBoolean) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      }
+    } else if (flexternBoolean) navigate(`/${userOnboarding.talent}/additional-details`);
+    else if (trumioTalentBoolean) {
+      navigate(`/${userOnboarding.talent}/availability-details`);
     }
     dispatch(setResumeDataUploadedForSocial(parseResume));
   };
@@ -177,9 +215,13 @@ const Social = () => {
   const onSkipClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/payment-details`);
-    } else {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      if (flexternBoolean) navigate(`/${userProfileEdit.talent}/additional-details`);
+      else if (trumioTalentBoolean) {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      }
+    } else if (flexternBoolean) navigate(`/${userOnboarding.talent}/additional-details`);
+    else if (trumioTalentBoolean) {
+      navigate(`/${userOnboarding.talent}/availability-details`);
     }
   };
 
@@ -209,7 +251,7 @@ const Social = () => {
     const reqData = {
       social_links,
     };
-    if(reqData){
+    if (reqData) {
       dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     }
 
@@ -255,7 +297,7 @@ const Social = () => {
           setValue(
             'linkedInLink',
             savedFormData?.linkedInLink ||
-              res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
+            res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
             {
               shouldValidate: true,
             },
@@ -267,7 +309,7 @@ const Social = () => {
           setValue(
             'twitterLink',
             savedFormData?.twitterLink ||
-              res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
+            res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
             {
               shouldValidate: true,
             },
@@ -294,14 +336,14 @@ const Social = () => {
           setValue(
             'otherSocialLinks',
             savedFormData?.otherSocialLinks ||
-              res?.talent_info?.social_links
-                .filter(
-                  (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
-                )
-                .map((link) => ({
-                  linkName: link.platform,
-                  link: link.url,
-                })),
+            res?.talent_info?.social_links
+              .filter(
+                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+              )
+              .map((link) => ({
+                linkName: link.platform,
+                link: link.url,
+              })),
             { shouldValidate: true },
           );
         } else {
@@ -437,7 +479,7 @@ const Social = () => {
                     </Col>
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="twitterLink">
-                        Twitter
+                        X (Formerly Twitter)
                       </Label>
                       <Controller
                         id="twitterLink"
@@ -467,12 +509,12 @@ const Social = () => {
                     </Col>
                   </Row>
                   <hr className="m-0 card-header-border mt-2" />
-                  <h5 className="m-0 mt-2 mb-1">Other</h5>
+                  <h5 className="m-0 mt-2 mb-1">Other Social Links</h5>
                   {otherSocialLinksFields?.map((item, index) => (
                     <Row key={item.id} className="mb-1">
                       <Col sm="12" md="12" lg="5">
                         <Label className="form-label" for={`otherSocialLinks[${index}].linkName`}>
-                          Website
+                          Link Name
                         </Label>
                         <Controller
                           id={`otherSocialLinks[${index}].linkName`}
@@ -576,7 +618,7 @@ const Social = () => {
                       <UploadIconContainer>
                         <Plus size={18} color={theme.activeNavPillText} />
                       </UploadIconContainer>
-                      <h5 className="fw-bold">Add New</h5>
+                      <h5 className="fw-bold">Add Social Link</h5>
                     </div>
                   </Row>
                 </CardBody>
@@ -641,6 +683,94 @@ const Social = () => {
                     </div>
                   </CardBody>
                 </Card>
+                <Card>
+                  <CardHeader>
+                    <h4 className="m-0 mt-1">Profile Completion</h4>
+                    <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                    <Progress value={overallPercentageCompletion}
+                      style={{ height: '0.5rem' }}
+                      className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                     />
+
+                  </CardHeader>
+
+                  <CardBody>
+                    <hr className="m-0 card-header-border" />
+
+                    {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
+                        >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+
+                    {isFlextern && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
+                        >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+                  </CardBody>
+                </Card>
+              </Col>
+            )}
+            {isEmpty(files) && (
+              <Col>
+                <Card>
+                  <CardHeader>
+                    <h4 className="m-0 mt-1">Profile Completion</h4>
+                    <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                    <Progress value={overallPercentageCompletion}
+                      style={{ height: '0.5rem' }}
+                      className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                     />
+
+                  </CardHeader>
+
+                  <CardBody>
+                    <hr className="m-0 card-header-border" />
+
+                    {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
+                        >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+
+                    {isFlextern && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
+                        >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+                  </CardBody>
+                </Card>
               </Col>
             )}
           </Row>
@@ -650,4 +780,4 @@ const Social = () => {
   );
 };
 
-export default Social;
+export default FlexternSocial;

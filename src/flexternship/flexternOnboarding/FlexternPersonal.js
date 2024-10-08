@@ -14,73 +14,64 @@ import {
   Col,
   Form,
   FormFeedback,
-  FormGroup,
   Input,
-  InputGroup,
-  InputGroupText,
   Label,
   Row,
   Spinner,
+  Progress,
+  CardText,
+  FormGroup,
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
 import classNames from 'classnames';
-import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
-import { ProfileFormContainer, UploadIconContainer } from '../style';
-import theme from '../../../configs/themeVariables';
-import { getStates, getCities, getLanguages } from '../../../redux/actions/staticActions';
-import {
-  states,
-  statesLoading,
-  cities,
-  citiesLoading,
-  languages,
-  languagesLoading,
-} from '../../../redux/selectors/staticSelectors';
+import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
+import theme from '../../configs/themeVariables';
+import { getLanguages } from '../../redux/actions/staticActions';
+import { languages, languagesLoading } from '../../redux/selectors/staticSelectors';
 import {
   deleteResume,
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
-} from '../../../redux/actions/talentOnboardingActions';
+} from '../../redux/actions/talentOnboardingActions';
 import {
   deleteResumeLoading,
   profileDetailsLoading,
   // resumeParsedDetails,
   resumeParsedDetailsLoading,
   resumeParsedDetails,
-  userDetails,
   userDetailsLoading,
-} from '../../../redux/selectors/talentOnboardingSelectors';
-import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
+} from '../../redux/selectors/talentOnboardingSelectors';
+import { languagesService, talentRolesService } from '../../services/staticServices';
 import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
-  getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
   filteredFormSchema,
   isEmpty,
-} from '../../../utility/Utils';
-import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
-import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
-import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
-import uuidv4 from '../../../lib/uuidv4';
-import { resumeUploadService, updateParsedResumeService } from '../../../services/talentOnboardingServices';
-import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
-import TextEditor from '../../CreateProject/TextEditor';
-import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
+  giveProgressBarColorClassName,
+} from '../../utility/Utils';
+import { maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
+import { projectFileUploadToAzureService } from '../../services/createProjectServices';
+import uuidv4 from '../../lib/uuidv4';
+import { resumeUploadService, updateParsedResumeService } from '../../services/talentOnboardingServices';
+import { getDownloadUrl } from '../../redux/actions/dashboardActions';
+import { downloadUrlLoading, userData } from '../../redux/selectors/dashboardSelectors';
+import TextEditor from '../../views/CreateProject/TextEditor';
+import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
 import {
   formData,
   formDocuments,
   resumeDataUploadedForPersonal,
   resumeParsed,
-} from '../../../redux/selectors/formDataSelectors';
+} from '../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
   setFileKey,
@@ -88,34 +79,16 @@ import {
   setFormDocuments,
   setResumeDataUploadedForPersonal,
   setResumeParsed,
-} from '../../../redux/reducers/formData';
+} from '../../redux/reducers/formData';
+
+import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
+import '../../App.css';
+import UploadResumeModal from '../../views/modals/UploadResumeModal'
 
 
-const customDropdownStyles = {
-  menuList: (provided) => ({
-    ...provided,
-    maxHeight: '150px', // Set the height you want
-    overflowY: 'auto',
-  }),
-};
-
-const Personal = () => {
+const FlexternPersonal = () => {
   const PersonalSchema = yup.object().shape({
     tagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
-    workExperienceYear: yup
-      .number()
-      .min(0, 'Year cannot be negative')
-      .max(99, 'Year must be 99 or less')
-      .integer('Year must be a number')
-      .typeError('Year must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
-    workExperienceMonth: yup
-      .number()
-      .min(0, 'Month cannot be negative')
-      .max(11, 'Month must be 11 or less')
-      .integer('Month must be a number')
-      .typeError('Month must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     professionalIntroduction: yup
       .string()
       .max(500, 'Professional introduction must be 500 characters or less')
@@ -137,15 +110,6 @@ const Personal = () => {
         }),
       )
       .max(5, 'Maximum of five languages can be added'),
-    readLanguages: yup
-      .array()
-      .of(
-        yup.object().shape({
-          label: yup.string(),
-          value: yup.string(),
-        }),
-      )
-      .max(5, 'Maximum of five languages can be added'),
     writeLanguages: yup
       .array()
       .of(
@@ -155,37 +119,12 @@ const Personal = () => {
         }),
       )
       .max(5, 'Maximum of five languages can be added'),
-    streetAddress: yup.string(),
-    houseNumber: yup.string(),
-    zipCode: yup.string(),
-    country: yup
-      .object()
-      .shape({
-        label: yup.string().required('Country is required'),
-        value: yup.string().required('Country is required'),
-      })
-      .required('Country is required'),
-    state: yup
-      .object()
-      .shape({
-        label: yup.string().required('State is required'),
-        value: yup.string().required('State is required'),
-      })
-      .transform((value) => (value === null ? undefined : value))
-      .required('State is required'),
-    city: yup
-      .object()
-      .shape({
-        label: yup.string().required('City is required'),
-        value: yup.string().required('City is required'),
-      })
-      .transform((value) => (value === null ? undefined : value))
-      .required('City is required'),
   });
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const IsresumeParsed = useSelector(resumeParsed);
   const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
+  const userDetailsData = useSelector(userData);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForPersonal || false);
   const {
     control,
@@ -201,15 +140,7 @@ const Personal = () => {
     defaultValues: {
       tagline: savedFormData?.tagline || '',
       professionalIntroduction: savedFormData?.professionalIntroduction || '',
-      streetAddress: savedFormData?.streetAddress || '',
-      houseNumber: savedFormData?.houseNumber || '',
-      workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
-      workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
       role: savedFormData?.role || null,
-      zipCode: savedFormData?.zipCode || '',
-      country: savedFormData?.country || null,
-      state: savedFormData?.state || null,
-      city: savedFormData?.city || null,
       resume: savedFormData?.resume || null,
       parseResume: IsresumeParsed || false,
     },
@@ -221,26 +152,55 @@ const Personal = () => {
 
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
+  const [resumeModalOpen, setResumeModalOpen] = useState(true);
   const [languagesOptions, setLanguagesOptions] = useState(null);
-  const [countriesOptions, setCountriesOptions] = useState(null);
-  const [statesOptions, setStatesOptions] = useState(null);
-  const [citiesOptions, setCitiesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [files, setFiles] = useState(savedFormDocuments ?? []);
-
-  const statesData = useSelector(states);
-  const statesIsLoading = useSelector(statesLoading);
-  const citiesData = useSelector(cities);
-  const citiesIsLoading = useSelector(citiesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
-  const userDetailsData = useSelector(userDetails);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const localFormData = useWatch({ control });
+
+  const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
+  const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
+
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
+  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
+  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
+
+  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
+  const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
+
+  const getOverallPercentageCompletion = () => {
+    if (isFlextern && !isTrumioTalent) {
+      setOverallPercentageCompletion(profileCompletionFlextern);
+    } else if (!isFlextern && isTrumioTalent) {
+      setOverallPercentageCompletion(profileCompletionProject);
+    } else {
+      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
+    }
+  };
+
+  useEffect(() => {
+    getOverallPercentageCompletion();
+  }, [profileCompletionFlextern, profileCompletionProject]);
+
+  useEffect(() => {
+    if (uploadingFiles && uploadingFiles?.length > 0) {
+      setResumeModalOpen(false);
+    }
+  }, [uploadingFiles]);
 
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
@@ -338,35 +298,6 @@ const Personal = () => {
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
       }
-      if (res?.work_experience && res?.work_experience > 0) {
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const years = Math.floor(res?.work_experience / 12);
-        const months = res?.work_experience % 12;
-
-        setValue('workExperienceYear', years, { shouldValidate: true });
-        setValue('workExperienceMonth', months, { shouldValidate: true });
-      }
-      if (res?.languages_read && res?.languages_read.length > 0) {
-        setValue(
-          'readLanguages',
-          res.languages_read?.map((language) => ({
-            label: language?.name || languageDetails?.options?.filter((lang) => lang.value === language._id)[0]?.label,
-            value: language?._id,
-          })),
-          { shouldValidate: true },
-        );
-      } else {
-        setValue(
-          'readLanguages',
-          [
-            {
-              label: 'English',
-              value: '64831445a51384fb6948e678',
-            },
-          ],
-          { shouldValidate: true },
-        );
-      }
       if (res?.languages_speak && res?.languages_speak.length > 0) {
         setValue(
           'speakLanguages',
@@ -409,69 +340,7 @@ const Personal = () => {
           { shouldValidate: true },
         );
       }
-      // As now resume parser API is not sending any data regarding the addresses, so mapping it from the userDetailsData API for better User Experience flow
-      if (parsedUploaded) {
-        if (
-          'streetAddress' in userDetailsData?.talent_info?.current_residency ||
-          'houseNumber' in userDetailsData?.talent_info?.current_residency ||
-          'zipCode' in userDetailsData?.talent_info?.current_residency ||
-          'country' in userDetailsData?.talent_info?.current_residency ||
-          'state' in userDetailsData?.talent_info?.current_residency ||
-          'city' in userDetailsData?.talent_info?.current_residency
-        ) {
-          if (userDetailsData?.talent_info?.current_residency?.street_address.length > 0) {
-            setValue(
-              'streetAddress',
-              savedFormData?.streetAddress || userDetailsData?.talent_info?.current_residency?.street_address,
-              { shouldValidate: true },
-            );
-          }
-          if (userDetailsData?.talent_info?.current_residency?.house_number.length > 0) {
-            setValue(
-              'houseNumber',
-              savedFormData?.houseNumber || userDetailsData?.talent_info?.current_residency?.house_number,
-              {
-                shouldValidate: true,
-              },
-            );
-          }
-          if (userDetailsData?.talent_info?.current_residency?.zip_code > 0) {
-            setValue('zipCode', savedFormData?.zipCode || userDetailsData?.talent_info?.current_residency?.zip_code, {
-              shouldValidate: true,
-            });
-          }
-          if ('country' in userDetailsData?.talent_info?.current_residency) {
-            setValue(
-              'country',
-              {
-                label: savedFormData?.country?.label || userDetailsData?.talent_info?.current_residency.country.name,
-                value: savedFormData?.country?.value || userDetailsData?.talent_info?.current_residency.country._id,
-              },
-              { shouldValidate: true },
-            );
-          }
-          if ('state' in userDetailsData?.talent_info?.current_residency) {
-            setValue(
-              'state',
-              {
-                label: savedFormData?.state?.label || userDetailsData?.talent_info?.current_residency.state.name,
-                value: savedFormData?.state?.value || userDetailsData?.talent_info?.current_residency.state._id,
-              },
-              { shouldValidate: true },
-            );
-          }
-          if ('city' in userDetailsData?.talent_info?.current_residency) {
-            setValue(
-              'city',
-              {
-                label: savedFormData?.city?.label || userDetailsData?.talent_info?.current_residency.city.name,
-                value: savedFormData?.city?.value || userDetailsData?.talent_info?.current_residency.city._id,
-              },
-              { shouldValidate: true },
-            );
-          }
-        }
-      }
+
       if (savedFormDocuments) {
         setFiles([
           {
@@ -535,11 +404,6 @@ const Personal = () => {
     };
     fileReRender();
   }, [savedFormDocuments]);
-  const formattedDate = new Date()
-    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-    .replace(',', '')
-    .split(' ');
-  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -632,55 +496,6 @@ const Personal = () => {
     </div>
   );
 
-  useEffect(() => {
-    const allData = { ...savedFormData, ...localFormData, country: watch('country') };
-    dispatch(setFormData(allData));
-    if (watch('country')?.value !== userDetailsData?.talent_info?.current_residency?.country?._id) {
-      setValue('state', null);
-      setValue('city', null);
-    }
-
-    if (watch('country')) {
-      dispatch(getStates(watch('country').value));
-      setCitiesOptions([]);
-    }
-    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country')?.value) {
-      setValue('state', savedFormData?.state);
-      if (savedFormData && savedFormData?.state != null) {
-        setValue('city', savedFormData?.city);
-      }
-    }
-  }, [watch('country')]);
-
-  useEffect(() => {
-    const allData = { ...savedFormData, ...localFormData, state: watch('state') };
-    dispatch(setFormData(allData));
-    if (watch('state')?.value !== userDetailsData?.talent_info?.current_residency?.state?._id) {
-      setValue('city', null);
-    }
-
-    if (watch('state')) {
-      dispatch(getCities(watch('state').value));
-    }
-    const state = watch('state');
-    const savedState = savedFormData?.state?.value;
-    const currentState = state?.value;
-
-    if (state && savedFormData && savedState === currentState) {
-      setValue('city', savedFormData?.city ?? '');
-    }
-  }, [watch('state')]);
-
-  useEffect(() => {
-    const requiredData = statesData?.map((state) => ({ label: state.name, value: state._id }));
-    setStatesOptions(requiredData);
-  }, [statesData]);
-
-  useEffect(() => {
-    const requiredData = citiesData?.map((city) => ({ label: city.name, value: city._id }));
-    setCitiesOptions(requiredData);
-  }, [citiesData]);
-
   const onBackClick = () => {
     dispatch(clearAllFormData());
     if (location?.pathname.includes('profile-edit')) {
@@ -692,7 +507,7 @@ const Personal = () => {
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
-    dispatch(setFormDocuments(files));
+    dispatch(setFormDocuments(null));
     if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -702,7 +517,8 @@ const Personal = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    dispatch(setFormDocuments(files));
+    // dispatch(setFormDocuments(files));
+    dispatch(setFormDocuments(null));
     if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -712,77 +528,26 @@ const Personal = () => {
   };
 
   const onSubmit = (data) => {
-    const {
-      tagline,
-      workExperienceYear,
-      workExperienceMonth,
-      professionalIntroduction,
-      role,
-      speakLanguages,
-      readLanguages,
-      writeLanguages,
-      streetAddress,
-      houseNumber,
-      zipCode,
-      country,
-      state,
-      city,
-    } = data;
-    // console.log(data)
+    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages } = data
 
-    const years = parseInt(workExperienceYear, 10) || 0;
-    const months = parseInt(workExperienceMonth, 10) || 0;
-
-    const work_experience = years * 12 + months;
     const professional_intro = professionalIntroduction;
     const languages_speak = speakLanguages?.map((language) => language.value);
-    const languages_read = readLanguages?.map((language) => language.value);
     const languages_write = writeLanguages?.map((language) => language.value);
-    const current_residency = {
-      country: country.value,
-      state: state.value,
-      city: city.value,
-      street_address: streetAddress,
-      house_number: houseNumber,
-      zip_code: zipCode,
+
+    const reqData = {
+      tagline,
+      professional_intro,
+      role: role.value,
+      languages_speak,
+      languages_write,
+      resume: !isEmpty(files)
+        ? {
+            file_name: files[0]?.file?.name || '',
+            file_key: files[0]?.uploadData?.file_key || '',
+          }
+        : {},
     };
 
-    let reqData;
-
-    if (workExperienceYear || workExperienceMonth) {
-      reqData = {
-        tagline,
-        work_experience,
-        professional_intro,
-        role: role.value,
-        languages_speak,
-        languages_read,
-        languages_write,
-        current_residency,
-        resume: !isEmpty(files)
-          ? {
-              file_name: files[0]?.file?.name || '',
-              file_key: files[0]?.uploadData?.file_key || '',
-            }
-          : {},
-      };
-    } else {
-      reqData = {
-        tagline,
-        professional_intro,
-        role: role.value,
-        languages_speak,
-        languages_read,
-        languages_write,
-        current_residency,
-        resume: !isEmpty(files)
-          ? {
-              file_name: files[0]?.file?.name || '',
-              file_key: files[0]?.uploadData?.file_key || '',
-            }
-          : {},
-      };
-    }
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     if (IsresumeParsed) {
       const languagesWritten = watch('writeLanguages')?.map((language) => ({
@@ -793,16 +558,11 @@ const Personal = () => {
         name: language.label,
         _id: language.value,
       }));
-      const languagesRead = watch('readLanguages')?.map((language) => ({
-        name: language.label,
-        _id: language.value,
-      }));
       const resumeUpdatedData = {
         target_info: {
           ...parsedResumeData,
           languages_speak: languagesSpoken,
           languages_write: languagesWritten,
-          languages_read: languagesRead,
           tagline,
           professional_introduction: professionalIntroduction,
         },
@@ -833,41 +593,12 @@ const Personal = () => {
     }
   };
 
-  const loadCountriesOptions = async (search) => {
-    if (search) {
-      return {
-        options: returnFilteredDropdownOptions(search, countriesOptions),
-      };
-    }
-    try {
-      const response = await countriesService();
-
-      const options = response?.data?.data?.map((country) => ({ label: country.name, value: country._id }));
-
-      setCountriesOptions(options);
-
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
-
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.talent_info?.tagline.length > 0) {
         setValue('tagline', savedFormData?.tagline || res?.talent_info?.tagline, {
           shouldValidate: true,
         });
-      }
-      if (res?.talent_info?.work_experience > 0) {
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const years = Math.floor(savedFormData?.workExperienceYear || res?.talent_info?.work_experience / 12);
-        const months = savedFormData?.workExperienceMonth || res?.talent_info?.work_experience % 12;
-
-        setValue('workExperienceYear', years, { shouldValidate: true });
-        setValue('workExperienceMonth', months, { shouldValidate: true });
       }
       if (res?.talent_info?.professional_intro.length > 0) {
         setValue(
@@ -893,10 +624,7 @@ const Personal = () => {
             size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
           },
           uploadData: {
-            file_key:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.file_key
-                : res?.talent_info?.resume?.file_key,
+            file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
         };
@@ -910,62 +638,6 @@ const Personal = () => {
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
-      if (
-        'streetAddress' in res?.talent_info?.current_residency ||
-        'houseNumber' in res?.talent_info?.current_residency ||
-        'zipCode' in res?.talent_info?.current_residency ||
-        'country' in res?.talent_info?.current_residency ||
-        'state' in res?.talent_info?.current_residency ||
-        'city' in res?.talent_info?.current_residency
-      ) {
-        if (res?.talent_info?.current_residency?.street_address.length > 0) {
-          setValue(
-            'streetAddress',
-            savedFormData?.streetAddress || res?.talent_info?.current_residency?.street_address,
-            { shouldValidate: true },
-          );
-        }
-        if (res?.talent_info?.current_residency?.house_number.length > 0) {
-          setValue('houseNumber', savedFormData?.houseNumber || res?.talent_info?.current_residency?.house_number, {
-            shouldValidate: true,
-          });
-        }
-        if (res?.talent_info?.current_residency?.zip_code > 0) {
-          setValue('zipCode', savedFormData?.zipCode || res?.talent_info?.current_residency?.zip_code, {
-            shouldValidate: true,
-          });
-        }
-        if ('country' in res?.talent_info?.current_residency) {
-          setValue(
-            'country',
-            {
-              label: savedFormData?.country?.label || res?.talent_info?.current_residency.country.name,
-              value: savedFormData?.country?.value || res?.talent_info?.current_residency.country._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-        if ('state' in res?.talent_info?.current_residency) {
-          setValue(
-            'state',
-            {
-              label: savedFormData?.state?.label || res?.talent_info?.current_residency.state.name,
-              value: savedFormData?.state?.value || res?.talent_info?.current_residency.state._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-        if ('city' in res?.talent_info?.current_residency) {
-          setValue(
-            'city',
-            {
-              label: savedFormData?.city?.label || res?.talent_info?.current_residency.city.name,
-              value: savedFormData?.city?.value || res?.talent_info?.current_residency.city._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-      }
       if (res?.talent_info?.languages_speak.length > 0) {
         setValue(
           'speakLanguages',
@@ -978,25 +650,6 @@ const Personal = () => {
       } else {
         setValue(
           'speakLanguages',
-          languagesData?.map((language) => ({
-            label: language.name,
-            value: language._id,
-          })),
-          { shouldValidate: true },
-        );
-      }
-      if (res?.talent_info?.languages_read.length > 0) {
-        setValue(
-          'readLanguages',
-          res?.talent_info?.languages_read?.map((language) => ({
-            label: language.name,
-            value: language._id,
-          })),
-          { shouldValidate: true },
-        );
-      } else {
-        setValue(
-          'readLanguages',
           languagesData?.map((language) => ({
             label: language.name,
             value: language._id,
@@ -1030,14 +683,6 @@ const Personal = () => {
     if (!IsresumeParsed && languagesData?.length > 0) {
       setValue(
         'speakLanguages',
-        languagesData?.map((language) => ({
-          label: language.name,
-          value: language._id,
-        })),
-        { shouldValidate: true },
-      );
-      setValue(
-        'readLanguages',
         languagesData?.map((language) => ({
           label: language.name,
           value: language._id,
@@ -1111,7 +756,7 @@ const Personal = () => {
 
   return (
     <ProfileFormContainer>
-      {(IsresumeParsed ? resumeParsedLoading : userDetailsIsLoading && languagesIsLoading) ? (
+      {userDetailsIsLoading && languagesIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
@@ -1145,85 +790,6 @@ const Personal = () => {
                       {errors.tagline && <FormFeedback>{errors.tagline.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
-                      <Row>
-                        <Col sm="12" md="6" lg="6">
-                          <Label className="form-label" for="workExperienceYear">
-                            Work Experience - Years
-                          </Label>
-                          <Controller
-                            id="workExperienceYear"
-                            name="workExperienceYear"
-                            control={control}
-                            render={({ field }) => (
-                              <InputGroup className="input-group-merge">
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  min={0}
-                                  onWheel={(e) => e.target.blur()}
-                                  placeholder="Enter"
-                                  invalid={errors.workExperienceYear && true}
-                                />
-                                <InputGroupText>Year(s)</InputGroupText>
-                              </InputGroup>
-                            )}
-                          />
-                          {errors.workExperienceYear && (
-                            <FormFeedback>{errors.workExperienceYear.message}</FormFeedback>
-                          )}
-                        </Col>
-                        <Col sm="12" md="6" lg="6">
-                          <Label className="form-label" for="workExperienceMonth">
-                            Months
-                          </Label>
-                          <Controller
-                            id="workExperienceMonth"
-                            name="workExperienceMonth"
-                            control={control}
-                            render={({ field }) => (
-                              <InputGroup className="input-group-merge">
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  min={0}
-                                  onWheel={(e) => e.target.blur()}
-                                  placeholder="Enter"
-                                  invalid={errors.workExperienceMonth && true}
-                                />
-                                <InputGroupText>Month(s)</InputGroupText>
-                              </InputGroup>
-                            )}
-                          />
-                          {errors.workExperienceMonth && (
-                            <FormFeedback>{errors.workExperienceMonth.message}</FormFeedback>
-                          )}
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="professionalIntroduction">
-                        Professional Introduction<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="professionalIntroduction"
-                        name="professionalIntroduction"
-                        control={control}
-                        render={({ field }) => (
-                          <TextEditor
-                            name={field.name}
-                            onChange={field.onChange}
-                            value={field.value}
-                            placeholder="Describe in 500 characters."
-                          />
-                        )}
-                      />
-                      {errors.professionalIntroduction && (
-                        <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
-                      )}
-                    </Col>
-                    <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="role">
                         Role<span className="label-asterisk">*</span>
                       </Label>
@@ -1248,13 +814,36 @@ const Personal = () => {
                       {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
                     </Col>
                   </Row>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="professionalIntroduction">
+                        Professional Introduction<span className="label-asterisk me-50">*</span>
+                      </Label>
+                      <Controller
+                        id="professionalIntroduction"
+                        name="professionalIntroduction"
+                        control={control}
+                        render={({ field }) => (
+                          <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Describe in 500 characters."
+                          />
+                        )}
+                      />
+                      {errors.professionalIntroduction && (
+                        <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
+                      )}
+                    </Col>
+                  </Row>
                   <Row className="mb-1 mt-3">
                     <h5 className="m-0">Languages</h5>
                   </Row>
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="speakLanguages">
-                        I can speak well (Top 5)
+                        Language - I can speak well (Top 5)
                       </Label>
                       <Controller
                         id="speakLanguages"
@@ -1278,37 +867,10 @@ const Personal = () => {
                       />
                       {errors.speakLanguages && <FormFeedback>{errors.speakLanguages.message}</FormFeedback>}
                     </Col>
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="readLanguages">
-                        I can read well (Top 5)
-                      </Label>
-                      <Controller
-                        id="readLanguages"
-                        name="readLanguages"
-                        control={control}
-                        invalid={errors.readLanguages && true}
-                        render={({ field }) => (
-                          <AsyncPaginate
-                            isDisabled
-                            isMulti
-                            loadOptions={loadLanguagesOptions}
-                            classNamePrefix="select"
-                            placeholder="Select top 5 language you can read"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.readLanguages,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.readLanguages && <FormFeedback>{errors.readLanguages.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
+
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="writeLanguages">
-                        I can write well (Top 5)
+                        Language - I can write well (Top 5)
                       </Label>
                       <Controller
                         id="writeLanguages"
@@ -1331,160 +893,6 @@ const Personal = () => {
                         )}
                       />
                       {errors.writeLanguages && <FormFeedback>{errors.writeLanguages.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-1 mt-3">
-                    <h5 className="m-0">
-                      Current Address<span className="label-asterisk">*</span>
-                    </h5>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="streetAddress">
-                        Street Address
-                      </Label>
-                      <Controller
-                        id="streetAddress"
-                        name="streetAddress"
-                        control={control}
-                        render={({ field }) => (
-                          <Input
-                            {...field}
-                            placeholder="Enter street address"
-                            invalid={errors.streetAddress && true}
-                            autoComplete="none"
-                          />
-                        )}
-                      />
-                      {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
-                    </Col>
-                    <Col sm="12" md="12" lg="6">
-                      <Row>
-                        <Col sm="6" md="6" lg="6">
-                          <Label className="form-label" for="houseNumber">
-                            House Number
-                          </Label>
-                          <Controller
-                            id="houseNumber"
-                            name="houseNumber"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter house number"
-                                invalid={errors.houseNumber && true}
-                                autoComplete="none"
-                              />
-                            )}
-                          />
-                          {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
-                        </Col>
-                        <Col sm="6" md="6" lg="6">
-                          <Label className="form-label" for="zipCode">
-                            Zip Code
-                          </Label>
-                          <Controller
-                            id="zipCode"
-                            name="zipCode"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter zip code"
-                                invalid={errors.zipCode && true}
-                                autoComplete="none"
-                              />
-                            )}
-                          />
-                          {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="country">
-                        Country<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="country"
-                        name="country"
-                        control={control}
-                        invalid={errors.country && true}
-                        render={({ field }) => (
-                          <AsyncPaginate
-                            styles={customDropdownStyles}
-                            loadOptions={loadCountriesOptions}
-                            classNamePrefix="select"
-                            placeholder="Select your country"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.country,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
-                    </Col>
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="state">
-                        State<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="state"
-                        name="state"
-                        control={control}
-                        invalid={errors.state && true}
-                        value={watch('state')}
-                        render={({ field }) => (
-                          <Select
-                            isDisabled={!watch('country')}
-                            isLoading={statesIsLoading}
-                            options={statesOptions}
-                            menuPosition="fixed"
-                            classNamePrefix="select"
-                            placeholder="Select your state"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.state,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.state && <FormFeedback>{errors?.state?.label?.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-1">
-                    <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="city">
-                        City<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        id="city"
-                        name="city"
-                        control={control}
-                        invalid={errors.city && true}
-                        value={watch('city')}
-                        render={({ field }) => (
-                          <Select
-                            isDisabled={!watch('country') || !watch('state')}
-                            isLoading={citiesIsLoading}
-                            menuPosition="fixed"
-                            minMenuHeight={200}
-                            options={citiesOptions}
-                            classNamePrefix="select"
-                            placeholder="Select your city"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.city,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
                     </Col>
                   </Row>
                 </CardBody>
@@ -1521,27 +929,42 @@ const Personal = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody>
+                  {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column">
                     <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
                       <Col lg="fit">
                         <Info className="font-medium-3 me-50" color="#004280" />
                       </Col>
-
                       <Col className="w-100 ">
-                        <div className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between">
-                          <span style={{ color: '#004280' }}>
-                            <span style={{ color: '#004280' }} className="fw-bold mr-2">
+                        <Row className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between">
+                          <Row style={{ color: '#004280' }}>
+                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
                               Auto Fill {files && files?.length > 0 && 'Profile'}
-                            </span>
-
-                            {files && files.length === 0 && (
-                              <span> - Upload your resume
-                                 
-                                 </span>
-                            )}
-                          </span>
-                          
-                        </div>
+                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            </Col>
+                            <Col lg="2">
+                              {resumeParsedLoading ? (
+                                <Spinner size="sm" />
+                              ) : (
+                                !uploadingFiles.includes(files[0]) &&
+                                files &&
+                                files.length > 0 && (
+                                  <FormGroup switch>
+                                    <Input
+                                      type="switch"
+                                      checked={parseResume}
+                                      onClick={() => {
+                                        setParsedUploaded(false);
+                                        setParseResume(!parseResume);
+                                        dispatch(setResumeParsed(!parseResume));
+                                      }}
+                                    />
+                                  </FormGroup>
+                                )
+                              )}
+                            </Col>
+                          </Row>
+                        </Row>
 
                         {files?.length === 0 && (
                           <>
@@ -1551,7 +974,6 @@ const Personal = () => {
                             >
                               <UploadIconContainer>
                                 <Upload size={18} color={theme.activeNavPillText} />
-                                
                               </UploadIconContainer>
                               <h5 className="fw-bold">Upload Resume</h5>
                             </Label>
@@ -1582,12 +1004,142 @@ const Personal = () => {
                   </div>
                 </CardBody>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1">Profile Completion</h4>
+                  <CardText className="m-0 mt-1">
+                    Make it easier for others to find you by completing your profile.
+                  </CardText>
+                  <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                  <Progress
+                    value={overallPercentageCompletion}
+                    style={{ height: '0.5rem' }}
+                    className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                  />
+                </CardHeader>
+
+                <CardBody>
+                  <hr className="m-0 card-header-border" />
+
+                  {isTrumioTalent && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox"
+                          className="custom-checkbox-input"
+                          checked={isProjectReady}
+                        />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                ?.path || '/marketplace',
+                            )
+                          }
+                        >
+                          {isProjectReady
+                            ? 'Explore Projects'
+                            : `${
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
+                    </div>
+                  )}
+
+                  {isFlextern && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox2"
+                          className="custom-checkbox-input"
+                          checked={isFlexternReady}
+                        />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                                ?.path || '/dashboard',
+                            )
+                          }
+                        >
+                          {isFlexternReady
+                            ? 'Explore Flexternships'
+                            : `${
+                                returnCompleteProfileDetailsCta(
+                                  userTypes.talent,
+                                  profileCompletionFlexternMissingValues,
+                                )?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Form>
       )}
+      {files?.length === 0 && (!userDetailsData?.talent_info?.resume || Object.keys(userDetailsData?.talent_info?.resume).length === 0) && (resumeModalOpen && <UploadResumeModal
+                    modal={resumeModalOpen}
+                    toggleModal={() => setResumeModalOpen(false)}
+                    uploadButton={
+                      <div className="d-flex justify-content-center mt-1 align-items-center">
+                        <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
+                          <h5
+                            style={{
+                              background: '#0065c1',
+                              color: 'white',
+                              paddingBlock: '12px',
+                              borderRadius: '5px',
+                              paddingInline: '16px',
+                            }}
+                            className="fw-bold"
+                          >
+                            Upload Resume
+                          </h5>
+                        </Label>
+                        <Controller
+                          id="resume"
+                          name="resume"
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              ref={filesRef}
+                              id="resume"
+                              type="file"
+                              max={1}
+                              accept="application/pdf"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                handleFileChange(e);
+                              }}
+                            />
+                          )}
+                        />
+                      </div>
+                    }
+                  />)}
     </ProfileFormContainer>
   );
 };
 
-export default Personal;
+export default FlexternPersonal;

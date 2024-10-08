@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Header from '../Header';
 import Tabs from './Tabs';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
@@ -9,25 +9,38 @@ import theme from '../../../configs/themeVariables';
 import { BackButtonContainer } from '../style';
 import { getItemFromSession, removeItemFromSession } from '../../../utility/sessesionStorageControl';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
+import { selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
+import FlexternTabs from '../../../flexternship/flexternOnboarding/FlexternTabs';
 
 const TalentOnboarding = () => {
-  const tabNames = {
-    Account: '1',
-    Personal: '2',
-    Educational: '3',
-    Social: '4',
-    Additional: '5',
-    Availability: '6',
-    Payment: '7',
-    InternHiring: '8',
-    InternXobinHiring: '9',
-  };
-
   const [active, setActive] = useState(tabNames.Account);
 
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isFlexternInvited = useSelector(selectTrumioIsFlextern);
+  const tabNames = isFlexternInvited
+    ? {
+        Account: '1',
+        Personal: '2',
+        Educational: '3',
+        Social: '4',
+        Additional: '5',
+        Availability: '6',
+        Payment: '7',
+        InternHiring: '8',
+        InternXobinHiring: '9',
+      }
+    : {
+        Account: '1',
+        Personal: '2',
+        Educational: '3',
+        Availability: '4',
+        Social: '5',
+        Payment: '6',
+        InternHiring: '7',
+        InternXobinHiring: '8',
+      };
 
   useEffect(() => {
     if (
@@ -46,13 +59,13 @@ const TalentOnboarding = () => {
     )
       setActive(tabNames.Educational);
     else if (
-        location.pathname === `/${userOnboarding.talent}/social-details` ||
-        location.pathname === `/${userProfileEdit.talent}/social-details`
+      location.pathname === `/${userOnboarding.talent}/social-details` ||
+      location.pathname === `/${userProfileEdit.talent}/social-details`
     )
       setActive(tabNames.Social);
     else if (
-        location.pathname === `/${userOnboarding.talent}/additional-details` ||
-        location.pathname === `/${userProfileEdit.talent}/additional-details`
+      location.pathname === `/${userOnboarding.talent}/additional-details` ||
+      location.pathname === `/${userProfileEdit.talent}/additional-details`
     )
       setActive(tabNames.Additional);
     else if (
@@ -104,7 +117,11 @@ const TalentOnboarding = () => {
               </div>
             </BackButtonContainer>
           )}
-          <Tabs tabNames={tabNames} active={active} />
+          {isFlexternInvited ? (
+            <FlexternTabs tabNames={tabNames} active={active} />
+          ) : (
+            <Tabs tabNames={tabNames} active={active} />
+          )}
         </div>
       </div>
     </>
