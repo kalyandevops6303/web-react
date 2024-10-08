@@ -20,6 +20,7 @@ const initialState = {
   cometChatToken: '',
   checkAdmin: null,
   checkAdminLoading: false,
+  appPermissions: null,
 };
 
 const authSlice = createSlice({
@@ -270,6 +271,25 @@ const authSlice = createSlice({
       error: action.payload,
     }),
 
+    // app permissions
+    getAppPermissionsRequest: (state) => ({
+      ...state,
+      loading: true,
+      error: null,
+    }),
+
+    getAppPermissionsSuccess: (state, action) => ({
+      ...state,
+      loading: false,
+      appPermissions: action.payload,
+    }),
+
+    getAppPermissionsFailure: (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.payload,
+    }),
+
     // userData
 
     userDataRequest: (state) => ({
@@ -378,6 +398,9 @@ export const {
   checkAdminSuccess,
   checkAdminFailure,
   googleLoginRequest,
+  getAppPermissionsRequest,
+  getAppPermissionsSuccess,
+  getAppPermissionsFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -17,7 +17,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
-import { logoutAction, switchProfile } from '../../../../redux/actions/authActions';
+import { getAppPermissions, logoutAction, switchProfile } from '../../../../redux/actions/authActions';
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
@@ -164,6 +164,11 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const toggleFeedbackSupportModal = () => {
     setFeedbackSupportModal(!feedbackSupportModal);
   };
+
+  // get app permissions
+  useEffect(() => {
+    dispatch(getAppPermissions());
+  }, []);
 
   const userName = isTeamLoggedIn
     ? userDetailsData?.name
