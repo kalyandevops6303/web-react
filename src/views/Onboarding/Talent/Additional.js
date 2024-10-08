@@ -188,7 +188,7 @@ const Additional = () => {
   const [educationsOptions, setEducationsOptions] = useState([]);
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
   const [defaultSelected, setDefaultSelected] = useState(null);
-  const [files, setFiles] = useState(savedFormDocuments ?? []);
+  const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
@@ -222,18 +222,18 @@ const Additional = () => {
   }, [profileCompletionFlextern, profileCompletionProject]);
 
   const filesRef = useRef();
-  useEffect(() => {
-    const fileReRender = async () => {
-      if (savedFormDocuments != null) {
-        filesRef.current = files;
-        setFiles(savedFormDocuments);
-        dispatch(setFormDocuments(savedFormDocuments));
-      } else {
-        setFiles([]);
-      }
-    };
-    fileReRender();
-  }, [savedFormDocuments]);
+  // useEffect(() => {
+  //   const fileReRender = async () => {
+  //     if (savedFormDocuments != null) {
+  //       filesRef.current = files;
+  //       setFiles(savedFormDocuments);
+  //       dispatch(setFormDocuments(savedFormDocuments));
+  //     } else {
+  //       setFiles([]);
+  //     }
+  //   };
+  //   fileReRender();
+  // }, [savedFormDocuments]);
 
   const userDetailsData = useSelector(userData);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
@@ -267,7 +267,11 @@ const Additional = () => {
     const response = await identityUploadService(file.name);
     const fileWithUrl = {
       id: uuidv4(),
-      file,
+      file:{
+        name: file.name,
+        size: file.size,
+        lastModified: file.lastModified,
+      },
       uploadData: response?.data?.data,
       isUploaded: false,
     };
@@ -486,6 +490,7 @@ const Additional = () => {
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
+    dispatch(setFormDocuments(null));
     if (location.pathname?.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
@@ -622,28 +627,13 @@ const Additional = () => {
         const file = {
           id: uuidv4(),
           file: {
-            name:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.file?.name
-                : res?.additional_info?.identity_verification?.file_name,
-            size:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.file?.size
-                : res?.additional_info?.identity_verification?.size,
-            lastModified:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.file?.lastModified
-                : res?.additional_info?.identity_verification?.created_at,
+            name: res?.additional_info?.identity_verification?.file_name,
+            size: res?.additional_info?.identity_verification?.size,
+            lastModified: res?.additional_info?.identity_verification?.created_at,
           },
           uploadData: {
-            upload_url:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.upload_url
-                : res?.additional_info?.identity_verification?.upload_url,
-            file_key:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.file_key
-                : res?.additional_info?.identity_verification?.file_key,
+            upload_url: res?.additional_info?.identity_verification?.upload_url,
+            file_key: res?.additional_info?.identity_verification?.file_key,
           },
           isUploaded: true,
         };
