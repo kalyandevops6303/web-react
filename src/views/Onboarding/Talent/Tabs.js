@@ -106,9 +106,9 @@ const Tabs = ({ tabNames, active }) => {
           }
         }}
       >
-        <NavLink active={isActive} className={isDisabled ? 'disabled-tab' : ''}>
-          {React.cloneElement(icon, { className: `font-medium-3 me-50 ${isDisabled ? 'text-muted' : ''}` })}
-          <span className={`fw-bold ${isDisabled ? 'text-muted' : ''}`}>{text}</span>
+        <NavLink active={isActive} className={isDisabled ? 'disabled-tab icon-disabled' : 'icon-enabled'}>
+          {React.cloneElement(icon, { className: isDisabled ? `font-medium-3 me-50 icon-disabled` : ` font-medium-3 me-50 icon-enabled` })}
+          <span className={`fw-bold ${isDisabled ? 'text-muted' : ''}`} style={{'color' : `${isDisabled ?  '#d1d1d1' :'#9e9e9e' }`}}>{text}</span>
         </NavLink>
       </NavItem>
     );
