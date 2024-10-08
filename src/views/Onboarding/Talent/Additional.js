@@ -275,7 +275,7 @@ const Additional = () => {
       uploadData: response?.data?.data,
       isUploaded: false,
     };
-    dispatch(setFormDocuments([fileWithUrl]));
+    // dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
   };
@@ -474,7 +474,8 @@ const Additional = () => {
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
-    dispatch(setFormDocuments(files));
+    // dispatch(setFormDocuments(files));
+    dispatch(setFormDocuments(null));
     if (location?.pathname.includes('profile-edit')) {
       if (flexternBoolean && trumioTalent) {
         navigate(`/${userProfileEdit.talent}/availability-details`);
@@ -499,7 +500,8 @@ const Additional = () => {
   };
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    dispatch(setFormDocuments(files));
+    // dispatch(setFormDocuments(files));
+    dispatch(setFormDocuments(null));
     if (location?.pathname.includes('profile-edit')) {
       if (flexternBoolean && trumioTalent) {
         navigate(`/${userProfileEdit.talent}/availability-details`);
@@ -638,7 +640,6 @@ const Additional = () => {
           isUploaded: true,
         };
         setFiles([file]);
-        dispatch(setFormDocuments([file]));
       }
     }
   };
