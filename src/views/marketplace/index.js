@@ -9,11 +9,12 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 import CreateProjectButton from './overview/CreateProjectButton';
-import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectFlexternBoolean } from '../../redux/selectors/authSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
 import { clearData } from '../../redux/reducers/marketPlace';
+import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 
 const MarketPlaceContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -54,11 +55,17 @@ const MarketPlace = () => {
       : getItem('selectedMarketplaceTab'),
   );
 
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
     setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
-    dispatch(getProfilePercentage());
+    if(isFlextern){
+      dispatch(getProfileCompletionFlextern());
+    }
+    else{
+      dispatch(getProfilePercentage());
+    }
     dispatch(clearProjectData());
     setItem('baseRoute', 'marketplace');
 

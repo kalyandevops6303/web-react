@@ -16,7 +16,7 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { clearData, makeTeamMemberSuccess } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
-import { selectAuthUserData, selectUserData } from '../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectFlexternBoolean, selectUserData } from '../../redux/selectors/authSelectors';
 import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
 import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
 import { getProfilePercentage, getTeamProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
@@ -28,6 +28,7 @@ import PublicTeamMembersListingModal from '../modals/PublicTeamMembersListingMod
 import MembersListingCard from './overview/MembersListingCard';
 import AssessedSkills from './overview/AssessedSkills';
 import AssessedSkillsTeam from './overview/AssessedSkillsTeam';
+import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -94,11 +95,16 @@ const UserDetails = () => {
         metadata: { page: 1, page_size: 10 },
       }),
     );
-
+    const isFlextern = useSelector(selectFlexternBoolean);
     // to fetch entity's profile percentage data if showProfilePercent is true
     if (showProfilePercent) {
       if (isTalentView || isClient) {
-        dispatch(getProfilePercentage());
+        if(isFlextern){
+          dispatch(getProfileCompletionFlextern());
+        }
+        else{
+          dispatch(getProfilePercentage());
+        }
       }
       if (isTeamView || isClubView) {
         dispatch(getTeamProfilePercentage());

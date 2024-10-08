@@ -39,8 +39,9 @@ import { clearInitedByData } from '../../../redux/reducers/projectDetails';
 import { AccordionBodyContent } from '../../create-bid/style';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
-import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { getMyTeam } from '../../../redux/actions/dashboardActions';
+import { getProfileCompletionFlextern } from '../../../redux/actions/talentOnboardingActions';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -167,10 +168,15 @@ const BidMilestone = () => {
     setAccpetModal(false);
     setRejectModal(false);
   };
-
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      dispatch(getProfilePercentage());
+      if(isFlextern){
+        dispatch(getProfileCompletionFlextern());
+      }
+      else{
+        dispatch(getProfilePercentage());
+      }
     }
   }, []);
 
