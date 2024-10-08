@@ -23,25 +23,10 @@ const initialState = {
   appPermissions: {
     DASHBOARD: {
       PAYMENT_METRICS: true,
-      REWARDS: true,
       PROJECTS: {
-        ACTIVE_PROJECTS: true,
         UPCOMING_PROJECTS: true,
       },
-      PAYMENTS: {
-        UPCOMING_PAYMENTS: true,
-      },
-      OPEN_LISTINGS: {
-        RECEIVED_BIDS: true,
-        EXPIRED_LISTINGS: true,
-        RECOMMENDED_TEAMS: true,
-      },
-      TEAMS: {
-        RECOMMENDED_TEAMS: true,
-      },
-      AVAILABILITY: true,
       ALERTS: true,
-      DISPUTES: true,
     },
     MARKETPLACE: {
       ALL_LISTINGS: true,
@@ -65,12 +50,7 @@ const initialState = {
       FAVOURITES: true,
     },
     PROJECT_DETAIL: {
-      TEAM: true,
-      BID: true,
-      MILESTONE: true,
       PAYMENT: true,
-      RATING: true,
-      INFRASTRUCTURE: true,
     },
   },
 };

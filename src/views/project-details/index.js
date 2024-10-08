@@ -9,7 +9,7 @@ import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import { InviteView, stepName, steps, infrastructureStep } from './overview/constants';
 import BidView from './overview/BidView';
 import TeamView from './overview/TeamView';
-import { projectDetails,selectContractData,selectNDAData } from '../../redux/selectors/projectDetailsSelectors';
+import { projectDetails, selectContractData, selectNDAData } from '../../redux/selectors/projectDetailsSelectors';
 import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import Milestone from './milestones/Milestone';
@@ -29,6 +29,8 @@ import DownloadCertificate from './overview/DownloadCertificate';
 import { updatePaymentStatus } from '../../redux/actions/milestonePaymentActions';
 import { downloadCertificate } from '../../redux/actions/projectDetailsAction';
 import { verifyInfraAccessService } from '../../services/infrastructureServices';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -65,7 +67,7 @@ const ProjectDetails = () => {
   const [selectedMilestone, setSelectedMilestone] = useState(null);
   const currentMilestone = useSelector((state) => state.milestone.milestoneData);
   const params = useParams();
-
+  const appPermissions = useSelector(appPermissionsSelector);
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
   const isClient = user?.user_type === userTypes.client;
 
@@ -113,7 +115,7 @@ const ProjectDetails = () => {
     let updatedSteps = [];
     if (projectDetailsData) {
       updatedSteps = [...steps]; // Create a copy of the original steps array
-      
+
       if (projectDetailsData?.status === projectStatusEnum.COMPLETED) {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
@@ -134,36 +136,71 @@ const ProjectDetails = () => {
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
       }
-      if(projectDetailsData?.status !== projectStatusEnum.COMPLETED){
+      if (projectDetailsData?.status !== projectStatusEnum.COMPLETED) {
         let signedBooleanForMilestoneTab;
-        let signedBooleanForPaymentTab; 
-        if(projectDetailsData?.nda?.is_nda) {
-          // if nda is signed then ndaData and contractData both will be there if nda is not is not signed then only ndaData will be there check the action 
-          if(ndaData) {
-            if(ndaData?.is_signed) { // checking whether the nda is signed by the current user or not 
-               // check whether the current user is client or a talent 
-               if(isClient && contractData) {
-                  signedBooleanForMilestoneTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made && contractData?.is_signed;// checks whether the document is signed by both the talent and client party the contract and nda and the payment has been made or not
-                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent &&  contractData?.is_documents_signed && ndaData?.is_documents_signed && contractData?.is_signed;
-                  // checks whether the document is signed by both the talent and client party the contract and nda
-               } else if (!isClient && contractData) {
-                  signedBooleanForMilestoneTab = ndaData?.is_documents_signed && ndaData?.is_signed && ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_signed; 
-                  signedBooleanForPaymentTab = ndaData?.is_documents_sent && contractData?.is_documents_sent && contractData?.is_documents_signed && ndaData?.is_documents_signed && contractData?.is_signed;
-               }
+        let signedBooleanForPaymentTab;
+        if (projectDetailsData?.nda?.is_nda) {
+          // if nda is signed then ndaData and contractData both will be there if nda is not is not signed then only ndaData will be there check the action
+          if (ndaData) {
+            if (ndaData?.is_signed) {
+              // checking whether the nda is signed by the current user or not
+              // check whether the current user is client or a talent
+              if (isClient && contractData) {
+                signedBooleanForMilestoneTab =
+                  ndaData?.is_documents_sent &&
+                  contractData?.is_documents_sent &&
+                  contractData?.is_payment_made &&
+                  contractData?.is_documents_signed &&
+                  contractData?.is_payment_made &&
+                  contractData?.is_signed; // checks whether the document is signed by both the talent and client party the contract and nda and the payment has been made or not
+                signedBooleanForPaymentTab =
+                  ndaData?.is_documents_sent &&
+                  contractData?.is_documents_sent &&
+                  contractData?.is_documents_signed &&
+                  ndaData?.is_documents_signed &&
+                  contractData?.is_signed;
+                // checks whether the document is signed by both the talent and client party the contract and nda
+              } else if (!isClient && contractData) {
+                signedBooleanForMilestoneTab =
+                  ndaData?.is_documents_signed &&
+                  ndaData?.is_signed &&
+                  ndaData?.is_documents_sent &&
+                  contractData?.is_documents_sent &&
+                  contractData?.is_payment_made &&
+                  contractData?.is_documents_signed &&
+                  contractData?.is_signed;
+                signedBooleanForPaymentTab =
+                  ndaData?.is_documents_sent &&
+                  contractData?.is_documents_sent &&
+                  contractData?.is_documents_signed &&
+                  ndaData?.is_documents_signed &&
+                  contractData?.is_signed;
+              }
             } else {
               signedBooleanForMilestoneTab = false;
               signedBooleanForPaymentTab = false;
             }
           }
-        } else if(contractData) {
-            if(isClient) {
-              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_signed ;
-              signedBooleanForPaymentTab = contractData?.is_documents_sent && contractData?.is_documents_signed && contractData?.is_signed; 
-            } else {
-              signedBooleanForMilestoneTab = contractData?.is_documents_sent && contractData?.is_payment_made && contractData?.is_documents_signed && contractData?.is_payment_made && contractData?.is_signed;
-              signedBooleanForPaymentTab = contractData?.is_documents_sent && contractData?.is_documents_signed && contractData?.is_signed;
-            }
+        } else if (contractData) {
+          if (isClient) {
+            signedBooleanForMilestoneTab =
+              contractData?.is_documents_sent &&
+              contractData?.is_payment_made &&
+              contractData?.is_documents_signed &&
+              contractData?.is_signed;
+            signedBooleanForPaymentTab =
+              contractData?.is_documents_sent && contractData?.is_documents_signed && contractData?.is_signed;
+          } else {
+            signedBooleanForMilestoneTab =
+              contractData?.is_documents_sent &&
+              contractData?.is_payment_made &&
+              contractData?.is_documents_signed &&
+              contractData?.is_payment_made &&
+              contractData?.is_signed;
+            signedBooleanForPaymentTab =
+              contractData?.is_documents_sent && contractData?.is_documents_signed && contractData?.is_signed;
           }
+        }
 
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: !signedBooleanForMilestoneTab };
@@ -171,13 +208,14 @@ const ProjectDetails = () => {
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: !signedBooleanForPaymentTab };
       }
       // Append irrespective of the status
-      if (infrastructureAccess && isClient) { // Checks if the user is client and has infrastructure access
+      if (infrastructureAccess && isClient) {
+        // Checks if the user is client and has infrastructure access
         updatedSteps.push({ ...infrastructureStep, isDisabled: false }); // add a new step
       }
 
       setStepsArray(updatedSteps);
     }
-  }, [projectDetailsData?.status, infrastructureAccess,ndaData,contractData]);
+  }, [projectDetailsData?.status, infrastructureAccess, ndaData, contractData]);
 
   useEffect(() => {
     let updatedInviteSteps = [];
@@ -189,7 +227,11 @@ const ProjectDetails = () => {
   }, [invitedByData?.request_status]);
 
   useEffect(() => {
-    if (projectDetailsData?.status === projectStatusEnum.COMPLETED && projectDetailsData?.completed_certificates && !isClient) {
+    if (
+      projectDetailsData?.status === projectStatusEnum.COMPLETED &&
+      projectDetailsData?.completed_certificates &&
+      !isClient
+    ) {
       dispatch(downloadCertificate({ project_id: projectId, onSuccess }));
     }
   }, [projectDetailsData?.status]);
@@ -297,16 +339,60 @@ const ProjectDetails = () => {
             />
           )}
           <Routes>
-            <Route path="bid" element={<BidView />} />
             <Route
-              path="milestone"
-              element={<Milestone selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />}
+              path="bid"
+              element={
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.BID']}>
+                  <BidView />{' '}
+                </PermissionWrapper>
+              }
             />
 
-            <Route path="payment" element={<PaymentTab />} />
-            <Route path="team" element={<TeamView />} />
-            <Route path="rating" element={<RatingView />} />
-            <Route path="infrastructure" element={<InfrastructureView />} />
+            <Route
+              path="milestone"
+              element={
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.MILESTONE']}>
+                  <Milestone selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />
+                </PermissionWrapper>
+              }
+            />
+
+            <Route
+              path="payment"
+              element={
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.PAYMENT']}>
+                  <PaymentTab />{' '}
+                </PermissionWrapper>
+              }
+            />
+
+            <Route
+              path="team"
+              element={
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.TEAM']}>
+                  <TeamView />
+                </PermissionWrapper>
+              }
+            />
+
+            <Route
+              path="rating"
+              element={
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.RATING']}>
+                  <RatingView />{' '}
+                </PermissionWrapper>
+              }
+            />
+
+            <Route
+              path="infrastructure"
+              element={
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.INFRASTRUCTURE']}>
+                  <InfrastructureView />{' '}
+                </PermissionWrapper>
+              }
+            />
+
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
             <Route path="milestone/project-invitation/:inviteId" element={<BidMilestone />} />
             <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />

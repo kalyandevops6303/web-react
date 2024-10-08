@@ -47,20 +47,6 @@ const PrivateDashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Mock response of permissions for role based actions
-  // const permissions = {
-  //   dashboard: {
-  //     alerts: true,
-  //     'upcoming-payments': true,
-  //   },
-  //   'project-management': {
-  //     tabs: {
-  //       team: true,
-  //       payment: true,
-  //     },
-  //   },
-  // };
-
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
@@ -316,14 +302,17 @@ const PrivateDashboard = () => {
               <EarningCard />
             </Col>
             <Col lg="6" sm="12">
-              <RewardsCard />
+              <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.REWARDS']}>
+                <RewardsCard />
+              </PermissionWrapper>
             </Col>
           </Row>
-          <section className="mb-2">
-            <Header className="mb-1">Projects</Header>
-            <ProjectListing />
-          </section>
-          {/* Syntax for Permission Wrapper for role based wrapper  */}
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.UPCOMING_PROJECTS']}>
+            <section className="mb-2">
+              <Header className="mb-1">Projects</Header>
+              <ProjectListing />
+            </section>
+          </PermissionWrapper>
 
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PAYMENTS.UPCOMING_PAYMENTS']}>
             <section className="mb-2">
@@ -332,16 +321,20 @@ const PrivateDashboard = () => {
             </section>
           </PermissionWrapper>
           {userDetailsData?.user_type === userTypes.client && (
-            <section className="mb-2">
-              <Header className="mb-1">Open Listings</Header>
-              <OpenListing />
-            </section>
+            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.OPEN_LISTINGS']}>
+              <section className="mb-2">
+                <Header className="mb-1">Open Listings</Header>
+                <OpenListing />
+              </section>
+            </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.client && (
-            <section className="mb-2">
-              <Header className="mb-1">Teams</Header>
-              <RecommendedTeamsListing />
-            </section>
+            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS']}>
+              <section className="mb-2">
+                <Header className="mb-1">Teams</Header>
+                <RecommendedTeamsListing />
+              </section>
+            </PermissionWrapper>
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <section className="mb-2">
@@ -371,7 +364,15 @@ const PrivateDashboard = () => {
 
         <Col lg="4" sm="12">
           {userDetailsData?.team_type !== userTypes.club && (
-            <div>{userDetailsData?.user_type === 'CLIENT' ? <AvailableTime /> : <AssessmentsOverview />}</div>
+            <div>
+              {userDetailsData?.user_type === 'CLIENT' ? (
+                <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.AVAILABILITY']}>
+                  <AvailableTime />
+                </PermissionWrapper>
+              ) : (
+                <AssessmentsOverview />
+              )}
+            </div>
           )}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
@@ -388,7 +389,9 @@ const PrivateDashboard = () => {
             />
           )}
           <Alerts />
-          <Disputes handleRaiseDispute={handleRaiseDispute} />
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.DISPUTES']}>
+            <Disputes handleRaiseDispute={handleRaiseDispute} />
+          </PermissionWrapper>
         </Col>
       </Row>
     </div>

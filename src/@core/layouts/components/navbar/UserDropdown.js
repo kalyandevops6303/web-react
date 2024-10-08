@@ -222,7 +222,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
             </UncontrolledTooltip>
           )}
           {isDelegate ? (
-            <span className="user-name" id="delegateUsername">
+            <span className="user-name truncate-1" id="delegateUsername">
               {truncateSentence({ sentence: `${userName} (${adminUsername})`, maxCharacters: 15 })}
             </span>
           ) : (
