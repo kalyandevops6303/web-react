@@ -60,7 +60,6 @@ import { filteredFormSchema } from '../../utility/Utils';
 import { getUserData } from '../../redux/actions/authActions';
 import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
 import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
-import ProgramFlexternorProjectModal from '../modals/ProgramFlexternOrProjectModal';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { ProgressBarWrapper } from '../create-bid/style';
 import { Progress } from 'reactstrap';
@@ -157,7 +156,6 @@ const Account = () => {
   const convertReferralIsLoading = useSelector(convertReferralLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(savedFormData?.resetPasswordModal || null);
-  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
 
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [selectedImage, setSelectedImage] = useState(savedFormData?.selectedImage || null);
@@ -170,10 +168,7 @@ const Account = () => {
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
   };
-  const toggleFlexternOrProjectModal = () => {
-    setFlexternOrProjectModal(!flexternOrProjectModal);
-  };
-
+  
   useEffect(() => {
     dispatch(setFormData({ ...savedFormData, resetPasswordModal }));
   }, [resetPasswordModal]);
@@ -325,17 +320,12 @@ const Account = () => {
         dispatch(saveClientProfileDetails(reqData, onSuccess));
       }
     }
+
   };
 
   useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
   }, []);
-
-  useEffect(() => {
-    if (userDetailsData?.user_type === userTypes.talent && userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS && !userDetailsData?.talent_info) {
-      setFlexternOrProjectModal(true);
-    }
-  }, [userDetailsData]);
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -664,7 +654,6 @@ const Account = () => {
           </div>
         </Form>
       )}
-      {flexternOrProjectModal && <ProgramFlexternorProjectModal modal={flexternOrProjectModal} toggleModal={toggleFlexternOrProjectModal} />}
     </AccountDetailsFormContainer>
   );
 };
