@@ -10,13 +10,14 @@ import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectUserData } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { getAlertsNotifications, markNotificationAsRead } from '../../../redux/actions/notificationsActions';
 import getTeamId from '../../../utility/commonUtils';
 import { getItem } from '../../../utility/localStorageControl';
+import { getProfileCompletionFlextern } from '../../../redux/actions/talentOnboardingActions';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -34,23 +35,26 @@ const Alerts = () => {
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
   const isDelegate = getItem('isDelegate');
-
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     dispatch(getAlertsNotifications({ priority: [1, 2], page: 1, pageSize: 4, oldData: [] }));
 
     if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
       dispatch(getTeamProfilePercentage());
-    } else {
-      dispatch(getProfilePercentage());
-    }
+    } else if(isFlextern){
+        dispatch(getProfileCompletionFlextern());
+      }
+      else{
+        dispatch(getProfilePercentage());
+      }
   }, [userDetailsData?.user_type]);
 
   useEffect(() => {
     returnCompleteProfileDetailsCta(
       talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
       profilePercentageData?.values_missing,
-    )
-  }, [])
+    );
+  }, []);
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);

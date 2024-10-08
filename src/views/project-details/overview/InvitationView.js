@@ -20,6 +20,8 @@ import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import CreateBidModal from '../../modals/CreateBidModal';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
+import { getProfileCompletionFlextern } from '../../../redux/actions/talentOnboardingActions';
+import { selectFlexternBoolean } from '../../../redux/selectors/authSelectors';
 
 const InvitationView = () => {
   const dispatch = useDispatch();
@@ -57,10 +59,15 @@ const InvitationView = () => {
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
-
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      dispatch(getProfilePercentage());
+      if(isFlextern){
+        dispatch(getProfileCompletionFlextern());
+      }
+      else{
+        dispatch(getProfilePercentage());
+      }
     }
   }, []);
 

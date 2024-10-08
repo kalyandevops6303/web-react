@@ -11,6 +11,8 @@ import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { returnDetailsForMarketPlace } from '../../../utility/Utils';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { getProfileCompletionFlextern } from '../../../redux/actions/talentOnboardingActions';
+import { selectFlexternBoolean } from '../../../redux/selectors/authSelectors';
 
 const NoDataFoundComponent = ({ isRecommanded }) => {
   const dispatch = useDispatch();
@@ -29,8 +31,14 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
       margin-bottom: 4rem !important;
     }
   `;
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
-    dispatch(getProfilePercentage());
+    if(isFlextern){
+      dispatch(getProfileCompletionFlextern());
+    }
+    else{
+      dispatch(getProfilePercentage());
+    }
   }, []);
 
   const onAddDetailsClick = (path) => {
