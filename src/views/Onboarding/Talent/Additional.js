@@ -849,7 +849,8 @@ const Additional = () => {
                               name="institutionEmail"
                               control={control}
                               render={({ field }) => (
-                                <Input {...field} placeholder="Enter URL" invalid={errors.institutionEmail && true} />
+                                <Input {...field} placeholder="Enter your institute email id
+                                " invalid={errors.institutionEmail && true} />
                               )}
                             />
                             {errors.institutionEmail && <FormFeedback>{errors.institutionEmail.message}</FormFeedback>}

@@ -9,7 +9,7 @@ import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button} from 'reactstra
 import toast from 'react-hot-toast';
 import { CreateBidRadioOption } from '../styled';
 import { selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
-import { saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../redux/reducers/auth';
 
 
@@ -30,8 +30,8 @@ const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
   };
 
   const onSuccess = () => {
-    navigate('/talent-onboarding/account-details');
     toggleModal();
+    navigate('/talent-onboarding/account-details');
   };
   const onNextClick = () => {
      const { flextern , trumio_talent } = selectedPrograms;
