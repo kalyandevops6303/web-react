@@ -20,7 +20,59 @@ const initialState = {
   cometChatToken: '',
   checkAdmin: null,
   checkAdminLoading: false,
-  appPermissions: null,
+  appPermissions: {
+    DASHBOARD: {
+      PAYMENT_METRICS: true,
+      REWARDS: true,
+      PROJECTS: {
+        ACTIVE_PROJECTS: true,
+        UPCOMING_PROJECTS: true,
+      },
+      PAYMENTS: {
+        UPCOMING_PAYMENTS: true,
+      },
+      OPEN_LISTINGS: {
+        RECEIVED_BIDS: true,
+        EXPIRED_LISTINGS: true,
+        RECOMMENDED_TEAMS: true,
+      },
+      TEAMS: {
+        RECOMMENDED_TEAMS: true,
+      },
+      AVAILABILITY: true,
+      ALERTS: true,
+      DISPUTES: true,
+    },
+    MARKETPLACE: {
+      ALL_LISTINGS: true,
+      MY_LISTINGS: true,
+      BIDS_RECEIVED: true,
+      TALENTS: true,
+      TEAMS: true,
+    },
+    PROJECT: {
+      ONGOING: true,
+      UPCOMING: true,
+      COMPLETED: true,
+      TERMINATED: true,
+      DISPUTED: true,
+      INVITED: true,
+    },
+    MY_TEAM: {
+      TEAMS: true,
+      TEAM_MEMBERS: true,
+      RECOMMENDED: true,
+      FAVOURITES: true,
+    },
+    PROJECT_DETAIL: {
+      TEAM: true,
+      BID: true,
+      MILESTONE: true,
+      PAYMENT: true,
+      RATING: true,
+      INFRASTRUCTURE: true,
+    },
+  },
 };
 
 const authSlice = createSlice({
@@ -281,7 +333,7 @@ const authSlice = createSlice({
     getAppPermissionsSuccess: (state, action) => ({
       ...state,
       loading: false,
-      appPermissions: action.payload,
+      //appPermissions: action.payload,
     }),
 
     getAppPermissionsFailure: (state, action) => ({

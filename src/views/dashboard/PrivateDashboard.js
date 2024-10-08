@@ -17,7 +17,7 @@ import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from 
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectUserData } from '../../redux/selectors/authSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
@@ -46,7 +46,7 @@ import PermissionWrapper from '../../PermissionWrapper';
 const PrivateDashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
- 
+
   // Mock response of permissions for role based actions
   // const permissions = {
   //   dashboard: {
@@ -93,6 +93,7 @@ const PrivateDashboard = () => {
   const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
 
   const userDetailsData = useSelector(selectUserData);
+  const appPermissions = useSelector(appPermissionsSelector);
   const profilePercentageData = useSelector(profilePercentage);
   const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
@@ -321,16 +322,15 @@ const PrivateDashboard = () => {
           <section className="mb-2">
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
-          </section> 
+          </section>
           {/* Syntax for Permission Wrapper for role based wrapper  */}
-          {userDetailsData?.team_type === userTypes.team ? null : (
-            <PermissionWrapper permissions={[]} permissionName={[""]}> 
-              <section className="mb-2">
-                <Header className="mb-1">Payments</Header>
-                <PaymentListing />
-              </section>
-            </PermissionWrapper>
-          )}
+
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PAYMENTS.UPCOMING_PAYMENTS']}>
+            <section className="mb-2">
+              <Header className="mb-1">Payments</Header>
+              <PaymentListing />
+            </section>
+          </PermissionWrapper>
           {userDetailsData?.user_type === userTypes.client && (
             <section className="mb-2">
               <Header className="mb-1">Open Listings</Header>
