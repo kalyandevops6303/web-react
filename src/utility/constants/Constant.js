@@ -218,6 +218,11 @@ const bidStages = {
   NO_STAGE: 'NO_STAGE',
 };
 
+const delegateTypes = {
+  payment_delegate: 'PAYMENT_DELEGATE',
+  full_access: 'FULL_ACCESS',
+}
+
 const CUSTOMER_SUPPORT_TYPES = {
   missing_institute: 'missing_institute',
   missing_skill: 'missing_skill',
@@ -287,6 +292,7 @@ export {
   PAYMENT_TYPES,
   SUPPORT_EMAIL,
   projectStatusEnum,
+  delegateTypes,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
   PROJECT_INVITATION_STATUS,
