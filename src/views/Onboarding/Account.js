@@ -101,6 +101,7 @@ const Account = () => {
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
   const isFlextern = useSelector((state) => state.auth?.flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
+  const userType = useSelector((state) => state.auth?.userType);
 
   const {
     control,
@@ -609,7 +610,7 @@ const Account = () => {
             </div>
           </div>
           <div className='w-25'>
-            <Card>
+            {userType != userTypes.client && <Card>
               <CardHeader>
                 <h4 className="m-0 mt-1">Profile Completion</h4>
                 <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
@@ -650,7 +651,7 @@ const Account = () => {
                   </div>
                 </div>}
               </CardBody>
-            </Card>
+            </Card>}
           </div>
         </Form>
       )}
