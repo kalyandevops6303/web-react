@@ -21,7 +21,7 @@ import { logoutAction, switchProfile } from '../../../../redux/actions/authActio
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
-import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
+import { clubStatus, delegateTypes, userTypes } from '../../../../utility/constants/Constant';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
@@ -57,6 +57,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isDelegate = getItem('isDelegate');
+  const delegateType = getItem('delegateType');
 
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
   const [supportModal, setSupportModal] = useState(false);
@@ -265,7 +266,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
         <DropdownMenu style={{ width: '24rem' }} end>
           {isDelegate && (
             <div className="mt-1">
-              <span className="px-1">Delegate for:</span>
+              <span className="px-1">{delegateType === delegateTypes.payment_delegate ? 'Payment Delegate for' : 'Delegate for'}:</span>
               <div className="mt-50 border-bottom border-grey-light">
                 {userDetailsData && (
                   <DelegateNameCard

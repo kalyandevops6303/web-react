@@ -116,6 +116,9 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     if (res.data.data.is_delegate) {
       setItem('isDelegate', res.data.data.is_delegate);
     }
+    if (res.data.data.delegate_type) {
+      setItem('delegateType', res.data.data.delegate_type);
+    }
     window.dataLayer.push({ user_id: res.data.data.user_id });
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {

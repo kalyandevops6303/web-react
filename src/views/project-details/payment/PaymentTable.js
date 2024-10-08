@@ -26,6 +26,11 @@ import { CustomBadge } from '../../styled';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { Modal } from 'reactstrap';
 import { invitePaymentDelegate } from '@src/redux/actions/delegateActions';
+import ShowToastMessage from '@src/@core/components/toast';
+import { SUCCESS } from '@src/utility/constants/ToastTypes';
+import { Spinner } from 'reactstrap';
+import '@src/views/Onboarding/style.js';
+import { AccountDetailsFormContainer } from '@src/views/Onboarding/style.js';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -45,6 +50,7 @@ const PaymentTable = () => {
   const milestoneTransactionDetails = useSelector((state) => state.milestonePayment?.milestoneTransactionDetails);
   const user = useSelector(userData);
   const savedUserData = useSelector(selectSavedUserData);
+  const paymentDelegateInviteLoading = useSelector((state) => state.delegate?.isLoading);
 
   const dispatch = useDispatch();
 
@@ -53,6 +59,7 @@ const PaymentTable = () => {
   }
 
   const onSuccess = () => {
+    ShowToastMessage(SUCCESS, 'The email containing the sign-up link has been successfully sent to the payment delegate');
     setShowPaymentDelegateModal(false)
   }
 
@@ -535,40 +542,44 @@ const PaymentTable = () => {
         <Modal isOpen={showPaymentDelegateModal} contentClassName="custom-modal-style" className="modal-dialog-centered">
           <ModalHeader toggle={() => setShowPaymentDelegateModal(!showPaymentDelegateModal)} />
           <ModalBody className="pt-0 px-5">
-          <h2 className="font-large-1 text-center mb-2 mt-2">Add Payment Delegate</h2>
-          
-          <div className='d-flex flex-column gap-2'>
+            <h2 className="font-large-1 text-center mb-2 mt-2">Add Payment Delegate</h2>
 
-          <div>
-          <label>Delegate Email</label>
-          <Input 
-          placeholder='Enter Email ID'
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          />
-          </div>
+            <div className='d-flex flex-column gap-2'>
+
+              <div>
+                <label>Delegate Email</label>
+                <Input
+                  placeholder='Enter Email ID'
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                />
+              </div>
 
 
-          <div className='mobile-input'>
-          <label>Project Name</label>
-          <Input 
-          defaultValue={projectDetailsData?.details?.name}
-          className="filled-form-control"
-          disabled
-          />
-          </div>
+              <div className='mobile-input'>
+                <label>Project Name</label>
+                <AccountDetailsFormContainer>
+                  <Input
+                    defaultValue={projectDetailsData?.details?.name}
+                    className="form-control filled-form-control"
+                    disabled
+                  />
+                </AccountDetailsFormContainer>
+              </div>
 
-          <div>
-          <b>Note:</b> An invitation link will be sent to the above mention email id.
-          </div>
-          </div>
+              <div>
+                <b>Note:</b> An invitation link will be sent to the above mention email id.
+              </div>
+            </div>
 
-          <div className='d-flex justify-content-end mt-2'>
-            <Button color='primary'
-            onClick={onSubmit}
-            >Send Invite</Button>
-          </div>
-          
+            <div className='d-flex justify-content-end mt-2'>
+              <Button color='primary'
+                onClick={onSubmit}
+              >
+                {paymentDelegateInviteLoading ? <Spinner size="sm" /> : 'Send Invite'}
+              </Button>
+            </div>
+
           </ModalBody>
         </Modal>
       }
