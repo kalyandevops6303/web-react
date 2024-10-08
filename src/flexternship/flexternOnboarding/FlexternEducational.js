@@ -22,44 +22,39 @@ import { ChevronLeft, ChevronRight, Plus, Info } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
-import { ProfileFormContainer, UploadIconContainer } from '../style';
-import theme from '../../../configs/themeVariables';
+import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
+import theme from '../../configs/themeVariables';
 import {
   getUserDetails,
   saveProfileDetails,
   getResumeParsedDetails,
-} from '../../../redux/actions/talentOnboardingActions';
-import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
+} from '../../redux/actions/talentOnboardingActions';
+import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
 import {
   profileDetailsLoading,
   userDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
-} from '../../../redux/selectors/talentOnboardingSelectors';
+} from '../../redux/selectors/talentOnboardingSelectors';
 import {
-  certificatesService,
+  // certificatesService,
   educationsService,
   paginatedInstitutesService,
   skillsService,
   toolsService,
-} from '../../../services/staticServices';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
-import { CUSTOMER_SUPPORT_TYPES, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
-import CustomerSupportModal from '../../modals/CustomerSupportModal';
-import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbackModal';
-import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
-import NoteComponent from '../NoteComponent';
-import CustomerSupportCTA from '../CustomerSupportCTA';
-import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
-import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+} from '../../services/staticServices';
+import ShowToastMessage from '../../@core/components/toast';
+import { CUSTOMER_SUPPORT_TYPES, userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
+import { getCustomerSupportCount } from '../../redux/actions/supportActions';
+import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions } from '../../utility/Utils';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
   formData,
   resumeParsed,
   formDocuments,
   resumeDataUploadedForEducation,
   fileKey,
-} from '../../../redux/selectors/formDataSelectors';
+} from '../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
   setFormData,
@@ -67,10 +62,21 @@ import {
   setFormDocuments,
   setResumeDataUploadedForEducation,
   setFileKey,
-} from '../../../redux/reducers/formData';
-import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+} from '../../redux/reducers/formData';
+import { updateParsedResumeService } from '../../services/talentOnboardingServices';
+import { Progress } from 'reactstrap';
+import { giveProgressBarColorClassName } from '../../utility/Utils';
+import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
+import "../../App.css";
+import { CardText } from 'reactstrap';
+import { userTypes } from '../../utility/constants/Constant';
+import { ERROR } from '../../utility/constants/ToastTypes';
+import CustomerSupportModal from '../../views/modals/CustomerSupportModal';
+import FeedbackForCustomerSupportModal from '../../views/modals/CustomerSupportFeedbackModal';
+import NoteComponent from '../../views/Onboarding/NoteComponent';
+import CustomerSupportCTA from '../../views/Onboarding/CustomerSupportCTA';
 
-const Educational = () => {
+const FlexternEducational = () => {
   const EducationalSchema = yup.object().shape({
     educationDetails: yup
       .array()
@@ -163,6 +169,18 @@ const Educational = () => {
 
   const localFormData = useWatch({ control });
 
+  const getOverallPercentageCompletion = () => {
+    if (isFlextern && !isTrumioTalent) {
+      setOverallPercentageCompletion(profileCompletionFlextern);
+    }
+    else if (!isFlextern && isTrumioTalent) {
+      setOverallPercentageCompletion(profileCompletionProject);
+    }
+    else {
+      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
+    }
+  }
+
   useEffect(() => {
     if (parseResume === false && resumeParsedLoading === false) {
       const allData = { ...savedFormData, ...localFormData };
@@ -190,13 +208,30 @@ const Educational = () => {
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
-  const [certificatesOptions, setCertificatesOptions] = useState(null);
+  // const [certificatesOptions, setCertificatesOptions] = useState(null);
   const [files, setFiles] = useState(savedFormDocuments || []);
   const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const supportData = useSelector((state) => state.support.supportCount);
+
+  const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
+  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
+  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
+  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
+  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
+
+  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
+  const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
+
+  useEffect(() => {
+    getOverallPercentageCompletion();
+  }, [profileCompletionFlextern, profileCompletionProject])
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
@@ -210,18 +245,18 @@ const Educational = () => {
   const onSkipClick = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
+      navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
-      navigate(`/${userOnboarding.talent}/availability-details`);
+      navigate(`/${userOnboarding.talent}/social-details`);
     }
   };
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
+      navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
-      navigate(`/${userOnboarding.talent}/availability-details`);
+      navigate(`/${userOnboarding.talent}/social-details`);
     }
     dispatch(setResumeDataUploadedForEducation(parseResume));
   };
@@ -330,26 +365,26 @@ const Educational = () => {
     }
   };
 
-  const loadCertificatesOptions = async (search) => {
-    if (search) {
-      return {
-        options: returnFilteredDropdownOptions(search, certificatesOptions),
-      };
-    }
-    try {
-      const response = await certificatesService();
+  // const loadCertificatesOptions = async (search) => {
+  //   if (search) {
+  //     return {
+  //       options: returnFilteredDropdownOptions(search, certificatesOptions),
+  //     };
+  //   }
+  //   try {
+  //     const response = await certificatesService();
 
-      const options = response?.data?.data?.map((certificate) => ({ label: certificate.name, value: certificate._id }));
+  //     const options = response?.data?.data?.map((certificate) => ({ label: certificate.name, value: certificate._id }));
 
-      setCertificatesOptions(options);
+  //     setCertificatesOptions(options);
 
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
+  //     return {
+  //       options,
+  //     };
+  //   } catch (error) {
+  //     return { options: [] };
+  //   }
+  // };
 
   const loadSkillsOptions = async (search) => {
     if (search) {
@@ -397,9 +432,9 @@ const Educational = () => {
           savedFormData?.educationDetails?.length > 0
             ? savedFormData?.educationDetails
             : res?.talent_info?.educational_institute?.map((detail) => ({
-                educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-                education: { label: detail.education.name, value: detail.education._id },
-              })),
+              educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+              education: { label: detail.education.name, value: detail.education._id },
+            })),
           { shouldValidate: true },
         );
       } else {
@@ -409,7 +444,7 @@ const Educational = () => {
         setValue(
           'tools',
           savedFormData?.tools ||
-            res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
+          res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -417,10 +452,10 @@ const Educational = () => {
         setValue(
           'certificates',
           savedFormData?.certificates ||
-            res?.talent_info?.expertise?.certificates?.map((certificate) => ({
-              label: certificate.name,
-              value: certificate._id,
-            })),
+          res?.talent_info?.expertise?.certificates?.map((certificate) => ({
+            label: certificate.name,
+            value: certificate._id,
+          })),
           { shouldValidate: true },
         );
       }
@@ -428,7 +463,7 @@ const Educational = () => {
         setValue(
           'skills',
           savedFormData?.skills ||
-            res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
+          res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -756,7 +791,7 @@ const Educational = () => {
                 <hr className="m-0 card-header-border" />
                 <CardBody>
                   <Row className="mb-1">
-                  <Col sm="12" md="12" lg="6">
+                    <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="skills">
                         Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
                       </Label>
@@ -785,36 +820,6 @@ const Educational = () => {
                       {errors.skills && <FormFeedback>{errors.skills?.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="certificates">
-                        Certificates
-                      </Label>
-                      <Controller
-                        id="certificates"
-                        name="certificates"
-                        control={control}
-                        invalid={errors.certificates && true}
-                        render={({ field }) => (
-                          <AsyncPaginate
-                            isMulti
-                            loadOptions={loadCertificatesOptions}
-                            menuPosition="fixed"
-                            minMenuHeight={200}
-                            classNamePrefix="select"
-                            placeholder="Select certificates"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors && errors.certificates,
-                            })}
-                            {...field}
-                          />
-                        )}
-                      />
-                      {errors.certificates && <FormFeedback>{errors.certificates?.message}</FormFeedback>}
-                    </Col>
-                  </Row>
-                  <Row className="mb-2">
-                    
-                    <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="tools">
                         Tools <i>(Top 5)</i>
                       </Label>
@@ -841,6 +846,63 @@ const Educational = () => {
                       />
                       {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
                     </Col>
+                    {/* <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="certificates">
+                        Certificates
+                      </Label>
+                      <Controller
+                        id="certificates"
+                        name="certificates"
+                        control={control}
+                        invalid={errors.certificates && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            isMulti
+                            loadOptions={loadCertificatesOptions}
+                            menuPosition="fixed"
+                            minMenuHeight={200}
+                            classNamePrefix="select"
+                            placeholder="Select certificates"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.certificates,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.certificates && <FormFeedback>{errors.certificates?.message}</FormFeedback>}
+                    </Col> */}
+                  </Row>
+                  <Row className="mb-2">
+
+                    {/* <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="tools">
+                        Tools <i>(Top 5)</i>
+                      </Label>
+                      <Controller
+                        id="tools"
+                        name="tools"
+                        control={control}
+                        invalid={errors.tools && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            isMulti
+                            loadOptions={loadToolsOptions}
+                            menuPosition="fixed"
+                            minMenuHeight={200}
+                            classNamePrefix="select"
+                            placeholder="Select up to 5 tools"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.tools,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
+                    </Col> */}
                   </Row>
                   {supportData?.tools_and_skills?.pending_requests > 0 && (
                     <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
@@ -908,6 +970,94 @@ const Educational = () => {
                     </div>
                   </CardBody>
                 </Card>
+                <Card>
+                  <CardHeader>
+                    <h4 className="m-0 mt-1">Profile Completion</h4>
+                    <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                    <Progress value={overallPercentageCompletion}
+                      style={{ height: '0.5rem' }}
+                      className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                    ></Progress>
+
+                  </CardHeader>
+
+                  <CardBody>
+                    <hr className="m-0 card-header-border" />
+
+                    {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
+                        >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+
+                    {isFlextern && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
+                        >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+                  </CardBody>
+                </Card>
+              </Col>
+            )}
+            {isEmpty(files) && (
+              <Col>
+                <Card>
+                  <CardHeader>
+                    <h4 className="m-0 mt-1">Profile Completion</h4>
+                    <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                    <Progress value={overallPercentageCompletion}
+                      style={{ height: '0.5rem' }}
+                      className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                    ></Progress>
+
+                  </CardHeader>
+
+                  <CardBody>
+                    <hr className="m-0 card-header-border" />
+
+                    {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
+                        >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+
+                    {isFlextern && <div className='d-flex gap-1 mt-1'>
+                      <div className="custom-checkbox-wrapper">
+                        <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b className='text-primary cursor-pointer'
+                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
+                        >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                      </div>
+                    </div>}
+                  </CardBody>
+                </Card>
               </Col>
             )}
           </Row>
@@ -928,4 +1078,4 @@ const Educational = () => {
   );
 };
 
-export default Educational;
+export default FlexternEducational;
