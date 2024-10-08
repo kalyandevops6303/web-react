@@ -30,8 +30,8 @@ const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
   };
 
   const onSuccess = () => {
-    navigate('/talent-onboarding/account-details');
     toggleModal();
+    navigate('/talent-onboarding/account-details');
   };
   const onNextClick = () => {
      const { flextern , trumio_talent } = selectedPrograms;

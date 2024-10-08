@@ -19,6 +19,8 @@ import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import AcceptRequestModal from '../modals/AcceptRequestModal';
 import RejectRequestModal from '../modals/RejectRequestModal';
+import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
+import { selectFlexternBoolean } from '../../redux/selectors/authSelectors';
 
 const TeamInvitation = () => {
   const dispatch = useDispatch();
@@ -57,11 +59,16 @@ const TeamInvitation = () => {
     setCompleteProfileModal(false);
     setAccpetModal(false);
     setRejectModal(false);
-  };
-
+  };  
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      dispatch(getProfilePercentage());
+      if(isFlextern){
+        dispatch(getProfileCompletionFlextern());
+      }
+      else{
+        dispatch(getProfilePercentage());
+      }
     }
   }, []);
 

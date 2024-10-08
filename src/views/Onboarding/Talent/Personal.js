@@ -62,7 +62,7 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import uuidv4 from '../../../lib/uuidv4';
 import { resumeUploadService, updateParsedResumeService } from '../../../services/talentOnboardingServices';
-import { getDownloadUrl, getProfilePercentage } from '../../../redux/actions/dashboardActions';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading, userData } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
@@ -173,8 +173,8 @@ const Personal = () => {
     (state) => state.dashboard?.profilePercentage?.values_missing,
   );
 
-  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
-  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
+  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
   const isFlextern = useSelector((state) => state.auth?.flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
 
@@ -506,7 +506,7 @@ const Personal = () => {
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
-    dispatch(setFormDocuments(files));
+    dispatch(setFormDocuments(null));
     if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -516,7 +516,8 @@ const Personal = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    dispatch(setFormDocuments(files));
+    // dispatch(setFormDocuments(files));
+    dispatch(setFormDocuments(null));
     if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -526,8 +527,7 @@ const Personal = () => {
   };
 
   const onSubmit = (data) => {
-    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages } = data;
-    // console.log(data)
+    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages } = data
 
     const professional_intro = professionalIntroduction;
     const languages_speak = speakLanguages?.map((language) => language.value);

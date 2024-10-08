@@ -11,7 +11,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
 import InfoIcon from '../../assets/images/timeline-info-icon.png';
-import { getProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
+import { getProfilePercentage, updateInvitation , getMyTeam } from '../../redux/actions/dashboardActions';
 import { getTeams, getWhoInvited } from '../../redux/actions/teamsActions';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import theme from '../../configs/themeVariables';
@@ -19,7 +19,9 @@ import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import AcceptRequestModal from '../modals/AcceptRequestModal';
 import RejectRequestModal from '../modals/RejectRequestModal';
-import { getMyTeam } from '../../redux/actions/dashboardActions';
+
+import { selectFlexternBoolean } from '../../redux/selectors/authSelectors';
+import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 
 const ClubInvitation = () => {
   const dispatch = useDispatch();
@@ -59,10 +61,15 @@ const ClubInvitation = () => {
     setAccpetModal(false);
     setRejectModal(false);
   };
-
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      dispatch(getProfilePercentage());
+      if(isFlextern){
+        dispatch(getProfileCompletionFlextern());
+      }
+      else{
+        dispatch(getProfilePercentage());
+      }
     }
   }, []);
 
@@ -80,7 +87,7 @@ const ClubInvitation = () => {
           setIsStatusUpdating(false);
           setAccpetModal(false);
           dispatch(getTeams({ onSuccess: () => {} }));
-          dispatch(getMyTeam())
+          dispatch(getMyTeam());
         },
         onError: () => {
           setIsStatusUpdating(false);
