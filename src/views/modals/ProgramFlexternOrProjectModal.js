@@ -9,7 +9,7 @@ import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button} from 'reactstra
 import toast from 'react-hot-toast';
 import { CreateBidRadioOption } from '../styled';
 import { selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
-import { getUserDetails, saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
+import { saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../redux/reducers/auth';
 
 
