@@ -16,6 +16,7 @@ import {
 import { setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
 import { setItemFromSession } from '../../utility/sessesionStorageControl';
+import { isEmpty } from 'lodash';
 
 const signUpDelegate =
   ({ email, newPassword, invitationToken, onSuccess }) =>
