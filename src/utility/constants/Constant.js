@@ -75,6 +75,19 @@ const teamStatusesOptions = [
   { label: 'Drafts', value: 'DRAFT' },
 ];
 
+const PaymentStatusOptions = [
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Initiated', value: 'INITIATED' },
+  { label: 'Processing', value: 'PROCESSING' },
+  { label: 'Failed', value: 'FAILED' },
+  { label: 'Paid', value: 'PAID' },
+];
+
+const PayTypeOptions = [
+  { label: 'Credit', value: 'CREDIT' },
+  { label: 'Debit', value: 'DEBIT' },
+];
+
 const clubStatusesOptions = [
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Drafts', value: 'DRAFT' },
@@ -205,6 +218,11 @@ const bidStages = {
   NO_STAGE: 'NO_STAGE',
 };
 
+const delegateTypes = {
+  payment_delegate: 'PAYMENT_DELEGATE',
+  full_access: 'FULL_ACCESS',
+}
+
 const CUSTOMER_SUPPORT_TYPES = {
   missing_institute: 'missing_institute',
   missing_skill: 'missing_skill',
@@ -295,6 +313,7 @@ export {
   PAYMENT_TYPES,
   SUPPORT_EMAIL,
   projectStatusEnum,
+  delegateTypes,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
   PROJECT_INVITATION_STATUS,
@@ -304,4 +323,6 @@ export {
   REPORT_ENTITIES,
   studyYears,
   graduationYears,
+  PaymentStatusOptions,
+  PayTypeOptions,
 };

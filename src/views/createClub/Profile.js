@@ -15,7 +15,6 @@ import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import { filteredFormSchema, handleEmailClick, isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
 import {
-  deleteDraftClub,
   getDraftClubById,
   registerClubEmail,
   setClubCreateDataAction,

@@ -29,7 +29,7 @@ const EarningCard = () => {
     const currentMonth = {
       total: data?.total_amount?.current_month ?? 0,
       completed: data?.completed_amount?.current_month ?? 0,
-      upcoming:data?.upcoming_amount?.current_month ?? 0,
+      upcoming: data?.upcoming_amount?.current_month ?? 0,
     };
     const currentYear = {
       total: data?.total_amount?.current_year ?? 0,
@@ -104,7 +104,9 @@ const EarningCard = () => {
           <div className="d-flex justify-content-around card-amount-details pt-1">
             <EarningAmount>
               <UncontrolledTooltip target="total_spendings" placement="top">
-                Total money {userDetailsData?.user_type === userTypes.client ? 'spend on' : 'earned by'} all projects
+                {userDetailsData?.user_type === userTypes.client
+                  ? 'Total amount paid for completed or ongoing project,Total of the month and total in a year (YTD)'
+                  : 'Total money earned by all projects'}
               </UncontrolledTooltip>
               <span className="title">
                 Total <Info size={14} id="total_spendings" />
@@ -112,15 +114,17 @@ const EarningCard = () => {
               <span className="amount">$ {round(spendingsPer?.total ?? 0, 2)}</span>
               {/* <span className="change">+0%</span> */}
             </EarningAmount>
+
             <EarningAmount>
               <UncontrolledTooltip target="completed_spendings" placement="top">
-                Total money {userDetailsData?.user_type === userTypes.client ? 'spend on' : 'earned by'} completed
-                projects
+                {userDetailsData?.user_type === userTypes.client
+                  ? 'Total amount paid for completed projects only'
+                  : ' Total money  earned by completed projects'}
               </UncontrolledTooltip>
               <span className="title">
-                Upcoming <Info size={14} id="completed_spendings" />
+                Completed <Info size={14} id="completed_spendings" />
               </span>
-              <span className="amount">$ {round(spendingsPer?.upcoming ?? 0, 2)}</span>
+              <span className="amount">$ {round(spendingsPer?.completed ?? 0, 2)}</span>
               {/* <span className="change">+0%</span> */}
             </EarningAmount>
           </div>

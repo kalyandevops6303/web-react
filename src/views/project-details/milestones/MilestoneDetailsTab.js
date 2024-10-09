@@ -58,7 +58,6 @@ import { confirmSaveForLater, navigatingRoute } from '../../../redux/selectors/f
 import { setConfirmSaveForLater } from '../../../redux/reducers/formData';
 import DraftSavedModal from '../../modals/DraftSavedModal';
 import { setShowSaveForLater } from '../../../redux/reducers/milestone';
-import isEmpty from "lodash";
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
@@ -292,7 +291,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       dispatch(setShowSaveForLater(true));
     else
       dispatch(setShowSaveForLater(false));
-  }, [allLinks, allDocuments])
+  }, [allLinks, allDocuments]);
 
   const onDrop = async (acceptedFiles, rejectedFiles) => {
     rejectedFiles.forEach((file) =>
