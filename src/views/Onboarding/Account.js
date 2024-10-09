@@ -4,8 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
+import {Button,
   Card,
   CardBody,
   CardHeader,
@@ -18,7 +17,7 @@ import {
   Row,
   Spinner,
   UncontrolledTooltip,
-} from 'reactstrap';
+ Progress } from 'reactstrap';
 import { ChevronRight, Info, UserPlus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
@@ -56,18 +55,16 @@ import { convertReferralLoading } from '../../redux/selectors/referralAndRewardS
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
-import { filteredFormSchema } from '../../utility/Utils';
+import { filteredFormSchema , giveProgressBarColorClassName } from '../../utility/Utils';
 import { getUserData } from '../../redux/actions/authActions';
 import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
 import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
 import { selectTrumioIsFlextern, selectUserData } from '../../redux/selectors/authSelectors';
 import { ProgressBarWrapper } from '../create-bid/style';
-import { Progress } from 'reactstrap';
-import { giveProgressBarColorClassName } from '../../utility/Utils';
+
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import "../../App.css";
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
-
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -414,7 +411,7 @@ const Account = () => {
     else {
       setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
     }
-  }
+  };
 
   useEffect(() => {
     if (imageUrlRes) {
@@ -424,7 +421,7 @@ const Account = () => {
 
   useEffect(() => {
     getOverallPercentageCompletion();
-  }, [profileCompletionFlextern, profileCompletionProject])
+  }, [profileCompletionFlextern, profileCompletionProject]);
 
   return (
     <AccountDetailsFormContainer>
@@ -620,7 +617,7 @@ const Account = () => {
                 <Progress value={overallPercentageCompletion}
                   style={{ height: '0.5rem' }}
                   className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                ></Progress>
+                 />
 
               </CardHeader>
 
@@ -630,7 +627,7 @@ const Account = () => {
                 {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
                   <div className="custom-checkbox-wrapper">
                     <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                    <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                    <label htmlFor="customCheckbox" className="custom-checkbox-label" />
                   </div>
                   <div>
                     <CardText className="m-0">Client Projects Ready</CardText>
@@ -643,7 +640,7 @@ const Account = () => {
                 {isFlextern && <div className='d-flex gap-1 mt-1'>
                   <div className="custom-checkbox-wrapper">
                     <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                    <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                    <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
                   </div>
                   <div>
                     <CardText className="m-0">Flexternship Ready</CardText>

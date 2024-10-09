@@ -83,8 +83,7 @@ import {
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
-import UploadResumeModal from '../../views/modals/UploadResumeModal'
-
+import UploadResumeModal from '../../views/modals/UploadResumeModal';
 
 const FlexternPersonal = () => {
   const PersonalSchema = yup.object().shape({
@@ -528,7 +527,7 @@ const FlexternPersonal = () => {
   };
 
   const onSubmit = (data) => {
-    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages } = data
+    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages } = data;
 
     const professional_intro = professionalIntroduction;
     const languages_speak = speakLanguages?.map((language) => language.value);

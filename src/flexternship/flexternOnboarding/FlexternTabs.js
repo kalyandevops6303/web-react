@@ -18,7 +18,7 @@ import EducationTabActiveImg from '../../assets/images/educationTabActive.png';
 import InternHiring from '../../views/Onboarding/Talent/InternHiring';
 import InternXobinHiring from '../../views/Onboarding/Talent/InternXobinHiring';
 import Additional from '../../views/Onboarding/Talent/Additional';
-import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectTrumioTalent , selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../redux/reducers/auth';
 import {
   getProfileCompletionFlextern,
@@ -26,7 +26,7 @@ import {
 } from '../../redux/actions/talentOnboardingActions';
 import { getFlexternVariables } from '../../redux/actions/authActions';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
-import { selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
+
 import FlexternPayment from './FlexternPayment';
 
 const FlexternTabs = ({ tabNames, active }) => {
@@ -65,7 +65,7 @@ const FlexternTabs = ({ tabNames, active }) => {
       if (location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
         toast.error('Flexternship cannot be unchecked under Additional Information');
         return;
-      } else if (
+      } if (
         (location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) &&
         name === 'trumio_talent' &&
         checked === false
