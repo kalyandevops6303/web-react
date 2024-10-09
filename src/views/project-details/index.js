@@ -24,13 +24,14 @@ import { CHECKOUT_STATUS, projectStatusEnum, userTypes } from '../../utility/con
 import { truncateSentence } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import MilestoneDetails from './milestones/MilestoneDetails';
-import ProjectDetailsNavbar from './overview/ProjectDetailsNavbar';
+import ProjectDetailsNavbar, { CustomStepWrap } from './overview/ProjectDetailsNavbar';
 import DownloadCertificate from './overview/DownloadCertificate';
 import { updatePaymentStatus } from '../../redux/actions/milestonePaymentActions';
 import { downloadCertificate } from '../../redux/actions/projectDetailsAction';
 import { verifyInfraAccessService } from '../../services/infrastructureServices';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
+import { CreditCard } from 'react-feather';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -70,7 +71,7 @@ const ProjectDetails = () => {
   const appPermissions = useSelector(appPermissionsSelector);
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
   const isClient = user?.user_type === userTypes.client;
-
+  const isDelegate = getItem('isDelegate');
   const changeStep = (step) => {
     setCurrentStep(step);
   };
@@ -331,12 +332,24 @@ const ProjectDetails = () => {
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
         <Col lg="9">
-          {!milestoneDetails && (
+          {!milestoneDetails && !isDelegate ? (
             <ProjectDetailsNavbar
               steps={isInviteView ? stepsArrayInvite : stepsArray}
               currentStep={currentStep}
               onChangeStep={changeStep}
             />
+          ) : (
+            <CustomStepWrap>
+              <div className="stepper active">
+                <span className="stepper-box">
+                  <CreditCard size={18} />
+                </span>
+                <span className="stepper-label">
+                  <span className="stepper-title">Payment</span>
+                  <span className="stepper-subtitle">Pay transaction</span>
+                </span>
+              </div>
+            </CustomStepWrap>
           )}
           <Routes>
             <Route

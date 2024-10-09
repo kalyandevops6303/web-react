@@ -307,7 +307,10 @@ const PrivateDashboard = () => {
               </PermissionWrapper>
             </Col>
           </Row>
-          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.UPCOMING_PROJECTS']}>
+          <PermissionWrapper
+            permissions={appPermissions}
+            permissionName={['DASHBOARD.PROJECTS.ACTIVE_PROJECTS', 'DASHBOARD.PROJECTS.UPCOMING_PROJECTS']}
+          >
             <section className="mb-2">
               <Header className="mb-1">Projects</Header>
               <ProjectListing />

@@ -412,7 +412,7 @@ const getAppPermissions = () => async (dispatch) => {
   try {
     const res = await getAppPermissionService();
 
-    // dispatch(getAppPermissionsSuccess(res.data.data));
+    dispatch(getAppPermissionsSuccess(res.data.data));
   } catch (error) {
     errorHandler(error, getAppPermissionsFailure);
   }
