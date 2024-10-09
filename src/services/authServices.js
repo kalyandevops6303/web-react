@@ -31,6 +31,8 @@ const resetPasswordService = (data) => DataService.post(API.auth.resetPassword, 
 
 const checkAdminService = (teamId) => DataService.get(`${API.auth.checkAdmin}?team_id=${teamId}`);
 
+const getAppPermissionService = () => DataService.get(`${API.permissions.appPermissions}`);
+
 export {
   loginService,
   loginServiceGoogle,
@@ -46,4 +48,5 @@ export {
   fcmUnsubscribeService,
   resetPasswordService,
   checkAdminService,
+  getAppPermissionService,
 };

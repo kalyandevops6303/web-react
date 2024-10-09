@@ -362,8 +362,13 @@ const API = {
   },
   hiring: {
     show_hiring_tab: `${apiAuthEndpoint}/api/v1/talent/check-mandatory-onboarding-details`,
-    questions_link: `${apiOnboardingEndpoint}/api/v1/coding-test/questions`
-  }
+    questions_link: `${apiOnboardingEndpoint}/api/v1/coding-test/questions`,
+  },
+
+  // permissions
+  permissions: {
+    appPermissions: `${apiAuthEndpoint}/api/v1/app-component-permissions`,
+  },
 };
 
 export default API;

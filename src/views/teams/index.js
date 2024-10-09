@@ -11,7 +11,8 @@ import PrimaryFilter from './overview/PrimaryFilter';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
 import { clearData } from '../../redux/reducers/myTeams';
-import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData } from '../../redux/selectors/authSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const TeamsContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -33,6 +34,7 @@ SecondaryFiltersWrapper.defaultProps = {
 };
 
 const MyTeams = () => {
+  const appPermissions = useSelector(appPermissionsSelector);
   const userData = useSelector(selectAuthUserData);
   const isTab = useIsTab();
   const dispatch = useDispatch();
@@ -48,7 +50,7 @@ const MyTeams = () => {
     useMatch('/my-teams/talents') ||
     useMatch('/my-teams/join_requests') ||
     useMatch('/my-teams/favourites') ||
-    useMatch('/my-teams/recommendation')    ;
+    useMatch('/my-teams/recommendation');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -93,18 +95,18 @@ const MyTeams = () => {
       <div className="d-flex justify-content-between w-100">
         <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
         <div className="relist-btn-wrapper">
-                      <Button
-                        color="primary"
-                        outline
-                        className="relist-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('/my-teams/teams', { state: { isDraftTeams: true } });
-                        }}
-                      >
-                      View Drafts
-                      </Button>
-                    </div>
+          <Button
+            color="primary"
+            outline
+            className="relist-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/my-teams/teams', { state: { isDraftTeams: true } });
+            }}
+          >
+            View Drafts
+          </Button>
+        </div>
       </div>
       <PrimaryFilter
         selected={primaryFilter}
@@ -113,12 +115,40 @@ const MyTeams = () => {
         userType={userData?.user_type}
       />
       <Routes>
-        <Route path="teams" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="teams"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAMS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
         <Route path="clients" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="talents" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="talents"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAM_MEMBERS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
         <Route path="join_requests" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="favourites" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="recommendation" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="favourites"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.FAVOURITES']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="recommendation"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.RECOMMENDED']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
       </Routes>
     </TeamsContainer>
   );

@@ -17,6 +17,7 @@ import {
   fcmUnsubscribeService,
   resetPasswordService,
   checkAdminService,
+  getAppPermissionService,
 } from '../../services/authServices';
 
 import {
@@ -67,6 +68,9 @@ import {
   checkAdminSuccess,
   checkAdminFailure,
   googleLoginRequest,
+  getAppPermissionsSuccess,
+  getAppPermissionsRequest,
+  getAppPermissionsFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -403,6 +407,17 @@ const checkIsAdmin = (teamId) => async (dispatch) => {
   }
 };
 
+const getAppPermissions = () => async (dispatch) => {
+  dispatch(getAppPermissionsRequest());
+  try {
+    const res = await getAppPermissionService();
+
+    dispatch(getAppPermissionsSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, getAppPermissionsFailure);
+  }
+};
+
 export {
   switchProfile,
   getUserData,
@@ -423,4 +438,5 @@ export {
   logoutAction,
   resetPassword,
   checkIsAdmin,
+  getAppPermissions,
 };
