@@ -6,28 +6,23 @@ import { Clock, Home, Link, User, Shield, FileText } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import { TabsContainer, ProgramCheckBox } from '../../views/Onboarding/style';
-import FlexternAccount from '../../views/Onboarding/Account';
+import Account from '../../views/Onboarding/Account';
 import FlexternPersonal from './FlexternPersonal';
 import FlexternEducational from './FlexternEducational';
 import FlexternAvailability from './FlexternAvailability';
-import Social from './FlexternSocial';
-import Payment from './FlexternPayment';
+import FlexternSocial from './FlexternSocial';
+import FlexternPayment from './FlexternPayment';
 import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
 import EducationTabInactiveImg from '../../assets/images/educationTabInactive.png';
 import EducationTabActiveImg from '../../assets/images/educationTabActive.png';
 import InternHiring from '../../views/Onboarding/Talent/InternHiring';
 import InternXobinHiring from '../../views/Onboarding/Talent/InternXobinHiring';
 import Additional from '../../views/Onboarding/Talent/Additional';
-import { selectFlexternBoolean, selectTrumioTalent , selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectTrumioTalent, selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../redux/reducers/auth';
-import {
-  getProfileCompletionFlextern,
-  saveProfileDetails,
-} from '../../redux/actions/talentOnboardingActions';
+import { getProfileCompletionFlextern, saveProfileDetails } from '../../redux/actions/talentOnboardingActions';
 import { getFlexternVariables } from '../../redux/actions/authActions';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
-
-import FlexternPayment from './FlexternPayment';
 
 const FlexternTabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -65,7 +60,8 @@ const FlexternTabs = ({ tabNames, active }) => {
       if (location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
         toast.error('Flexternship cannot be unchecked under Additional Information');
         return;
-      } if (
+      }
+      if (
         (location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) &&
         name === 'trumio_talent' &&
         checked === false
@@ -101,15 +97,25 @@ const FlexternTabs = ({ tabNames, active }) => {
     const isDisabled = isTabDisabled(tabName);
     return (
       <NavItem
-        onClick={() => {
-          if (!isDisabled) {
-            onTabClick(location.pathname.includes('profile-edit') ? editPath : onboardingPath);
-          }
-        }}
+      onClick={() => {
+        if (!isDisabled) {
+          onTabClick(location.pathname.includes('profile-edit') ? editPath : onboardingPath);
+        }
+      }}
       >
-        <NavLink active={isActive} className={isDisabled ? 'disabled-tab icon-disabled' : 'icon-enabled'}>
-          {React.cloneElement(icon, { className: isDisabled ? `font-medium-3 me-50 icon-disabled` : ` font-medium-3 me-50 icon-enabled` })}
-          <span className={`fw-bold ${isDisabled ? 'text-muted' : ''}`} style={{'color' : `${isDisabled ?  '#d1d1d1' :'#9e9e9e' }`}}>{text}</span>
+        <NavLink
+          active={isActive}
+          className={isDisabled && !isActive ? 'disabled-tab icon-disabled' : isActive ? 'icon-active' : 'icon-enabled'}
+        >
+          {React.cloneElement(icon, {
+            className: isDisabled ? `font-medium-3 me-50 icon-disabled` : ` font-medium-3 me-50 icon-enabled`,
+          })}
+          <span
+            className={`fw-bold ${isDisabled ? 'text-muted' : ''}`}
+            style={{ color: `${isDisabled && !isActive ? '#d1d1d1' : isActive ? '#0185E4' : '#9e9e9e'}` }}
+          >
+            {text}
+          </span>
         </NavLink>
       </NavItem>
     );
@@ -198,7 +204,7 @@ const FlexternTabs = ({ tabNames, active }) => {
           )}
         </ProgramCheckBox>
         <ProgramCheckBox active={selectProgram?.trumio_talent} completed={isProjectReady}>
-          {isProjectReady && selectProgram?.trumio_talent? (
+          {isProjectReady && selectProgram?.trumio_talent ? (
             <>
               <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
               <label htmlFor="customCheckbox" className="custom-checkbox-label" />

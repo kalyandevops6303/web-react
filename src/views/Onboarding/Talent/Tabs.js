@@ -31,6 +31,7 @@ const Tabs = ({ tabNames, active }) => {
   const [showTab, setShowTab] = useState(true);
 
   const onTabClick = (path) => {
+    console.log('path', path);
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
     }
@@ -49,6 +50,7 @@ const Tabs = ({ tabNames, active }) => {
       <Nav pills className="mb-2">
         <NavItem
           onClick={() => {
+            console.log('location.pathname', location.pathname);
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/account-details`);
             }

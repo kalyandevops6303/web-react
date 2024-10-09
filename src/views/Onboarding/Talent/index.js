@@ -13,14 +13,13 @@ import { selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
 import FlexternTabs from '../../../flexternship/flexternOnboarding/FlexternTabs';
 
 const TalentOnboarding = () => {
-  const [active, setActive] = useState(tabNames.Account);
-
+  
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isFlexternInvited = useSelector(selectTrumioIsFlextern);
   const tabNames = isFlexternInvited
-    ? {
+  ? {
         Account: '1',
         Personal: '2',
         Educational: '3',
@@ -41,6 +40,7 @@ const TalentOnboarding = () => {
         InternHiring: '7',
         InternXobinHiring: '8',
       };
+  const [active, setActive] = useState(tabNames.Account);
 
   useEffect(() => {
     if (
