@@ -24,10 +24,10 @@ const initialState = {
     DASHBOARD: {
       PAYMENT_METRICS: true,
       // REWARDS: true,
-      PROJECTS: {
-        ACTIVE_PROJECTS: true,
-        UPCOMING_PROJECTS: true,
-      },
+      // PROJECTS: {
+      //   ACTIVE_PROJECTS: true,
+      //   UPCOMING_PROJECTS: true,
+      // },
       PAYMENTS: {
         UPCOMING_PAYMENTS: true,
       },
@@ -338,10 +338,10 @@ const authSlice = createSlice({
         DASHBOARD: {
           PAYMENT_METRICS: true,
           // REWARDS: true,
-          PROJECTS: {
-            // ACTIVE_PROJECTS: true,
-            // UPCOMING_PROJECTS: true,
-          },
+          // PROJECTS: {
+          // ACTIVE_PROJECTS: true,
+          // UPCOMING_PROJECTS: true,
+          // },
           PAYMENTS: {
             UPCOMING_PAYMENTS: true,
           },

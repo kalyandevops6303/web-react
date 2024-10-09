@@ -309,7 +309,11 @@ const PrivateDashboard = () => {
           </Row>
           <PermissionWrapper
             permissions={appPermissions}
-            permissionName={['DASHBOARD.PROJECTS.ACTIVE_PROJECTS', 'DASHBOARD.PROJECTS.UPCOMING_PROJECTS']}
+            permissionName={[
+              'DASHBOARD.PROJECTS.ACTIVE_PROJECTS',
+              'DASHBOARD.PROJECTS.UPCOMING_PROJECTS',
+              'DASHBOARD.PROJECTS.RECOMMENDED_PROJECTS',
+            ]}
           >
             <section className="mb-2">
               <Header className="mb-1">Projects</Header>
@@ -324,7 +328,10 @@ const PrivateDashboard = () => {
             </section>
           </PermissionWrapper>
           {userDetailsData?.user_type === userTypes.client && (
-            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.OPEN_LISTINGS']}>
+            <PermissionWrapper
+              permissions={appPermissions}
+              permissionName={['DASHBOARD.OPEN_LISTINGS.RECEIVED_BIDS', 'DASHBOARD.OPEN_LISTINGS.EXPIRED_LISTINGS']}
+            >
               <section className="mb-2">
                 <Header className="mb-1">Open Listings</Header>
                 <OpenListing />
@@ -332,7 +339,7 @@ const PrivateDashboard = () => {
             </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.client && (
-            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS']}>
+            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.RECOMMENDED_TEAMS']}>
               <section className="mb-2">
                 <Header className="mb-1">Teams</Header>
                 <RecommendedTeamsListing />
