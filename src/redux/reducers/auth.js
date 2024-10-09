@@ -49,8 +49,7 @@ const authSlice = createSlice({
       error: null,
       fcmToken: '',
       userType: null,
-      flextern: null,
-      trumio_talent:null,
+      
     }),
 
     logOut: () => ({

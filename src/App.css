@@ -99,3 +99,6 @@
     stroke: #9e9e9e !important;
   }
   
+  .icon-active svg {
+    stroke : #0185E4 !important;
+  }
