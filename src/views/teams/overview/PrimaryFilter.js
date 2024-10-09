@@ -68,17 +68,19 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
         </PermissionWrapper>
       )}
       {userType !== userTypes.talent && (
-        <Col onClick={() => handlePrimaryCard(PATH_NAMES.TALENTS)}>
-          <Statbox
-            isActive={selected === PATH_NAMES.TALENTS}
-            isMarketPlaceTab
-            title={selectCardData?.talent}
-            desc={TAB_NAMES.TALENTS}
-            icon={<Users height={20} />}
-            color="light-turquoise"
-            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
-          />
-        </Col>
+        <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAM_MEMBERS']}>
+          <Col onClick={() => handlePrimaryCard(PATH_NAMES.TALENTS)}>
+            <Statbox
+              isActive={selected === PATH_NAMES.TALENTS}
+              isMarketPlaceTab
+              title={selectCardData?.talent}
+              desc={TAB_NAMES.TALENTS}
+              icon={<Users height={20} />}
+              color="light-turquoise"
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
+            />
+          </Col>
+        </PermissionWrapper>
       )}
 
       {userType !== userTypes.client && (

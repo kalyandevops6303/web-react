@@ -124,7 +124,14 @@ const MyTeams = () => {
           }
         />
         <Route path="clients" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="talents" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="talents"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAM_MEMBERS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
         <Route path="join_requests" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
         <Route
           path="favourites"
