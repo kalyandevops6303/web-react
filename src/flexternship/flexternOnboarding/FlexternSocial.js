@@ -201,28 +201,30 @@ const FlexternSocial = () => {
   const onSuccess = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
-      if (flexternBoolean) navigate(`/${userProfileEdit.talent}/additional-details`);
-      else if (trumioTalentBoolean) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      }
-    } else if (flexternBoolean) navigate(`/${userOnboarding.talent}/additional-details`);
-    else if (trumioTalentBoolean) {
-      navigate(`/${userOnboarding.talent}/availability-details`);
+       navigate(`/${userProfileEdit.talent}/additional-details`);
+    } 
+    else if (location.pathname.includes('onboarding')) {
+      navigate(`/${userOnboarding.talent}/additional-details`);
     }
     dispatch(setResumeDataUploadedForSocial(parseResume));
   };
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
-    if (location.pathname.includes('profile-edit')) {
-      if (flexternBoolean) navigate(`/${userProfileEdit.talent}/additional-details`);
-      else if (trumioTalentBoolean) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      }
-    } else if (flexternBoolean) navigate(`/${userOnboarding.talent}/additional-details`);
-    else if (trumioTalentBoolean) {
-      navigate(`/${userOnboarding.talent}/availability-details`);
-    }
+    // if (location.pathname.includes('profile-edit')) {
+    //   if (flexternBoolean) navigate(`/${userProfileEdit.talent}/additional-details`);
+    //   else if (trumioTalentBoolean) {
+    //     navigate(`/${userProfileEdit.talent}/availability-details`);
+    //   }
+    // } else if (flexternBoolean) navigate(`/${userOnboarding.talent}/additional-details`);
+    // else if (trumioTalentBoolean) {
+    //   navigate(`/${userOnboarding.talent}/availability-details`);
+    // }
+    if(location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/additional-details`);
+    } else if(location.pathname.includes('onboarding')) {
+      navigate(`/${userOnboarding.talent}/additional-details`);
+    } 
   };
 
   const onSubmit = (data) => {

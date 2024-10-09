@@ -19,82 +19,81 @@ import InternHiring from '../../views/Onboarding/Talent/InternHiring';
 import InternXobinHiring from '../../views/Onboarding/Talent/InternXobinHiring';
 import Additional from '../../views/Onboarding/Talent/Additional';
 import { selectFlexternBoolean, selectTrumioTalent, selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
-import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../redux/reducers/auth';
-import { getProfileCompletionFlextern, saveProfileDetails } from '../../redux/actions/talentOnboardingActions';
-import { getFlexternVariables } from '../../redux/actions/authActions';
+import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
+
 
 const FlexternTabs = ({ tabNames, active }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectProgram, setSelectProgram] = useState({
-    flextern: false,
-    trumio_talent: false,
-  });
+  // const [selectProgram, setSelectProgram] = useState({
+  //   flextern: false,
+  //   trumio_talent: false,
+  // });
   const flexternBoolean = useSelector(selectFlexternBoolean);
   const trumioTalent = useSelector(selectTrumioTalent);
   const isFlextern = useSelector(selectTrumioIsFlextern);
   // const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
-  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
+  // const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
 
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
     }
   };
-  const handleProgramChange = (event) => {
-    const { name, checked } = event.target;
-    const reqData = {};
-    reqData[name] = checked;
-    if (name === 'flextern' && checked === false && selectProgram?.trumio_talent === false) {
-      toast.error('Minimum One Program has to be selected');
-      return;
-    }
-    if (name === 'trumio_talent' && checked === false && selectProgram?.flextern === false) {
-      toast.error('Minimum One Program has to be selected');
-      return;
-    }
-    if (selectProgram?.flextern === true && selectProgram?.trumio_talent === true) {
-      if (location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
-        toast.error('Flexternship cannot be unchecked under Additional Information');
-        return;
-      }
-      if (
-        (location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) &&
-        name === 'trumio_talent' &&
-        checked === false
-      ) {
-        toast.error('Project cannot be unchecked under Additional Information');
-        return;
-      }
-    }
-    setSelectProgram((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-    if (name === 'flextern') {
-      dispatch(setTalentBooleansFlextern(checked));
-    } else if (name === 'trumio_talent') {
-      dispatch(setTalentBooleanTrumioTalent(checked));
-    }
-    dispatch(saveProfileDetails(reqData));
-  };
-  const isTabDisabled = (tabName) => {
-    if (selectProgram.flextern && selectProgram.trumio_talent) return false;
-    if (selectProgram.flextern && !selectProgram.trumio_talent) {
-      return tabName === 'Availability' || tabName === 'Payment';
-    }
-    if (!selectProgram.flextern && selectProgram.trumio_talent) {
-      return tabName === 'Additional';
-    }
-    return false;
-  };
+  // const handleProgramChange = (event) => {
+  //   const { name, checked } = event.target;
+  //   const reqData = {};
+  //   reqData[name] = checked;
+  //   if (name === 'flextern' && checked === false && selectProgram?.trumio_talent === false) {
+  //     toast.error('Minimum One Program has to be selected');
+  //     return;
+  //   }
+  //   if (name === 'trumio_talent' && checked === false && selectProgram?.flextern === false) {
+  //     toast.error('Minimum One Program has to be selected');
+  //     return;
+  //   }
+  //   if (selectProgram?.flextern === true && selectProgram?.trumio_talent === true) {
+  //     if (location.pathname.includes('/additional-details') && name === 'flextern' && checked === false) {
+  //       toast.error('Flexternship cannot be unchecked under Additional Information');
+  //       return;
+  //     }
+  //     if (
+  //       (location.pathname.includes('/availability-details') || location.pathname.includes('/payment-details')) &&
+  //       name === 'trumio_talent' &&
+  //       checked === false
+  //     ) {
+  //       toast.error('Project cannot be unchecked under Additional Information');
+  //       return;
+  //     }
+  //   }
+  //   setSelectProgram((prev) => ({
+  //     ...prev,
+  //     [name]: checked,
+  //   }));
+  //   if (name === 'flextern') {
+  //     dispatch(setTalentBooleansFlextern(checked));
+  //   } else if (name === 'trumio_talent') {
+  //     dispatch(setTalentBooleanTrumioTalent(checked));
+  //   }
+  //   dispatch(saveProfileDetails(reqData));
+  // };
+  // const isTabDisabled = (tabName) => {
+  //   if (selectProgram.flextern && selectProgram.trumio_talent) return false;
+  //   if (selectProgram.flextern && !selectProgram.trumio_talent) {
+  //     return tabName === 'Availability' || tabName === 'Payment';
+  //   }
+  //   if (!selectProgram.flextern && selectProgram.trumio_talent) {
+  //     return tabName === 'Additional';
+  //   }
+  //   return false;
+  // };
 
   const renderNavItem = (onboardingPath, editPath, icon, text, tabName) => {
     const isActive = location.pathname === onboardingPath || location.pathname === editPath;
-    const isDisabled = isTabDisabled(tabName);
+    const isDisabled = false;
     return (
       <NavItem
       onClick={() => {
@@ -161,35 +160,35 @@ const FlexternTabs = ({ tabNames, active }) => {
   //     }
   //   }
   // }, [location.pathname, talentOnboardingUserDetails, userData]);
-  const onSuccessFlexternVariables = (data) => {
-    if (typeof data?.flextern === 'boolean' && typeof data?.trumio_talent === 'boolean') {
-      setSelectProgram((prev) => ({
-        ...prev,
-        flextern: data?.flextern,
-        trumio_talent: data?.trumio_talent,
-      }));
-    } else if (isFlextern) {
-      setSelectProgram((prev) => ({
-        ...prev,
-        flextern: true,
-        trumio_talent: false,
-      }));
-    }
-  };
+  // const onSuccessFlexternVariables = (data) => {
+  //   if (typeof data?.flextern === 'boolean' && typeof data?.trumio_talent === 'boolean') {
+  //     setSelectProgram((prev) => ({
+  //       ...prev,
+  //       flextern: data?.flextern,
+  //       trumio_talent: data?.trumio_talent,
+  //     }));
+  //   } else if (isFlextern) {
+  //     setSelectProgram((prev) => ({
+  //       ...prev,
+  //       flextern: true,
+  //       trumio_talent: false,
+  //     }));
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   dispatch(getFlexternVariables(onSuccessFlexternVariables));
+  // }, []);
 
   useEffect(() => {
-    dispatch(getFlexternVariables(onSuccessFlexternVariables));
-  }, []);
-
-  useEffect(() => {
-    if (flexternBoolean) dispatch(getProfileCompletionFlextern());
+    if (isFlexternReady) dispatch(getProfileCompletionFlextern());
     if (trumioTalent) dispatch(getProfilePercentage());
   }, [flexternBoolean, trumioTalent]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       <div className="mb-2 d-flex justify-content-center gap-2">
-        <ProgramCheckBox active={selectProgram?.flextern} completed={isFlexternReady}>
+        <ProgramCheckBox active={isFlextern} completed={isFlexternReady}>
           {isFlexternReady && selectProgram?.flextern ? (
             <>
               <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
@@ -198,12 +197,12 @@ const FlexternTabs = ({ tabNames, active }) => {
             </>
           ) : (
             <div className="form-check form-check-inline checkbox-custom-margin">
-              <Input type="checkbox" name="flextern" checked={selectProgram?.flextern} onChange={handleProgramChange} />{' '}
+              <Input type="checkbox" name="flextern" checked={isFlextern} />{' '}
               Flexternship
             </div>
           )}
         </ProgramCheckBox>
-        <ProgramCheckBox active={selectProgram?.trumio_talent} completed={isProjectReady}>
+        {/* <ProgramCheckBox active={selectProgram?.trumio_talent} completed={isProjectReady}>
           {isProjectReady && selectProgram?.trumio_talent ? (
             <>
               <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
@@ -221,7 +220,7 @@ const FlexternTabs = ({ tabNames, active }) => {
               Project
             </div>
           )}
-        </ProgramCheckBox>
+        </ProgramCheckBox> */}
       </div>
       <Nav pills className="mb-2">
         {renderNavItem(
@@ -264,7 +263,7 @@ const FlexternTabs = ({ tabNames, active }) => {
           'Additional Information',
           'Additional',
         )}
-        {renderNavItem(
+        {/* {renderNavItem(
           `/${userOnboarding.talent}/availability-details`,
           `/${userProfileEdit.talent}/availability-details`,
           <Clock />,
@@ -277,7 +276,7 @@ const FlexternTabs = ({ tabNames, active }) => {
           <Shield />,
           'Payment',
           'Payment',
-        )}
+        )} */}
         {/* {showHiringTab && <NavItem
           onClick={() => {
             if (location.pathname.includes('profile-edit')) {
@@ -337,7 +336,7 @@ const FlexternTabs = ({ tabNames, active }) => {
           {(location.pathname === `/${userOnboarding.talent}/social-details` ||
             location.pathname === `/${userProfileEdit.talent}/social-details`) && <FlexternSocial />}
         </TabPane>
-        <TabPane tabId={tabNames.Availability}>
+        {/* <TabPane tabId={tabNames.Availability}>
           {(location.pathname === `/${userOnboarding.talent}/availability-details` ||
             location.pathname === `/${userProfileEdit.talent}/availability-details`) && <FlexternAvailability />}
         </TabPane>
@@ -346,7 +345,7 @@ const FlexternTabs = ({ tabNames, active }) => {
           location.pathname === `/${userProfileEdit.talent}/payment-details` ? (
             <FlexternPayment />
           ) : null}
-        </TabPane>
+        </TabPane> */}
         <TabPane tabId={tabNames.InternHiring}>
           {location.pathname === `/${userProfileEdit.talent}/intern-hiring` ||
           location.pathname === `/${userOnboarding.talent}/intern-hiring` ? (

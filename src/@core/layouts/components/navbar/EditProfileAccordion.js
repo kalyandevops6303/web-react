@@ -121,24 +121,9 @@ const EditProfileAccordion = () => {
             </DropdownItem>
             <DropdownItem
               onClick={() => handleEditProfileForTalent('additional')}
-              disabled={!flexternBoolean}
               className="w-100 edit-link "
             >
               <span className="align-middle p-1">Additional Information</span>
-            </DropdownItem>
-            <DropdownItem
-              onClick={() => handleEditProfileForTalent('availability')}
-              disabled={!trumioTalentBoolean}
-              className="w-100 edit-link "
-            >
-              <span className="align-middle p-1">Availability</span>
-            </DropdownItem>
-            <DropdownItem
-              onClick={() => handleEditProfileForTalent('payment')}
-              disabled={!trumioTalentBoolean}
-              className="w-100 edit-link "
-            >
-              <span className="align-middle p-1">Payment</span>
             </DropdownItem>
           </>
         );

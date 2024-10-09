@@ -863,10 +863,6 @@ export const checkPointRedirection = ({ response, navigate }) => {
       navigate('/auth/register-phone');
     }
   } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
-    if(response?.is_flextern) {
-      navigate(`/${response.user_type.toLowerCase()}-onboarding/choose-program`)
-    } 
-    else 
       navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
   } else if (response?.checkpoint === checkPoints.PROFILE_DETAILS) {
     navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
