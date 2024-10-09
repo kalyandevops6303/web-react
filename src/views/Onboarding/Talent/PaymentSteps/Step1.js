@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner } from 'reactstrap';
-import { ChevronLeft, ChevronRight } from 'react-feather';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner , UncontrolledTooltip } from 'reactstrap';
+import { ChevronLeft, ChevronRight , Info } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -20,9 +20,8 @@ import { handleEmailClick } from '../../../../utility/Utils';
 import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
 import { getShowHiringTab } from '../../../../redux/actions/hiringActions';
-import { UncontrolledTooltip } from 'reactstrap';
+
 import { SuccessInfoBanner } from '../../../assessments/style';
-import { Info } from 'react-feather';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep, step }) => {
@@ -65,7 +64,7 @@ const Step1 = ({ setStep, step }) => {
     if (isPaymentOnboardingDone) {
       dispatch(linkStripeAccount((res) => {
         setStripeAccountLink(res.url);
-        const acctSegment = res.url.split('/').find(segment => segment.startsWith('acct'));
+        const acctSegment = res.url.split('/').find((segment) => segment.startsWith('acct'));
 
         if (acctSegment) {
           const prefix = acctSegment.slice(0, 4);  // 'acct'
@@ -77,7 +76,7 @@ const Step1 = ({ setStep, step }) => {
         }
       }));
     }
-  }, [isPaymentOnboardingDone])
+  }, [isPaymentOnboardingDone]);
 
   const onBackClick = () => {
     dispatch(clearAllFormData());
@@ -171,21 +170,21 @@ const Step1 = ({ setStep, step }) => {
 
   const onGetHiredClick = () => {
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/intern-xobin-hiring`)
+      navigate(`/${userProfileEdit.talent}/intern-xobin-hiring`);
     }
     else {
-      navigate(`/${userOnboarding.talent}/intern-xobin-hiring`)
+      navigate(`/${userOnboarding.talent}/intern-xobin-hiring`);
     }
-  }
+  };
 
   const onGetHiredClick2 = () => {
     if (location.pathname.includes('profile-edit')) {
-      navigate(`/${userProfileEdit.talent}/intern-hiring`)
+      navigate(`/${userProfileEdit.talent}/intern-hiring`);
     }
     else {
-      navigate(`/${userOnboarding.talent}/intern-hiring`)
+      navigate(`/${userOnboarding.talent}/intern-hiring`);
     }
-  }
+  };
 
   const getCTAText = () => {
     if (isPaymentOnboardingDone) {
@@ -197,7 +196,7 @@ const Step1 = ({ setStep, step }) => {
     return 'STEP 2 - Taxpayer Identification';
   };
 
-  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab)
+  const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
 
   return (
     <ProfileFormContainer>

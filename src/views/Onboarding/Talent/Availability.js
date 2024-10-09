@@ -27,7 +27,7 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
-import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveProfileDetails , saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
@@ -37,7 +37,6 @@ import { currencies, currenciesLoading } from '../../../redux/selectors/staticSe
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
-import { saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({

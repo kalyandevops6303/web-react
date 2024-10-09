@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner } from 'reactstrap';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner , Progress , CardText } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ProfileFormContainer, UploadIconContainer } from '../../../views/Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { CITIZEN_TYPES, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
+import { CITIZEN_TYPES, userOnboarding, userProfileEdit , userTypes } from '../../../utility/constants/Constant';
 
 import { saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../../views/Onboarding/AccountCreatedModal';
@@ -16,17 +16,14 @@ import {
   savePaymentDetails,
   updatePaymentDetails,
 } from '../../../redux/actions/paymentActions';
-import { handleEmailClick } from '../../../utility/Utils';
+import { handleEmailClick , giveProgressBarColorClassName } from '../../../utility/Utils';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 import { SuccessInfoBanner } from '../../../views/assessments/style';
-import { Progress } from 'reactstrap';
-import { giveProgressBarColorClassName } from '../../../utility/Utils';
+
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import "../../../App.css";
-import { CardText } from 'reactstrap';
-import { userTypes } from '../../../utility/constants/Constant';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep, step }) => {
@@ -44,7 +41,6 @@ const Step1 = ({ setStep, step }) => {
 
   const [stripeAccountText, setStripeAccountText] = useState("");
   const [stripeAccountLink, setStripeAccountLink] = useState("");
-
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
@@ -69,13 +65,11 @@ const Step1 = ({ setStep, step }) => {
     else {
       setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
     }
-  }
+  };
 
   useEffect(() => {
     getOverallPercentageCompletion();
-  }, [profileCompletionFlextern, profileCompletionProject])
-
-
+  }, [profileCompletionFlextern, profileCompletionProject]);
 
   useEffect(() => {
     dispatch(setFormData({ ...savedFormData, step }));
@@ -298,7 +292,7 @@ const Step1 = ({ setStep, step }) => {
                 <Progress value={overallPercentageCompletion}
                   style={{ height: '0.5rem' }}
                   className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                ></Progress>
+                 />
 
               </CardHeader>
 
@@ -308,7 +302,7 @@ const Step1 = ({ setStep, step }) => {
                 {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
                   <div className="custom-checkbox-wrapper">
                     <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                    <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                    <label htmlFor="customCheckbox" className="custom-checkbox-label" />
                   </div>
                   <div>
                     <CardText className="m-0">Client Projects Ready</CardText>
@@ -321,7 +315,7 @@ const Step1 = ({ setStep, step }) => {
                 {isFlextern && <div className='d-flex gap-1 mt-1'>
                   <div className="custom-checkbox-wrapper">
                     <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                    <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                    <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
                   </div>
                   <div>
                     <CardText className="m-0">Flexternship Ready</CardText>

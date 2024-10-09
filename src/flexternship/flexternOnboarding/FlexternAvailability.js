@@ -5,8 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
+import {Button,
   Card,
   CardBody,
   CardHeader,
@@ -18,7 +17,7 @@ import {
   Row,
   Spinner,
   UncontrolledTooltip,
-} from 'reactstrap';
+ Progress , CardText } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
@@ -30,8 +29,8 @@ import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import { getUserDetails, saveProfileDetails, saveCheckpointComplete } from '../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading, userDetailsLoading } from '../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../services/staticServices';
-import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../utility/Utils';
-import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
+import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions , giveProgressBarColorClassName } from '../../utility/Utils';
+import { userOnboarding, userProfileEdit , userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { currencies, currenciesLoading } from '../../redux/selectors/staticSelectors';
 import { getCurrencies } from '../../redux/actions/staticActions';
@@ -39,12 +38,8 @@ import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
 
-import { Progress } from 'reactstrap';
-import { giveProgressBarColorClassName } from '../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import "../../App.css";
-import { CardText } from 'reactstrap';
-import { userTypes } from '../../utility/constants/Constant';
 
 const FlexternAvailability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -164,7 +159,6 @@ const FlexternAvailability = () => {
 
   const localFormData = useWatch({ control });
 
-
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
@@ -188,12 +182,11 @@ const FlexternAvailability = () => {
     else {
       setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
     }
-  }
+  };
 
   useEffect(() => {
     getOverallPercentageCompletion();
-  }, [profileCompletionFlextern, profileCompletionProject])
-
+  }, [profileCompletionFlextern, profileCompletionProject]);
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
@@ -1012,7 +1005,7 @@ const FlexternAvailability = () => {
                 <Progress value={overallPercentageCompletion}
                   style={{ height: '0.5rem' }}
                   className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                ></Progress>
+                 />
 
               </CardHeader>
 
@@ -1022,7 +1015,7 @@ const FlexternAvailability = () => {
                 {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
                   <div className="custom-checkbox-wrapper">
                     <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                    <label htmlFor="customCheckbox" className="custom-checkbox-label"></label>
+                    <label htmlFor="customCheckbox" className="custom-checkbox-label" />
                   </div>
                   <div>
                     <CardText className="m-0">Client Projects Ready</CardText>
@@ -1035,7 +1028,7 @@ const FlexternAvailability = () => {
                 {isFlextern && <div className='d-flex gap-1 mt-1'>
                   <div className="custom-checkbox-wrapper">
                     <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                    <label htmlFor="customCheckbox2" className="custom-checkbox-label"></label>
+                    <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
                   </div>
                   <div>
                     <CardText className="m-0">Flexternship Ready</CardText>

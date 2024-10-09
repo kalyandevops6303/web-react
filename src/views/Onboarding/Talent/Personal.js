@@ -90,7 +90,6 @@ import {
   setResumeParsed,
 } from '../../../redux/reducers/formData';
 
-
 const customDropdownStyles = {
   menuList: (provided) => ({
     ...provided,
