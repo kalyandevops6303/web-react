@@ -8,13 +8,15 @@ import Statbox from '../../user-details/overview/Statbox';
 import { getCardInfo } from '../../../redux/actions/myTeamActions';
 import { userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state?.myTeams?.cardData);
   const isLoading = useSelector((state) => state?.myTeams?.cardInfoLoading);
   const isLoadingSecondaryFilter = useSelector((state) => state?.myTeams?.loading);
-
+  const appPermissions = useSelector(appPermissionsSelector);
   const selectMyTeamMetaData = useSelector((state) => state?.myTeams?.metaData);
 
   useEffect(() => {
@@ -51,17 +53,19 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   return (
     <Row className="primary-row">
       {userType !== userTypes.team && (
-        <Col onClick={() => handlePrimaryCard(PATH_NAMES.TEAMS)}>
-          <Statbox
-            isActive={selected === PATH_NAMES.TEAMS}
-            isMarketPlaceTab
-            title={selectCardData?.teams}
-            desc={TAB_NAMES.TEAMS}
-            icon={<Users height={20} />}
-            color="light-turquoise"
-            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
-          />
-        </Col>
+        <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAMS']}>
+          <Col onClick={() => handlePrimaryCard(PATH_NAMES.TEAMS)}>
+            <Statbox
+              isActive={selected === PATH_NAMES.TEAMS}
+              isMarketPlaceTab
+              title={selectCardData?.teams}
+              desc={TAB_NAMES.TEAMS}
+              icon={<Users height={20} />}
+              color="light-turquoise"
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
+            />
+          </Col>
+        </PermissionWrapper>
       )}
       {userType !== userTypes.talent && (
         <Col onClick={() => handlePrimaryCard(PATH_NAMES.TALENTS)}>
@@ -90,24 +94,25 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           />
         </Col>
       )}
-
-      <Col onClick={() => handlePrimaryCard(PATH_NAMES.RECOMMENDATION)}>
-        <Statbox
-          isActive={selected === PATH_NAMES.RECOMMENDATION}
-          isMarketPlaceTab
-          title={
-            selected === PATH_NAMES.RECOMMENDATION && isLoadingSecondaryFilter
-              ? selectCardData?.recommended
-              : selected === PATH_NAMES.RECOMMENDATION
-              ? selectMyTeamMetaData?.total_records
-              : selectCardData?.recommended
-          }
-          desc={TAB_NAMES.RECOMMENDATION}
-          icon={<ThumbsUp height={20} />}
-          color="light-warning"
-          className="stat-box cursor-pointer"
-        />
-      </Col>
+      <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.RECOMMENDED']}>
+        <Col onClick={() => handlePrimaryCard(PATH_NAMES.RECOMMENDATION)}>
+          <Statbox
+            isActive={selected === PATH_NAMES.RECOMMENDATION}
+            isMarketPlaceTab
+            title={
+              selected === PATH_NAMES.RECOMMENDATION && isLoadingSecondaryFilter
+                ? selectCardData?.recommended
+                : selected === PATH_NAMES.RECOMMENDATION
+                ? selectMyTeamMetaData?.total_records
+                : selectCardData?.recommended
+            }
+            desc={TAB_NAMES.RECOMMENDATION}
+            icon={<ThumbsUp height={20} />}
+            color="light-warning"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      </PermissionWrapper>
 
       {userType !== userTypes.client ? (
         <Col onClick={() => handlePrimaryCard(PATH_NAMES.JOIN_REQ)}>
@@ -128,17 +133,20 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           />
         </Col>
       ) : null}
-      <Col onClick={() => handlePrimaryCard(PATH_NAMES.FAV)}>
-        <Statbox
-          isActive={selected === PATH_NAMES.FAV}
-          className="stat-box cursor-pointer"
-          isMarketPlaceTab
-          title={selectCardData?.favorite ?? 0}
-          desc={TAB_NAMES.FAV}
-          icon={<Heart height={20} />}
-          color="light-dark-red"
-        />
-      </Col>
+      <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.FAVOURITES']}>
+        <Col onClick={() => handlePrimaryCard(PATH_NAMES.FAV)}>
+          <Statbox
+            isActive={selected === PATH_NAMES.FAV}
+            className="stat-box cursor-pointer"
+            isMarketPlaceTab
+            title={selectCardData?.favorite ?? 0}
+            desc={TAB_NAMES.FAV}
+            icon={<Heart height={20} />}
+            color="light-dark-red"
+          />
+        </Col>
+      </PermissionWrapper>
+
       {userType === userTypes.client && (
         <Col>
           <div />
