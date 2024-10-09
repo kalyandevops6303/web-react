@@ -17,6 +17,8 @@ import Tag from '../../../@core/components/tags';
 import ViewAllCard from './ExtraCardWithCount';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
+import { appPermissionsSelector } from '@src/redux/selectors/authSelectors';
+;
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -36,12 +38,14 @@ import ProjectBidCard from './ProjectBidCard';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { AccordionName } from './DashboardConstant';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const Empty = ({ active, recommended, isTeam, payment, receivedBid, isEducationNotCompleted }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+
   const dispatch = useDispatch();
 
   const onAddDetailsClick = (path) => {
@@ -137,6 +141,7 @@ const OpenListing = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const profilePercentageData = useSelector(profilePercentage);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
