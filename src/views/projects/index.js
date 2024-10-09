@@ -11,7 +11,8 @@ import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
 import { clearData } from '../../redux/reducers/project';
-import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData } from '../../redux/selectors/authSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -37,6 +38,7 @@ const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const userData = useSelector(selectAuthUserData);
+  const appPermissions = useSelector(appPermissionsSelector);
   const isTab = useIsTab();
 
   const routesMatch =
@@ -89,12 +91,54 @@ const Projects = () => {
       />
 
       <Routes>
-        <Route path="ongoing" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="upcoming" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="completed" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="terminated" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="dispute" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="invited" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="ongoing"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.ONGOING']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="upcoming"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.UPCOMING']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="completed"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.COMPLETED']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="terminated"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.TERMINATED']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="dispute"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.DISPUTED']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="invited"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.INVITED']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
       </Routes>
     </ProjectContainer>
   );

@@ -20,6 +20,7 @@ import {
   checkAdminService,
   checkRequestValidation,
   getFlexternVariablesService,
+  getAppPermissionService,
 } from '../../services/authServices';
 
 import {
@@ -78,7 +79,10 @@ import {
   googleLoginRequest,
   setTalentBooleanTrumioTalent,
   setTalentBooleansFlextern,
-  setTalentBooleanIsFlextern
+  setTalentBooleanIsFlextern,
+  getAppPermissionsSuccess,
+  getAppPermissionsRequest,
+  getAppPermissionsFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -476,6 +480,16 @@ const validateRequestFlexTernToken = ({ requestToken}) => async (dispatch) => {
     } catch(error) {
       errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
     }
+}
+const getAppPermissions = () => async (dispatch) => {
+  dispatch(getAppPermissionsRequest());
+  try {
+    const res = await getAppPermissionService();
+
+    dispatch(getAppPermissionsSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, getAppPermissionsFailure);
+  }
 };
 
 export {
@@ -501,4 +515,5 @@ export {
   checkIsAdmin,
   validateRequestFlexTernToken,
   getFlexternVariables,
-};
+  getAppPermissions,
+}

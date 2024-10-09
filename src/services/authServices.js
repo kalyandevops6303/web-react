@@ -36,6 +36,7 @@ const checkAdminService = (teamId) => DataService.get(`${API.auth.checkAdmin}?te
 const checkRequestValidation = (requestToken) => DataService.get(`${API.auth.requestValidation}?request_token=${requestToken}`);
 
 const getFlexternVariablesService = () => DataService.get(API.auth.flexternValues);
+const getAppPermissionService = () => DataService.get(`${API.permissions.appPermissions}`);
 
 export {
   loginService,
@@ -55,4 +56,5 @@ export {
   checkAdminService,
   checkRequestValidation,
   getFlexternVariablesService,
+  getAppPermissionService,
 };

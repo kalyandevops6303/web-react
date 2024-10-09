@@ -10,11 +10,13 @@ import PrimaryFilter from './overview/PrimaryFilter';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 import CreateProjectButton from './overview/CreateProjectButton';
 import { selectAuthUserData, selectFlexternBoolean } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
 import { clearData } from '../../redux/reducers/marketPlace';
 import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const MarketPlaceContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -40,6 +42,7 @@ const MarketPlace = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userData = useSelector(selectAuthUserData);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const routesMatch =
     useMatch('/marketplace/clients') ||
@@ -104,12 +107,47 @@ const MarketPlace = () => {
       <CreateProjectButton />
       <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
       <Routes>
-        <Route path="all_listings" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="my_listings" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="my_bids" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="all_listings"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.ALL_LISTINGS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="my_listings"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.MY_LISTINGS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="my_bids"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.BIDS_RECEIVED']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
         <Route path="clients" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="talents" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="teams" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="talents"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENTS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
+        <Route
+          path="teams"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TEAMS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
       </Routes>
     </MarketPlaceContainer>
   );

@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { isEmpty } from 'lodash';
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
 
 const PermissionWrapper = ({ permissions, permissionName, children }) => {
   const hasPermission = (permissions, permissionName) => {
-    if(isEmpty(permissions)) return true;
-    const parts = permissionName[0].split(".");
+    if (isEmpty(permissions)) return true;
+    const parts = permissionName[0].split('.');
     let current = permissions;
 
     for (let part of parts) {
@@ -30,4 +30,3 @@ PermissionWrapper.propTypes = {
   permissionName: PropTypes.array.isRequired,
   children: PropTypes.node.isRequired,
 };
-

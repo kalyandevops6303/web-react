@@ -35,3 +35,5 @@ export const selectUserType = createSelector(authSelector, (auth) => auth.userTy
 export const checkAdmin = createSelector(authSelector, (auth) => auth.checkAdmin);
 
 export const checkAdminLoading = createSelector(authSelector, (auth) => auth.checkAdminLoading);
+
+export const appPermissionsSelector = createSelector(authSelector, (auth) => auth.appPermissions);
