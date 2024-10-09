@@ -303,9 +303,9 @@ const Account = () => {
     ) {
       if (userDetailsData.user_type === userTypes.talent) {
         if (location.pathname.includes('profile-edit') && isFlexternInvited) {
-          reqData = { ...reqData, flextern: userAuthData?.talent_info?.flextern, trumio_talent: userAuthData?.talent_info?.trumio_talent };
+          reqData = { ...reqData, flextern: isFlexternInvited, trumio_talent: false };
         } else if (location.pathname.includes('talent-onboarding') && isFlexternInvited) {
-          reqData = { ...reqData, flextern: userDetailsData?.talent_info?.flextern, trumio_talent: userDetailsData?.talent_info?.trumio_talent };
+          reqData = { ...reqData, flextern: isFlexternInvited, trumio_talent: false };
         }
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
         dispatch(getUserDetails(onGetUserDetailsSuccess));

@@ -502,17 +502,18 @@ const Additional = () => {
     dispatch(clearAllFormData());
     // dispatch(setFormDocuments(files));
     dispatch(setFormDocuments(null));
-    if (location?.pathname.includes('profile-edit')) {
-      if (flexternBoolean && trumioTalent) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      } else if (flexternBoolean && !trumioTalent) {
-        navigate(`/dashboard`);
-      }
-    } else if (flexternBoolean && trumioTalent) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
-    } else if (flexternBoolean && !trumioTalent) {
-      navigate(`/dashboard`);
-    }
+    // if (location?.pathname.includes('profile-edit')) {
+    //   if (flexternBoolean && trumioTalent) {
+    //     navigate(`/${userProfileEdit.talent}/availability-details`);
+    //   } else if (flexternBoolean && !trumioTalent) {
+    //     navigate(`/dashboard`);
+    //   }
+    // } else if (flexternBoolean && trumioTalent) {
+    //   navigate(`/${userProfileEdit.talent}/availability-details`);
+    // } else if (flexternBoolean && !trumioTalent) {
+    //   navigate(`/dashboard`);
+    // }
+    navigate('/dashboard');
   };
 
   const onSubmit = (data) => {
