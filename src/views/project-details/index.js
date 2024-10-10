@@ -24,7 +24,7 @@ import { CHECKOUT_STATUS, projectStatusEnum, userTypes } from '../../utility/con
 import { truncateSentence } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import MilestoneDetails from './milestones/MilestoneDetails';
-import ProjectDetailsNavbar, { CustomStepWrap } from './overview/ProjectDetailsNavbar';
+import ProjectDetailsNavbar from './overview/ProjectDetailsNavbar';
 import DownloadCertificate from './overview/DownloadCertificate';
 import { updatePaymentStatus } from '../../redux/actions/milestonePaymentActions';
 import { downloadCertificate } from '../../redux/actions/projectDetailsAction';
@@ -330,34 +330,24 @@ const ProjectDetails = () => {
             <DownloadCertificate downloadUrl={downloadCertificateURL} />
           )}
           <LeftSidebarProjectDetails />
-          {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
+          <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.MILESTONE_PAYMENT']}>
+            {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
+          </PermissionWrapper>
         </Col>
         <Col lg="9">
-          {!milestoneDetails && !isDelegate ? (
+          {!milestoneDetails && (
             <ProjectDetailsNavbar
               steps={isInviteView ? stepsArrayInvite : stepsArray}
               currentStep={currentStep}
               onChangeStep={changeStep}
             />
-          ) : (
-            <CustomStepWrap>
-              <div className="stepper active">
-                <span className="stepper-box">
-                  <CreditCard size={18} />
-                </span>
-                <span className="stepper-label">
-                  <span className="stepper-title">Payment</span>
-                  <span className="stepper-subtitle">Pay transaction</span>
-                </span>
-              </div>
-            </CustomStepWrap>
           )}
           <Routes>
             <Route
               path="bid"
               element={
                 <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.BID']}>
-                  <BidView />{' '}
+                  <BidView />
                 </PermissionWrapper>
               }
             />
@@ -375,7 +365,7 @@ const ProjectDetails = () => {
               path="payment"
               element={
                 <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.PAYMENT']}>
-                  <PaymentTab />{' '}
+                  <PaymentTab />
                 </PermissionWrapper>
               }
             />
@@ -393,7 +383,7 @@ const ProjectDetails = () => {
               path="rating"
               element={
                 <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.RATING']}>
-                  <RatingView />{' '}
+                  <RatingView />
                 </PermissionWrapper>
               }
             />
@@ -402,7 +392,7 @@ const ProjectDetails = () => {
               path="infrastructure"
               element={
                 <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.INFRASTRUCTURE']}>
-                  <InfrastructureView />{' '}
+                  <InfrastructureView />
                 </PermissionWrapper>
               }
             />
