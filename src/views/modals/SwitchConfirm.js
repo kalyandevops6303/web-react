@@ -9,9 +9,10 @@ import SwitchGif from '../../assets/images/gifs/switch.gif';
 import { switchProfile } from '../../redux/actions/authActions';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
-import { selectSavedUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectSavedUserData } from '../../redux/selectors/authSelectors';
 import getTeamId from '../../utility/commonUtils';
 import { markNotificationAsRead } from '../../redux/actions/notificationsActions';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, modal, toggleModal }) => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, 
   const location = useLocation();
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
   const isGetTeamLoading = useSelector((state) => state.team?.isTeamsLoading);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const teams = useSelector((state) => state.team?.teams);
 
@@ -41,8 +43,7 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, 
 
   const handleSwitch = () => {
     if (entity === 'TALENT') {
-      if(navigateTo)
-        navigate(navigateTo);
+      if (navigateTo) navigate(navigateTo);
       dispatch(switchProfile({ data: selectSavedUserDetailsData, onSuccess, selected: false }));
     } else if (entity === 'TEAM' && switchTeamId === getTeamId()) {
       navigate(navigateTo);
@@ -69,31 +70,33 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, 
   `;
 
   return (
-    <Modal
-      isOpen={modal}
-      contentClassName="custom-larger-than-medium-modal-style"
-      className="modal-dialog-centered modal-lg"
-    >
-      <ModalHeader toggle={isSwitchModalViaUrl ? toggleOnSwitch : toggleModal} />
-      <ModalBody className="py-0">
-        <SwitchModalWrapper>
-          <div className="d-flex align-items-center px-50 py-0">
-            <img src={SwitchGif} alt="complete-profile" width={170} height={170} />
-            <div className="pe-1 ms-3">
-              <h2 className="fw-bold modal-heading">Switch Profile</h2>
-              <p className="fw-normal mt-1 modal-body-text">
-                This action needs to be taken by a different profile. Please switch to the relevant profile.
-              </p>
+    <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.MODALS.PROFILE_SWITCH']}>
+      <Modal
+        isOpen={modal}
+        contentClassName="custom-larger-than-medium-modal-style"
+        className="modal-dialog-centered modal-lg"
+      >
+        <ModalHeader toggle={isSwitchModalViaUrl ? toggleOnSwitch : toggleModal} />
+        <ModalBody className="py-0">
+          <SwitchModalWrapper>
+            <div className="d-flex align-items-center px-50 py-0">
+              <img src={SwitchGif} alt="complete-profile" width={170} height={170} />
+              <div className="pe-1 ms-3">
+                <h2 className="fw-bold modal-heading">Switch Profile</h2>
+                <p className="fw-normal mt-1 modal-body-text">
+                  This action needs to be taken by a different profile. Please switch to the relevant profile.
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="d-flex gap-1 mb-2 justify-content-end">
-            <Button disabled={isGetTeamLoading} color="primary" onClick={handleSwitch}>
-              {isGetTeamLoading ? <Spinner size="sm" /> : 'Switch'}
-            </Button>
-          </div>
-        </SwitchModalWrapper>
-      </ModalBody>
-    </Modal>
+            <div className="d-flex gap-1 mb-2 justify-content-end">
+              <Button disabled={isGetTeamLoading} color="primary" onClick={handleSwitch}>
+                {isGetTeamLoading ? <Spinner size="sm" /> : 'Switch'}
+              </Button>
+            </div>
+          </SwitchModalWrapper>
+        </ModalBody>
+      </Modal>
+    </PermissionWrapper>
   );
 };
 
