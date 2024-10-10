@@ -1,42 +1,50 @@
+img,
+video {
+  max-width: none;
+}
+html {
+  font-size: 16px;
+}
+
 .message__info__wrapper {
-    /* background-color: red !important; */
-    flex-direction: column;
-    align-items: flex-start !important;
+  /* background-color: red !important; */
+  flex-direction: column;
+  align-items: flex-start !important;
 }
 
 .reaction {
-    /* width: 40px; */
-    height: 30px;
-    margin-top: -50px;
-    margin-left: 5px;
-    background-color: white;
+  /* width: 40px; */
+  height: 30px;
+  margin-top: -50px;
+  margin-left: 5px;
+  background-color: white;
 }
 
 .sender__message__container {
-    width: fit-content;
-    max-width: 75%;
-    align-self: flex-start !important;
+  width: fit-content;
+  max-width: 75%;
+  align-self: flex-start !important;
 }
 
 .receiver__message__container {
-    width: fit-content;
-    max-width: 75%;
-    align-self: flex-start !important;
+  width: fit-content;
+  max-width: 75%;
+  align-self: flex-start !important;
 }
 
 .message__image > .message__details >.message__reaction__wrapper {
-    justify-content: flex-start !important;
+  justify-content: flex-start !important;
 }
 
 .message__image > .message__details >.message__reaction__wrapper > .reaction {
-    margin-top: -10px !important;
+  margin-top: -10px !important;
 }
 
 
 .message__file > .message__details >.message__reaction__wrapper {
-    justify-content: flex-start !important;
+  justify-content: flex-start !important;
 }
 
 .message__file > .message__details >.message__reaction__wrapper > .reaction {
-    margin-top: -10px !important;
+  margin-top: -10px !important;
 }
