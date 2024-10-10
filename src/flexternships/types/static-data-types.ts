@@ -22,9 +22,9 @@ export type StaticDataState = {
 
 export type StaticDataActions = {
     fetchStaticData: () => Promise<void>
-    fetchSkills: () => Promise<void>
-    fetchTools: () => Promise<void>
-    fetchRoles: () => Promise<void>
+    // fetchSkills: () => Promise<void>
+    // fetchTools: () => Promise<void>
+    // fetchRoles: () => Promise<void>
 }
 
 export type StaticDataStore = StaticDataState & StaticDataActions

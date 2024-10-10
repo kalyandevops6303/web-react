@@ -1,5 +1,5 @@
 import { createFlexternProjectDraft } from "@flexternships/services/project-management-v2"
-import { ListingDetails, Milestone, ModalType, ProjectCreationState, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
+import { Milestone, ModalType, ProjectCreationState, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
 
 export const nextTab = (set: any) => {
   // This is called after validation

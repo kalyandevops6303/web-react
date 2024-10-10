@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { closeModal, jumpToTab, nextTab, openModal, previousTab, saveDraft, updateEstimatedDuration, updateEstimatedStartDate, updateListingData, updateMilestonesData, updateRequirementsData, updateRolesData } from "@flexternships/actions/project-creation-actions"
-import { ListingDetails, Milestone, ModalType, ProjectCreationState, ProjectCreationStore, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
+import { Milestone, ModalType, ProjectCreationState, ProjectCreationStore, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
 import { addDaysToEpoch, dateToEpoch } from "@flexternships/utils/date-utils";
 
 const defaultInitState: ProjectCreationState = {

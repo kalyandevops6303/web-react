@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { baseUrls, routes } from '@flexternships/utils/api';
+import { routes } from '@flexternships/utils/api';
 
 export const fetchAllRoles = async () => {
     const response = await axios.get(routes.userManagement.static.roles.fetchAll); // Replace with your endpoint

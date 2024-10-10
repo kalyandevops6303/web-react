@@ -3,7 +3,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
 import { DatePicker } from '@flexternships/app/components/core/form/DatePicker';

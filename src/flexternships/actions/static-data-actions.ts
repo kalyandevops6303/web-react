@@ -9,6 +9,6 @@ export const fetchStaticData = async (set: any) => {
     set((state: StaticDataState) => ({ ...state, roles, skills, tools, isStaticDataLoading: false }))
 }
 
-export const fetchSkills = async (set: any) => { }
-export const fetchTools = async (set: any) => { }
-export const fetchRoles = async (ste: any) => { }
+// export const fetchSkills = async (set: any) => { }
+// export const fetchTools = async (set: any) => { }
+// export const fetchRoles = async (ste: any) => { }

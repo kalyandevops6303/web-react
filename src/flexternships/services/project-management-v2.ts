@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ProjectCreationFormData } from '@flexternships/types/project-creation-types';
-import { baseUrls, routes } from '@flexternships/utils/api';
+import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 
 export const getFileUploadUrl = async (filename: string) => {
