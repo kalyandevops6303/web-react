@@ -1,0 +1,100 @@
+.formFieldContainer {
+    @apply my-5 mr-6 flex flex-col;
+}
+
+.formInputLabelContainer {
+    @apply text-xs not-italic font-normal mb-1;
+}
+
+.formInputLabel {
+    @apply text-grey-500 leading-5;
+}
+
+.requiredAsterisk {
+    @apply text-error leading-5;
+}
+
+.formInput {
+    @apply py-2.5 px-3 text-sm leading-5.5 font-normal text-grey-600 not-italic outline-none placeholder:text-xs placeholder:font-normal placeholder:leading-5.5 placeholder:text-grey-200 border-1 border-solid rounded-md;
+}
+
+.inputTextExtra {
+    @apply absolute right-3 top-2.5 text-sm leading-5.5 font-normal text-grey-600 not-italic;
+}
+
+.formInputDefault {
+    @apply border-grey-50 bg-white;
+}
+
+.formInputReadOnly {
+    @apply border-trublue;
+    background: linear-gradient(0deg, rgba(153, 193, 230, 0.10) 0%, rgba(153, 193, 230, 0.10) 100%);
+}
+
+.formInputTextarea {
+    @apply resize-none min-h-36 overflow-hidden h-auto;
+}
+
+
+/* Date picker input styles */
+.formDateInput {
+    @apply py-2.5 px-3 flex flex-row items-center justify-between border-1 border-solid border-grey-50 bg-white rounded-md cursor-pointer;
+}
+
+.formDateFilled {
+    @apply text-sm font-normal leading-5.5 text-grey-600;
+}
+
+.formDatePlaceholder {
+    @apply text-xs font-normal leading-5.5 text-grey-200;
+}
+
+/* Multi Select */
+.formMultiSelectInput {
+    @apply flex flex-row;
+}
+
+.formMultiSelectInput .placeholder {
+    @apply text-xs font-normal leading-5.5 text-grey-200 grow;
+}
+
+
+/* File Upload */
+
+.formFileInput {
+    @apply mt-1.5 flex flex-row items-center cursor-pointer;
+}
+
+.formFileInputIconContainer {
+    @apply p-2 mr-2 bg-trublue-light rounded-52 flex items-center justify-center;
+}
+
+.formFileInputIcon {
+    @apply text-trublue;
+}
+
+.formFileInputText {
+    @apply text-trublue-secondary-500 text-sm not-italic font-semibold tracking-wide;
+}
+
+/* Number Input */
+
+.formNumberInputContainer {
+    @apply h-11 self-start flex items-center px-2.5 relative;
+}
+
+.formNumberInput {
+    @apply w-24 h-7 text-center text-grey-600 bg-grey-light rounded-5 outline-none;
+}
+
+.formNumberInputContainer .inputAction {
+    @apply p-0.5 bg-trublue-secondary-500 rounded-md text-white;
+}
+
+.formNumberInputContainer .leftInputAction {
+    @apply absolute left-0;
+}
+
+.formNumberInputContainer .rightInputAction {
+    @apply absolute right-0;
+}

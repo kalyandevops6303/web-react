@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+@layer base {
+  :root {
+    --tru-blue: #0185E4;
+    --tru-grey: #6A7071;
+  }
+} */
+
+@layer base {
+  * {
+    @apply box-border m-0 p-0 border-0;
+  }
+  body {
+    @apply bg-grey-light
+  }
+}

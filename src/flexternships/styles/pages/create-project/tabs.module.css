@@ -1,0 +1,232 @@
+.tabContent {
+    @apply py-6 mb-3.5 bg-white rounded-md overflow-hidden;
+}
+
+.tabContentHeader {
+    @apply px-6 pb-4 mb-1 border-b-1 border-grey-border text-grey-heading text-lg not-italic font-medium;
+}
+
+.tabContentBody {
+    @apply px-6 flex flex-row flex-wrap;
+}
+
+.bottomActionsContainer {
+    @apply flex flex-row items-center justify-between;
+}
+
+.buttonsContainer {
+    @apply flex flex-row justify-end;
+}
+
+/* Roles */
+.roleCard {
+    @apply ps-6 mb-4 w-full relative overflow-hidden transition-all duration-300;
+}
+
+.roleCard .chevronContainer {
+    @apply absolute right-0 mt-6 mr-6;
+}
+
+.roleCard .chevron {
+    @apply text-grey-muted cursor-pointer;
+}
+
+.roleCard .errorTextButton {
+    @apply text-error text-sm not-italic font-semibold tracking-wide cursor-pointer;
+}
+
+/* Milestones */
+.durationContainer {
+    @apply my-5 mr-6 flex flex-col;
+}
+
+.durationTitle {
+    @apply text-xs not-italic font-normal mb-1 text-grey-500 leading-5;
+}
+
+.durationValue {
+    @apply mt-2 text-base not-italic font-medium text-grey-heading;
+}
+
+.durationValueDiff {
+    @apply text-sm not-italic font-medium leading-5.5;
+}
+
+.durationValueDiff.undershot {
+    @apply text-success;
+}
+
+.durationValueDiff.exceed {
+    @apply text-error;
+}
+
+.milestoneDurationUpdatedTag {
+    @apply py-0.5 px-2 bg-success bg-opacity-10 text-success text-xs not-italic font-medium leading-5 rounded-[22px] absolute -right-[80px];
+}
+
+.milestonesTabInfo {
+    @apply mb-6 py-5 px-4 flex flex-row gap-x-16 justify-end items-center rounded-md;
+}
+
+.milestonesTabInfo.undershot {
+    @apply bg-trublue-light;
+}
+.milestonesTabInfo.exceed {
+    @apply bg-error bg-opacity-10;
+}
+
+.milestonesTabInfo.undershot .infoContentContainer {
+    @apply text-trublue-secondary-500 ;
+}
+.milestonesTabInfo.exceed .infoContentContainer {
+    @apply text-error;
+}
+
+.milestonesTabInfo .infoContentContainer {
+    @apply flex flex-row gap-x-2;
+}
+
+.milestonesTabInfo .infoContentContainer .infoContent {
+    @apply text-sm not-italic leading-5.5;
+}
+.milestonesTabInfo .infoAction {
+    @apply text-sm text-trublue-secondary-500 not-italic font-semibold tracking-wide cursor-pointer;
+}
+
+
+/* Listing */
+.listImmediatelyContainer,
+.listLaterContainer {
+    @apply flex flex-row gap-4;
+}
+
+.listingRadio {
+    @apply w-[18px] h-[18px];
+}
+
+.listingRadioContent {
+    @apply flex flex-col gap-2;
+}
+
+.listingRadioTitle {
+    @apply text-grey-heading text-base not-italic font-medium leading-6;
+}
+
+.listingStartDate.listingStartDate {
+    @apply w-[232px] m-0;
+}
+
+.delistActionContainer {
+    @apply flex flex-row items-center flex-wrap gap-3;
+}
+
+.delistTextContainer {
+    @apply text-grey text-sm not-italic font-normal leading-[21px];
+}
+
+.delistAfterInput.delistAfterInput {
+    @apply w-[75px] m-0;
+}
+
+/* Preview */
+.previewTab .projectDetailsItem {
+    @apply mt-5 mr-6 flex flex-col;
+}
+
+.previewTab .projectDetailsItem .projectDetailsItemTitle {
+    @apply text-grey-heading text-sm not-italic font-normal;
+}
+
+.previewTab .projectDetailsItem .projectDetailsItemValueContainer {
+    @apply mb-2 text-lg not-italic leading-6;
+}
+
+.previewTab .projectDetailsItem .projectDetailsItemValueContainer .projectDetailsItemValue {
+    @apply text-grey-heading font-semibold;
+}
+
+.previewTab .projectDetailsItem .projectDetailsItemValueContainer .projectDetailsItemGreymatter {
+    @apply text-grey-300 font-medium;
+}
+
+/* Roles Preview & Milestones Preview */
+
+.previewTab .milestonesPreview,
+.previewTab .rolesPreview {
+    @apply shadow-table w-full mt-6 border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden;
+}
+
+.previewTab .milestonesPreview .milestonesPreviewHeader,
+.previewTab .rolesPreview .rolesPreviewHeader {
+    @apply flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10;
+}
+
+.previewTab .milestonesPreview .milestonesPreviewHeader .milestonesPreviewHeaderItem,
+.previewTab .rolesPreview .rolesPreviewHeader .rolesPreviewHeaderItem {
+    @apply px-4 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase;
+}
+
+/* Roles Preview */
+.previewTab .rolesPreview .roleItem {
+    @apply flex flex-row min-h-[52px] items-center border-solid border-grey-c2;
+}
+
+.previewTab .rolesPreview .roleItem .role {
+    @apply p-4 w-[240px];
+}
+
+.previewTab .rolesPreview .roleItem .count {
+    @apply p-4 w-[100px];
+}
+
+.previewTab .rolesPreview .roleItem .role,
+.previewTab .rolesPreview .roleItem .count {
+    @apply text-grey-heading text-sm not-italic font-medium leading-5.5;
+}
+
+
+.previewTab .rolesPreview .roleItem .skills,
+.previewTab .rolesPreview .roleItem .tools {
+    @apply p-4 flex-1 flex flex-wrap gap-3;
+}
+
+/* Milestones Preview */
+.previewTab .milestonesPreview .milestonesPreviewBody .milestoneItem {
+    @apply border-solid border-grey-c2;
+}
+
+.previewTab .milestonesPreview .milestonesPreviewBody .milestoneItem .milestoneMainInfo {
+    @apply flex flex-row;
+}
+
+.previewTab .milestonesPreview .milestonesPreviewBody .milestoneItem .milestoneMainInfo .milestoneMainInfoItem {
+    @apply p-4 text-grey-heading text-sm not-italic leading-5.5;
+}
+
+.previewTab .milestonesPreview .milestonesPreviewBody .milestoneItem .milestoneSubInfo {
+    @apply mx-4 py-4 border-t-1 border-solid border-grey-50;
+}
+
+.milestonesPreviewBody .milestoneItem .milestoneDescriptionContainer {
+    @apply mb-6;
+}
+
+.milestonesPreviewBody .milestoneItem .milestoneSubInfo .milestoneSubInfoHeading {
+    @apply mb-2 text-grey-300 text-xs not-italic font-semibold tracking-wide uppercase;
+}
+
+.milestonesPreviewBody .milestoneItem .milestoneSubInfo .milestoneSubInfoContent {
+    @apply text-grey-600 text-sm not-italic font-normal leading-5.5;
+}
+
+.milestonesPreviewBody .milestoneItem .milestoneSubInfo .milestoneDeliverablesList {
+    @apply pl-5;
+}
+
+.milestonesPreviewBody .milestoneItem .milestoneSubInfo .milestoneDeliverablesList .listItem {
+    @apply relative before:absolute before:-left-4 before:top-2 before:w-1 before:h-1 before:bg-grey-600 before:rounded-full;
+}
+
+.milestonesPreviewBody .milestoneItem .milestoneSubInfo .milestoneSubInfoContentReadMore {
+    @apply text-trublue text-sm not-italic font-normal leading-5.5 cursor-pointer;
+}

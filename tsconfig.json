@@ -34,7 +34,17 @@
       "@hooks/*": ["./src/utility/hooks/*"],
       "@assets/*": ["./src/@core/assets/*"],
       "@layouts/*": ["./src/@core/layouts/*"],
-      "@components/*": ["./src/@core/components/*"]
+      "@components/*": ["./src/@core/components/*"],
+      "@flexternships/app/*": ["./src/flexternships/app/*"],
+      "@flexternships/components/*": ["./src/flexternships/app/components/*"],
+      "@flexternships/styles/*": ["./src/flexternships/styles/*"],
+      "@flexternships/lib/*": ["./src/flexternships/lib/*"],
+      "@flexternships/utils/*": ["./src/flexternships/utils/*"],
+      "@flexternships/types/*": ["./src/flexternships/types/*"],
+      "@flexternships/stores/*": ["./src/flexternships/stores/*"],
+      "@flexternships/actions/*": ["./src/flexternships/actions/*"],
+      "@flexternships/schemas/*": ["./src/flexternships/schemas/*"],
+      "@flexternships/services/*": ["./src/flexternships/services/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],

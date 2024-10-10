@@ -11,9 +11,9 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components",
+    "components": "@flexternships/app/components",
     "utils": "@/lib/utils",
-    "ui": "@/components/ui",
+    "ui": "@flexternships/app/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
   }

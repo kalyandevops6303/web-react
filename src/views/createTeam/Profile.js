@@ -401,7 +401,7 @@ const Profile = ({ setDraftSavedModal }) => {
   const onDraftSubmit = () => {
     const languages_supported = watch('languagesSupported')?.map((language) => language.value);
     const skillsSelected = watch('skills')?.map((skill) => skill.value);
-    const servicesSelected = watch('services').map((skill) => skill.value);
+    const servicesSelected = watch('@flexternships/services').map((skill) => skill.value);
     const toolsSelected = watch('tools')?.map((skill) => skill.value);
     const availabilityData = {
       ...(watch('preferredWorkingTimeZone') && { timezone: watch('preferredWorkingTimeZone')?.value?._id || null }),
@@ -728,7 +728,7 @@ const Profile = ({ setDraftSavedModal }) => {
       );
 
       setValue(
-        'services',
+        '@flexternships/services',
         data?.services?.map((service) => ({
           label: servicesOptionsLoaded?.options?.find((serviceOption) => serviceOption?.value === service).label,
           value: service,
@@ -880,7 +880,7 @@ const Profile = ({ setDraftSavedModal }) => {
         }
         if (teamDetails?.services?.length > 0 && (!savedFormData?.services || savedFormData?.services?.length === 0)) {
           setValue(
-            'services',
+            '@flexternships/services',
             teamDetails?.services.map((service) => ({
               label: service.name,
               value: service?._id,
@@ -888,7 +888,7 @@ const Profile = ({ setDraftSavedModal }) => {
             { shouldValidate: true },
           );
         } else {
-          setValue('services', savedFormData?.services, { shouldValidate: true });
+          setValue('@flexternships/services', savedFormData?.services, { shouldValidate: true });
         }
         if (teamDetails?.tools?.length > 0 && (!savedFormData?.tools || savedFormData?.tools?.length === 0)) {
           setValue(

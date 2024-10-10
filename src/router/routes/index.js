@@ -42,6 +42,7 @@ import BidDetails from '../../views/project-details/BidDetails';
 import Assessments from '../../views/assessments';
 import InternalProjects from '../../views/internal/projects';
 import NotFound from '../../views/NotFound';
+import CreateFlexternProject from '@flexternships/app/create-project/page';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -237,6 +238,10 @@ const Routes = [
   {
     path: `/${userOnboarding.talent}/intern-xobin-hiring`,
     element: <TalentOnboarding />,
+  },
+  {
+    path: `/flexternships/create-project`,
+    element: <CreateFlexternProject />,
   },
   {
     path: '*',

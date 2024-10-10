@@ -1,0 +1,11 @@
+.tag {
+    @apply py-[1px] px-2 rounded text-xs not-italic font-semibold leading-4.5
+}
+
+.primaryTag {
+    @apply bg-trublue-light text-trublue-secondary-500;
+}
+
+.successTag {
+    @apply bg-success bg-opacity-10 text-success;
+}

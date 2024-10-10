@@ -1,0 +1,24 @@
+.horizontalFileCard {
+    @apply mb-3.5 py-4 px-6 flex flex-row justify-between items-center bg-white;
+}
+
+.horizontalFileCard .fileContainer {
+    @apply flex flex-row items-center;
+}
+.horizontalFileCard .fileContainer .fileIconContainer {
+    @apply mr-4;
+}
+.horizontalFileCard .fileContainer .fileName {
+    @apply text-grey-heading text-sm not-italic font-medium leading-6 max-w-lg;
+}
+
+
+.horizontalFileCard .fileInfoContainer {
+    @apply text-grey text-sm not-italic font-normal leading-5;
+}
+.horizontalFileCard .fileInfoContainer .fileSize {
+    @apply pr-20;
+}
+.horizontalFileCard .fileInfoContainer .fileUploadDate {
+    @apply mr-4;
+}

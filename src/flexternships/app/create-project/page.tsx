@@ -1,0 +1,57 @@
+"use client" // Mark this component as Client Component
+import { ArrowLeft, Box, Check, Clock, FileText, Users } from "react-feather";
+
+import PrimaryIconText from "@flexternships/app/components/core/buttons/PrimaryIconText";
+import TabNavigationForm from "@flexternships/app/components/pages/create-project/TabNavigationForm"
+import Listing from "@flexternships/app/components/pages/create-project/tabs/Listing";
+import Milestones from "@flexternships/app/components/pages/create-project/tabs/milestone/Milestones";
+import Preview from "@flexternships/app/components/pages/create-project/tabs/preview/Preview";
+import Requirements from "@flexternships/app/components/pages/create-project/tabs/Requirements";
+import Roles from "@flexternships/app/components/pages/create-project/tabs/roles/Roles";
+
+export default function CreateFlexternProject() {
+
+  const tabs = [
+    {
+      id: "requirements",
+      title: "Requirements",
+      subtitle: "Project Details",
+      icon: <FileText size={20} />,
+      content: <Requirements />,
+    },
+    {
+      id: "roles",
+      title: "Roles",
+      subtitle: "Define required roles",
+      icon: <Users size={20} />,
+      content: <Roles />
+    },
+    {
+      id: "milestones",
+      title: "Milestones",
+      subtitle: "Enter tasks & deliverables",
+      icon: <Box size={20} />,
+      content: <Milestones />,
+    },
+    {
+      id: "listing",
+      title: "Listing",
+      subtitle: "Add start and end date",
+      icon: <Clock size={20} />,
+      content: <Listing />,
+    },
+    {
+      id: "preview",
+      title: "Preview",
+      subtitle: "Review before posting",
+      icon: <Check size={20} />,
+      content: <Preview />,
+    },
+  ]
+  return (
+    <div className="p-6">
+        <PrimaryIconText className={'mb-2.5'} text='Create Project' icon={<ArrowLeft className={'text-white'} size={18} />} bgDark onClick={() => {}} />
+      <TabNavigationForm tabs={tabs} />
+    </div>
+  )
+}

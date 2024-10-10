@@ -65,7 +65,7 @@ const CreateInfrastructure = ({ updateInfraData }) => {
 
     const { fields, append, remove } = useFieldArray({
         control,
-        name: 'servicesSelected',
+        name: '@flexternships/servicesSelected',
     });
 
     const dispatch = useDispatch();
@@ -112,7 +112,7 @@ const CreateInfrastructure = ({ updateInfraData }) => {
     };
 
     const handleAddService = () => {
-        const isFilled = watch('servicesSelected').every((item) => {
+        const isFilled = watch('@flexternships/servicesSelected').every((item) => {
             const { service } = item;
             return service?.value;
         });
@@ -135,7 +135,7 @@ const CreateInfrastructure = ({ updateInfraData }) => {
             };
         }
         try {
-            const selectedServices = watch('servicesSelected').map(item => item.service?.value);
+            const selectedServices = watch('@flexternships/servicesSelected').map(item => item.service?.value);
             const options = availableServices
                 .filter(service => !selectedServices.includes(service._id))
                 .map(service => ({ label: service.name, value: service._id }));
