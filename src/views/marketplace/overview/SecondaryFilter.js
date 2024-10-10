@@ -44,6 +44,8 @@ import TalentCard from '../../cards/TalentCard';
 import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const location = useLocation();
@@ -62,6 +64,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const isLoading = useSelector((state) => state.marketPlace.loading);
   const isCardLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
   const selectCardData = useSelector((state) => state?.marketPlace?.cardData);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const metaData = { page: 1, page_size: 10 };
 
@@ -412,7 +415,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const setStatusOptions = () => {
-   if (primaryFilter === 'my_listings') {
+    if (primaryFilter === 'my_listings') {
       return [
         ...statusesOptions,
         { label: 'Expired', value: 'LISTING_EXPIRED' },
@@ -538,89 +541,97 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               </Col>
             ) : (
               <span className="w-auto">
-                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'all_listings' && primaryFilter !== 'teams' && (
-                  <Col>
-                    <Label className="form-label">Status</Label>
-                    <Select
-                      isClearable
-                      options={setStatusOptions()}
-                      classNamePrefix="select"
-                      placeholder="Select status"
-                      theme={selectThemeColors}
-                      onChange={(value) => onChangeFilter('statuses', value)}
-                      value={
-                        secondFilterState.statuses.length > 0
-                          ? {
-                              value: secondFilterState.statuses[0].value,
-                              label: secondFilterState.statuses[0].label,
-                            }
-                          : null
-                      }
-                    />
-                  </Col>
-                )}
+                {primaryFilter !== 'talents' &&
+                  primaryFilter !== 'clients' &&
+                  primaryFilter !== 'all_listings' &&
+                  primaryFilter !== 'teams' && (
+                    <Col>
+                      <Label className="form-label">Status</Label>
+                      <Select
+                        isClearable
+                        options={setStatusOptions()}
+                        classNamePrefix="select"
+                        placeholder="Select status"
+                        theme={selectThemeColors}
+                        onChange={(value) => onChangeFilter('statuses', value)}
+                        value={
+                          secondFilterState.statuses.length > 0
+                            ? {
+                                value: secondFilterState.statuses[0].value,
+                                label: secondFilterState.statuses[0].label,
+                              }
+                            : null
+                        }
+                      />
+                    </Col>
+                  )}
               </span>
             )}
-
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
-              <Col>
-                <Label className="form-label">Payment type</Label>
-                <Select
-                  isClearable
-                  options={projectTypesOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('project_types', value)}
-                  value={
-                    secondFilterState.project_types.length > 0
-                      ? {
-                          value: secondFilterState.project_types[0].value,
-                          label: secondFilterState.project_types[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
-              <Col>
-                <Label className="form-label">Skills</Label>
-                <AsyncPaginate
-                  isClearable
-                  loadOptions={loadSkillsOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select skill"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('skills', value)}
-                  value={
-                    secondFilterState.skills.length > 0
-                      ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
-              <Col>
-                <Label className="form-label">Tools</Label>
-                <AsyncPaginate
-                  isClearable
-                  loadOptions={loadToolsOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select tool"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('tools', value)}
-                  value={
-                    secondFilterState.tools.length > 0
-                      ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PAYMENT_TYPE']}>
+              {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+                <Col>
+                  <Label className="form-label">Payment type</Label>
+                  <Select
+                    isClearable
+                    options={projectTypesOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('project_types', value)}
+                    value={
+                      secondFilterState.project_types.length > 0
+                        ? {
+                            value: secondFilterState.project_types[0].value,
+                            label: secondFilterState.project_types[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.SKILLS']}>
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
+                <Col>
+                  <Label className="form-label">Skills</Label>
+                  <AsyncPaginate
+                    isClearable
+                    loadOptions={loadSkillsOptions}
+                    classNamePrefix="wide"
+                    placeholder="Select skill"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('skills', value)}
+                    value={
+                      secondFilterState.skills.length > 0
+                        ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TOOLS']}>
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
+                <Col>
+                  <Label className="form-label">Tools</Label>
+                  <AsyncPaginate
+                    isClearable
+                    loadOptions={loadToolsOptions}
+                    classNamePrefix="wide"
+                    placeholder="Select tool"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('tools', value)}
+                    value={
+                      secondFilterState.tools.length > 0
+                        ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
             {primaryFilter === 'clients' && (
               <Col>
                 <Label className="form-label">Company industry</Label>
