@@ -35,9 +35,11 @@
       "@assets/*": ["./src/@core/assets/*"],
       "@layouts/*": ["./src/@core/layouts/*"],
       "@components/*": ["./src/@core/components/*"],
+      // Aliases for Flexternships
       "@flexternships/app/*": ["./src/flexternships/app/*"],
       "@flexternships/components/*": ["./src/flexternships/app/components/*"],
       "@flexternships/styles/*": ["./src/flexternships/styles/*"],
+      "@flexternships/assets/*": ["./src/flexternships/assets/*"],
       "@flexternships/lib/*": ["./src/flexternships/lib/*"],
       "@flexternships/utils/*": ["./src/flexternships/utils/*"],
       "@flexternships/types/*": ["./src/flexternships/types/*"],

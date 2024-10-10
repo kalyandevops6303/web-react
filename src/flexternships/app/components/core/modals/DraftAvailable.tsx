@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import PrimaryButton from "../buttons/PrimaryButton"
 import SecondaryButton from "../buttons/SecondaryButton"
 import CloseModalButton from "../buttons/CloseModalButton"
+import ChecklistGif from '@flexternships/assets/images/checklist.gif'
 
 export default function DraftAvailable() {
   const [isOpen, setIsOpen] = useState<boolean>(true)
@@ -16,7 +17,7 @@ export default function DraftAvailable() {
             <div className="height-full mr-[0.88rem] flex min-w-48 w-48 items-center justify-center">
               {/* Icon can be replaced with an actual icon */}
               <img
-                src={"/assets/images/checklist.gif"}
+                src={ChecklistGif}
                 className=" w-full"
                 width={100}
                 height={100}

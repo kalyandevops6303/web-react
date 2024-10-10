@@ -5,6 +5,7 @@ import SecondaryButton from "../buttons/SecondaryButton"
 import CloseModalButton from "../buttons/CloseModalButton"
 import { ModalType } from "@flexternships/types/project-creation-types"
 import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
+import TickGif from "@flexternships/assets/images/tick.gif"
 
 export default function DurationUpdated() {
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
@@ -20,7 +21,7 @@ export default function DurationUpdated() {
             <div className="height-full mr-10 flex min-w-30 w-30 items-center justify-center">
               {/* Icon can be replaced with an actual icon */}
               <img
-                src={"/assets/images/tick.gif"}
+                src={TickGif}
                 className=" w-full"
                 width={100}
                 height={100}

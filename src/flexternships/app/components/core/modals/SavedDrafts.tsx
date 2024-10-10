@@ -4,6 +4,7 @@ import SecondaryButton from "../buttons/SecondaryButton"
 import CloseModalButton from "../buttons/CloseModalButton"
 import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
 import { ModalType } from "@flexternships/types/project-creation-types"
+import ChecklistGif from "@flexternships/assets/images/checklist.gif"
 
 export default function SavedDrafts(props: Props) {
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
@@ -26,7 +27,7 @@ export default function SavedDrafts(props: Props) {
               <div className="height-full mr-10 flex w-30 min-w-30 items-center justify-center">
                 {/* Icon can be replaced with an actual icon */}
                 <img
-                  src={"/assets/images/tick.gif"}
+                  src={ChecklistGif}
                   className=" w-full"
                   width={100}
                   height={100}

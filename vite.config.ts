@@ -85,6 +85,7 @@ export default defineConfig({
       '@flexternships/app': path.resolve(__dirname, 'src/flexternships/app'),
       '@flexternships/components': path.resolve(__dirname, 'src/flexternships/app/components'),
       '@flexternships/styles': path.resolve(__dirname, 'src/flexternships/styles'),
+      '@flexternships/assets': path.resolve(__dirname, 'src/flexternships/assets'),
       '@flexternships/lib': path.resolve(__dirname, 'src/flexternships/lib'),
       '@flexternships/utils': path.resolve(__dirname, 'src/flexternships/utils'),
       '@flexternships/types': path.resolve(__dirname, 'src/flexternships/types'),

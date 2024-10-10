@@ -5,6 +5,7 @@ import { ModalType } from "@flexternships/types/project-creation-types"
 import CloseModalButton from "../buttons/CloseModalButton"
 import PrimaryButton from "../buttons/PrimaryButton"
 import SecondaryButton from "../buttons/SecondaryButton"
+import ChecklistGif from "@flexternships/assets/images/checklist.gif"
 
 export default function SuccessfulCreation(props: Props) {
   const { onRecall, onConfirm, recallTimeLeft } = props;
@@ -27,7 +28,7 @@ export default function SuccessfulCreation(props: Props) {
             <div className="height-full mr-[0.87rem] flex w-48 min-w-48 items-center justify-center">
               {/* Icon can be replaced with an actual icon */}
               <img
-                src={"/assets/images/checklist.gif"}
+                src={ChecklistGif}
                 className=" w-full"
                 width={100}
                 height={100}

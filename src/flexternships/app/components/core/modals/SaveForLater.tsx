@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import PrimaryButton from "../buttons/PrimaryButton"
 import SecondaryButton from "../buttons/SecondaryButton"
 import CloseModalButton from "../buttons/CloseModalButton"
+import SavedGif from "@flexternships/assets/images/saved.gif"
 
 export default function SaveForLaterModal() {
   const [isOpen, setIsOpen] = useState<boolean>(true)
@@ -17,7 +18,7 @@ export default function SaveForLaterModal() {
               <div className="height-full mr-[1.44rem] flex min-w-48 w-48 items-center justify-center">
                 {/* Icon can be replaced with an actual icon */}
                 <img
-                  src={"/assets/images/saved.gif"}
+                  src={SavedGif}
                   className=" w-full"
                   width={100}
                   height={100}

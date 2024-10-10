@@ -5,6 +5,7 @@ import SecondaryButton from "../buttons/SecondaryButton"
 import CloseModalButton from "../buttons/CloseModalButton"
 import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
 import { ModalType } from "@flexternships/types/project-creation-types"
+import ChecklistAlarmGif from "@flexternships/assets/images/checklistAlarm.gif"
 
 export default function UpdateDurationModal({
   estimatedDuration,
@@ -33,7 +34,7 @@ export default function UpdateDurationModal({
           <div className="flex">
             <div className="height-full mr-4 flex min-w-48 items-center justify-center">
               <img
-                src={"/assets/images/checklistAlarm.gif"}
+                src={ChecklistAlarmGif}
                 className=" w-full"
                 width={100}
                 height={100}

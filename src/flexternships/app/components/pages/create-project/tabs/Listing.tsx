@@ -33,6 +33,11 @@ export default function Listing() {
     console.log(listingStartDate, listingEndDate);
     nextTab();
   }
+  
+  const handleStartDateChangeForLater = (selectedDateEpoch: number) => {
+    if(selectedDateEpoch < dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0)))) return;
+    setListingStartDateEpochForLater(selectedDateEpoch);
+  }
 
   return (
     <>
@@ -78,7 +83,7 @@ export default function Listing() {
                     value={delistAfterForImmediate}
                     onChange={(e) => {
                       const parsedValue = parseInt(e.target.value);
-                      setDelistAfterForImmediate(isNaN(parsedValue) ? 1 : parsedValue); // Set to 0 if NaN
+                      setDelistAfterForImmediate(isNaN(parsedValue) ? 1 : parsedValue);
                     }}
                     type='numeric'
                     label=''
@@ -117,7 +122,7 @@ export default function Listing() {
                   List later
                 </div>
                 <div className='flex flex-row items-end gap-10'>
-                  <DatePicker value={listingStartDateEpochForLater} onChange={(dateEpoch) => (setListingStartDateEpochForLater(dateEpoch))} label='Listing Start Date' placeholder='Select start date' className={Styles.listingStartDate} required />
+                  <DatePicker value={listingStartDateEpochForLater} onChange={(dateEpoch) => (handleStartDateChangeForLater(dateEpoch))} label='Listing Start Date' placeholder='Select start date' className={Styles.listingStartDate} required />
                   <div className={Styles.delistActionContainer}>
                     <span className={Styles.delistTextContainer}>
                       De-list After
