@@ -8,6 +8,7 @@ import babel from 'vite-plugin-babel';
 import postCssRtl from 'postcss-rtl';
 // import Checker from 'vite-plugin-checker';
 import sassDts from 'vite-plugin-sass-dts';
+import tailwindcss from 'tailwindcss';
 
 const loadJsFilesAsJsx = (): Plugin => ({
   name: 'load-js-files-as-jsx',
@@ -63,7 +64,7 @@ export default defineConfig({
       },
     },
     postcss: {
-      plugins: [postCssRtl()],
+      plugins: [tailwindcss(), postCssRtl()],
     },
   },
   resolve: {
