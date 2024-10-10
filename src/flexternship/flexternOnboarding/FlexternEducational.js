@@ -167,15 +167,7 @@ const FlexternEducational = () => {
   const localFormData = useWatch({ control });
 
   const getOverallPercentageCompletion = () => {
-    if (isFlextern && !isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
-      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
-    }
   };
 
   useEffect(() => {

@@ -173,15 +173,7 @@ const FlexternAvailability = () => {
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   const getOverallPercentageCompletion = () => {
-    if (isFlextern && !isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
-      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
-    }
   };
 
   useEffect(() => {

@@ -402,15 +402,7 @@ const Account = () => {
   };
 
   const getOverallPercentageCompletion = () => {
-    if (isFlextern && !isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
-      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
-    }
+      if (isFlextern) setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {
@@ -613,7 +605,7 @@ const Account = () => {
               <CardHeader>
                 <h4 className="m-0 mt-1">Profile Completion</h4>
                 <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
-                <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion || 0}%</h3>
                 <Progress value={overallPercentageCompletion}
                   style={{ height: '0.5rem' }}
                   className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
@@ -637,7 +629,7 @@ const Account = () => {
                   </div>
                 </div>}
 
-                {isFlextern && <div className='d-flex gap-1 mt-1'>
+                {<div className='d-flex gap-1 mt-1'>
                   <div className="custom-checkbox-wrapper">
                     <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
                     <label htmlFor="customCheckbox2" className="custom-checkbox-label" />

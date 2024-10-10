@@ -181,7 +181,7 @@ const FlexternTabs = ({ tabNames, active }) => {
   // }, []);
 
   useEffect(() => {
-    if (isFlexternReady) dispatch(getProfileCompletionFlextern());
+    dispatch(getProfileCompletionFlextern());
     if (trumioTalent) dispatch(getProfilePercentage());
   }, [flexternBoolean, trumioTalent]);
 
@@ -189,7 +189,7 @@ const FlexternTabs = ({ tabNames, active }) => {
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       <div className="mb-2 d-flex justify-content-center gap-2">
         <ProgramCheckBox active={isFlextern} completed={isFlexternReady}>
-          {isFlexternReady && selectProgram?.flextern ? (
+          {isFlexternReady ? (
             <>
               <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
               <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
