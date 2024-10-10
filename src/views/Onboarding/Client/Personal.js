@@ -819,6 +819,32 @@ const Personal = () => {
               </Row>
               <Row className="mb-1">
                 <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="country">
+                    Country<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="country"
+                    name="country"
+                    control={control}
+                    invalid={errors.country && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        loadOptions={loadCountriesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select your country"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.country,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="city">
                     City<span className="label-asterisk me-50">*</span>
                   </Label>
@@ -873,32 +899,6 @@ const Personal = () => {
                     )}
                   />
                   {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
-                </Col>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="country">
-                    Country<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="country"
-                    name="country"
-                    control={control}
-                    invalid={errors.country && true}
-                    render={({ field }) => (
-                      <AsyncPaginate
-                        loadOptions={loadCountriesOptions}
-                        classNamePrefix="select"
-                        placeholder="Select your country"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.country,
-                        })}
-                        {...field}
-                      />
-                    )}
-                  />
-                  {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
                 </Col>
               </Row>
             </CardBody>
