@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ChevronDown, ChevronUp } from 'react-feather';
 import { Milestone } from '@flexternships/types/project-creation-types';

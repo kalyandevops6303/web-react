@@ -1,15 +1,12 @@
 "use client";
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
 import { ChevronLeft, Plus } from 'react-feather';
 import { useFieldArray, useForm } from 'react-hook-form';
-import ActivityIndicator from '@flexternships/app/components/core/Spinner';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
-import { useStaticDataStore } from '@flexternships/stores/static-data-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectRolesForm } from '@flexternships/types/project-creation-types';
 import { ProjectRolesFormSchema } from '@flexternships/schemas/project-creation-schemas';

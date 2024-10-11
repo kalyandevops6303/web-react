@@ -1,14 +1,13 @@
 import { closestCenter, DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
-import { AlertCircle, ChevronLeft, Plus } from 'react-feather';
+import { ChevronLeft, Plus } from 'react-feather';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
 import { DatePicker } from '@flexternships/app/components/core/form/DatePicker';
-import SuccessTag from '@flexternships/app/components/core/tags/SuccessTag';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { MilestonesForm, ModalType } from '@flexternships/types/project-creation-types';
@@ -39,9 +38,7 @@ export default function Milestones() {
 
   const {
     control,
-    register,
     handleSubmit,
-    setValue,
     formState: { errors, isValid },
   } = useForm<MilestonesForm>({
     mode: 'onChange',

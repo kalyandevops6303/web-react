@@ -1,8 +1,8 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, Plus, Trash2 } from 'react-feather';
-import { Controller, FieldErrors, useFieldArray, UseFormRegister } from 'react-hook-form';
+import { Controller, FieldErrors, useFieldArray } from 'react-hook-form';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleElevatedCard';
 import TextInput from '@flexternships/app/components/core/form/TextInput';

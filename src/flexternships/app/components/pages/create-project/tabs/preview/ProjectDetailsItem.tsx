@@ -1,4 +1,3 @@
-import React from 'react';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 
 export default function ProjectDetailsItem(props: Props) {

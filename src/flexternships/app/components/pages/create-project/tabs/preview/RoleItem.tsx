@@ -1,4 +1,3 @@
-import React from 'react';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css'
 import PrimaryTag from '@flexternships/app/components/core/tags/PrimaryTag';
 import { ProjectRole } from '@flexternships/types/project-creation-types';
