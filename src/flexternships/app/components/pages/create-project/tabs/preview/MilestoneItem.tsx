@@ -49,7 +49,7 @@ export default function MilestoneItem(props: Props) {
                         }
                     </span>
                 </div>
-                <div className={Styles.milestoneDeliverablesContainer}>
+                <div>
                     <div className={Styles.milestoneSubInfoHeading}>
                         Deliverables
                     </div>

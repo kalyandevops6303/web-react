@@ -26,7 +26,7 @@
     @apply text-grey text-xl bg-grey-50;
 }
 
-.tabBody {}
+/* .tabBody {} */
 
 .tabTitle {
     @apply font-sans text-sm leading-5.5 not-italic font-semibold;

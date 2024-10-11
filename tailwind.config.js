@@ -2,8 +2,9 @@ const defaultTheme = require("tailwindcss/defaultTheme")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    darkMode: ['class'],
-    content: [
+  important: true,
+  darkMode: ['class'],
+  content: [
     './index.html',
     "./src/flexternships/**/*.{js,jsx,ts,tsx}", // include all js, jsx, ts, tsx files
   ],

@@ -43,7 +43,7 @@ export function DatePicker(props: InputProps) {
                     mode="single"
                     selected={epochToDate(value)}
                     onSelect={handleDateSelection}
-                    initialFocus
+                    // initialFocus
                 />
             </PopoverContent>
         </Popover>

@@ -23,7 +23,6 @@ export default function Roles() {
     control,
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isValid },
   } = useForm<ProjectRolesForm>({
     mode: 'onChange',
@@ -54,7 +53,6 @@ export default function Roles() {
               <RoleCard
                 key={field.id}
                 index={index}
-                register={register}
                 control={control}
                 removable={fields.length > 1}
                 remove={() => remove(index)}

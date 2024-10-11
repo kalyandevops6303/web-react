@@ -48,9 +48,13 @@ export default function CreateFlexternProject() {
       content: <Preview />,
     },
   ]
+
+  const onBack = () => {
+    window.location.href = '/dashboard';
+  }
   return (
-    <div className="p-6">
-        <PrimaryIconText className={'mb-2.5'} text='Create Project' icon={<ArrowLeft className={'text-white'} size={18} />} bgDark onClick={() => {}} />
+    <div className="flexternships p-6">
+      <PrimaryIconText onClick={onBack} className={'mb-2.5'} text='Create Project' icon={<ArrowLeft className={'text-white'} size={18} />} bgDark />
       <TabNavigationForm tabs={tabs} />
     </div>
   )

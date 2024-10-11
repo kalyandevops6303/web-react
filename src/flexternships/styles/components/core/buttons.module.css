@@ -19,7 +19,7 @@
     @apply transition-transform duration-100 ease-in-out transform active:scale-95;
 }
 
-.secondaryDisabledButton {}
+/* .secondaryDisabledButton {} */
 
 .primaryIconText {
     @apply flex flex-row items-center cursor-pointer;

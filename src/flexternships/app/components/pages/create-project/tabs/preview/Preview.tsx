@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'react-feather';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
-import HorizontalFileCard from '@flexternships/app/components/core/files/HorizontalFileCard';
+import HorizontalFileCard from '@/flexternships/app/components/core/files/HorizontalFileCard';
 import SuccessfulCreation from '@flexternships/app/components/core/modals/SuccessfulCreation';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
@@ -108,7 +108,7 @@ export default function Preview() {
                 Tools
               </div>
             </div>
-            <div className={Styles.rolesPreviewBody}>
+            <div>
               {
                 formData.roles.map((role, index) => (
                   <RoleItem key={index} data={role} last={formData.roles.length === index + 1} />
