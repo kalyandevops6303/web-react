@@ -1,4 +1,3 @@
-import React from 'react';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { AlertCircle } from 'react-feather';
 
@@ -7,7 +6,7 @@ export default function MilestoneInfo(props: InfoProps) {
     return (
         <div className={`${Styles.milestonesTabInfo} ${infoType === "undershot" ? Styles.undershot : (infoType === "overshot" ? Styles.exceed : '')}`}>
             <div className={Styles.infoContentContainer}>
-                <div className={Styles.infoIcon}>
+                <div>
                     <AlertCircle size={18} />
                 </div>
                 <div className={Styles.infoContent}>

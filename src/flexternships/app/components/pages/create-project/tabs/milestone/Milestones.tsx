@@ -98,6 +98,7 @@ export default function Milestones() {
   };
 
   const handleEstimatedStartDateChange = (newDate: number) => {
+    if(newDate < dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0)))) return;
     updateEstimatedStartDate(newDate);
   }
 
@@ -164,10 +165,10 @@ export default function Milestones() {
                     key={field.id}
                     id={field.id}
                     milestoneIndex={index}
-                    register={register}
                     control={control}
                     removable={fields.length > 2}
                     remove={() => remove(index)}
+                    errors={errors.milestones?.[index]}
                   />
                 ))}
               </SortableContext>
@@ -181,7 +182,7 @@ export default function Milestones() {
                   title: '',
                   duration: 1,
                   description: '',
-                  deliverables: [''],
+                  deliverables: [' '],
                 })} />
             </div>
           </div>

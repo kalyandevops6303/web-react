@@ -13,6 +13,7 @@ export default function MultiSelectInput(props: InputProps) {
         required,
         placeholder,
         className,
+        error
     } = props;
 
 
@@ -31,7 +32,7 @@ export default function MultiSelectInput(props: InputProps) {
                         {required && <span className={Styles.requiredAsterisk}>*</span>}
                     </div>
 
-                    <div className={`${Styles.formInput} ${Styles.formInputDefault} ${Styles.formMultiSelectInput}`}>
+                    <div className={`${Styles.formInput} ${error ? Styles.formInputError : Styles.formInputDefault} ${Styles.formMultiSelectInput}`}>
                         {
                             fields.length === 0 ? (
                                 <div className={`${Styles.placeholder}`}>
@@ -56,6 +57,7 @@ export default function MultiSelectInput(props: InputProps) {
                             <ChevronDown />
                         </span>
                     </div>
+                    {error && <p className={Styles.formInputErrorMessage}>{error}</p>}
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto h-72 overflow-y-scroll p-0 bg-white">
@@ -76,12 +78,13 @@ export default function MultiSelectInput(props: InputProps) {
 
 type InputProps = {
     name: string,
+    choices: Choice[]
     control: any
     label: string; // Required field
     required?: boolean; // Optional field
     placeholder?: string; // Optional field
     className?: string; // Optional field
-    choices: Choice[]
+    error?: string
 };
 
 

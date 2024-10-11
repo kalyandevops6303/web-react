@@ -81,9 +81,12 @@ export default function Listing() {
                   </span>
                   <TextInput
                     value={delistAfterForImmediate}
-                    onChange={(e) => {
-                      const parsedValue = parseInt(e.target.value);
-                      setDelistAfterForImmediate(isNaN(parsedValue) ? 1 : parsedValue);
+                    onChange={(value) => {
+                      let parsedValue;
+                      if(typeof value === 'string')
+                        parsedValue = parseInt(value);
+                      else parsedValue = value;
+                      setDelistAfterForImmediate(parsedValue>0 ? parsedValue : 1);
                     }}
                     type='numeric'
                     label=''
@@ -129,9 +132,12 @@ export default function Listing() {
                     </span>
                     <TextInput
                       value={delistAfterForLater}
-                      onChange={(e) => {
-                        const parsedValue = parseInt(e.target.value);
-                        setDelistAfterForLater(isNaN(parsedValue) ? 1 : parsedValue); // Set to 0 if NaN
+                      onChange={(value) => {
+                        let parsedValue;
+                        if(typeof value === 'string')
+                          parsedValue = parseInt(value);
+                        else parsedValue = value;
+                        setDelistAfterForLater(parsedValue>0 ? parsedValue : 1);
                       }}
                       type='numeric'
                       label=''

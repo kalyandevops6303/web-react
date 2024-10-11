@@ -61,6 +61,7 @@ export default function Roles() {
                 control={control}
                 removable={fields.length > 1}
                 remove={() => remove(index)}
+                errors={errors.projectRoles?.[index]}
               />
             ))}
             <div>

@@ -1,6 +1,6 @@
 import React from "react";
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
-import { UseFormRegisterReturn } from "react-hook-form";
+import Tooltip from "../Tooltip";
 
 export default function TextInput(props: InputProps) {
     const {
@@ -13,7 +13,9 @@ export default function TextInput(props: InputProps) {
         textarea,
         value,
         onChange,
-        extra
+        extra,
+        error,
+        tooltip
     } = props;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -31,8 +33,11 @@ export default function TextInput(props: InputProps) {
         }
 
         // Only call onChange if valid
-        if (isValid) {
-            onChange(e);
+        if(!isValid) return;
+        if (type==="numeric") {
+            onChange(Number(newValue));
+        } else {
+            onChange(newValue);
         }
     }
 
@@ -41,12 +46,13 @@ export default function TextInput(props: InputProps) {
             <div className={Styles.formInputLabelContainer}>
                 <label className={Styles.formInputLabel}>{label}</label>
                 {required && <span className={Styles.requiredAsterisk}>*</span>}
+                {tooltip && <Tooltip content={tooltip} />}
             </div>
             {
                 textarea ? (
                     <textarea
                         placeholder={placeholder}
-                        className={`${Styles.formInput} ${readOnly ? Styles.formInputReadOnly : Styles.formInputDefault} ${Styles.formInputTextarea}`}
+                        className={`${Styles.formInput} ${readOnly ? Styles.formInputReadOnly : (error ? Styles.formInputError : Styles.formInputDefault)} ${Styles.formInputTextarea}`}
                         disabled={readOnly}
                         value={value}
                         onChange={handleChange}
@@ -55,7 +61,7 @@ export default function TextInput(props: InputProps) {
                     <div className="w-full flex flex-col relative">
                         <input
                             placeholder={placeholder}
-                            className={`${Styles.formInput} ${readOnly ? Styles.formInputReadOnly : Styles.formInputDefault}`}
+                            className={`${Styles.formInput} ${readOnly ? Styles.formInputReadOnly : (error ? Styles.formInputError : Styles.formInputDefault)}`}
                             disabled={readOnly}
                             value={value}
                             onChange={handleChange} // Use the updated handleChange
@@ -71,13 +77,14 @@ export default function TextInput(props: InputProps) {
 
                 )
             }
+            {error && <p className={Styles.formInputErrorMessage}>{error}</p>}
         </div>
     );
 }
 
 type InputProps = {
     value: number | string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onChange: (newValue: number | string) => void;
     label: string; // Required field
     type?: "alphanumeric" | "numeric"; // Optional field
     required?: boolean; // Optional field
@@ -85,5 +92,7 @@ type InputProps = {
     textarea?: boolean; // Optional field
     placeholder?: string; // Optional field
     className?: string; // Optional field
-    extra?: string
+    extra?: string;
+    tooltip?: string;
+    error?: string;
 };

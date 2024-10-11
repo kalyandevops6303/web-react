@@ -3,7 +3,7 @@
 }
 
 .formInputLabelContainer {
-    @apply text-xs not-italic font-normal mb-1;
+    @apply text-xs not-italic font-normal mb-1 flex flex-row gap-0.5;
 }
 
 .formInputLabel {
@@ -25,6 +25,9 @@
 .formInputDefault {
     @apply border-grey-50 bg-white;
 }
+.formInputError {
+    @apply border-error bg-white;
+}
 
 .formInputReadOnly {
     @apply border-trublue;
@@ -35,10 +38,14 @@
     @apply resize-none min-h-36 overflow-hidden h-auto;
 }
 
+.formInputErrorMessage {
+    @apply text-error text-xs not-italic font-normal leading-5;
+}
+
 
 /* Date picker input styles */
 .formDateInput {
-    @apply py-2.5 px-3 flex flex-row items-center justify-between border-1 border-solid border-grey-50 bg-white rounded-md cursor-pointer;
+    @apply py-2.5 px-3 flex flex-row items-center justify-between border-1 border-solid rounded-md cursor-pointer;
 }
 
 .formDateFilled {

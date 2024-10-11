@@ -70,10 +70,8 @@ export const createFlexternProject: (projectData: ProjectCreationFormData) => Pr
             }
         )),
         "listing_details": {
-          "start_date": projectData.listingDetails.listingStartDate,
-          "end_date": projectData.listingDetails.listingEndDate,
-          // "start_date_epoch": 0,
-          // "end_date_epoch": 0
+          "start_date_epoch": projectData.listingDetails.listingStartDate,
+          "end_date_epoch": projectData.listingDetails.listingEndDate,
         },
         "milestones": projectData.milestones.map((item) => ({
                 "name": item.title,
@@ -128,10 +126,8 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
             }
         )),
         "listing_details": {
-          "start_date": projectData.listingDetails.listingStartDate,
-          "end_date": projectData.listingDetails.listingEndDate,
-          // "start_date_epoch": 0,
-          // "end_date_epoch": 0
+          "start_date_epoch": projectData.listingDetails.listingStartDate,
+          "end_date_epoch": projectData.listingDetails.listingEndDate,
         },
         "milestones": projectData.milestones.map((item) => ({
                 "name": item.title,

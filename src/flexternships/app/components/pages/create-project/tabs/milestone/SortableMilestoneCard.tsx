@@ -2,15 +2,15 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, Plus, Trash2 } from 'react-feather';
-import { Controller, useFieldArray, UseFormRegister } from 'react-hook-form';
+import { Controller, FieldErrors, useFieldArray, UseFormRegister } from 'react-hook-form';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleElevatedCard';
 import TextInput from '@flexternships/app/components/core/form/TextInput';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
-import { MilestonesForm } from '@flexternships/types/project-creation-types';
+import { Milestone } from '@flexternships/types/project-creation-types';
 
 export default function SortableMilestoneCard(props: Props) {
-    const { id, milestoneIndex, removable, register, control, remove } = props;
+    const { id, milestoneIndex, removable, control, remove, errors } = props;
 
     const [isExpanded, setIsExpanded] = useState(false);
     const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -19,6 +19,7 @@ export default function SortableMilestoneCard(props: Props) {
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
+        maxHeight: isDragging ? '150px':'600px',
     };
 
     const { fields: deliverables, append: appendDeliverable, remove: removeDeliverable } = useFieldArray({
@@ -29,6 +30,8 @@ export default function SortableMilestoneCard(props: Props) {
     useEffect(() => {
         setIsExpanded((cur) => (isDragging ? false : cur));
     }, [isDragging]);
+
+    console.log(deliverables);
 
 
     return (
@@ -61,7 +64,11 @@ export default function SortableMilestoneCard(props: Props) {
                             <TextInput
                                 value={value}
                                 onChange={onChange}
-                                className="w-[510px]" label={`Milestone  ${milestoneIndex + 1}`} placeholder="Enter milestone" required />
+                                className="w-[510px]" 
+                                label={`Milestone  ${milestoneIndex + 1}`} 
+                                placeholder="Enter milestone"
+                                error={errors?.title?.message}
+                                required />
                         )}>
                     </Controller>
                     <Controller
@@ -76,7 +83,7 @@ export default function SortableMilestoneCard(props: Props) {
                                 placeholder="Enter duration"
                                 type='numeric'
                                 extra="wk"
-
+                                error={errors?.duration?.message}
                                 required />
                         )}>
                     </Controller>
@@ -91,13 +98,18 @@ export default function SortableMilestoneCard(props: Props) {
                                     <TextInput
                                         value={value}
                                         onChange={onChange}
-                                        className="w-[554px]" label="Description" placeholder="Enter description" textarea required />
+                                        className="w-[554px]" 
+                                        label="Description" 
+                                        placeholder="Enter description"
+                                        tooltip='This is a mandatory field'
+                                        error={errors?.description?.message}
+                                        textarea required />
                                 )}>
                             </Controller>
                             <div className='flex flex-col'>
                                 {
                                     deliverables.map((field, index) => (
-                                        <div key={index} className='relative'>
+                                        <div key={field.id} className='relative'>
                                             <Controller
                                                 name={`milestones.${milestoneIndex}.deliverables.${index}`}
                                                 control={control}
@@ -109,12 +121,13 @@ export default function SortableMilestoneCard(props: Props) {
                                                         className="w-[428px]"
                                                         label="Deliverables"
                                                         placeholder="Enter deliverables"
+                                                        error={errors?.deliverables?.[index]?.message}
                                                     />
                                                 )}>
                                             </Controller>
                                             {
                                                 deliverables.length > 1 && (
-                                                    <span className='absolute -right-2 bottom-[35px] text-error cursor-pointer' onClick={() => removeDeliverable(index)}>
+                                                    <span className='absolute -right-2 bottom-[35px] text-error cursor-pointer' onClick={() => (removeDeliverable(index))}>
                                                         <Trash2 size={18} />
                                                     </span>
                                                 )
@@ -123,8 +136,6 @@ export default function SortableMilestoneCard(props: Props) {
 
                                     ))
                                 }
-                                {/* <TextInput className="w-[510px]" label="Deliverables" placeholder="Enter deliverables" /> */}
-                                {/* TODO: Add deliverables button */}
                                 <div>
                                     <PrimaryIconText className={'mt-2'} text='Add Deliverables' icon={<Plus className={'text-trublue'} size={18} />} onClick={() => appendDeliverable('')} />
                                 </div>
@@ -151,7 +162,7 @@ type Props = {
     id: string
     milestoneIndex: number
     removable: boolean
-    register: UseFormRegister<MilestonesForm>;
     control: any;
     remove: () => void;
+    errors: FieldErrors<Milestone> | undefined;
 };

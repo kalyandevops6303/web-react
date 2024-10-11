@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'react-feather';
-import { Controller, UseFormRegister, useWatch } from 'react-hook-form';
+import { Controller, FieldErrors, useWatch } from 'react-hook-form';
 import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleElevatedCard';
 import MultiSelectInput from '@flexternships/app/components/core/form/MultiSelectInput';
 import NumberInput from '@flexternships/app/components/core/form/NumberInput';
 import SingleSelectInput from '@flexternships/app/components/core/form/SingleSelectInput';
-import TextInput from '@flexternships/app/components/core/form/TextInput';
 import { useStaticDataStore } from '@flexternships/stores/static-data-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
-import { ProjectRolesForm } from '@flexternships/types/project-creation-types';
+import { ProjectRole } from '@flexternships/types/project-creation-types';
 
 export default function RoleCard(props: Props) {
-    const { index, removable, register, remove, control } = props;
+    const { index, removable, remove, control, errors } = props;
     const [isExpanded, setIsExpanded] = useState(false);
     const rolesData = useStaticDataStore((state) => state.roles);
     const skillsData = useStaticDataStore((state) => state.skills);
@@ -40,14 +39,6 @@ export default function RoleCard(props: Props) {
                         name={`projectRoles.${index}.role`}
                         control={control}
                         render={({ field: { value, onChange } }) => (
-                            // <TextInput
-                            //     value={value}
-                            //     onChange={onChange}
-                            //     className="w-[510px]"
-                            //     label="Project Role"
-                            //     placeholder="Enter role"
-                            //     required
-                            // />
                             <SingleSelectInput
                                 value={value}
                                 onChange={onChange}
@@ -109,6 +100,7 @@ export default function RoleCard(props: Props) {
                                 className="w-[510px]"
                                 label="Skills "
                                 placeholder="Enter skills"
+                                error={errors?.skills?.message}
                                 required
                             />
                             <MultiSelectInput
@@ -118,6 +110,7 @@ export default function RoleCard(props: Props) {
                                 className="w-[510px]"
                                 label="Tools"
                                 placeholder="Enter tools"
+                                error={errors?.tools?.message}
                             />
                         </>
                     )}
@@ -139,7 +132,7 @@ export default function RoleCard(props: Props) {
 type Props = {
     index: number;
     removable: boolean
-    register: UseFormRegister<ProjectRolesForm>;
     control: any;
     remove: () => void;
+    errors: FieldErrors<ProjectRole> | undefined;
 };

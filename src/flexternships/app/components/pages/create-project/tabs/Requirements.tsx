@@ -45,6 +45,12 @@ export default function Requirements() {
     nextTab();
   };
 
+  const onSaveDraft = () => {
+    const data = watch();
+    updateRequirementsData(data);
+    saveAsDraft();
+  };
+
   // Watch for changes in estimatedDuration and estimatedWeeklyHours to autofill totalHours
   const estimatedDuration = watch('estimatedDuration');
   const estimatedWeeklyHours = watch('estimatedWeeklyHours');
@@ -74,6 +80,7 @@ export default function Requirements() {
                 type="alphanumeric"
                 label="Project Name"
                 placeholder="Enter project name"
+                error={errors.projectName?.message}
                 required />
             )}>
 
@@ -88,6 +95,7 @@ export default function Requirements() {
                 className="w-[272px]"
                 label="Estimated Start Date"
                 placeholder="Enter start date"
+                error={errors.estimatedStartDate?.message}
                 required />
             )}>
           </Controller>
@@ -103,6 +111,7 @@ export default function Requirements() {
                 label="Estimated Duration (in weeks)"
                 placeholder="Enter duration"
                 extra="wk"
+                error={errors.estimatedDuration?.message}
                 required />
             )}>
 
@@ -117,6 +126,7 @@ export default function Requirements() {
                 className="w-[272px]" type="numeric" label="Estimated Hours / Week"
                 placeholder="Enter estimation" 
                 extra="hrs/wk"
+                error={errors.estimatedWeeklyHours?.message}
                 required />
 
             )}>
@@ -145,7 +155,12 @@ export default function Requirements() {
               <TextInput
                 value={value}
                 onChange={onChange}
-                className="w-full" type="alphanumeric" label="Project Description" placeholder="Enter project background and requirements" required textarea />
+                className="w-full" 
+                type="alphanumeric" 
+                label="Project Description" 
+                placeholder="Enter project background and requirements" 
+                error={errors.projectDescription?.message}
+                required textarea />
             )}>
           </Controller>
 
@@ -159,7 +174,11 @@ export default function Requirements() {
         </div>
       </div>
       <div className={Styles.buttonsContainer}>
-        <SecondaryButton className="mr-6" text="Save as Draft " onClick={saveAsDraft} loading={isSaveDraftLoading} />
+        <SecondaryButton 
+          className="mr-6" 
+          text="Save as Draft " 
+          onClick={onSaveDraft} 
+          loading={isSaveDraftLoading} />
         <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>
           Continue
         </PrimaryButton>

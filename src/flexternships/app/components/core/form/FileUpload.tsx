@@ -55,22 +55,26 @@ export default function FileUpload(props: InputProps) {
             <div className={Styles.formInputLabelContainer}>
                 <span className={Styles.formInputLabel}>{label}</span>
                 {required && <span className={Styles.requiredAsterisk}>*</span>}
-                <div className={`flex flex-col w-full ${fields.length !== 0 ? 'mt-4' : ''}`}>
-                    {
-                        fields.map((item: any, index: number) => (
-                            <HorizontalFileCard
-                                key={index}
-                                fileName={item.fileName}
-                                fileSize={formatFileSize(item.size)}
-                                createdAt={formatEpochToHumanReadable(item.createdAt)}
-                                generateDownloadLink={async () => (await getFileDownloadUrl(item.fileKey))}
-                                removable
-                                remove={() => handleRemove(index)} // Call handleRemove to remove file and clear input
-                            />
-                        ))
-                    }
-                </div>
             </div>
+            {
+                    fields.length > 0 && (
+                        <div className={`flex flex-col w-full ${fields.length !== 0 ? 'mt-1' : ''}`}>
+                            {
+                                fields.map((item: any, index: number) => (
+                                    <HorizontalFileCard
+                                        key={index}
+                                        fileName={item.fileName}
+                                        fileSize={formatFileSize(item.size)}
+                                        createdAt={formatEpochToHumanReadable(item.createdAt)}
+                                        generateDownloadLink={async () => (await getFileDownloadUrl(item.fileKey))}
+                                        removable
+                                        remove={() => handleRemove(index)} // Call handleRemove to remove file and clear input
+                                    />
+                                ))
+                            }
+                        </div>
+                    )
+            }
             <label htmlFor={name} className={`${Styles.formFileInput}`}>
                 <span className={Styles.formFileInputIconContainer}>
                     <Upload className={Styles.formFileInputIcon} size={18} />
