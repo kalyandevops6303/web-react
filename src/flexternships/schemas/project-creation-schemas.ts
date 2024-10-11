@@ -9,19 +9,19 @@ export const ProjectDetailsSchema = yup.object().shape({
         .min(dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0))), 'Estimated start date cannot be in the past'), // Allow today
     estimatedDuration: yup.number()
         .required('Estimated duration is required')
-        .positive('Estimated duration must be a positive number')
-        .integer('Estimated duration must be an integer'), // Optional: ensure it's an integer
+        .positive('Estimated duration should be positive')
+        .integer('Estimated duration must be an integer'),
     estimatedWeeklyHours: yup.number()
         .required('Estimated weekly hours are required')
-        .positive('Estimated weekly hours must be a positive number')
-        .max(168, 'Estimated weekly hours cannot exceed 168 hours'), // Optional: max for a week
+        .positive('Estimated weekly hours should be positive')
+        .max(168, 'Estimated weekly hours cannot exceed 168 hours'),
     totalProjectHoursEach: yup.number()
         .required('Total project hours each is required')
         .positive('Total project hours each must be a positive number'),
     projectDescription: yup.string()
         .required('Project description is required')
         .min(50, 'Project description should be atleast 50 characters')
-        .max(500, 'Project description cannot exceed 500 characters'), // Optional: limit the length
+        .max(500, 'Project description cannot exceed 500 characters'),
     documents: yup.array().of(yup.object().shape(
         {
             fileName: yup.string().required("fileName is required"),
@@ -75,5 +75,5 @@ export const MilestonesFormSchema = yup.object().shape({
                 .required()
                 .min(1, 'At least one deliverable is required'),
         }
-    )).required()//.min(1, "At least one project role is required")
+    )).required().min(2, "At least two milestones are required")
 })
