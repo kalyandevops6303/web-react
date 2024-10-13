@@ -109,7 +109,7 @@ const Step2 = ({ setStep, step }) => {
     defaultValues: {
       taxName: savedFormData?.taxName || '',
       taxClass: savedFormData?.taxClass || '',
-      taxType: savedFormData?.taxType || '',
+      taxType: '',
       ssnTaxId: savedFormData?.ssnTaxId || null,
       nsnTaxId: savedFormData?.nsnTaxId || null,
     },
@@ -146,7 +146,7 @@ const Step2 = ({ setStep, step }) => {
     if (res) {
       if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type?.length > 0) {
-        setTaxUserType(savedFormData?.taxType || res?.tax_user_type);
+        setTaxUserType(res?.tax_user_type);
       }
       if (res.tax_identification?.legal_name?.length > 0) {
         setValue('taxName', savedFormData?.taxName || res.tax_identification?.legal_name);
