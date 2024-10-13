@@ -65,7 +65,7 @@ import { projectFileUploadToAzureService } from '../../../services/createProject
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { deleteIdentityFile, getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { deleteIdentityFile, getUserDetails, saveCheckpointComplete, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
@@ -637,6 +637,8 @@ const Additional = () => {
         setFiles([file]);
       }
     }
+
+    dispatch(saveCheckpointComplete(() =>{}))
   };
 
   useEffect(() => {
