@@ -167,15 +167,7 @@ const FlexternEducational = () => {
   const localFormData = useWatch({ control });
 
   const getOverallPercentageCompletion = () => {
-    if (isFlextern && !isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
-      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
-    }
   };
 
   useEffect(() => {
@@ -220,7 +212,7 @@ const FlexternEducational = () => {
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
-  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
 
   const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
@@ -468,17 +460,15 @@ const FlexternEducational = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
+            name:  res?.talent_info?.resume?.file_name,
+            size:  res?.talent_info?.resume?.size,
           },
           uploadData: {
-            file_key:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.file_key
-                : res?.talent_info?.resume?.file_key,
+            file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
         };
+        setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }

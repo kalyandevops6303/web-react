@@ -476,15 +476,16 @@ export const {
   checkAdminSuccess,
   checkAdminFailure,
   googleLoginRequest,
+  getAppPermissionsRequest,
+  getAppPermissionsSuccess,
+  getAppPermissionsFailure,
   setTalentBooleanTrumioTalent,
   setTalentBooleansFlextern,
   setTalentBooleanIsFlextern,
   profileCompletionFlexternRequest, 
   profileCompletionFlexternSuccess, 
-  profileCompletionFlexternFailure,
-  getAppPermissionsRequest,
-  getAppPermissionsSuccess,
-  getAppPermissionsFailure,
+  profileCompletionFlexternFailure
+
 } = authSlice.actions;
 
 export default authSlice.reducer;

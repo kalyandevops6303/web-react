@@ -87,7 +87,6 @@ const CompleteProfileDetailsCta = {
 
 // eslint-disable-next-line consistent-return
 const returnCompleteProfileDetailsCta = (userType, missingValues) => {
-
   if (userType === 'CLIENT' && missingValues?.includes('company_name')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_name');
     // eslint-disable-next-line no-else-return

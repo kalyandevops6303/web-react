@@ -29,6 +29,9 @@ const Alerts = () => {
   const profilePercentageData = useSelector(profilePercentage);
   const notificationsData = useSelector(notifications);
 
+  const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
+  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
   const talentOrClientProfile =
     userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
@@ -141,15 +144,15 @@ const Alerts = () => {
               <CardText className="mb-50">
                 Make it easier for others to find you by <br /> completing your profile.
               </CardText>
-              <span className="font-weight-bold percentage ">{profilePercentageData?.profile_completed}%</span>
+              <span className="font-weight-bold percentage ">{isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed}%</span>
               <Progress
                 style={{ height: '0.5rem' }}
-                className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
-                value={profilePercentageData?.profile_completed}
+                className={`${giveProgressBarColorClassName(isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed)} mt-25`}
+                value={isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed}
               />
               {returnCompleteProfileDetailsCta(
                 talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                profilePercentageData?.values_missing,
+                (isFlextern ? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing),
               ) && (
                 <CardText
                   className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"

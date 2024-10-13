@@ -202,19 +202,13 @@ const Additional = () => {
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
-  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
 
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
-  const getOverallPercentageCompletion = () => {
-    if (isFlextern && !isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionFlextern);
-    } else if (!isFlextern && isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionProject);
-    } else {
-      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
-    }
+  const getOverallPercentageCompletion = () => {  
+    setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {

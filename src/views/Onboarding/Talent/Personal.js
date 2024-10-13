@@ -899,13 +899,6 @@ const Personal = () => {
           },
           isUploaded: true,
         };
-        dispatch(
-          setFileKey(
-            savedFormDocuments != null
-              ? savedFormDocuments[0]?.uploadData?.file_key
-              : res?.talent_info?.resume?.file_key,
-          ),
-        );
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }

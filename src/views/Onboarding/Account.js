@@ -64,7 +64,7 @@ import { ProgressBarWrapper } from '../create-bid/style';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import "../../App.css";
-import { getProfilePercentage } from '../../redux/actions/dashboardActions';
+// import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -98,7 +98,7 @@ const Account = () => {
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
-  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
   const userType = useSelector((state) => state.auth?.userType);
 
@@ -402,15 +402,7 @@ const Account = () => {
   };
 
   const getOverallPercentageCompletion = () => {
-    if (isFlextern && !isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
-      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
-    }
+      if (isFlextern) setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {
@@ -613,7 +605,7 @@ const Account = () => {
               <CardHeader>
                 <h4 className="m-0 mt-1">Profile Completion</h4>
                 <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
-                <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion || 0}%</h3>
                 <Progress value={overallPercentageCompletion}
                   style={{ height: '0.5rem' }}
                   className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
@@ -645,8 +637,8 @@ const Account = () => {
                   <div>
                     <CardText className="m-0">Flexternship Ready</CardText>
                     <b className='text-primary cursor-pointer'
-                    onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                    >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
+                    onClick={() => !userDetailsData?.talent_info? navigate('/talent-onboarding/account-details') : navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
+                    >{isFlexternReady ? 'Explore Flexternships' : `${!userDetailsData?.talent_info? 'Add Account Details' :returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
                   </div>
                 </div>}
               </CardBody>

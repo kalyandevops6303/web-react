@@ -29,6 +29,7 @@ import {
   profileDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
+  userDetails,
   userDetailsLoading,
 } from '../../redux/selectors/talentOnboardingSelectors';
 import AccountCreatedModal from '../../views/Onboarding/AccountCreatedModal';
@@ -130,22 +131,15 @@ const FlexternSocial = () => {
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
-  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const userData = useSelector(userDetails);
+  const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
 
   const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   const getOverallPercentageCompletion = () => {
-    if (isFlextern && !isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
-      setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
-      setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
-    }
   };
 
   useEffect(() => {
@@ -356,17 +350,15 @@ const FlexternSocial = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
           },
           uploadData: {
-            file_key:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.file_key
-                : res?.talent_info?.resume?.file_key,
+            file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
         };
+        setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key ?? savedFormDocuments[0]?.uploadData?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }
@@ -379,7 +371,9 @@ const FlexternSocial = () => {
         if (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')) {
           setValue(
             'linkedInLink',
-            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn').url,
+            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url?.length > 0 && savedFormData?.linkedInLink === userData?.talent_info?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url
+              ? res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url
+              : savedFormData?.linkedInLink,
             {
               shouldValidate: true,
             },
@@ -388,21 +382,27 @@ const FlexternSocial = () => {
         if (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')) {
           setValue(
             'twitterLink',
-            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter').url,
+            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url?.length > 0 && savedFormData?.twitterLink === userData?.talent_info?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url
+              ? res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url
+              : savedFormData?.twitterLink,
             {
               shouldValidate: true,
             },
           );
         }
+        
         if (res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')) {
           setValue(
             'githubLink',
-            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub').url,
+            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url?.length > 0 && savedFormData?.githubLink === userData?.talent_info?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url
+              ? res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url
+              : savedFormData?.githubLink,
             {
               shouldValidate: true,
             },
           );
         }
+        
         if (
           res?.talent_info?.social_links.filter(
             (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',

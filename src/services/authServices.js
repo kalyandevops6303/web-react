@@ -38,6 +38,8 @@ const checkRequestValidation = (requestToken) => DataService.get(`${API.auth.req
 const getFlexternVariablesService = () => DataService.get(API.auth.flexternValues);
 const getAppPermissionService = () => DataService.get(`${API.permissions.appPermissions}`);
 
+
+
 export {
   loginService,
   loginServiceGoogle,
@@ -54,7 +56,7 @@ export {
   fcmUnsubscribeService,
   resetPasswordService,
   checkAdminService,
+  getAppPermissionService,
   checkRequestValidation,
   getFlexternVariablesService,
-  getAppPermissionService,
 };

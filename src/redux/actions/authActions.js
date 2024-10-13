@@ -77,12 +77,12 @@ import {
   checkAdminSuccess,
   checkAdminFailure,
   googleLoginRequest,
-  setTalentBooleanTrumioTalent,
-  setTalentBooleansFlextern,
-  setTalentBooleanIsFlextern,
   getAppPermissionsSuccess,
   getAppPermissionsRequest,
   getAppPermissionsFailure,
+  setTalentBooleanTrumioTalent,
+  setTalentBooleansFlextern,
+  setTalentBooleanIsFlextern,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -101,7 +101,6 @@ import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
-
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -240,29 +239,34 @@ const verifyEmail = (data) => async (dispatch) => {
   }
 };
 
-const verifyEmailForFlextern = ({data,onSuccess ,errorHandlerInviteNotFound}) => async (dispatch) => {
-  dispatch(verifyEmailForFlexternRequest());
-  try {
-    const res = await verifyEmailForFlexternService(data);
-    if(!isEmpty(res?.data?.data)) {
-      setItem('access_token', res.data.data.access_token);
-      setItem('access_token_expires', res.data.data.access_token_expires);
-      setItem('refresh_token', res.data.data.refresh_token);
-      setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-      dispatch(setTalentBooleanIsFlextern(true))
-      dispatch(verifyEmailForFlexternSuccess());
-      if(onSuccess) {
-        onSuccess();
+const verifyEmailForFlextern =
+  ({ data, onSuccess, errorHandlerInviteNotFound }) =>
+  async (dispatch) => {
+    dispatch(verifyEmailForFlexternRequest());
+    try {
+      const res = await verifyEmailForFlexternService(data);
+      if (!isEmpty(res?.data?.data)) {
+        setItem('access_token', res.data.data.access_token);
+        setItem('access_token_expires', res.data.data.access_token_expires);
+        setItem('refresh_token', res.data.data.refresh_token);
+        setItem('refresh_token_expires', res.data.data.refresh_token_expires);
+        dispatch(setTalentBooleanIsFlextern(true));
+        dispatch(verifyEmailForFlexternSuccess());
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+    } catch (error) {
+      if (
+        error?.response?.data?.errorData?.message === 'Flextern invitation not found for this email' &&
+        errorHandlerInviteNotFound
+      ) {
+        errorHandlerInviteNotFound();
+      } else {
+        errorHandler(error, verifyEmailForFlexternFailure);
       }
     }
-  } catch (error) {
-    if(error?.response?.data?.errorData?.message === "Flextern invitation not found for this email" && errorHandlerInviteNotFound) {
-      errorHandlerInviteNotFound();
-    } else {
-      errorHandler(error,verifyEmailForFlexternFailure);
-    }
-  }
-};
+  };
 const setPassword = (Password) => async (dispatch) => {
   dispatch(setPasswordRequest());
   try {
@@ -286,13 +290,13 @@ const registerPhone =
     }
   };
 
-const verifyPhone = (data,onVerifyOtpSuccess) => async (dispatch) => {
+const verifyPhone = (data, onVerifyOtpSuccess) => async (dispatch) => {
   dispatch(verifyPhoneRequest());
   try {
     await verifyPhoneService(data);
     dispatch(verifyPhoneSuccess());
-    if(onVerifyOtpSuccess) {
-      onVerifyOtpSuccess();  
+    if (onVerifyOtpSuccess) {
+      onVerifyOtpSuccess();
     }
     return null;
   } catch (error) {
@@ -492,6 +496,8 @@ const getAppPermissions = () => async (dispatch) => {
   }
 };
 
+
+
 export {
   switchProfile,
   getUserData,
@@ -516,4 +522,4 @@ export {
   validateRequestFlexTernToken,
   getFlexternVariables,
   getAppPermissions,
-}
+};

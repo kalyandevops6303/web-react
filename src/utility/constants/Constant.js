@@ -321,8 +321,8 @@ export {
   teamTypes,
   clubOrTeamStatuses,
   REPORT_ENTITIES,
-  studyYears,
-  graduationYears,
   PaymentStatusOptions,
   PayTypeOptions,
+  studyYears,
+  graduationYears,
 };
