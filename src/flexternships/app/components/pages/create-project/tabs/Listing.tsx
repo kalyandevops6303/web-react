@@ -8,6 +8,7 @@ import TextInput from '@flexternships/app/components/core/form/TextInput';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { addDaysToEpoch, dateToEpoch } from '@flexternships/utils/date-utils';
+import Tooltip from '@flexternships/app/components/core/Tooltip';
 
 export default function Listing() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
@@ -74,10 +75,11 @@ export default function Listing() {
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>
                   List immediately
+                <Tooltip content={'Your project will be posted immediately'} />
                 </div>
                 <div className={Styles.delistActionContainer}>
                   <span className={Styles.delistTextContainer}>
-                    De-list After
+                    De-list after
                   </span>
                   <TextInput
                     value={delistAfterForImmediate}
@@ -123,12 +125,13 @@ export default function Listing() {
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>
                   List later
+                <Tooltip content={'Your project will be posted on the listing start date'} />
                 </div>
                 <div className='flex flex-row items-end gap-10'>
                   <DatePicker value={listingStartDateEpochForLater} onChange={(dateEpoch) => (handleStartDateChangeForLater(dateEpoch))} label='Listing Start Date' placeholder='Select start date' className={Styles.listingStartDate} required />
                   <div className={Styles.delistActionContainer}>
                     <span className={Styles.delistTextContainer}>
-                      De-list After
+                      De-list after
                     </span>
                     <TextInput
                       value={delistAfterForLater}

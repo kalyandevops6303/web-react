@@ -11,7 +11,7 @@ import { ProjectRole } from '@flexternships/types/project-creation-types';
 
 export default function RoleCard(props: Props) {
     const { index, removable, remove, control, errors } = props;
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
     const rolesData = useStaticDataStore((state) => state.roles);
     const skillsData = useStaticDataStore((state) => state.skills);
     const toolsData = useStaticDataStore((state) => state.tools);
@@ -55,7 +55,7 @@ export default function RoleCard(props: Props) {
                         render={({ field: { value, onChange } }) => (
                             <NumberInput
                                 className="w-[247px]"
-                                label="Count "
+                                label="Headcount "
                                 min={1}
                                 value={value}
                                 onChange={onChange}

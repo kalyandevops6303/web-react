@@ -12,7 +12,7 @@ import { Milestone } from '@flexternships/types/project-creation-types';
 export default function SortableMilestoneCard(props: Props) {
     const { id, milestoneIndex, removable, control, remove, errors } = props;
 
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
     const toggleExpand = () => setIsExpanded(!isExpanded);
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
@@ -101,7 +101,7 @@ export default function SortableMilestoneCard(props: Props) {
                                         className="w-[554px]" 
                                         label="Description" 
                                         placeholder="Enter description"
-                                        tooltip='This is a mandatory field'
+                                        tooltip='Describe the milestone objectives and output required'
                                         error={errors?.description?.message}
                                         textarea required />
                                 )}>
@@ -137,7 +137,7 @@ export default function SortableMilestoneCard(props: Props) {
                                     ))
                                 }
                                 <div>
-                                    <PrimaryIconText className={'mt-2'} text='Add Deliverables' icon={<Plus className={'text-trublue'} size={18} />} onClick={() => appendDeliverable('')} />
+                                    <PrimaryIconText className={'mt-2'} text='Add Deliverable' icon={<Plus className={'text-trublue'} size={18} />} onClick={() => appendDeliverable('')} />
                                 </div>
                             </div>
                         </>

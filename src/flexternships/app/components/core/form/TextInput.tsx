@@ -42,7 +42,7 @@ export default function TextInput(props: InputProps) {
     }
 
     return (
-        <div className={`${Styles.formFieldContainer} ${className ?? className}`}>
+        <div className={`${Styles.formFieldContainer} ${className ?? ''}`}>
             <div className={Styles.formInputLabelContainer}>
                 <label className={Styles.formInputLabel}>{label}</label>
                 {required && <span className={Styles.requiredAsterisk}>*</span>}

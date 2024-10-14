@@ -44,7 +44,32 @@ export default function Milestones() {
     mode: 'onChange',
     resolver: yupResolver(MilestonesFormSchema),
     defaultValues: {
-      milestones: milestonesData,
+      milestones: (() => {
+        let runningTotal = 0;
+        const totalMilestones = milestonesData.length;
+
+        return milestonesData.map((milestoneItem, index) => {
+          if (index === totalMilestones - 1) {
+            // For the last item, calculate the remaining duration
+            return {
+              title: milestoneItem.title,
+              duration: estimatedDuration - runningTotal, // Remaining duration for the last item
+              description: milestoneItem.description,
+              deliverables: milestoneItem.deliverables,
+            };
+          } else {
+            // For other milestones, use Math.ceil and keep track of the running total
+            const duration = Math.ceil(milestoneItem.duration * estimatedDuration);
+            runningTotal += duration;
+            return {
+              title: milestoneItem.title,
+              duration: duration,
+              description: milestoneItem.description,
+              deliverables: milestoneItem.deliverables,
+            };
+          }
+        });
+      })(),
     },
   });
 

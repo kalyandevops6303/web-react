@@ -40,14 +40,18 @@ export default function MilestoneItem(props: Props) {
                     <div className={Styles.milestoneSubInfoHeading}>
                         Description
                     </div>
-                    <div className={`${Styles.milestoneSubInfoContent} ${isDescriptionExpanded ? '' : 'line-clamp-2'}`}>
+                    <div className={`${Styles.milestoneSubInfoContent} ${(!isDescriptionExpanded && (data.description.length > 180)) && 'line-clamp-2'}`}>
                         {data.description}
                     </div>
-                    <span className={Styles.milestoneSubInfoContentReadMore} onClick={toggleDescription}>
-                        {
-                            isDescriptionExpanded ? 'read less' : 'read more'
-                        }
-                    </span>
+                    {
+                        (data.description.length > 180) && (
+                            <span className={Styles.milestoneSubInfoContentReadMore} onClick={toggleDescription}>
+                                {
+                                    isDescriptionExpanded ? 'read less' : 'read more'
+                                }
+                            </span>
+                        )
+                    }
                 </div>
                 <div>
                     <div className={Styles.milestoneSubInfoHeading}>

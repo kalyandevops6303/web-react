@@ -1,6 +1,5 @@
 "use client"
-import React, { useState } from "react"
-import PrimaryButton from "../buttons/PrimaryButton"
+
 import SecondaryButton from "../buttons/SecondaryButton"
 import CloseModalButton from "../buttons/CloseModalButton"
 import { ModalType } from "@flexternships/types/project-creation-types"

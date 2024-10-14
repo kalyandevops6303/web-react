@@ -1,5 +1,6 @@
+/* If you want to reference any global className then use :global(.className) */
 .tabContent {
-    @apply py-6 mb-3.5 bg-white rounded-md overflow-hidden;
+    @apply py-6 mb-3.5 bg-white rounded-md;
 }
 
 .tabContentHeader {
@@ -109,7 +110,7 @@
 }
 
 .listingRadioTitle {
-    @apply text-grey-heading text-base not-italic font-medium leading-6;
+    @apply text-grey-heading text-base not-italic font-medium leading-6 flex items-center gap-1;
 }
 
 .listingStartDate.listingStartDate {
@@ -134,7 +135,7 @@
 }
 
 .previewTab .projectDetailsItem .projectDetailsItemTitle {
-    @apply text-grey-heading text-sm not-italic font-normal;
+    @apply text-grey-heading text-sm not-italic font-normal flex items-center gap-1;
 }
 
 .previewTab .projectDetailsItem .projectDetailsItemValueContainer {

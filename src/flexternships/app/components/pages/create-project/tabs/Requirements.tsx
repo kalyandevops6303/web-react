@@ -123,7 +123,7 @@ export default function Requirements() {
               <TextInput
                 value={value}
                 onChange={onChange}
-                className="w-[272px]" type="numeric" label="Estimated Hours / Week"
+                className="w-[272px]" type="numeric" label="Estimated Hours / Week per Flextern"
                 placeholder="Enter estimation" 
                 extra="hrs/wk"
                 error={errors.estimatedWeeklyHours?.message}
@@ -141,7 +141,7 @@ export default function Requirements() {
                 value={value}
                 onChange={onChange}
                 className="w-[272px]" type="numeric" 
-                label="Total Project Hours / Flextern" 
+                label="Total Project Hours per Flextern" 
                 placeholder="Add duration & hours/week" 
                 extra="hrs/flextern"
                 readOnly />
@@ -167,7 +167,7 @@ export default function Requirements() {
           <FileUpload
             name={'documents'}
             control={control}
-            label="Upload detailed requirements document (optional)"
+            label="Upload requirement documents (optional)"
             placeholder="Upload Document" />
 
 

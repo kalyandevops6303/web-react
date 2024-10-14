@@ -28,17 +28,17 @@ const defaultInitState: ProjectCreationState = {
     ],
     milestones: [{
       title: 'Plan and Design',
-      duration: 2,
+      duration: 0.25, // percentage of the total duration
       description: '',
       deliverables: ['Plan', 'Design'],
     }, {
       title: 'Execute/Implement',
-      duration: 2,
+      duration: 0.5, // percentage of the total duration
       description: '',
       deliverables: ['Execute', 'Implement'],
     }, {
       title: 'Publish/Deploy',
-      duration: 2,
+      duration: 0.25, // percentage of the total duration
       description: '',
       deliverables: ['Publish', 'Deploy'],
     }],

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'react-feather';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
-import HorizontalFileCard from '@/flexternships/app/components/core/files/HorizontalFileCard';
+import HorizontalFileCard from '@flexternships/app/components/core/files/HorizontalFileCard';
 import SuccessfulCreation from '@flexternships/app/components/core/modals/SuccessfulCreation';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
@@ -61,13 +61,13 @@ export default function Preview() {
           Project Details
         </div>
         <div className={Styles.tabContentBody}>
-          <ProjectDetailsItem className='w-[470px] mb-5' title='Project name' value={formData.requirements.projectName || 'NaN'} />
-          <ProjectDetailsItem className='w-[230px] mb-5' title='Estimated Duration' value={`${formData.requirements.estimatedDuration * 7}d`} />
-          <ProjectDetailsItem className='w-[330px] mb-5' title='Listing Duration' value={`${formatEpochToHumanReadable(formData.listingDetails.listingStartDate)} to ${formatEpochToHumanReadable(formData.listingDetails.listingEndDate)}`} />
+          <ProjectDetailsItem className='w-[460px] mb-5' title='Project name' value={formData.requirements.projectName || 'NaN'} />
+          <ProjectDetailsItem className='w-[280px] mb-5' title='Estimated Duration' value={`${formData.requirements.estimatedDuration} weeks`} tooltip='Estimated duration of the project in weeks' />
+          <ProjectDetailsItem className='w-[280px] mb-5' title='Listing Duration' value={`${formatEpochToHumanReadable(formData.listingDetails.listingStartDate)} to ${formatEpochToHumanReadable(formData.listingDetails.listingEndDate)}`} />
           <ProjectDetailsItem className='w-[208px]' title='Estimated Start Date' value={formatEpochToHumanReadable(formData.requirements.estimatedStartDate)} />
-          <ProjectDetailsItem className='w-[238px]' title='Total Milestones' value={`${formData.milestones.length}` || 'NaN'} greymatter={`in ${formData.requirements.estimatedDuration} Weeks`} />
-          <ProjectDetailsItem className='w-[230px]' title='Estimated Hours/Week' value={`${formData.requirements.estimatedWeeklyHours}hrs weekly`} />
-          <ProjectDetailsItem className='w-[330px]' title='Total Project Hours/Flextern' value={`${formData.requirements.totalProjectHoursEach}hrs`} />
+          <ProjectDetailsItem className='w-[228px]' title='Total Milestones' value={`${formData.milestones.length}` || 'NaN'} greymatter={`in ${formData.requirements.estimatedDuration} Weeks`} />
+          <ProjectDetailsItem className='w-[280px]' title='Estimated Hours/Week per Flextern' value={`${formData.requirements.estimatedWeeklyHours}hrs weekly`} tooltip='Estimated weekly work-hours for each flextern' />
+          <ProjectDetailsItem className='w-[280px]' title='Total Project Hours per Flextern' value={`${formData.requirements.totalProjectHoursEach}hrs`} tooltip='Total project hours for each flextern' />
         </div>
       </div>
       <div className={`${Styles.tabContent} shadow-card`}>

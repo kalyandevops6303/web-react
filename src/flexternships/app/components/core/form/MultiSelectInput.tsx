@@ -26,7 +26,7 @@ export default function MultiSelectInput(props: InputProps) {
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <div className={`${Styles.formFieldContainer} ${className ?? className} relative`}>
+                <div className={`${Styles.formFieldContainer} ${className ?? ''} relative`}>
                     <div className={Styles.formInputLabelContainer}>
                         <label className={Styles.formInputLabel}>{label}</label>
                         {required && <span className={Styles.requiredAsterisk}>*</span>}
@@ -42,7 +42,7 @@ export default function MultiSelectInput(props: InputProps) {
                                 <div className="flex flex-row grow flex-wrap gap-2">
                                     {
                                         fields.map((item: any, index) => (
-                                            <div className="p-1 flex flex-row items-center gap-1 bg-trublue-secondary-500 bg-opacity-70 text-white rounded">
+                                            <div key={index} className="p-1 flex flex-row items-center gap-1 bg-trublue-secondary-500 bg-opacity-70 text-white rounded">
                                                 <span className="text-xs font-medium leading-5">{item.name}</span>
                                                 <span onClick={() => remove(index)}>
                                                     <X size={12} />
@@ -60,11 +60,11 @@ export default function MultiSelectInput(props: InputProps) {
                     {error && <p className={Styles.formInputErrorMessage}>{error}</p>}
                 </div>
             </PopoverTrigger>
-            <PopoverContent className="w-auto h-72 overflow-y-scroll p-0 bg-white">
+            <PopoverContent className={`h-72 overflow-y-scroll p-0 bg-white ${className ?? ''}`}>
                 <div className="flex flex-col">
                     {
-                        choices.map((item) => (
-                            <div className="py-2.5 px-4 hover:bg-trublue-light hover:text-trublue text-grey-heading text-sm" onClick={() => append(item)}>
+                        choices.map((item, index) => (
+                            <div key={index} className="py-2.5 px-4 hover:bg-trublue-light hover:text-trublue text-grey-heading text-sm" onClick={() => append(item)}>
                                 {item.name}
                             </div>
                         ))

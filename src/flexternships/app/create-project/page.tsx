@@ -53,7 +53,7 @@ export default function CreateFlexternProject() {
     window.location.href = '/dashboard';
   }
   return (
-    <div className="flexternships p-6">
+    <div className="flexternships-page p-6">
       <PrimaryIconText onClick={onBack} className={'mb-2.5'} text='Create Project' icon={<ArrowLeft className={'text-white'} size={18} />} bgDark />
       <TabNavigationForm tabs={tabs} />
     </div>

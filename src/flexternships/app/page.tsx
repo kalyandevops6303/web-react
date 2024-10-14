@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Button } from "@flexternships/app/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Next.js Enterprise Boilerplate",
+  title: "Flexternships | TruNext",
   twitter: {
     card: "summary_large_image",
   },
@@ -22,8 +22,9 @@ export default function Web() {
   return (
     <>
       <main className="flex h-screen items-center justify-center gap-2">
-        <h1>Hello world</h1>
-        <Button>shadcn/ui button</Button>
+        <h1>
+          Welcome to TruNext App - Flexternships Demo
+        </h1>
       </main>
     </>
   )

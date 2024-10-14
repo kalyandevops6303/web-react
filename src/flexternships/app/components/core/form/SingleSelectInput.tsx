@@ -18,7 +18,7 @@ export default function SingleSelectInput(props: InputProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <div className={`${Styles.formFieldContainer} ${className ?? className} relative`}>
+        <div className={`${Styles.formFieldContainer} ${className ?? ''} relative`}>
           <div className={Styles.formInputLabelContainer}>
             <label className={Styles.formInputLabel}>{label}</label>
             {required && <span className={Styles.requiredAsterisk}>*</span>}
@@ -42,11 +42,11 @@ export default function SingleSelectInput(props: InputProps) {
           </div>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-auto h-72 overflow-y-scroll p-0 bg-white">
+      <PopoverContent className={`h-72 overflow-y-scroll p-0 bg-white ${className ?? ''}`}>
         <div className="flex flex-col">
           {
-            choices.map((item) => (
-              <div className="py-2.5 px-4 hover:bg-trublue-light hover:text-trublue text-grey-heading text-sm" onClick={() => onChange(item)}>
+            choices.map((item, index) => (
+              <div key={index} className="py-2.5 px-4 hover:bg-trublue-light hover:text-trublue text-grey-heading text-sm" onClick={() => onChange(item)}>
                 {item.name}
               </div>
             ))

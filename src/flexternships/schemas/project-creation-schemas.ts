@@ -21,7 +21,7 @@ export const ProjectDetailsSchema = yup.object().shape({
     projectDescription: yup.string()
         .required('Project description is required')
         .min(50, 'Project description should be atleast 50 characters')
-        .max(500, 'Project description cannot exceed 500 characters'),
+        .max(3000, 'Project description must be 3000 characters or less'),
     documents: yup.array().of(yup.object().shape(
         {
             fileName: yup.string().required("fileName is required"),
