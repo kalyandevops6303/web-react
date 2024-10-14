@@ -10,7 +10,7 @@ import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
-import { selectFlexternBoolean, selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectUserData,selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
@@ -33,12 +33,13 @@ const Alerts = () => {
   const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
 
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
+  const isFlexternProfileCompleted = profileCompletionFlextern === 100;
   const talentOrClientProfile =
     userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
   const isDelegate = getItem('isDelegate');
-  const isFlextern = useSelector(selectFlexternBoolean);
+  const isFlextern = useSelector(selectTrumioIsFlextern);
   useEffect(() => {
     dispatch(getAlertsNotifications({ priority: [1, 2], page: 1, pageSize: 4, oldData: [] }));
 
@@ -61,6 +62,7 @@ const Alerts = () => {
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
+    console.log(path)
     navigate(path);
   };
 
@@ -135,7 +137,7 @@ const Alerts = () => {
             </Link>
           )}
         </CardHeader>
-        {!isProfileCompleted && !isDelegate && (
+        {!isProfileCompleted && !isDelegate && !isFlexternProfileCompleted &&(
           <Card className="card-inside">
             <CardHeader>
               <CardTitle tag="h4">Profile Completion!</CardTitle>
@@ -160,7 +162,7 @@ const Alerts = () => {
                     onAddDetailsClick(
                       returnCompleteProfileDetailsCta(
                         talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                        profilePercentageData?.values_missing,
+                        isFlextern?  profileCompletionFlexternMissingValues :profilePercentageData?.values_missing
                       )?.path,
                     )
                   }
@@ -168,7 +170,7 @@ const Alerts = () => {
                   {
                     returnCompleteProfileDetailsCta(
                       talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                      profilePercentageData?.values_missing,
+                      isFlextern? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing,
                     )?.label
                   }
                 </CardText>

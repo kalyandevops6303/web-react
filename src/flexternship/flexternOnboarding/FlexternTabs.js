@@ -183,14 +183,14 @@ const FlexternTabs = ({ tabNames, active }) => {
   // }, []);
 
   useEffect(() => {
-    if(isFlextern && userData?.checkpoint === 'PROFILE_DETAILS') dispatch(getProfileCompletionFlextern());
+    if(isFlextern) dispatch(getProfileCompletionFlextern());
     if (trumioTalent) dispatch(getProfilePercentage());
-  }, [flexternBoolean, trumioTalent]);
+  }, [userData]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
-      <div className="mb-2 d-flex justify-content-center gap-2">
-        <ProgramCheckBox active={isFlextern} completed={isFlexternReady}>
+      {/* <div className="mb-2 d-flex justify-content-center gap-2"> */}
+        {/* <ProgramCheckBox active={isFlextern} completed={isFlexternReady}>
           {isFlexternReady ? (
             <>
               <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
@@ -203,7 +203,7 @@ const FlexternTabs = ({ tabNames, active }) => {
               Flexternship
             </div>
           )}
-        </ProgramCheckBox>
+        </ProgramCheckBox> */}
         {/* <ProgramCheckBox active={selectProgram?.trumio_talent} completed={isProjectReady}>
           {isProjectReady && selectProgram?.trumio_talent ? (
             <>
@@ -223,7 +223,7 @@ const FlexternTabs = ({ tabNames, active }) => {
             </div>
           )}
         </ProgramCheckBox> */}
-      </div>
+      {/* </div> */}
       <Nav pills className="mb-2">
         {renderNavItem(
           `/${userOnboarding.talent}/account-details`,
