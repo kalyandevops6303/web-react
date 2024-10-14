@@ -16,7 +16,12 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { clearData, makeTeamMemberSuccess } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
-import { selectAuthUserData, selectFlexternBoolean, selectUserData } from '../../redux/selectors/authSelectors';
+import {
+  selectAuthUserData,
+  selectFlexternBoolean,
+  selectTrumioIsFlextern,
+  selectUserData,
+} from '../../redux/selectors/authSelectors';
 import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
 import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
 import { getProfilePercentage, getTeamProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
@@ -59,7 +64,8 @@ const UserDetails = () => {
 
   const queryParams = new URLSearchParams(window.location.search);
   const projectId = queryParams.get('project_id');
-  
+  const isFlextern = useSelector(selectTrumioIsFlextern);
+
   useEffect(() => {
     dispatch(clearData());
     dispatch(getRequestStatusSuccess(null));
@@ -74,7 +80,7 @@ const UserDetails = () => {
         user_type: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
         isEditable,
         currentUserType: userData?.user_type,
-        projectId: projectId || undefined
+        projectId: projectId || undefined,
       }),
     );
 
@@ -95,14 +101,12 @@ const UserDetails = () => {
         metadata: { page: 1, page_size: 10 },
       }),
     );
-    const isFlextern = useSelector(selectFlexternBoolean);
     // to fetch entity's profile percentage data if showProfilePercent is true
     if (showProfilePercent) {
       if (isTalentView || isClient) {
-        if(isFlextern){
+        if (isFlextern) {
           dispatch(getProfileCompletionFlextern());
-        }
-        else{
+        } else {
           dispatch(getProfilePercentage());
         }
       }
@@ -289,7 +293,7 @@ const UserDetails = () => {
                   color="light-success"
                 />
               </Col>
-              {isTalentView && (
+              {isTalentView && !currentProfile?.flextern && (
                 <Col lg="3" className="pe-75">
                   <Statbox
                     elevate={false}
@@ -314,7 +318,7 @@ const UserDetails = () => {
                     />
                   </Col>
                 ))}
-              {isTalentView && (
+              {isTalentView && !currentProfile?.flextern && (
                 <Col lg="3" className="pe-75">
                   <Statbox
                     elevate={false}
@@ -325,24 +329,26 @@ const UserDetails = () => {
                   />
                 </Col>
               )}
-              <Col lg="3" className="pe-75">
-                <Statbox
-                  elevate={false}
-                  title={
-                    <>
-                      {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
-                        ? 0
-                        : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
-                      hours/week <br />
-                      {currentProfile?.availability?.timezone?.abbreviation}(
-                      {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
-                    </>
-                  }
-                  desc="Availability"
-                  icon={<Calendar height={20} />}
-                  color="light-primary"
-                />
-              </Col>
+              {!currentProfile?.flextern && (
+                <Col lg="3" className="pe-75">
+                  <Statbox
+                    elevate={false}
+                    title={
+                      <>
+                        {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
+                          ? 0
+                          : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
+                        hours/week <br />
+                        {currentProfile?.availability?.timezone?.abbreviation}(
+                        {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
+                      </>
+                    }
+                    desc="Availability"
+                    icon={<Calendar height={20} />}
+                    color="light-primary"
+                  />
+                </Col>
+              )}
             </Row>
           </DetailsHeaderSection>
 
@@ -356,8 +362,8 @@ const UserDetails = () => {
             />
           </Row>
           <Row>
-            {isTalentView && <AssessedSkills />}
-            {isTeamView && <AssessedSkillsTeam />}
+            {isTalentView && !currentProfile?.flextern && <AssessedSkills />}
+            {isTeamView && !currentProfile?.flextern && <AssessedSkillsTeam />}
           </Row>
           <Row>
             <RecentProjects isEditable={userData?._id === param?.userId} />

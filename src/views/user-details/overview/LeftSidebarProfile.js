@@ -25,7 +25,7 @@ import { CustomBadge } from '../../styled';
 import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectTrumioIsFlextern, selectUserData } from '../../../redux/selectors/authSelectors';
 // import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
@@ -37,6 +37,7 @@ import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbac
 import { checkIfReported } from '../../../redux/actions/reportActions';
 import { checkReportSuccess } from '../../../redux/reducers/report';
 import { selectAlreadyReported, selectCheckReportLoading } from '../../../redux/selectors/reportSelectors';
+import { profile } from 'console';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
+  const isFlextern = useSelector(selectTrumioIsFlextern);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const favUnfavLoading = useSelector((state) => state.currentProfile.favUnfavLoading);
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
@@ -61,28 +63,33 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
   const alreadyReported = useSelector(selectAlreadyReported);
   const checkReportLoading = useSelector(selectCheckReportLoading);
+  const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
 
   useEffect(() => {
-    if(param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club){
+    if (param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club) {
       setUserType(userTypes.team);
-    }else{
+    } else {
       setUserType(param?.userType.toUpperCase());
     }
   }, [param?.userType]);
 
-  useEffect(()=>{
-    if(param?.userType){
+  useEffect(() => {
+    if (param?.userType) {
       let entityType = param?.userType.toUpperCase();
-      if(param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club){
+      if (param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club) {
         entityType = userTypes.team;
       }
-      dispatch(checkIfReported({data:{
-        reported_entity_id : data?._id,
-        reported_entity_type : entityType
-      }, onSuccess : checkReportSuccess}));
+      dispatch(
+        checkIfReported({
+          data: {
+            reported_entity_id: data?._id,
+            reported_entity_type: entityType,
+          },
+          onSuccess: checkReportSuccess,
+        }),
+      );
     }
-   
-},[data,userType]);
+  }, [data, userType]);
 
   // It is used to check if the user is a member of the team or not, if yes then it will disable the report button
   useEffect(() => {
@@ -239,13 +246,24 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               {data?.total_reviews || 0} Review(s)
             </CardText>
           </div>
-          {showProfilePercent && (
+          {showProfilePercent && !data?.flextern  && (
             <div className="profile-completion mt-2">
               <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
               <Progress
                 style={{ height: '0.4rem', borderRadius: '6px' }}
                 className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
                 value={profilePercentageData?.profile_completed}
+              />
+              <CardText className="font-small-3 mt-25">Profile Completion</CardText>
+            </div>
+          )}{' '}
+          {showProfilePercent && data?.flextern && (
+            <div className="profile-completion mt-2">
+              <CardText className="mb-25">{profileCompletionFlextern}%</CardText>
+              <Progress
+                style={{ height: '0.4rem', borderRadius: '6px' }}
+                className={giveProgressBarColorClassName(profileCompletionFlextern)}
+                value={profileCompletionFlextern}
               />
               <CardText className="font-small-3 mt-25">Profile Completion</CardText>
             </div>
@@ -317,17 +335,19 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   </div>
                 )}
 
-                <div className="d-flex mb-75">
-                  <span className="info-key">Location:</span>
-                  {data?.current_residency?.city ? (
-                    <CardText>
-                      {data?.current_residency?.city?.name}, {data?.current_residency?.state?.name},
-                      {data?.current_residency?.country?.name}
-                    </CardText>
-                  ) : (
-                    '-'
-                  )}
-                </div>
+                {!data?.flextern && (
+                  <div className="d-flex mb-75">
+                    <span className="info-key">Location:</span>
+                    {data?.current_residency?.city ? (
+                      <CardText>
+                        {data?.current_residency?.city?.name}, {data?.current_residency?.state?.name},
+                        {data?.current_residency?.country?.name}
+                      </CardText>
+                    ) : (
+                      '-'
+                    )}
+                  </div>
+                )}
               </>
             )}
             {isClient && (
@@ -354,12 +374,14 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   title="Language"
                   data={unionBy(data?.languages_speak, data?.languages_read, data?.languages_write, 'name')}
                 />
-                <BadgeGroup
-                  color="light-success-2"
-                  title="Team Associations"
-                  data={data?.team_associations}
-                  isTeamAssociations
-                />
+                {!data?.flextern && (
+                  <BadgeGroup
+                    color="light-success-2"
+                    title="Team Associations"
+                    data={data?.team_associations}
+                    isTeamAssociations
+                  />
+                )}
               </>
             )}
             {isTeamView && (
@@ -395,21 +417,23 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                 <BadgeGroup color="light-blue" title="Language" data={data?.languages_supported} />
               </>
             )}
-            <BadgeGroup
-              color="light-success-2"
-              title="Time zone"
-              data={
-                data?.availability?.timezone
-                  ? [
-                      {
-                        name:
-                          `${data?.availability?.timezone?.abbreviation}(${data?.availability?.timezone?.offset_name})` ||
-                          '-',
-                      },
-                    ]
-                  : []
-              }
-            />
+            {!data?.flextern && (
+              <BadgeGroup
+                color="light-success-2"
+                title="Time zone"
+                data={
+                  data?.availability?.timezone
+                    ? [
+                        {
+                          name:
+                            `${data?.availability?.timezone?.abbreviation}(${data?.availability?.timezone?.offset_name})` ||
+                            '-',
+                        },
+                      ]
+                    : []
+                }
+              />
+            )}
             {!isTeamView && (
               <div className="social-links">
                 <CardText className="Info-key mt-50 mb-50">Social Links</CardText>
@@ -496,9 +520,11 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               </div>
             )}
             <div className="d-flex gap-2 justify-content-center align-items-center flex-wrap">
-              {!alreadyReported && !checkReportLoading && (userDataSelector?.user_type === userTypes.client ||
-                userDataSelector?.user_type === userTypes.team ||
-                userDataSelector?.user_type === userTypes.talent) &&
+              {!alreadyReported &&
+                !checkReportLoading &&
+                (userDataSelector?.user_type === userTypes.client ||
+                  userDataSelector?.user_type === userTypes.team ||
+                  userDataSelector?.user_type === userTypes.talent) &&
                 // param?.userType.toUpperCase() === userTypes.talent &&
                 (((param?.userType.toUpperCase() === userTypes.team ||
                   param?.userType.toUpperCase() === userTypes.club) &&
@@ -563,9 +589,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           reportTargetDetails={`${data?.created_by?.first_name || data?.first_name} ${
             data?.created_by?.last_name || data?.last_name
           }`}
-          entityType={
-            userType
-          }
+          entityType={userType}
         />
       )}
 

@@ -96,8 +96,8 @@ const Account = () => {
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
   const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
 
-  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
-  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
+  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
   const userType = useSelector((state) => state.auth?.userType);
