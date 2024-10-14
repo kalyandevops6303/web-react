@@ -34,6 +34,7 @@ import {
   userDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
+  userDetails,
 } from '../../redux/selectors/talentOnboardingSelectors';
 import {
   // certificatesService,
@@ -474,21 +475,13 @@ const FlexternEducational = () => {
       }
     }
   };
-
+  const userData = useSelector(userDetails);
   const setResumeParsedDetails = (res) => {
     if (res) {
-      if (res?.talent_info?.educational_institute?.length > 0) {
-        setValue(
-          'educationDetails',
-          res?.talent_info?.educational_institute?.map((detail) => ({
-            educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-            education: { label: detail.education.name, value: detail.education._id },
-          })),
-          { shouldValidate: true },
-        );
-      } else {
-        setValue('educationDetails', [{}]);
-      }
+      setValue('educationDetails', userData?.talent_info?.educational_institute?.map((detail) => ({
+        educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+        education: { label: detail.education.name, value: detail.education._id },
+      })))
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',

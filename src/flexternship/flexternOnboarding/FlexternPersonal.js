@@ -281,10 +281,13 @@ const FlexternPersonal = () => {
       return { options: [] };
     }
   };
-
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
     if (res) {
+        setValue('role',{
+          label:  userDetailsData?.talent_info?.role?.name,
+          value:  userDetailsData?.talent_info?.role?._id,
+        },);
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
       }
