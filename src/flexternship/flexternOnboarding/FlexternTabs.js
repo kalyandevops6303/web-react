@@ -183,7 +183,7 @@ const FlexternTabs = ({ tabNames, active }) => {
   // }, []);
 
   useEffect(() => {
-    if(isFlextern && userData?.talent_info) dispatch(getProfileCompletionFlextern());
+    if(isFlextern && userData?.checkpoint === 'PROFILE_DETAILS') dispatch(getProfileCompletionFlextern());
     if (trumioTalent) dispatch(getProfilePercentage());
   }, [flexternBoolean, trumioTalent]);
 
