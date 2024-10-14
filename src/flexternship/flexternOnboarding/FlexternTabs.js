@@ -21,6 +21,7 @@ import Additional from '../../views/Onboarding/Talent/Additional';
 import { selectFlexternBoolean, selectTrumioTalent, selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
 import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
+import { userDetails } from '@/redux/selectors/talentOnboardingSelectors';
 
 
 const FlexternTabs = ({ tabNames, active }) => {
@@ -34,6 +35,7 @@ const FlexternTabs = ({ tabNames, active }) => {
   const flexternBoolean = useSelector(selectFlexternBoolean);
   const trumioTalent = useSelector(selectTrumioTalent);
   const isFlextern = useSelector(selectTrumioIsFlextern);
+  const userData = useSelector(userDetails);
   // const showHiringTab = useSelector((state) => state.hiring?.showHiringTab);
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
   // const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
@@ -181,7 +183,7 @@ const FlexternTabs = ({ tabNames, active }) => {
   // }, []);
 
   useEffect(() => {
-    dispatch(getProfileCompletionFlextern());
+    if(isFlextern && userData?.talent_info) dispatch(getProfileCompletionFlextern());
     if (trumioTalent) dispatch(getProfilePercentage());
   }, [flexternBoolean, trumioTalent]);
 
