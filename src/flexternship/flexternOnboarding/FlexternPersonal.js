@@ -233,7 +233,7 @@ const FlexternPersonal = () => {
         dispatch(setFormDocuments(null));
         setFiles([...filtered]);
       }),
-    );
+    );  
   };
 
   const isFileValid = (file) => {
@@ -366,10 +366,10 @@ const FlexternPersonal = () => {
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
-    if (response)
-      dispatch(
-        getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
-      );
+    // if (response)
+    //   dispatch(
+    //     getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
+    //   );
     dispatch(setResumeParsed(true));
     setParseResume(true);
   };
