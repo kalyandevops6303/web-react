@@ -9,7 +9,7 @@ on:
         type: choice
         options:
           - uat
-          - prod
+          - production
       version_type:
         description: 'Release version'
         required: true
@@ -18,6 +18,15 @@ on:
           - major
           - minor
           - patch
+      tag_pattern:
+        description: 'Tag pattern for the selected branch'
+        required: true
+        type: choice
+        options:
+          - uat_*
+          - tru-uat_*
+          - v*
+          - tru-prod_v*
 
 jobs:
   tag-dispatch:
@@ -35,22 +44,42 @@ jobs:
 
     - name: Fetch tags
       run: git fetch --tags
-          
+
     - name: Current branch
       run: git branch
 
     - name: Get Latest Tag
       id: get_latest_tag
       run: |
-        TAG=$(git tag -l "uat_*" | sort -V --reverse | sed -n 1p)
-        echo "::set-output name=latest_tag::${TAG}"
+        branch=${{ github.event.inputs.branch }}
+        tag_pattern=${{ github.event.inputs.tag_pattern }}
+
+        if [ "$branch" = "production" ]; then
+          if [[ "$tag_pattern" != "v*" && "$tag_pattern" != "tru-prod_v*" ]]; then
+            echo "Invalid tag pattern for production branch. Use 'v*' or 'tru-prod_v*'."
+            exit 1
+          fi
+        elif [ "$branch" = "uat" ]; then
+          if [[ "$tag_pattern" != "uat_*" && "$tag_pattern" != "tru-uat_*" ]]; then
+            echo "Invalid tag pattern for uat branch. Use 'uat_*' or 'tru-uat_*'."
+            exit 1
+          fi
+        fi
+
+        TAG=$(git tag -l "$tag_pattern" | sort -V --reverse | sed -n 1p)
+        echo "latest_tag=$TAG" >> $GITHUB_ENV
         [[ -z "${TAG}" ]] && echo "No tag found..." || echo "Tag found: ${TAG}"
 
     - name: Increment Tag
       id: increment_tag
       run: |
-        latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
+        latest_tag=${{ env.latest_tag }}
         version_type=${{ github.event.inputs.version_type }}
+        
+        if [ -z "$latest_tag" ]; then
+          echo "No previous tag found. Exiting."
+          exit 1
+        fi
         
         # Extract the prefix and version number
         prefix="${latest_tag%%v*}"  # Extract everything before 'v'
@@ -79,15 +108,14 @@ jobs:
         
         new_tag="${prefix}v${major}.${minor}.${patch}"
         
+        echo "next_tag=$new_tag" >> $GITHUB_ENV
         echo "Next tag: $new_tag"
-        echo "::set-output name=next_tag::$new_tag"
 
-        
     - name: Push new tag
       env:
         GITHUB_TOKEN: ${{ secrets.TAG_TOKEN }}
       run: |
-        new_tag=${{ steps.increment_tag.outputs.next_tag }}
+        new_tag=${{ env.next_tag }}
         git tag $new_tag
         git push origin $new_tag
 
@@ -97,9 +125,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TAG_TOKEN }}
       with:
-          tag_name: ${{ steps.increment_tag.outputs.next_tag }}
-          release_name: ${{ steps.increment_tag.outputs.next_tag }}
-          body: 'Description of the release'
-          draft: false
-          prerelease: false
-
+        tag_name: ${{ env.next_tag }}
+        release_name: ${{ env.next_tag }}
+        body: 'Description of the release'
+        draft: false
+        prerelease: false
