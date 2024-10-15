@@ -931,7 +931,7 @@ const FlexternEducational = () => {
                 </div>
               </div>
             </Col>
-            {(userData?.talent_info?.resume || !isEmpty(files)) && (
+            {((userData?.talent_info?.resume && Object.keys(userData.talent_info.resume).length > 0) || !isEmpty(files)) && (
               <Col>
                 <Card>
                   <CardBody>
