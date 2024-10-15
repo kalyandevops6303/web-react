@@ -415,7 +415,9 @@ const FlexternSocial = () => {
             { shouldValidate: true },
           );
         }
-        else{
+        else if(userData?.talent_info?.social_links.filter(
+          (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+        ).length > 0){
           setValue(
             'otherSocialLinks',
               userData?.talent_info?.social_links
@@ -428,6 +430,8 @@ const FlexternSocial = () => {
                 })),
               { shouldValidate: true },
             );
+        }else{
+          setValue('otherSocialLinks', [defaultLink]);
         }
       }
     }
@@ -660,7 +664,7 @@ const FlexternSocial = () => {
               </div>
             </Col>
 
-            {!isEmpty(files) && (
+            {(userData?.talent_info?.resume || !isEmpty(files)) && (
               <Col>
                 <Card>
                   <CardBody>

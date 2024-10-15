@@ -620,17 +620,17 @@ const Additional = () => {
         }
       }
 
-      if (res?.additional_info?.identity_verification) {
+      if (res?.additional_info?.identity_verification && Object.keys(res.additional_info.identity_verification).length > 0) {
         const file = {
           id: uuidv4(),
           file: {
-            name: res?.additional_info?.identity_verification?.file_name,
-            size: res?.additional_info?.identity_verification?.size,
-            lastModified: res?.additional_info?.identity_verification?.created_at,
+            name: res.additional_info.identity_verification.file_name,
+            size: res.additional_info.identity_verification.size,
+            lastModified: res.additional_info.identity_verification.created_at,
           },
           uploadData: {
-            upload_url: res?.additional_info?.identity_verification?.upload_url,
-            file_key: res?.additional_info?.identity_verification?.file_key,
+            upload_url: res.additional_info.identity_verification.upload_url,
+            file_key: res.additional_info.identity_verification.file_key,
           },
           isUploaded: true,
         };

@@ -43,6 +43,7 @@ import {
   resumeParsedDetailsLoading,
   resumeParsedDetails,
   userDetailsLoading,
+  userDetails,
 } from '../../redux/selectors/talentOnboardingSelectors';
 import { languagesService, talentRolesService } from '../../services/staticServices';
 import {
@@ -123,7 +124,7 @@ const FlexternPersonal = () => {
   const savedFormDocuments = useSelector(formDocuments);
   const IsresumeParsed = useSelector(resumeParsed);
   const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
-  const userDetailsData = useSelector(userData);
+  const userData = useSelector(userDetails);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForPersonal || false);
   const {
     control,
@@ -281,13 +282,10 @@ const FlexternPersonal = () => {
       return { options: [] };
     }
   };
+  console.log(localFormData);
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
-    if (res) {
-        setValue('role',{
-          label:  userDetailsData?.talent_info?.role?.name,
-          value:  userDetailsData?.talent_info?.role?._id,
-        },);
+    if (res) {      
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
       }
@@ -518,6 +516,7 @@ const FlexternPersonal = () => {
     if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
+      dispatch(getUserDetails(()=>{}));
       navigate(`/${userOnboarding.talent}/educational-details`);
     }
     dispatch(setResumeDataUploadedForPersonal(parseResume));
@@ -1093,7 +1092,7 @@ const FlexternPersonal = () => {
           </Row>
         </Form>
       )}
-      {files?.length === 0 && (!userDetailsData?.talent_info?.resume || Object.keys(userDetailsData?.talent_info?.resume).length === 0) && (resumeModalOpen && <UploadResumeModal
+      {files?.length === 0 && (!userData?.talent_info?.resume || Object.keys(userData?.talent_info?.resume).length === 0) && (resumeModalOpen && <UploadResumeModal
                     modal={resumeModalOpen}
                     toggleModal={() => setResumeModalOpen(false)}
                     uploadButton={

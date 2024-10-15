@@ -4,7 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {Button,
+import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -16,7 +17,9 @@ import {Button,
   Spinner,
   FormGroup,
   Input,
- Progress , CardText } from 'reactstrap';
+  Progress,
+  CardText,
+} from 'reactstrap';
 import { ChevronLeft, ChevronRight, Plus, Info } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,9 +47,15 @@ import {
   toolsService,
 } from '../../services/staticServices';
 import ShowToastMessage from '../../@core/components/toast';
-import { CUSTOMER_SUPPORT_TYPES, userOnboarding, userProfileEdit , userTypes } from '../../utility/constants/Constant';
+import { CUSTOMER_SUPPORT_TYPES, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
-import { filteredFormSchema, isEmpty, removeEmptyKeys, returnFilteredDropdownOptions , giveProgressBarColorClassName } from '../../utility/Utils';
+import {
+  filteredFormSchema,
+  isEmpty,
+  removeEmptyKeys,
+  returnFilteredDropdownOptions,
+  giveProgressBarColorClassName,
+} from '../../utility/Utils';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
   formData,
@@ -66,7 +75,7 @@ import {
 import { updateParsedResumeService } from '../../services/talentOnboardingServices';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
-import "../../App.css";
+import '../../App.css';
 
 import { ERROR } from '../../utility/constants/ToastTypes';
 import CustomerSupportModal from '../../views/modals/CustomerSupportModal';
@@ -158,7 +167,7 @@ const FlexternEducational = () => {
   const localFormData = useWatch({ control });
 
   const getOverallPercentageCompletion = () => {
-      setOverallPercentageCompletion(profileCompletionFlextern);
+    setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {
@@ -172,19 +181,19 @@ const FlexternEducational = () => {
     dispatch(setResumeParsed(parseResume));
   }, [parseResume]);
 
-  useEffect(() => {
-    if (parseResume === false) {
-      if (savedFormData) {
-        const requiredFields = filteredFormSchema({
-          savedData: savedFormData,
-          formSchemaFields: EducationalSchema.fields,
-        });
-        reset(requiredFields);
-        const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
-        trigger(keysWithValues);
-      }
-    }
-  }, [parseResume]);
+  // useEffect(() => {
+  //   if (parseResume === false) {
+  //     if (savedFormData) {
+  //       const requiredFields = filteredFormSchema({
+  //         savedData: savedFormData,
+  //         formSchemaFields: EducationalSchema.fields,
+  //       });
+  //       reset(requiredFields);
+  //       const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+  //       trigger(keysWithValues);
+  //     }
+  //   }
+  // }, [parseResume]);
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
@@ -197,9 +206,13 @@ const FlexternEducational = () => {
   const supportData = useSelector((state) => state.support.supportCount);
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
@@ -236,6 +249,7 @@ const FlexternEducational = () => {
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
+      dispatch(getUserDetails(()=>{}));
       navigate(`/${userOnboarding.talent}/social-details`);
     }
     dispatch(setResumeDataUploadedForEducation(parseResume));
@@ -323,6 +337,14 @@ const FlexternEducational = () => {
       return { options: [] };
     }
   };
+
+  useEffect(() => {
+    if (watch('educationDetails')?.length < 2) {
+      setValue('educationDetails', [
+        { educationInstitution: watch('educationInstitution'), education: watch('education') },
+      ]);
+    }
+  }, [watch('educationInstitution'), watch('education')]);
 
   const loadToolsOptions = async (search) => {
     if (search) {
@@ -412,9 +434,9 @@ const FlexternEducational = () => {
           savedFormData?.educationDetails?.length > 0
             ? savedFormData?.educationDetails
             : res?.talent_info?.educational_institute?.map((detail) => ({
-              educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-              education: { label: detail.education.name, value: detail.education._id },
-            })),
+                educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+                education: { label: detail.education.name, value: detail.education._id },
+              })),
           { shouldValidate: true },
         );
       } else {
@@ -424,7 +446,7 @@ const FlexternEducational = () => {
         setValue(
           'tools',
           savedFormData?.tools ||
-          res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
+            res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -432,10 +454,10 @@ const FlexternEducational = () => {
         setValue(
           'certificates',
           savedFormData?.certificates ||
-          res?.talent_info?.expertise?.certificates?.map((certificate) => ({
-            label: certificate.name,
-            value: certificate._id,
-          })),
+            res?.talent_info?.expertise?.certificates?.map((certificate) => ({
+              label: certificate.name,
+              value: certificate._id,
+            })),
           { shouldValidate: true },
         );
       }
@@ -443,7 +465,7 @@ const FlexternEducational = () => {
         setValue(
           'skills',
           savedFormData?.skills ||
-          res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
+            res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -451,8 +473,8 @@ const FlexternEducational = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name:  res?.talent_info?.resume?.file_name,
-            size:  res?.talent_info?.resume?.size,
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
           },
           uploadData: {
             file_key: res?.talent_info?.resume?.file_key,
@@ -468,10 +490,13 @@ const FlexternEducational = () => {
   const userData = useSelector(userDetails);
   const setResumeParsedDetails = (res) => {
     if (res) {
-      setValue('educationDetails', userData?.talent_info?.educational_institute?.map((detail) => ({
-        educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-        education: { label: detail.education.name, value: detail.education._id },
-      })))
+      setValue(
+        'educationDetails',
+        userData?.talent_info?.educational_institute?.map((detail) => ({
+          educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+          education: { label: detail.education.name, value: detail.education._id },
+        })),
+      );
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',
@@ -845,7 +870,6 @@ const FlexternEducational = () => {
                     </Col> */}
                   </Row>
                   <Row className="mb-2">
-
                     {/* <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="tools">
                         Tools <i>(Top 5)</i>
@@ -907,7 +931,7 @@ const FlexternEducational = () => {
                 </div>
               </div>
             </Col>
-            {!isEmpty(files) && (
+            {(userData?.talent_info?.resume || !isEmpty(files)) && (
               <Col>
                 <Card>
                   <CardBody>
@@ -943,43 +967,93 @@ const FlexternEducational = () => {
                 <Card>
                   <CardHeader>
                     <h4 className="m-0 mt-1">Profile Completion</h4>
-                    <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                    <CardText className="m-0 mt-1">
+                      Make it easier for others to find you by completing your profile.
+                    </CardText>
                     <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                    <Progress value={overallPercentageCompletion}
+                    <Progress
+                      value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
                       className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                     />
-
+                    />
                   </CardHeader>
 
                   <CardBody>
                     <hr className="m-0 card-header-border" />
 
-                    {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                      <div className="custom-checkbox-wrapper">
-                        <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                    {isTrumioTalent && (
+                      <div className="d-flex gap-1 mt-1">
+                        <div className="custom-checkbox-wrapper">
+                          <Input
+                            type="checkbox"
+                            id="customCheckbox"
+                            className="custom-checkbox-input"
+                            checked={isProjectReady}
+                          />
+                          <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                        </div>
+                        <div>
+                          <CardText className="m-0">Client Projects Ready</CardText>
+                          <b
+                            className="text-primary cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.path || '/marketplace',
+                              )
+                            }
+                          >
+                            {isProjectReady
+                              ? 'Explore Projects'
+                              : `${
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionProjectMissingValues,
+                                  )?.label
+                                }`}{' '}
+                            <ChevronRight size="1.2em" />
+                          </b>
+                        </div>
                       </div>
-                      <div>
-                        <CardText className="m-0">Client Projects Ready</CardText>
-                        <b className='text-primary cursor-pointer'
-                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                        >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                      </div>
-                    </div>}
+                    )}
 
-                    {isFlextern && <div className='d-flex gap-1 mt-1'>
-                      <div className="custom-checkbox-wrapper">
-                        <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                    {isFlextern && (
+                      <div className="d-flex gap-1 mt-1">
+                        <div className="custom-checkbox-wrapper">
+                          <Input
+                            type="checkbox"
+                            id="customCheckbox2"
+                            className="custom-checkbox-input"
+                            checked={isFlexternReady}
+                          />
+                          <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                        </div>
+                        <div>
+                          <CardText className="m-0">Flexternship Ready</CardText>
+                          <b
+                            className="text-primary cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                returnCompleteProfileDetailsCta(
+                                  userTypes.talent,
+                                  profileCompletionFlexternMissingValues,
+                                )?.path || '/dashboard',
+                              )
+                            }
+                          >
+                            {isFlexternReady
+                              ? 'Explore Flexternships'
+                              : `${
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionFlexternMissingValues,
+                                  )?.label
+                                }`}{' '}
+                            <ChevronRight size="1.2em" />
+                          </b>
+                        </div>
                       </div>
-                      <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b className='text-primary cursor-pointer'
-                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                        >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                      </div>
-                    </div>}
+                    )}
                   </CardBody>
                 </Card>
               </Col>
@@ -989,43 +1063,93 @@ const FlexternEducational = () => {
                 <Card>
                   <CardHeader>
                     <h4 className="m-0 mt-1">Profile Completion</h4>
-                    <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                    <CardText className="m-0 mt-1">
+                      Make it easier for others to find you by completing your profile.
+                    </CardText>
                     <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                    <Progress value={overallPercentageCompletion}
+                    <Progress
+                      value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
                       className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                     />
-
+                    />
                   </CardHeader>
 
                   <CardBody>
                     <hr className="m-0 card-header-border" />
 
-                    {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                      <div className="custom-checkbox-wrapper">
-                        <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                    {isTrumioTalent && (
+                      <div className="d-flex gap-1 mt-1">
+                        <div className="custom-checkbox-wrapper">
+                          <Input
+                            type="checkbox"
+                            id="customCheckbox"
+                            className="custom-checkbox-input"
+                            checked={isProjectReady}
+                          />
+                          <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                        </div>
+                        <div>
+                          <CardText className="m-0">Client Projects Ready</CardText>
+                          <b
+                            className="text-primary cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.path || '/marketplace',
+                              )
+                            }
+                          >
+                            {isProjectReady
+                              ? 'Explore Projects'
+                              : `${
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionProjectMissingValues,
+                                  )?.label
+                                }`}{' '}
+                            <ChevronRight size="1.2em" />
+                          </b>
+                        </div>
                       </div>
-                      <div>
-                        <CardText className="m-0">Client Projects Ready</CardText>
-                        <b className='text-primary cursor-pointer'
-                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                        >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                      </div>
-                    </div>}
+                    )}
 
-                    {isFlextern && <div className='d-flex gap-1 mt-1'>
-                      <div className="custom-checkbox-wrapper">
-                        <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                    {isFlextern && (
+                      <div className="d-flex gap-1 mt-1">
+                        <div className="custom-checkbox-wrapper">
+                          <Input
+                            type="checkbox"
+                            id="customCheckbox2"
+                            className="custom-checkbox-input"
+                            checked={isFlexternReady}
+                          />
+                          <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                        </div>
+                        <div>
+                          <CardText className="m-0">Flexternship Ready</CardText>
+                          <b
+                            className="text-primary cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                returnCompleteProfileDetailsCta(
+                                  userTypes.talent,
+                                  profileCompletionFlexternMissingValues,
+                                )?.path || '/dashboard',
+                              )
+                            }
+                          >
+                            {isFlexternReady
+                              ? 'Explore Flexternships'
+                              : `${
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionFlexternMissingValues,
+                                  )?.label
+                                }`}{' '}
+                            <ChevronRight size="1.2em" />
+                          </b>
+                        </div>
                       </div>
-                      <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b className='text-primary cursor-pointer'
-                          onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                        >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                      </div>
-                    </div>}
+                    )}
                   </CardBody>
                 </Card>
               </Col>
