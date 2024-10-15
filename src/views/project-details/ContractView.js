@@ -205,6 +205,7 @@ const ContractView = () => {
   // After both party have signed in NDA/Contract view => Note: Client has 7(payment_validity) days to make payment for milestones or project will be terminated
 
   return (
+    <div className='trumio'>
     <ContractDetailsWrap>
       <BackButtonContainer className="p-0 mb-1">
         <div onClick={() => navigate(-1)} className="p-0 d-flex">
@@ -417,6 +418,7 @@ const ContractView = () => {
         </Col>
       </Row>
     </ContractDetailsWrap>
+    </div>
   );
 };
 

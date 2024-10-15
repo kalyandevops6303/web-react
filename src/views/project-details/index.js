@@ -310,6 +310,7 @@ const ProjectDetails = () => {
   const milestoneDetails = params?.['*'].includes('milestone-details');
 
   return (
+    <div className='trumio'>
     <ProjectDetailsWrapper>
       <div className="top-head">
         <div className="fixed-header">
@@ -419,6 +420,7 @@ const ProjectDetails = () => {
         </Col>
       </Row>
     </ProjectDetailsWrapper>
+    </div>
   );
 };
 

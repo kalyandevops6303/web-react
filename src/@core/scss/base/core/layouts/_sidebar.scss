@@ -11,7 +11,7 @@
 // ------------------------------
 
 // Base
-.sidebar {
+.trumio .sidebar {
   position: relative;
   width: 100%;
   height: 100%;
@@ -21,13 +21,13 @@
     vertical-align: top;
   }
 }
-.sidebar-fixed {
+.trumio .sidebar-fixed {
   position: fixed;
   height: 100%;
   overflow: scroll;
 }
 
-.sidenav-overlay {
+.trumio .sidenav-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -46,7 +46,7 @@
   }
 }
 
-.drag-target {
+.trumio .drag-target {
   height: 100%;
   width: 40px;
   position: fixed;
@@ -55,23 +55,23 @@
   z-index: 1036;
 }
 
-.sidebar-detached {
+.trumio .sidebar-detached {
   .sidebar {
     width: $sidebar-width;
   }
 }
 
 @include media-breakpoint-up(lg) {
-  .sidebar-left {
+  .trumio .sidebar-left {
     float: left;
   }
-  .sidebar-right {
+  .trumio .sidebar-right {
     float: right;
   }
 }
 
 @include media-breakpoint-down(lg) {
-  .sidebar-detached {
+  .trumio .sidebar-detached {
     .sidebar {
       width: 100%;
     }

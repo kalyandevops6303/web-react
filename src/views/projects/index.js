@@ -79,6 +79,7 @@ const Projects = () => {
   };
 
   return (
+    <div className='trumio'>
     <ProjectContainer>
       <BreadCrumbs data={[{ title: 'Project', link: '/projects' }, { title: primaryEnum[primaryFilter] }]} />
 
@@ -141,6 +142,7 @@ const Projects = () => {
         />
       </Routes>
     </ProjectContainer>
+    </div>
   );
 };
 

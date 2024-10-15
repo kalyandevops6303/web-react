@@ -56,7 +56,7 @@ const CreateBid = () => {
   }, [currentStep]);
 
   return (
-    <>
+    <div className='trumio'>
       {draftSavedModal && (
         <DraftSavedModal
           modal={draftSavedModal}
@@ -131,7 +131,7 @@ const CreateBid = () => {
           </Routes>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
