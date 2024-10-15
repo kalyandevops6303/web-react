@@ -71,7 +71,7 @@ export const MilestonesFormSchema = yup.object().shape({
                 .positive('Duration must be a positive number'),
             description: yup.string()
                 .required('Description is required'),
-            deliverables: yup.array().of(yup.string().required('Deliverable must be a string'))
+            deliverables: yup.array().of(yup.string().required('Deliverable is required'))
                 .required()
                 .min(1, 'At least one deliverable is required'),
         }
