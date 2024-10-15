@@ -81,7 +81,7 @@ const TalentOnboarding = () => {
   }, []);
 
   return (
-    <>
+    <div className='trumio'>
       {location.pathname.includes('onboarding') && <Header />}
 
       <div className={`${location.pathname.includes('onboarding') ? 'px-5 py-3' : 'px-3 pt-1'} `}>
@@ -101,7 +101,7 @@ const TalentOnboarding = () => {
           <Tabs tabNames={tabNames} active={active} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

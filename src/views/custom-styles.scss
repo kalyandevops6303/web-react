@@ -1,143 +1,157 @@
-.custom-modal-style {
-  width: 670px !important;
-  margin: 0 auto;
-}
 
-.modal-wide {
-  width: 858px !important;
-}
 
-.custom-modal-style-70 {
-  width: 70% !important;
-  margin: 0 auto;
-}
-
-.listing-team-members-modal-style {
-  width: 1050px !important;
-  margin: 0 auto;
-}
-
-.invite-talent-listing-modal-style {
-  width: 750px !important;
-  margin: 0 auto;
-}
-
-.gray-modal {
-  .modal-header {
-    background-color: #f8f8f8;
-  }
-  .modal-body {
-    background-color: #f8f8f8;
-  }
-}
-
-.custom-reset-password-modal-style {
-  width: 500px !important;
-  margin: 0 auto;
-}
-
-.custom-larger-than-medium-modal-style {
-  width: 540px !important;
-  margin: 0 auto;
-}
-.custom-modal-style-sm {
-  width: 30% !important;
-  margin: auto;
-}
-
-.modal-dialog {
-  max-width: none !important;
-}
-
-.modal-heading {
-  font-size: 1.719rem;//24.066px
-  font-weight: 500;
-  margin-bottom: 0.75rem;
-  padding: 0;  
-}
-
-.modal-body-text {
-  font-size: 1.286rem;//18.002px
-}
-
-.custom-modal-project-details {
-  width: 78% !important;
-  margin: 0 auto;
-}
-.delete-modal {
-  width: 48% !important;
-  margin: 0 auto;
-}
-@media (max-width: 768px) {
-  .custom-modal-project-details {
-    width: 100% !important;
-  }
-  .custom-modal-style-sm {
-    width: 30% !important;
-  }
-  .delete-modal{
-    width: 100% !important;
+// Scoped styles for .trumio
+.trumio {
+  .custom-modal-style {
+    width: 670px !important;
     margin: 0 auto;
   }
-}
 
-// Tooltip
-.show-more-popover-body {
-  padding: 0.2rem 0;
-  border: none;
-}
-.tooltip-option {
-  padding: 0.3rem 1rem;
-  cursor: pointer;
-}
-.tooltip-option:hover {
-  background-color: #e9f3ff;
-}
-.tooltip-option-active {
-  background-color: #e9f3ff;
-}
+  .modal-wide {
+    width: 858px !important;
+  }
 
-.accordion-item {
-  .accordion-header {
-    .accordion-button::after {
-      transform: rotate(0deg);
+  .custom-modal-style-70 {
+    width: 70% !important;
+    margin: 0 auto;
+  }
+
+  .listing-team-members-modal-style {
+    width: 1050px !important;
+    margin: 0 auto;
+  }
+
+  .invite-talent-listing-modal-style {
+    width: 750px !important;
+    margin: 0 auto;
+  }
+
+  .gray-modal {
+    .modal-header {
+      background-color: #f8f8f8;
     }
-    .collapsed::after {
-      transform: rotate(180deg);
+    .modal-body {
+      background-color: #f8f8f8;
     }
   }
-}
 
-.form-control:disabled {
-  background-color: #fff;
-}
+  .custom-reset-password-modal-style {
+    width: 500px !important;
+    margin: 0 auto;
+  }
 
-.payment-form-control:disabled {
-background-color: #efefef !important;
-}
+  .custom-larger-than-medium-modal-style {
+    width: 540px !important;
+    margin: 0 auto;
+  }
 
-.popover {
-  .popover-body {
+  .custom-modal-style-sm {
+    width: 30% !important;
+    margin: auto;
+  }
+
+  .modal-dialog {
+    max-width: none !important;
+  }
+
+  .modal-heading {
+    font-size: 1.719rem; //24.066px
+    font-weight: 500;
+    margin-bottom: 0.75rem;
     padding: 0;
-    border-radius: 6px;
-    border: 1px solid #D9D9D9;
   }
-  .popover-arrow {
-    display: none;
-  }
-  .btn-option-1 {
-    border-radius: 6px 6px 0 0;
-  }
-  .btn-option-1:hover,
-  .btn-option-2:hover {
-    background-color: rgba(1, 133, 228, 0.12);
 
-    svg,
-    p {
-      color: #0185e4;
+  .modal-body-text {
+    font-size: 1.286rem; //18.002px
+  }
+
+  .custom-modal-project-details {
+    width: 78% !important;
+    margin: 0 auto;
+  }
+
+  .delete-modal {
+    width: 48% !important;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .custom-modal-project-details {
+      width: 100% !important;
+    }
+    .custom-modal-style-sm {
+      width: 30% !important;
+    }
+    .delete-modal {
+      width: 100% !important;
+      margin: 0 auto;
     }
   }
-  .btn-option-2 {
-    border-radius: 0 0 6px 6px;
+
+  // Tooltip
+  .show-more-popover-body {
+    padding: 0.2rem 0;
+    border: none;
+  }
+
+  .tooltip-option {
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+  }
+
+  .tooltip-option:hover {
+    background-color: #e9f3ff;
+  }
+
+  .tooltip-option-active {
+    background-color: #e9f3ff;
+  }
+
+  .accordion-item {
+    .accordion-header {
+      .accordion-button::after {
+        transform: rotate(0deg);
+      }
+      .collapsed::after {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .form-control:disabled {
+    background-color: #fff;
+  }
+
+  .payment-form-control:disabled {
+    background-color: #efefef !important;
+  }
+
+  .popover {
+    .popover-body {
+      padding: 0;
+      border-radius: 6px;
+      border: 1px solid #D9D9D9;
+    }
+
+    .popover-arrow {
+      display: none;
+    }
+
+    .btn-option-1 {
+      border-radius: 6px 6px 0 0;
+    }
+
+    .btn-option-1:hover,
+    .btn-option-2:hover {
+      background-color: rgba(1, 133, 228, 0.12);
+      svg,
+      p {
+        color: #0185e4;
+      }
+    }
+
+    .btn-option-2 {
+      border-radius: 0 0 6px 6px;
+    }
   }
 }

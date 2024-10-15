@@ -1,0 +1,3 @@
+.simpleElevatedCard {
+    @apply shadow-card rounded-md;
+}

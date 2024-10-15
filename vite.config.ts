@@ -8,6 +8,7 @@ import babel from 'vite-plugin-babel';
 import postCssRtl from 'postcss-rtl';
 // import Checker from 'vite-plugin-checker';
 import sassDts from 'vite-plugin-sass-dts';
+import tailwindcss from 'tailwindcss';
 
 const loadJsFilesAsJsx = (): Plugin => ({
   name: 'load-js-files-as-jsx',
@@ -63,7 +64,7 @@ export default defineConfig({
       },
     },
     postcss: {
-      plugins: [postCssRtl()],
+      plugins: [tailwindcss(), postCssRtl()],
     },
   },
   resolve: {
@@ -80,7 +81,18 @@ export default defineConfig({
       '@layouts': path.resolve(__dirname, 'src/@core/layouts'),
       '@components': path.resolve(__dirname, 'src/@core/components'),
       '@lib': path.resolve(__dirname, 'src/lib'),
-      stream: 'rollup-plugin-node-polyfills/polyfills/stream',
+      // Flexternship Aliases
+      '@flexternships/app': path.resolve(__dirname, 'src/flexternships/app'),
+      '@flexternships/components': path.resolve(__dirname, 'src/flexternships/app/components'),
+      '@flexternships/styles': path.resolve(__dirname, 'src/flexternships/styles'),
+      '@flexternships/assets': path.resolve(__dirname, 'src/flexternships/assets'),
+      '@flexternships/lib': path.resolve(__dirname, 'src/flexternships/lib'),
+      '@flexternships/utils': path.resolve(__dirname, 'src/flexternships/utils'),
+      '@flexternships/types': path.resolve(__dirname, 'src/flexternships/types'),
+      '@flexternships/stores': path.resolve(__dirname, 'src/flexternships/stores'),
+      '@flexternships/actions': path.resolve(__dirname, 'src/flexternships/actions'),
+      '@flexternships/schemas': path.resolve(__dirname, 'src/flexternships/schemas'),
+      '@flexternships/services': path.resolve(__dirname, 'src/flexternships/services'),
       crypto: 'crypto-browserify',
       util: 'rollup-plugin-node-polyfills/polyfills/util',
       zlib: 'rollup-plugin-node-polyfills/polyfills/zlib',

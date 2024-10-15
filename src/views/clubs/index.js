@@ -68,6 +68,7 @@ const Clubs = () => {
   };
 
   return (
+    <div className='trumio'>
     <ClubContainer>
       <div className="d-flex justify-content-between">
         <BreadCrumbs data={[{ title: 'Clubs', link: '/clubs' }, { title: primaryEnum[primaryFilter] }]} />
@@ -97,6 +98,7 @@ const Clubs = () => {
         <Route path="favourites" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
       </Routes>
     </ClubContainer>
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "default",
-  "rsc": false,
+  "style": "new-york",
+  "rsc": true,
   "tsx": true,
   "tailwind": {
     "config": "tailwind.config.js",
@@ -11,10 +11,10 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "components": "@flexternships/app/components",
+    "utils": "@flexternships/lib/utils",
+    "ui": "@flexternships/app/components/ui",
+    "lib": "@flexternships/lib",
+    "hooks": "@flexternships/hooks"
   }
 }
