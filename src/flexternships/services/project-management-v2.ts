@@ -77,7 +77,7 @@ export const createFlexternProject: (projectData: ProjectCreationFormData) => Pr
                 "name": item.title,
                 "description": item.description,
                 "estimated_duration": {
-                  "duration": item.duration,
+                  "duration": Math.max(1, item.duration),
                   "duration_type": "WEEK"
                 },
                 "deliverables": item.deliverables,
@@ -132,7 +132,7 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
                 "name": item.title,
                 "description": item.description,
                 "estimated_duration": {
-                  "duration": item.duration,
+                  "duration": Math.max(1, item.duration),
                   "duration_type": "WEEK"
                 },
                 "deliverables": item.deliverables,

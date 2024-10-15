@@ -116,6 +116,18 @@ const PrivateDashboard = () => {
     }
   };
 
+  const onDraftFlexternProjectsCheckSuccess = (res) => {
+    if (res?.has_draft_project) {
+      setSavedDraftsAvailableModal(true);
+    } else {
+      navigate('/flexternships/create-project');
+    }
+  };
+
+  const onCreateFlexternProjectClick = () => {
+    dispatch(draftProjectsCheck(onDraftFlexternProjectsCheckSuccess)); // change this to flextern project drafts check
+  };
+
   const onCreateProjectClick = () => {
     dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
   };
@@ -240,6 +252,11 @@ const PrivateDashboard = () => {
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
+          <span className='mr-2'>
+            <Button color="primary" onClick={onCreateFlexternProjectClick} disabled={draftProjectsCheckIsLoading}>
+              {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Hire Flexterns'}
+            </Button>
+          </span>
           <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
             {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
           </Button>
