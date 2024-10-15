@@ -249,7 +249,7 @@ const FlexternEducational = () => {
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
-      dispatch(getUserDetails(()=>{}));
+      dispatch(getUserDetails(() => { }));
       navigate(`/${userOnboarding.talent}/social-details`);
     }
     dispatch(setResumeDataUploadedForEducation(parseResume));
@@ -434,9 +434,9 @@ const FlexternEducational = () => {
           savedFormData?.educationDetails?.length > 0
             ? savedFormData?.educationDetails
             : res?.talent_info?.educational_institute?.map((detail) => ({
-                educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-                education: { label: detail.education.name, value: detail.education._id },
-              })),
+              educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+              education: { label: detail.education.name, value: detail.education._id },
+            })),
           { shouldValidate: true },
         );
       } else {
@@ -446,7 +446,7 @@ const FlexternEducational = () => {
         setValue(
           'tools',
           savedFormData?.tools ||
-            res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
+          res?.talent_info?.expertise?.tools?.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -454,10 +454,10 @@ const FlexternEducational = () => {
         setValue(
           'certificates',
           savedFormData?.certificates ||
-            res?.talent_info?.expertise?.certificates?.map((certificate) => ({
-              label: certificate.name,
-              value: certificate._id,
-            })),
+          res?.talent_info?.expertise?.certificates?.map((certificate) => ({
+            label: certificate.name,
+            value: certificate._id,
+          })),
           { shouldValidate: true },
         );
       }
@@ -465,7 +465,7 @@ const FlexternEducational = () => {
         setValue(
           'skills',
           savedFormData?.skills ||
-            res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
+          res?.talent_info?.expertise?.skills?.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -931,8 +931,8 @@ const FlexternEducational = () => {
                 </div>
               </div>
             </Col>
+            <Col>
             {((userData?.talent_info?.resume && Object.keys(userData.talent_info.resume).length > 0) || !isEmpty(files)) && (
-              <Col>
                 <Card>
                   <CardBody>
                     <div className="d-flex flex-column">
@@ -964,196 +964,99 @@ const FlexternEducational = () => {
                     </div>
                   </CardBody>
                 </Card>
-                <Card>
-                  <CardHeader>
-                    <h4 className="m-0 mt-1">Profile Completion</h4>
-                    <CardText className="m-0 mt-1">
-                      Make it easier for others to find you by completing your profile.
-                    </CardText>
-                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                    <Progress
-                      value={overallPercentageCompletion}
-                      style={{ height: '0.5rem' }}
-                      className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                    />
-                  </CardHeader>
-
-                  <CardBody>
-                    <hr className="m-0 card-header-border" />
-
-                    {isTrumioTalent && (
-                      <div className="d-flex gap-1 mt-1">
-                        <div className="custom-checkbox-wrapper">
-                          <Input
-                            type="checkbox"
-                            id="customCheckbox"
-                            className="custom-checkbox-input"
-                            checked={isProjectReady}
-                          />
-                          <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                        </div>
-                        <div>
-                          <CardText className="m-0">Client Projects Ready</CardText>
-                          <b
-                            className="text-primary cursor-pointer"
-                            onClick={() =>
-                              navigate(
-                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                  ?.path || '/marketplace',
-                              )
-                            }
-                          >
-                            {isProjectReady
-                              ? 'Explore Projects'
-                              : `${
-                                  returnCompleteProfileDetailsCta(
-                                    userTypes.talent,
-                                    profileCompletionProjectMissingValues,
-                                  )?.label
-                                }`}{' '}
-                            <ChevronRight size="1.2em" />
-                          </b>
-                        </div>
-                      </div>
-                    )}
-
-                    {isFlextern && (
-                      <div className="d-flex gap-1 mt-1">
-                        <div className="custom-checkbox-wrapper">
-                          <Input
-                            type="checkbox"
-                            id="customCheckbox2"
-                            className="custom-checkbox-input"
-                            checked={isFlexternReady}
-                          />
-                          <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                        </div>
-                        <div>
-                          <CardText className="m-0">Flexternship Ready</CardText>
-                          <b
-                            className="text-primary cursor-pointer"
-                            onClick={() =>
-                              navigate(
-                                returnCompleteProfileDetailsCta(
-                                  userTypes.talent,
-                                  profileCompletionFlexternMissingValues,
-                                )?.path || '/dashboard',
-                              )
-                            }
-                          >
-                            {isFlexternReady
-                              ? 'Explore Flexternships'
-                              : `${
-                                  returnCompleteProfileDetailsCta(
-                                    userTypes.talent,
-                                    profileCompletionFlexternMissingValues,
-                                  )?.label
-                                }`}{' '}
-                            <ChevronRight size="1.2em" />
-                          </b>
-                        </div>
-                      </div>
-                    )}
-                  </CardBody>
-                </Card>
-              </Col>
             )}
-            {isEmpty(files) && (
-              <Col>
-                <Card>
-                  <CardHeader>
-                    <h4 className="m-0 mt-1">Profile Completion</h4>
-                    <CardText className="m-0 mt-1">
-                      Make it easier for others to find you by completing your profile.
-                    </CardText>
-                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                    <Progress
-                      value={overallPercentageCompletion}
-                      style={{ height: '0.5rem' }}
-                      className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                    />
-                  </CardHeader>
 
-                  <CardBody>
-                    <hr className="m-0 card-header-border" />
+            <Card>
+              <CardHeader>
+                <h4 className="m-0 mt-1">Profile Completion</h4>
+                <CardText className="m-0 mt-1">
+                  Make it easier for others to find you by completing your profile.
+                </CardText>
+                <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                <Progress
+                  value={overallPercentageCompletion}
+                  style={{ height: '0.5rem' }}
+                  className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                />
+              </CardHeader>
 
-                    {isTrumioTalent && (
-                      <div className="d-flex gap-1 mt-1">
-                        <div className="custom-checkbox-wrapper">
-                          <Input
-                            type="checkbox"
-                            id="customCheckbox"
-                            className="custom-checkbox-input"
-                            checked={isProjectReady}
-                          />
-                          <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                        </div>
-                        <div>
-                          <CardText className="m-0">Client Projects Ready</CardText>
-                          <b
-                            className="text-primary cursor-pointer"
-                            onClick={() =>
-                              navigate(
-                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                  ?.path || '/marketplace',
-                              )
-                            }
-                          >
-                            {isProjectReady
-                              ? 'Explore Projects'
-                              : `${
-                                  returnCompleteProfileDetailsCta(
-                                    userTypes.talent,
-                                    profileCompletionProjectMissingValues,
-                                  )?.label
-                                }`}{' '}
-                            <ChevronRight size="1.2em" />
-                          </b>
-                        </div>
-                      </div>
-                    )}
+              <CardBody>
+                <hr className="m-0 card-header-border" />
 
-                    {isFlextern && (
-                      <div className="d-flex gap-1 mt-1">
-                        <div className="custom-checkbox-wrapper">
-                          <Input
-                            type="checkbox"
-                            id="customCheckbox2"
-                            className="custom-checkbox-input"
-                            checked={isFlexternReady}
-                          />
-                          <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                        </div>
-                        <div>
-                          <CardText className="m-0">Flexternship Ready</CardText>
-                          <b
-                            className="text-primary cursor-pointer"
-                            onClick={() =>
-                              navigate(
-                                returnCompleteProfileDetailsCta(
-                                  userTypes.talent,
-                                  profileCompletionFlexternMissingValues,
-                                )?.path || '/dashboard',
-                              )
-                            }
-                          >
-                            {isFlexternReady
-                              ? 'Explore Flexternships'
-                              : `${
-                                  returnCompleteProfileDetailsCta(
-                                    userTypes.talent,
-                                    profileCompletionFlexternMissingValues,
-                                  )?.label
-                                }`}{' '}
-                            <ChevronRight size="1.2em" />
-                          </b>
-                        </div>
-                      </div>
-                    )}
-                  </CardBody>
-                </Card>
-              </Col>
-            )}
+                {isTrumioTalent && (
+                  <div className="d-flex gap-1 mt-1">
+                    <div className="custom-checkbox-wrapper">
+                      <Input
+                        type="checkbox"
+                        id="customCheckbox"
+                        className="custom-checkbox-input"
+                        checked={isProjectReady}
+                      />
+                      <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                    </div>
+                    <div>
+                      <CardText className="m-0">Client Projects Ready</CardText>
+                      <b
+                        className="text-primary cursor-pointer"
+                        onClick={() =>
+                          navigate(
+                            returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                              ?.path || '/marketplace',
+                          )
+                        }
+                      >
+                        {isProjectReady
+                          ? 'Explore Projects'
+                          : `${returnCompleteProfileDetailsCta(
+                            userTypes.talent,
+                            profileCompletionProjectMissingValues,
+                          )?.label
+                          }`}{' '}
+                        <ChevronRight size="1.2em" />
+                      </b>
+                    </div>
+                  </div>
+                )}
+
+                {isFlextern && (
+                  <div className="d-flex gap-1 mt-1">
+                    <div className="custom-checkbox-wrapper">
+                      <Input
+                        type="checkbox"
+                        id="customCheckbox2"
+                        className="custom-checkbox-input"
+                        checked={isFlexternReady}
+                      />
+                      <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                    </div>
+                    <div>
+                      <CardText className="m-0">Flexternship Ready</CardText>
+                      <b
+                        className="text-primary cursor-pointer"
+                        onClick={() =>
+                          navigate(
+                            returnCompleteProfileDetailsCta(
+                              userTypes.talent,
+                              profileCompletionFlexternMissingValues,
+                            )?.path || '/dashboard',
+                          )
+                        }
+                      >
+                        {isFlexternReady
+                          ? 'Explore Flexternships'
+                          : `${returnCompleteProfileDetailsCta(
+                            userTypes.talent,
+                            profileCompletionFlexternMissingValues,
+                          )?.label
+                          }`}{' '}
+                        <ChevronRight size="1.2em" />
+                      </b>
+                    </div>
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+            </Col>
           </Row>
         </Form>
       )}
