@@ -422,12 +422,21 @@ const PaymentHistory = () => {
   };
 
   const loadNewPaymentHistoryData = () => {
+    const dateObject = new Date(watch('paymentDate'));
+    const timestamp = dateObject.getTime();
+    const filters = {
+      payment_date: timestamp || null,
+      project_name: watch('projectName'),
+      payment_status: watch('paymentStatus')?.value,
+      payment_type: watch('payType')?.value,
+    };
     dispatch(
       getPaymentHistory({
         // eslint-disable-next-line no-unsafe-optional-chaining
         page: paymentHistoryData?.metadata?.current_page + 1,
         pageSize: 10,
         oldData: paymentHistoryData?.data,
+        filters
       }),
     );
   };
