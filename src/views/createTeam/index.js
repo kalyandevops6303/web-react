@@ -38,6 +38,7 @@ const CreateTeam = () => {
   }, [dispatch]);
 
   return (
+    <div className='trumio'>
     <div className={`${location.pathname.includes('create-team') ? 'px-5 py-2' : 'px-3 pt-1'} `}>
       <div className="px-2">
         {location.pathname.includes('create-team') ? (
@@ -65,6 +66,7 @@ const CreateTeam = () => {
         )}
         <Tabs tabNames={tabNames} active={active} />
       </div>
+    </div>
     </div>
   );
 };

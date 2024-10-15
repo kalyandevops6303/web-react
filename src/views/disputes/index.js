@@ -192,7 +192,7 @@ const index = () => {
   );
 
   return (
-    <>
+    <div className='trumio'>
       {raiseDisputeModal && (
         <RaiseDisputeModal
           modal={raiseDisputeModal}
@@ -244,7 +244,7 @@ const index = () => {
         <Route path="open" element={<Listings />} />
         <Route path="resolved" element={<Listings />} />
       </Routes>
-    </>
+    </div>
   );
 };
 

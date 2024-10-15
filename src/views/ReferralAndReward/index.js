@@ -145,7 +145,7 @@ const ReferralAndReward = () => {
   );
 
   return (
-    <>
+    <div className='trumio'>
       {referNowModal && <ReferNowModal modal={referNowModal} toggleModal={toggleReferNowModal} />}
       <BreadCrumbs data={[{ title: 'Dashboard' }, { title: 'Rewards', link: '#' }]} />
       <div className="d-flex justify-content-between align-items-start">
@@ -218,7 +218,7 @@ const ReferralAndReward = () => {
           </InfiniteScroll>
         </TableContainer>
       )}
-    </>
+    </div>
   );
 };
 

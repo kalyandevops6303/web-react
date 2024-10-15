@@ -53,7 +53,7 @@ const Assessments = () => {
     }, [assessmentsListData])
 
     return (
-        <>
+        <div className='trumio'>
             {assessmentsListDataLoading ?
                 <ComponentSpinner />
                 :
@@ -81,7 +81,7 @@ const Assessments = () => {
                         </CardBody>
                     </Card>}
                 </div>}
-        </>
+        </div>
     );
 };
 

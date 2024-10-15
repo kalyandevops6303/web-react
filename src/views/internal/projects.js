@@ -63,6 +63,7 @@ const InternalProjects = () => {
   }, []);
 
   return (
+    <div className='trumio'>
     <ProjectsContainer>
       {isLoading ? (
         <ComponentSpinner />
@@ -97,6 +98,7 @@ const InternalProjects = () => {
         </ResponsiveGrid>
       )}
     </ProjectsContainer>
+    </div>
   );
 };
 

@@ -128,7 +128,7 @@ const TeamInvitation = () => {
   }
 
   return (
-    <>
+    <div className='trumio'>
       <BreadCrumbs data={breadCrumb} />
       {completeProfileModal && (
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
@@ -244,7 +244,7 @@ const TeamInvitation = () => {
           </GrayCardWrapper>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

@@ -130,7 +130,7 @@ const Notifications = () => {
   }
 
   return (
-    <>
+    <div className='trumio'>
       <h2>Notifications</h2>
       <div className="d-flex justify-content-between align-items-end mb-2 mt-2">
         {notificationsPollingData?.unread_notifications_count > 0 && notificationsData?.data?.length > 0 ? (
@@ -225,7 +225,7 @@ const Notifications = () => {
           />
         )}
       </InfiniteScroll>
-    </>
+    </div>
   );
 };
 
