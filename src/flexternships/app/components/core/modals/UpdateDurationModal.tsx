@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import PrimaryButton from "../buttons/PrimaryButton"
 import SecondaryButton from "../buttons/SecondaryButton"
 import CloseModalButton from "../buttons/CloseModalButton"

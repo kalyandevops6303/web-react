@@ -26,9 +26,8 @@ export default function Preview() {
 
   useEffect(() => {
       const postProject = async () => {
-        let projectId = undefined;
         try {
-          projectId = await createFlexternProject(formData);
+          await createFlexternProject(formData);
         } catch (error) {
           // TODO - Add ERROR TOAST
           console.log("There's an error while posting the project: ", error);

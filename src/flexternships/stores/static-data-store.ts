@@ -8,7 +8,7 @@ const defaultInitState: StaticDataState = {
     roles: [],
     tools: [],
 }
-export const useStaticDataStore = create<StaticDataStore>((set, get) => ({
+export const useStaticDataStore = create<StaticDataStore>((set) => ({
     ...defaultInitState,
     fetchStaticData: async () => fetchStaticData(set),
     // fetchSkills: async () => fetchSkills(set),

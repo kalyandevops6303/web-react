@@ -21,7 +21,6 @@ export default function Roles() {
 
   const {
     control,
-    register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<ProjectRolesForm>({

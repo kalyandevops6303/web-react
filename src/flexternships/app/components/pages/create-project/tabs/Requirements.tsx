@@ -30,7 +30,6 @@ export default function Requirements() {
 
   const {
     control,
-    register,
     handleSubmit,
     watch,
     setValue,

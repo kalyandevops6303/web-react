@@ -1,6 +1,5 @@
-import React, { useState } from "react";
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
-import { useFieldArray, UseFormRegisterReturn } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
 import { ChevronDown, X } from "react-feather";
 import { Popover, PopoverContent, PopoverTrigger } from "@flexternships/app/components/ui/popover";
 

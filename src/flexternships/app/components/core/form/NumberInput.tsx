@@ -1,7 +1,5 @@
-import React, { useState } from "react";
 import { Minus, Plus } from "react-feather";
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
-import { Controller, UseFormRegisterReturn } from "react-hook-form";
 
 export default function NumberInput(props: InputProps) {
     const { label, value, onChange, min, max, required, className } = props;

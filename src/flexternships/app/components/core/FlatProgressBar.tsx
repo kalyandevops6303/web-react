@@ -1,4 +1,3 @@
-import React from "react";
 import Styles from "@flexternships/styles/components/core/progress-bar.module.css";
 
 export default function FlatProgressBar({ currentProgress, maxProgress }: ProgressProps) {

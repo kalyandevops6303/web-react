@@ -1,4 +1,3 @@
-import React from 'react';
 import Styles from '@flexternships/styles/components/core/files.module.css';
 import SimpleElevatedCard from '../cards/SimpleElevatedCard';
 import { getFileIcon } from '@/flexternships/utils/file-utils';

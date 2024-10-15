@@ -1,10 +1,8 @@
 "use client"
-import React, { useEffect, useState } from "react"
 import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
 import { ModalType } from "@flexternships/types/project-creation-types"
 import CloseModalButton from "../buttons/CloseModalButton"
 import PrimaryButton from "../buttons/PrimaryButton"
-import SecondaryButton from "../buttons/SecondaryButton"
 import ChecklistGif from "@flexternships/assets/images/checklist.gif"
 
 export default function SuccessfulCreation(props: Props) {

@@ -22,7 +22,7 @@ export default function FileUpload(props: InputProps) {
         if (!file) return;
 
         const uploadRequirements = await getFileUploadUrl(file.name);
-        const uploadResponse = await uploadFileToUrl(uploadRequirements.data.upload_url, file);
+        await uploadFileToUrl(uploadRequirements.data.upload_url, file);
 
         append({
             fileName: file.name,
