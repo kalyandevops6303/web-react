@@ -38,7 +38,6 @@ export default function Roles() {
   });
 
   const onContinue = (data: ProjectRolesForm) => {
-    console.log('Submitted Roles:', data.projectRoles);
     updateRolesData(data.projectRoles);
     nextTab();
   };

@@ -1,39 +1,39 @@
 import { closestCenter, DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, Plus } from 'react-feather';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
 import { DatePicker } from '@flexternships/app/components/core/form/DatePicker';
+import UpdateDurationModal from '@flexternships/app/components/core/modals/UpdateDurationModal';
+import { MilestonesFormSchema } from '@flexternships/schemas/project-creation-schemas';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { MilestonesForm, ModalType } from '@flexternships/types/project-creation-types';
-import { MilestonesFormSchema } from '@flexternships/schemas/project-creation-schemas';
-import { dateToEpoch } from '@flexternships/utils/date-utils';
+import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import MilestoneInfo from './MilestoneInfo';
 import SortableMilestoneCard from './SortableMilestoneCard';
-import UpdateDurationModal from '@flexternships/app/components/core/modals/UpdateDurationModal';
-
 
 export default function Milestones() {
-  const previousTab = useProjectCreationStore((state) => (state.previousTab));
-  const nextTab = useProjectCreationStore((state) => (state.nextTab));
-  const estimatedStartDate = useProjectCreationStore((state) => (state.data.requirements.estimatedStartDate));
-  const estimatedDuration = useProjectCreationStore((state) => (state.data.requirements.estimatedDuration));
-  const milestonesData = useProjectCreationStore((state) => state.data.milestones);
-  const updateEstimatedStartDate = useProjectCreationStore((state) => (state.updateEstimatedStartDate));
-  const updateEstimatedDuration = useProjectCreationStore((state) => (state.updateEstimatedDuration));
-  const updateMilestonesData = useProjectCreationStore((state) => state.updateMilestonesData);
-  const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
-  const openModal = useProjectCreationStore((state) => state.openModal);
-  const closeModal = useProjectCreationStore((state) => state.closeModal);
-
+  const {
+    previousTab,
+    nextTab,
+    data: {
+      requirements: { estimatedStartDate, estimatedDuration },
+      milestones: milestonesData,
+    },
+    updateEstimatedStartDate,
+    updateEstimatedDuration,
+    updateMilestonesData,
+    saveDraft,
+    openModal,
+    closeModal,
+  } = useProjectCreationStore();
 
   const [milestoneDurationState, setMilestoneDurationState] = useState<"undershot" | "overshot" | "balanced" | "updated">("balanced");
-
   const sensors = useSensors(useSensor(PointerSensor));
 
   const {
@@ -43,184 +43,171 @@ export default function Milestones() {
   } = useForm<MilestonesForm>({
     mode: 'onChange',
     resolver: yupResolver(MilestonesFormSchema),
-    defaultValues: {
-      milestones: (() => {
-        let runningTotal = 0;
-        const totalMilestones = milestonesData.length;
+    defaultValues: useMemo(() => {
+      let runningTotal = 0;
+      let isDefault = true;
+      const totalMilestones = milestonesData.length;
 
-        return milestonesData.map((milestoneItem, index) => {
-          if (index === totalMilestones - 1) {
-            // For the last item, calculate the remaining duration
-            return {
-              title: milestoneItem.title,
-              duration: estimatedDuration - runningTotal, // Remaining duration for the last item
-              description: milestoneItem.description,
-              deliverables: milestoneItem.deliverables,
-            };
-          } else {
-            // For other milestones, use Math.ceil and keep track of the running total
-            const duration = Math.ceil(milestoneItem.duration * estimatedDuration);
-            runningTotal += duration;
-            return {
-              title: milestoneItem.title,
-              duration: duration,
-              description: milestoneItem.description,
-              deliverables: milestoneItem.deliverables,
-            };
+      return {
+        milestones: milestonesData.map((milestoneItem, index) => {
+          if (!isDefault) return milestoneItem;
+          if (milestoneItem.duration >= 1) {
+            isDefault = false;
+            return milestoneItem;
           }
-        });
-      })(),
-    },
+
+          const duration = index === totalMilestones - 1
+            ? Math.max(1, Math.abs(estimatedDuration - runningTotal)) // Last item ensures remaining duration is >= 1
+            : Math.ceil(milestoneItem.duration * estimatedDuration);
+
+          runningTotal += duration;
+
+          return { ...milestoneItem, duration };
+        }),
+      };
+    }, [estimatedDuration, milestonesData]),
   });
 
-  const { fields, append, remove, move } = useFieldArray({
-    control,
-    name: 'milestones',
-  });
+  const { fields, append, remove, move } = useFieldArray({ control, name: 'milestones' });
+  const milestones = useWatch({ control, name: "milestones" });
 
-  const milestones = useWatch({
-    control,
-    name: "milestones",
-  });
+  const sumOfMilestoneDuration = useMemo(() => {
+    return milestones.reduce((total, { duration }) => {
+      const parsedDuration = typeof duration === 'string' ? parseFloat(duration) : duration;
+      return total + (isNaN(parsedDuration) ? 0 : parsedDuration);
+    }, 0);
+  }, [milestones]);
 
-
-  const sumOfMilestoneDuration: number = milestones.reduce((total, milestone) => {
-    const duration = typeof milestone.duration === 'string' ? parseFloat(milestone.duration) : milestone.duration;
-    return total + (isNaN(duration) ? 0 : duration); // Handle NaN case
-  }, 0);
-  const durationDiff: number = sumOfMilestoneDuration - estimatedDuration;
+  const durationDiff = sumOfMilestoneDuration - estimatedDuration;
 
   useEffect(() => {
-    console.log("Total Duration updated:", sumOfMilestoneDuration);
-    if (durationDiff === 0) {
-      setMilestoneDurationState("balanced");
-      return;
-    }
     if (durationDiff > 0) {
       setMilestoneDurationState('overshot');
-    } else {
+    } else if(durationDiff < 0) {
       setMilestoneDurationState('undershot');
+    } else if(milestoneDurationState!=='updated') {
+      setMilestoneDurationState("balanced");
     }
-  }, [sumOfMilestoneDuration]);
+  }, [durationDiff, milestoneDurationState, sumOfMilestoneDuration]);
 
   const matchEstimatedDuration = () => {
     updateEstimatedDuration(sumOfMilestoneDuration);
     setMilestoneDurationState("updated");
-  }
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
     if (over && active.id !== over.id) {
       const oldIndex = fields.findIndex(field => field.id === active.id);
       const newIndex = fields.findIndex(field => field.id === over.id);
-
       move(oldIndex, newIndex);
     }
   };
 
   const handleEstimatedStartDateChange = (newDate: number) => {
-    if(newDate < dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0)))) return;
-    updateEstimatedStartDate(newDate);
-  }
+    if (newDate >= dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0)))) {
+      updateEstimatedStartDate(newDate);
+    }
+  };
 
   const onContinue = (data: MilestonesForm) => {
-    if (durationDiff !== 0) {
-      // open modal
-      console.log('entered', durationDiff)
-      openModal(ModalType.DURATION_OVERSHOT)
-      return;
+    if (durationDiff < 0) {
+      openModal(ModalType.DURATION_UNDERSHOT);
+    } else if (durationDiff > 0) {
+      openModal(ModalType.DURATION_OVERSHOT);
+    } else {
+      updateMilestonesData(data.milestones);
+      nextTab();
     }
-    updateMilestonesData(data.milestones);
-    nextTab();
-  }
+  };
 
   return (
     <>
       <div className={Styles.tabContent}>
-        <div className={Styles.tabContentHeader}>
-          Project Overview
-        </div>
+        <div className={Styles.tabContentHeader}>Project Overview</div>
         <div className={Styles.tabContentBody}>
-          <DatePicker value={estimatedStartDate} onChange={handleEstimatedStartDateChange} className='w-[272px]' label='Estimated Start Date' placeholder='Enter start date' required />
-          <div className={`${Styles.durationContainer}`}> {/* Apply class based on type */}
-            <div className={Styles.durationTitle}>
-              Estimated Duration (in weeks)
-            </div>
-            <div className={`flex flex-col items-end relative`}>
+          <DatePicker
+            value={estimatedStartDate}
+            onChange={handleEstimatedStartDateChange}
+            className='w-[272px]'
+            label='Estimated Start Date'
+            placeholder='Enter start date'
+            fromDate={getTodayDate()}
+            required
+          />
+          <div className={Styles.durationContainer}>
+            <div className={Styles.durationTitle}>Estimated Duration (in weeks)</div>
+            <div className='flex flex-col items-end relative'>
               <span className={Styles.durationValue}>
                 {estimatedDuration} wk
-                {
-                  (milestoneDurationState === "updated") && (
-                    <span className={Styles.milestoneDurationUpdatedTag}>
-                      Updated
-                    </span>
-                  )
-                }
+                {milestoneDurationState === "updated" && <span className={Styles.milestoneDurationUpdatedTag}>Updated</span>}
               </span>
-              {
-                (durationDiff !== 0) && (
-                  <span className={`${Styles.durationValueDiff} ${durationDiff < 0 ? Styles.undershot : (durationDiff > 0 ? Styles.exceed : '')}`}>
-                    {durationDiff < 0 ? '-' : (durationDiff > 0 ? '+' : '')} {Math.abs(durationDiff)} wk
-                  </span>
-                )
-              }
+              {durationDiff !== 0 && (
+                <span className={`${Styles.durationValueDiff} ${durationDiff < 0 ? Styles.undershot : Styles.exceed}`}>
+                  {durationDiff < 0 ? '-' : '+'} {Math.abs(durationDiff)} wk
+                </span>
+              )}
             </div>
           </div>
         </div>
       </div>
+
       <div className={Styles.tabContent}>
-        <div className={Styles.tabContentHeader}>
-          Milestones
-        </div>
+        <div className={Styles.tabContentHeader}>Milestones</div>
         <div className={`${Styles.tabContentBody} mt-6`}>
-          {
-            (durationDiff !== 0) && (
-              <MilestoneInfo updateHandler={matchEstimatedDuration} infoType={milestoneDurationState} />
-            )
-          }
-          <div className='w-full'>
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={fields} strategy={verticalListSortingStrategy}>
-                {fields.map((field, index) => (
-                  <SortableMilestoneCard
-                    key={field.id}
-                    id={field.id}
-                    milestoneIndex={index}
-                    control={control}
-                    removable={fields.length > 2}
-                    remove={() => remove(index)}
-                    errors={errors.milestones?.[index]}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-            <div>
-              <PrimaryIconText
-                className={'mt-2'}
-                text='Add Milestone'
-                icon={<Plus className={'text-trublue'} size={18} />}
-                onClick={() => append({
-                  title: '',
-                  duration: 1,
-                  description: '',
-                  deliverables: [' '],
-                })} />
-            </div>
-          </div>
+          {durationDiff !== 0 && (
+            <MilestoneInfo 
+              updateHandler={() => {
+                if (durationDiff < 0) {
+                  openModal(ModalType.DURATION_UNDERSHOT);
+                } else if (durationDiff > 0) {
+                  openModal(ModalType.DURATION_OVERSHOT);
+                }
+              }} 
+              infoType={milestoneDurationState}
+            />
+          )}
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={fields} strategy={verticalListSortingStrategy}>
+              {fields.map((field, index) => (
+                <SortableMilestoneCard
+                  key={field.id}
+                  id={field.id}
+                  milestoneIndex={index}
+                  control={control}
+                  removable={fields.length > 2}
+                  remove={() => remove(index)}
+                  errors={errors.milestones?.[index]}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+          <PrimaryIconText
+            className='mt-2'
+            text='Add Milestone'
+            icon={<Plus className='text-trublue' size={18} />}
+            onClick={() => append({ title: '', duration: 1, description: '', deliverables: [' '] })}
+          />
         </div>
       </div>
+
       <div className={Styles.bottomActionsContainer}>
-        {/* Make this a separate component */}
         <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' text='Save as Draft ' onClick={saveAsDraft} />
-          <PrimaryButton onClick={handleSubmit(onContinue, (formErrors) => console.log('Validation Errors:', formErrors))} disabled={!isValid}>
+          <SecondaryButton className='mr-6' text='Save as Draft' onClick={saveDraft} />
+          <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>
             Continue
           </PrimaryButton>
         </div>
       </div>
-      <UpdateDurationModal estimatedDuration={estimatedDuration} revisedEstimatedDuration={sumOfMilestoneDuration} onConfirm={() => { matchEstimatedDuration(); closeModal(); }} />
+      <UpdateDurationModal
+        estimatedDuration={estimatedDuration}
+        revisedEstimatedDuration={sumOfMilestoneDuration}
+        onConfirm={() => {
+          matchEstimatedDuration();
+          closeModal();
+        }}
+      />
     </>
   );
 }

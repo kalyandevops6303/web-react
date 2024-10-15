@@ -5,10 +5,10 @@ import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryI
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
 import { DatePicker } from '@flexternships/app/components/core/form/DatePicker';
 import TextInput from '@flexternships/app/components/core/form/TextInput';
+import Tooltip from '@flexternships/app/components/core/Tooltip';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
-import { addDaysToEpoch, dateToEpoch } from '@flexternships/utils/date-utils';
-import Tooltip from '@flexternships/app/components/core/Tooltip';
+import { addDaysToEpoch, dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 
 export default function Listing() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
@@ -17,9 +17,9 @@ export default function Listing() {
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
 
   const [listingChoice, setListingChoice] = useState<"immediate" | "later">("immediate");
-  const [delistAfterForImmediate, setDelistAfterForImmediate] = useState<number>(14); // in days
+  const [delistAfterForImmediate, setDelistAfterForImmediate] = useState<number>(30); // in days
   const [listingStartDateEpochForLater, setListingStartDateEpochForLater] = useState<number>(dateToEpoch(new Date())); // in epoch
-  const [delistAfterForLater, setDelistAfterForLater] = useState<number>(14); // in days
+  const [delistAfterForLater, setDelistAfterForLater] = useState<number>(30); // in days
 
   const onContinue = () => {
     let listingStartDate: number, listingEndDate: number;
@@ -31,7 +31,6 @@ export default function Listing() {
       listingEndDate = addDaysToEpoch(listingStartDate, delistAfterForLater);
     }
     updateListingData(listingStartDate, listingEndDate);
-    console.log(listingStartDate, listingEndDate);
     nextTab();
   }
   
@@ -128,7 +127,14 @@ export default function Listing() {
                 <Tooltip content={'Your project will be posted on the listing start date'} />
                 </div>
                 <div className='flex flex-row items-end gap-10'>
-                  <DatePicker value={listingStartDateEpochForLater} onChange={(dateEpoch) => (handleStartDateChangeForLater(dateEpoch))} label='Listing Start Date' placeholder='Select start date' className={Styles.listingStartDate} required />
+                  <DatePicker 
+                    value={listingStartDateEpochForLater} 
+                    onChange={(dateEpoch) => (handleStartDateChangeForLater(dateEpoch))} 
+                    label='Listing Start Date' placeholder='Select start date' 
+                    className={Styles.listingStartDate} 
+                    fromDate={getTodayDate()}
+                    required
+                  />
                   <div className={Styles.delistActionContainer}>
                     <span className={Styles.delistTextContainer}>
                       De-list after

@@ -31,9 +31,6 @@ export default function SortableMilestoneCard(props: Props) {
         setIsExpanded((cur) => (isDragging ? false : cur));
     }, [isDragging]);
 
-    console.log(deliverables);
-
-
     return (
         <div ref={setNodeRef} style={style}>
             <SimpleElevatedCard

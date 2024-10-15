@@ -1,5 +1,5 @@
-import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { AlertCircle } from 'react-feather';
+import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 
 export default function MilestoneInfo(props: InfoProps) {
     const { infoType, updateHandler } = props;

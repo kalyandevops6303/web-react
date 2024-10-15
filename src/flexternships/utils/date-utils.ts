@@ -69,3 +69,13 @@ export function formatEpochToHumanReadable(epoch: number): string {
 
     return date.toLocaleDateString('en-US', options);
 }
+
+
+/**
+ * Utility to get today's date as a Date object.
+ * @returns A Date object representing today's date at 00:00:00 hours.
+ */
+export function getTodayDate(): Date {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}

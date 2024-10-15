@@ -13,6 +13,7 @@ import { useStaticDataStore } from '@flexternships/stores/static-data-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
+import { getTodayDate } from '@flexternships/utils/date-utils';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -96,6 +97,7 @@ export default function Requirements() {
                 label="Estimated Start Date"
                 placeholder="Enter start date"
                 error={errors.estimatedStartDate?.message}
+                fromDate={getTodayDate()}
                 required />
             )}>
           </Controller>

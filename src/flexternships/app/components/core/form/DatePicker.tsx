@@ -2,13 +2,13 @@
 
 import { format } from "date-fns";
 import { ChevronDown } from "react-feather";
+import { Calendar } from "@flexternships/app/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@flexternships/app/components/ui/popover";
 import Styles from "@flexternships/styles/components/core/form-fields.module.css";
-import { Calendar } from "@flexternships/app/components/ui/calendar";
 import { dateToEpoch, epochToDate } from "@flexternships/utils/date-utils";
 
 export function DatePicker(props: InputProps) {
-    const { label, value, onChange, required, placeholder, className, error } = props; // Destructure setValue and name
+    const { label, value, onChange, required, placeholder, className, error, fromDate } = props; // Destructure setValue and name
     const handleDateSelection = (date: Date | undefined) => {
         if (date === undefined) {
             date = new Date();
@@ -43,6 +43,7 @@ export function DatePicker(props: InputProps) {
                     mode="single"
                     selected={epochToDate(value)}
                     onSelect={handleDateSelection}
+                    fromDate={fromDate}
                     // initialFocus
                 />
             </PopoverContent>
@@ -58,4 +59,5 @@ type InputProps = {
     placeholder?: string;                   // Optional field
     className?: string;                     // Optional field
     error?: string
+    fromDate?: Date
 };

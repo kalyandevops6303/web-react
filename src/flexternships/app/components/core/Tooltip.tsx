@@ -32,7 +32,7 @@ const Tooltip: React.FC<TooltipProps> = ({ content, className }) => {
 
       {/* Tooltip content */}
       {showTooltip && (
-        <div className="absolute top-1/2 left-full -translate-y-1/2 ml-2 p-2 min-w-36 max-w-52 text-xs bg-gray-800 text-white rounded shadow-lg z-10 break-words text-center">
+        <div className="absolute top-1/2 left-full -translate-y-1/2 ml-2 py-2 px-3 min-w-36 max-w-52 text-xs bg-gray-800 text-white rounded shadow-lg z-10 break-words">
           {content}
           {/* Tooltip arrow pointing left */}
           <div className="absolute top-1/2 left-2 -translate-x-full -translate-y-1/2 size-3 bg-gray-800 rotate-45"></div>

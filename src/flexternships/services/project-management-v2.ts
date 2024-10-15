@@ -87,7 +87,6 @@ export const createFlexternProject: (projectData: ProjectCreationFormData) => Pr
     };
 
     const response = await axios.post(routes.projectManagementV2.project.create, formattedProjectData, config)
-    console.log('Response Data:', response.data);
 
     return response.data?.project_id || undefined;
 }
@@ -143,7 +142,6 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
     };
 
     const response = await axios.post(routes.projectManagementV2.project.saveDraft, formattedProjectData, config)
-    console.log('Response Data:', response.data);
 
     return response.data?.project_id || undefined;
 }

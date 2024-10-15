@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { Upload } from 'react-feather';
 import { useFieldArray } from "react-hook-form";
-import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import { getFileDownloadUrl, getFileUploadUrl, uploadFileToUrl } from "@flexternships/services/project-management-v2";
+import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import { dateToEpoch, formatEpochToHumanReadable } from "@flexternships/utils/date-utils";
 import { formatFileSize } from "@flexternships/utils/file-utils";
 import HorizontalFileCard from "../files/HorizontalFileCard";
@@ -21,11 +21,8 @@ export default function FileUpload(props: InputProps) {
         const file = event.target.files && event.target.files[0];
         if (!file) return;
 
-        console.log(file);
         const uploadRequirements = await getFileUploadUrl(file.name);
-        console.log(uploadRequirements);
         const uploadResponse = await uploadFileToUrl(uploadRequirements.data.upload_url, file);
-        console.log(uploadResponse);
 
         append({
             fileName: file.name,
@@ -75,7 +72,7 @@ export default function FileUpload(props: InputProps) {
                         </div>
                     )
             }
-            <label htmlFor={name} className={`${Styles.formFileInput}`}>
+            <label htmlFor={name} className={`${Styles.formFileInput} self-start`}>
                 <span className={Styles.formFileInputIconContainer}>
                     <Upload className={Styles.formFileInputIcon} size={18} />
                 </span>

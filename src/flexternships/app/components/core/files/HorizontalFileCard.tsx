@@ -6,7 +6,6 @@ export default function HorizontalFileCard(props: Props) {
     const { fileName, fileSize, createdAt, className, removable = false, remove, generateDownloadLink } = props;
     const handleClick = async () => {
         const downloadResponse = await generateDownloadLink();
-        console.log(downloadResponse.data)
         window.open(downloadResponse.data, "_blank");
     }
     return (

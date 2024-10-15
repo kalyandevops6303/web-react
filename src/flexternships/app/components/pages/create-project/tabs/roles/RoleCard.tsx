@@ -6,6 +6,7 @@ import MultiSelectInput from '@flexternships/app/components/core/form/MultiSelec
 import NumberInput from '@flexternships/app/components/core/form/NumberInput';
 import SingleSelectInput from '@flexternships/app/components/core/form/SingleSelectInput';
 import { useStaticDataStore } from '@flexternships/stores/static-data-store';
+import FormFieldsStyles from '@flexternships/styles/components/core/form-fields.module.css';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectRole } from '@flexternships/types/project-creation-types';
 
@@ -54,7 +55,7 @@ export default function RoleCard(props: Props) {
                         control={control}
                         render={({ field: { value, onChange } }) => (
                             <NumberInput
-                                className="w-[247px]"
+                                // className="w-[247px]"
                                 label="Headcount "
                                 min={1}
                                 value={value}
@@ -64,31 +65,24 @@ export default function RoleCard(props: Props) {
                         )}>
                     </Controller>
 
-                    {
-                        role?.skills.length > 0 && (
-                            <div className='flex flex-col justify-center gap-1 mr-10 items-center'>
-                                <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
-                                    Skills
-                                </div>
-                                <div className='mt-2 text-base text-grey-600 not-italic font-medium leading-6'>
-                                    {role?.skills.length}
-                                </div>
-                            </div>
-                        )
-                    }
+                    <div className='flex flex-col py-5 pr-6 gap-3 mx-4'>
+                        <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
+                            Skills{' '}
+                            <span className={FormFieldsStyles.requiredAsterisk}>*</span>
+                        </div>
+                        <div className={`${role?.skills.length?'text-base text-grey-600 not-italic font-medium leading-6':'text-sm text-grey-200 italic font-normal leading-5.5'}`}>
+                            {role?.skills.length || 'Add skills'}
+                        </div>
+                    </div>
 
-                    {
-                        role?.tools.length > 0 && (
-                            <div className='flex flex-col justify-center gap-1 items-center'>
-                                <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
-                                    Tools
-                                </div>
-                                <div className='mt-2 text-base text-grey-600 not-italic font-medium leading-6'>
-                                    {role?.tools.length}
-                                </div>
-                            </div>
-                        )
-                    }
+                    <div className='flex flex-col py-5 pr-6 gap-3 mx-4'>
+                        <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
+                            Tools
+                        </div>
+                        <div className={`${role?.tools.length?'text-base text-grey-600 not-italic font-medium leading-6':'text-sm text-grey-200 italic font-normal leading-5.5'}`}>
+                            {role?.tools.length || 'Add tools'}
+                        </div>
+                    </div>
 
                     {isExpanded && (
                         <>
