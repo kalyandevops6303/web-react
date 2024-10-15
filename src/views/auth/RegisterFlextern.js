@@ -213,13 +213,13 @@ const RegisterFlextern = () => {
           isLoading={isLoading}
           emailData={emailData}
         />
-        <div className="my-2 custom-divider">
+        {/* <div className="my-2 custom-divider">
           <span className="custom-line" />
           <p className="custom-divider-text m-0 px-1">Or</p>
           <span className="custom-line" />
-        </div>
+        </div> */}
 
-        <SigninWithGoogle title="Sign Up" />
+        {/* <SigninWithGoogle title="Sign Up" /> */}
 
         <div className="d-flex justify-content-center sign-info">
           <Label>
