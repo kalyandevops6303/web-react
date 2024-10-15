@@ -176,7 +176,7 @@ const Search = () => {
   }, [searchData]);
 
   return (
-    <div>
+    <div className='trumio'>
       <Header isTopCards className="d-flex justify-content-between">
         Search Results
       </Header>

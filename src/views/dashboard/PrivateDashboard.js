@@ -182,7 +182,7 @@ const PrivateDashboard = () => {
   };
 
   return (
-    <div>
+    <div className='trumio'>
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
