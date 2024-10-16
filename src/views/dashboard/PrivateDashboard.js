@@ -17,7 +17,7 @@ import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from 
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
-import { appPermissionsSelector, selectUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectTrumioIsFlextern, selectUserData } from '../../redux/selectors/authSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
@@ -66,7 +66,7 @@ const PrivateDashboard = () => {
 
   const query = useSelector((state) => state.search.query);
   const isDelegate = getItem('isDelegate');
-
+  const isFlexternInvited = useSelector(selectTrumioIsFlextern);
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
   };
@@ -397,7 +397,7 @@ const PrivateDashboard = () => {
                   <AvailableTime />
                 </PermissionWrapper>
               ) : (
-                <AssessmentsOverview />
+                !isFlexternInvited && <AssessmentsOverview />
               )}
             </div>
           )}

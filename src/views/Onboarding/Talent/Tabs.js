@@ -3,6 +3,7 @@ import Proptypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { Clock, Home, Link, User, Shield, Crosshair } from 'react-feather';
+import { useDispatch, useSelector } from 'react-redux';
 import { TabsContainer } from '../style';
 import Account from '../Account';
 import Personal from './Personal';
@@ -15,7 +16,6 @@ import EducationTabInactiveImg from '../../../assets/images/educationTabInactive
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
-import { useDispatch, useSelector } from 'react-redux';
 import { getQuestionsLink, getShowHiringTab } from "../../../redux/actions/hiringActions";
 
 const Tabs = ({ tabNames, active }) => {
@@ -31,6 +31,7 @@ const Tabs = ({ tabNames, active }) => {
   const [showTab, setShowTab] = useState(true);
 
   const onTabClick = (path) => {
+    console.log('path', path);
     if (location.pathname.includes('profile-edit')) {
       navigate(path);
     }
@@ -38,17 +39,18 @@ const Tabs = ({ tabNames, active }) => {
 
   const onFailure = () => {
     setShowTab(false);
-  }
+  };
 
   useEffect(() => {
     if (questions?.length === 0) setHasQuestions(false);
-  }, [questions])
+  }, [questions]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       <Nav pills className="mb-2">
         <NavItem
           onClick={() => {
+            console.log('location.pathname', location.pathname);
             if (location.pathname.includes('profile-edit')) {
               onTabClick(`/${userProfileEdit.talent}/account-details`);
             }

@@ -33,7 +33,7 @@ import DelegateAccordion from './DelegateAccordion';
 import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
-import { setFormDocuments } from '../../../../redux/reducers/formData';
+import { clearAllFormData, setFormDocuments } from '../../../../redux/reducers/formData';
 import DelegateNameCard from '../../../../views/cards/DelegateNameCard';
 import {
   checkIsDelegateModeModalVisible,
@@ -117,6 +117,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
       }
+      dispatch(clearAllFormData());
       dispatch(setFormDocuments(null));
     };
 

@@ -13,6 +13,11 @@ const CompleteProfileDetailsCta = {
       path: `/${userProfileEdit.talent}/educational-details`,
     },
     {
+      keyToMatch: 'resume',
+      label: 'Add Resume',
+      path: `/${userProfileEdit.talent}/personal-details`,
+    },
+    {
       keyToMatch: 'availability',
       label: 'Add Availability Details',
       path: `/${userProfileEdit.talent}/availability-details`,
@@ -40,6 +45,8 @@ const CompleteProfileDetailsCta = {
       path: `/${userProfileEdit.talent}/personal-details`,
     },
     { keyToMatch: 'languages', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/personal-details` },
+    { keyToMatch: 'additional_info', label: 'Complete Additional Info', path: `/${userProfileEdit.talent}/additional-details` },
+
   ],
   CLIENT: [
     { keyToMatch: 'company_name', label: 'Add Personal Details', path: `/${userProfileEdit.client}/personal-details` },
@@ -98,10 +105,16 @@ const returnCompleteProfileDetailsCta = (userType, missingValues) => {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'payment_account');
   } else if (missingValues?.includes('social_links')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'social_links');
+  } else if (missingValues?.includes('resume')) {
+    // console.log("hello")
+    // console.log(CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'resume'))
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'resume');
   } else if (missingValues?.includes('image_uri')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'image_uri');
   } else if (userType === 'TALENT' && missingValues?.includes('work_experience')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'work_experience');
+  } else if (userType === 'TALENT' && missingValues?.includes('additional_info')) {
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'additional_info');
   } else if (
     userType === 'TALENT' &&
     (missingValues?.includes('languages_read') ||

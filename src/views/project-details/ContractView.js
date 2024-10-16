@@ -23,7 +23,7 @@ import {
   sendDocument,
   signContractByTalent,
 } from '../../redux/actions/projectDetailsAction';
-import { selectSavedUserData, selectUserType } from '../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectSavedUserData, selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ConfirmContractModal from '../modals/ConfirmContractModal';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
@@ -31,6 +31,7 @@ import AlertAndNote from './overview/AlertAndNote';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
+import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 
 const ContractView = () => {
   const navigate = useNavigate();
@@ -98,11 +99,16 @@ const ContractView = () => {
 
     html2pdf().from(element).set(opt).save();
   };
-
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     dispatch(getAppConfig());
     dispatch(getDocument({ document_id: param?.docId || '', project_id: param?.projectId, doc_type: getDocType() }));
-    dispatch(getProfilePercentage());
+    if(isFlextern){
+      dispatch(getProfileCompletionFlextern());
+    }
+    else{
+      dispatch(getProfilePercentage());
+    }
   }, []);
 
   const handleOpenAcceptModal = (worker) => {

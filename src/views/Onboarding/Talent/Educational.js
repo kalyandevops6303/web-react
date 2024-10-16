@@ -35,6 +35,7 @@ import {
   userDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
+  userDetails,
 } from '../../../redux/selectors/talentOnboardingSelectors';
 import {
   certificatesService,
@@ -436,37 +437,27 @@ const Educational = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
+            name:  res?.talent_info?.resume?.file_name,
+            size:  res?.talent_info?.resume?.size,
           },
           uploadData: {
-            file_key:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.file_key
-                : res?.talent_info?.resume?.file_key,
+            file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
         };
+        setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }
     }
   };
-
+  const userData = useSelector(userDetails);
   const setResumeParsedDetails = (res) => {
     if (res) {
-      if (res?.talent_info?.educational_institute?.length > 0) {
-        setValue(
-          'educationDetails',
-          res?.talent_info?.educational_institute?.map((detail) => ({
-            educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-            education: { label: detail.education.name, value: detail.education._id },
-          })),
-          { shouldValidate: true },
-        );
-      } else {
-        setValue('educationDetails', [{}]);
-      }
+      setValue('educationDetails', userData?.talent_info?.educational_institute?.map((detail) => ({
+        educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+        education: { label: detail.education.name, value: detail.education._id },
+      })))
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',

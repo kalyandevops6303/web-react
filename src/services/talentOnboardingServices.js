@@ -9,6 +9,10 @@ const profileDetailsService = (data) => DataService.put(API.talentOnboarding.pro
 
 const resumeUploadService = (data) => DataService.get(`${API.talentOnboarding.profileResumeUpload}?filename=${data}`);
 
+const identityUploadService = (data) => DataService.get(`${API.talentOnboarding.identityUpload}?filename=${data}`);
+
+const identityDeleteService = () => DataService.delete(`${API.talentOnboarding.identityDelete}`);
+
 const parsedResumeService = (data) => DataService.get(`${API.talentOnboarding.resumeParsedDetails}?file_key=${data}`);
 
 const deleteResumeService = () => DataService.delete(`${API.talentOnboarding.deleteResume}`);
@@ -23,6 +27,8 @@ const profileImageUploadService = (filename) =>
 
 const profileImageUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
 
+const profileCompletionFlexternService = () => DataService.get(API.talentOnboarding.profileCompletionFlextern);
+
 export {
   userDetailsService,
   accountDetailsService,
@@ -34,4 +40,7 @@ export {
   parsedResumeService,
   updateParsedResumeService,
   deleteResumeService,
+  identityUploadService,
+  identityDeleteService,
+  profileCompletionFlexternService
 };

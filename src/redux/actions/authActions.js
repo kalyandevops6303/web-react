@@ -6,6 +6,7 @@ import {
   loginService,
   registerEmailService,
   verifyEmailService,
+  verifyEmailForFlexternService,
   registerPhoneService,
   verifyPhoneService,
   forgotPasswordService,
@@ -17,6 +18,8 @@ import {
   fcmUnsubscribeService,
   resetPasswordService,
   checkAdminService,
+  checkRequestValidation,
+  getFlexternVariablesService,
   getAppPermissionService,
 } from '../../services/authServices';
 
@@ -31,6 +34,12 @@ import {
   verifyEmailRequest,
   verifyEmailSuccess,
   verifyEmailFailure,
+  verifyEmailForFlexternRequest,
+  verifyEmailForFlexternSuccess,
+  verifyEmailForFlexternFailure,
+  verifyRequestInvitationFlexternToken,
+  verifyRequestInvitationFlexternTokenSuccess,
+  verifyRequestInvitationFlexternTokenFailure,
   registerPhoneRequest,
   registerPhoneSuccess,
   registerPhoneFailure,
@@ -71,6 +80,9 @@ import {
   getAppPermissionsSuccess,
   getAppPermissionsRequest,
   getAppPermissionsFailure,
+  setTalentBooleanTrumioTalent,
+  setTalentBooleansFlextern,
+  setTalentBooleanIsFlextern,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -88,6 +100,7 @@ import { registerClubEmailService } from '../../services/clubServices';
 import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
+import { isEmpty } from '../../utility/Utils';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -111,34 +124,57 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
   dispatch(loginRequest());
   try {
     const res = await loginService({ email: username, password });
-    dispatch(setUserTypeSuccess(res?.data?.data?.user_type));
-    setItem('access_token', res.data.data.access_token);
-    setItem('access_token_expires', res.data.data.access_token_expires);
-    setItem('refresh_token', res.data.data.refresh_token);
-    setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-    setItem('user_id', res.data.data.user_id);
-    if (res.data.data.is_delegate) {
-      setItem('isDelegate', res.data.data.is_delegate);
-    }
-    if (res.data.data.delegate_type) {
-      setItem('delegateType', res.data.data.delegate_type);
-    }
-    window.dataLayer.push({ user_id: res.data.data.user_id });
-    onSuccess(res.data.data);
-    if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
-      dispatch(loginSuccess(res.data.data));
-      dispatch(cometChatLogin(res.data.data.comet_chat_token));
-      setItemFromSession('isUserVisited', true);
-      if (res.data?.data?.is_delegate) {
-        setItem('isDelegateProfileCreated', true);
+    if(!isEmpty(res?.data?.data)) {
+      dispatch(setUserTypeSuccess(res?.data?.data?.user_type));
+      setItem('access_token', res.data.data.access_token);
+      setItem('access_token_expires', res.data.data.access_token_expires);
+      setItem('refresh_token', res.data.data.refresh_token);
+      setItem('refresh_token_expires', res.data.data.refresh_token_expires);
+      setItem('user_id', res.data.data.user_id);
+      if (res.data.data.is_delegate) {
+        setItem('isDelegate', res.data.data.is_delegate);
       }
-    } else {
-      dispatch(loginSuccess(false));
+      // if (res.data.)
+      window.dataLayer.push({ user_id: res.data.data.user_id });
+      onSuccess(res.data.data);
+      if(res.data?.data?.user_type === userTypes.talent) {
+        if(res.data?.data?.is_flextern) {
+          dispatch(setTalentBooleanIsFlextern(res.data?.data?.is_flextern));
+        } else {
+          dispatch(setTalentBooleanIsFlextern(false));
+        }
+        dispatch(setTalentBooleanTrumioTalent(res.data?.data?.trumio_talent));
+        dispatch(setTalentBooleansFlextern(res.data?.data?.flextern));
+      }
+      if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
+        dispatch(loginSuccess(res.data.data));
+        dispatch(cometChatLogin(res.data.data.comet_chat_token));
+        setItemFromSession('isUserVisited', true);
+        if (res.data?.data?.is_delegate) {
+          setItem('isDelegateProfileCreated', true);
+        }
+      } else {
+        dispatch(loginSuccess(false));
+      }
     }
   } catch (error) {
     errorHandler(error, loginFailure);
   }
 };
+
+
+const getFlexternVariables = (onSuccessFlexternVariables) => async (dispatch) => {
+  try {
+    const res = await getFlexternVariablesService();
+    if(!isEmpty(res?.data?.data)) {
+      dispatch(setTalentBooleansFlextern(res?.data?.data?.flextern))
+      dispatch(setTalentBooleanTrumioTalent(res?.data?.data?.trumio_talent));
+      onSuccessFlexternVariables(res?.data?.data);
+    }
+  } catch (error) {
+    errorHandler(error);
+  }
+}
 
 const loginUserWithGoogle =
   ({ id_token, user_type, onError, onSuccess }) =>
@@ -194,6 +230,7 @@ const verifyEmail = (data) => async (dispatch) => {
     setItem('access_token_expires', res.data.data.access_token_expires);
     setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
+    dispatch(setTalentBooleanIsFlextern(false)) // making sure for normal talent onboarding or client onboarding the checkpoints are properly navigated
     dispatch(verifyEmailSuccess());
     return null;
   } catch (error) {
@@ -201,6 +238,35 @@ const verifyEmail = (data) => async (dispatch) => {
     return error?.response?.data?.errorData?.message;
   }
 };
+
+const verifyEmailForFlextern =
+  ({ data, onSuccess, errorHandlerInviteNotFound }) =>
+  async (dispatch) => {
+    dispatch(verifyEmailForFlexternRequest());
+    try {
+      const res = await verifyEmailForFlexternService(data);
+      if (!isEmpty(res?.data?.data)) {
+        setItem('access_token', res.data.data.access_token);
+        setItem('access_token_expires', res.data.data.access_token_expires);
+        setItem('refresh_token', res.data.data.refresh_token);
+        setItem('refresh_token_expires', res.data.data.refresh_token_expires);
+        dispatch(setTalentBooleanIsFlextern(true));
+        dispatch(verifyEmailForFlexternSuccess());
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+    } catch (error) {
+      if (
+        error?.response?.data?.errorData?.message === 'Flextern invitation not found for this email' &&
+        errorHandlerInviteNotFound
+      ) {
+        errorHandlerInviteNotFound();
+      } else {
+        errorHandler(error, verifyEmailForFlexternFailure);
+      }
+    }
+  };
 const setPassword = (Password) => async (dispatch) => {
   dispatch(setPasswordRequest());
   try {
@@ -224,11 +290,14 @@ const registerPhone =
     }
   };
 
-const verifyPhone = (data) => async (dispatch) => {
+const verifyPhone = (data, onVerifyOtpSuccess) => async (dispatch) => {
   dispatch(verifyPhoneRequest());
   try {
     await verifyPhoneService(data);
     dispatch(verifyPhoneSuccess());
+    if (onVerifyOtpSuccess) {
+      onVerifyOtpSuccess();
+    }
     return null;
   } catch (error) {
     dispatch(verifyPhoneFailure());
@@ -407,6 +476,15 @@ const checkIsAdmin = (teamId) => async (dispatch) => {
   }
 };
 
+const validateRequestFlexTernToken = ({ requestToken}) => async (dispatch) => {
+    dispatch(verifyRequestInvitationFlexternToken());
+    try {
+      const res = await checkRequestValidation(requestToken);
+      dispatch(verifyRequestInvitationFlexternTokenSuccess(res.data?.data?.email_invited));
+    } catch(error) {
+      errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
+    }
+}
 const getAppPermissions = () => async (dispatch) => {
   dispatch(getAppPermissionsRequest());
   try {
@@ -418,6 +496,8 @@ const getAppPermissions = () => async (dispatch) => {
   }
 };
 
+
+
 export {
   switchProfile,
   getUserData,
@@ -427,6 +507,7 @@ export {
   registerEmail,
   setPassword,
   verifyEmail,
+  verifyEmailForFlextern,
   registerPhone,
   verifyPhone,
   forgotPassword,
@@ -438,5 +519,7 @@ export {
   logoutAction,
   resetPassword,
   checkIsAdmin,
+  validateRequestFlexTernToken,
+  getFlexternVariables,
   getAppPermissions,
 };

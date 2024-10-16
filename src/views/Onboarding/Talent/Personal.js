@@ -90,7 +90,6 @@ import {
   setResumeParsed,
 } from '../../../redux/reducers/formData';
 
-
 const customDropdownStyles = {
   menuList: (provided) => ({
     ...provided,
@@ -332,6 +331,10 @@ const Personal = () => {
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
     if (res) {
+      setValue('role',{
+        label:  userDetailsData?.talent_info?.role?.name,
+        value:  userDetailsData?.talent_info?.role?._id,
+      },);
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
       }
@@ -900,13 +903,6 @@ const Personal = () => {
           },
           isUploaded: true,
         };
-        dispatch(
-          setFileKey(
-            savedFormDocuments != null
-              ? savedFormDocuments[0]?.uploadData?.file_key
-              : res?.talent_info?.resume?.file_key,
-          ),
-        );
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }

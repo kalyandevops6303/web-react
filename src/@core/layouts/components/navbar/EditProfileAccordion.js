@@ -12,12 +12,20 @@ import { useSelector } from 'react-redux';
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clubStatus, userProfileEdit, userTypes } from '../../../../utility/constants/Constant';
-import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import {
+  selectFlexternBoolean,
+  selectTrumioTalent,
+  selectUserData,
+  selectTrumioIsFlextern,
+} from '../../../../redux/selectors/authSelectors';
 import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
 import { getItem } from '../../../../utility/localStorageControl';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
+  const flexternBoolean = useSelector(selectFlexternBoolean);
+  const trumioTalentBoolean = useSelector(selectTrumioTalent);
+  const isFlexternInvited = useSelector(selectTrumioIsFlextern);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const isDelegate = getItem('isDelegate');
 
@@ -33,19 +41,36 @@ const EditProfileAccordion = () => {
 
   const handleEditProfileForTalent = (tab) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-
-    if (tab === 'account') {
-      navigate(`/${userProfileEdit.talent}/account-details`);
-    } else if (tab === 'personal') {
-      navigate(`/${userProfileEdit.talent}/personal-details`);
-    } else if (tab === 'education') {
-      navigate(`/${userProfileEdit.talent}/educational-details`);
-    } else if (tab === 'availability') {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
-    } else if (tab === 'social') {
-      navigate(`/${userProfileEdit.talent}/social-details`);
+    if (isFlexternInvited) {
+      if (tab === 'account') {
+        navigate(`/${userProfileEdit.talent}/account-details`);
+      } else if (tab === 'personal') {
+        navigate(`/${userProfileEdit.talent}/personal-details`);
+      } else if (tab === 'education') {
+        navigate(`/${userProfileEdit.talent}/educational-details`);
+      } else if (tab === 'availability') {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      } else if (tab === 'social') {
+        navigate(`/${userProfileEdit.talent}/social-details`);
+      } else if (tab === 'additional') {
+        navigate(`/${userProfileEdit.talent}/additional-details`);
+      } else {
+        navigate(`/${userProfileEdit.talent}/payment-details`);
+      }
     } else {
-      navigate(`/${userProfileEdit.talent}/payment-details`);
+      if (tab === 'account') {
+        navigate(`/${userProfileEdit.talent}/account-details`);
+      } else if (tab === 'personal') {
+        navigate(`/${userProfileEdit.talent}/personal-details`);
+      } else if (tab === 'education') {
+        navigate(`/${userProfileEdit.talent}/educational-details`);
+      } else if (tab === 'availability') {
+        navigate(`/${userProfileEdit.talent}/availability-details`);
+      } else if (tab === 'social') {
+        navigate(`/${userProfileEdit.talent}/social-details`);
+      } else {
+        navigate(`/${userProfileEdit.talent}/payment-details`);
+      }
     }
   };
   const handleEditProfileForClient = (tab) => {
@@ -77,6 +102,57 @@ const EditProfileAccordion = () => {
       ShowToastMessage(ERROR, 'Club is not verified yet');
     }
   };
+  const handleEditTabsForTalent = () => {
+    if (userDetailsData?.user_type === userTypes.talent) {
+      if (isFlexternInvited) {
+        return (
+          <>
+            <DropdownItem onClick={() => handleEditProfileForTalent('account')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Account</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('personal')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Personal</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Education</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Social</span>
+            </DropdownItem>
+            <DropdownItem
+              onClick={() => handleEditProfileForTalent('additional')}
+              className="w-100 edit-link "
+            >
+              <span className="align-middle p-1">Additional Information</span>
+            </DropdownItem>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <DropdownItem onClick={() => handleEditProfileForTalent('account')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Account</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('personal')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Personal</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Education</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('availability')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Availability</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Social</span>
+            </DropdownItem>
+            <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
+              <span className="align-middle p-1">Payment</span>
+            </DropdownItem>
+          </>
+        );
+      }
+    }
+  };
 
   return (
     <div className="edit-accordion">
@@ -88,7 +164,7 @@ const EditProfileAccordion = () => {
 
           <div style={{ maxHeight: '9rem', overflowY: 'auto' }}>
             <AccordionBody accordionId="1">
-              {userDetailsData?.user_type === userTypes.talent && (
+              {/* {userDetailsData?.user_type === userTypes.talent && (
                 <>
                   <DropdownItem onClick={() => handleEditProfileForTalent('account')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Account</span>
@@ -99,17 +175,21 @@ const EditProfileAccordion = () => {
                   <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Education</span>
                   </DropdownItem>
-                  <DropdownItem onClick={() => handleEditProfileForTalent('availability')} className="w-100 edit-link ">
-                    <span className="align-middle p-1">Availability</span>
-                  </DropdownItem>
                   <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
                     <span className="align-middle p-1">Social</span>
                   </DropdownItem>
-                  <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
+                  <DropdownItem onClick={() => handleEditProfileForTalent('additional') } disabled={!flexternBoolean} className="w-100 edit-link ">
+                    <span className="align-middle p-1">Additional Information</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleEditProfileForTalent('availability')} disabled={!trumioTalentBoolean}className="w-100 edit-link ">
+                    <span className="align-middle p-1">Availability</span>
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleEditProfileForTalent('payment')} disabled={!trumioTalentBoolean} className="w-100 edit-link ">
                     <span className="align-middle p-1">Payment</span>
                   </DropdownItem>
                 </>
-              )}
+              )} */}{' '}
+              {handleEditTabsForTalent()}
               {userDetailsData?.user_type === userTypes.client && !isDelegate && (
                 <>
                   <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
@@ -136,7 +216,6 @@ const EditProfileAccordion = () => {
                   </DropdownItem>
                 </>
               )}
-
               {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'CLUB' && (
                 <>
                   <div id="account-edit">

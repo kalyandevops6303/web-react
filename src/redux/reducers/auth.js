@@ -20,6 +20,11 @@ const initialState = {
   cometChatToken: '',
   checkAdmin: null,
   checkAdminLoading: false,
+  flextern : null,
+  trumio_talent:null,
+  is_flextern: null,
+  profileCompletionFlextern: null,
+  profileCompletionFlexternLoading: false,
   appPermissions: null,
 };
 
@@ -44,6 +49,7 @@ const authSlice = createSlice({
       error: null,
       fcmToken: '',
       userType: null,
+      
     }),
 
     logOut: () => ({
@@ -103,6 +109,43 @@ const authSlice = createSlice({
       error: action.payload,
     }),
 
+    // Verify Email for  Flextern
+    verifyEmailForFlexternRequest : (state) => ({
+      ...state,
+      loading:true,
+      error: null,
+    }),
+
+    verifyEmailForFlexternSuccess : (state) => ({
+      ...state,
+      loading:false,
+      isEmailVerified: true,
+    }),
+
+    verifyEmailForFlexternFailure : (state,action) => ({
+      ...state,
+      loading:false,
+      error: action.payload,
+    }),
+    // verify request invitation token
+
+    verifyRequestInvitationFlexternToken: (state) => ({
+      ...state,
+      loading: true,
+      error:null,
+    }),
+
+    verifyRequestInvitationFlexternTokenSuccess: (state,action) => ({
+      ...state,
+      loading: false,
+      email: action.payload,
+    }),
+
+    verifyRequestInvitationFlexternTokenFailure: (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.payload,
+    }),
     // Register Phone
     registerPhoneRequest: (state) => ({
       ...state,
@@ -119,7 +162,7 @@ const authSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
-
+    
     // Set  Password
     setPasswordRequest: (state) => ({
       ...state,
@@ -231,6 +274,18 @@ const authSlice = createSlice({
       googleAuthLoading: false,
       error: action.payload,
     }),
+    setTalentBooleansFlextern: (state,action) => ({
+      ...state,
+      flextern: action.payload,
+    }),
+    setTalentBooleanTrumioTalent : (state,action) => ({
+      ...state,
+      trumio_talent: action.payload,
+    }),
+    setTalentBooleanIsFlextern : (state,action) => ({
+      ...state,
+      is_flextern: action.payload,
+    }),
 
     // CometChat Login
     cometloginSuccess: (state) => ({
@@ -341,6 +396,23 @@ const authSlice = createSlice({
       checkAdminLoading: false,
       error: action.payload,
     }),
+    profileCompletionFlexternRequest: (state) => ({
+      ...state, 
+      profileCompletionFlexternLoading: true, 
+      error: null 
+    }),
+    profileCompletionFlexternSuccess: (state, action) => ({
+      ...state, 
+      profileCompletionFlexternLoading: false, 
+      profileCompletionFlextern: action.payload,
+      error: null 
+    }),
+    profileCompletionFlexternFailure: (state, action) => ({
+      ...state, 
+      profileCompletionFlextern: null, 
+      profileCompletionFlexternLoading: false, 
+      error: action.payload 
+    })
   },
 });
 
@@ -360,6 +432,12 @@ export const {
   verifyEmailFPRequest,
   verifyEmailFPSuccess,
   verifyEmailFPFailure,
+  verifyEmailForFlexternRequest,
+  verifyEmailForFlexternSuccess,
+  verifyEmailForFlexternFailure,
+  verifyRequestInvitationFlexternToken,
+  verifyRequestInvitationFlexternTokenSuccess,
+  verifyRequestInvitationFlexternTokenFailure,
   registerPhoneRequest,
   registerPhoneSuccess,
   registerPhoneFailure,
@@ -401,6 +479,13 @@ export const {
   getAppPermissionsRequest,
   getAppPermissionsSuccess,
   getAppPermissionsFailure,
+  setTalentBooleanTrumioTalent,
+  setTalentBooleansFlextern,
+  setTalentBooleanIsFlextern,
+  profileCompletionFlexternRequest, 
+  profileCompletionFlexternSuccess, 
+  profileCompletionFlexternFailure
+
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -27,9 +27,10 @@ import { userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectUserData } from '../../../redux/selectors/authSelectors';
 import { LeftSidebarProfileWrapper } from '../../user-details/overview/style';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { getProfileCompletionFlextern } from '../../../redux/actions/talentOnboardingActions';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -65,11 +66,16 @@ const LeftSidebarProfile = ({
       navigate(`/${data.user_type.toLowerCase()}-profile-edit/account-details`);
     }
   };
-
+  const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (showProfilePercent) {
       if (isTalentView || isClient) {
-        dispatch(getProfilePercentage());
+        if(isFlextern){
+          dispatch(getProfileCompletionFlextern());
+        }
+        else{
+          dispatch(getProfilePercentage());
+        }
       }
       if (isTeamView) {
         dispatch(getTeamProfilePercentage());

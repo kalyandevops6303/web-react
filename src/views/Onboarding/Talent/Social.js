@@ -30,6 +30,7 @@ import {
   profileDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
+  userDetails,
   userDetailsLoading,
 } from '../../../redux/selectors/talentOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
@@ -77,6 +78,7 @@ const Social = () => {
   const isResumeDataUploadedForSocial = useSelector(resumeDataUploadedForSocial);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForSocial || false);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
+  const userData = useSelector(userDetails);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [files, setFiles] = useState(savedFormDocuments || []);
   const defaultLink = {
@@ -255,7 +257,7 @@ const Social = () => {
           setValue(
             'linkedInLink',
             savedFormData?.linkedInLink ||
-              res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
+            res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
             {
               shouldValidate: true,
             },
@@ -267,7 +269,7 @@ const Social = () => {
           setValue(
             'twitterLink',
             savedFormData?.twitterLink ||
-              res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
+            res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
             {
               shouldValidate: true,
             },
@@ -293,15 +295,14 @@ const Social = () => {
         ) {
           setValue(
             'otherSocialLinks',
-            savedFormData?.otherSocialLinks ||
-              res?.talent_info?.social_links
-                .filter(
-                  (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
-                )
-                .map((link) => ({
-                  linkName: link.platform,
-                  link: link.url,
-                })),
+            res?.talent_info?.social_links
+              .filter(
+                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+              )
+              .map((link) => ({
+                linkName: link.platform,
+                link: link.url,
+              })),
             { shouldValidate: true },
           );
         } else {
@@ -312,22 +313,24 @@ const Social = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
           },
           uploadData: {
-            file_key:
-              savedFormDocuments != null
-                ? savedFormDocuments[0]?.uploadData?.file_key
-                : res?.talent_info?.resume?.file_key,
+            file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
         };
+        setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key ?? savedFormDocuments[0]?.uploadData?.file_key));
         dispatch(setFormDocuments([fileUrl]));
       }
     }
   };
+
+  useEffect(()=>{
+    console.log(files)
+  },[files])
 
   const setResumeParsedDetails = (res) => {
     if (res) {
@@ -335,7 +338,8 @@ const Social = () => {
         if (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')) {
           setValue(
             'linkedInLink',
-            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn').url,
+            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url?.length > 0 ?  (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url
+              || savedFormData?.linkedInLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url,
             {
               shouldValidate: true,
             },
@@ -344,16 +348,19 @@ const Social = () => {
         if (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')) {
           setValue(
             'twitterLink',
-            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter').url,
+            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url?.length > 0 ? (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url
+              || savedFormData?.twitterLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url ,
             {
               shouldValidate: true,
             },
           );
         }
+        
         if (res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')) {
           setValue(
             'githubLink',
-            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub').url,
+            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url?.length > 0 ? ( res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url
+              || savedFormData?.githubLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url,
             {
               shouldValidate: true,
             },
@@ -376,6 +383,20 @@ const Social = () => {
               })),
             { shouldValidate: true },
           );
+        }
+        else{
+          setValue(
+            'otherSocialLinks',
+              userData?.talent_info?.social_links
+                .filter(
+                  (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+                )
+                .map((link) => ({
+                  linkName: link.platform,
+                  link: link.url,
+                })),
+              { shouldValidate: true },
+            );
         }
       }
     }

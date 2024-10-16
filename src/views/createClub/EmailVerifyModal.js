@@ -8,12 +8,12 @@ import { EmailVerifyModalContainer } from './style';
 import { createClub } from '../../redux/actions/clubActions';
 import { clearAllFormData } from '../../redux/reducers/formData';
 
-const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
+const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal, email }) => {
   const dispatch = useDispatch();
   const [otpError, setOtpError] = useState(false);
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const emailId = useSelector((state) => state.clubs.email);
+  const emailId = useSelector((state) => state.clubs.email) || email;
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
 
   const handleChange = (value) => {
@@ -127,10 +127,12 @@ EmailVerifyModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   setClubCreatedModal: Proptypes.func,
+  email: Proptypes.string,
 };
 
 EmailVerifyModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   setClubCreatedModal: () => {},
+  email: '',
 };

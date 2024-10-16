@@ -20,7 +20,10 @@ const API = {
     verifyOtp: `${apiAuthEndpoint}/api/v1/user/forgot-password/verify`,
     setNewPassword: `${apiAuthEndpoint}/api/v1/user/forgot-password/change`,
     resetPassword: `${apiAuthEndpoint}/api/v1/user/reset-password`,
+    requestValidation: `${apiAuthEndpoint}/api/v1/requests/validation`,
     checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
+    validateFlexTernEmail: `${apiAuthEndpoint}/api/v1/talent/email/check`,
+    flexternValues: `${apiAuthEndpoint}/api/v1/flextern/values`,
   },
   static: {
     talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,
@@ -55,6 +58,9 @@ const API = {
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
     profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
     profileResumeUpload: `${apiAuthEndpoint}/api/v1/talent/resume`,
+    identityUpload: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
+    identityDelete: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
+    profileCompletionFlextern: `${apiAuthEndpoint}/api/v1/flextern/profile-percentage`
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,

@@ -11,6 +11,8 @@ const registerEmailService = (email, userType) =>
 
 const verifyEmailService = (data) => DataService.post(API.auth.verifyEmail, data);
 
+const verifyEmailForFlexternService = (data) => DataService.post(API.auth.validateFlexTernEmail, data);
+
 const setPasswordService = (password) => DataService.post(API.auth.createNewPassowrd, { password });
 
 const registerPhoneService = ({ phone, country_code }) =>
@@ -31,13 +33,19 @@ const resetPasswordService = (data) => DataService.post(API.auth.resetPassword, 
 
 const checkAdminService = (teamId) => DataService.get(`${API.auth.checkAdmin}?team_id=${teamId}`);
 
+const checkRequestValidation = (requestToken) => DataService.get(`${API.auth.requestValidation}?request_token=${requestToken}`);
+
+const getFlexternVariablesService = () => DataService.get(API.auth.flexternValues);
 const getAppPermissionService = () => DataService.get(`${API.permissions.appPermissions}`);
+
+
 
 export {
   loginService,
   loginServiceGoogle,
   registerEmailService,
   verifyEmailService,
+  verifyEmailForFlexternService,
   setPasswordService,
   registerPhoneService,
   verifyPhoneService,
@@ -49,4 +57,6 @@ export {
   resetPasswordService,
   checkAdminService,
   getAppPermissionService,
+  checkRequestValidation,
+  getFlexternVariablesService,
 };

@@ -857,9 +857,13 @@ export const getMissingName = (type, values) => {
 };
 export const checkPointRedirection = ({ response, navigate }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
-    navigate('/auth/register-phone');
+    if(response?.is_flextern) {
+      navigate('/auth/register-phone-talent');
+    } else {
+      navigate('/auth/register-phone');
+    }
   } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
-    navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
+      navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
   } else if (response?.checkpoint === checkPoints.PROFILE_DETAILS) {
     navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
   } else if (response?.checkpoint === checkPoints.COMPLETE) {
