@@ -858,7 +858,7 @@ export const getMissingName = (type, values) => {
 export const checkPointRedirection = ({ response, navigate }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
     if(response?.is_flextern) {
-      navigate('/auth/register-phone-talent');
+      navigate('/auth/register-phone-flexternship');
     } else {
       navigate('/auth/register-phone');
     }

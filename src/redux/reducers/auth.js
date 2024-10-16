@@ -26,6 +26,7 @@ const initialState = {
   profileCompletionFlextern: null,
   profileCompletionFlexternLoading: false,
   appPermissions: null,
+  flexternshipInviteType: null,
 };
 
 const authSlice = createSlice({
@@ -127,6 +128,13 @@ const authSlice = createSlice({
       loading:false,
       error: action.payload,
     }),
+    // set flexternship invite type
+
+    setFlexternshipInviteType: (state,action) => ({
+      ...state,
+      flexternshipInviteType: action.payload
+    }),
+
     // verify request invitation token
 
     verifyRequestInvitationFlexternToken: (state) => ({
@@ -484,8 +492,8 @@ export const {
   setTalentBooleanIsFlextern,
   profileCompletionFlexternRequest, 
   profileCompletionFlexternSuccess, 
-  profileCompletionFlexternFailure
-
+  profileCompletionFlexternFailure,
+  setFlexternshipInviteType
 } = authSlice.actions;
 
 export default authSlice.reducer;

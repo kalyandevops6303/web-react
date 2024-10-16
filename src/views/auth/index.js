@@ -27,7 +27,8 @@ import { selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import RegisterDelegate from './RegisterDelegate';
 import RegisterFlextern from './RegisterFlextern';
-import RegisterPhoneTalent from './RegisterPhoneTalent';
+import RegisterPhoneFlextern from './RegisterPhoneFlextern';
+
 
 const AuthRoute = () => {
   const userType = useSelector(selectUserType);
@@ -61,8 +62,8 @@ const AuthRoute = () => {
       element: <RegisterPhone  />,
     },
     {
-      path: '/register-phone-talent',
-      element: <RegisterPhoneTalent />,
+      path: '/register-phone-flexternship',
+      element: <RegisterPhoneFlextern />,
     },
     {
       path: '/email-verify',

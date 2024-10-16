@@ -11,7 +11,7 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { validations, filteredFormSchema } from '../../utility/Utils';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import { selectAuthLoading, selectEmail } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading, selectEmail, selectFlexternInviteType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
@@ -127,6 +127,16 @@ const RegisterFlextern = () => {
 
   const togglePrivacyPolicyModal = () => setPrivacyPolicyModal(!privacyPolicyModal);
   const toggleTermsModal = () => setTermsModal(!termsModal);
+  const inviteHeader = {
+    "FLEXTERN_CLIENT" : {
+      title: "Client Sign up 🔐"
+    },
+    "FLEXTERN_TALENT" : {
+      title: "Flextern Sign up 🔐"
+    }
+  }
+
+  const flexternInviteType = useSelector(selectFlexternInviteType);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -175,7 +185,7 @@ const RegisterFlextern = () => {
  
   const onSuccess = () => {
     dispatch(clearAllFormData());
-    navigate('/auth/register-phone-talent');
+    navigate('/auth/register-phone-flexternship');
   };
 
   // extract invitation token from url
@@ -184,7 +194,8 @@ const RegisterFlextern = () => {
     const { email } = values;
     const data = {};
     data.email = email;
-    data.user_type = userTypes.talent;
+    if(flexternInviteType === userTypes.flexternClient) data.user_type = userTypes.client;
+    else data.user_type = userTypes.talent;
     dispatch(verifyEmailForFlextern({ data, onSuccess}));
   };
 
@@ -198,7 +209,8 @@ const RegisterFlextern = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Flextern Sign Up 🔐
+          {/* Flextern Sign Up 🔐 */}
+          {inviteHeader[flexternInviteType]?.title}
         </CardTitle>
         <RegisterFlexternForm
           onSubmit={handleSubmit(onSubmit)}

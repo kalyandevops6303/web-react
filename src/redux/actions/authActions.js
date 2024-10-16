@@ -34,6 +34,7 @@ import {
   verifyEmailRequest,
   verifyEmailSuccess,
   verifyEmailFailure,
+  setFlexternshipInviteType,
   verifyEmailForFlexternRequest,
   verifyEmailForFlexternSuccess,
   verifyEmailForFlexternFailure,
@@ -481,6 +482,7 @@ const validateRequestFlexTernToken = ({ requestToken}) => async (dispatch) => {
     try {
       const res = await checkRequestValidation(requestToken);
       dispatch(verifyRequestInvitationFlexternTokenSuccess(res.data?.data?.email_invited));
+      dispatch(setFlexternshipInviteType(res.data?.data?.user_type));
     } catch(error) {
       errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
     }

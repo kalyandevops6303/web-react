@@ -98,12 +98,15 @@ const RegisterEmail = () => {
 
   const onFlexternEmailVerifySuccess = () => {
     dispatch(clearAllFormData());
-    navigate('/auth/register-phone-talent');
+    navigate('/auth/register-phone-flexternship');
   };
 
-  const checkFlexTernorTalent = (email) => {
+  const checkFlexternshipEmail = (email) => {
     const data = { email };
-    data.user_type = userTypes.talent;
+    if(userType === userTypes.client)
+      data.user_type = userTypes.client;
+    else
+      data.user_type = userTypes.talent;
     dispatch(
       verifyEmailForFlextern({
         data,
@@ -116,11 +119,13 @@ const RegisterEmail = () => {
   const onSubmit = (values) => {
     const { email } = values;
     // call a function to first check whether the email entered is for flextern or a talent this will be only valide for talent usertype other
-    if (userType === userTypes.client) {
-      dispatch(registerEmail({ email, userType, onSuccess }));
-    } else {
-      checkFlexTernorTalent(email);
-    }
+    // if (userType === userTypes.client) {
+    //   dispatch(registerEmail({ email, userType, onSuccess }));
+    // } else {
+    //   checkFlexTernorTalent(email);
+    // }
+
+    checkFlexternshipEmail(email)
   };
 
   function getButtonContent() {
@@ -128,11 +133,7 @@ const RegisterEmail = () => {
       return <Spinner size="sm" />;
     }
 
-    if (userType === userTypes.client) {
-      return 'Submit';
-    }
-
-    return 'Verify';
+    return "Verify"
   }
 
   const emailValue = watch('email'); // track the value of the mobile field
