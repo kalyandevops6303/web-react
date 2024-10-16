@@ -43,6 +43,7 @@ import Assessments from '../../views/assessments';
 import InternalProjects from '../../views/internal/projects';
 import NotFound from '../../views/NotFound';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
+import CreateFlexternProject from '@flexternships/app/create-project/page';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -245,6 +246,10 @@ const Routes = [
     meta: {
       layout: 'blank',
     }
+  },
+  {
+    path: `/flexternships/create-project`,
+    element: <CreateFlexternProject />,
   },
   {
     path: '*',

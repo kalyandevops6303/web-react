@@ -224,6 +224,7 @@ const UserDetails = () => {
   }
 
   return (
+    <div>
     <DetailsWrap>
       <DetailsHeader />
 
@@ -402,6 +403,7 @@ const UserDetails = () => {
         />
       )}
     </DetailsWrap>
+    </div>
   );
 };
 

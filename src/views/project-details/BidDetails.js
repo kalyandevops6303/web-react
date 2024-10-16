@@ -173,6 +173,7 @@ const BidDetails = () => {
 
   if (isLoading) return <ComponentSpinner />;
   return (
+    <div className='trumio'>
     <BidDetailsWrap>
       <div className="d-flex justify-content-between mb-2 pb-2 rounded top-head">
         <div className="d-flex justify-content-between fixed-header">
@@ -601,6 +602,7 @@ const BidDetails = () => {
         </Col>
       </Row>
     </BidDetailsWrap>
+    </div>
   );
 };
 

@@ -122,6 +122,7 @@ const AuthRoute = () => {
     return <img src={WelcomePic} alt="bg-pic" className="me-8 welcome-pic" />;
   };
   return (
+    <div className='trumio'>
     <OnBoardWrap>
       <Suspense fallback={<Spinner />}>
         <Routes>
@@ -134,6 +135,7 @@ const AuthRoute = () => {
         <div className="w-100">{window.innerWidth > 1024 && renderImage()}</div>
       </Suspense>
     </OnBoardWrap>
+    </div>
   );
 };
 

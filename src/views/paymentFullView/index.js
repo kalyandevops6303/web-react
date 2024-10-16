@@ -20,13 +20,13 @@ const PaymentFullView = () => {
   }, []);
 
   return (
-    <>
+    <div className='trumio'>
       <BreadCrumbs data={[{ title: 'Dashboard', link: '/dashboard' }, { title: 'Payments' }]} />
 
       <TopStatCards />
 
       <PaymentHistory />
-    </>
+    </div>
   );
 };
 

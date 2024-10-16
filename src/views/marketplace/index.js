@@ -90,6 +90,7 @@ const MarketPlace = () => {
   };
 
   return (
+    <div className='trumio'>
     <MarketPlaceContainer>
       <BreadCrumbs
         data={[
@@ -148,6 +149,7 @@ const MarketPlace = () => {
         />
       </Routes>
     </MarketPlaceContainer>
+    </div>
   );
 };
 

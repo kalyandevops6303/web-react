@@ -219,7 +219,7 @@ const CreateProject = () => {
   }, [params]);
 
   return (
-    <>
+    <div className='trumio'>
       {draftSavedModal && (
         <DraftSavedModal
           modal={draftSavedModal}
@@ -258,7 +258,7 @@ const CreateProject = () => {
           </FormWizardContainer>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

@@ -91,6 +91,7 @@ const MyTeams = () => {
   };
 
   return (
+    <div className='trumio'>
     <TeamsContainer>
       <div className="d-flex justify-content-between w-100">
         <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
@@ -151,6 +152,7 @@ const MyTeams = () => {
         />
       </Routes>
     </TeamsContainer>
+    </div>
   );
 };
 
