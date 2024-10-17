@@ -408,8 +408,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       case 'clients':
         return 'Search client name';
       case 'talents':
+        if(userType === userTypes.flexternClient)
+          return 'Search talent, project, department name';
         return 'Search talent name';
       default:
+        if(userType === userTypes.flexternClient)
+          return 'Search project, department, client name'
         return 'Search project name, user name';
     }
   };
@@ -595,7 +599,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.SKILLS']}>
-              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
                 <Col>
                   <Label className="form-label">Skills</Label>
                   <AsyncPaginate
@@ -616,7 +620,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TOOLS']}>
-              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
                 <Col>
                   <Label className="form-label">Tools</Label>
                   <AsyncPaginate
