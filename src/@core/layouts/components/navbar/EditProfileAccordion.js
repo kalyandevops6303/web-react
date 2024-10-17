@@ -184,21 +184,23 @@ const EditProfileAccordion = () => {
                       <span className="align-middle p-1">Education</span>
                     </DropdownItem>
                   </PermissionWrapper>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
+                    <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
+                    <span className="align-middle p-1">Social</span>
+                  </DropdownItem>
+                  </PermissionWrapper>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ADDITIONAL']}>
+                    <DropdownItem onClick={() => handleEditProfileForTalent('additional') } disabled={!flexternBoolean} className="w-100 edit-link ">
+                      <span className="align-middle p-1">Additional Information</span>
+                    </DropdownItem>
+                  </PermissionWrapper>
                   <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.AVAILABILITY']}>
-                    <DropdownItem
-                      onClick={() => handleEditProfileForTalent('availability')}
-                      className="w-100 edit-link "
-                    >
+                    <DropdownItem onClick={() => handleEditProfileForTalent('availability')} disabled={!trumioTalentBoolean}className="w-100 edit-link ">
                       <span className="align-middle p-1">Availability</span>
                     </DropdownItem>
                   </PermissionWrapper>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
-                    <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
-                      <span className="align-middle p-1">Social</span>
-                    </DropdownItem>
-                  </PermissionWrapper>
                   <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PAYMENT']}>
-                    <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
+                    <DropdownItem onClick={() => handleEditProfileForTalent('payment')} disabled={!trumioTalentBoolean} className="w-100 edit-link ">
                       <span className="align-middle p-1">Payment</span>
                     </DropdownItem>
                   </PermissionWrapper>
