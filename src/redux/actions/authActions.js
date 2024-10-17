@@ -258,7 +258,7 @@ const verifyEmailForFlextern =
       }
     } catch (error) {
       if (
-        error?.response?.data?.errorData?.message === 'Flextern invitation not found for this email' &&
+        error?.response?.data?.errorData?.errorCode === 404 &&
         errorHandlerInviteNotFound
       ) {
         errorHandlerInviteNotFound();
