@@ -21,6 +21,7 @@ import {
   selectFlexternBoolean,
   selectTrumioIsFlextern,
   selectUserData,
+  appPermissionsSelector
 } from '../../redux/selectors/authSelectors';
 import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
 import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
@@ -34,6 +35,7 @@ import MembersListingCard from './overview/MembersListingCard';
 import AssessedSkills from './overview/AssessedSkills';
 import AssessedSkillsTeam from './overview/AssessedSkillsTeam';
 import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -42,6 +44,7 @@ const UserDetails = () => {
   const userData = useSelector(selectAuthUserData);
   const userDataSelector = useSelector(selectUserData);
   const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const [acceptInvitationModal, setAcceptInvitationModal] = useState(null);
   const [declineInvitationModal, setDeclineInvitationModal] = useState(null);
@@ -64,7 +67,6 @@ const UserDetails = () => {
 
   const queryParams = new URLSearchParams(window.location.search);
   const projectId = queryParams.get('project_id');
-  const isFlextern = useSelector(selectTrumioIsFlextern);
 
   useEffect(() => {
     dispatch(clearData());
@@ -225,13 +227,13 @@ const UserDetails = () => {
 
   return (
     <div>
-    <DetailsWrap>
-      <DetailsHeader />
+      <DetailsWrap>
+        <DetailsHeader />
 
-      {/* Club code */}
-      <div className="d-flex justify-content-between align-items-center">
-        {/* <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} /> */}
-        {/* {currentProfile.team_type === 'CLUB' && requestStatusData && (
+        {/* Club code */}
+        <div className="d-flex justify-content-between align-items-center">
+          {/* <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} /> */}
+          {/* {currentProfile.team_type === 'CLUB' && requestStatusData && (
           <div className="d-flex align-items-center gap-2 mb-2">
             <Button onClick={() => setDeclineInvitationModal(true)} color="flat-danger" className="me-1">
               Decline
@@ -241,168 +243,190 @@ const UserDetails = () => {
             </Button>
           </div>
         )} */}
-      </div>
-      <Row className="pt-75">
-        <Col lg="3">
-          <LeftSidebarProfile
-            isTalentView={isTalentView}
-            isTeamView={isTeamView || isClubView}
-            isClient={isClient}
-            data={currentProfile}
-            isEditable={userData?._id === param?.userId}
-            isClubProfile={currentProfile.team_type === 'CLUB'}
-          />
-          {(isTeamView || isClubView) && (
-            <MembersListingCard
-              toggleModal={togglePublicTeamMembersListingModal}
-              teamId={param?.userId}
-              publicTeamMembersListingModal={publicTeamMembersListingModal}
-              isClubView={isClubView}
+        </div>
+        <Row className="pt-75">
+          <Col lg="3">
+            <LeftSidebarProfile
+              isTalentView={isTalentView}
+              isTeamView={isTeamView || isClubView}
+              isClient={isClient}
+              data={currentProfile}
+              isEditable={userData?._id === param?.userId}
+              isClubProfile={currentProfile.team_type === 'CLUB'}
             />
-          )}
-        </Col>
-        <Col lg="9">
-          <DetailsHeaderSection>
-            <Row className="pt-3 details-card">
-              <DetailsCTAHeader
-                isTalentView={isTalentView}
-                isTeamView={isTeamView || isClubView}
-                isClient={isClient}
-                data={currentProfile}
-                isEditable={userData?._id === param?.userId}
-                isClubProfile={currentProfile.team_type === 'CLUB'}
+            {(isTeamView || isClubView) && (
+              <MembersListingCard
+                toggleModal={togglePublicTeamMembersListingModal}
+                teamId={param?.userId}
+                publicTeamMembersListingModal={publicTeamMembersListingModal}
+                isClubView={isClubView}
               />
-              {isClient && (
-                <Col lg="3" className="pe-75">
-                  <Statbox
-                    className="cursor-pointer"
-                    onClick={handelRedirectToOpenListing}
-                    elevate={false}
-                    title={currentProfile?.open_listing_count || 0}
-                    desc="Open listing(s)"
-                    icon={<img src={MoneyIcon} height={22} alt="money" />}
-                    color="light-warning"
-                  />
-                </Col>
-              )}
-              <Col lg="3" className="pe-75">
-                <Statbox
-                  elevate={false}
-                  title={recentProjectsMetadata?.total_records || 0}
-                  desc="Completed Project(s)"
-                  icon={<Check height={20} />}
-                  color="light-success"
+            )}
+          </Col>
+          <Col lg="9">
+            <DetailsHeaderSection>
+              <Row className="pt-3 details-card">
+                <DetailsCTAHeader
+                  isTalentView={isTalentView}
+                  isTeamView={isTeamView || isClubView}
+                  isClient={isClient}
+                  data={currentProfile}
+                  isEditable={userData?._id === param?.userId}
+                  isClubProfile={currentProfile.team_type === 'CLUB'}
                 />
-              </Col>
-              {isTalentView && !currentProfile?.flextern && (
-                <Col lg="3" className="pe-75">
-                  <Statbox
-                    elevate={false}
-                    title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
-                    desc="Hourly Rate"
-                    icon={<img src={MoneyIcon} height={22} alt="money" />}
-                    color="light-warning"
-                  />
-                </Col>
-              )}
-              {isTeamView ||
-                (isClubView && (
+                {isClient && (
                   <Col lg="3" className="pe-75">
                     <Statbox
+                      className="cursor-pointer"
+                      onClick={handelRedirectToOpenListing}
                       elevate={false}
-                      title={`${currentProfile?.total_project_value?.code || ''} ${
-                        currentProfile?.total_project_value || 0
-                      }`}
-                      desc="Total Project Value"
+                      title={currentProfile?.open_listing_count || 0}
+                      desc="Open listing(s)"
                       icon={<img src={MoneyIcon} height={22} alt="money" />}
                       color="light-warning"
                     />
                   </Col>
-                ))}
-              {isTalentView && !currentProfile?.flextern && (
+                )}
                 <Col lg="3" className="pe-75">
                   <Statbox
                     elevate={false}
-                    title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
-                    desc="Work Experience"
-                    icon={<Briefcase height={20} />}
-                    color="light-warning"
+                    title={recentProjectsMetadata?.total_records || 0}
+                    desc="Completed Project(s)"
+                    icon={<Check height={20} />}
+                    color="light-success"
                   />
                 </Col>
-              )}
-              {!currentProfile?.flextern && (
-                <Col lg="3" className="pe-75">
-                  <Statbox
-                    elevate={false}
-                    title={
-                      <>
-                        {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
-                          ? 0
-                          : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
-                        hours/week <br />
-                        {currentProfile?.availability?.timezone?.abbreviation}(
-                        {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
-                      </>
-                    }
-                    desc="Availability"
-                    icon={<Calendar height={20} />}
-                    color="light-primary"
-                  />
-                </Col>
-              )}
+                <PermissionWrapper
+                  permissions={appPermissions}
+                  permissionName={['DASHBOARD.USER_DETAILS.HOURLY_RATING']}
+                >
+                  {isTalentView && !currentProfile?.flextern && (
+                    <Col lg="3" className="pe-75">
+                      <Statbox
+                        elevate={false}
+                        title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
+                        desc="Hourly Rate"
+                        icon={<img src={MoneyIcon} height={22} alt="money" />}
+                        color="light-warning"
+                      />
+                    </Col>
+                  )}
+                </PermissionWrapper>
+                <>
+                  {isTeamView ||
+                    (isClubView && (
+                      <Col lg="3" className="pe-75">
+                        <Statbox
+                          elevate={false}
+                          title={`${currentProfile?.total_project_value?.code || ''} ${
+                            currentProfile?.total_project_value || 0
+                          }`}
+                          desc="Total Project Value"
+                          icon={<img src={MoneyIcon} height={22} alt="money" />}
+                          color="light-warning"
+                        />
+                      </Col>
+                    ))}
+                </>
+                <PermissionWrapper
+                  permissions={appPermissions}
+                  permissionName={['DASHBOARD.USER_DETAILS.WORK_EXPERIENCE']}
+                >
+                  {isTalentView && !currentProfile?.flextern && (
+                    <Col lg="3" className="pe-75">
+                      <Statbox
+                        elevate={false}
+                        title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
+                        desc="Work Experience"
+                        icon={<Briefcase height={20} />}
+                        color="light-warning"
+                      />
+                    </Col>
+                  )}
+                </PermissionWrapper>
+                {!currentProfile?.flextern && (
+                  <PermissionWrapper
+                    permissions={appPermissions}
+                    permissionName={['DASHBOARD.USER_DETAILS.AVAILABILITY']}
+                  >
+                    <Col lg="3" className="pe-75">
+                      <Statbox
+                        elevate={false}
+                        title={
+                          <>
+                            {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
+                              ? 0
+                              : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
+                            hours/week <br />
+                            {currentProfile?.availability?.timezone?.abbreviation}(
+                            {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
+                          </>
+                        }
+                        desc="Availability"
+                        icon={<Calendar height={20} />}
+                        color="light-primary"
+                      />
+                    </Col>
+                  </PermissionWrapper>
+                )}
+              </Row>
+            </DetailsHeaderSection>
+
+            <Row>
+              <UserBio
+                data={currentProfile}
+                isTalentView={isTalentView}
+                isTeamView={isTeamView || isClubView}
+                isClient={isClient}
+                isEditable={userData?._id === param?.userId}
+              />
             </Row>
-          </DetailsHeaderSection>
+            <Row>
+              <PermissionWrapper
+                permissions={appPermissions}
+                permissionName={['DASHBOARD.USER_DETAILS.ASSESSED_SKILLS']}
+              >
+                {isTalentView && !currentProfile?.flextern && <AssessedSkills />}
+              </PermissionWrapper>
+              {isTeamView && !currentProfile?.flextern && <AssessedSkillsTeam />}
+            </Row>
+            <Row>
+              <RecentProjects isEditable={userData?._id === param?.userId} />
+            </Row>
+            <Row>
+              <Reviews />
+            </Row>
+          </Col>
+        </Row>
+        {acceptInvitationModal && (
+          <AcceptClubInviationModal
+            modal={acceptInvitationModal}
+            toggleModal={toggleAcceptInvitationModal}
+            description="You’ve accepted club invitation"
+            selectedTalents={[currentProfile]}
+            onAccept={onAccept}
+            onLoading={isStatusUpdating}
+          />
+        )}
 
-          <Row>
-            <UserBio
-              data={currentProfile}
-              isTalentView={isTalentView}
-              isTeamView={isTeamView || isClubView}
-              isClient={isClient}
-              isEditable={userData?._id === param?.userId}
-            />
-          </Row>
-          <Row>
-            {isTalentView && !currentProfile?.flextern && <AssessedSkills />}
-            {isTeamView && !currentProfile?.flextern && <AssessedSkillsTeam />}
-          </Row>
-          <Row>
-            <RecentProjects isEditable={userData?._id === param?.userId} />
-          </Row>
-          <Row>
-            <Reviews />
-          </Row>
-        </Col>
-      </Row>
-      {acceptInvitationModal && (
-        <AcceptClubInviationModal
-          modal={acceptInvitationModal}
-          toggleModal={toggleAcceptInvitationModal}
-          description="You’ve accepted club invitation"
-          selectedTalents={[currentProfile]}
-          onAccept={onAccept}
-          onLoading={isStatusUpdating}
-        />
-      )}
-
-      {declineInvitationModal && (
-        <DeclineClubInvitaionModal
-          modal={declineInvitationModal}
-          toggleModal={toggleDeclineInvitaionModal}
-          data={currentProfile}
-          onDecline={onDecline}
-          onLoading={isStatusUpdating}
-        />
-      )}
-      {publicTeamMembersListingModal && (
-        <PublicTeamMembersListingModal
-          modal={publicTeamMembersListingModal}
-          toggleModal={togglePublicTeamMembersListingModal}
-          teamId={param?.userId}
-          isClubView={isClubView}
-        />
-      )}
-    </DetailsWrap>
+        {declineInvitationModal && (
+          <DeclineClubInvitaionModal
+            modal={declineInvitationModal}
+            toggleModal={toggleDeclineInvitaionModal}
+            data={currentProfile}
+            onDecline={onDecline}
+            onLoading={isStatusUpdating}
+          />
+        )}
+        {publicTeamMembersListingModal && (
+          <PublicTeamMembersListingModal
+            modal={publicTeamMembersListingModal}
+            toggleModal={togglePublicTeamMembersListingModal}
+            teamId={param?.userId}
+            isClubView={isClubView}
+          />
+        )}
+      </DetailsWrap>
     </div>
   );
 };

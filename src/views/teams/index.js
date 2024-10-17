@@ -124,7 +124,14 @@ const MyTeams = () => {
             </PermissionWrapper>
           }
         />
-        <Route path="clients" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="clients"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.CLIENTS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
         <Route
           path="talents"
           element={
@@ -133,7 +140,14 @@ const MyTeams = () => {
             </PermissionWrapper>
           }
         />
-        <Route path="join_requests" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="join_requests"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.JOIN_REQUESTS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
         <Route
           path="favourites"
           element={

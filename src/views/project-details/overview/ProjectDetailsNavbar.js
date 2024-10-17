@@ -4,8 +4,10 @@ import { useNavigate, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import { UncontrolledTooltip } from 'reactstrap';
 import theme from '../../../configs/themeVariables';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
-export const CustomStepWrap = styled.div`
+const CustomStepWrap = styled.div`
   max-width: fit-content;
   box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.08);
   background-color: ${theme.white};
@@ -105,6 +107,7 @@ const ProjectDetailsNavbar = ({ onChangeStep, steps, currentStep }) => {
   const param = useParams();
 
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const handleChangeStep = (step) => {
     onChangeStep(step);
@@ -138,25 +141,29 @@ const ProjectDetailsNavbar = ({ onChangeStep, steps, currentStep }) => {
   return (
     <CustomStepWrap>
       {steps.map((item) => (
-        <div
-          onClick={item?.isDisabled ? () => {} : () => handleChangeStep(item.title.toLowerCase())}
-          key={item.title}
-          className={`stepper ${
-            currentStep === item.title.toLowerCase() ? 'active' : `cursor-pointer ${item.isDisabled ? 'disabled' : ''}`
-          }`}
-          id={`${item.title.toLowerCase()}`}
-        >
-          <span className="stepper-box">{item.icon}</span>
-          <span className="stepper-label">
-            <span className="stepper-title">{item.title}</span>
-            <span className="stepper-subtitle">{item.subtitle}</span>
-          </span>
-          {item.isDisabled && (
-            <UncontrolledTooltip target={`${item.title.toLowerCase()}`} placement="bottom">
-              {getTooltipText(item.title.toLowerCase())}
-            </UncontrolledTooltip>
-          )}
-        </div>
+        <PermissionWrapper permissions={appPermissions} permissionName={item.permission}>
+          <div
+            onClick={item?.isDisabled ? () => {} : () => handleChangeStep(item.title.toLowerCase())}
+            key={item.title}
+            className={`stepper ${
+              currentStep === item.title.toLowerCase()
+                ? 'active'
+                : `cursor-pointer ${item.isDisabled ? 'disabled' : ''}`
+            }`}
+            id={`${item.title.toLowerCase()}`}
+          >
+            <span className="stepper-box">{item.icon}</span>
+            <span className="stepper-label">
+              <span className="stepper-title">{item.title}</span>
+              <span className="stepper-subtitle">{item.subtitle}</span>
+            </span>
+            {item.isDisabled && (
+              <UncontrolledTooltip target={`${item.title.toLowerCase()}`} placement="bottom">
+                {getTooltipText(item.title.toLowerCase())}
+              </UncontrolledTooltip>
+            )}
+          </div>
+        </PermissionWrapper>
       ))}
     </CustomStepWrap>
   );

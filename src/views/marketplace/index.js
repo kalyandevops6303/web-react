@@ -130,7 +130,14 @@ const MarketPlace = () => {
             </PermissionWrapper>
           }
         />
-        <Route path="clients" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route
+          path="clients"
+          element={
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.CLIENTS']}>
+              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+            </PermissionWrapper>
+          }
+        />
         <Route
           path="talents"
           element={

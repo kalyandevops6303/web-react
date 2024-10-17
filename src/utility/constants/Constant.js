@@ -23,6 +23,8 @@ const userTypes = {
   talent: 'TALENT',
   team: 'TEAM',
   club: 'CLUB',
+  flexternClient: 'FLEXTERN_CLIENT',
+  flexternTalent: 'FLEXTERN_TALENT',
 };
 
 const teamTypes = {
