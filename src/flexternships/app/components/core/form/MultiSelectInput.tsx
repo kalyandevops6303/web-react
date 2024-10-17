@@ -18,7 +18,7 @@ export default function MultiSelectInput(props: InputProps) {
         maxMenuHeight
     } = props;
 
-    const loadHandler = async (search: string, loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined = { page: 1 }) => {
+    const loadHandler = async (search: string, _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined = { page: 1 }) => {
         const page = additional.page;
         const data = await loadOptions(page, pageSize, search);
         return {
@@ -49,7 +49,7 @@ export default function MultiSelectInput(props: InputProps) {
                         maxMenuHeight={maxMenuHeight}
                         placeholder={placeholder}
                         classNames={{
-                            control: (state) => `
+                            control: () => `
                                 ${error ? Styles.formInputError : Styles.formInputDefault}
                                 p-0.5
                             `,
