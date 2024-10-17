@@ -501,175 +501,190 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   {ExpandCollapseComp}
                 </Col>
               ))}
-            {(userType === userTypes.talent ||
-              userType === userTypes.team ||
-              primaryFilter === 'talents' ||
-              primaryFilter === 'teams') &&
-              !inMyBids && (
-                <Col>
-                  <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
-                  <Select
-                    isClearable
-                    options={sortingOptions}
-                    classNamePrefix="select"
-                    placeholder="Select type"
-                    theme={selectThemeColors}
-                    onChange={onChangeSort}
-                    value={
-                      secondFilterState.sort_by.length > 0
-                        ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                        : null
-                    }
-                  />
-                </Col>
-              )}
-            {primaryFilter === 'my_bids' && userType !== userTypes.client ? (
-              <Col>
-                <Label className="form-label">Bid status</Label>
-                <Select
-                  isClearable
-                  options={bidStatusesOptions}
-                  classNamePrefix="select"
-                  placeholder="Select status"
-                  theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('bid_statuses', value)}
-                  value={
-                    secondFilterState.bid_statuses.length > 0
-                      ? {
-                          value: secondFilterState.bid_statuses[0].value,
-                          label: secondFilterState.bid_statuses[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            ) : (
-              <span className="w-auto">
-                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'all_listings' && primaryFilter !== 'teams' && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TYPE']}>
+              {(userType === userTypes.talent ||
+                userType === userTypes.team ||
+                primaryFilter === 'talents' ||
+                primaryFilter === 'teams') &&
+                !inMyBids && (
                   <Col>
-                    <Label className="form-label">Status</Label>
+                    <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
                     <Select
                       isClearable
-                      options={setStatusOptions()}
+                      options={sortingOptions}
                       classNamePrefix="select"
-                      placeholder="Select status"
+                      placeholder="Select type"
                       theme={selectThemeColors}
-                      onChange={(value) => onChangeFilter('statuses', value)}
+                      onChange={onChangeSort}
                       value={
-                        secondFilterState.statuses.length > 0
-                          ? {
-                              value: secondFilterState.statuses[0].value,
-                              label: secondFilterState.statuses[0].label,
-                            }
+                        secondFilterState.sort_by.length > 0
+                          ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
                           : null
                       }
                     />
                   </Col>
                 )}
-              </span>
-            )}
-
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
-              <Col>
-                <Label className="form-label">Payment type</Label>
-                <Select
-                  isClearable
-                  options={projectTypesOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('project_types', value)}
-                  value={
-                    secondFilterState.project_types.length > 0
-                      ? {
-                          value: secondFilterState.project_types[0].value,
-                          label: secondFilterState.project_types[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
-              <Col>
-                <Label className="form-label">Skills</Label>
-                <AsyncPaginate
-                  isClearable
-                  loadOptions={loadSkillsOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select skill"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('skills', value)}
-                  value={
-                    secondFilterState.skills.length > 0
-                      ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
-              <Col>
-                <Label className="form-label">Tools</Label>
-                <AsyncPaginate
-                  isClearable
-                  loadOptions={loadToolsOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select tool"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('tools', value)}
-                  value={
-                    secondFilterState.tools.length > 0
-                      ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {primaryFilter === 'clients' && (
-              <Col>
-                <Label className="form-label">Company industry</Label>
-                <AsyncPaginate
-                  isClearable
-                  loadOptions={loadCompanyIndustriesOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select industry"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('industries', value)}
-                  value={
-                    secondFilterState.industries.length > 0
-                      ? { value: secondFilterState.industries[0].value, label: secondFilterState.industries[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-
-            {primaryFilter === 'clients' && (
-              <Col>
-                <Label className="form-label">Project Area</Label>
-                <AsyncPaginate
-                  isClearable
-                  loadOptions={loadAreaOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select area"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('project_areas', value)}
-                  value={
-                    secondFilterState.project_areas.length > 0
-                      ? {
-                          value: secondFilterState.project_areas[0].value,
-                          label: secondFilterState.project_areas[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.STATUS']}>
+              {primaryFilter === 'my_bids' && userType !== userTypes.client ? (
+                <Col>
+                  <Label className="form-label">Bid status</Label>
+                  <Select
+                    isClearable
+                    options={bidStatusesOptions}
+                    classNamePrefix="select"
+                    placeholder="Select status"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('bid_statuses', value)}
+                    value={
+                      secondFilterState.bid_statuses.length > 0
+                        ? {
+                            value: secondFilterState.bid_statuses[0].value,
+                            label: secondFilterState.bid_statuses[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              ) : (
+                <span className="w-auto">
+                  {primaryFilter !== 'talents' &&
+                    primaryFilter !== 'clients' &&
+                    primaryFilter !== 'all_listings' &&
+                    primaryFilter !== 'teams' && (
+                      <Col>
+                        <Label className="form-label">Status</Label>
+                        <Select
+                          isClearable
+                          options={setStatusOptions()}
+                          classNamePrefix="select"
+                          placeholder="Select status"
+                          theme={selectThemeColors}
+                          onChange={(value) => onChangeFilter('statuses', value)}
+                          value={
+                            secondFilterState.statuses.length > 0
+                              ? {
+                                  value: secondFilterState.statuses[0].value,
+                                  label: secondFilterState.statuses[0].label,
+                                }
+                              : null
+                          }
+                        />
+                      </Col>
+                    )}
+                </span>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.PAYMENT_TYPE']}>
+              {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+                <Col>
+                  <Label className="form-label">Payment type</Label>
+                  <Select
+                    isClearable
+                    options={projectTypesOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('project_types', value)}
+                    value={
+                      secondFilterState.project_types.length > 0
+                        ? {
+                            value: secondFilterState.project_types[0].value,
+                            label: secondFilterState.project_types[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.SKILLS']}>
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
+                <Col>
+                  <Label className="form-label">Skills</Label>
+                  <AsyncPaginate
+                    isClearable
+                    loadOptions={loadSkillsOptions}
+                    classNamePrefix="wide"
+                    placeholder="Select skill"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('skills', value)}
+                    value={
+                      secondFilterState.skills.length > 0
+                        ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TOOLS']}>
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
+                <Col>
+                  <Label className="form-label">Tools</Label>
+                  <AsyncPaginate
+                    isClearable
+                    loadOptions={loadToolsOptions}
+                    classNamePrefix="wide"
+                    placeholder="Select tool"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('tools', value)}
+                    value={
+                      secondFilterState.tools.length > 0
+                        ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.COMPANY_INDUSTRY']}>
+              {primaryFilter === 'clients' && (
+                <Col>
+                  <Label className="form-label">Company industry</Label>
+                  <AsyncPaginate
+                    isClearable
+                    loadOptions={loadCompanyIndustriesOptions}
+                    classNamePrefix="wide"
+                    placeholder="Select industry"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('industries', value)}
+                    value={
+                      secondFilterState.industries.length > 0
+                        ? { value: secondFilterState.industries[0].value, label: secondFilterState.industries[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.PROJECT_AREA']}>
+              {primaryFilter === 'clients' && (
+                <Col>
+                  <Label className="form-label">Project Area</Label>
+                  <AsyncPaginate
+                    isClearable
+                    loadOptions={loadAreaOptions}
+                    classNamePrefix="wide"
+                    placeholder="Select area"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('project_areas', value)}
+                    value={
+                      secondFilterState.project_areas.length > 0
+                        ? {
+                            value: secondFilterState.project_areas[0].value,
+                            label: secondFilterState.project_areas[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
             {!isTab && (
               <Col className="reset-btn cursor-pointer" onClick={handleReset}>
                 <div className="reset-icon">

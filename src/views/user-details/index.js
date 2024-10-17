@@ -21,8 +21,8 @@ import {
   selectFlexternBoolean,
   selectTrumioIsFlextern,
   selectUserData,
+  appPermissionsSelector
 } from '../../redux/selectors/authSelectors';
-import { appPermissionsSelector, selectAuthUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
 import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
 import { getProfilePercentage, getTeamProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
