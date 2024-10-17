@@ -39,6 +39,8 @@ import ViewAllCard from './ExtraCardWithCount';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import ProjectInvitaionCard from './ProjectInvitationCard';
 import TeamInviteCard from './TeamInviteCard';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -163,7 +165,7 @@ const InviteListing = () => {
 
   const teamInvitation = useSelector(selectTeamInvitation);
   const isTeamInviteLoading = useSelector(selectTeamInvitationLoading);
-
+  const appPermissions = useSelector(appPermissionsSelector);
   const projectInvitation = useSelector(selectProjectInvitation);
   const isProjectInviteLoading = useSelector(selectProjectInvitationLoading);
 
@@ -182,211 +184,215 @@ const InviteListing = () => {
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
-      <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
-          <>
-            <AccordionHeader targetId="1">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Team Invites
-                  <Tag
-                    hasNew={teamInvitation?.unreadCount > 0 ? teamInvitation?.unreadCount : false}
-                    count={teamInvitation?.metadata?.total_records}
-                  />
-                </span>
-                {teamInvitation?.data?.length > 0 && (
-                  <CardText
-                    onClick={(e) => handleViewAllForTeamInvite(e, '/my-teams/join_requests')}
-                    className=" view-all-cta"
-                  >
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="1">
-              {isSliderLoading || isTeamInviteLoading ? (
-                <div style={{ height: '250px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
-                  <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {teamInvitation?.data?.length > 0 && isTab ? (
-                    teamInvitation?.data?.map((project) => (
-                      <TeamInviteCard
-                        accordionName={AccordionName.teamInvitation}
-                        isRecommendedTeam
-                        key={project.id}
-                        data={project}
-                        recommended
-                      />
-                    ))
-                  ) : teamInvitation?.data?.length > 0 ? (
-                    <>
-                      {teamInvitation?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {teamInvitation?.data?.map((project, index) => (
-                            <TeamInviteCard
-                              accordionName={AccordionName.teamInvitation}
-                              isRecommendedTeam
-                              className={`slide-${index}`}
-                              key={project.id}
-                              data={project}
-                              recommended
-                            />
-                          ))}
-
-                          {teamInvitation?.metadata?.total_records > 10 && (
-                            <ViewAllCard
-                              accordionName={AccordionName.teamInvitation}
-                              height={230}
-                              width={225}
-                              onViewAll={() => {
-                                navigate('/projects/invited');
-                                dispatch(setActiveNavTab('projects'));
-                              }}
-                              count={calculateRemainingBidsCount(teamInvitation)}
-                            />
-                          )}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {teamInvitation?.data?.map((project) => (
-                            <TeamInviteCard
-                              accordionName={AccordionName.teamInvitation}
-                              isRecommendedTeam
-                              className="custom-slider-project"
-                              key={project.id}
-                              data={project}
-                              recommended
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Empty
-                      isTeam
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      payment={false}
+      <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.INVITES.TEAM_INVITES']}>
+        <AccordionItem>
+          {userDetailsData?.user_type === userTypes.talent && (
+            <>
+              <AccordionHeader targetId="1">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center">
+                    Team Invites
+                    <Tag
+                      hasNew={teamInvitation?.unreadCount > 0 ? teamInvitation?.unreadCount : false}
+                      count={teamInvitation?.metadata?.total_records}
                     />
+                  </span>
+                  {teamInvitation?.data?.length > 0 && (
+                    <CardText
+                      onClick={(e) => handleViewAllForTeamInvite(e, '/my-teams/join_requests')}
+                      className=" view-all-cta"
+                    >
+                      View All
+                    </CardText>
                   )}
-                </ProjectsListingWrap>
-              )}
-            </AccordionBody>
-          </>
-        )}
-      </AccordionItem>
-      <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
-          <>
-            <AccordionHeader targetId="2">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Project Invites
-                  <Tag
-                    hasNew={projectInvitation?.unreadCount > 0 ? projectInvitation?.unreadCount : false}
-                    count={projectInvitation?.metadata?.total_records}
-                  />
-                </span>
-                {projectInvitation?.data?.length > 0 && (
-                  <CardText
-                    onClick={() => {
-                      navigate('/projects/invited');
-                      dispatch(setActiveNavTab('projects'));
-                    }}
-                    className=" view-all-cta"
-                  >
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="2">
-              {isSliderLoading || isProjectInviteLoading ? (
-                <div style={{ height: '250px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
-                  <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {projectInvitation?.data?.length > 0 && isTab ? (
-                    projectInvitation?.data?.map((project) => (
-                      <ProjectInvitaionCard
-                        accordionName={AccordionName.projectInvitation}
-                        isRecommendedTeam
-                        key={project.id}
-                        data={project}
-                        recommended
-                      />
-                    ))
-                  ) : projectInvitation?.data?.length > 0 ? (
-                    <>
-                      {projectInvitation?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {projectInvitation?.data?.map((project, index) => (
-                            <ProjectInvitaionCard
-                              accordionName={AccordionName.projectInvitation}
-                              isRecommendedTeam
-                              className={`slide-${index}`}
-                              key={project.id}
-                              data={project}
-                              recommended
-                            />
-                          ))}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="1">
+                {isSliderLoading || isTeamInviteLoading ? (
+                  <div style={{ height: '250px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                    <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {teamInvitation?.data?.length > 0 && isTab ? (
+                      teamInvitation?.data?.map((project) => (
+                        <TeamInviteCard
+                          accordionName={AccordionName.teamInvitation}
+                          isRecommendedTeam
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
+                      ))
+                    ) : teamInvitation?.data?.length > 0 ? (
+                      <>
+                        {teamInvitation?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {teamInvitation?.data?.map((project, index) => (
+                              <TeamInviteCard
+                                accordionName={AccordionName.teamInvitation}
+                                isRecommendedTeam
+                                className={`slide-${index}`}
+                                key={project.id}
+                                data={project}
+                                recommended
+                              />
+                            ))}
 
-                          {projectInvitation?.metadata?.total_records > 10 && (
-                            <ViewAllCard
-                              accordionName={AccordionName.projectInvitation}
-                              height={334}
-                              width={225}
-                              onViewAll={() => {
-                                navigate('/projects/invited');
-                                dispatch(setActiveNavTab('projects'));
-                              }}
-                              count={calculateRemainingBidsCount(projectInvitation)}
-                            />
-                          )}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {projectInvitation?.data?.map((project) => (
-                            <ProjectInvitaionCard
-                              accordionName={AccordionName.projectInvitation}
-                              isRecommendedTeam
-                              className="custom-slider-project"
-                              key={project.id}
-                              data={project}
-                              recommended
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Empty
-                      recommended
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      payment={false}
+                            {teamInvitation?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.teamInvitation}
+                                height={230}
+                                width={225}
+                                onViewAll={() => {
+                                  navigate('/projects/invited');
+                                  dispatch(setActiveNavTab('projects'));
+                                }}
+                                count={calculateRemainingBidsCount(teamInvitation)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {teamInvitation?.data?.map((project) => (
+                              <TeamInviteCard
+                                accordionName={AccordionName.teamInvitation}
+                                isRecommendedTeam
+                                className="custom-slider-project"
+                                key={project.id}
+                                data={project}
+                                recommended
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        isTeam
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </>
+          )}
+        </AccordionItem>
+      </PermissionWrapper>
+      <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.INVITES.PROJECT_INVITES']}>
+        <AccordionItem>
+          {userDetailsData?.user_type === userTypes.talent && (
+            <>
+              <AccordionHeader targetId="2">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center">
+                    Project Invites
+                    <Tag
+                      hasNew={projectInvitation?.unreadCount > 0 ? projectInvitation?.unreadCount : false}
+                      count={projectInvitation?.metadata?.total_records}
                     />
+                  </span>
+                  {projectInvitation?.data?.length > 0 && (
+                    <CardText
+                      onClick={() => {
+                        navigate('/projects/invited');
+                        dispatch(setActiveNavTab('projects'));
+                      }}
+                      className=" view-all-cta"
+                    >
+                      View All
+                    </CardText>
                   )}
-                </ProjectsListingWrap>
-              )}
-            </AccordionBody>
-          </>
-        )}
-      </AccordionItem>
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="2">
+                {isSliderLoading || isProjectInviteLoading ? (
+                  <div style={{ height: '250px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                    <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {projectInvitation?.data?.length > 0 && isTab ? (
+                      projectInvitation?.data?.map((project) => (
+                        <ProjectInvitaionCard
+                          accordionName={AccordionName.projectInvitation}
+                          isRecommendedTeam
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
+                      ))
+                    ) : projectInvitation?.data?.length > 0 ? (
+                      <>
+                        {projectInvitation?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {projectInvitation?.data?.map((project, index) => (
+                              <ProjectInvitaionCard
+                                accordionName={AccordionName.projectInvitation}
+                                isRecommendedTeam
+                                className={`slide-${index}`}
+                                key={project.id}
+                                data={project}
+                                recommended
+                              />
+                            ))}
+
+                            {projectInvitation?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.projectInvitation}
+                                height={334}
+                                width={225}
+                                onViewAll={() => {
+                                  navigate('/projects/invited');
+                                  dispatch(setActiveNavTab('projects'));
+                                }}
+                                count={calculateRemainingBidsCount(projectInvitation)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {projectInvitation?.data?.map((project) => (
+                              <ProjectInvitaionCard
+                                accordionName={AccordionName.projectInvitation}
+                                isRecommendedTeam
+                                className="custom-slider-project"
+                                key={project.id}
+                                data={project}
+                                recommended
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        recommended
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </>
+          )}
+        </AccordionItem>
+      </PermissionWrapper>
     </Accordion>
   );
 };

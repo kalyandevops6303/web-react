@@ -84,17 +84,19 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
       )}
 
       {userType !== userTypes.client && (
-        <Col onClick={() => handlePrimaryCard(PATH_NAMES.CLIENTS)}>
-          <Statbox
-            isActive={selected === PATH_NAMES.CLIENTS}
-            isMarketPlaceTab
-            title={selectCardData?.clients ?? 0}
-            desc={TAB_NAMES.CLIENTS}
-            icon={<Users height={20} />}
-            color="light-turquoise"
-            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
-          />
-        </Col>
+        <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.CLIENTS']}>
+          <Col onClick={() => handlePrimaryCard(PATH_NAMES.CLIENTS)}>
+            <Statbox
+              isActive={selected === PATH_NAMES.CLIENTS}
+              isMarketPlaceTab
+              title={selectCardData?.clients ?? 0}
+              desc={TAB_NAMES.CLIENTS}
+              icon={<Users height={20} />}
+              color="light-turquoise"
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
+            />
+          </Col>
+        </PermissionWrapper>
       )}
       <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.RECOMMENDED']}>
         <Col onClick={() => handlePrimaryCard(PATH_NAMES.RECOMMENDATION)}>
@@ -117,23 +119,25 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
       </PermissionWrapper>
 
       {userType !== userTypes.client ? (
-        <Col onClick={() => handlePrimaryCard(PATH_NAMES.JOIN_REQ)}>
-          <Statbox
-            isActive={selected === PATH_NAMES.JOIN_REQ}
-            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
-            isMarketPlaceTab
-            title={
-              selected === PATH_NAMES.JOIN_REQ && isLoadingSecondaryFilter
-                ? selectCardData?.join_request || selectCardData?.join_requests
-                : selected === PATH_NAMES.JOIN_REQ
-                ? selectMyTeamMetaData?.total_records
-                : selectCardData?.join_request || selectCardData?.join_requests
-            }
-            desc={TAB_NAMES.JOIN_REQ}
-            icon={<UserCheck height={20} />}
-            color="light-success"
-          />
-        </Col>
+        <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.JOIN_REQUESTS']}>
+          <Col onClick={() => handlePrimaryCard(PATH_NAMES.JOIN_REQ)}>
+            <Statbox
+              isActive={selected === PATH_NAMES.JOIN_REQ}
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
+              isMarketPlaceTab
+              title={
+                selected === PATH_NAMES.JOIN_REQ && isLoadingSecondaryFilter
+                  ? selectCardData?.join_request || selectCardData?.join_requests
+                  : selected === PATH_NAMES.JOIN_REQ
+                  ? selectMyTeamMetaData?.total_records
+                  : selectCardData?.join_request || selectCardData?.join_requests
+              }
+              desc={TAB_NAMES.JOIN_REQ}
+              icon={<UserCheck height={20} />}
+              color="light-success"
+            />
+          </Col>
+        </PermissionWrapper>
       ) : null}
       <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.FAVOURITES']}>
         <Col onClick={() => handlePrimaryCard(PATH_NAMES.FAV)}>

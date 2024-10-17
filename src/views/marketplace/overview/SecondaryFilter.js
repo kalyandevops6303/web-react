@@ -419,7 +419,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const setStatusOptions = () => {
-   if (primaryFilter === 'my_listings') {
+    if (primaryFilter === 'my_listings') {
       return [
         ...statusesOptions,
         { label: 'Expired', value: 'LISTING_EXPIRED' },
@@ -568,7 +568,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 )}
               </span>
             )}
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.PAYMENT_TYPE']}>
+
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Payment type</Label>
@@ -590,9 +590,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            </PermissionWrapper>
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.SKILLS']}>
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams' || (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
               <Col>
                 <Label className="form-label">Skills</Label>
                 <AsyncPaginate
@@ -611,9 +609,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            </PermissionWrapper>
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TOOLS']}>
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams' || (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
               <Col>
                 <Label className="form-label">Tools</Label>
                 <AsyncPaginate
@@ -632,7 +628,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            </PermissionWrapper>
             {primaryFilter === 'clients' && (
               <Col>
                 <Label className="form-label">Company industry</Label>

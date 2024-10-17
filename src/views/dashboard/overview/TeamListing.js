@@ -39,6 +39,8 @@ import Tag from '../../../@core/components/tags';
 import { AccordionName } from './DashboardConstant';
 import ViewAllCard from './ExtraCardWithCount';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -140,7 +142,7 @@ const TeamListing = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const profilePercentageData = useSelector(profilePercentage);
-
+  const appPermissions = useSelector(appPermissionsSelector);
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
@@ -188,59 +190,60 @@ const TeamListing = () => {
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
-      <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
-          <>
-            <AccordionHeader targetId="1">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  My Teams
-                  <Tag
-                    hasNew={myTeam?.unreadCount > 0 ? myTeam?.unreadCount : false}
-                    count={myTeam?.metadata?.total_records}
-                  />
-                </span>
-                {myTeam?.data?.length > 0 && (
-                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="1">
-              {isSliderLoading || isMyTeamLoading ? (
-                <div style={{ height: '150px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
-                  <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {myTeam?.data?.length > 0 && isTab ? (
-                    myTeam?.data?.map((project) => (
-                      <MyTeamCard
-                        accordionName={AccordionName.myTeam}
-                        isRecommendedTeam
-                        key={project.id}
-                        data={project}
-                        recommended
-                      />
-                    ))
-                  ) : myTeam?.data?.length > 0 ? (
-                    <>
-                      {myTeam?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {myTeam?.data?.map((project, index) => (
-                            <MyTeamCard
-                              accordionName={AccordionName.myTeam}
-                              isRecommendedTeam
-                              className={`slide-${index}`}
-                              key={project.id}
-                              data={project}
-                              recommended
-                            />
-                          ))}
-                          {/* {myTeam?.metadata?.total_records > 10 && (
+      <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.MY_TEAMS']}>
+        <AccordionItem>
+          {userDetailsData?.user_type === userTypes.talent && (
+            <>
+              <AccordionHeader targetId="1">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center">
+                    My Teams
+                    <Tag
+                      hasNew={myTeam?.unreadCount > 0 ? myTeam?.unreadCount : false}
+                      count={myTeam?.metadata?.total_records}
+                    />
+                  </span>
+                  {myTeam?.data?.length > 0 && (
+                    <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
+                      View All
+                    </CardText>
+                  )}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="1">
+                {isSliderLoading || isMyTeamLoading ? (
+                  <div style={{ height: '150px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                    <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {myTeam?.data?.length > 0 && isTab ? (
+                      myTeam?.data?.map((project) => (
+                        <MyTeamCard
+                          accordionName={AccordionName.myTeam}
+                          isRecommendedTeam
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
+                      ))
+                    ) : myTeam?.data?.length > 0 ? (
+                      <>
+                        {myTeam?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {myTeam?.data?.map((project, index) => (
+                              <MyTeamCard
+                                accordionName={AccordionName.myTeam}
+                                isRecommendedTeam
+                                className={`slide-${index}`}
+                                key={project.id}
+                                data={project}
+                                recommended
+                              />
+                            ))}
+                            {/* {myTeam?.metadata?.total_records > 10 && (
                             <ViewAllCard
                               accordionName={AccordionName.myTeam}
                               height={120}
@@ -248,39 +251,40 @@ const TeamListing = () => {
                               count={calculateRemainingBidsCount(myTeam)}
                             />
                           )} */}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {myTeam?.data?.map((project) => (
-                            <MyTeamCard
-                              accordionName={AccordionName.myTeam}
-                              isRecommendedTeam
-                              className="custom-slider-project"
-                              key={project.id}
-                              data={project}
-                              recommended
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Empty
-                      isTeam
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      payment={false}
-                    />
-                  )}
-                </ProjectsListingWrap>
-              )}
-            </AccordionBody>
-          </>
-        )}
-      </AccordionItem>
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {myTeam?.data?.map((project) => (
+                              <MyTeamCard
+                                accordionName={AccordionName.myTeam}
+                                isRecommendedTeam
+                                className="custom-slider-project"
+                                key={project.id}
+                                data={project}
+                                recommended
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        isTeam
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </>
+          )}
+        </AccordionItem>
+      </PermissionWrapper>
 
       {/* <AccordionItem>
         {userDetailsData?.user_type === userTypes.talent && (
@@ -386,98 +390,99 @@ const TeamListing = () => {
           </>
         )}
       </AccordionItem> */}
-
-      <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
-          <>
-            <AccordionHeader targetId="3">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Recommended Teams{' '}
-                  <Tag
-                    hasNew={recommendedTeams?.unreadCount > 0 ? recommendedTeams?.unreadCount : false}
-                    count={recommendedTeams?.metadata?.total_records}
-                  />
-                </span>
-                {recommendedTeams?.data?.length > 0 && (
-                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="3">
-              {isSliderLoading || isRecommendedTeamsLoading ? (
-                <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
-                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {recommendedTeams?.data?.length > 0 && isTab ? (
-                    recommendedTeams?.data?.map((project) => (
-                      <TeamTalentCard
-                        accordionName={AccordionName.recommendedTeams}
-                        isRecommendedTeam
-                        key={project.id}
-                        data={project}
-                      />
-                    ))
-                  ) : recommendedTeams?.data?.length > 0 ? (
-                    <>
-                      {recommendedTeams?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {recommendedTeams?.data?.map((project, index) => (
-                            <TeamTalentCard
-                              accordionName={AccordionName.recommendedTeams}
-                              isRecommendedTeam
-                              className={`slide-${index}`}
-                              key={project.id}
-                              data={project}
-                            />
-                          ))}
-
-                          {recommendedTeams?.metadata?.total_records > 10 && (
-                            <ViewAllCard
-                              accordionName={AccordionName.recommendedTeams}
-                              height={220}
-                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
-                              count={calculateRemainingBidsCount(recommendedTeams)}
-                            />
-                          )}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {recommendedTeams?.data?.map((project) => (
-                            <TeamTalentCard
-                              accordionName={AccordionName.recommendedTeams}
-                              isRecommendedTeam
-                              className="custom-slider-project"
-                              key={project.id}
-                              data={project}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Empty
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      payment={false}
-                      recommended
+      <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.RECOMMENDED_TEAMS']}>
+        <AccordionItem>
+          {userDetailsData?.user_type === userTypes.talent && (
+            <>
+              <AccordionHeader targetId="3">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center">
+                    Recommended Teams{' '}
+                    <Tag
+                      hasNew={recommendedTeams?.unreadCount > 0 ? recommendedTeams?.unreadCount : false}
+                      count={recommendedTeams?.metadata?.total_records}
                     />
+                  </span>
+                  {recommendedTeams?.data?.length > 0 && (
+                    <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
+                      View All
+                    </CardText>
                   )}
-                </ProjectsListingWrap>
-              )}
-            </AccordionBody>
-          </>
-        )}
-      </AccordionItem>
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="3">
+                {isSliderLoading || isRecommendedTeamsLoading ? (
+                  <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                    <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {recommendedTeams?.data?.length > 0 && isTab ? (
+                      recommendedTeams?.data?.map((project) => (
+                        <TeamTalentCard
+                          accordionName={AccordionName.recommendedTeams}
+                          isRecommendedTeam
+                          key={project.id}
+                          data={project}
+                        />
+                      ))
+                    ) : recommendedTeams?.data?.length > 0 ? (
+                      <>
+                        {recommendedTeams?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {recommendedTeams?.data?.map((project, index) => (
+                              <TeamTalentCard
+                                accordionName={AccordionName.recommendedTeams}
+                                isRecommendedTeam
+                                className={`slide-${index}`}
+                                key={project.id}
+                                data={project}
+                              />
+                            ))}
+
+                            {recommendedTeams?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.recommendedTeams}
+                                height={220}
+                                onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
+                                count={calculateRemainingBidsCount(recommendedTeams)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {recommendedTeams?.data?.map((project) => (
+                              <TeamTalentCard
+                                accordionName={AccordionName.recommendedTeams}
+                                isRecommendedTeam
+                                className="custom-slider-project"
+                                key={project.id}
+                                data={project}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        payment={false}
+                        recommended
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </>
+          )}
+        </AccordionItem>
+      </PermissionWrapper>
     </Accordion>
   );
 };

@@ -18,6 +18,8 @@ import { allReferrals, allReferralsLoading } from '../../redux/selectors/referra
 import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { roundOfAmount } from '../../utility/Utils';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 const ReferralAndReward = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,7 @@ const ReferralAndReward = () => {
 
   const allReferralsIsLoading = useSelector(allReferralsLoading);
   const allReferralsData = useSelector(allReferrals);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const routesMatch = useMatch('/referral-reward/all');
 
@@ -145,37 +148,38 @@ const ReferralAndReward = () => {
   );
 
   return (
-    <div className='trumio'>
-      {referNowModal && <ReferNowModal modal={referNowModal} toggleModal={toggleReferNowModal} />}
-      <BreadCrumbs data={[{ title: 'Dashboard' }, { title: 'Rewards', link: '#' }]} />
-      <div className="d-flex justify-content-between align-items-start">
-        <Row className="primary-row w-50">
-          <Col sm="12" md="6" lg="5" onClick={() => handlePrimaryChangeFilter('all')}>
-            <Statbox
-              isMarketPlaceTab
-              isActive={primaryFilter === 'all'}
-              title={allReferralsData?.metadata?.total_records}
-              desc="Referral Rewards"
-              icon={<User size={40} />}
-              color="light-info"
-              className="stat-box cursor-pointer"
-            />
-          </Col>
-        </Row>
-        <Button color="primary" onClick={() => setReferNowModal(true)}>
-          Refer Now
-        </Button>
-      </div>
-      <NotesContainer className="p-2">
-        <p className="notes-heading">Note:</p>
-        <p>
-          For Rewards rules please visit{' '}
-          <a target="_blank" href="https://trumio.ai" rel="noreferrer">
-            www.trumio.ai
-          </a>{' '}
-          and review our FAQ's.
-        </p>
-        {/* <ul className="m-0">
+    <div className="trumio">
+      <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.REWARDS']}>
+        {referNowModal && <ReferNowModal modal={referNowModal} toggleModal={toggleReferNowModal} />}
+        <BreadCrumbs data={[{ title: 'Dashboard' }, { title: 'Rewards', link: '#' }]} />
+        <div className="d-flex justify-content-between align-items-start">
+          <Row className="primary-row w-50">
+            <Col sm="12" md="6" lg="5" onClick={() => handlePrimaryChangeFilter('all')}>
+              <Statbox
+                isMarketPlaceTab
+                isActive={primaryFilter === 'all'}
+                title={allReferralsData?.metadata?.total_records}
+                desc="Referral Rewards"
+                icon={<User size={40} />}
+                color="light-info"
+                className="stat-box cursor-pointer"
+              />
+            </Col>
+          </Row>
+          <Button color="primary" onClick={() => setReferNowModal(true)}>
+            Refer Now
+          </Button>
+        </div>
+        <NotesContainer className="p-2">
+          <p className="notes-heading">Note:</p>
+          <p>
+            For Rewards rules please visit{' '}
+            <a target="_blank" href="https://trumio.ai" rel="noreferrer">
+              www.trumio.ai
+            </a>{' '}
+            and review our FAQ's.
+          </p>
+          {/* <ul className="m-0">
           <li className="notes-info">
             The fixed cost will be equally distributed between each talent Referral recorded to user for 180 days for
             start of transaction
@@ -195,29 +199,30 @@ const ReferralAndReward = () => {
             platform within the first 180 days for the next 2 years.
           </li>
         </ul> */}
-      </NotesContainer>
+        </NotesContainer>
 
-      {allReferralsIsLoading ? (
-        <ComponentSpinner className="mt-5" />
-      ) : (
-        <TableContainer className="mt-3">
-          <InfiniteScroll
-            dataLength={allReferralsData?.data?.length || 0}
-            next={loadNewReferrals}
-            hasMore={allReferralsData?.metadata?.has_next_page}
-          >
-            <DataTable
-              noHeader
-              pagination={false}
-              columns={tableColumns}
-              className="react-dataTable"
-              sortIcon={<ChevronDown size={10} />}
-              data={allReferralsDataset}
-              classNamePrefix="react-dataTable"
-            />
-          </InfiniteScroll>
-        </TableContainer>
-      )}
+        {allReferralsIsLoading ? (
+          <ComponentSpinner className="mt-5" />
+        ) : (
+          <TableContainer className="mt-3">
+            <InfiniteScroll
+              dataLength={allReferralsData?.data?.length || 0}
+              next={loadNewReferrals}
+              hasMore={allReferralsData?.metadata?.has_next_page}
+            >
+              <DataTable
+                noHeader
+                pagination={false}
+                columns={tableColumns}
+                className="react-dataTable"
+                sortIcon={<ChevronDown size={10} />}
+                data={allReferralsDataset}
+                classNamePrefix="react-dataTable"
+              />
+            </InfiniteScroll>
+          </TableContainer>
+        )}
+      </PermissionWrapper>
     </div>
   );
 };

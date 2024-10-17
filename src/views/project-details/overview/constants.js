@@ -16,29 +16,34 @@ const steps = [
     title: stepName.team,
     subtitle: 'Team members',
     icon: <Users size={18} />,
+    permission: ['PROJECT_DETAIL.TEAM'],
   },
   {
     title: stepName.bid,
     subtitle: 'Project bid status',
     icon: <FileText size={18} />,
+    permission: ['PROJECT_DETAIL.BID'],
   },
   {
     title: stepName.milestone,
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
     isDisabled: true,
+    permission: ['PROJECT_DETAIL.MILESTONE'],
   },
   {
     title: stepName.payment,
     subtitle: 'Pay transaction',
     icon: <CreditCard size={18} />,
     isDisabled: true,
+    permission: ['PROJECT_DETAIL.PAYMENT'],
   },
   {
     title: stepName.rating,
     subtitle: 'Give and get ratings',
     icon: <Star size={18} />,
     isDisabled: true,
+    permission: ['PROJECT_DETAIL.RATING'],
   },
 ];
 
@@ -47,31 +52,36 @@ const infrastructureStep = {
   subtitle: 'Manage resources',
   icon: <HardDrive size={18} />,
   isDisabled: true,
-}
+  permission: ['PROJECT_DETAIL.INFRASTRUCTURE'],
+};
 
 const InviteView = [
   {
     title: stepName.project,
     subtitle: 'About work details',
     icon: <Box size={18} />,
+    permission: ['PROJECT_DETAIL.PROJECT'],
   },
   {
     title: stepName.milestone,
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
     isDisabled: false,
+    permission: ['PROJECT_DETAIL.MILESTONE'],
   },
   {
     title: stepName.payment,
     subtitle: 'Pay transaction',
     icon: <CreditCard size={18} />,
     isDisabled: true,
+    permission: ['PROJECT_DETAIL.PAYMENT'],
   },
   {
     title: stepName.rating,
     subtitle: 'Give and get ratings',
     icon: <Star size={18} />,
     isDisabled: true,
+    permission: ['PROJECT_DETAIL.RATING'],
   },
 ];
 

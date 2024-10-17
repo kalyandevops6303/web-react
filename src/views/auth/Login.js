@@ -18,7 +18,7 @@ import InputPasswordToggle from '@components/input-password-toggle';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { checkPointRedirection, filteredFormSchema, validations } from '../../utility/Utils';
-import { loginUser, switchProfile } from '../../redux/actions/authActions';
+import { getAppPermissions, loginUser, switchProfile } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
@@ -132,6 +132,7 @@ const Login = () => {
 
   const onSuccess = (response) => {
     dispatch(clearAllFormData());
+    dispatch(getAppPermissions());
     checkPointRedirection({ response, navigate });
   };
 

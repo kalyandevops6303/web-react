@@ -25,7 +25,7 @@ import { CustomBadge } from '../../styled';
 import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { selectAuthUserData, selectTrumioIsFlextern, selectUserData } from '../../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData, selectTrumioIsFlextern, selectUserData } from '../../../redux/selectors/authSelectors';
 // import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
@@ -38,6 +38,7 @@ import { checkIfReported } from '../../../redux/actions/reportActions';
 import { checkReportSuccess } from '../../../redux/reducers/report';
 import { selectAlreadyReported, selectCheckReportLoading } from '../../../redux/selectors/reportSelectors';
 import { profile } from 'console';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const alreadyReported = useSelector(selectAlreadyReported);
   const checkReportLoading = useSelector(selectCheckReportLoading);
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   useEffect(() => {
     if (param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club) {
@@ -246,7 +248,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               {data?.total_reviews || 0} Review(s)
             </CardText>
           </div>
-          {showProfilePercent && !data?.flextern  && (
+          {showProfilePercent && !data?.flextern && (
             <div className="profile-completion mt-2">
               <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
               <Progress
@@ -366,7 +368,12 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
             {isTalentView && (
               <>
-                <BadgeGroup color="light-blue" title="Certificates" data={data?.expertise?.certificates} />
+                <PermissionWrapper
+                  permissions={appPermissions}
+                  permissionName={['DASHBOARD.USER_DETAILS.CERTIFICATES']}
+                >
+                  <BadgeGroup color="light-blue" title="Certificates" data={data?.expertise?.certificates} />
+                </PermissionWrapper>
                 <BadgeGroup color="light-blue" title="Skills" data={data?.expertise?.skills} />
                 <BadgeGroup color="light-blue" title="Tools" data={data?.expertise?.tools} />
                 <BadgeGroup
@@ -375,12 +382,17 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   data={unionBy(data?.languages_speak, data?.languages_read, data?.languages_write, 'name')}
                 />
                 {!data?.flextern && (
-                  <BadgeGroup
-                    color="light-success-2"
-                    title="Team Associations"
-                    data={data?.team_associations}
-                    isTeamAssociations
-                  />
+                  <PermissionWrapper
+                    permissions={appPermissions}
+                    permissionName={['DASHBOARD.USER_DETAILS.TEAM_ASSOCIATIONS']}
+                  >
+                    <BadgeGroup
+                      color="light-success-2"
+                      title="Team Associations"
+                      data={data?.team_associations}
+                      isTeamAssociations
+                    />
+                  </PermissionWrapper>
                 )}
               </>
             )}
@@ -418,22 +430,25 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               </>
             )}
             {!data?.flextern && (
-              <BadgeGroup
-                color="light-success-2"
-                title="Time zone"
-                data={
-                  data?.availability?.timezone
-                    ? [
-                        {
-                          name:
-                            `${data?.availability?.timezone?.abbreviation}(${data?.availability?.timezone?.offset_name})` ||
-                            '-',
-                        },
-                      ]
-                    : []
-                }
-              />
+              <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.USER_DETAILS.TIME_ZONES']}>
+                <BadgeGroup
+                  color="light-success-2"
+                  title="Time zone"
+                  data={
+                    data?.availability?.timezone
+                      ? [
+                          {
+                            name:
+                              `${data?.availability?.timezone?.abbreviation}(${data?.availability?.timezone?.offset_name})` ||
+                              '-',
+                          },
+                        ]
+                      : []
+                  }
+                />
+              </PermissionWrapper>
             )}
+
             {!isTeamView && (
               <div className="social-links">
                 <CardText className="Info-key mt-50 mb-50">Social Links</CardText>

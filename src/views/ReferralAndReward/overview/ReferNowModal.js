@@ -9,11 +9,14 @@ import { RequirementsFormContainer } from '../../CreateProject/style';
 import { validEmailRegex } from '../../../utility/constants/Constant';
 import { createNewReferral } from '../../../redux/actions/referralAndRewardActions';
 import { createReferralLoading } from '../../../redux/selectors/referralAndRewardSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 const ReferNowModal = ({ modal, toggleModal }) => {
   const dispatch = useDispatch();
 
   const createReferralIsLoading = useSelector(createReferralLoading);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const [validEmailError, setValidEmailError] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -62,9 +65,9 @@ const ReferNowModal = ({ modal, toggleModal }) => {
           setValidEmailError(true);
         }
         break;
-      case 'Backspace': 
+      case 'Backspace':
         if (inputValue.length === 1) {
-          setInputValue("");
+          setInputValue('');
         }
         break;
       default:
@@ -73,76 +76,78 @@ const ReferNowModal = ({ modal, toggleModal }) => {
   };
 
   return (
-    <Modal
-      isOpen={modal}
-      contentClassName="custom-larger-than-medium-modal-style"
-      className="modal-dialog-centered modal-lg"
-    >
-      <ModalHeader toggle={toggleModal} />
-      <ModalBody>
-        <RequirementsFormContainer>
-          <div className="d-flex flex-column px-3">
-            <h2 className="fw-bold font-large-1 text-center mb-2">Invite</h2>
-            <Row>
-              <Col sm="12" md="12" lg="12">
-                <CreatableSelect
-                  classNamePrefix="select"
-                  theme={selectThemeColors}
-                  inputId="emails"
-                  name="emails"
-                  components={customSelectComponents}
-                  inputValue={inputValue}
-                  isClearable
-                  isMulti
-                  menuIsOpen={false}
-                  onChange={(newValue) => setCustomEmailsValue(newValue)}
-                  onInputChange={(newValue) => {
-                    if (newValue) {
-                      setInputValue(newValue);
-                    }
-                  }}
-                  onKeyDown={(e) => handleKeyDown(e)}
-                  placeholder="Enter email IDs"
-                  value={customEmailsValue}
-                  onBlur={(e) => {
-                    if (validEmailRegex.test(inputValue)) {
-                      if (
-                        validEmailRegex.test(inputValue) &&
-                        !customEmailsValue.find((email) => email.label === inputValue)
-                      ) {
-                        setCustomEmailsValue((prev) => [...prev, createOption(inputValue, inputValue)]);
-                        setInputValue('');
-                        setValidEmailError(false);
-                        e.preventDefault();
+    <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.REWARDS']}>
+      <Modal
+        isOpen={modal}
+        contentClassName="custom-larger-than-medium-modal-style"
+        className="modal-dialog-centered modal-lg"
+      >
+        <ModalHeader toggle={toggleModal} />
+        <ModalBody>
+          <RequirementsFormContainer>
+            <div className="d-flex flex-column px-3">
+              <h2 className="fw-bold font-large-1 text-center mb-2">Invite</h2>
+              <Row>
+                <Col sm="12" md="12" lg="12">
+                  <CreatableSelect
+                    classNamePrefix="select"
+                    theme={selectThemeColors}
+                    inputId="emails"
+                    name="emails"
+                    components={customSelectComponents}
+                    inputValue={inputValue}
+                    isClearable
+                    isMulti
+                    menuIsOpen={false}
+                    onChange={(newValue) => setCustomEmailsValue(newValue)}
+                    onInputChange={(newValue) => {
+                      if (newValue) {
+                        setInputValue(newValue);
                       }
-                    } else {
-                      e.preventDefault();
-                      setValidEmailError(true);
-                    }
-                  }}
-                />
-                {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
-              </Col>
-            </Row>
-            <p className="font-small-2 mt-50">
-              Note: Please press either of &quot;Enter&quot; or &quot;Space&quot; or &quot;Comma&quot; after entering
-              the email id in order to add it
-            </p>
-            <div className="d-flex justify-content-end mt-50">
-              <Button
-                color="primary"
-                type="button"
-                className="mb-1 mt-2"
-                onClick={onSubmit}
-                disabled={createReferralIsLoading}
-              >
-                {createReferralIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
-              </Button>
+                    }}
+                    onKeyDown={(e) => handleKeyDown(e)}
+                    placeholder="Enter email IDs"
+                    value={customEmailsValue}
+                    onBlur={(e) => {
+                      if (validEmailRegex.test(inputValue)) {
+                        if (
+                          validEmailRegex.test(inputValue) &&
+                          !customEmailsValue.find((email) => email.label === inputValue)
+                        ) {
+                          setCustomEmailsValue((prev) => [...prev, createOption(inputValue, inputValue)]);
+                          setInputValue('');
+                          setValidEmailError(false);
+                          e.preventDefault();
+                        }
+                      } else {
+                        e.preventDefault();
+                        setValidEmailError(true);
+                      }
+                    }}
+                  />
+                  {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
+                </Col>
+              </Row>
+              <p className="font-small-2 mt-50">
+                Note: Please press either of &quot;Enter&quot; or &quot;Space&quot; or &quot;Comma&quot; after entering
+                the email id in order to add it
+              </p>
+              <div className="d-flex justify-content-end mt-50">
+                <Button
+                  color="primary"
+                  type="button"
+                  className="mb-1 mt-2"
+                  onClick={onSubmit}
+                  disabled={createReferralIsLoading}
+                >
+                  {createReferralIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
+                </Button>
+              </div>
             </div>
-          </div>
-        </RequirementsFormContainer>
-      </ModalBody>
-    </Modal>
+          </RequirementsFormContainer>
+        </ModalBody>
+      </Modal>
+    </PermissionWrapper>
   );
 };
 

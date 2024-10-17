@@ -23,6 +23,8 @@ import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
 import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -40,6 +42,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const isLoading = useSelector((state) => state.project.loading);
   const isCardLoading = useSelector((state) => state?.project?.cardInfoLoading);
   const selectCardData = useSelector((state) => state?.project?.cardData);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const filterTypeOptions = [
     { label: 'Fixed', value: 'FIXED' },
@@ -255,133 +258,145 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </InputGroup>
           </div>
           <Row>
-            <Col>
-              <Label className="form-label">Project type</Label>
-              <Select
-                isClearable
-                options={filterTypeOptions}
-                classNamePrefix="select"
-                placeholder="Select type"
-                theme={selectThemeColors}
-                onChange={(value) => onChangeFilter('project_type', value)}
-                value={
-                  secondFilterState.project_type.length > 0
-                    ? {
-                        value: secondFilterState.project_type[0].value,
-                        label: secondFilterState.project_type[0].label,
-                      }
-                    : null
-                }
-              />
-            </Col>
-            {userType === userTypes.talent && primaryFilter === 'invited' && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PROJECT_TYPE']}>
               <Col>
-                <Label className="form-label">Invited by</Label>
+                <Label className="form-label">Project type</Label>
                 <Select
-                  options={invitedByOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('invitation_by', value)}
-                  value={
-                    secondFilterState.invitation_by.length > 0
-                      ? {
-                          value: secondFilterState.invitation_by[0].value,
-                          label: secondFilterState.invitation_by[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {userType === userTypes.team && primaryFilter === 'invited' && (
-              <Col>
-                <Label className="form-label">Type</Label>
-                <Select
-                  options={typeOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('invitation_type', value)}
-                  value={
-                    secondFilterState.invitation_type.length > 0
-                      ? {
-                          value: secondFilterState.invitation_type[0].value,
-                          label: secondFilterState.invitation_type[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {userType === userTypes.client && primaryFilter === 'invited' && (
-              <Col>
-                <Label className="form-label">Invited</Label>
-                <Select
-                  options={invitedOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('invitation_to', value)}
-                  value={
-                    secondFilterState.invitation_to.length > 0
-                      ? {
-                          value: secondFilterState.invitation_to[0].value,
-                          label: secondFilterState.invitation_to[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {userType !== userTypes.team && primaryFilter !== 'invited' && (
-              <Col>
-                <Label className="form-label">Team name</Label>
-                <AsyncPaginate
                   isClearable
-                  debounceTimeout={1000}
-                  additional={{ page: 1 }}
-                  loadOptions={loadTeamNameOptions}
-                  classNamePrefix="name"
-                  placeholder="Select team name"
+                  options={filterTypeOptions}
+                  classNamePrefix="select"
+                  placeholder="Select type"
                   theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('team_name', value)}
+                  onChange={(value) => onChangeFilter('project_type', value)}
                   value={
-                    secondFilterState.team_name.length > 0
+                    secondFilterState.project_type.length > 0
                       ? {
-                          value: secondFilterState.team_name[0].value,
-                          label: secondFilterState.team_name[0].label,
+                          value: secondFilterState.project_type[0].value,
+                          label: secondFilterState.project_type[0].label,
                         }
                       : null
                   }
                 />
               </Col>
-            )}
-            {userType !== userTypes.client && primaryFilter !== 'invited' && (
-              <Col>
-                <Label className="form-label">Client name</Label>
-                <AsyncPaginate
-                  isClearable
-                  debounceTimeout={1000}
-                  additional={{ page: 1 }}
-                  loadOptions={loadClientNameOptions}
-                  classNamePrefix="name"
-                  placeholder="Select client name"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={(value) => onChangeFilter('client_name', value)}
-                  value={
-                    secondFilterState.client_name.length > 0
-                      ? {
-                          value: secondFilterState.client_name[0].value,
-                          label: secondFilterState.client_name[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.INVITED_BY']}>
+              {userType === userTypes.talent && primaryFilter === 'invited' && (
+                <Col>
+                  <Label className="form-label">Invited by</Label>
+                  <Select
+                    options={invitedByOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('invitation_by', value)}
+                    value={
+                      secondFilterState.invitation_by.length > 0
+                        ? {
+                            value: secondFilterState.invitation_by[0].value,
+                            label: secondFilterState.invitation_by[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TYPE']}>
+              {userType === userTypes.team && primaryFilter === 'invited' && (
+                <Col>
+                  <Label className="form-label">Type</Label>
+                  <Select
+                    options={typeOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('invitation_type', value)}
+                    value={
+                      secondFilterState.invitation_type.length > 0
+                        ? {
+                            value: secondFilterState.invitation_type[0].value,
+                            label: secondFilterState.invitation_type[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.INVITED']}>
+              {userType === userTypes.client && primaryFilter === 'invited' && (
+                <Col>
+                  <Label className="form-label">Invited</Label>
+                  <Select
+                    options={invitedOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('invitation_to', value)}
+                    value={
+                      secondFilterState.invitation_to.length > 0
+                        ? {
+                            value: secondFilterState.invitation_to[0].value,
+                            label: secondFilterState.invitation_to[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TEAM_NAME']}>
+              {userType !== userTypes.team && primaryFilter !== 'invited' && (
+                <Col>
+                  <Label className="form-label">Team name</Label>
+                  <AsyncPaginate
+                    isClearable
+                    debounceTimeout={1000}
+                    additional={{ page: 1 }}
+                    loadOptions={loadTeamNameOptions}
+                    classNamePrefix="name"
+                    placeholder="Select team name"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('team_name', value)}
+                    value={
+                      secondFilterState.team_name.length > 0
+                        ? {
+                            value: secondFilterState.team_name[0].value,
+                            label: secondFilterState.team_name[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.CLIENT_NAME']}>
+              {userType !== userTypes.client && primaryFilter !== 'invited' && (
+                <Col>
+                  <Label className="form-label">Client name</Label>
+                  <AsyncPaginate
+                    isClearable
+                    debounceTimeout={1000}
+                    additional={{ page: 1 }}
+                    loadOptions={loadClientNameOptions}
+                    classNamePrefix="name"
+                    placeholder="Select client name"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('client_name', value)}
+                    value={
+                      secondFilterState.client_name.length > 0
+                        ? {
+                            value: secondFilterState.client_name[0].value,
+                            label: secondFilterState.client_name[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
             {!isTab && (
               <Col className="reset-btn cursor-pointer" onClick={handleReset}>
                 <div className="reset-icon">

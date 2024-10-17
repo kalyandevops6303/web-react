@@ -12,10 +12,14 @@ import Social from './Social';
 import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
+import PermissionWrapper from '@/PermissionWrapper';
+import { useSelector } from 'react-redux';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const onTabClick = (path) => {
     if (location.pathname.includes('profile-edit')) {
@@ -26,117 +30,147 @@ const Tabs = ({ tabNames, active }) => {
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       <Nav pills className="mb-2">
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.client}/account-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.client}/account-details` ||
-              location.pathname === `/${userProfileEdit.client}/account-details`
-            }
+        <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
+          <NavItem
+            onClick={() => {
+              if (location.pathname.includes('profile-edit')) {
+                onTabClick(`/${userProfileEdit.client}/account-details`);
+              }
+            }}
           >
-            <Home className="font-medium-3 me-50" />
-            <span className="fw-bold">Account</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.client}/personal-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.client}/personal-details` ||
-              location.pathname === `/${userProfileEdit.client}/personal-details`
-            }
+            <NavLink
+              active={
+                location.pathname === `/${userOnboarding.client}/account-details` ||
+                location.pathname === `/${userProfileEdit.client}/account-details`
+              }
+            >
+              <Home className="font-medium-3 me-50" />
+              <span className="fw-bold">Account</span>
+            </NavLink>
+          </NavItem>
+        </PermissionWrapper>
+        <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PERSONAL']}>
+          <NavItem
+            onClick={() => {
+              if (location.pathname.includes('profile-edit')) {
+                onTabClick(`/${userProfileEdit.client}/personal-details`);
+              }
+            }}
           >
-            <User className="font-medium-3 me-50" />
-            <span className="fw-bold">Personal</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.client}/educational-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.client}/educational-details` ||
-              location.pathname === `/${userProfileEdit.client}/educational-details`
-            }
+            <NavLink
+              active={
+                location.pathname === `/${userOnboarding.client}/personal-details` ||
+                location.pathname === `/${userProfileEdit.client}/personal-details`
+              }
+            >
+              <User className="font-medium-3 me-50" />
+              <span className="fw-bold">Personal</span>
+            </NavLink>
+          </NavItem>
+        </PermissionWrapper>
+        <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.EDUCATION']}>
+          <NavItem
+            onClick={() => {
+              if (location.pathname.includes('profile-edit')) {
+                onTabClick(`/${userProfileEdit.client}/educational-details`);
+              }
+            }}
           >
-            {location.pathname === `/${userOnboarding.client}/educational-details` ||
-            location.pathname === `/${userProfileEdit.client}/educational-details` ? (
-              <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
-            ) : (
-              <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />
-            )}
-            <span className="fw-bold">Education</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.client}/availability-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.client}/availability-details` ||
-              location.pathname === `/${userProfileEdit.client}/availability-details`
-            }
+            <NavLink
+              active={
+                location.pathname === `/${userOnboarding.client}/educational-details` ||
+                location.pathname === `/${userProfileEdit.client}/educational-details`
+              }
+            >
+              {location.pathname === `/${userOnboarding.client}/educational-details` ||
+              location.pathname === `/${userProfileEdit.client}/educational-details` ? (
+                <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
+              ) : (
+                <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />
+              )}
+              <span className="fw-bold">Education</span>
+            </NavLink>
+          </NavItem>
+        </PermissionWrapper>
+        <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.AVAILABILITY']}>
+          <NavItem
+            onClick={() => {
+              if (location.pathname.includes('profile-edit')) {
+                onTabClick(`/${userProfileEdit.client}/availability-details`);
+              }
+            }}
           >
-            <Clock className="font-medium-3 me-50" />
-            <span className="fw-bold">Availability</span>
-          </NavLink>
-        </NavItem>
-        <NavItem
-          onClick={() => {
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.client}/social-details`);
-            }
-          }}
-        >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.client}/social-details` ||
-              location.pathname === `/${userProfileEdit.client}/social-details`
-            }
+            <NavLink
+              active={
+                location.pathname === `/${userOnboarding.client}/availability-details` ||
+                location.pathname === `/${userProfileEdit.client}/availability-details`
+              }
+            >
+              <Clock className="font-medium-3 me-50" />
+              <span className="fw-bold">Availability</span>
+            </NavLink>
+          </NavItem>
+        </PermissionWrapper>
+        <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
+          <NavItem
+            onClick={() => {
+              if (location.pathname.includes('profile-edit')) {
+                onTabClick(`/${userProfileEdit.client}/social-details`);
+              }
+            }}
           >
-            <Link className="font-medium-3 me-50" />
-            <span className="fw-bold">Social</span>
-          </NavLink>
-        </NavItem>
+            <NavLink
+              active={
+                location.pathname === `/${userOnboarding.client}/social-details` ||
+                location.pathname === `/${userProfileEdit.client}/social-details`
+              }
+            >
+              <Link className="font-medium-3 me-50" />
+              <span className="fw-bold">Social</span>
+            </NavLink>
+          </NavItem>
+        </PermissionWrapper>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
           {(location.pathname === `/${userOnboarding.client}/account-details` ||
-            location.pathname === `/${userProfileEdit.client}/account-details`) && <Account />}
+            location.pathname === `/${userProfileEdit.client}/account-details`) && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
+              <Account />
+            </PermissionWrapper>
+          )}
         </TabPane>
         <TabPane tabId={tabNames.Personal}>
           {(location.pathname === `/${userOnboarding.client}/personal-details` ||
-            location.pathname === `/${userProfileEdit.client}/personal-details`) && <Personal />}
+            location.pathname === `/${userProfileEdit.client}/personal-details`) && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PERSONAL']}>
+              <Personal />
+            </PermissionWrapper>
+          )}
         </TabPane>
         <TabPane tabId={tabNames.Educational}>
           {(location.pathname === `/${userOnboarding.client}/educational-details` ||
-            location.pathname === `/${userProfileEdit.client}/educational-details`) && <Educational />}
+            location.pathname === `/${userProfileEdit.client}/educational-details`) && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.EDUCATION']}>
+              <Educational />
+            </PermissionWrapper>
+          )}
         </TabPane>
         <TabPane tabId={tabNames.Availability}>
           {(location.pathname === `/${userOnboarding.client}/availability-details` ||
-            location.pathname === `/${userProfileEdit.client}/availability-details`) && <Availability />}
+            location.pathname === `/${userProfileEdit.client}/availability-details`) && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.AVAILABILITY']}>
+              <Availability />
+            </PermissionWrapper>
+          )}
         </TabPane>
         <TabPane tabId={tabNames.Social}>
           {(location.pathname === `/${userOnboarding.client}/social-details` ||
-            location.pathname === `/${userProfileEdit.client}/social-details`) && <Social />}
+            location.pathname === `/${userProfileEdit.client}/social-details`) && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
+              <Social />
+            </PermissionWrapper>
+          )}
         </TabPane>
       </TabContent>
     </TabsContainer>

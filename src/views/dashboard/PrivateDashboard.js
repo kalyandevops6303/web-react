@@ -315,14 +315,16 @@ const PrivateDashboard = () => {
       <Row>
         <Col lg="8" sm="12">
           <Row>
-            <Col lg="6" sm="12">
-              <EarningCard />
-            </Col>
-            <Col lg="6" sm="12">
-              <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.REWARDS']}>
+            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PAYMENT_METRICS']}>
+              <Col lg="6" sm="12">
+                <EarningCard />
+              </Col>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.REWARDS']}>
+              <Col lg="6" sm="12">
                 <RewardsCard />
-              </PermissionWrapper>
-            </Col>
+              </Col>
+            </PermissionWrapper>
           </Row>
           <PermissionWrapper
             permissions={appPermissions}
@@ -376,16 +378,23 @@ const PrivateDashboard = () => {
             </section>
           )}
           {userDetailsData?.user_type === userTypes.talent && (
-            <section className="mb-2">
-              <Header className="mb-1">Teams</Header>
-              <TeamListing />
-            </section>
+            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.RECOMMENDED_TEAMS']}>
+              <section className="mb-2">
+                <Header className="mb-1">Teams</Header>
+                <TeamListing />
+              </section>
+            </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.talent && (
-            <section className="mb-2">
-              <Header className="mb-1">Invites</Header>
-              <InviteListing />
-            </section>
+            <PermissionWrapper
+              permissions={appPermissions}
+              permissionName={['DASHBOARD.INVITES.TEAM_INVITES', 'DASHBOARD.INVITES.PROJECT_INVITES']}
+            >
+              <section className="mb-2">
+                <Header className="mb-1">Invites</Header>
+                <InviteListing />
+              </section>
+            </PermissionWrapper>
           )}
         </Col>
 
