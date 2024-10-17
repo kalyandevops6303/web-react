@@ -44,6 +44,8 @@ import TalentCard from '../../cards/TalentCard';
 import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const location = useLocation();
@@ -62,6 +64,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const isLoading = useSelector((state) => state.marketPlace.loading);
   const isCardLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
   const selectCardData = useSelector((state) => state?.marketPlace?.cardData);
+  const appPermissions = useSelector(appPermissionsSelector);
 
   const metaData = { page: 1, page_size: 10 };
 
@@ -405,8 +408,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       case 'clients':
         return 'Search client name';
       case 'talents':
+        if(userType === userTypes.flexternClient)
+          return 'Search talent, project, department name';
         return 'Search talent name';
       default:
+        if(userType === userTypes.flexternClient)
+          return 'Search project, department, client name'
         return 'Search project name, user name';
     }
   };
@@ -561,7 +568,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 )}
               </span>
             )}
-
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.PAYMENT_TYPE']}>
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Payment type</Label>
@@ -583,7 +590,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.SKILLS']}>
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams' || (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
               <Col>
                 <Label className="form-label">Skills</Label>
                 <AsyncPaginate
@@ -602,7 +611,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TOOLS']}>
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams' || (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
               <Col>
                 <Label className="form-label">Tools</Label>
                 <AsyncPaginate
@@ -621,6 +632,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
+            </PermissionWrapper>
             {primaryFilter === 'clients' && (
               <Col>
                 <Label className="form-label">Company industry</Label>
