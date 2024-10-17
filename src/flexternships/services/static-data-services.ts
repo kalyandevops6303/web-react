@@ -9,7 +9,7 @@ export type PaginatedData = {
         total_records: number
         has_next_page: boolean
     }
-    data: any[]
+    data: { _id: string, name: string }[]
 };
 
 // Services code starts here

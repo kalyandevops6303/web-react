@@ -19,8 +19,6 @@ export default function RoleCard(props: Props) {
         name: `projectRoles.${index}`,
     });
 
-    console.log(role);
-
     return (
         <div>
             <SimpleElevatedCard
@@ -45,6 +43,7 @@ export default function RoleCard(props: Props) {
                         label="Project Role "
                         placeholder="Enter role"
                         error={errors?.role?.message}
+                        maxMenuHeight={220}
                         required />
 
                     <Controller
@@ -93,6 +92,7 @@ export default function RoleCard(props: Props) {
                                 label="Skills "
                                 placeholder="Enter skills"
                                 error={errors?.skills?.message}
+                                maxMenuHeight={220}
                                 required
                             />
                             <MultiSelectInput
@@ -104,6 +104,7 @@ export default function RoleCard(props: Props) {
                                 label="Tools"
                                 placeholder="Enter tools"
                                 error={errors?.tools?.message}
+                                maxMenuHeight={220}
                             />
                         </>
                     )}

@@ -10,16 +10,17 @@ export default function MultiSelectInput(props: InputProps) {
         control,
         label,
         required,
-        placeholder,
+        placeholder = 'Select options',
         className,
         loadOptions,
-        pageSize,
-        error
+        pageSize = 10,
+        error,
+        maxMenuHeight
     } = props;
 
-    const loadHandler = async (search: string, loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined) => {
-        const page = additional?.page || 1;
-        const data = await loadOptions(page, pageSize ?? 10, search);
+    const loadHandler = async (search: string, loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined = { page: 1 }) => {
+        const page = additional.page;
+        const data = await loadOptions(page, pageSize, search);
         return {
             options: data.data.map(choice => ({ label: choice.name, value: choice._id })),
             hasMore: data.metadata.has_next_page,
@@ -40,13 +41,13 @@ export default function MultiSelectInput(props: InputProps) {
                 render={({ field: { value, onChange } }) => (
                     <AsyncPaginate
                         isMulti
-                        value={value?.map((item:Choice) => ({ label: item.name, value: item._id }))}
+                        value={value?.map((item: Choice) => ({ label: item.name, value: item._id }))}
                         loadOptions={loadHandler}
                         onChange={(newValue) => {
                             onChange(newValue.map(item => ({ _id: item.value, name: item.label })));
                         }}
-                        maxMenuHeight={220}
-                        placeholder={placeholder ?? 'Select options'}
+                        maxMenuHeight={maxMenuHeight}
+                        placeholder={placeholder}
                         classNames={{
                             control: (state) => `
                                 ${error ? Styles.formInputError : Styles.formInputDefault}
@@ -82,6 +83,7 @@ type InputProps = {
     pageSize?: number;
     loadOptions: (page: number, pageSize: number, search: string) => Promise<PaginatedData>;
     error?: string;
+    maxMenuHeight?: number;
 };
 
 type OptionType = {

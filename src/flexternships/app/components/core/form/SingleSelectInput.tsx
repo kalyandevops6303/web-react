@@ -2,7 +2,8 @@ import Styles from '@flexternships/styles/components/core/form-fields.module.css
 import { Controller } from "react-hook-form";
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { PaginatedData } from '@/flexternships/services/static-data-services';
-import { GroupBase, OptionsOrGroups, SingleValue } from 'react-select';
+import { GroupBase, OptionsOrGroups } from 'react-select';
+import { isEmpty } from 'lodash';
 
 export default function SingleSelectInput(props: InputProps) {
   const {
@@ -10,16 +11,17 @@ export default function SingleSelectInput(props: InputProps) {
     control,
     label,
     required,
-    placeholder,
+    placeholder = 'Select option',
     className,
     loadOptions,
-    pageSize,
-    error
+    pageSize = 10,
+    error,
+    maxMenuHeight
   } = props;
 
-  const loadHandler = async (search: string, loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined) => {
-    const page = additional?.page || 1;
-    const data = await loadOptions(page, pageSize ?? 10, search);
+  const loadHandler = async (search: string, loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined = { page: 1 }) => {
+    const page = additional.page;
+    const data = await loadOptions(page, pageSize, search);
     return {
       options: data.data.map(choice => ({ label: choice.name, value: choice._id })),
       hasMore: data.metadata.has_next_page,
@@ -39,7 +41,7 @@ export default function SingleSelectInput(props: InputProps) {
         control={control}
         render={({ field: { value, onChange } }) => (
           <AsyncPaginate
-            value={(value && value.name && value._id) ? { label: value.name, value: value._id } : null}
+            value={!isEmpty(value) && !isEmpty(value.name) && !isEmpty(value._id) ? { label: value.name, value: value._id } : null}
             loadOptions={loadHandler}
             onChange={(newValue) => {
               if (newValue) {
@@ -48,10 +50,10 @@ export default function SingleSelectInput(props: InputProps) {
                 onChange(null);
               }
             }}
-            maxMenuHeight={220}
-            placeholder={placeholder ?? 'Select options'}  // Direct string for placeholder
+            maxMenuHeight={maxMenuHeight}
+            placeholder={placeholder}  // Direct string for placeholder
             classNames={{
-              control: (state) => `
+              control: () => `
                 ${error ? Styles.formInputError : Styles.formInputDefault}
                 p-0.5
               `,
@@ -83,6 +85,7 @@ type InputProps = {
   pageSize?: number;
   loadOptions: (page: number, pageSize: number, search: string) => Promise<PaginatedData>;
   error?: string;
+  maxMenuHeight?: number;
 };
 
 type OptionType = {
