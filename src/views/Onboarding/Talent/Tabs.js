@@ -17,8 +17,6 @@ import EducationTabActiveImg from '../../../assets/images/educationTabActive.png
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
 import { getQuestionsLink, getShowHiringTab } from "../../../redux/actions/hiringActions";
-import { useDispatch, useSelector } from 'react-redux';
-import { getQuestionsLink, getShowHiringTab } from '../../../redux/actions/hiringActions';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
@@ -61,12 +59,6 @@ const Tabs = ({ tabNames, active }) => {
             }
           }}
         >
-          <NavLink
-            active={
-              location.pathname === `/${userOnboarding.talent}/account-details` ||
-              location.pathname === `/${userProfileEdit.talent}/account-details`
-            }
-          >
             <NavLink
               active={
                 location.pathname === `/${userOnboarding.talent}/account-details` ||
