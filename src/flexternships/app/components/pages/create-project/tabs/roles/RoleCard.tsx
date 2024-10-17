@@ -5,22 +5,21 @@ import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleE
 import MultiSelectInput from '@flexternships/app/components/core/form/MultiSelectInput';
 import NumberInput from '@flexternships/app/components/core/form/NumberInput';
 import SingleSelectInput from '@flexternships/app/components/core/form/SingleSelectInput';
-import { useStaticDataStore } from '@flexternships/stores/static-data-store';
 import FormFieldsStyles from '@flexternships/styles/components/core/form-fields.module.css';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectRole } from '@flexternships/types/project-creation-types';
+import { fetchRolesPaginated, fetchSkillsPaginated, fetchToolsPaginated } from '@/flexternships/services/static-data-services';
 
 export default function RoleCard(props: Props) {
     const { index, removable, remove, control, errors } = props;
     const [isExpanded, setIsExpanded] = useState(true);
-    const rolesData = useStaticDataStore((state) => state.roles);
-    const skillsData = useStaticDataStore((state) => state.skills);
-    const toolsData = useStaticDataStore((state) => state.tools);
 
     const role = useWatch({
         control,
         name: `projectRoles.${index}`,
     });
+
+    console.log(role);
 
     return (
         <div>
@@ -36,20 +35,18 @@ export default function RoleCard(props: Props) {
                 </div>
 
                 <div className="flex flex-row flex-wrap">
-                    <Controller
+
+                    <SingleSelectInput
                         name={`projectRoles.${index}.role`}
                         control={control}
-                        render={({ field: { value, onChange } }) => (
-                            <SingleSelectInput
-                                value={value}
-                                onChange={onChange}
-                                choices={rolesData ?? []}
-                                className="w-[510px]"
-                                label="Project Role "
-                                placeholder="Enter role"
-                                required/>
-                        )}>
-                    </Controller>
+                        pageSize={10}
+                        loadOptions={fetchRolesPaginated}
+                        className="w-[510px]"
+                        label="Project Role "
+                        placeholder="Enter role"
+                        error={errors?.role?.message}
+                        required />
+
                     <Controller
                         name={`projectRoles.${index}.count`}
                         control={control}
@@ -70,7 +67,7 @@ export default function RoleCard(props: Props) {
                             Skills{' '}
                             <span className={FormFieldsStyles.requiredAsterisk}>*</span>
                         </div>
-                        <div className={`${role?.skills.length?'text-base text-grey-600 not-italic font-medium leading-6':'text-sm text-grey-200 italic font-normal leading-5.5'}`}>
+                        <div className={`${role?.skills.length ? 'text-base text-grey-600 not-italic font-medium leading-6' : 'text-sm text-grey-200 italic font-normal leading-5.5'}`}>
                             {role?.skills.length || 'Add skills'}
                         </div>
                     </div>
@@ -79,7 +76,7 @@ export default function RoleCard(props: Props) {
                         <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
                             Tools
                         </div>
-                        <div className={`${role?.tools.length?'text-base text-grey-600 not-italic font-medium leading-6':'text-sm text-grey-200 italic font-normal leading-5.5'}`}>
+                        <div className={`${role?.tools.length ? 'text-base text-grey-600 not-italic font-medium leading-6' : 'text-sm text-grey-200 italic font-normal leading-5.5'}`}>
                             {role?.tools.length || 'Add tools'}
                         </div>
                     </div>
@@ -90,7 +87,8 @@ export default function RoleCard(props: Props) {
                             <MultiSelectInput
                                 name={`projectRoles.${index}.skills`}
                                 control={control}
-                                choices={skillsData ?? []}
+                                pageSize={10}
+                                loadOptions={fetchSkillsPaginated}
                                 className="w-[510px]"
                                 label="Skills "
                                 placeholder="Enter skills"
@@ -100,7 +98,8 @@ export default function RoleCard(props: Props) {
                             <MultiSelectInput
                                 name={`projectRoles.${index}.tools`}
                                 control={control}
-                                choices={toolsData ?? []}
+                                pageSize={10}
+                                loadOptions={fetchToolsPaginated}
                                 className="w-[510px]"
                                 label="Tools"
                                 placeholder="Enter tools"

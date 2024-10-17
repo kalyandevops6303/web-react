@@ -9,7 +9,6 @@ import { DatePicker } from '@flexternships/app/components/core/form/DatePicker';
 import FileUpload from '@flexternships/app/components/core/form/FileUpload';
 import TextInput from '@flexternships/app/components/core/form/TextInput';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
-import { useStaticDataStore } from '@flexternships/stores/static-data-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
@@ -20,12 +19,7 @@ export default function Requirements() {
   const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);
   const updateRequirementsData = useProjectCreationStore((state) => state.updateRequirementsData);
   const nextTab = useProjectCreationStore((state) => state.nextTab);
-  const fetchStaticData = useStaticDataStore((state) => state.fetchStaticData);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
-
-  useEffect(() => {
-    fetchStaticData();
-  }, [fetchStaticData])
 
 
   const {
