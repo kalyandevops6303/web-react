@@ -116,7 +116,7 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
         },
         "roles": projectData.roles.map((item) => (
             {
-                "role_id": item.role._id,
+                "role_id": item.role._id || null,
                 "proficiency": {
                   "skills": item.skills.map((skill)=>(skill._id)),
                   "tools": item.tools.map((tool) => (tool._id)),
