@@ -46,7 +46,9 @@ export default function SavedDrafts(props: Props) {
                   Marketplace &gt; My Listings &gt; Drafts Or View Draft
                 </p>
                 <div className="mt-12 flex justify-end">
-                  <SecondaryButton onClick={handleClose} className=" mr-6" text="Close" />
+                  <SecondaryButton onClick={handleClose} className=" mr-6">
+                    Close
+                  </SecondaryButton>
                   <PrimaryButton onClick={props.onConfirm}>View Drafts</PrimaryButton>
                 </div>
               </div>

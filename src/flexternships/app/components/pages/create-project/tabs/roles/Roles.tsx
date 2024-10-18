@@ -77,9 +77,10 @@ export default function Roles() {
         <div className={Styles.buttonsContainer}>
           <SecondaryButton
             className="mr-6"
-            text="Save as Draft"
             onClick={saveAsDraft}
-          />
+          >
+            Save as Draft
+          </SecondaryButton>
           <PrimaryButton
             onClick={handleSubmit(onContinue, (formErrors) => console.log('Validation Errors:', formErrors))}
             disabled={!isValid}

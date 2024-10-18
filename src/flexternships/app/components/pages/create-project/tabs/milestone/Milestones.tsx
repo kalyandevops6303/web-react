@@ -194,7 +194,9 @@ export default function Milestones() {
       <div className={Styles.bottomActionsContainer}>
         <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' text='Save as Draft' onClick={saveDraft} />
+          <SecondaryButton className='mr-6' onClick={saveDraft} >
+            Save as Draft
+          </SecondaryButton>
           <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>
             Continue
           </PrimaryButton>

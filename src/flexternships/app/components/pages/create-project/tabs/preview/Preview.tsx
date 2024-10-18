@@ -148,7 +148,9 @@ export default function Preview() {
         {/* Make this a separate component */}
         <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' text='Save as Draft ' onClick={saveAsDraft} />
+          <SecondaryButton className='mr-6' onClick={saveAsDraft}>
+            Save as Draft
+          </SecondaryButton>
           <PrimaryButton onClick={handlePost}>
             <span className='mr-2'>
               Post

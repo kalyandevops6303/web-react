@@ -41,7 +41,9 @@ export default function SocialDetails() {
             <div className='flex justify-between'>
                 <PrimaryIconText text='Back' icon={<ChevronLeft size={16} />} onClick={() => { }} />
                 <div className='flex gap-5'>
-                    <SecondaryButton text='Skip' onClick={() => { }} />
+                    <SecondaryButton onClick={() => { }}>
+                        Skip
+                    </SecondaryButton>
                     <PrimaryButton onClick={() => { }}>
                         Save & Continue
                     </PrimaryButton>

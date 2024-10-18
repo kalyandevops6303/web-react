@@ -103,7 +103,9 @@ export default function CompanyDetails() {
                 </div>
             </div>
             <div className='flex justify-end gap-5'>
-                <SecondaryButton text='Change Password' onClick={() => { }} />
+                <SecondaryButton onClick={() => { }}>
+                    Skip
+                </SecondaryButton>
                 <PrimaryButton onClick={() => { }}>
                     Save & Continue
                 </PrimaryButton>
