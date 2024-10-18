@@ -32,7 +32,7 @@ export default function RoleCard(props: Props) {
                     )}
                 </div>
 
-                <div className="flex flex-row flex-wrap">
+                <div className="flex flex-row flex-wrap py-5 pr-6 gap-x-6 gap-y-10">
 
                     <SingleSelectInput
                         name={`projectRoles.${index}.role`}
@@ -61,7 +61,7 @@ export default function RoleCard(props: Props) {
                         )}>
                     </Controller>
 
-                    <div className='flex flex-col py-5 pr-6 gap-3 mx-4'>
+                    <div className='flex flex-col gap-3 mx-4'>
                         <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
                             Skills{' '}
                             <span className={FormFieldsStyles.requiredAsterisk}>*</span>
@@ -71,7 +71,7 @@ export default function RoleCard(props: Props) {
                         </div>
                     </div>
 
-                    <div className='flex flex-col py-5 pr-6 gap-3 mx-4'>
+                    <div className='flex flex-col gap-3 mx-4'>
                         <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
                             Tools
                         </div>

@@ -1,107 +1,107 @@
 .formFieldContainer {
-    @apply my-5 mr-6 flex flex-col;
+  @apply flex flex-col;
 }
 
 .formInputLabelContainer {
-    @apply text-xs not-italic font-normal mb-1 flex flex-row gap-0.5;
+  @apply text-xs not-italic font-normal mb-1 flex flex-row gap-0.5;
 }
 
 .formInputLabel {
-    @apply text-grey-500 leading-5;
+  @apply text-grey-500 leading-5;
 }
 
 .requiredAsterisk {
-    @apply text-error leading-5;
+  @apply text-error leading-5;
 }
 
 .formInput {
-    @apply py-2.5 px-3 text-sm leading-5.5 font-normal text-grey-600 not-italic outline-none placeholder:text-xs placeholder:font-normal placeholder:leading-5.5 placeholder:text-grey-200 border-1 border-solid rounded-md;
+  @apply py-2.5 px-3 text-sm leading-5.5 font-normal text-grey-600 not-italic outline-none placeholder:text-xs placeholder:font-normal placeholder:leading-5.5 placeholder:text-grey-200 border-1 border-solid rounded-md;
 }
 
 .inputTextExtra {
-    @apply absolute right-3 top-2.5 text-sm leading-5.5 font-normal text-grey-600 not-italic;
+  @apply absolute right-3 top-2.5 text-sm leading-5.5 font-normal text-grey-600 not-italic;
 }
 
 .formInputDefault {
-    @apply border-grey-50 bg-white;
+  @apply border-grey-50 bg-white;
 }
 .formInputError {
-    @apply border-error bg-white;
+  @apply border-error bg-white;
 }
 
 .formInputReadOnly {
-    @apply border-trublue;
-    background: linear-gradient(0deg, rgba(153, 193, 230, 0.10) 0%, rgba(153, 193, 230, 0.10) 100%);
+  @apply border-trublue;
+  background: linear-gradient(0deg, rgba(153, 193, 230, 0.10) 0%, rgba(153, 193, 230, 0.10) 100%);
 }
 
 .formInputTextarea {
-    @apply resize-none min-h-36 overflow-hidden h-auto;
+  @apply resize-none min-h-36 overflow-hidden h-auto;
 }
 
 .formInputErrorMessage {
-    @apply text-error text-xs not-italic font-normal leading-5;
+  @apply text-error text-xs not-italic font-normal leading-5;
 }
 
 
 /* Date picker input styles */
 .formDateInput {
-    @apply py-2.5 px-3 flex flex-row items-center justify-between border-1 border-solid rounded-md cursor-pointer;
+  @apply py-2.5 px-3 flex flex-row items-center justify-between border-1 border-solid rounded-md cursor-pointer;
 }
 
 .formDateFilled {
-    @apply text-sm font-normal leading-5.5 text-grey-600;
+  @apply text-sm font-normal leading-5.5 text-grey-600;
 }
 
 .formDatePlaceholder {
-    @apply text-xs font-normal leading-5.5 text-grey-200;
+  @apply text-xs font-normal leading-5.5 text-grey-200;
 }
 
 /* Multi Select */
 .formMultiSelectInput {
-    @apply flex flex-row;
+  @apply flex flex-row;
 }
 
 .formMultiSelectInput .placeholder {
-    @apply text-xs font-normal leading-5.5 text-grey-200 grow;
+  @apply text-xs font-normal leading-5.5 text-grey-200 grow;
 }
 
 
 /* File Upload */
 
 .formFileInput {
-    @apply mt-1.5 flex flex-row items-center cursor-pointer;
+  @apply mt-1.5 flex flex-row items-center cursor-pointer;
 }
 
 .formFileInputIconContainer {
-    @apply p-2 mr-2 bg-trublue-light rounded-52 flex items-center justify-center;
+  @apply p-2 mr-2 bg-trublue-light rounded-52 flex items-center justify-center;
 }
 
 .formFileInputIcon {
-    @apply text-trublue;
+  @apply text-trublue;
 }
 
 .formFileInputText {
-    @apply text-trublue-secondary-500 text-sm not-italic font-semibold tracking-wide;
+  @apply text-trublue-secondary-500 text-sm not-italic font-semibold tracking-wide;
 }
 
 /* Number Input */
 
 .formNumberInputContainer {
-    @apply h-11 self-start flex items-center px-2.5 relative;
+  @apply h-11 self-start flex items-center px-2.5 relative;
 }
 
 .formNumberInput {
-    @apply w-24 h-7 text-center text-grey-600 bg-grey-light rounded-5 outline-none;
+  @apply w-24 h-7 text-center text-grey-600 bg-grey-light rounded-5 outline-none;
 }
 
 .formNumberInputContainer .inputAction {
-    @apply p-0.5 bg-trublue-secondary-500 rounded-md text-white;
+  @apply p-0.5 bg-trublue-secondary-500 rounded-md text-white;
 }
 
 .formNumberInputContainer .leftInputAction {
-    @apply absolute left-0;
+  @apply absolute left-0;
 }
 
 .formNumberInputContainer .rightInputAction {
-    @apply absolute right-0;
+  @apply absolute right-0;
 }

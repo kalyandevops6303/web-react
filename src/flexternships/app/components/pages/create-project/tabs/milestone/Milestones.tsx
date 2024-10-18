@@ -154,7 +154,7 @@ export default function Milestones() {
 
       <div className={Styles.tabContent}>
         <div className={Styles.tabContentHeader}>Milestones</div>
-        <div className={`${Styles.tabContentBody} mt-6`}>
+        <div className={`${Styles.milestonesContentBody} mt-6`}>
           {durationDiff !== 0 && (
             <MilestoneInfo 
               updateHandler={() => {

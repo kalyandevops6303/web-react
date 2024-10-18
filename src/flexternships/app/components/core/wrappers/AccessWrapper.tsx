@@ -1,5 +1,5 @@
 import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
-import { useFlexternUserStore } from '@/flexternships/stores/flextern-user-store';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import React, { useEffect } from 'react'
 import { Navigate } from 'react-router-dom';
 import AccessDenied from '../../pages/defaults/AccessDenied';

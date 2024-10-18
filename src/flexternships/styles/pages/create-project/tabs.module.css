@@ -8,6 +8,10 @@
 }
 
 .tabContentBody {
+  @apply px-6 flex flex-row flex-wrap gap-x-6 gap-y-10;
+}
+
+.previewCardBody, .milestonesContentBody {
   @apply px-6 flex flex-row flex-wrap;
 }
 
