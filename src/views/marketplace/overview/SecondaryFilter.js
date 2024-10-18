@@ -31,6 +31,7 @@ import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import {
+  appRoles,
   bidStatusesOptions,
   projectTypesOptions,
   sortingOptions,
@@ -47,7 +48,7 @@ import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
-const SecondaryFilters = ({ primaryFilter, userType }) => {
+const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   const location = useLocation();
   const [searchText, setSearchText] = useState(location?.state?.clientName ?? '');
   const [inputText, setInputText] = useState(location?.state?.clientName ?? '');
@@ -408,11 +409,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       case 'clients':
         return 'Search client name';
       case 'talents':
-        if(userType === userTypes.flexternClient)
+        if(appRole === appRoles.flexternClient)
           return 'Search talent, project, department name';
         return 'Search talent name';
       default:
-        if(userType === userTypes.flexternClient)
+        if(appRole === appRoles.flexternClient)
           return 'Search project, department, client name'
         return 'Search project name, user name';
     }
@@ -599,7 +600,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.SKILLS']}>
-              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (appRole === appRoles.flexternClient && primaryFilter==='my_listings')) && (
                 <Col>
                   <Label className="form-label">Skills</Label>
                   <AsyncPaginate
@@ -620,7 +621,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TOOLS']}>
-              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (userType === userTypes.flexternClient && primaryFilter==='my_listings')) && (
+              {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams'|| (appRole === appRoles.flexternClient && primaryFilter==='my_listings')) && (
                 <Col>
                   <Label className="form-label">Tools</Label>
                   <AsyncPaginate
@@ -766,10 +767,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 SecondaryFilters.propTypes = {
   primaryFilter: PropTypes.string,
   userType: PropTypes.string,
+  appRole: PropTypes.string,
 };
 SecondaryFilters.defaultProps = {
   primaryFilter: '',
   userType: '',
+  appRole: '',
 };
 
 export default SecondaryFilters;
