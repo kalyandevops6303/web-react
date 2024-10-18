@@ -244,14 +244,18 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                 )}
               </CardText>
             </div>
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.PROJECTS_COUNT']}>
+            
             <div className="d-flex flex-grow-1">
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.RATING']}>
               <RatingBadge number={clientDetails?.rating || 0} />
+              </PermissionWrapper>
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.PROJECTS_COUNT']}>
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {clientDetails?.projects_worked_on_count ?? 0} Projects
               </CardText>
-            </div>
               </PermissionWrapper>
+            </div>
+             
            
           </div>
         </div>
@@ -290,8 +294,11 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
       )}
       {location.pathname.split('/').includes('my_listings') && (
         <BidsReceivedWrapper>
+           <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.BIDS_RECEIVED']}>
           <p className="wrapper-title mb-50">Bids Received</p>
+          </PermissionWrapper>
           <div className="d-flex align-items-center justify-content-between">
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.BIDS_RECEIVED']}>
             {bidsReceivedAvatarGroup?.length === 0 ? (
               <p className="m-0">None</p>
             ) : (
@@ -306,6 +313,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                 </div>
               </div>
             )}
+            </PermissionWrapper>
             {data?.project?.status === 'LISTING_EXPIRED' || data?.project?.status === 'WITHDRAWN' ? (
               <div className="d-flex justify-content-end relist-btn-wrapper">
                 <Button

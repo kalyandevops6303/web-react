@@ -343,6 +343,7 @@ const authSlice = createSlice({
           MARKETPLACE: true,
           PROJECTS: true,
           MY_TEAM: false,
+          CLIENT_TEAM: true,
           CLUBS: false,
         },
         DASHBOARD: {
@@ -385,22 +386,37 @@ const authSlice = createSlice({
             ASSESSED_SKILLS: true,
             CERTIFICATES: true,
           },
-          AVAILABILITY: true,
+          AVAILABILITY: false,
           ALERTS: true,
           DISPUTES: true,
+          CREATES: {
+            CREATE_PROJECT: false,
+            HIRE_FLEXTERNS: true,
+            CREATE_TEAM: false,
+            CREATE_CLUB: false,
+            JOIN_TEAM: false,
+          }
         },
         MARKETPLACE: {
           ALL_LISTINGS: true,
           MY_LISTINGS: true,
-          BIDS_RECEIVED: true,
+          BIDS_RECEIVED: false,
           TALENTS: true,
           CLIENTS: false,
           TEAMS: false,
+          TALENT_DETAILS: {
+            RATING: false,
+            PROJECTS_COUNT: false,
+            LOCATION: false,
+          },
           PROJECT_DETAILS: {
             PRICE: false,
             LOCATION: false,
+            RATING: false,
             PROJECTS_COUNT: false,
+            BIDS_RECEIVED: false,
           },
+          
           FILTERS: {
             PAYMENT_TYPE: true,
             COMPANY_INDUSTRY: true,
@@ -421,6 +437,7 @@ const authSlice = createSlice({
           PROJECT_DETAILS: {
             PRICE: false,
             LOCATION: false,
+            RATING: false,
             PROJECTS_COUNT: false,
           },
           FILTERS: {
@@ -463,7 +480,7 @@ const authSlice = createSlice({
           GET_HIRED: true,
         },
       }
-      // action.payload,
+      // appPermissions : action.payload,
     }),
 
     getAppPermissionsFailure: (state, action) => ({

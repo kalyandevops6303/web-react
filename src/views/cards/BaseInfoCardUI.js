@@ -110,14 +110,18 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
                 {data?.client?.company_name}
               </CardText>
             </div>
-            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
+           
             <div className="d-flex flex-grow-1">
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
               <RatingBadge number={data?.invitations_to?.rating ?? data?.client?.rating} />
+              </PermissionWrapper>
+              <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {data?.client?.projects_worked_on_count || 0} Projects
               </CardText>
+              </PermissionWrapper>
             </div>
-            </PermissionWrapper>
+            
           </div>
         </div>
       )}

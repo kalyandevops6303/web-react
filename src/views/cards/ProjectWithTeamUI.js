@@ -293,14 +293,18 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                       {data?.client?.first_name} {data?.client?.last_name}
                     </CardText>
                   </div>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
+                  
                   <div className="d-flex flex-grow-1 mt-25">
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
                     <RatingBadge number={data?.client?.rating ?? 0} />
+                    </PermissionWrapper>
+                    <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
                       {data?.client?.projects_worked_on_count ?? 0} Projects
                     </CardText>
+                    </PermissionWrapper>
                   </div>
-                  </PermissionWrapper>
+                  
                 </div>
               </div>
             </section>
