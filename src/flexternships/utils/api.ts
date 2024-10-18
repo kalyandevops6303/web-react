@@ -28,6 +28,9 @@ export const routes = {
                 fetchAll: `${baseUrls.userManagement}/static/talent-role`,
                 fetchPaginated: `${baseUrls.userManagement}/static/talent-role/paginated`
             }
+        },
+        user: {
+            getUserDetails: `${baseUrls.userManagement}/user/details`
         }
     }
     
