@@ -1,72 +1,94 @@
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
-import { ChevronDown } from "react-feather";
-import { Popover, PopoverContent, PopoverTrigger } from "@flexternships/app/components/ui/popover";
+import { Controller } from "react-hook-form";
+import { AsyncPaginate } from 'react-select-async-paginate';
+import { PaginatedData } from '@/flexternships/services/static-data-services';
+import { GroupBase, OptionsOrGroups } from 'react-select';
+import { isEmpty } from 'lodash';
 
 export default function SingleSelectInput(props: InputProps) {
   const {
-    value,
-    onChange,
-    choices,
+    name,
+    control,
     label,
     required,
-    placeholder,
+    placeholder = 'Select option',
     className,
+    loadOptions,
+    pageSize = 10,
+    error,
+    maxMenuHeight
   } = props;
 
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <div className={`${Styles.formFieldContainer} ${className ?? ''} relative`}>
-          <div className={Styles.formInputLabelContainer}>
-            <label className={Styles.formInputLabel}>{label}</label>
-            {required && <span className={Styles.requiredAsterisk}>*</span>}
-          </div>
+  const loadHandler = async (search: string, _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined = { page: 1 }) => {
+    const page = additional.page;
+    const data = await loadOptions(page, pageSize, search);
+    return {
+      options: data.data.map(choice => ({ label: choice.name, value: choice._id })),
+      hasMore: data.metadata.has_next_page,
+      additional: { page: page + 1 }
+    }
+  }
 
-          <div className={`${Styles.formInput} ${Styles.formInputDefault} ${Styles.formMultiSelectInput}`}>
-            {
-              value?.name ? (
-                <div className="grow">
-                  {value.name}
-                </div>
-              ) : (
-                <div className={`${Styles.placeholder}`}>
-                  {placeholder}
-                </div>
-              )
-            }
-            <span className="text-grey-300">
-              <ChevronDown />
-            </span>
-          </div>
-        </div>
-      </PopoverTrigger>
-      <PopoverContent className={`h-72 overflow-y-scroll p-0 bg-white ${className ?? ''}`}>
-        <div className="flex flex-col">
-          {
-            choices.map((item, index) => (
-              <div key={index} className="py-2.5 px-4 hover:bg-trublue-light hover:text-trublue text-grey-heading text-sm" onClick={() => onChange(item)}>
-                {item.name}
-              </div>
-            ))
-          }
-        </div>
-      </PopoverContent>
-    </Popover>
+  return (
+    <div className={`${Styles.formFieldContainer} ${className ?? ''}`}>
+      <div className={Styles.formInputLabelContainer}>
+        <label className={Styles.formInputLabel}>{label}</label>
+        {required && <span className={Styles.requiredAsterisk}>*</span>}
+      </div>
+
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <AsyncPaginate
+            value={!isEmpty(value) && !isEmpty(value.name) && !isEmpty(value._id) ? { label: value.name, value: value._id } : null}
+            loadOptions={loadHandler}
+            onChange={(newValue) => {
+              if (newValue) {
+                onChange({ _id: newValue.value, name: newValue.label });
+              } else {
+                onChange(null);
+              }
+            }}
+            maxMenuHeight={maxMenuHeight}
+            placeholder={placeholder}  // Direct string for placeholder
+            classNames={{
+              control: () => `
+                ${error ? Styles.formInputError : Styles.formInputDefault}
+                p-0.5
+              `,
+              placeholder: () => 'text-xs font-normal leading-5.5 text-grey-200', // Styling applied here
+              singleValue: () => 'text-sm text-grey-600 font-normal leading-5.5 not-italic',
+              option: (state) => `
+                text-xs font-normal leading-5 not-italic
+                ${state.isSelected ? 'bg-trublue-secondary-500 text-white' : state.isFocused ? 'bg-trublue-secondary-50' : 'bg-white text-grey-600'}
+              `,
+              dropdownIndicator: () => 'text-grey-300',
+              indicatorSeparator: () => 'hidden',
+            }}
+          />
+
+        )}
+      />
+      {error && <p className={Styles.formInputErrorMessage}>{error}</p>}
+    </div>
   );
 }
 
 type InputProps = {
-  value: Choice,
-  onChange: (newVal: Choice) => void
-  label: string; // Required field
-  required?: boolean; // Optional field
-  placeholder?: string; // Optional field
-  className?: string; // Optional field
-  choices: Choice[]
+  name: string;
+  control: any;
+  label: string;
+  required?: boolean;
+  placeholder?: string;
+  className?: string;
+  pageSize?: number;
+  loadOptions: (page: number, pageSize: number, search: string) => Promise<PaginatedData>;
+  error?: string;
+  maxMenuHeight?: number;
 };
 
-
-type Choice = {
-  _id: string
-  name: string
+type OptionType = {
+  label: string;
+  value: string;
 }

@@ -842,6 +842,34 @@ const Personal = () => {
                   />
                   {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
                 </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="state">
+                    State<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="state"
+                    name="state"
+                    control={control}
+                    invalid={errors.state && true}
+                    render={({ field }) => (
+                      <Select
+                        isDisabled={!watch('country')}
+                        isLoading={statesIsLoading}
+                        options={statesOptions}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
+                        classNamePrefix="select"
+                        placeholder="Select your state"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.state,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
+                </Col>
               </Row>
               <Row className="mb-1">
                 <Col sm="12" md="12" lg="6">
@@ -871,34 +899,6 @@ const Personal = () => {
                     )}
                   />
                   {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="state">
-                    State<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="state"
-                    name="state"
-                    control={control}
-                    invalid={errors.state && true}
-                    render={({ field }) => (
-                      <Select
-                        isDisabled={!watch('country')}
-                        isLoading={statesIsLoading}
-                        options={statesOptions}
-                        menuPosition="fixed"
-                        minMenuHeight={200}
-                        classNamePrefix="select"
-                        placeholder="Select your state"
-                        theme={selectThemeColors}
-                        className={classNames('react-select', {
-                          'is-invalid': errors && errors.state,
-                        })}
-                        {...field}
-                      />
-                    )}
-                  />
-                  {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
                 </Col>
               </Row>
             </CardBody>

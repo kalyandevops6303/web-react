@@ -12,10 +12,11 @@ import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
-import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import { DisputeCount } from '../styled';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const determineClassWhenDisputeStatus = (pathname, userData) => {
   if (pathname === 'dispute' && userData?.user_type === userTypes.client) {
@@ -34,6 +35,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
+  const appPermissions = useSelector(appPermissionsSelector);
   const location = useLocation();
   const navigate = useNavigate();
   const pathname = location.pathname.split('/').pop();
@@ -291,12 +293,18 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                       {data?.client?.first_name} {data?.client?.last_name}
                     </CardText>
                   </div>
+                  
                   <div className="d-flex flex-grow-1 mt-25">
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
                     <RatingBadge number={data?.client?.rating ?? 0} />
+                    </PermissionWrapper>
+                    <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
                       {data?.client?.projects_worked_on_count ?? 0} Projects
                     </CardText>
+                    </PermissionWrapper>
                   </div>
+                  
                 </div>
               </div>
             </section>
@@ -339,6 +347,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                             {data?.worker_details?.title}
                           </CardText>
                         </div>
+                       
                         <div className="d-flex flex-grow-1 mt-25">
                           <RatingBadge number={data?.worker_details?.rating ?? 0} />
                           <CardText className="ps-1 font-small-3 fw-300 rating-label">

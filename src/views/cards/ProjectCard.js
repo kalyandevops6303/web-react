@@ -18,8 +18,9 @@ import SwitchConfirmModal from '../modals/SwitchConfirm';
 import { convertUnixTimestampToDate, getPath, getReadType } from '../../utility/Utils';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
-import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -38,6 +39,7 @@ const ProjectCard = ({
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [switchData, setSwitchData] = useState();
   const userdata = useSelector(selectUserData);
+  const appPermissions = useSelector(appPermissionsSelector);
   const location = useLocation();
   const pathname = location.pathname.split('/').pop();
 
@@ -168,6 +170,7 @@ const ProjectCard = ({
                   </span>
                 </CardTitle>
                 <div className="d-flex flex-wrap project-stats">
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PRICE']}>
                   <CardText className="project">
                     {data?.pay_type?.variable_cost ? (
                       <>Variable Price</>
@@ -177,6 +180,7 @@ const ProjectCard = ({
                       </>
                     )}
                   </CardText>
+                  </PermissionWrapper>
                   {(data?.assigned_date || data?.completed_date || data?.invite_date) && (
                     <CardText className="mb-1">
                       {data?.assigned_date && (
@@ -214,10 +218,12 @@ const ProjectCard = ({
                       )}
                     </CardText>
                   )}
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.LOCATION']}>
                   <CardText className="project d-flex align-items-center ms-25">
                     <img src={Mpin} alt="Mpin" className="mpin" />
                     {data?.client?.office_address?.country?.name || 'Location'}
                   </CardText>
+                  </PermissionWrapper>
                   <CardText className=" mb-1">
                     {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
                   </CardText>
@@ -249,6 +255,7 @@ const ProjectCard = ({
                 )}
               </Col>
               <Col lg="4">
+              
                 {primaryFilter !== 'terminated' ? (
                   <ProjectWithTeamUI
                     secondaryFilterForInvitedType={secondaryFilterForInvitedType}

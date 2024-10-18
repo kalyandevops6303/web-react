@@ -38,7 +38,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   return (
     <Row className="primary-row">
       <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.ALL_LISTINGS']}>
-        <Col onClick={() => handlePrimaryCard('all_listings')}>
+        <Col  md={5} lg={3} xl={2} onClick={() => handlePrimaryCard('all_listings')}>
           <Statbox
             isActive={selected === 'all_listings'}
             isMarketPlaceTab
@@ -52,7 +52,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
       </PermissionWrapper>
       {userType === userTypes.client ? (
         <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.MY_LISTINGS']}>
-          <Col onClick={() => handlePrimaryCard('my_listings')}>
+          <Col md={5} lg={3} xl={2} onClick={() => handlePrimaryCard('my_listings')}>
             <Statbox
               isActive={selected === 'my_listings'}
               isMarketPlaceTab
@@ -97,7 +97,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
 
       {(userType === userTypes.client || userType === userTypes.team) && (
         <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENTS']}>
-          <Col onClick={() => handlePrimaryCard('talents')}>
+          <Col md={5} lg={3} xl={2} onClick={() => handlePrimaryCard('talents')}>
             <Statbox
               isActive={selected === 'talents'}
               className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}

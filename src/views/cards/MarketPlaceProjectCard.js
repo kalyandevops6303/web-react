@@ -15,7 +15,7 @@ import RelistListingDetailsModal from '../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../modals/RelistSuccessModal';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
@@ -26,6 +26,7 @@ import DeleteDraftModal from '../modals/DeleteDraftModal';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import { deleteDraftBid } from '../../redux/actions/createBidActions';
 import { deleteDraftBidLoading } from '../../redux/selectors/createBidSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const MarketPlaceProjectCard = ({
   primaryFilter,
@@ -44,6 +45,7 @@ const MarketPlaceProjectCard = ({
   const [isNewTag, setIsTagNew] = useState(project?.is_read === false);
   const userData = useSelector(selectUserData);
   const deleteDraftBidIsLoading = useSelector(deleteDraftBidLoading);
+  const appPermissions = useSelector(appPermissionsSelector);
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -241,12 +243,15 @@ const MarketPlaceProjectCard = ({
                   <span className="cursor-pointer">{project?.details?.name ?? project?.name}</span>
                 </CardTitle>
                 <div className="d-flex gap-sm-5 flex-wrap project-stats">
+                <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.PRICE']} >
                   <CardText className="project">
                     <>
                       {project?.pay_type} Price &nbsp;
                       {project?.total_cost > 0 ? `${project?.total_cost} ${project?.currency_symbol}` : ''}
                     </>
                   </CardText>
+                  </PermissionWrapper>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.LOCATION']} >
                   <CardText className="project d-flex align-items-center">
                     <img src={Mpin} alt="Mpin" className="mpin" />
                     {project?.client?.office_address?.country?.name ||
@@ -255,6 +260,7 @@ const MarketPlaceProjectCard = ({
                       project?.country_name ||
                       'Location'}
                   </CardText>
+                  </PermissionWrapper>
                   <CardText className=" mb-1">
                     {`Posted ${project?.posted_date ? DateTime?.fromMillis(project?.posted_date)?.toRelative() : '-'}`}
                   </CardText>

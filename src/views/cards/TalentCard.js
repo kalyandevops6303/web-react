@@ -21,10 +21,13 @@ import NewTag from '../../@core/components/new-tag';
 import { getReadType } from '../../utility/Utils';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
+import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
 function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
+  const appPermissions = useSelector(appPermissionsSelector);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -137,11 +140,16 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                     </CardText>
                     <div className="d-flex teamcard-flex-cloumn">
                       <div className="d-flex mr-2">
+                      <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENT_DETAILS.RATING']}>
                         <RatingBadge number={data?.rating ?? 0} />
+                        </PermissionWrapper>
+                        <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENT_DETAILS.PROJECTS_COUNT']}>
                         <CardText className="ps-1 font-small-3 fw-300 rating-label">
                           {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
                         </CardText>
+                        </PermissionWrapper>
                       </div>
+                      <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENT_DETAILS.LOCATION']}>
                       <div className="d-flex margin-none" style={{ marginLeft: '20px' }}>
                         {locationDetails ? (
                           <div className="d-flex align-items-center">
@@ -153,6 +161,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                           </div>
                         ) : null}
                       </div>
+                      </PermissionWrapper>
                     </div>
                   </Col>
                 </div>

@@ -19,13 +19,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
-import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 import { setActiveNavTab } from '../../../../redux/reducers/activeNavTab';
 import SwitchConfirmModal from '../../../../views/modals/SwitchConfirm';
 import { setConfirmSaveForLater, setNavigatingRoute } from '../../../../redux/reducers/formData';
 import { confirmSaveForLater } from '../../../../redux/selectors/formDataSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const HeadWrapper = styled.div`
   display: flex;
@@ -81,6 +82,7 @@ const ThemeNavbar = (props) => {
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
+  const appPermissions = useSelector(appPermissionsSelector);
   const saveArtifactDraftPath = /^\/project-details\/[a-zA-Z0-9_-]+\/milestone-details\/[a-zA-Z0-9_-]+$/;
   const draftTeamPath = location?.pathname.includes(
     '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details');
@@ -260,6 +262,7 @@ useEffect(() => {
               </div>
             )}
 
+            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.MY_TEAM']}>
             {isTabDisabled ? (
               <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
             ) : (
@@ -285,6 +288,9 @@ useEffect(() => {
               </div>
             )}
 
+            </PermissionWrapper>
+            
+            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.CLUBS']}>
             {userData?.user_type === userTypes.talent && (
               <div
                 onClick={() => {
@@ -307,6 +313,7 @@ useEffect(() => {
                 Clubs
               </div>
             )}
+            </PermissionWrapper>
           </>
         )}
       </div>

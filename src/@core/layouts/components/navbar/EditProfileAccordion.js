@@ -17,7 +17,7 @@ import {
   selectTrumioTalent,
   selectUserData,
   selectTrumioIsFlextern,
-  appPermissionsSelector
+  appPermissionsSelector 
 } from '../../../../redux/selectors/authSelectors';
 import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
 import { getItem } from '../../../../utility/localStorageControl';
