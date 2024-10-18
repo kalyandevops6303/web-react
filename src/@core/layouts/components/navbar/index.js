@@ -262,7 +262,7 @@ useEffect(() => {
               </div>
             )}
 
-            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.CLIENT_TEAM']}>
+            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.MY_TEAM']}>
             {isTabDisabled ? (
               <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
             ) : (
@@ -290,7 +290,7 @@ useEffect(() => {
 
             </PermissionWrapper>
             
-            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.MY_TEAM']}>
+            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.CLUBS']}>
             {userData?.user_type === userTypes.talent && (
               <div
                 onClick={() => {
