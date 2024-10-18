@@ -84,10 +84,11 @@ import {
   setTalentBooleanTrumioTalent,
   setTalentBooleansFlextern,
   setTalentBooleanIsFlextern,
+  setUserLoginAttemptNo,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
-import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
@@ -102,6 +103,7 @@ import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
+
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -159,8 +161,17 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       }
     }
   } catch (error) {
-    errorHandler(error, loginFailure);
+    if (error?.response?.data?.errorData?.errorCode === 403 ) {
+      const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
+      dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt,10)));
+      // ShowToastMessage(ERROR,error?.response?.data?.errorData?.message.match(/'([^']+)'/)[1])
+      dispatch(loginFailure())
+    } else {
+      errorHandler(error, loginFailure);
+    }
   }
+
+  
 };
 
 
@@ -259,7 +270,7 @@ const verifyEmailForFlextern =
       }
     } catch (error) {
       if (
-        error?.response?.data?.errorData?.message === 'Flextern invitation not found for this email' &&
+        error?.response?.data?.errorData?.errorCode === 404 &&
         errorHandlerInviteNotFound
       ) {
         errorHandlerInviteNotFound();
