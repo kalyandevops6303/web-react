@@ -26,7 +26,12 @@ import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
-import { projectStatusEnum, userTypes ,PROJECT_INVITATION_STATUS , REPORT_ENTITIES } from '../../utility/constants/Constant';
+import {
+  projectStatusEnum,
+  userTypes,
+  PROJECT_INVITATION_STATUS,
+  REPORT_ENTITIES,
+} from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
@@ -96,7 +101,7 @@ const ProjectModal = ({
   setSwitchProfileModal,
   setRelistConfirmationModal,
   setSavedDraftsAvailableModal,
-  setSwitchData
+  setSwitchData,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -113,12 +118,17 @@ const ProjectModal = ({
   const alreadyReported = useSelector(selectAlreadyReported);
   // const checkReportLoading = useSelector(selectCheckReportLoading);
 
-  useEffect(()=>{
-      dispatch(checkIfReported({data:{
-        reported_entity_id : data?._id,
-        reported_entity_type : REPORT_ENTITIES.PROJECT
-      }, onSuccess : checkReportSuccess}));
-  },[cardData]);
+  useEffect(() => {
+    dispatch(
+      checkIfReported({
+        data: {
+          reported_entity_id: data?._id,
+          reported_entity_type: REPORT_ENTITIES.PROJECT,
+        },
+        onSuccess: checkReportSuccess,
+      }),
+    );
+  }, [cardData]);
 
   const onReportSuccess = () => {
     setReportModal(false);
@@ -171,19 +181,21 @@ const ProjectModal = ({
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         // const url = new URL(`${window.location.protocol}//${window.location.host}${location.pathname}`);
         // handling the when the invite is from team
-        if((data?.invitation_status === PROJECT_INVITATION_STATUS.PENDING) && (location.pathname.split('/').includes('invited'))) {
+        if (
+          data?.invitation_status === PROJECT_INVITATION_STATUS.PENDING &&
+          location.pathname.split('/').includes('invited')
+        ) {
           setSwitchData({
             entity: data?.switch_team_id ? 'TEAM' : 'TALENT',
             navigateTo: `/project-details/${data?._id}/project/project-invitation/${data?.request_id}`,
             switchTeamId: data?.switch_team_id,
           });
-
-        } else if(data?.invitation_status === PROJECT_INVITATION_STATUS.ACCEPTED) {
+        } else if (data?.invitation_status === PROJECT_INVITATION_STATUS.ACCEPTED) {
           setSwitchData({
             entity: data?.switch_team_id ? 'TEAM' : 'TALENT',
             navigateTo: `/project-details/${data?._id}/bid`,
             switchTeamId: data?.switch_team_id,
-          });          
+          });
         }
         toggleModal();
         setSwitchProfileModal(true);
@@ -203,18 +215,16 @@ const ProjectModal = ({
         navigate(`/project-details/${data?._id}/milestone`);
       } else if (location.pathname.split('/').includes('completed')) {
         navigate(`/project-details/${data?._id}/rating`);
-      } 
-      else if (location.pathname.split('/').includes('invited')) {
+      } else if (location.pathname.split('/').includes('invited')) {
         // this case is for when client invites the talent to the project
-        if(data?.invitation_status === PROJECT_INVITATION_STATUS.READ_ONLY) {
+        if (data?.invitation_status === PROJECT_INVITATION_STATUS.READ_ONLY) {
           navigate(`/project-details/${data?._id}/project/project-invitation/${data?.request_id}`);
         } else {
           navigate(`/project-details/${data?._id}/bid`);
         }
-      }
-      else {
+      } else {
         navigate(`/project-details/${data?._id}/bid`);
-      } 
+      }
     } else if (isDashboard) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         toggleModal();
@@ -313,45 +323,55 @@ const ProjectModal = ({
                 </Col>
               </Row>
               <Row className="mb-2">
-                <Col lg="5">
-                  <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
-                    <CardText className="project-name">Currency</CardText>
-                  </div>
-                </Col>
+                {data?.pay_type && (
+                  <>
+                    <Col lg="5">
+                      <div>
+                        <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
+                        <CardText className="project-name">Currency</CardText>
+                      </div>
+                    </Col>
 
-                <Col lg="3">
-                  <div>
-                    <CardTitle className="mb-25 fw-bolder">
-                      {data?.pay_type?.fixed_cost
-                        ? ` Fixed - 
-                          ${data?.pay_type?.currency?.code} ${data?.pay_type?.fixed_cost}`
-                        : 'Variable'}
-                    </CardTitle>
-                    <CardText className="project-name">Payment Type</CardText>
-                  </div>
-                </Col>
-                <Col lg="4">
-                  <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'Yes' : 'No'}</CardTitle>
-                    <CardText className="project-name">NDA</CardText>
-                  </div>
-                </Col>
+                    <Col lg="3">
+                      <div>
+                        <CardTitle className="mb-25 fw-bolder">
+                          {data?.pay_type?.fixed_cost
+                            ? ` Fixed - 
+                        ${data?.pay_type?.currency?.code} ${data?.pay_type?.fixed_cost}`
+                            : 'Variable'}
+                        </CardTitle>
+                        <CardText className="project-name">Payment Type</CardText>
+                      </div>
+                    </Col>
+                  </>
+                )}
+                {data?.nda && (
+                  <Col lg="4">
+                    <div>
+                      <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'Yes' : 'No'}</CardTitle>
+                      <CardText className="project-name">NDA</CardText>
+                    </div>
+                  </Col>
+                )}
               </Row>
               <Row className="mb-2">
-                <Col lg="5">
-                  <AvailableTimeComp
-                    timeZone={data?.availability?.timezone?.abbreviation}
-                    weekdaysData={data?.availability?.weekdays_avl}
-                    weekendsData={data?.availability?.weekends_avl}
-                  />
-                </Col>
-                <Col lg="3">
-                  <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.availability?.time_overlap} hr</CardTitle>
-                    <CardText className="project-name">Minimum Overlap</CardText>
-                  </div>
-                </Col>
+                {data.availability && (
+                  <>
+                    <Col lg="5">
+                      <AvailableTimeComp
+                        timeZone={data?.availability?.timezone?.abbreviation}
+                        weekdaysData={data?.availability?.weekdays_avl}
+                        weekendsData={data?.availability?.weekends_avl}
+                      />
+                    </Col>
+                    <Col lg="3">
+                      <div>
+                        <CardTitle className="mb-25 fw-bolder">{data?.availability?.time_overlap} hr</CardTitle>
+                        <CardText className="project-name">Minimum Overlap</CardText>
+                      </div>
+                    </Col>
+                  </>
+                )}
                 {(location.pathname.split('/').includes('my_listings') ||
                   (location.pathname.split('/').includes('my_bids') &&
                     selectUserDetailsData?.user_type === userTypes.client)) && (
@@ -494,9 +514,11 @@ const ProjectModal = ({
               {(selectUserDetailsData?.user_type === userTypes.talent ||
                 selectUserDetailsData?.user_type === userTypes.team) && (
                 <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-                  {!alreadyReported &&  <Button onClick={toggleReportModal} color="flat-danger" className=" me-1">
-                    Report
-                  </Button>}
+                  {!alreadyReported && (
+                    <Button onClick={toggleReportModal} color="flat-danger" className=" me-1">
+                      Report
+                    </Button>
+                  )}
 
                   {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
@@ -529,16 +551,14 @@ const ProjectModal = ({
             />
           )}
 
-          {
-            successReportModal && (
-              <FeedbackForCustomerSupportModal
+          {successReportModal && (
+            <FeedbackForCustomerSupportModal
               modal={successReportModal}
               toggleModal={() => setSuccessReportModal(false)}
               modalHeading="Thanks for your feedback !"
               modalText="Your feedback has reached our team. We’ll be working towards providing you the best possible experience."
-              />
-            )
-          }
+            />
+          )}
         </ViewProjectDetailModalWrap>
       </ModalBody>
     </Modal>
@@ -572,7 +592,7 @@ ProjectModal.defaultProps = {
   setCreateBidModal: () => {},
   toggleCompleteProfileModal: () => {},
   setSwitchProfileModal: () => {},
-  setSwitchData: () => {},    
+  setSwitchData: () => {},
   isActiveProject: false,
   isUpcomingProject: false,
   setRelistConfirmationModal: () => {},
