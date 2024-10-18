@@ -26,7 +26,7 @@ const MarketPlaceContainer = styled.div`
 
 const SecondaryFiltersWrapper = ({ primaryFilter }) => {
   const userData = useSelector(selectAuthUserData);
-  return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
+  return <SecondaryFilters userType={userData?.user_type} appRole={userData?.app_roles?.[0]} primaryFilter={primaryFilter} />;
 };
 SecondaryFiltersWrapper.propTypes = {
   primaryFilter: PropTypes.string,

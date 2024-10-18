@@ -23,9 +23,12 @@ const userTypes = {
   talent: 'TALENT',
   team: 'TEAM',
   club: 'CLUB',
+};
+
+const appRoles = {
   flexternClient: 'FLEXTERN_CLIENT',
   flexternTalent: 'FLEXTERN_TALENT',
-};
+}
 
 const teamTypes = {
   team: 'TEAM',
@@ -285,6 +288,7 @@ export {
   ERROR_CODES,
   checkPoints,
   userTypes,
+  appRoles,
   userOnboarding,
   teamStatusesOptions,
   clubStatusesOptions,
