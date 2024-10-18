@@ -345,6 +345,85 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 </Col>
               )}
             </PermissionWrapper>
+            {/* // After the department name comes from new API, functionality will be implemented
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
+              {userType !== userTypes.team  && (
+                <Col>
+                  <Label className="form-label">Deparment Name</Label>
+                  <AsyncPaginate
+                    isClearable
+                    debounceTimeout={1000}
+                    additional={{ page: 1 }}
+                    loadOptions={loadTeamNameOptions}
+                    classNamePrefix="name"
+                    placeholder="Select department name"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('team_name', value)}
+                    value={
+                      secondFilterState.team_name.length > 0
+                        ? {
+                            value: secondFilterState.team_name[0].value,
+                            label: secondFilterState.team_name[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.STATUS']}>
+              {userType !== userTypes.team && (
+                <Col>
+                  <Label className="form-label">Status</Label>
+                  <AsyncPaginate
+                    isClearable
+                    debounceTimeout={1000}
+                    additional={{ page: 1 }}
+                    loadOptions={loadTeamNameOptions}
+                    classNamePrefix="name"
+                    placeholder="Select status"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('status', value)}
+                    value={
+                      secondFilterState.team_name.length > 0
+                        ? {
+                            value: secondFilterState.team_name[0].value,
+                            label: secondFilterState.team_name[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PROJECT_NAME']}>
+              {userType !== userTypes.team && (
+                <Col>
+                  <Label className="form-label">Project Name</Label>
+                  <AsyncPaginate
+                    isClearable
+                    debounceTimeout={1000}
+                    additional={{ page: 1 }}
+                    loadOptions={loadTeamNameOptions}
+                    classNamePrefix="name"
+                    placeholder="Select project name"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('team_name', value)}
+                    value={
+                      secondFilterState.team_name.length > 0
+                        ? {
+                            value: secondFilterState.team_name[0].value,
+                            label: secondFilterState.team_name[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper> */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TEAM_NAME']}>
               {userType !== userTypes.team && primaryFilter !== 'invited' && (
                 <Col>

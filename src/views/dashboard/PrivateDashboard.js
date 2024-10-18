@@ -249,7 +249,10 @@ const PrivateDashboard = () => {
           toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
         />
       )}
+      <span className='mb-2'>
+
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
+      </span>
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
           <span className='mr-2'>
@@ -301,15 +304,21 @@ const PrivateDashboard = () => {
 
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.CREATE_TEAM']}>
           <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateClub}>
             Create Club
           </span>
+          </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.CREATE_TEAM']}>
           <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
             Create Team
           </span>
+          </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.CREATE_TEAM']}>
           <Button as="link" color="primary" onClick={handleJoinTeam}>
             Join Team
           </Button>
+          </PermissionWrapper>
         </CreateTeamButtonWrapper>
       )}
       <Row>

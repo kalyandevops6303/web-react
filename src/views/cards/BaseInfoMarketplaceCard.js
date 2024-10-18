@@ -17,7 +17,8 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectUserData } from '../../redux/selectors/authSelectors';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal, setDeleteDraftModal }) => {
   const project = data && data?.project;
@@ -29,6 +30,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const delegateDetails = data.client_delegate ?? {};
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const userData = useSelector(selectUserData);
+  const appPermissions = useSelector(appPermissionsSelector);
   const location = useLocation();
 
   const handleLike = (e) => {
@@ -242,12 +244,15 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                 )}
               </CardText>
             </div>
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.PROJECTS_COUNT']}>
             <div className="d-flex flex-grow-1">
               <RatingBadge number={clientDetails?.rating || 0} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {clientDetails?.projects_worked_on_count ?? 0} Projects
               </CardText>
             </div>
+              </PermissionWrapper>
+           
           </div>
         </div>
       )}

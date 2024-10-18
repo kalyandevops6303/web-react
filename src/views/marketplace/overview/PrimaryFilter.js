@@ -38,7 +38,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   return (
     <Row className="primary-row">
       <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.ALL_LISTINGS']}>
-        <Col onClick={() => handlePrimaryCard('all_listings')}>
+        <Col  md={5} lg={3} xl={2} onClick={() => handlePrimaryCard('all_listings')}>
           <Statbox
             isActive={selected === 'all_listings'}
             isMarketPlaceTab
