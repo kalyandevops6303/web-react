@@ -52,6 +52,9 @@ export const routes = {
                 putProfileDetails: `${baseUrls.userManagementV2}/client/profile-details`,
                 getOrganisationDetails: `${baseUrls.userManagementV2}/client/organisation-details`,
             }
+        },
+        password: {
+            changePasswordWithCurrentPassword: `${baseUrls.userManagement}/user/reset-password`,
         }
     }
     

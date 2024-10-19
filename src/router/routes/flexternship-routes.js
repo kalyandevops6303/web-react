@@ -62,7 +62,20 @@ export const FlexternshipRoutes = [
     },
     {
         path: '/dashboard',
-        element: <PrivateDashboard />,
+        element: (
+            <AccessWrapper
+                allowAppRoles={[FlexternUserAppRole.FLEXTERN_CLIENT]}
+                allowCheckpoints={[FlexternUserCheckpoint.COMPLETE]}
+                blockCheckpoints={[
+                    {
+                        checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                        redirectRoute: '/client-onboarding'
+                    }
+                ]}
+            >
+                <PrivateDashboard />
+            </AccessWrapper>
+        ),
     },
     {
         path: '/search',
@@ -129,14 +142,14 @@ export const FlexternshipRoutes = [
         },
     },
     {
-        path: `/client-onboarding/:section-details`,
+        path: `/client-onboarding/*`,
         element: (
             <AccessWrapper
                 allowAppRoles={[FlexternUserAppRole.FLEXTERN_CLIENT]}
                 allowCheckpoints={[FlexternUserCheckpoint.ACCOUNT_DETAILS]}
                 blockCheckpoints={[
                     {
-                        checkpoint: FlexternUserCheckpoint.COMPLETE, 
+                        checkpoint: FlexternUserCheckpoint.COMPLETE,
                         redirectRoute: '/dashboard'
                     }
                 ]}
@@ -153,8 +166,21 @@ export const FlexternshipRoutes = [
         element: <TalentOnboarding />,
     },
     {
-        path: `/${userProfileEdit.client}/:section-details`,
-        element: <ClientOnboarding />,
+        path: `/${userProfileEdit.client}/*`,
+        element: (
+            <AccessWrapper
+                allowAppRoles={[FlexternUserAppRole.FLEXTERN_CLIENT]}
+                allowCheckpoints={[FlexternUserCheckpoint.COMPLETE]}
+                blockCheckpoints={[
+                    {
+                        checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                        redirectRoute: '/client-onboarding'
+                    }
+                ]}
+            >
+                <FlexternshipClientOnboarding />
+            </AccessWrapper>
+        ),
     },
     {
         path: '/create-project',

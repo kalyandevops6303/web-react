@@ -8,7 +8,7 @@ export default function PrimaryButton(props: ButtonProps) {
     const { children, onClick, disabled, className, loading } = props;
 
     return (
-        <button onClick={onClick} className={`${Styles.baseButton} ${disabled ? Styles.primaryDisabledButton : Styles.primaryEnabledButton} ${className ?? ''}`} disabled={disabled ?? false}>
+        <button onClick={onClick} className={`${Styles.baseButton} ${disabled || loading ? Styles.primaryDisabledButton : Styles.primaryEnabledButton} ${className ?? ''}`} disabled={(disabled || loading)?? false}>
             {loading ? <Spinner white={true} /> : children}
         </button>
     );

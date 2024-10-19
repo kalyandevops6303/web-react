@@ -24,6 +24,25 @@ export const getImageUploadUrl = async (filename: string) => {
     return response.data;
 }
 
+/// Password Endpoints
+/**
+ * Changes the user's password using their current password for authentication.
+ * @param currentPassword - The user's current password.
+ * @param newPassword - The new password to set.
+ * @returns A Promise that resolves to the response data from the password change request.
+ */
+export const changePasswordWithCurrentPassword = async (currentPassword: string, newPassword: string) => {
+    const headers = appendAuthToken({});
+    const config = {
+        headers: headers,
+    }
+    const response = await axios.post(routes.userManagement.password.changePasswordWithCurrentPassword, {
+        current_password: currentPassword,
+        new_password: newPassword,
+    }, config);
+    return response.data;
+}
+
 /// User Endpoints
 /**
  * Fetches user details including app roles.

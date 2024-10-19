@@ -11,6 +11,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import ReactCountryFlag from 'react-country-flag';
 import { isEmpty } from 'lodash';
+import ChangePasswordModal from '@/flexternships/app/components/core/modals/ChangePasswordModal';
 
 export default function AccountDetails() {
     const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
@@ -20,6 +21,7 @@ export default function AccountDetails() {
     const upsertClientAccountInfo = useFlexternUserProfileStore((state) => state.upsertClientAccountInfo);
 
     const [isSaveLoading, setIsSaveLoading] = useState(false);
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
     const {
         control,
@@ -148,13 +150,14 @@ export default function AccountDetails() {
                 </div>
             </div>
             <div className='flex justify-end gap-5'>
-                <SecondaryButton onClick={() => { }}>
+                <SecondaryButton onClick={() => (setIsChangePasswordModalOpen(true))}>
                     Change Password
                 </SecondaryButton>
                 <PrimaryButton onClick={handleSubmit(onContinue)} loading={isSaveLoading} disabled={!isValid}>
                     Save & Continue
                 </PrimaryButton>
             </div>
+            <ChangePasswordModal isOpen={isChangePasswordModalOpen} onClose={() => (setIsChangePasswordModalOpen(false))} />
         </div>
     )
 }
