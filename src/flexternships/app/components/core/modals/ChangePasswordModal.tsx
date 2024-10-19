@@ -9,7 +9,7 @@ import { ResetPasswordSchema } from '@/flexternships/schemas/core-schemas';
 import SecondaryButton from '../buttons/SecondaryButton';
 import { changePasswordWithCurrentPassword } from '@/flexternships/services/user-management';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import ShowToastMessage from '@/flexternships/utils/toast-utils';
+import { showToastMessage } from '@/flexternships/utils/toast-utils';
 
 interface ClientOnboardingSuccessProps {
   isOpen: boolean;
@@ -42,13 +42,13 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
     setIsLoading(true);
     try {
       await changePasswordWithCurrentPassword(data.oldPassword, data.newPassword);
-      ShowToastMessage(ToastType.SUCCESS, "Password changed successfully!");
+      showToastMessage(ToastType.SUCCESS, "Password changed successfully!");
       onClose();
     } catch (error) {
       if (error instanceof Error) {
-        ShowToastMessage(ToastType.ERROR, error.message);
+        showToastMessage(ToastType.ERROR, error.message);
       } else {
-        ShowToastMessage(ToastType.ERROR, "An unexpected error occurred");
+        showToastMessage(ToastType.ERROR, "An unexpected error occurred");
       }
     } finally {
       setIsLoading(false);
@@ -56,7 +56,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
   }
 
   const temp = () => {
-    ShowToastMessage(ToastType.SUCCESS, "Password changed successfully!");
+    showToastMessage(ToastType.SUCCESS, "Password changed successfully!");
   }
 
 

@@ -6,7 +6,7 @@ import { ToastType } from '../constraints/enums/core-enums';
  * @param type - The type of toast message (ERROR, SUCCESS, or default).
  * @param message - The content of the toast message.
  */
-const ShowToastMessage = (type: ToastType, message: string) => {
+export const showToastMessage = (type: ToastType, message: string) => {
   const options = {
     position: 'top-center',
     duration: 6000,
@@ -25,4 +25,3 @@ const ShowToastMessage = (type: ToastType, message: string) => {
       break;
   }
 };
-export default ShowToastMessage;

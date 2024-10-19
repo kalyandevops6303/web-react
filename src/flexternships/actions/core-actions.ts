@@ -1,5 +1,7 @@
 import { isEmpty } from "lodash";
 import { getUserDetails } from "@flexternships/services/user-management";
+import { showToastMessage } from "../utils/toast-utils";
+import { ToastType } from "../constraints/enums/core-enums";
 
 export const populateUserDetails = async (get: any, set: any) => {
     const userDetails = get().userDetails;
@@ -30,8 +32,7 @@ export const populateUserDetails = async (get: any, set: any) => {
             }
         });
     } catch (error) {
-        // TODO - Add ERROR TOAST
-        console.log("There's an error while populating user details: ", error);
+        showToastMessage(ToastType.ERROR, 'An unexpected error occurred while fetching user details');
     }
     set({ isUserDetailsLoading: false });
 }
