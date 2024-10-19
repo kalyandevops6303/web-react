@@ -8,7 +8,7 @@ export default function SecondaryButton(props: ButtonProps) {
     const { children, onClick, loading = false, disabled, className, cancel = false } = props;
 
     return (
-        <button onClick={onClick} className={`${Styles.baseButton} ${disabled ? Styles.secondaryDisabledButton : cancel ? Styles.secondaryEnabledButtonRed : Styles.secondaryEnabledButtonBlue} ${className || ""}`}>
+        <button disabled={disabled} onClick={onClick} className={`${Styles.baseButton} ${disabled ? Styles.secondaryDisabledButton : cancel ? Styles.secondaryEnabledButtonRed : Styles.secondaryEnabledButtonBlue} ${className || ""}`}>
             {
                 loading ? (<Spinner />) : (
                     children

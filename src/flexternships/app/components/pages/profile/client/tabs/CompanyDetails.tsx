@@ -302,9 +302,9 @@ export default function CompanyDetails() {
                 </div>
             </div>
             <div className='flex justify-between'>
-                <PrimaryIconText text='Back' icon={<ChevronLeft size={16} />} onClick={isDirty ? (() => { }) : previousTab} className={`${isDirty ? 'opacity-30 cursor-default' : ''}`} />
+                <PrimaryIconText text='Back' icon={<ChevronLeft size={16} />} onClick={isDirty || isSaveLoading ? (() => { }) : previousTab} className={`${isDirty || isSaveLoading ? 'opacity-30 cursor-default' : ''}`} />
                 <div className='flex gap-5'>
-                    <SecondaryButton onClick={nextTab} disabled={isDirty}>
+                    <SecondaryButton onClick={nextTab} disabled={isDirty || isSaveLoading}>
                         Skip
                         <ChevronRight size={18} />
                     </SecondaryButton>

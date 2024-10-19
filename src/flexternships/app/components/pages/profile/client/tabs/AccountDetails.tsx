@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import ReactCountryFlag from 'react-country-flag';
+import { isEmpty } from 'lodash';
 
 export default function AccountDetails() {
     const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
@@ -20,25 +21,34 @@ export default function AccountDetails() {
 
     const [isSaveLoading, setIsSaveLoading] = useState(false);
 
-    useEffect(() => {
-        populateClientInfoDetails();
-    }, [populateClientInfoDetails]);
-
     const {
         control,
         handleSubmit,
-        watch,
-        setValue,
+        reset,
         formState: { errors, isValid },
     } = useForm<FlexternClientAccountDetails>({
         mode: 'onChange',
         resolver: yupResolver(FlexternClientAccountDetailsSchema),
         defaultValues: {
-            firstname: profileDetails.firstname,
-            lastname: profileDetails.lastname,
-            imageUri: profileDetails.imageUri,
+            firstname: '',
+            lastname: '',
+            imageUri: '',
         },
     });
+
+    useEffect(() => {
+        populateClientInfoDetails();
+    }, [populateClientInfoDetails]);
+
+    useEffect(() => {
+        if (!isEmpty(profileDetails)) {
+            reset({
+                firstname: profileDetails.firstname,
+                lastname: profileDetails.lastname,
+                imageUri: profileDetails.imageUri,
+            });
+        }
+    }, [profileDetails, reset]);
 
     if (isProfileDetailsLoading) {
         return (

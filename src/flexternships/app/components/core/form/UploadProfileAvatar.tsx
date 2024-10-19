@@ -103,7 +103,7 @@ export default function UploadProfileAvatar(props: UploadProfileAvatarProps) {
 
 
 type UploadProfileAvatarProps = {
-    value: string;
+    value: string | undefined;
     onChange: (value: string) => void;
     className?: string;
 }

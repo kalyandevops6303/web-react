@@ -3,7 +3,7 @@ import { City, CompanyIndustry, Country, State } from "./core-types";
 export type FlexternClientAccountDetails = {
     firstname: string;
     lastname: string;
-    imageUri: string; // submits file key gets public uri
+    imageUri?: string; // submits file key gets public uri
 }
 
 export enum CompanyStrength {

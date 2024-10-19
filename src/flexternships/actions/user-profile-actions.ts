@@ -8,9 +8,10 @@ export const populateClientInfoDetails = async (set: any) => {
         ...state,
         profileDetails: {
             ...state.profileDetails,
-            firstname: data.first_name,
-            lastname: data.last_name,
-            imageUri: data.image_uri,
+            firstname: data.client_info?.first_name,
+            lastname: data.client_info?.last_name,
+            imageUri: data.client_info?.image_uri,
+            title: data.client_info?.title,
         }
     }));
     set({ isProfileDetailsLoading: false });
@@ -25,7 +26,6 @@ export const populateClientOrgDetails = async (set: any) => {
             ...state.profileDetails,
             companyName: data.company_name,
             companyLogo: data.company_logo,
-            title: data.title,
             companyTagline: data.company_tagline,
             companyIndustry: data.company_industry,
             companyStrength: data.company_strength,
@@ -57,7 +57,11 @@ export const upsertClientAccountInfo = async (data: FlexternClientAccountDetails
             imageUri: data.imageUri,
         }
     }));
-    await upsertFlexternClientAccountInfo(data);
+    await upsertFlexternClientAccountInfo({
+        firstname: data.firstname,
+        lastname: data.lastname,
+        ...(data.imageUri?.startsWith('https') ? {} : {imageUri: data.imageUri})
+    });
 }
 
 export const updateClientCompanyInfo = async (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails, set: any) => {
@@ -65,10 +69,20 @@ export const updateClientCompanyInfo = async (data: FlexternClientCompanyDetails
         ...state,
         profileDetails: {
             ...state.profileDetails,
-            ...data
+            ...data,
         }
     }));
-    await updateFlexternClientInfo(data);
+    let fileKeyAdjustedData = {}
+    if('companyLogo' in data) {
+        const {companyLogo, ...restData} = data
+        fileKeyAdjustedData = {
+            ...restData,
+            ...(companyLogo.startsWith('https') ? {} : {companyLogo})
+        }
+    } else {
+        fileKeyAdjustedData = data
+    }
+    await updateFlexternClientInfo(fileKeyAdjustedData);
 }
 
 export const nextTab = (set: any) => {

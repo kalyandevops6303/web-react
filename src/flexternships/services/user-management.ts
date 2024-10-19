@@ -51,7 +51,7 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
     const formattedData = {
         "first_name": data.firstname,
         "last_name": data.lastname,
-        "image_uri": data.imageUri,
+        ...(data.imageUri ? { image_uri: data.imageUri } : {}),
     }
     await axios.post(routes.userManagement.user.v2.postAccountDetails, formattedData, config);
 }

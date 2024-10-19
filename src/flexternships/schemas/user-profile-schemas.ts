@@ -49,7 +49,7 @@ export const FlexternClientCompanySocialDetailsSchema = yup.object().shape({
     socialLinks: yup.array().of(
         yup.object().shape({
             platform: yup.string().required('Platform is required'),
-            url: yup.string().url('Must be a valid URL').required('URL is required')
+            url: yup.string().url('Must be a valid URL').optional()
         })
-    ).required('At least one social link is required')
+    ).min(3, 'At least 3 social links are required')
 });
