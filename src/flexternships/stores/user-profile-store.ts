@@ -8,7 +8,7 @@ const defaultInitState: FlexternUserProfileForm = {
     profileDetails: {} as FlexternClientProfileDetails,
 }
 
-export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set, get) => ({
+export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set, _get) => ({
     ...defaultInitState,
     populateClientInfoDetails: () => populateClientInfoDetails(set),
     populateClientOrgDetails: () => populateClientOrgDetails(set),

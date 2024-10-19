@@ -182,7 +182,7 @@ export default function CompanyDetails() {
                             <div className="flex gap-x-8">
                                 {
                                     Object.entries(CompanyStrength)
-                                        .filter(([key, value]) => !isNaN(Number(value)))
+                                        .filter(([, value]) => !isNaN(Number(value)))
                                         .map(([key, value]) => (
                                             <label key={key} className="flex items-center cursor-pointer">
                                                 <input
