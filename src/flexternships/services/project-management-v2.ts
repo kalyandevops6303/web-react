@@ -3,6 +3,11 @@ import { ProjectCreationFormData } from '@flexternships/types/project-creation-t
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 
+/**
+ * Retrieves a file upload URL for a given filename.
+ * @param filename - The name of the file to be uploaded.
+ * @returns A Promise that resolves to the upload URL data.
+ */
 export const getFileUploadUrl = async (filename: string) => {
     const headers = appendAuthToken({});
     const config = {
@@ -15,6 +20,11 @@ export const getFileUploadUrl = async (filename: string) => {
     return response.data;
 }
 
+/**
+ * Retrieves a file download URL for a given file key.
+ * @param fileKey - The key of the file to be downloaded.
+ * @returns A Promise that resolves to the download URL data.
+ */
 export const getFileDownloadUrl = async (fileKey: string) => {
     const headers = appendAuthToken({});
     const config = {
@@ -27,16 +37,11 @@ export const getFileDownloadUrl = async (fileKey: string) => {
     return response.data;
 }
 
-export const uploadFileToUrl = async (url: string, file: any) => {
-    const uploadResponse = await axios.put(url, file, {
-        headers: {
-            'x-ms-blob-type': 'BlockBlob',
-            'Content-Type': file.type,
-        }
-    });
-    return uploadResponse;
-}
-
+/**
+ * Creates a new Flextern project.
+ * @param projectData - The data for the project to be created.
+ * @returns A Promise that resolves to the created project ID or undefined.
+ */
 export const createFlexternProject: (projectData: ProjectCreationFormData) => Promise<string | undefined> = async (projectData) => {
     const headers = appendAuthToken({});
     const config = {
@@ -91,7 +96,11 @@ export const createFlexternProject: (projectData: ProjectCreationFormData) => Pr
     return response.data?.project_id || undefined;
 }
 
-// TODO - Implement this service
+/**
+ * Creates a draft of a Flextern project.
+ * @param projectData - The data for the project draft to be created.
+ * @returns A Promise that resolves to the created draft project ID or undefined.
+ */
 export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) => Promise<string | undefined> = async (projectData) => {
     const headers = appendAuthToken({});
     const config = {

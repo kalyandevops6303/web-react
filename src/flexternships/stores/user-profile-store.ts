@@ -1,13 +1,19 @@
 import { create } from "zustand";
-import { FlexternClientProfileDetails, FlexternUserProfileForm, FlexternUserProfileStore } from "../constraints/types/user-profile-types";
-import { populateUserProfileDetails } from "../actions/user-profile-actions";
+import { FlexternClientAccountDetails, FlexternClientCompanyDetails, FlexternClientCompanySocialDetails, FlexternClientProfileDetails, FlexternUserProfileForm, FlexternUserProfileStore } from "../constraints/types/user-profile-types";
+import { nextTab, populateClientInfoDetails, populateClientOrgDetails, previousTab, updateClientCompanyInfo, upsertClientAccountInfo } from "../actions/user-profile-actions";
 
 const defaultInitState: FlexternUserProfileForm = {
+    currentTabIndex: 0,
     isProfileDetailsLoading: false,
     profileDetails: {} as FlexternClientProfileDetails,
 }
 
-export const useFlexternUserStore = create<FlexternUserProfileStore>((set, get) => ({
+export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set, get) => ({
     ...defaultInitState,
-    populateProfileDetails: () => populateUserProfileDetails(get, set)
+    populateClientInfoDetails: () => populateClientInfoDetails(set),
+    populateClientOrgDetails: () => populateClientOrgDetails(set),
+    nextTab: () => nextTab(set),
+    previousTab: () => previousTab(set),
+    upsertClientAccountInfo: async (data: FlexternClientAccountDetails) => upsertClientAccountInfo(data, set),
+    updateClientCompanyInfo: async (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => updateClientCompanyInfo(data, set),
 }));

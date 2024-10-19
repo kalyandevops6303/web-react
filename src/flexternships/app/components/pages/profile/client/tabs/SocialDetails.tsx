@@ -2,9 +2,14 @@ import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryBu
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText'
 import SecondaryButton from '@/flexternships/app/components/core/buttons/SecondaryButton'
 import TextInput from '@/flexternships/app/components/core/form/TextInput'
-import { ChevronLeft, Plus } from 'react-feather'
+import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store'
+import { ChevronLeft, ChevronRight, Plus } from 'react-feather'
 
 export default function SocialDetails() {
+    const previousTab = useFlexternUserProfileStore((state) => state.previousTab);
+
+    
+
     return (
         <div>
             <div className="py-6 flex flex-col bg-white rounded-md">
@@ -39,10 +44,11 @@ export default function SocialDetails() {
                 </div>
             </div>
             <div className='flex justify-between'>
-                <PrimaryIconText text='Back' icon={<ChevronLeft size={16} />} onClick={() => { }} />
+                <PrimaryIconText text='Back' icon={<ChevronLeft size={16} />} onClick={previousTab} />
                 <div className='flex gap-5'>
                     <SecondaryButton onClick={() => { }}>
                         Skip
+                        <ChevronRight size={18} />
                     </SecondaryButton>
                     <PrimaryButton onClick={() => { }}>
                         Save & Continue

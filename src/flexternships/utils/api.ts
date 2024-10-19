@@ -1,6 +1,7 @@
 export const baseUrls = {
     projectManagementV2: `${import.meta.env.VITE_API_ENDPOINT}/projectv2/api/v1`,
     userManagement: `${import.meta.env.VITE_API_ENDPOINT}/user/api/v1`,
+    userManagementV2: `${import.meta.env.VITE_API_ENDPOINT}/user/api/v2`,
 }
 
 export const routes = {
@@ -27,10 +28,30 @@ export const routes = {
             roles: {
                 fetchAll: `${baseUrls.userManagement}/static/talent-role`,
                 fetchPaginated: `${baseUrls.userManagement}/static/talent-role/paginated`
-            }
+            },
+            companyIndustry: {
+                fetchPaginated: `${baseUrls.userManagement}/static/company-industry/paginated`
+            },
+            country: {
+                fetchPaginated: `${baseUrls.userManagement}/static/country/paginated`
+            },
+            state: {
+                fetchPaginatedByCountry: `${baseUrls.userManagement}/static/state-by-id/paginated`
+            },
+            city: {
+                fetchPaginatedByState: `${baseUrls.userManagement}/static/city/paginated`
+            },
+        },
+        files: {
+            getImageUploadUrl: `${baseUrls.userManagement}/user/profile/image-url`,
         },
         user: {
-            getUserDetails: `${baseUrls.userManagement}/user/details`
+            getUserDetails: `${baseUrls.userManagement}/user/details`,
+            v2: {
+                postAccountDetails: `${baseUrls.userManagementV2}/client/account-details`,
+                putProfileDetails: `${baseUrls.userManagementV2}/client/profile-details`,
+                getOrganisationDetails: `${baseUrls.userManagementV2}/client/organisation-details`,
+            }
         }
     }
     

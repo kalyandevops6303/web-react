@@ -30,8 +30,7 @@
 }
 
 .formInputReadOnly {
-  @apply border-trublue;
-  background: linear-gradient(0deg, rgba(153, 193, 230, 0.10) 0%, rgba(153, 193, 230, 0.10) 100%);
+  @apply border-trublue bg-gradient-to-t from-[rgba(153,193,230,0.10)] to-[rgba(153,193,230,0.10)];
 }
 
 .formInputTextarea {

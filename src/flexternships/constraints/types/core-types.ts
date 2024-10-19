@@ -1,5 +1,43 @@
 import { FlexternUserAppRole, FlexternUserCheckpoint, UserType } from "../enums/core-enums";
 
+// Static Data Types
+
+export type Skill = {
+    _id: string
+    name: string
+}
+
+export type Tool = {
+    _id: string
+    name: string
+}
+
+export type Role = {
+    _id: string
+    name: string
+}
+
+export type CompanyIndustry = {
+    _id: string
+    name: string
+}
+
+export type Country = {
+    _id: string
+    name: string
+}
+
+export type State = {
+    _id: string
+    name: string
+}
+
+export type City = {
+    _id: string
+    name: string
+}
+
+
 export type FlexternClientDetails = {
     id: string;
     userType: UserType;

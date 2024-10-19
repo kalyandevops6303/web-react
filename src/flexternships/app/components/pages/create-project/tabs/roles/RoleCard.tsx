@@ -8,7 +8,7 @@ import SingleSelectInput from '@flexternships/app/components/core/form/SingleSel
 import FormFieldsStyles from '@flexternships/styles/components/core/form-fields.module.css';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectRole } from '@flexternships/types/project-creation-types';
-import { fetchRolesPaginated, fetchSkillsPaginated, fetchToolsPaginated } from '@/flexternships/services/static-data-services';
+import { fetchRolesPaginated, fetchSkillsPaginated, fetchToolsPaginated } from '@/flexternships/services/user-management';
 
 export default function RoleCard(props: Props) {
     const { index, removable, remove, control, errors } = props;
