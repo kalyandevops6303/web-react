@@ -55,10 +55,6 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
     }
   }
 
-  const temp = () => {
-    showToastMessage(ToastType.SUCCESS, "Password changed successfully!");
-  }
-
 
   if (!isOpen) return null;
   return (
@@ -126,7 +122,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
             <SecondaryButton onClick={onClose}>
               Close
             </SecondaryButton>
-            <PrimaryButton onClick={temp} loading={isLoading}>
+            <PrimaryButton onClick={handleSubmit(onSubmit)} loading={isLoading}>
               Save
             </PrimaryButton>
           </div>

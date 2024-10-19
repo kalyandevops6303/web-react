@@ -38,8 +38,6 @@ export default function SocialDetails() {
     const {
         control,
         handleSubmit,
-        watch,
-        setValue,
         reset,
         formState: { errors, isValid, isDirty },
     } = useForm<FlexternClientCompanySocialDetails>({
@@ -192,7 +190,6 @@ export default function SocialDetails() {
             <ClientOnboardingSuccessModal
                 isOpen={isSuccessModalOpen}
                 onClose={() => setIsSuccessModalOpen(false)}
-                onContinue={() => navigate('/dashboard')}
             />
         </div>
     )

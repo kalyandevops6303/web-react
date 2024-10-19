@@ -3,9 +3,9 @@ import { getUserDetails } from "@flexternships/services/user-management";
 import { showToastMessage } from "../utils/toast-utils";
 import { ToastType } from "../constraints/enums/core-enums";
 
-export const populateUserDetails = async (get: any, set: any) => {
+export const populateUserDetails = async (force: boolean, get: any, set: any) => {
     const userDetails = get().userDetails;
-    if (!isEmpty(userDetails)) return;
+    if (!isEmpty(userDetails) && !force) return;
 
     set({ isUserDetailsLoading: true });
     try {

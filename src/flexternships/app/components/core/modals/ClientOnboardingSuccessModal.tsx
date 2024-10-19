@@ -2,14 +2,22 @@ import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryBut
 import { X } from 'react-feather';
 
 import checklistImage from '@flexternships/assets/images/checklist.gif';
+import { useNavigate } from 'react-router-dom';
+import { useFlexternUserStore } from '@flexternships/stores/core-stores';
 
 interface ClientOnboardingSuccessProps {
   isOpen: boolean;
   onClose: () => void;
-  onContinue: () => void;
 }
 
-export default function ClientOnboardingSuccessModal({ isOpen, onClose, onContinue }: ClientOnboardingSuccessProps) {
+export default function ClientOnboardingSuccessModal({ isOpen, onClose }: ClientOnboardingSuccessProps) {
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
+  const navigate = useNavigate();
+
+  const onContinue = () => {
+    populateUserDetails(true);
+    navigate('/dashboard');
+  }
   if (!isOpen) return null;
 
   return (
@@ -35,25 +43,7 @@ export default function ClientOnboardingSuccessModal({ isOpen, onClose, onContin
               </PrimaryButton>
             </div>
           </div>
-
         </div>
-
-
-        {/* <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Onboarding Complete</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X size={24} />
-          </button>
-        </div>
-        <p className="mb-6">Congratulations! You have successfully completed the onboarding process.</p>
-        <div className="flex justify-end space-x-4">
-          <SecondaryButton onClick={onClose}>
-            Close
-          </SecondaryButton>
-          <PrimaryButton onClick={onContinue}>
-            Continue to Dashboard
-          </PrimaryButton>
-        </div> */}
       </div>
     </div>
   );

@@ -71,7 +71,7 @@ export type FlexternUser = {
 }
 
 export type FlexternUserActions = {
-    populateUserDetails: () => Promise<void>;
+    populateUserDetails: (force?: boolean) => Promise<void>;
 }
 
 export type FlexternUserStore = FlexternUser & FlexternUserActions;
