@@ -14,3 +14,13 @@ export enum FlexternUserCheckpoint {
     ACCOUNT_DETAILS = 'ACCOUNT_DETAILS',
     COMPLETE = 'COMPLETE',
 }
+
+export enum ToastType {
+    ERROR = 'error',
+    SUCCESS = 'success',
+}
+
+export enum ServerResponseStatus {
+    SUCCESS = 'SUCCESS',
+    FAIL = 'FAIL',
+}

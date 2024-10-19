@@ -8,6 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ResetPasswordSchema } from '@/flexternships/schemas/core-schemas';
 import SecondaryButton from '../buttons/SecondaryButton';
 import { changePasswordWithCurrentPassword } from '@/flexternships/services/user-management';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import ShowToastMessage from '@/flexternships/utils/toast-utils';
 
 interface ClientOnboardingSuccessProps {
   isOpen: boolean;
@@ -36,13 +38,27 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
   });
 
   const [isLoading, setIsLoading] = useState(false);
-
   const onSubmit = async (data: ResetPasswordForm) => {
     setIsLoading(true);
-    await changePasswordWithCurrentPassword(data.oldPassword, data.newPassword);
-    onClose();
-    setIsLoading(false);
+    try {
+      await changePasswordWithCurrentPassword(data.oldPassword, data.newPassword);
+      ShowToastMessage(ToastType.SUCCESS, "Password changed successfully!");
+      onClose();
+    } catch (error) {
+      if (error instanceof Error) {
+        ShowToastMessage(ToastType.ERROR, error.message);
+      } else {
+        ShowToastMessage(ToastType.ERROR, "An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
+
+  const temp = () => {
+    ShowToastMessage(ToastType.SUCCESS, "Password changed successfully!");
+  }
+
 
   if (!isOpen) return null;
   return (
@@ -110,7 +126,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
             <SecondaryButton onClick={onClose}>
               Close
             </SecondaryButton>
-            <PrimaryButton onClick={handleSubmit(onSubmit)} loading={isLoading}>
+            <PrimaryButton onClick={temp} loading={isLoading}>
               Save
             </PrimaryButton>
           </div>

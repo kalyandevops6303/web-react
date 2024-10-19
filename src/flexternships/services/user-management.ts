@@ -5,12 +5,14 @@ import { appendAuthToken } from "@flexternships/utils/local-storage";
 import axios from "axios";
 import { FlexternClientAccountDetails, FlexternClientProfileDetails } from "../constraints/types/user-profile-types";
 import { isEmpty } from "lodash";
+import { handleError } from "../utils/error-utils";
 
 /// File Endpoints
 /**
  * Retrieves a file upload URL for a given image filename.
  * @param filename - The name of the image file to be uploaded.
  * @returns A Promise that resolves to the image upload URL data.
+ * @throws {Error} If the file upload URL retrieval fails or an unexpected error occurs.
  */
 export const getImageUploadUrl = async (filename: string) => {
     const headers = appendAuthToken({});
@@ -20,8 +22,12 @@ export const getImageUploadUrl = async (filename: string) => {
             filename: filename,
         }
     }
-    const response = await axios.get(routes.userManagement.files.getImageUploadUrl, config);
-    return response.data;
+    try {
+        const response = await axios.get(routes.userManagement.files.getImageUploadUrl, config);
+        return response.data;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while retrieving the image upload URL');
+    }
 }
 
 /// Password Endpoints
@@ -30,37 +36,48 @@ export const getImageUploadUrl = async (filename: string) => {
  * @param currentPassword - The user's current password.
  * @param newPassword - The new password to set.
  * @returns A Promise that resolves to the response data from the password change request.
+ * @throws {Error} If the password change fails or an unexpected error occurs.
  */
 export const changePasswordWithCurrentPassword = async (currentPassword: string, newPassword: string) => {
     const headers = appendAuthToken({});
-    const config = {
-        headers: headers,
+    const config = { headers };
+    
+    try {
+        const response = await axios.post(
+            routes.userManagement.password.changePasswordWithCurrentPassword,
+            { current_password: currentPassword, new_password: newPassword },
+            config
+        );
+        return response.data;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while changing the password');
     }
-    const response = await axios.post(routes.userManagement.password.changePasswordWithCurrentPassword, {
-        current_password: currentPassword,
-        new_password: newPassword,
-    }, config);
-    return response.data;
 }
 
 /// User Endpoints
 /**
  * Fetches user details including app roles.
  * @returns A Promise that resolves to the user details.
+ * @throws {Error} If the user details retrieval fails or an unexpected error occurs.
  */
 export const getUserDetails = async () => {
     const headers = appendAuthToken({});
     const config = {
         headers: headers,
     }
-    const response = await axios.get(routes.userManagement.user.getUserDetails, config);
-    return response.data.data;
+    try {
+        const response = await axios.get(routes.userManagement.user.getUserDetails, config);
+        return response.data.data;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching user details');
+    }
 }
 
 /**
  * Creates or updates Flextern client account information.
  * @param data - The client account details to be upserted.
  * @returns A Promise that resolves when the operation is complete.
+ * @throws {Error} If the account information update fails or an unexpected error occurs.
  */
 export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccountDetails) => {
     const headers = appendAuthToken({});
@@ -72,13 +89,18 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
         "last_name": data.lastname,
         ...(data.imageUri ? { image_uri: data.imageUri } : {}),
     }
-    await axios.post(routes.userManagement.user.v2.postAccountDetails, formattedData, config);
+    try {
+        await axios.post(routes.userManagement.user.v2.postAccountDetails, formattedData, config);
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while updating client account information');
+    }
 }
 
 /**
  * Updates Flextern client profile information.
  * @param data - Partial client profile details to be updated.
  * @returns A Promise that resolves when the update is complete.
+ * @throws {Error} If the profile information update fails or an unexpected error occurs.
  */
 export const updateFlexternClientInfo = async (data: Partial<FlexternClientProfileDetails>) => {
     const headers = appendAuthToken({});
@@ -127,20 +149,29 @@ export const updateFlexternClientInfo = async (data: Partial<FlexternClientProfi
     if (!isEmpty(data.socialLinks)) {
         formattedData.social_links = data.socialLinks;
     }
-    await axios.put(routes.userManagement.user.v2.putProfileDetails, formattedData, config);
+    try {
+        await axios.put(routes.userManagement.user.v2.putProfileDetails, formattedData, config);
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while updating client profile information');
+    }
 }
 
 /**
  * Retrieves Flextern client organization information.
  * @returns A Promise that resolves to the organization details.
+ * @throws {Error} If the organization details retrieval fails or an unexpected error occurs.
  */
 export const getFlexternClientOrgInfo = async () => {
     const headers = appendAuthToken({});
     const config = {
         headers: headers,
     }
-    const response = await axios.get(routes.userManagement.user.v2.getOrganisationDetails, config);
-    return response.data.data;
+    try {
+        const response = await axios.get(routes.userManagement.user.v2.getOrganisationDetails, config);
+        return response.data.data;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching organization details');
+    }
 }
 
 
@@ -162,36 +193,51 @@ export type PaginatedData = {
 /**
  * Fetches all available roles.
  * @returns A Promise that resolves to an array of roles.
+ * @throws {Error} If the roles retrieval fails or an unexpected error occurs.
  */
 export const fetchAllRoles = async () => {
-    const response = await axios.get(routes.userManagement.static.roles.fetchAll);
-    return response?.data || [];
+    try {
+        const response = await axios.get(routes.userManagement.static.roles.fetchAll);
+        return response?.data || [];
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching roles');
+    }
 }
 
 /**
  * Fetches all available skills.
  * @returns A Promise that resolves to an array of skills.
+ * @throws {Error} If the skills retrieval fails or an unexpected error occurs.
  */
 export const fetchAllSkills = async () => {
-    const response = await axios.get(routes.userManagement.static.skills.fetchAll);
-    return response?.data?.data || [];
+    try {
+        const response = await axios.get(routes.userManagement.static.skills.fetchAll);
+        return response?.data?.data || [];
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching skills');
+    }
 }
 
 /**
  * Fetches all available tools.
  * @returns A Promise that resolves to an array of tools.
+ * @throws {Error} If the tools retrieval fails or an unexpected error occurs.
  */
 export const fetchAllTools = async () => {
-    const response = await axios.get(routes.userManagement.static.tools.fetchAll);
-    return response?.data?.data || [];
+    try {
+        const response = await axios.get(routes.userManagement.static.tools.fetchAll);
+        return response?.data?.data || [];
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching tools');
+    }
 }
-
 /**
  * Fetches paginated roles data.
  * @param page - The page number to fetch (default: 1).
  * @param page_size - The number of items per page (default: 10).
  * @param search_query - Optional search query to filter roles.
  * @returns A Promise that resolves to paginated roles data.
+ * @throws {Error} If the roles retrieval fails or an unexpected error occurs.
  */
 export const fetchRolesPaginated = async (page: number = 1, page_size: number = 10, search_query?: string): Promise<PaginatedData> => {
     const emptyData = {
@@ -203,8 +249,13 @@ export const fetchRolesPaginated = async (page: number = 1, page_size: number = 
         },
         "data": [],
     }
-    const response = await axios.get(`${routes.userManagement.static.roles.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
-    return response?.data?.data || emptyData;
+    try {
+        const response = await axios.get(`${routes.userManagement.static.roles.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
+        return response?.data?.data || emptyData;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching paginated roles');
+    }
+    return emptyData; // Add this line to ensure a return value in all cases
 }
 
 /**
@@ -213,6 +264,7 @@ export const fetchRolesPaginated = async (page: number = 1, page_size: number = 
  * @param page_size - The number of items per page (default: 10).
  * @param search_query - Optional search query to filter skills.
  * @returns A Promise that resolves to paginated skills data.
+ * @throws {Error} If the skills retrieval fails or an unexpected error occurs.
  */
 export const fetchSkillsPaginated = async (page: number = 1, page_size: number = 10, search_query?: string): Promise<PaginatedData> => {
     const emptyData = {
@@ -224,8 +276,13 @@ export const fetchSkillsPaginated = async (page: number = 1, page_size: number =
         },
         "data": [],
     }
-    const response = await axios.get(`${routes.userManagement.static.skills.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
-    return response?.data?.data || emptyData;
+    try {
+        const response = await axios.get(`${routes.userManagement.static.skills.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
+        return response?.data?.data || emptyData;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching paginated skills');
+    }
+    return emptyData; // Add this line to ensure a return value in all cases
 }
 
 /**
@@ -234,6 +291,7 @@ export const fetchSkillsPaginated = async (page: number = 1, page_size: number =
  * @param page_size - The number of items per page (default: 10).
  * @param search_query - Optional search query to filter tools.
  * @returns A Promise that resolves to paginated tools data.
+ * @throws {Error} If the tools retrieval fails or an unexpected error occurs.
  */
 export const fetchToolsPaginated = async (page: number = 1, page_size: number = 10, search_query?: string): Promise<PaginatedData> => {
     const emptyData = {
@@ -245,8 +303,13 @@ export const fetchToolsPaginated = async (page: number = 1, page_size: number = 
         },
         "data": [],
     }
-    const response = await axios.get(`${routes.userManagement.static.tools.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
-    return response?.data?.data || emptyData;
+    try {
+        const response = await axios.get(`${routes.userManagement.static.tools.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
+        return response?.data?.data || emptyData;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching paginated tools');
+    }
+    return emptyData; // Add this line to ensure a return value in all cases
 }
 
 /**
@@ -255,6 +318,7 @@ export const fetchToolsPaginated = async (page: number = 1, page_size: number = 
  * @param page_size - The number of items per page (default: 10).
  * @param search_query - Optional search query to filter company industries.
  * @returns A Promise that resolves to paginated company industries data.
+ * @throws {Error} If the company industries retrieval fails or an unexpected error occurs.
  */
 export const fetchCompanyIndustriesPaginated = async (page: number = 1, page_size: number = 10, search_query?: string): Promise<PaginatedData> => {
     const emptyData = {
@@ -266,8 +330,13 @@ export const fetchCompanyIndustriesPaginated = async (page: number = 1, page_siz
         },
         "data": [],
     }
-    const response = await axios.get(`${routes.userManagement.static.companyIndustry.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
-    return response?.data?.data || emptyData;
+    try {
+        const response = await axios.get(`${routes.userManagement.static.companyIndustry.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
+        return response?.data?.data || emptyData;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching paginated company industries');
+    }
+    return emptyData; // Add this line to ensure a return value in all cases
 }
 
 
@@ -277,6 +346,7 @@ export const fetchCompanyIndustriesPaginated = async (page: number = 1, page_siz
  * @param page_size - The number of items per page (default: 10).
  * @param search_query - Optional search query to filter countries.
  * @returns A Promise that resolves to paginated countries data.
+ * @throws {Error} If the countries retrieval fails or an unexpected error occurs.
  */
 export const fetchCountriesPaginated = async (page: number = 1, page_size: number = 10, search_query?: string): Promise<PaginatedData> => {
     const emptyData = {
@@ -288,8 +358,13 @@ export const fetchCountriesPaginated = async (page: number = 1, page_size: numbe
         },
         "data": [],
     }
-    const response = await axios.get(`${routes.userManagement.static.country.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
-    return response?.data?.data || emptyData;
+    try {
+        const response = await axios.get(`${routes.userManagement.static.country.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
+        return response?.data?.data || emptyData;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching paginated countries');
+    }
+    return emptyData; // Add this line to ensure a return value in all cases
 }
 
 
@@ -300,6 +375,7 @@ export const fetchCountriesPaginated = async (page: number = 1, page_size: numbe
  * @param page_size - The number of items per page (default: 10).
  * @param search_query - Optional search query to filter states.
  * @returns A Promise that resolves to paginated states data.
+ * @throws {Error} If the states retrieval fails or an unexpected error occurs.
  */
 export const fetchStatesPaginatedByCountry = async (country_id: string, page: number = 1, page_size: number = 10, search_query?: string): Promise<PaginatedData> => {
     const emptyData = {
@@ -311,8 +387,13 @@ export const fetchStatesPaginatedByCountry = async (country_id: string, page: nu
         },
         "data": [],
     }
-    const response = await axios.get(`${routes.userManagement.static.state.fetchPaginatedByCountry}/${country_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
-    return response?.data?.data || emptyData;
+    try {
+        const response = await axios.get(`${routes.userManagement.static.state.fetchPaginatedByCountry}/${country_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
+        return response?.data?.data || emptyData;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching paginated states');
+    }
+    return emptyData; // Add this line to ensure a return value in all cases
 }
 
 
@@ -323,6 +404,7 @@ export const fetchStatesPaginatedByCountry = async (country_id: string, page: nu
  * @param page_size - The number of items per page (default: 10).
  * @param search_query - Optional search query to filter cities.
  * @returns A Promise that resolves to paginated cities data.
+ * @throws {Error} If the cities retrieval fails or an unexpected error occurs.
  */
 export const fetchCitiesPaginatedByState = async (state_id: string, page: number = 1, page_size: number = 10, search_query?: string): Promise<PaginatedData> => {
     const emptyData = {
@@ -334,6 +416,11 @@ export const fetchCitiesPaginatedByState = async (state_id: string, page: number
         },
         "data": [],
     }
-    const response = await axios.get(`${routes.userManagement.static.city.fetchPaginatedByState}/${state_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
-    return response?.data?.data || emptyData;
+    try {
+        const response = await axios.get(`${routes.userManagement.static.city.fetchPaginatedByState}/${state_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`);
+        return response?.data?.data || emptyData;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while fetching paginated cities');
+    }
+    return emptyData; // Add this line to ensure a return value in all cases
 }

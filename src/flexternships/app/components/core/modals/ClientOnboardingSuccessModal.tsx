@@ -1,4 +1,3 @@
-import React from 'react';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import { X } from 'react-feather';
 
