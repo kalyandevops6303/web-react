@@ -10,6 +10,9 @@ import { useProjectCreationStore } from '@flexternships/stores/project-creation-
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { addDaysToEpoch, dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 
+import selectedRadioIcon from '@flexternships/assets/icons/radios/selectedRadio.svg';
+import defaultRadioIcon from '@flexternships/assets/icons/radios/defaultRadio.svg';
+
 export default function Listing() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
   const nextTab = useProjectCreationStore((state) => (state.nextTab));
@@ -49,27 +52,7 @@ export default function Listing() {
           <div className='flex flex-col w-full gap-7 pt-6'>
             <div className={Styles.listImmediatelyContainer} onClick={() => setListingChoice("immediate")}>
               <div className={Styles.listingRadio}>
-                {
-                  listingChoice === "immediate" ? (<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
-                    <g filter="url(#filter0_d_6220_38284)">
-                      <circle cx="13" cy="11" r="9" fill="#0185E4" />
-                    </g>
-                    <defs>
-                      <filter id="filter0_d_6220_38284" x="0" y="0" width="26" height="26" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                        <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                        <feOffset dy="2" />
-                        <feGaussianBlur stdDeviation="2" />
-                        <feColorMatrix type="matrix" values="0 0 0 0 0.00392157 0 0 0 0 0.521569 0 0 0 0 0.894118 0 0 0 0.4 0" />
-                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_6220_38284" />
-                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_6220_38284" result="shape" />
-                      </filter>
-                    </defs>
-                  </svg>) : (<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                    <circle cx="9" cy="9" r="8.25" stroke="#D8D6DE" strokeWidth="1.5" />
-                  </svg>)
-                }
-
+                <img src={listingChoice === "immediate" ? selectedRadioIcon : defaultRadioIcon} alt={listingChoice === "immediate" ? "selected" : "default"} />
               </div>
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>
@@ -100,26 +83,7 @@ export default function Listing() {
             </div>
             <div className={Styles.listLaterContainer} onClick={() => setListingChoice("later")}>
               <div className={Styles.listingRadio}>
-                {
-                  listingChoice === "later" ? (<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
-                    <g filter="url(#filter0_d_6220_38284)">
-                      <circle cx="13" cy="11" r="9" fill="#0185E4" />
-                    </g>
-                    <defs>
-                      <filter id="filter0_d_6220_38284" x="0" y="0" width="26" height="26" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                        <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                        <feOffset dy="2" />
-                        <feGaussianBlur stdDeviation="2" />
-                        <feColorMatrix type="matrix" values="0 0 0 0 0.00392157 0 0 0 0 0.521569 0 0 0 0 0.894118 0 0 0 0.4 0" />
-                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_6220_38284" />
-                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_6220_38284" result="shape" />
-                      </filter>
-                    </defs>
-                  </svg>) : (<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                    <circle cx="9" cy="9" r="8.25" stroke="#D8D6DE" strokeWidth="1.5" />
-                  </svg>)
-                }
+                <img src={listingChoice === "later" ? selectedRadioIcon : defaultRadioIcon} alt={listingChoice === "later" ? "selected" : "default"} />
               </div>
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>
