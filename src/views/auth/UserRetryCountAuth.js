@@ -1,7 +1,7 @@
 import { userAttemptNo } from '@/redux/selectors/authSelectors';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-useState;
+
 const UserRetryCountAuth = () => {
   const userLoginAttemptNo = useSelector(userAttemptNo);
   const [timeLeft, setTimeLeft] = useState(0);

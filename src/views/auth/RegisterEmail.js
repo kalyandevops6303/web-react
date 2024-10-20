@@ -118,13 +118,6 @@ const RegisterEmail = () => {
 
   const onSubmit = (values) => {
     const { email } = values;
-    // call a function to first check whether the email entered is for flextern or a talent this will be only valide for talent usertype other
-    // if (userType === userTypes.client) {
-    //   dispatch(registerEmail({ email, userType, onSuccess }));
-    // } else {
-    //   checkFlexTernorTalent(email);
-    // }
-
     checkFlexternshipEmail(email)
   };
 

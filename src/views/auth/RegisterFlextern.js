@@ -209,7 +209,6 @@ const RegisterFlextern = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          {/* Flextern Sign Up 🔐 */}
           {inviteHeader[flexternInviteType]?.title}
         </CardTitle>
         <RegisterFlexternForm
