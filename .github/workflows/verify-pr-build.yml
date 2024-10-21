@@ -1,11 +1,11 @@
-# This workflow verifies that the project builds successfully on pull requests to specific branches
+# This workflow verifies that the project builds successfully on all pull requests
 
 name: Verify Pull Request Build
 
 on:
   pull_request:
-    # Trigger this workflow for pull requests to these branches
-    branches: [dev-test, uat, production]
+    # Trigger this workflow for pull requests to all branches
+    branches: ['*']
 
 jobs:
   build:
