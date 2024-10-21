@@ -6,12 +6,12 @@ import AccessDenied from '../../pages/defaults/AccessDenied';
 import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
 
-// checks the user's access to the app based on the allowed roles
-// assumes that the user is authenticated to reach this wrapper
+// Checks the user's access to the app based on the allowed roles
+// Assumes that the user is authenticated to reach this wrapper
 export default function AccessWrapper(props: AccessWrapperProps) {
-    const { children, allowAppRoles, allowCheckpoints, blockCheckpoints, fallbackRoute } = props;
-    const currentUserAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
-    const currentUserCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
+    const { children, allowedAppRoles, fallbackRoute } = props;
+    const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
+    const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
     const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
     const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
@@ -19,10 +19,7 @@ export default function AccessWrapper(props: AccessWrapperProps) {
         populateUserDetails();
     }, [populateUserDetails]);
 
-    console.log(currentUserCheckpoint);
-    console.log(currentUserAppRoles);
-
-    // check if the user details are still loading
+    // Check if the user details are still loading
     if (isUserDetailsLoading) {
         return (
             <div className='flex justify-center items-center h-screen w-screen absolute'>
@@ -33,45 +30,44 @@ export default function AccessWrapper(props: AccessWrapperProps) {
         );
     }
 
-    //  check if the user has any app roles and the allowed roles are not empty
-    if (isEmpty(currentUserAppRoles) || allowAppRoles.length === 0) {
-        return fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />;
-    }
-    //  check if the user has any of the allowed roles
-    const hasAllowedRole = currentUserAppRoles.some(role => allowAppRoles.includes(role));
-    if (!hasAllowedRole) {
+    // Check if the user has any app roles and the allowed roles are not empty
+    if (isEmpty(userAppRoles) || allowedAppRoles.length === 0) {
         return fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />;
     }
 
-    // Verify user's checkpoints
-    if (blockCheckpoints) {
-        // Check if the user's current checkpoint is in the list of blocked checkpoints
-        const blockedCheckpoint = blockCheckpoints.find(bc => bc.checkpoint === currentUserCheckpoint);
-        if (blockedCheckpoint) {
-            // If the user's checkpoint is blocked, redirect to the specified route
-            return <Navigate to={blockedCheckpoint.redirectRoute} />;
-        }
-    }
+    // Check if the user has any of the allowed roles and meets the checkpoint requirements
+    const hasAccess = allowedAppRoles.some(allowedRole => {
+        const userHasRole = userAppRoles.includes(allowedRole.appRole);
+        const isCheckpointAllowed = allowedRole.allowCheckpoints.includes(userCheckpoint);
+        const isCheckpointBlocked = allowedRole.blockCheckpoints.some(bc => bc.checkpoint === userCheckpoint);
 
-    // Check if the user's checkpoint is allowed
-    if (allowCheckpoints && !allowCheckpoints.includes(currentUserCheckpoint)) {
-        // If the user's checkpoint is not in the list of allowed checkpoints,
-        // either redirect to the fallback route or show an access denied page
-        return fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />;
+        return userHasRole && isCheckpointAllowed && !isCheckpointBlocked;
+    });
+
+    if (!hasAccess) {
+        // If access is denied, check for a specific redirect route
+        const redirectRoute = allowedAppRoles.find(role => 
+            userAppRoles.includes(role.appRole) && 
+            role.blockCheckpoints.some(bc => bc.checkpoint === userCheckpoint)
+        )?.blockCheckpoints.find(bc => bc.checkpoint === userCheckpoint)?.redirectRoute;
+
+        // Redirect to the specific route, fallback route, or show access denied
+        return redirectRoute ? <Navigate to={redirectRoute} /> : (fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />);
     }
     
+    // If all checks pass, render the children components
     return children;
 }
 
 type AccessWrapperProps = {
     children: React.ReactNode;
-    allowAppRoles: FlexternUserAppRole[];
-    allowCheckpoints?: FlexternUserCheckpoint[];
-    blockCheckpoints?: BlockedCheckpoint[];
+    allowedAppRoles: {
+        appRole: FlexternUserAppRole;
+        allowCheckpoints: FlexternUserCheckpoint[];
+        blockCheckpoints: {
+            checkpoint: FlexternUserCheckpoint;
+            redirectRoute: string;
+        }[];
+    }[];
     fallbackRoute?: string;
-}
-
-type BlockedCheckpoint = {
-    checkpoint: FlexternUserCheckpoint;
-    redirectRoute: string;
 }

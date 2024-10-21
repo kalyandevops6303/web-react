@@ -64,17 +64,31 @@ export const FlexternshipRoutes = [
         path: '/dashboard',
         element: (
             <AccessWrapper
-                allowAppRoles={[FlexternUserAppRole.FLEXTERN_CLIENT]}
-                allowCheckpoints={[FlexternUserCheckpoint.COMPLETE]}
-                blockCheckpoints={[
+                allowedAppRoles={[
                     {
-                        checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                        redirectRoute: '/client-onboarding'
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
                     }
                 ]}
             >
                 <PrivateDashboard />
-            </AccessWrapper>
+            </AccessWrapper >
         ),
     },
     {
@@ -145,12 +159,16 @@ export const FlexternshipRoutes = [
         path: `/client-onboarding/*`,
         element: (
             <AccessWrapper
-                allowAppRoles={[FlexternUserAppRole.FLEXTERN_CLIENT]}
-                allowCheckpoints={[FlexternUserCheckpoint.ACCOUNT_DETAILS]}
-                blockCheckpoints={[
+                allowedAppRoles={[
                     {
-                        checkpoint: FlexternUserCheckpoint.COMPLETE,
-                        redirectRoute: '/dashboard'
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.ACCOUNT_DETAILS],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                                redirectRoute: '/dashboard'
+                            }
+                        ]
                     }
                 ]}
             >
@@ -164,23 +182,6 @@ export const FlexternshipRoutes = [
     {
         path: `/${userProfileEdit.talent}/:section-details`,
         element: <TalentOnboarding />,
-    },
-    {
-        path: `/${userProfileEdit.client}/*`,
-        element: (
-            <AccessWrapper
-                allowAppRoles={[FlexternUserAppRole.FLEXTERN_CLIENT]}
-                allowCheckpoints={[FlexternUserCheckpoint.COMPLETE]}
-                blockCheckpoints={[
-                    {
-                        checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                        redirectRoute: '/client-onboarding'
-                    }
-                ]}
-            >
-                <FlexternshipClientOnboarding />
-            </AccessWrapper>
-        ),
     },
     {
         path: '/create-project',
