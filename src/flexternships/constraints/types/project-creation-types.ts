@@ -9,6 +9,14 @@ export enum ModalType {
   DURATION_UPDATED = "duration_updated",
 }
 
+export enum MilestoneInfoType {
+  UNDERSHOT = "undershot",
+  OVERSHOT = "overshot",
+  BALANCED = "balanced",
+  UPDATED = "updated"
+}
+
+
 // Form Data Types
 type Skill = {
   _id: string
