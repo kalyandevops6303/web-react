@@ -76,7 +76,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
                     user_type: userTypes.client,
                     user_id: data?.client_info?.user_id,
                     title: `${data?.client_info?.first_name} ${data?.client_info?.last_name} ` || 'user',
-                    img: data?.client_info.image_uri || defaultAvatar,
+                    img: data?.client_info?.image_uri || defaultAvatar,
                     placement: 'bottom',
                     imgHeight: 33,
                     imgWidth: 33,
