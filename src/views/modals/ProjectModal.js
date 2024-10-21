@@ -34,7 +34,7 @@ import {
 } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
-import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
+import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
@@ -43,6 +43,8 @@ import FeedbackForCustomerSupportModal from './CustomerSupportFeedbackModal';
 import { selectAlreadyReported } from '../../redux/selectors/reportSelectors';
 import { checkIfReported } from '../../redux/actions/reportActions';
 import { checkReportSuccess } from '../../redux/reducers/report';
+import PermissionWrapper from '@/PermissionWrapper';
+import { isEmpty } from 'lodash';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -260,6 +262,8 @@ const ProjectModal = ({
       }))
     : [];
 
+  const appPermissions = useSelector(appPermissionsSelector);
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -323,39 +327,42 @@ const ProjectModal = ({
                 </Col>
               </Row>
               <Row className="mb-2">
-                {data?.pay_type && (
-                  <>
-                    <Col lg="5">
-                      <div>
-                        <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
-                        <CardText className="project-name">Currency</CardText>
-                      </div>
-                    </Col>
+              {!isEmpty(data?.pay_type) && (
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.CURRENCY']}>
+                  <Col lg="5">
+                    <div>
+                      <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
+                      <CardText className="project-name">Currency</CardText>
+                    </div>
+                  </Col>
 
-                    <Col lg="3">
-                      <div>
-                        <CardTitle className="mb-25 fw-bolder">
-                          {data?.pay_type?.fixed_cost
-                            ? ` Fixed - 
+                  <Col lg="3">
+                    <div>
+                      <CardTitle className="mb-25 fw-bolder">
+                        {data?.pay_type?.fixed_cost
+                          ? ` Fixed - 
                         ${data?.pay_type?.currency?.code} ${data?.pay_type?.fixed_cost}`
-                            : 'Variable'}
-                        </CardTitle>
-                        <CardText className="project-name">Payment Type</CardText>
-                      </div>
-                    </Col>
-                  </>
-                )}
-                {data?.nda && (
+                          : 'Variable'}
+                      </CardTitle>
+                      <CardText className="project-name">Payment Type</CardText>
+                    </div>
+                  </Col>
+                </PermissionWrapper>
+              )}
+              {!isEmpty(data?.nda) && (
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.NDA']}>
                   <Col lg="4">
                     <div>
                       <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'Yes' : 'No'}</CardTitle>
                       <CardText className="project-name">NDA</CardText>
                     </div>
                   </Col>
-                )}
+                </PermissionWrapper>
+              )}
               </Row>
               <Row className="mb-2">
-                {data.availability && (
+                {!isEmpty(data.availability) && (
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.AVAILABILTY']}>
                   <>
                     <Col lg="5">
                       <AvailableTimeComp
@@ -371,7 +378,9 @@ const ProjectModal = ({
                       </div>
                     </Col>
                   </>
+                </PermissionWrapper>
                 )}
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.BIDS']}>
                 {(location.pathname.split('/').includes('my_listings') ||
                   (location.pathname.split('/').includes('my_bids') &&
                     selectUserDetailsData?.user_type === userTypes.client)) && (
@@ -393,6 +402,7 @@ const ProjectModal = ({
                     <CardText className="project-name">Bids Received</CardText>
                   </Col>
                 )}
+                </PermissionWrapper>
               </Row>
             </CardBody>
           </Card>
