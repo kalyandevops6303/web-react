@@ -13,8 +13,11 @@ import { addDaysToEpoch, dateToEpoch, getTodayDate } from '@flexternships/utils/
 import selectedRadioIcon from '@flexternships/assets/icons/radios/selectedRadio.svg';
 import defaultRadioIcon from '@flexternships/assets/icons/radios/defaultRadio.svg';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { showToastMessage } from '@/flexternships/utils/toast-utils';
 
 export default function Listing() {
+  const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
   const nextTab = useProjectCreationStore((state) => (state.nextTab));
   const updateListingData = useProjectCreationStore((state) => state.updateListingData);
@@ -25,7 +28,7 @@ export default function Listing() {
   const [listingStartDateEpochForLater, setListingStartDateEpochForLater] = useState<number>(dateToEpoch(new Date())); // in epoch
   const [delistAfterForLater, setDelistAfterForLater] = useState<number>(30); // in days
 
-  const onContinue = () => {
+  const formatAndUpdateData = () => {
     let listingStartDate: number, listingEndDate: number;
     if (listingChoice === "immediate") {
       listingStartDate = dateToEpoch(new Date());
@@ -35,12 +38,25 @@ export default function Listing() {
       listingEndDate = addDaysToEpoch(listingStartDate, delistAfterForLater);
     }
     updateListingData(listingStartDate, listingEndDate);
+  }
+
+  const onContinue = () => {
+    formatAndUpdateData();
     nextTab();
   }
-  
+
   const handleStartDateChangeForLater = (selectedDateEpoch: number) => {
-    if(selectedDateEpoch < dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0)))) return;
+    if (selectedDateEpoch < dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0)))) return;
     setListingStartDateEpochForLater(selectedDateEpoch);
+  }
+
+  const onSaveDraft = async () => {
+    try {
+      formatAndUpdateData();
+      await saveAsDraft();
+    } catch (error) {
+      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+    }
   }
 
   return (
@@ -58,7 +74,7 @@ export default function Listing() {
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>
                   List immediately
-                <Tooltip content={'Your project will be posted immediately'} />
+                  <Tooltip content={'Your project will be posted immediately'} />
                 </div>
                 <div className={Styles.delistActionContainer}>
                   <span className={Styles.delistTextContainer}>
@@ -68,10 +84,10 @@ export default function Listing() {
                     value={delistAfterForImmediate}
                     onChange={(value) => {
                       let parsedValue;
-                      if(typeof value === 'string')
+                      if (typeof value === 'string')
                         parsedValue = parseInt(value);
                       else parsedValue = value;
-                      setDelistAfterForImmediate(parsedValue>0 ? parsedValue : 1);
+                      setDelistAfterForImmediate(parsedValue > 0 ? parsedValue : 1);
                     }}
                     type={TextInputType.NUMERIC}
                     label=''
@@ -89,14 +105,14 @@ export default function Listing() {
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>
                   List later
-                <Tooltip content={'Your project will be posted on the listing start date'} />
+                  <Tooltip content={'Your project will be posted on the listing start date'} />
                 </div>
                 <div className='flex flex-row items-end gap-10'>
-                  <DatePicker 
-                    value={listingStartDateEpochForLater} 
-                    onChange={(dateEpoch) => (handleStartDateChangeForLater(dateEpoch))} 
-                    label='Listing Start Date' placeholder='Select start date' 
-                    className={Styles.listingStartDate} 
+                  <DatePicker
+                    value={listingStartDateEpochForLater}
+                    onChange={(dateEpoch) => (handleStartDateChangeForLater(dateEpoch))}
+                    label='Listing Start Date' placeholder='Select start date'
+                    className={Styles.listingStartDate}
                     fromDate={getTodayDate()}
                     required
                   />
@@ -108,10 +124,10 @@ export default function Listing() {
                       value={delistAfterForLater}
                       onChange={(value) => {
                         let parsedValue;
-                        if(typeof value === 'string')
+                        if (typeof value === 'string')
                           parsedValue = parseInt(value);
                         else parsedValue = value;
-                        setDelistAfterForLater(parsedValue>0 ? parsedValue : 1);
+                        setDelistAfterForLater(parsedValue > 0 ? parsedValue : 1);
                       }}
                       type={TextInputType.NUMERIC}
                       label=''
@@ -131,7 +147,10 @@ export default function Listing() {
         {/* Make this a separate component */}
         <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' onClick={saveAsDraft}>
+          <SecondaryButton 
+          className='mr-6' 
+          loading={isSaveDraftLoading}
+          onClick={onSaveDraft}>
             Save as Draft
           </SecondaryButton>
           <PrimaryButton onClick={onContinue}>

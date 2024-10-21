@@ -24,8 +24,9 @@ export const saveDraft = async (get: any, set: any) => {
     openModal(ModalType.DRAFT_SAVED, set);
   } catch (error) {
     throw new Error("An unexpected error occurred while saving the draft");
+  } finally {
+    set({ isSaveDraftLoading: false });
   }
-  set({ isSaveDraftLoading: false });
   return projectId;
 }
 
