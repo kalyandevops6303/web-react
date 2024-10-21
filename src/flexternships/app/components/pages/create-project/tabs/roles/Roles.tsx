@@ -11,9 +11,12 @@ import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectRolesForm } from '@flexternships/types/project-creation-types';
 import { ProjectRolesFormSchema } from '@flexternships/schemas/project-creation-schemas';
 import RoleCard from './RoleCard';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { showToastMessage } from '@/flexternships/utils/toast-utils';
 
 export default function Roles() {
   const rolesData = useProjectCreationStore((state) => state.data.roles);
+  const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);
   const previousTab = useProjectCreationStore((state) => state.previousTab);
   const nextTab = useProjectCreationStore((state) => state.nextTab);
   const updateRolesData = useProjectCreationStore((state) => state.updateRolesData);
@@ -22,6 +25,7 @@ export default function Roles() {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isValid },
   } = useForm<ProjectRolesForm>({
     mode: 'onChange',
@@ -40,6 +44,16 @@ export default function Roles() {
     updateRolesData(data.projectRoles);
     nextTab();
   };
+
+
+  const onSaveDraft = async () => {
+    try {
+      updateRolesData(watch('projectRoles'));
+      await saveAsDraft();
+    } catch (error) {
+      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+    }
+  }
 
   return (
     <div className='flex flex-col'>
@@ -77,7 +91,8 @@ export default function Roles() {
         <div className={Styles.buttonsContainer}>
           <SecondaryButton
             className="mr-6"
-            onClick={saveAsDraft}
+            onClick={onSaveDraft}
+            loading={isSaveDraftLoading}
           >
             Save as Draft
           </SecondaryButton>

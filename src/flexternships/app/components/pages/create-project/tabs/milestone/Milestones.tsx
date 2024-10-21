@@ -16,6 +16,8 @@ import { MilestoneInfoType, MilestonesForm, ModalType } from '@flexternships/typ
 import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import MilestoneInfo from './MilestoneInfo';
 import SortableMilestoneCard from './SortableMilestoneCard';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { showToastMessage } from '@/flexternships/utils/toast-utils';
 
 export default function Milestones() {
   const {
@@ -25,6 +27,7 @@ export default function Milestones() {
       requirements: { estimatedStartDate, estimatedDuration },
       milestones: milestonesData,
     },
+    isSaveDraftLoading,
     updateEstimatedStartDate,
     updateEstimatedDuration,
     updateMilestonesData,
@@ -39,6 +42,7 @@ export default function Milestones() {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isValid },
   } = useForm<MilestonesForm>({
     mode: 'onChange',
@@ -121,6 +125,15 @@ export default function Milestones() {
     }
   };
 
+  const onSaveDraft = async () => {
+    try {
+      updateMilestonesData(watch('milestones'));
+      await saveDraft();
+    } catch (error) {
+      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+    }
+  }
+
   return (
     <>
       <div className={Styles.tabContent}>
@@ -194,7 +207,11 @@ export default function Milestones() {
       <div className={Styles.bottomActionsContainer}>
         <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' onClick={saveDraft} >
+          <SecondaryButton
+            className='mr-6'
+            onClick={onSaveDraft}
+            loading={isSaveDraftLoading}
+          >
             Save as Draft
           </SecondaryButton>
           <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>

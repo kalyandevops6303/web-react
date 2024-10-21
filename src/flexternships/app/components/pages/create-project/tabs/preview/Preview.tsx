@@ -14,10 +14,13 @@ import { formatFileSize } from '@flexternships/utils/file-utils';
 import MilestoneItem from './MilestoneItem';
 import ProjectDetailsItem from './ProjectDetailsItem';
 import RoleItem from './RoleItem';
+import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
   const formData = useProjectCreationStore((state) => state.data);
+  const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
   const openModal = useProjectCreationStore((state) => state.openModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
@@ -51,6 +54,15 @@ export default function Preview() {
       setRecallTimeLeft(-1);
       closeModal();
     }
+
+
+  const onSaveDraft = async () => {
+    try {
+      await saveAsDraft();
+    } catch (error) {
+      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+    }
+  }
 
 
   return (
@@ -148,7 +160,7 @@ export default function Preview() {
         {/* Make this a separate component */}
         <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' onClick={saveAsDraft}>
+          <SecondaryButton className='mr-6' onClick={onSaveDraft} loading={isSaveDraftLoading}>
             Save as Draft
           </SecondaryButton>
           <PrimaryButton onClick={handlePost}>

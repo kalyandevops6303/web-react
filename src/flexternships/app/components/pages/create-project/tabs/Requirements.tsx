@@ -14,6 +14,8 @@ import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
 import { getTodayDate } from '@flexternships/utils/date-utils';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
+import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -40,10 +42,14 @@ export default function Requirements() {
     nextTab();
   };
 
-  const onSaveDraft = () => {
+  const onSaveDraft = async () => {
     const data = watch();
     updateRequirementsData(data);
-    saveAsDraft();
+    try {
+      await saveAsDraft();
+    } catch (error) {
+      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+    }
   };
 
   // Watch for changes in estimatedDuration and estimatedWeeklyHours to autofill totalHours
