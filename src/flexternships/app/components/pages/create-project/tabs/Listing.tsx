@@ -12,6 +12,7 @@ import { addDaysToEpoch, dateToEpoch, getTodayDate } from '@flexternships/utils/
 
 import selectedRadioIcon from '@flexternships/assets/icons/radios/selectedRadio.svg';
 import defaultRadioIcon from '@flexternships/assets/icons/radios/defaultRadio.svg';
+import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 
 export default function Listing() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
@@ -72,7 +73,7 @@ export default function Listing() {
                       else parsedValue = value;
                       setDelistAfterForImmediate(parsedValue>0 ? parsedValue : 1);
                     }}
-                    type='numeric'
+                    type={TextInputType.NUMERIC}
                     label=''
                     className={Styles.delistAfterInput} />
                   <span className={Styles.delistTextContainer}>
@@ -112,7 +113,7 @@ export default function Listing() {
                         else parsedValue = value;
                         setDelistAfterForLater(parsedValue>0 ? parsedValue : 1);
                       }}
-                      type='numeric'
+                      type={TextInputType.NUMERIC}
                       label=''
                       className={Styles.delistAfterInput} />
                     <span className={Styles.delistTextContainer}>

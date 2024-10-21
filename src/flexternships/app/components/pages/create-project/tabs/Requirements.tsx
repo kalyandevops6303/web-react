@@ -13,6 +13,7 @@ import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
 import { getTodayDate } from '@flexternships/utils/date-utils';
+import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -71,7 +72,7 @@ export default function Requirements() {
                 value={value}
                 onChange={onChange}
                 className="w-[568px]"
-                type="alphanumeric"
+                type={TextInputType.ALPHANUMERIC}
                 label="Project Name"
                 placeholder="Enter project name"
                 error={errors.projectName?.message}
@@ -102,7 +103,7 @@ export default function Requirements() {
                 value={value}
                 onChange={onChange}
                 className="w-[272px]"
-                type="numeric"
+                type={TextInputType.NUMERIC}
                 label="Estimated Duration (in weeks)"
                 placeholder="Enter duration"
                 extra="wk"
@@ -118,7 +119,9 @@ export default function Requirements() {
               <TextInput
                 value={value}
                 onChange={onChange}
-                className="w-[272px]" type="numeric" label="Estimated Hours / Week per Flextern"
+                className="w-[272px]" 
+                type={TextInputType.NUMERIC} 
+                label="Estimated Hours / Week per Flextern"
                 placeholder="Enter estimation" 
                 extra="hrs/wk"
                 error={errors.estimatedWeeklyHours?.message}
@@ -135,7 +138,8 @@ export default function Requirements() {
               <TextInput
                 value={value}
                 onChange={onChange}
-                className="w-[272px]" type="numeric" 
+                className="w-[272px]" 
+                type={TextInputType.NUMERIC} 
                 label="Total Project Hours per Flextern" 
                 placeholder="Add duration & hours/week" 
                 extra="hrs/flextern"
@@ -151,7 +155,7 @@ export default function Requirements() {
                 value={value}
                 onChange={onChange}
                 className="w-full" 
-                type="alphanumeric" 
+                type={TextInputType.ALPHANUMERIC} 
                 label="Project Description" 
                 placeholder="Enter project background and requirements" 
                 error={errors.projectDescription?.message}
