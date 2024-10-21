@@ -20,11 +20,11 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20.18.0'  # Specify the Node.js version
+        node-version: '20.18.0'
 
     # Install project dependencies using Yarn
     - name: Install dependencies
-      run: yarn install --frozen-lockfile  # Use frozen lockfile to ensure consistent builds
+      run: yarn install --frozen-lockfile
 
     # Attempt to build the project
     - name: Build project
