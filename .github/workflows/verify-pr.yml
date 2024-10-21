@@ -1,6 +1,6 @@
 # This workflow verifies that the project builds successfully on all pull requests
 
-name: Verify Pull Request Build
+name: Verify Pull Request
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ jobs:
 
     steps:
     # Check out the repository code
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Set up Node.js environment
     - name: Set up Node.js
@@ -22,9 +22,18 @@ jobs:
       with:
         node-version: '20.18.0'
 
+    # Cache dependencies
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/yarn
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
     # Install project dependencies using Yarn
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile --prefer-offline
 
     # Attempt to build the project
     - name: Build project
