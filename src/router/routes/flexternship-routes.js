@@ -184,6 +184,27 @@ export const FlexternshipRoutes = [
         element: <TalentOnboarding />,
     },
     {
+        path: `/${userProfileEdit.client}/*`,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipClientOnboarding />
+            </RoleAccessWrapper>
+        ),
+      },
+    {
         path: '/create-project',
         element: <CreateProject />,
     },
