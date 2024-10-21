@@ -1,0 +1,48 @@
+# This workflow verifies that the project builds successfully on all pull requests
+
+name: Verify Pull Request
+
+on:
+  pull_request:
+    # Trigger this workflow for pull requests to all branches
+    branches: ['*']
+
+jobs:
+  build:
+    # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
+
+    steps:
+    # Check out the repository code
+    - uses: actions/checkout@v4
+
+    # Set up Node.js environment
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.18.0'
+
+    # Cache dependencies
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/yarn
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    # Install project dependencies using Yarn
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile --prefer-offline
+
+    # Attempt to build the project
+    - name: Build project
+      run: yarn build
+
+    # Check if the build was successful
+    - name: Check for build errors
+      run: |
+        if [ $? -ne 0 ]; then
+          echo "Build failed. Please fix the errors before merging."
+          exit 1
+        fi
