@@ -1,0 +1,39 @@
+# This workflow verifies that the project builds successfully on pull requests to specific branches
+
+name: Verify Pull Request Build
+
+on:
+  pull_request:
+    # Trigger this workflow for pull requests to these branches
+    branches: [dev-test, uat, production]
+
+jobs:
+  build:
+    # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
+
+    steps:
+    # Check out the repository code
+    - uses: actions/checkout@v3
+
+    # Set up Node.js environment
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.18.0'  # Specify the Node.js version
+
+    # Install project dependencies using Yarn
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile  # Use frozen lockfile to ensure consistent builds
+
+    # Attempt to build the project
+    - name: Build project
+      run: yarn build
+
+    # Check if the build was successful
+    - name: Check for build errors
+      run: |
+        if [ $? -ne 0 ]; then
+          echo "Build failed. Please fix the errors before merging."
+          exit 1
+        fi
