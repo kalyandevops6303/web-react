@@ -11,8 +11,11 @@ export default function DurationUpdated() {
   const curModal = useProjectCreationStore((state) => state.curModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
 
-  return (isOpen && curModal === ModalType.DURATION_UPDATED) ? (
-    <>
+  if (!isOpen || curModal !== ModalType.DURATION_UPDATED) {
+    return null;
+  }
+
+  return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
         <div className="relative w-full min-w-[41.7rem] max-w-sm rounded-lg  bg-white pt-13 pr-8 pb-8 pl-10  shadow-lg">
           <CloseModalButton onClick={closeModal} />
@@ -30,7 +33,7 @@ export default function DurationUpdated() {
             <div>
               <h2 className=" text-2xl font-medium text-grey-heading">Estimated Duration Updated</h2>
               <p className=" mb-6 mt-2 text-lg text-grey">
-                We’ve updated estimated duration to match sum of milestone durations.
+                We've updated estimated duration to match sum of milestone durations.
               </p>
               <p className=" text-xl font-medium text-grey-600">
                 8 wk {/*update this to dynamic value*/}
@@ -47,8 +50,5 @@ export default function DurationUpdated() {
           </div>
         </div>
       </div>
-    </>
-  ) : (
-    <></>
   )
 }

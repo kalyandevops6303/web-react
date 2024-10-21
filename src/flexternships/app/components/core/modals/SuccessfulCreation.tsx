@@ -4,21 +4,26 @@ import { ModalType } from "@flexternships/types/project-creation-types"
 import CloseModalButton from "../buttons/CloseModalButton"
 import PrimaryButton from "../buttons/PrimaryButton"
 import ChecklistGif from "@flexternships/assets/images/checklist.gif"
+import { useNavigate } from "react-router-dom"
 
 export default function SuccessfulCreation(props: Props) {
   const { onRecall, onConfirm, recallTimeLeft } = props;
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
   const curModal = useProjectCreationStore((state) => state.curModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
+  const navigate = useNavigate();
+
+  if (!isOpen || curModal !== ModalType.PROJECT_CREATED) {
+    return null;
+  }
 
   const handleClose = () => {
     closeModal();
     // redirect
-    window.location.href = "/dashboard";
+    navigate("/dashboard");
   }
 
-  return (isOpen && curModal === ModalType.PROJECT_CREATED) ? (
-    <>
+  return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
         <div className="relative w-full min-w-[40rem] max-w-sm rounded-lg bg-white pt-13 pr-8 pb-8 pl-6  shadow-lg">
           <CloseModalButton onClick={handleClose} />
@@ -54,9 +59,6 @@ export default function SuccessfulCreation(props: Props) {
           </div>
         </div>
       </div>
-    </>
-  ) : (
-    <></>
   )
 }
 

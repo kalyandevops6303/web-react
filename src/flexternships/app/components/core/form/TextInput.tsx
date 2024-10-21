@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import Tooltip from "../Tooltip";
 import { Eye, EyeOff } from "react-feather";
+import { TextInputType } from "@/flexternships/constraints/enums/form-enums";
 
 export default function TextInput(props: InputProps) {
     const {
-        type = "alphanumeric",
+        type = TextInputType.ALPHANUMERIC,
         label,
         required,
         placeholder,
@@ -28,17 +29,13 @@ export default function TextInput(props: InputProps) {
         // Validate based on type
         let isValid = true;
 
-        if (type === "numeric") {
+        if (type === TextInputType.NUMERIC) {
             isValid = !isNaN(Number(newValue)); // Check if value is numeric
-        } else if (type === "alphanumeric") {
-            // Allow letters and numbers (including special characters if necessary)
-            // isValid = /^[a-zA-Z0-9]*$/.test(newValue);
-            isValid = true;
         }
 
         // Only call onChange if valid
-        if(!isValid) return;
-        if (type==="numeric") {
+        if (!isValid) return;
+        if (type === TextInputType.NUMERIC) {
             onChange(Number(newValue));
         } else {
             onChange(newValue);
@@ -103,7 +100,7 @@ type InputProps = {
     value: number | string;
     onChange: (newValue: number | string) => void;
     label: string; // Required field
-    type?: "alphanumeric" | "numeric"; // Optional field
+    type?: TextInputType; // Optional field
     required?: boolean; // Optional field
     readOnly?: boolean; // Optional field
     textarea?: boolean; // Optional field
