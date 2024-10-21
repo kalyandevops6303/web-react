@@ -30,7 +30,9 @@ export default function DraftAvailable() {
                 You have project(s) in draft mode. Would you like to continue where you left off?
               </p>
               <div className=" mt-17 flex justify-end">
-                <SecondaryButton onClick={() => setIsOpen(false)} className=" mr-6" text="Create New Project" />
+                <SecondaryButton onClick={() => setIsOpen(false)} className=" mr-6">
+                  Create New Project
+                </SecondaryButton>
                 <PrimaryButton onClick={() => setIsOpen(false)}>View Drafts</PrimaryButton>
               </div>
             </div>

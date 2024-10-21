@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import Tooltip from "../Tooltip";
+import { Eye, EyeOff } from "react-feather";
 
 export default function TextInput(props: InputProps) {
     const {
@@ -15,8 +16,11 @@ export default function TextInput(props: InputProps) {
         onChange,
         extra,
         error,
-        tooltip
+        tooltip,
+        isPassword
     } = props;
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const newValue = e.target.value;
@@ -41,6 +45,10 @@ export default function TextInput(props: InputProps) {
         }
     }
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    }
+
     return (
         <div className={`${Styles.formFieldContainer} ${className ?? ''}`}>
             <div className={Styles.formInputLabelContainer}>
@@ -60,12 +68,22 @@ export default function TextInput(props: InputProps) {
                 ) : (
                     <div className="w-full flex flex-col relative">
                         <input
+                            type={isPassword && !showPassword ? "password" : "text"}
                             placeholder={placeholder}
                             className={`${Styles.formInput} ${readOnly ? Styles.formInputReadOnly : (error ? Styles.formInputError : Styles.formInputDefault)}`}
                             disabled={readOnly}
                             value={value}
-                            onChange={handleChange} // Use the updated handleChange
+                            onChange={handleChange}
                         />
+                        {isPassword && (
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        )}
                         {
                             extra && (
                                 <span className={Styles.inputTextExtra}>
@@ -74,7 +92,6 @@ export default function TextInput(props: InputProps) {
                             )
                         }
                     </div>
-
                 )
             }
             {error && <p className={Styles.formInputErrorMessage}>{error}</p>}
@@ -95,4 +112,5 @@ type InputProps = {
     extra?: string;
     tooltip?: string;
     error?: string;
+    isPassword?: boolean; // New optional field for password input
 };

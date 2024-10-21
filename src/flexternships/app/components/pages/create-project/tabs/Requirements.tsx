@@ -62,7 +62,7 @@ export default function Requirements() {
     <div className="flex flex-col">
       <div className={Styles.tabContent}>
         <div className={Styles.tabContentHeader}>Project Listing Details</div>
-        <div className={Styles.tabContentBody}>
+        <div className={`${Styles.tabContentBody} px-6 py-5`}>
           <Controller
             name="projectName"
             control={control}
@@ -171,9 +171,10 @@ export default function Requirements() {
       <div className={Styles.buttonsContainer}>
         <SecondaryButton 
           className="mr-6" 
-          text="Save as Draft " 
           onClick={onSaveDraft} 
-          loading={isSaveDraftLoading} />
+          loading={isSaveDraftLoading}>
+            Save as Draft
+          </SecondaryButton>
         <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>
           Continue
         </PrimaryButton>

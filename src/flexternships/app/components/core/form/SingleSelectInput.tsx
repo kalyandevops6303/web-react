@@ -1,7 +1,7 @@
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import { Controller } from "react-hook-form";
 import { AsyncPaginate } from 'react-select-async-paginate';
-import { PaginatedData } from '@/flexternships/services/static-data-services';
+import { PaginatedData } from '@/flexternships/services/user-management';
 import { GroupBase, OptionsOrGroups } from 'react-select';
 import { isEmpty } from 'lodash';
 
@@ -16,7 +16,8 @@ export default function SingleSelectInput(props: InputProps) {
     loadOptions,
     pageSize = 10,
     error,
-    maxMenuHeight
+    maxMenuHeight,
+    disabled = false,
   } = props;
 
   const loadHandler = async (search: string, _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined = { page: 1 }) => {
@@ -50,11 +51,13 @@ export default function SingleSelectInput(props: InputProps) {
                 onChange(null);
               }
             }}
+            isDisabled={disabled}
             maxMenuHeight={maxMenuHeight}
             placeholder={placeholder}  // Direct string for placeholder
             classNames={{
               control: () => `
                 ${error ? Styles.formInputError : Styles.formInputDefault}
+                ${disabled ? 'bg-grey-50' : ''}
                 p-0.5
               `,
               placeholder: () => 'text-xs font-normal leading-5.5 text-grey-200', // Styling applied here
@@ -63,7 +66,7 @@ export default function SingleSelectInput(props: InputProps) {
                 text-xs font-normal leading-5 not-italic
                 ${state.isSelected ? 'bg-trublue-secondary-500 text-white' : state.isFocused ? 'bg-trublue-secondary-50' : 'bg-white text-grey-600'}
               `,
-              dropdownIndicator: () => 'text-grey-300',
+              dropdownIndicator: () => (disabled ? 'text-grey-muted' : 'text-grey-300'),
               indicatorSeparator: () => 'hidden',
             }}
           />
@@ -86,6 +89,7 @@ type InputProps = {
   loadOptions: (page: number, pageSize: number, search: string) => Promise<PaginatedData>;
   error?: string;
   maxMenuHeight?: number;
+  disabled?: boolean;
 };
 
 type OptionType = {

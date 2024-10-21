@@ -1,33 +1,62 @@
-export const baseUrls = {
-    projectManagementV2: `${import.meta.env.VITE_API_ENDPOINT}/projectv2/api/v1`,
-    userManagement: `${import.meta.env.VITE_API_ENDPOINT}/user/api/v1`,
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+const serviceUrls = {
+    projectManagementV2: `${baseUrl}/projectv2/api/v1`,
+    userManagement: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v1`,
+    userManagementV2: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v2`,
 }
 
 export const routes = {
     projectManagementV2: {
         files: {
-            getUploadUrl: `${baseUrls.projectManagementV2}/project/file`,
-            getDownloadUrl: `${baseUrls.projectManagementV2}/download/url`,
+            getUploadUrl: `${serviceUrls.projectManagementV2}/project/file`,
+            getDownloadUrl: `${serviceUrls.projectManagementV2}/download/url`,
         },
         project: {
-            create: `${baseUrls.projectManagementV2}/project`,
-            saveDraft: `${baseUrls.projectManagementV2}/project/draft/save`,
+            create: `${serviceUrls.projectManagementV2}/project`,
+            saveDraft: `${serviceUrls.projectManagementV2}/project/draft/save`,
         }
     },
     userManagement: {
         static: {
             skills: {
-                fetchAll: `${baseUrls.userManagement}/static/skills/all`,
-                fetchPaginated: `${baseUrls.userManagement}/static/skills/paginated`
+                fetchAll: `${serviceUrls.userManagement}/static/skills/all`,
+                fetchPaginated: `${serviceUrls.userManagement}/static/skills/paginated`
             },
             tools: {
-                fetchAll: `${baseUrls.userManagement}/static/tools/all`,
-                fetchPaginated: `${baseUrls.userManagement}/static/tools/paginated`
+                fetchAll: `${serviceUrls.userManagement}/static/tools/all`,
+                fetchPaginated: `${serviceUrls.userManagement}/static/tools/paginated`
             },
             roles: {
-                fetchAll: `${baseUrls.userManagement}/static/talent-role`,
-                fetchPaginated: `${baseUrls.userManagement}/static/talent-role/paginated`
+                fetchAll: `${serviceUrls.userManagement}/static/talent-role`,
+                fetchPaginated: `${serviceUrls.userManagement}/static/talent-role/paginated`
+            },
+            companyIndustry: {
+                fetchPaginated: `${serviceUrls.userManagement}/static/company-industry/paginated`
+            },
+            country: {
+                fetchPaginated: `${serviceUrls.userManagement}/static/country/paginated`
+            },
+            state: {
+                fetchPaginatedByCountry: `${serviceUrls.userManagement}/static/state-by-id/paginated`
+            },
+            city: {
+                fetchPaginatedByState: `${serviceUrls.userManagement}/static/city/paginated`
+            },
+        },
+        files: {
+            getImageUploadUrl: `${serviceUrls.userManagement}/user/profile/image-url`,
+        },
+        user: {
+            getUserDetails: `${serviceUrls.userManagement}/user/details`,
+            v2: {
+                postAccountDetails: `${serviceUrls.userManagementV2}/client/account-details`,
+                putProfileDetails: `${serviceUrls.userManagementV2}/client/profile-details`,
+                getOrganisationDetails: `${serviceUrls.userManagementV2}/client/organisation-details`,
             }
+        },
+        password: {
+            changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
         }
     }
     

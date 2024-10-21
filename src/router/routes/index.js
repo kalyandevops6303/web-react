@@ -44,6 +44,9 @@ import InternalProjects from '../../views/internal/projects';
 import NotFound from '../../views/NotFound';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
 import CreateFlexternProject from '@flexternships/app/create-project/page';
+import { isFlexternshipApp } from '@/configs/api/env';
+import { FlexternshipRoutes } from './flexternship-routes';
+import { OneOffRoutes } from './one-off-routes';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -51,211 +54,8 @@ const getLayout = {
   horizontal: <HorizontalLayout />,
 };
 
-// ** Document title
-const TemplateTitle = '%s - Vuexy React Admin Template';
-
-// ** Default Route
-const DefaultRoute = '/auth';
-
 // ** Merge Routes
-const Routes = [
-  {
-    path: '/',
-    index: true,
-    element: <Navigate replace to={DefaultRoute} />,
-  },
-  {
-    path: '/dashboard',
-    element: <PrivateDashboard />,
-  },
-  {
-    path: '/search',
-    element: <Search />,
-  },
-  {
-    path: '/profile/:userType/:userId',
-    element: <UserDetails />,
-  },
-  {
-    path: '/marketplace/*',
-    element: <MarketPlace />,
-  },
-  {
-    path: '/project-details/:projectId/*',
-    element: <ProjectDetails />,
-  },
-  {
-    path: '/project-details/:projectId/bid/:bidId',
-    element: <BidDetails />,
-  },
-
-  {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
-    element: <ContractView />,
-  },
-  {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
-    element: <ContractView />,
-  },
-  {
-    path: '/projects/*',
-    element: <Projects />,
-  },
-  {
-    path: '/my-teams/*',
-    element: <MyTeams />,
-  },
-
-  {
-    path: '/clubs/*',
-    element: <Clubs />,
-  },
-
-  {
-    path: '/auth/*',
-    element: <AuthRoute />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/coming-soon',
-    element: <ComingSoon />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: `/${userOnboarding.talent}/:section-details`,
-    element: <TalentOnboarding />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: `/${userOnboarding.client}/:section-details`,
-    element: <ClientOnboarding />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: `/${userProfileEdit.talent}/:section-details`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userProfileEdit.client}/:section-details`,
-    element: <ClientOnboarding />,
-  },
-  {
-    path: '/create-project',
-    element: <CreateProject />,
-  },
-  {
-    path: '/create-project/:projectId',
-    element: <CreateProject />,
-  },
-  {
-    path: '/notifications',
-    element: <Notifications />,
-  },
-  {
-    path: '/create-bid/:projectId/:bidType/:bidId/*',
-    element: <CreateBid />,
-  },
-  {
-    path: '/team-invitation/:inviteId',
-    element: <TeamInvitation />,
-  },
-  {
-    path: '/join-request/:inviteId',
-    element: <TeamInvitation />,
-  },
-  {
-    path: '/club-invitation/:inviteId',
-    element: <ClubInvitation />,
-  },
-
-  {
-    path: '/create-team/:section-details',
-    element: <CreateTeam />,
-  },
-  {
-    path: '/create-team/:section-details/:id',
-    element: <CreateTeam />,
-  },
-  {
-    path: `/${userProfileEdit.team}/:section-details`,
-    element: <CreateTeam />,
-  },
-  {
-    path: '/create-club/:section-details',
-    element: <CreateClub />,
-  },
-  {
-    path: `/${userProfileEdit.club}/:section-details`,
-    element: <CreateClub />,
-  },
-  {
-    path: '/create-club/:section-details/:id',
-    element: <CreateClub />,
-  },
-  {
-    path: '/disputes/*',
-    element: <Disputes />,
-  },
-  {
-    path: '/referral-reward/*',
-    element: <ReferralAndReward />,
-  },
-  {
-    path: '/chat',
-    element: <Chat />,
-  },
-  {
-    path: '/payments',
-    element: <PaymentFullView />,
-  },
-  {
-    path: '/assessments',
-    element: <Assessments />,
-  },
-  {
-    path: '/internal/projects',
-    element: <InternalProjects />,
-  },
-  {
-    path: `/${userProfileEdit.talent}/intern-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userProfileEdit.talent}/intern-xobin-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userOnboarding.talent}/intern-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userOnboarding.talent}/intern-xobin-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path:`${userOnboarding.talent}/choose-program`,
-    element: <ChooseProgram />,
-    meta: {
-      layout: 'blank',
-    }
-  },
-  {
-    path: `/flexternships/create-project`,
-    element: <CreateFlexternProject />,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
-];
+const Routes = isFlexternshipApp ? FlexternshipRoutes : OneOffRoutes;
 
 // eslint-disable-next-line consistent-return
 const getRouteMeta = (route) => {
@@ -329,4 +129,4 @@ const getRoutes = (layout) => {
   return AllRoutes;
 };
 
-export { DefaultRoute, TemplateTitle, Routes, getRoutes };
+export { Routes, getRoutes };

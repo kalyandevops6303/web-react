@@ -59,7 +59,9 @@ export default function UpdateDurationModal({
                 <div className="text-grey-300 text-xs">Revised Estimated Duration (in weeks)</div>
               </div>
               <div className="mt-6 flex justify-end">
-                <SecondaryButton onClick={closeModal} className=" mr-6" text="Go Back" />
+                <SecondaryButton onClick={closeModal} className=" mr-6">
+                  Go Back
+                </SecondaryButton>
                 <PrimaryButton onClick={onConfirm}>Update Duration</PrimaryButton>
               </div>
             </div>

@@ -12,7 +12,10 @@ module.exports = {
     extend: {
       colors: {
         transparent: "transparent",
-        white: "#fff",
+        white: {
+          DEFAULT: "#fff",
+          fa: "#fafafa",
+        },
         grey: {
           DEFAULT: "#6E6B7B",
           light: "#F8F8F8",
@@ -81,6 +84,7 @@ module.exports = {
       boxShadow: {
         'card': '0px 4px 24px 0px rgba(0, 0, 0, 0.06)',
         'table': '0px 4px 6px -1px rgba(0, 0, 0, 0.10)',
+        'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
       },
     },
   },

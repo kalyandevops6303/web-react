@@ -29,7 +29,9 @@ export default function SaveForLaterModal() {
                 <h2 className=" text-2xl font-medium text-grey-heading">Save For Later</h2>
                 <p className="mt-2 text-lg text-grey">You have unsaved work. Do you want to save it as a draft?</p>
                 <div className="mt-17 flex justify-end">
-                  <SecondaryButton onClick={() => setIsOpen(false)} cancel={true} className=" mr-6" text="Discard" />
+                  <SecondaryButton onClick={() => setIsOpen(false)} cancel={true} className=" mr-6">
+                    Discard
+                  </SecondaryButton>
                   <PrimaryButton onClick={() => setIsOpen(false)}>Save as Draft</PrimaryButton>
                 </div>
               </div>

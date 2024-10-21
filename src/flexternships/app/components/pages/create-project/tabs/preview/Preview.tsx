@@ -59,7 +59,7 @@ export default function Preview() {
         <div className={Styles.tabContentHeader}>
           Project Details
         </div>
-        <div className={Styles.tabContentBody}>
+        <div className={Styles.previewCardBody}>
           <ProjectDetailsItem className='w-[460px] mb-5' title='Project name' value={formData.requirements.projectName || 'NaN'} />
           <ProjectDetailsItem className='w-[280px] mb-5' title='Estimated Duration' value={`${formData.requirements.estimatedDuration} weeks`} tooltip='Estimated duration of the project in weeks' />
           <ProjectDetailsItem className='w-[280px] mb-5' title='Listing Duration' value={`${formatEpochToHumanReadable(formData.listingDetails.listingStartDate)} to ${formatEpochToHumanReadable(formData.listingDetails.listingEndDate)}`} />
@@ -73,7 +73,7 @@ export default function Preview() {
         <div className={Styles.tabContentHeader}>
           Project Description
         </div>
-        <div className={Styles.tabContentBody}>
+        <div className={Styles.previewCardBody}>
           <div className='mt-5 w-full text-grey-heading text-base not-italic font-normal leading-6'>
             {
               formData.requirements.projectDescription || 'NaN'
@@ -91,7 +91,7 @@ export default function Preview() {
         <div className={Styles.tabContentHeader}>
           Roles
         </div>
-        <div className={Styles.tabContentBody}>
+        <div className={Styles.previewCardBody}>
           <div className={Styles.rolesPreview}>
             <div className={Styles.rolesPreviewHeader}>
               <div className={`${Styles.rolesPreviewHeaderItem} w-[240px]`}>
@@ -121,7 +121,7 @@ export default function Preview() {
         <div className={Styles.tabContentHeader}>
           Milestones
         </div>
-        <div className={Styles.tabContentBody}>
+        <div className={Styles.previewCardBody}>
           <div className={Styles.milestonesPreview}>
             <div className={Styles.milestonesPreviewHeader}>
               <div className={`${Styles.milestonesPreviewHeaderItem} w-[200px]`}>
@@ -148,7 +148,9 @@ export default function Preview() {
         {/* Make this a separate component */}
         <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' text='Save as Draft ' onClick={saveAsDraft} />
+          <SecondaryButton className='mr-6' onClick={saveAsDraft}>
+            Save as Draft
+          </SecondaryButton>
           <PrimaryButton onClick={handlePost}>
             <span className='mr-2'>
               Post

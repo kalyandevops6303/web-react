@@ -2,7 +2,14 @@ import axios from 'axios';
 import { ProjectCreationFormData } from '@flexternships/types/project-creation-types';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
+import { handleError } from '@flexternships/utils/error-utils';
 
+/**
+ * Retrieves a file upload URL for a given filename.
+ * @param filename - The name of the file to be uploaded.
+ * @returns A Promise that resolves to the upload URL data.
+ * @throws {Error} If the file upload URL retrieval fails or an unexpected error occurs.
+ */
 export const getFileUploadUrl = async (filename: string) => {
     const headers = appendAuthToken({});
     const config = {
@@ -11,10 +18,20 @@ export const getFileUploadUrl = async (filename: string) => {
             filename: filename,
         }
     }
-    const response = await axios.get(routes.projectManagementV2.files.getUploadUrl, config);
-    return response.data;
+    try {
+        const response = await axios.get(routes.projectManagementV2.files.getUploadUrl, config);
+        return response.data;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while retrieving the file upload URL');
+    }
 }
 
+/**
+ * Retrieves a file download URL for a given file key.
+ * @param fileKey - The key of the file to be downloaded.
+ * @returns A Promise that resolves to the download URL data.
+ * @throws {Error} If the file download URL retrieval fails or an unexpected error occurs.
+ */
 export const getFileDownloadUrl = async (fileKey: string) => {
     const headers = appendAuthToken({});
     const config = {
@@ -23,20 +40,20 @@ export const getFileDownloadUrl = async (fileKey: string) => {
             file_key: fileKey,
         }
     }
-    const response = await axios.get(routes.projectManagementV2.files.getDownloadUrl, config);
-    return response.data;
+    try {
+        const response = await axios.get(routes.projectManagementV2.files.getDownloadUrl, config);
+        return response.data;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while retrieving the file download URL');
+    }
 }
 
-export const uploadFileToUrl = async (url: string, file: any) => {
-    const uploadResponse = await axios.put(url, file, {
-        headers: {
-            'x-ms-blob-type': 'BlockBlob',
-            'Content-Type': file.type,
-        }
-    });
-    return uploadResponse;
-}
-
+/**
+ * Creates a new Flextern project.
+ * @param projectData - The data for the project to be created.
+ * @returns A Promise that resolves to the created project ID or undefined.
+ * @throws {Error} If the project creation fails or an unexpected error occurs.
+ */
 export const createFlexternProject: (projectData: ProjectCreationFormData) => Promise<string | undefined> = async (projectData) => {
     const headers = appendAuthToken({});
     const config = {
@@ -86,12 +103,20 @@ export const createFlexternProject: (projectData: ProjectCreationFormData) => Pr
         })),
     };
 
-    const response = await axios.post(routes.projectManagementV2.project.create, formattedProjectData, config)
-
-    return response.data?.project_id || undefined;
+    try {
+        const response = await axios.post(routes.projectManagementV2.project.create, formattedProjectData, config)
+        return response.data?.project_id || undefined;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while creating the Flextern project');
+    }
 }
 
-// TODO - Implement this service
+/**
+ * Creates a draft of a Flextern project.
+ * @param projectData - The data for the project draft to be created.
+ * @returns A Promise that resolves to the created draft project ID or undefined.
+ * @throws {Error} If the project draft creation fails or an unexpected error occurs.
+ */
 export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) => Promise<string | undefined> = async (projectData) => {
     const headers = appendAuthToken({});
     const config = {
@@ -141,7 +166,10 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
         })),
     };
 
-    const response = await axios.post(routes.projectManagementV2.project.saveDraft, formattedProjectData, config)
-
-    return response.data?.project_id || undefined;
+    try {
+        const response = await axios.post(routes.projectManagementV2.project.saveDraft, formattedProjectData, config)
+        return response.data?.project_id || undefined;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
+    }
 }
