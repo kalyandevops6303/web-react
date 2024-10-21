@@ -39,7 +39,9 @@ export default function DurationUpdated() {
                 Revised Estimated Duration (in weeks)
               </p>
               <div className="mt-6 flex justify-end">
-                <SecondaryButton onClick={closeModal} text="Close" />
+                <SecondaryButton onClick={closeModal}>
+                  Close
+                </SecondaryButton>
               </div>
             </div>
           </div>

@@ -1,5 +1,7 @@
 import { createFlexternProjectDraft } from "@flexternships/services/project-management-v2"
 import { Milestone, ModalType, ProjectCreationState, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
+import { showToastMessage } from "@flexternships/utils/toast-utils"
+import { ToastType } from "@flexternships/enums/core-enums"
 
 export const nextTab = (set: any) => {
   // This is called after validation
@@ -23,8 +25,7 @@ export const saveDraft = async (get: any, set: any) => {
     projectId = await createFlexternProjectDraft(draftData);
     openModal(ModalType.DRAFT_SAVED, set);
   } catch (error) {
-    // TODO - Add ERROR TOAST
-    console.log("There's an error while saving the draft: ", error);
+    showToastMessage(ToastType.ERROR, "An unexpected error occurred while saving the draft");
   }
   set({ isSaveDraftLoading: false });
   return projectId;

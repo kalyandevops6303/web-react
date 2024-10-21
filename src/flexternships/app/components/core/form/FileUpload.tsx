@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
 import { Upload } from 'react-feather';
 import { useFieldArray } from "react-hook-form";
-import { getFileDownloadUrl, getFileUploadUrl, uploadFileToUrl } from "@flexternships/services/project-management-v2";
+import { getFileDownloadUrl, getFileUploadUrl } from "@flexternships/services/project-management-v2";
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import { dateToEpoch, formatEpochToHumanReadable } from "@flexternships/utils/date-utils";
 import { formatFileSize } from "@flexternships/utils/file-utils";
 import HorizontalFileCard from "../files/HorizontalFileCard";
+import { uploadFileToUrl } from "@/flexternships/services/core-service";
 
 export default function FileUpload(props: InputProps) {
     const { name, control, label, required, placeholder, className } = props;

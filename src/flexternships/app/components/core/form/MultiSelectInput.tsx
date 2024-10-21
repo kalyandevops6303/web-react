@@ -1,7 +1,7 @@
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import { Controller } from "react-hook-form";
 import { AsyncPaginate } from 'react-select-async-paginate';
-import { PaginatedData } from '@/flexternships/services/static-data-services';
+import { PaginatedData } from '@/flexternships/services/user-management';
 import { GroupBase, OptionsOrGroups } from 'react-select';
 
 export default function MultiSelectInput(props: InputProps) {
