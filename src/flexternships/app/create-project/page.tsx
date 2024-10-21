@@ -9,8 +9,12 @@ import Milestones from "@flexternships/app/components/pages/create-project/tabs/
 import Preview from "@flexternships/app/components/pages/create-project/tabs/preview/Preview";
 import Requirements from "@flexternships/app/components/pages/create-project/tabs/Requirements";
 import Roles from "@flexternships/app/components/pages/create-project/tabs/roles/Roles";
+import SaveForLater from "../components/core/modals/SaveForLater";
+import { useProjectCreationStore } from "@/flexternships/stores/project-creation-store";
+import { ModalType } from "@/flexternships/constraints/types/project-creation-types";
 
 export default function CreateFlexternProject() {
+  const openModal = useProjectCreationStore((state) => state.openModal);
   const navigate = useNavigate();
 
   const tabs = [
@@ -55,10 +59,16 @@ export default function CreateFlexternProject() {
     navigate('/dashboard');
   }
 
+  const openSaveForLaterModal = () => {
+    openModal(ModalType.SAVE_FOR_LATER);
+  }
+
+
   return (
     <div className="flexternships-page p-6">
-      <PrimaryIconText onClick={onBack} className={'mb-2.5'} text='Create Project' icon={<ArrowLeft className={'text-white'} size={18} />} bgDark />
+      <PrimaryIconText onClick={openSaveForLaterModal} className={'mb-2.5'} text='Create Project' icon={<ArrowLeft className={'text-white'} size={18} />} bgDark />
       <TabNavigationForm tabs={tabs} />
+      <SaveForLater onCancel={onBack} />
     </div>
   )
 }

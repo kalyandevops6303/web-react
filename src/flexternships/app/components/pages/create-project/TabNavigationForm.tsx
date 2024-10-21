@@ -15,6 +15,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
         }
     }
 
+
     return (
         <div className={Styles.formContainer}>
             <div className={Styles.tabsContainer}>
@@ -45,7 +46,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
             </div>
             <SavedDrafts onConfirm={() => ''} />
         </div>
-    )
+    );
 }
 
 type TabProp = {
