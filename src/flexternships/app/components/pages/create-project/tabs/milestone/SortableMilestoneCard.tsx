@@ -9,6 +9,7 @@ import TextInput from '@flexternships/app/components/core/form/TextInput';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { Milestone } from '@flexternships/types/project-creation-types';
 import reorderIcon from '@flexternships/assets/icons/core/reorderIcon.svg';
+import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 
 export default function SortableMilestoneCard(props: Props) {
     const { id, milestoneIndex, removable, control, remove, errors } = props;
@@ -75,7 +76,7 @@ export default function SortableMilestoneCard(props: Props) {
                                 className="w-[247px]"
                                 label="Duration (in weeks)"
                                 placeholder="Enter duration"
-                                type='numeric'
+                                type={TextInputType.NUMERIC}
                                 extra="wk"
                                 error={errors?.duration?.message}
                                 required />
