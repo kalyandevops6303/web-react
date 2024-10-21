@@ -337,6 +337,7 @@ const authSlice = createSlice({
       ...state,
       loading: false,
       appPermissions: action.payload,
+
     }),
 
     getAppPermissionsFailure: (state, action) => ({

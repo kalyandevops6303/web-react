@@ -360,15 +360,10 @@ const PrivateDashboard = () => {
             </section>
           </PermissionWrapper>
           {userDetailsData?.user_type === userTypes.client && (
-            <PermissionWrapper
-              permissions={appPermissions}
-              permissionName={['DASHBOARD.OPEN_LISTINGS.RECEIVED_BIDS', 'DASHBOARD.OPEN_LISTINGS.EXPIRED_LISTINGS']}
-            >
               <section className="mb-2">
                 <Header className="mb-1">Open Listings</Header>
                 <OpenListing />
               </section>
-            </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.client && (
             <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.RECOMMENDED_TEAMS']}>
@@ -399,15 +394,10 @@ const PrivateDashboard = () => {
             </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.talent && (
-            <PermissionWrapper
-              permissions={appPermissions}
-              permissionName={['DASHBOARD.INVITES.TEAM_INVITES', 'DASHBOARD.INVITES.PROJECT_INVITES']}
-            >
               <section className="mb-2">
                 <Header className="mb-1">Invites</Header>
                 <InviteListing />
               </section>
-            </PermissionWrapper>
           )}
         </Col>
 
@@ -419,7 +409,7 @@ const PrivateDashboard = () => {
                   <AvailableTime />
                 </PermissionWrapper>
               ) : (
-                !isFlexternInvited && <AssessmentsOverview />
+                !isFlexternInvited && <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.ASSESSMENTs']}><AssessmentsOverview /></PermissionWrapper>
               )}
             </div>
           )}

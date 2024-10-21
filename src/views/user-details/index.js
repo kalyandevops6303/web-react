@@ -42,6 +42,7 @@ const UserDetails = () => {
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
+  const isFlextern = useSelector((state) => state.auth?.flextern);
   const userDataSelector = useSelector(selectUserData);
   const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
   const appPermissions = useSelector(appPermissionsSelector);
