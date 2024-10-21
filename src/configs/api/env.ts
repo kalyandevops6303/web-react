@@ -1,8 +1,10 @@
 export const isFlexternshipApp: boolean = (import.meta.env.VITE_IS_FLEXTERNSHIP_APP === 'true');
 
-export const apiAuthEndpoint: string = `${import.meta.env.VITE_API_AUTH_ENDPOINT}`;
-export const apiOnboardingEndpoint: string = `${import.meta.env.VITE_API_ONBOARDING_ENDPOINT}`;
-export const apiCreateProjectEndpoint: string = `${import.meta.env.VITE_API_CREATE_PROJECT_ENDPOINT}`;
-export const apiCreateProjectAIEndpoint: string = `${import.meta.env.VITE_API_AI_ASSIST_ENDPOINT}`;
-export const apiPaymentEndPoint: string = `${import.meta.env.VITE_API_PAYMENT_ENDPOINT}`;
-export const apiProjectInfraEndpoint: string = `${import.meta.env.VITE_API_PROJECT_INFRA_ENDPOINT}`;
+// API ENDPOINTS
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+export const apiAuthEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}`;
+export const apiOnboardingEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}`;
+export const apiCreateProjectEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_CREATE_PROJECT_PATH}`;
+export const apiCreateProjectAIEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_AI_ASSIST_PATH}`;
+export const apiPaymentEndPoint: string = `${baseUrl}/${import.meta.env.VITE_API_PAYMENT_PATH}`;
+export const apiProjectInfraEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_PROJECT_INFRA_PATH}`;

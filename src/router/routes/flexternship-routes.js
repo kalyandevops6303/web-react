@@ -45,9 +45,9 @@ import NotFound from '../../views/NotFound';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
 
 import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
-import AccessWrapper from '@/flexternships/app/components/core/wrappers/AccessWrapper';
 import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
+import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
 
 
 // ** Default Route
@@ -63,7 +63,7 @@ export const FlexternshipRoutes = [
     {
         path: '/dashboard',
         element: (
-            <AccessWrapper
+            <RoleAccessWrapper
                 allowedAppRoles={[
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
@@ -88,7 +88,7 @@ export const FlexternshipRoutes = [
                 ]}
             >
                 <PrivateDashboard />
-            </AccessWrapper >
+            </RoleAccessWrapper >
         ),
     },
     {
@@ -158,7 +158,7 @@ export const FlexternshipRoutes = [
     {
         path: `/client-onboarding/*`,
         element: (
-            <AccessWrapper
+            <RoleAccessWrapper
                 allowedAppRoles={[
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
@@ -173,7 +173,7 @@ export const FlexternshipRoutes = [
                 ]}
             >
                 <FlexternshipClientOnboarding />
-            </AccessWrapper>
+            </RoleAccessWrapper>
         ),
         meta: {
             layout: 'blank',

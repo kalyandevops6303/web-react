@@ -1,7 +1,7 @@
 export const baseUrls = {
-    projectManagementV2: `${import.meta.env.VITE_API_ENDPOINT}/projectv2/api/v1`,
-    userManagement: `${import.meta.env.VITE_API_ENDPOINT}/user/api/v1`,
-    userManagementV2: `${import.meta.env.VITE_API_ENDPOINT}/user/api/v2`,
+    projectManagementV2: `${import.meta.env.VITE_API_BASE_URL}/projectv2/api/v1`,
+    userManagement: `${import.meta.env.VITE_API_BASE_URL}/user/api/v1`,
+    userManagementV2: `${import.meta.env.VITE_API_BASE_URL}/user/api/v2`,
 }
 
 export const routes = {

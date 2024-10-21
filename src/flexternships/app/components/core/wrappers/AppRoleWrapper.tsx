@@ -8,7 +8,7 @@ import { isEmpty } from 'lodash';
 
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
-export default function AccessWrapper(props: AccessWrapperProps) {
+export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     const { children, allowedAppRoles, fallbackRoute } = props;
     const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
     const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
@@ -59,7 +59,7 @@ export default function AccessWrapper(props: AccessWrapperProps) {
     return children;
 }
 
-type AccessWrapperProps = {
+type RoleAccessWrapperProps = {
     children: React.ReactNode;
     allowedAppRoles: {
         appRole: FlexternUserAppRole;
