@@ -28,6 +28,7 @@ import { validateUrl } from '../../redux/actions/dashboardActions';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
+import UserRetryCountAuth from './UserRetryCountAuth';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -203,8 +204,12 @@ const Login = () => {
             {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
           </div>
 
-          <div className="form-check mb-1">
-            <div className="d-flex justify-content-end fw-bold">
+          <UserRetryCountAuth />
+          <Button size="btn-sm" type="submit" color="primary" block disabled={!emailValue || !passValue || isLoading}>
+            {isLoading ? <Spinner size="sm" /> : 'Sign in'}
+          </Button>
+          {/* <div className="form-check mb-1"> */}
+            <div className="d-flex justify-content-center fw-bold w-full mt-1">
               <Label
                 tag={Link}
                 to="/auth/forgot-password"
@@ -215,10 +220,7 @@ const Login = () => {
                 <small>Forgot Password?</small>
               </Label>
             </div>
-          </div>
-          <Button size="btn-sm" type="submit" color="primary" block disabled={!emailValue || !passValue || isLoading}>
-            {isLoading ? <Spinner size="sm" /> : 'Sign in'}
-          </Button>
+          {/* </div> */}
         </Form>
         {/* <div className="divider my-2 custom-divider">
           <div className="divider-text">Or</div>

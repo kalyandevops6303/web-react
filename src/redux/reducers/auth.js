@@ -26,6 +26,8 @@ const initialState = {
   profileCompletionFlextern: null,
   profileCompletionFlexternLoading: false,
   appPermissions: null,
+  flexternshipInviteType: null,
+  userLoginAttemptNo: null,
 };
 
 const authSlice = createSlice({
@@ -49,7 +51,7 @@ const authSlice = createSlice({
       error: null,
       fcmToken: '',
       userType: null,
-      
+      userLoginAttemptNo: null,
     }),
 
     logOut: () => ({
@@ -126,6 +128,17 @@ const authSlice = createSlice({
       ...state,
       loading:false,
       error: action.payload,
+    }),
+    // set flexternship invite type
+
+    setFlexternshipInviteType: (state,action) => ({
+      ...state,
+      flexternshipInviteType: action.payload
+    }),
+
+    setUserLoginAttemptNo: (state,action) => ({
+      ...state,
+      userLoginAttemptNo: action.payload,
     }),
     // verify request invitation token
 
@@ -485,8 +498,9 @@ export const {
   setTalentBooleanIsFlextern,
   profileCompletionFlexternRequest, 
   profileCompletionFlexternSuccess, 
-  profileCompletionFlexternFailure
-
+  profileCompletionFlexternFailure,
+  setFlexternshipInviteType,
+  setUserLoginAttemptNo,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -27,7 +27,7 @@ import { getItem } from '../../utility/localStorageControl';
 import theme from '../../configs/themeVariables';
 import ResendOTPComp from './components/ResendOTP';
 
-const RegisterPhoneTalent = () => {
+const RegisterPhoneFlextern = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const savedFormData = useSelector(formData);
@@ -137,8 +137,8 @@ const RegisterPhoneTalent = () => {
     setError(response);
     dispatch(clearAllFormData());
   };
-  const mobileValue = watch('mobile');
 
+  const mobileValue = watch('mobile')
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -236,4 +236,4 @@ const RegisterPhoneTalent = () => {
   );
 };
 
-export default RegisterPhoneTalent;
+export default RegisterPhoneFlextern;

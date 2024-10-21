@@ -12,6 +12,8 @@ export const selectTrumioTalent = createSelector(authSelector, (auth) => auth.tr
  
 export const selectAuthUserData = createSelector(authSelector, (auth) => auth.userData);
 
+export const selectFlexternInviteType = createSelector(authSelector, (auth) => auth.flexternshipInviteType);
+
 export const selectUserData = createSelector(authSelector, (auth) => auth.userData);
 
 export const selectSavedUserData = createSelector(authSelector, (auth) => auth.savedUserData);
@@ -37,3 +39,5 @@ export const checkAdmin = createSelector(authSelector, (auth) => auth.checkAdmin
 export const checkAdminLoading = createSelector(authSelector, (auth) => auth.checkAdminLoading);
 
 export const appPermissionsSelector = createSelector(authSelector, (auth) => auth.appPermissions);
+
+export const userAttemptNo = createSelector(authSelector, (auth) => auth.userLoginAttemptNo)
