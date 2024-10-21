@@ -18,6 +18,7 @@ export default function ClientOnboardingSuccessModal({ isOpen, onClose }: Client
     populateUserDetails(true);
     navigate('/dashboard');
   }
+
   if (!isOpen) return null;
 
   return (

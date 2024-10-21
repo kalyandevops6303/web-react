@@ -26,7 +26,11 @@ export default function UpdateDurationModal({
     }
   }, [revisedEstimatedDuration, estimatedDuration])
 
-  return (isOpen && (curModal === ModalType.DURATION_UNDERSHOT || curModal === ModalType.DURATION_OVERSHOT)) ? (
+  if (!isOpen || (curModal !== ModalType.DURATION_UNDERSHOT && curModal !== ModalType.DURATION_OVERSHOT)) {
+    return null;
+  }
+
+  return (
     <>
       <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
         <div className="relative w-full min-w-[40rem] max-w-sm rounded-lg bg-white pt-13 pr-8 pb-8 pl-6  shadow-lg">
@@ -69,8 +73,6 @@ export default function UpdateDurationModal({
         </div>
       </div>
     </>
-  ) : (
-    <></>
   )
 }
 
