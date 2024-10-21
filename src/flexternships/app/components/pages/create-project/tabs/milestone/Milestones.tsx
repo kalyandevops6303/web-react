@@ -12,7 +12,7 @@ import UpdateDurationModal from '@flexternships/app/components/core/modals/Updat
 import { MilestonesFormSchema } from '@flexternships/schemas/project-creation-schemas';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
-import { MilestonesForm, ModalType } from '@flexternships/types/project-creation-types';
+import { MilestoneInfoType, MilestonesForm, ModalType } from '@flexternships/types/project-creation-types';
 import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import MilestoneInfo from './MilestoneInfo';
 import SortableMilestoneCard from './SortableMilestoneCard';
@@ -33,7 +33,7 @@ export default function Milestones() {
     closeModal,
   } = useProjectCreationStore();
 
-  const [milestoneDurationState, setMilestoneDurationState] = useState<"undershot" | "overshot" | "balanced" | "updated">("balanced");
+  const [milestoneDurationState, setMilestoneDurationState] = useState<MilestoneInfoType>(MilestoneInfoType.BALANCED);
   const sensors = useSensors(useSensor(PointerSensor));
 
   const {
@@ -82,17 +82,17 @@ export default function Milestones() {
 
   useEffect(() => {
     if (durationDiff > 0) {
-      setMilestoneDurationState('overshot');
+      setMilestoneDurationState(MilestoneInfoType.OVERSHOT);
     } else if(durationDiff < 0) {
-      setMilestoneDurationState('undershot');
-    } else if(milestoneDurationState!=='updated') {
-      setMilestoneDurationState("balanced");
+      setMilestoneDurationState(MilestoneInfoType.UNDERSHOT);
+    } else if(milestoneDurationState!==MilestoneInfoType.UPDATED) {
+      setMilestoneDurationState(MilestoneInfoType.BALANCED);
     }
   }, [durationDiff, milestoneDurationState, sumOfMilestoneDuration]);
 
   const matchEstimatedDuration = () => {
     updateEstimatedDuration(sumOfMilestoneDuration);
-    setMilestoneDurationState("updated");
+    setMilestoneDurationState(MilestoneInfoType.UPDATED);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -140,7 +140,7 @@ export default function Milestones() {
             <div className='flex flex-col items-end relative'>
               <span className={Styles.durationValue}>
                 {estimatedDuration} wk
-                {milestoneDurationState === "updated" && <span className={Styles.milestoneDurationUpdatedTag}>Updated</span>}
+                {milestoneDurationState === MilestoneInfoType.UPDATED && <span className={Styles.milestoneDurationUpdatedTag}>Updated</span>}
               </span>
               {durationDiff !== 0 && (
                 <span className={`${Styles.durationValueDiff} ${durationDiff < 0 ? Styles.undershot : Styles.exceed}`}>

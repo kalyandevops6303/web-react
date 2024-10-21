@@ -1,5 +1,6 @@
 "use client" // Mark this component as Client Component
 import { ArrowLeft, Box, Check, Clock, FileText, Users } from "react-feather";
+import { useNavigate } from "react-router-dom";
 
 import PrimaryIconText from "@flexternships/app/components/core/buttons/PrimaryIconText";
 import TabNavigationForm from "@flexternships/app/components/pages/create-project/TabNavigationForm"
@@ -10,6 +11,7 @@ import Requirements from "@flexternships/app/components/pages/create-project/tab
 import Roles from "@flexternships/app/components/pages/create-project/tabs/roles/Roles";
 
 export default function CreateFlexternProject() {
+  const navigate = useNavigate();
 
   const tabs = [
     {
@@ -50,8 +52,9 @@ export default function CreateFlexternProject() {
   ]
 
   const onBack = () => {
-    window.location.href = '/dashboard';
+    navigate('/dashboard');
   }
+
   return (
     <div className="flexternships-page p-6">
       <PrimaryIconText onClick={onBack} className={'mb-2.5'} text='Create Project' icon={<ArrowLeft className={'text-white'} size={18} />} bgDark />
