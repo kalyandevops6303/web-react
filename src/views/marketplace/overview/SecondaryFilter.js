@@ -46,7 +46,8 @@ import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
 import PermissionWrapper from '@/PermissionWrapper';
-import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData } from '@/redux/selectors/authSelectors';
+import { userData } from '@/redux/selectors/dashboardSelectors';
 
 const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   const location = useLocation();
@@ -59,6 +60,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
 
   const [hasMore, setHasMore] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const isFlextern = useSelector((state) => state.auth?.flextern);
   const selectMarketPlaceData = useSelector((state) => state.marketPlace.listData);
   const selectMarkeMetaData = useSelector((state) => state.marketPlace.metaData);
   const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
@@ -157,7 +159,8 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   const onError = () => {
     setHasMore(false);
   };
-
+  const userData = useSelector(selectAuthUserData);
+  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
   useEffect(() => {
     dispatch(clearData());
     const valuesOnly = {};
@@ -185,6 +188,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
             onError,
             postData: valuesOnly,
             searchText,
+            flexTern: flexTern
           }),
         );
       } else {
@@ -202,11 +206,12 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
             onError,
             postData: valuesOnly,
             searchText,
+            flexTern: flexTern
           }),
         );
       }
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite, userType]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite, userType, flexTern]);
 
   // Function to toggle the popover
   const togglePopover = () => {
@@ -344,7 +349,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
     return () => {
       debouncedHandleSearchTextChange.cancel();
     };
-  }, [inputText]);
+  }, [inputText, isFlextern]);
 
   const handleSearchTextChange = (e) => {
     setInputText(e.target.value);
@@ -378,6 +383,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
           onError,
           postData: valuesOnly,
           searchText,
+          flexTern: isFlextern
         }),
       );
     } else {
@@ -395,6 +401,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
           onError,
           postData: valuesOnly,
           searchText,
+          flexTern: isFlextern
         }),
       );
     }

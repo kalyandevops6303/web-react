@@ -20,12 +20,12 @@ const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
   const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
-
+  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false) }));
+      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false), flexTern:flexTern }));
     }
   };
   const handleUnLike = (e) => {

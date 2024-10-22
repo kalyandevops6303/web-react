@@ -1,11 +1,14 @@
 import errorHandler from '../../utility/errorHandler';
 import {
   getCardService,
+  getCardServiceFlextern,
   getClientsService,
   getListProjectService,
+  getListProjectServiceFlextern,
   getMyBidProjectService,
   getReceivedBidProjectService,
   getTalentsService,
+  getTalentsServiceFlextern,
   getTeamsService,
 } from '../../services/marketPlaceServices';
 
@@ -18,16 +21,16 @@ import {
   getListReq,
   getUsersSuccess,
 } from '../reducers/marketPlace';
-import { makeFavService, makeProjectFavService, removeFavService } from '../../services/profileServices';
+import { makeFavService, makeProjectFavService, makeProjectFavServiceFlextern, removeFavService } from '../../services/profileServices';
 import { userTypes } from '../../utility/constants/Constant';
 import { favUnfavError, favUnfavRequest, favUnfavSuccess } from '../reducers/favUnfav';
 
 const getCardInfo =
-  ({ onSuccess, onError }) =>
+  ({ onSuccess, onError, flexTern }) =>
   async (dispatch) => {
     dispatch(getCardInfoRequest());
     try {
-      const res = await getCardService();
+      const res = flexTern ? await getCardServiceFlextern() : await getCardService();
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -50,6 +53,7 @@ const getListProjects =
     isFavorite,
     show_expired,
     show_to_be_listed,
+    flexTern,
   }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
@@ -71,21 +75,35 @@ const getListProjects =
           metaData,
         });
       } else {
-        res = await getListProjectService({
-          postData: {
-            ...postData,
-            is_my_listings: isMyListing,
-            is_recommended: isRecommanded,
-            is_favourite: isFavorite,
-            show_expired,
-            show_to_be_listed,
-          },
-          searchText,
-          metaData,
-        });
+        if (flexTern) {
+          res = await getListProjectServiceFlextern({
+            postData: {
+              ...postData,
+              is_my_listings: isMyListing,
+              is_recommended: isRecommanded,
+              is_favourite: isFavorite,
+              show_expired,
+              show_to_be_listed,
+            },
+            searchText,
+            metaData,
+          });
+        } else {
+          await getListProjectService({
+            postData: {
+              ...postData,
+              is_my_listings: isMyListing,
+              is_recommended: isRecommanded,
+              is_favourite: isFavorite,
+              show_expired,
+              show_to_be_listed,
+            },
+            searchText,
+            metaData,
+          });
+        }
       }
-
-      dispatch(getListProjectsSuccess(res.data.data));
+      await dispatch(getListProjectsSuccess(res.data.data));
       onSuccess();
     } catch (error) {
       onError();
@@ -94,7 +112,7 @@ const getListProjects =
   };
 
 const getUsers =
-  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText, isFavorite }) =>
+  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText, isFavorite, flexTern }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
@@ -102,11 +120,17 @@ const getUsers =
     try {
       let res;
       if (primaryFilter === 'talents') {
-        res = await getTalentsService({
-          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
-          searchText,
-          metaData,
-        });
+        res = flexTern
+          ? await getTalentsServiceFlextern({
+              postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+              searchText,
+              metaData,
+            })
+          : await getTalentsService({
+              postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+              searchText,
+              metaData,
+            });
       } else if (primaryFilter === 'clients') {
         res = await getClientsService({
           postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
@@ -129,13 +153,13 @@ const getUsers =
   };
 
 const makeFav =
-  ({ user_id, user_type, project_id, onSuccess, onError }) =>
+  ({ user_id, user_type, project_id, onSuccess, onError, flexTern }) =>
   async (dispatch) => {
     dispatch(favUnfavRequest());
 
     try {
       if (project_id) {
-        await makeProjectFavService(project_id);
+        flexTern ? await makeProjectFavServiceFlextern(project_id)  : await makeProjectFavService(project_id);
       } else {
         await makeFavService(user_id, user_type);
       }
