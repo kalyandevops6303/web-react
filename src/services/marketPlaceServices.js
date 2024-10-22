@@ -3,11 +3,19 @@ import DataService from '../configs/dataService/dataService';
 
 const getCardService = () => DataService.get(API.marketplace.cardInfo);
 
+const getCardServiceFlextern = () => DataService.get(API.marketplace.cardInfoFlextern);
+
 const getListProjectService = ({ postData, searchText, metaData }) =>
   DataService.post(
     `${API.marketplace.listProject}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
     postData,
   );
+
+  const getListProjectServiceFlextern = ({ postData, searchText, metaData }) =>
+    DataService.post(
+      `${API.marketplace.listProjectFlextern}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+      postData,
+    );
 
 const getReceivedBidProjectService = ({ postData, searchText, metaData }) =>
   DataService.post(
@@ -27,6 +35,12 @@ const getTalentsService = ({ postData, searchText, metaData }) =>
     postData,
   );
 
+  const getTalentsServiceFlextern = ({ postData, searchText, metaData }) =>
+    DataService.post(
+      `${API.marketplace.listTalentsFlextern}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+      postData,
+    );
+
 const getClientsService = ({ postData, searchText, metaData }) =>
   DataService.post(
     `${API.marketplace.listClients}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
@@ -41,10 +55,13 @@ const getTeamsService = ({ postData, searchText, metaData }) =>
 
 export {
   getCardService,
+  getCardServiceFlextern,
   getListProjectService,
+  getListProjectServiceFlextern,
   getTeamsService,
   getReceivedBidProjectService,
   getMyBidProjectService,
   getTalentsService,
+  getTalentsServiceFlextern,
   getClientsService,
 };

@@ -32,12 +32,12 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const userData = useSelector(selectUserData);
   const appPermissions = useSelector(appPermissionsSelector);
   const location = useLocation();
-
+  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false) }));
+      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false), flexTern }));
     }
   };
   const handleUnLike = (e) => {

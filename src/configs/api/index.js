@@ -68,6 +68,7 @@ const API = {
     addToFav: `${apiOnboardingEndpoint}/api/v1/favourite/set-user`,
     removeFav: `${apiOnboardingEndpoint}/api/v1/favourite/remove`,
     addToFavProject: `${apiOnboardingEndpoint}/api/v1/favourite/set-project`,
+    addToFavProjectFlextern: `${apiOnboardingEndpoint}/api/v2/favourite/set-project`,
     addToFavTeam: `${apiOnboardingEndpoint}/api/v1/favourite/set-team`,
     recentProjects: `${apiOnboardingEndpoint}/api/v1/users/completed-projects`,
     reviews: `${apiOnboardingEndpoint}/api/v1/users/reviews`,
@@ -236,6 +237,11 @@ const API = {
     myBids: `${apiOnboardingEndpoint}/api/v1/my-bids-projects`,
     listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
     listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
+
+    //v2
+    cardInfoFlextern: `${apiOnboardingEndpoint}/api/v2/marketplace/cards-info`,
+    listProjectFlextern: `${apiOnboardingEndpoint}/api/v2/marketplace/list-projects`,
+    listTalentsFlextern: `${apiOnboardingEndpoint}/api/v2/marketplace/list-talents`,
 
     // internal
     allProjectsUrl: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects/all`,

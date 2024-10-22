@@ -30,7 +30,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false) }));
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern: flexTern }));
     }
   };
   const handleUnLike = (e) => {
