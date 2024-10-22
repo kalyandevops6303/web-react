@@ -14,16 +14,19 @@ import PermissionWrapper from '@/PermissionWrapper';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const dispatch = useDispatch();
+  const userData = useSelector(selectAuthUserData);
   const selectCardData = useSelector((state) => state.marketPlace.cardData);
   const isLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
   const isSecondaryLoading = useSelector((state) => state.marketPlace.loading);
   const appPermissions = useSelector(appPermissionsSelector);
+  const isFlextern = useSelector((state) => state.auth?.flextern);
+  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
 
-  const userData = useSelector(selectAuthUserData);
+
   const userType = userData?.user_type;
   useEffect(() => {
-    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
-  }, []);
+    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {}, flexTern: flexTern }));
+  }, [flexTern]);
 
   if (isLoading && !selectCardData) {
     return <ComponentSpinner />;

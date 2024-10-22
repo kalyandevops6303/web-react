@@ -23,6 +23,8 @@ const removeFavService = (data) => DataService.post(API.profile.removeFav, data)
 
 const makeProjectFavService = (id) => DataService.post(API.profile.addToFavProject, { project_id: id });
 
+const makeProjectFavServiceFlextern = (id) => DataService.post(API.profile.addToFavProjectFlextern, { project_id: id });
+
 const getRecentProjectService = ({ user_id, entity, metadata }) =>
   DataService.get(
     `${API.profile.recentProjects}/${user_id}?entity=${entity}&page=${metadata?.page}&page_size=${metadata?.page_size}`,
@@ -49,6 +51,7 @@ export {
   makeFavService,
   removeFavService,
   makeProjectFavService,
+  makeProjectFavServiceFlextern,
   reportService,
   publicTeamMembersService,
 };

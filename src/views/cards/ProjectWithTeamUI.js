@@ -40,11 +40,12 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const navigate = useNavigate();
   const pathname = location.pathname.split('/').pop();
 
+  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false) }));
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern:flexTern }));
     }
   };
   const handleUnLike = (e) => {
