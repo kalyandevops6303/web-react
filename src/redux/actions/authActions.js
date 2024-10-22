@@ -252,11 +252,11 @@ const verifyEmail = (data) => async (dispatch) => {
 };
 
 const verifyEmailForFlextern =
-  ({ data, onSuccess, errorHandlerInviteNotFound }) =>
+  ({ data, onSuccess,invitation_token ,errorHandlerInviteNotFound }) =>
   async (dispatch) => {
     dispatch(verifyEmailForFlexternRequest());
     try {
-      const res = await verifyEmailForFlexternService(data);
+      const res = await verifyEmailForFlexternService(data,invitation_token);
       if (!isEmpty(res?.data?.data)) {
         setItem('access_token', res.data.data.access_token);
         setItem('access_token_expires', res.data.data.access_token_expires);

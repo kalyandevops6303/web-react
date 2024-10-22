@@ -26,6 +26,7 @@ import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 import { getItem } from '../../utility/localStorageControl';
 import theme from '../../configs/themeVariables';
 import ResendOTPComp from './components/ResendOTP';
+import { clearPhoneData } from '@/redux/reducers/auth';
 
 const RegisterPhoneFlextern = () => {
   const dispatch = useDispatch();
@@ -70,6 +71,11 @@ const RegisterPhoneFlextern = () => {
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
+
+    return () => {
+      dispatch(clearAllFormData());
+      dispatch(clearPhoneData());
+    }
   }, [localFormData]);
 
   useEffect(() => {
@@ -81,6 +87,11 @@ const RegisterPhoneFlextern = () => {
       reset(requiredFields);
       const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
       trigger(keysWithValues);
+    }
+
+    return () => {
+      dispatch(clearAllFormData());
+      dispatch(clearPhoneData());
     }
   }, []);
 

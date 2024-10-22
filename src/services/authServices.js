@@ -11,7 +11,7 @@ const registerEmailService = (email, userType) =>
 
 const verifyEmailService = (data) => DataService.post(API.auth.verifyEmail, data);
 
-const verifyEmailForFlexternService = (data) => DataService.post(API.auth.validateFlexTernEmail, data);
+const verifyEmailForFlexternService = (data,invitation_token) => DataService.post(`${API.auth.validateFlexTernEmail}?invitation_token=${invitation_token}`, data);
 
 const setPasswordService = (password) => DataService.post(API.auth.createNewPassowrd, { password });
 
