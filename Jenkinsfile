@@ -10,7 +10,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'qa-auto', 'tru-dev'], description: 'Select deployment environment')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'qa-auto', 'tru-dev', 'tru-qa'], description: 'Select deployment environment')
     }
 
     stages {
@@ -20,16 +20,16 @@ pipeline {
                     def filename
                     switch (params.ENVIRONMENT) {
                         case 'dev':
-                            filename = 'env-dev.txt'
+                            filename = '/Dev/env-dev.txt'
                             break
                         case 'qa':
-                            filename = 'env-qa.txt'
+                            filename = '/QA/env-qa.txt'
                             break
                         case 'qa-auto':
-                            filename = 'env-qa-auto.txt'
+                            filename = '/QA-auto/env-qa-auto.txt'
                             break
                         case 'tru-dev':
-                            filename = 'env-tru-dev.txt'
+                            filename = '/Dev/env-tru-dev.txt'
                             break
                         default:
                             error("Unknown environment: ${params.ENVIRONMENT}")
@@ -69,14 +69,14 @@ pipeline {
                     if (!env.DOWNLOAD_URL) {
                         error("Error: Download URL is empty")
                     }
-                    sh "curl -L '${env.DOWNLOAD_URL}' --output ${env.FILENAME}"
+                    sh "curl -L '${env.DOWNLOAD_URL}' --output env-${params.ENVIRONMENT}.txt"
                 }
             }
         }
 
         stage('Archive the File') {
             steps {
-                archiveArtifacts artifacts: "${env.FILENAME}", allowEmptyArchive: false
+                archiveArtifacts artifacts: "env-${params.ENVIRONMENT}.txt", allowEmptyArchive: false
             }
         }
 
