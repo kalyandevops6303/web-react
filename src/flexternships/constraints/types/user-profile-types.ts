@@ -54,6 +54,7 @@ export type FlexternUserProfileFormActions = {
     updateClientCompanyInfo: (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => Promise<void>;
     nextTab: () => void;
     previousTab: () => void;
+    resetStore: () => void;
 }
 
 export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserProfileFormActions;

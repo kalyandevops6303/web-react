@@ -14,7 +14,7 @@ import { formatFileSize } from '@flexternships/utils/file-utils';
 import MilestoneItem from './MilestoneItem';
 import ProjectDetailsItem from './ProjectDetailsItem';
 import RoleItem from './RoleItem';
-import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function Preview() {

@@ -12,7 +12,7 @@ import { ProjectRolesForm } from '@flexternships/types/project-creation-types';
 import { ProjectRolesFormSchema } from '@flexternships/schemas/project-creation-schemas';
 import RoleCard from './RoleCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 export default function Roles() {
   const rolesData = useProjectCreationStore((state) => state.data.roles);

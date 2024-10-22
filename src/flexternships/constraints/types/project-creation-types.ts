@@ -107,6 +107,7 @@ export type ProjectCreationActions = {
   updateListingData: (listingStartDate?: number, listingEndDate?: number) => void
   openModal: (modalType:ModalType) => void
   closeModal: () => void
+  resetStore: () => void
 };
 
 export type ProjectCreationStore = ProjectCreationState & ProjectCreationActions

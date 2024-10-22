@@ -103,6 +103,7 @@ import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
+import { logout as logoutZustand } from '@flexternships/utils/core-utils';
 
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
@@ -381,6 +382,8 @@ const logoutAction =
     if (fcmToken) {
       dispatch(fcmUnsubscribeNotification(fcmToken));
     }
+    // Zustand Logout
+    logoutZustand();
     dispatch(logOut());
     dispatch(clearTeams());
     dispatch(clearTeamCardData());

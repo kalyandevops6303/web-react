@@ -16,4 +16,5 @@ export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set
     previousTab: () => previousTab(set),
     upsertClientAccountInfo: async (data: FlexternClientAccountDetails) => upsertClientAccountInfo(data, set),
     updateClientCompanyInfo: async (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => updateClientCompanyInfo(data, set),
+    resetStore: () => set({...defaultInitState}),
 }));
