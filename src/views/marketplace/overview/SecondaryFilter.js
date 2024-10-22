@@ -160,7 +160,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
     setHasMore(false);
   };
   const userData = useSelector(selectAuthUserData);
-  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
+  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
   useEffect(() => {
     dispatch(clearData());
     const valuesOnly = {};
