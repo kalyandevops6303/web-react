@@ -383,7 +383,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
           onError,
           postData: valuesOnly,
           searchText,
-          flexTern: isFlextern
+          flexTern: flexTern
         }),
       );
     } else {
@@ -401,7 +401,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
           onError,
           postData: valuesOnly,
           searchText,
-          flexTern: isFlextern
+          flexTern: flexTern
         }),
       );
     }
