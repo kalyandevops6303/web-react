@@ -6,12 +6,15 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import { FlexternClientAccountDetails } from '@/flexternships/constraints/types/user-profile-types';
 import { FlexternClientAccountDetailsSchema } from '@/flexternships/schemas/user-profile-schemas';
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import ReactCountryFlag from 'react-country-flag';
 import { isEmpty } from 'lodash';
 import ChangePasswordModal from '@/flexternships/app/components/core/modals/ChangePasswordModal';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function AccountDetails() {
     const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
@@ -19,6 +22,8 @@ export default function AccountDetails() {
     const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
     const nextTab = useFlexternUserProfileStore((state) => state.nextTab);
     const upsertClientAccountInfo = useFlexternUserProfileStore((state) => state.upsertClientAccountInfo);
+
+    const userDetails = useFlexternUserStore((state) => state.userDetails);
 
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
@@ -64,9 +69,13 @@ export default function AccountDetails() {
 
     const onContinue = async (data: FlexternClientAccountDetails) => {
         setIsSaveLoading(true);
-        await upsertClientAccountInfo(data);
+        try {
+            await upsertClientAccountInfo(data);
+            nextTab();
+        } catch (error) {
+            showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+        }
         setIsSaveLoading(false);
-        nextTab();
     }
 
     return (
@@ -125,13 +134,13 @@ export default function AccountDetails() {
                         </div>
                         <div className='flex gap-x-3'>
                             <div className='px-3 mt-1 rounded-md min-w-[100px] flex items-center gap-x-2 border-1 border-solid border-trublue bg-gradient-to-t from-[rgba(153,193,230,0.10)] to-[rgba(153,193,230,0.10)]'>
-                                <ReactCountryFlag className='rounded-md min-h-4' countryCode='IN' svg />
+                                <ReactCountryFlag className='rounded-md min-h-4' countryCode={userDetails.phoneCountry.code} svg />
                                 <span className='text-sm leading-5.5 font-normal text-grey-600 not-italic'>
-                                    +91
+                                    {userDetails.countryCode}
                                 </span>
                             </div>
                             <TextInput
-                                value={'3369855421'}
+                                value={userDetails.phone}
                                 onChange={() => { }}
                                 className='w-[281px]'
                                 label=""
@@ -141,7 +150,7 @@ export default function AccountDetails() {
 
                     </div>
                     <TextInput
-                        value={'johndoe@gmail.com'}
+                        value={userDetails.email}
                         onChange={() => { }}
                         className='w-[393px]'
                         label="Email address"
