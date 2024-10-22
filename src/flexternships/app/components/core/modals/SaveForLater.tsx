@@ -6,7 +6,7 @@ import CloseModalButton from "../buttons/CloseModalButton"
 import SavedGif from "@flexternships/assets/images/saved.gif"
 import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
 import { ModalType } from "@flexternships/types/project-creation-types"
-import { showToastMessage } from "@flexternships/utils/toast-utils"
+import { showToastMessage } from "@flexternships/utils/core-utils"
 import { ToastType } from "@flexternships/enums/core-enums"
 
 export default function SaveForLater(props: Props) {

@@ -14,7 +14,7 @@ import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
 import { getTodayDate } from '@flexternships/utils/date-utils';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
-import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function Requirements() {

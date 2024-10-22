@@ -14,7 +14,7 @@ import selectedRadioIcon from '@flexternships/assets/icons/radios/selectedRadio.
 import defaultRadioIcon from '@flexternships/assets/icons/radios/defaultRadio.svg';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 export default function Listing() {
   const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);

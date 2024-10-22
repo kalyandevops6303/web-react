@@ -9,7 +9,7 @@ import { ResetPasswordSchema } from '@/flexternships/schemas/core-schemas';
 import SecondaryButton from '../buttons/SecondaryButton';
 import { changePasswordWithCurrentPassword } from '@/flexternships/services/user-management';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 interface ClientOnboardingSuccessProps {
   isOpen: boolean;

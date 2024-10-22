@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash";
 import { getUserDetails } from "@flexternships/services/user-management";
-import { showToastMessage } from "../utils/toast-utils";
+import { showToastMessage } from "../utils/core-utils";
 import { ToastType } from "../constraints/enums/core-enums";
 
 export const populateUserDetails = async (force: boolean, get: any, set: any) => {

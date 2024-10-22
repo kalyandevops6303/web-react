@@ -17,7 +17,7 @@ import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import MilestoneInfo from './MilestoneInfo';
 import SortableMilestoneCard from './SortableMilestoneCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { showToastMessage } from '@/flexternships/utils/toast-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 export default function Milestones() {
   const {
