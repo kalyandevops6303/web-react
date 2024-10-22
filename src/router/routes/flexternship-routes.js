@@ -77,7 +77,7 @@ export const FlexternshipRoutes = [
                     },
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE, FlexternUserCheckpoint.PROFILE_DETAILS],
                         blockCheckpoints: [
                             {
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
