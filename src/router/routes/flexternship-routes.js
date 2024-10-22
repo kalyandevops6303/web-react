@@ -132,14 +132,13 @@ export const FlexternshipRoutes = [
                 ]}
             >
                 <FlexternshipProjectDetails />
-            </RoleAccessWrapper >,
+            </RoleAccessWrapper >
         ),
     },
     {
         path: '/project-details/:projectId/bid/:bidId',
         element: <BidDetails />,
     },
-
     {
         path: '/project-details/:projectId/:projectStep/doc/:docType/*',
         element: <ContractView />,
