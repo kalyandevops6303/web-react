@@ -302,11 +302,12 @@ const Account = () => {
       userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS
     ) {
       if (userDetailsData.user_type === userTypes.talent) {
-        if (location.pathname.includes('profile-edit') && isFlexternInvited) {
-          reqData = { ...reqData, flextern: isFlexternInvited, trumio_talent: false };
-        } else if (location.pathname.includes('talent-onboarding') && isFlexternInvited) {
-          reqData = { ...reqData, flextern: isFlexternInvited, trumio_talent: false };
-        }
+        // if (location.pathname.includes('profile-edit') && isFlexternInvited) {
+        //   reqData = { ...reqData, flextern: isFlexternInvited, trumio_talent: false };
+        // } else if (location.pathname.includes('talent-onboarding') && isFlexternInvited) {
+        //   reqData = { ...reqData, flextern: isFlexternInvited, trumio_talent: false };
+        // }
+        // commmenting this out for now if it's required for future implementation
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
         dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else {
