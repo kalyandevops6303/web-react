@@ -1,4 +1,5 @@
 import ProjectDetailsTabNavigation from "../components/pages/project-details/ProjectDetailsTabNavigation"
+import MilestoneTab from "../components/pages/project-details/tabs/milestone"
 
 export default function FlexternshipProjectDetails() {
 
@@ -10,6 +11,8 @@ export default function FlexternshipProjectDetails() {
       {/* TODO: Project Card */}
       {/* TODO: Tab Navigation Component (pass the tabs array as props along with the route where they should be rendered) */}
       <ProjectDetailsTabNavigation />
+      <div className="h-10"></div>
+      <MilestoneTab />
     </div>
   )
 }
