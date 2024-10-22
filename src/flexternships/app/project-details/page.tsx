@@ -1,6 +1,6 @@
 import ProjectDetailsTabNavigation from "../components/pages/project-details/ProjectDetailsTabNavigation"
 
-export default function CreateFlexternProject() {
+export default function FlexternshipProjectDetails() {
 
   const tabs = []
 

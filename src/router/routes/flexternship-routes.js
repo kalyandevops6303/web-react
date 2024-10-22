@@ -48,6 +48,7 @@ import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/con
 import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
+import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 
 
 // ** Default Route
@@ -105,7 +106,34 @@ export const FlexternshipRoutes = [
     },
     {
         path: '/project-details/:projectId/*',
-        element: <ProjectDetails />,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipProjectDetails />
+            </RoleAccessWrapper >,
+        ),
     },
     {
         path: '/project-details/:projectId/bid/:bidId',
@@ -203,7 +231,7 @@ export const FlexternshipRoutes = [
                 <FlexternshipClientOnboarding />
             </RoleAccessWrapper>
         ),
-      },
+    },
     {
         path: '/create-project',
         element: <CreateProject />,
