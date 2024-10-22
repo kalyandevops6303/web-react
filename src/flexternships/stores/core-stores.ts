@@ -10,5 +10,5 @@ const defaultInitState: FlexternUser = {
 export const useFlexternUserStore = create<FlexternUserStore>((set, get) => ({
     ...defaultInitState,
     populateUserDetails: (force: boolean = false) => populateUserDetails(force, get, set),
-    resetStore: () => set(defaultInitState)
+    resetStore: () => set({...defaultInitState})
 }));

@@ -63,5 +63,5 @@ export const useProjectCreationStore = create<ProjectCreationStore>((set, get) =
   updateListingData: (listingStartDate?: number, listingEndDate?: number) => updateListingData(set, listingStartDate, listingEndDate),
   openModal: (modalType: ModalType) => openModal(modalType, set),
   closeModal: () => closeModal(set),
-  resetStore: () => set(defaultInitState),
+  resetStore: () => set({...defaultInitState}),
 }));
