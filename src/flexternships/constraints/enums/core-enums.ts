@@ -18,6 +18,7 @@ export enum FlexternUserAppRole {
 
 export enum FlexternUserCheckpoint {
     ACCOUNT_DETAILS = 'ACCOUNT_DETAILS',
+    PROFILE_DETAILS = 'PROFILE_DETAILS',
     COMPLETE = 'COMPLETE',
 }
 
