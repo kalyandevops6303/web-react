@@ -31,6 +31,9 @@ pipeline {
                         case 'tru-dev':
                             filename = '/Dev/env-tru-dev.txt'
                             break
+			case 'tru-qa':
+                            filename = '/QA/env-tru-qa.txt'
+                            break
                         default:
                             error("Unknown environment: ${params.ENVIRONMENT}")
                     }
@@ -50,7 +53,7 @@ pipeline {
                 script {
                     def fileResponse = sh(script: """
                         curl -H "Authorization: Bearer ${env.TOKEN}" \
-                        "https://graph.microsoft.com/v1.0/sites/${env.SITE_ID}/drive/root:/${env.FILENAME}"
+                        "https://graph.microsoft.com/v1.0/sites/${env.SITE_ID}/drive/root:${env.FILENAME}"
                     """, returnStdout: true).trim()
                     env.DOWNLOAD_URL = sh(script: "echo '${fileResponse}' | jq -r '.\"@microsoft.graph.downloadUrl\"'", returnStdout: true).trim()
                 }
@@ -117,6 +120,13 @@ pipeline {
                             servicePort = '4112'
                             targetPort = '4112'
 			    mode='trudev'
+                            break
+                        case 'tru-qa':
+                            composeFile = 'docker-compose.tru-qa.yml'
+                            serviceName = 'tru-qa'
+                            servicePort = '9112'
+                            targetPort = '9112'
+			    mode='truqa'
                             break
                         default:
                             composeFile = 'docker-compose.yml'
