@@ -116,7 +116,7 @@ pipeline {
                             serviceName = 'tru-dev'
                             servicePort = '4112'
                             targetPort = '4112'
-			    mode='tru-dev'
+			    mode='trudev'
                             break
                         default:
                             composeFile = 'docker-compose.yml'
