@@ -1,5 +1,9 @@
 import { toast, ToastOptions } from 'react-hot-toast';
-import { ToastType } from '../constraints/enums/core-enums';
+import { ToastType } from '@flexternships/enums/core-enums';
+import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
+import { useFlexternUserStore } from '@flexternships/stores/core-stores';
+import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
+// Import other Zustand stores as needed
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
@@ -24,4 +28,14 @@ export const showToastMessage = (type: ToastType, message: string) => {
       toast(message, { ...options, icon: 'ℹ️' });
       break;
   }
+};
+
+/**
+ * Logs out the user by resetting all Zustand stores.
+ */
+export const logout = () => {
+  // Reset ProjectCreationStore
+  useFlexternUserStore.getState().resetStore();
+  useFlexternUserProfileStore.getState().resetStore();
+  useProjectCreationStore.getState().resetStore();
 };
