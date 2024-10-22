@@ -140,8 +140,6 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
     }
   };
 
-  console.log(clientDetails, 'clientDetails');
-
   return (
     <div>
       <IconWrapper className="d-flex justify-content-end pt-50">
