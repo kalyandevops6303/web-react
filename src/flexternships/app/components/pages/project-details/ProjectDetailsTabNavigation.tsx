@@ -1,6 +1,7 @@
 import { ProjectTabType } from '@/flexternships/constraints/types/project-details-types'
 import NavigationTab from './NavigationTab'
 
+
 export default function ProjectDetailsTabNavigation({tabs}:{
   tabs: ProjectTabType[]}) {
   return (

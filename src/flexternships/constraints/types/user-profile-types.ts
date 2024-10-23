@@ -4,6 +4,7 @@ export type FlexternClientAccountDetails = {
     firstname: string;
     lastname: string;
     imageUri?: string; // submits file key gets public uri
+    user_type: string;
 }
 
 export enum CompanyStrength {

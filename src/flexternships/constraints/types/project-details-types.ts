@@ -5,5 +5,7 @@ export type ProjectTabType = {
     title: string,
     icon: JSX.Element,
     description: string,
-    route: string
+    route: string,
+    talentVisible: boolean,
+    clientVisible: boolean
 }

@@ -1,8 +1,14 @@
 import { Box, Star, Users, Watch } from 'react-feather';
 import ProjectDetailsTabNavigation from '../components/pages/project-details/ProjectDetailsTabNavigation';
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
+import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
+import { useEffect } from 'react';
 
 export default function FlexternshipProjectDetails() {
+  const fetchUserDetails = useFlexternUserProfileStore(state => state.populateClientInfoDetails)
+  useEffect(()=>{
+    fetchUserDetails()
+  },[])
   const tabs = [
     {
       id: 'team',
@@ -10,6 +16,9 @@ export default function FlexternshipProjectDetails() {
       icon: <Users size={18} />,
       description: 'Team list & Permission',
       route: '/team',
+      talentVisible: true,
+      clientVisible: true,
+
     },
     {
       id: 'projects',
@@ -17,6 +26,8 @@ export default function FlexternshipProjectDetails() {
       icon: <Box size={18} />,
       description: 'About work details',
       route: '/projects',
+      talentVisible: true,
+      clientVisible: false,
     },
     {
       id: 'milestone',
@@ -24,6 +35,8 @@ export default function FlexternshipProjectDetails() {
       icon: <Watch size={18} />,
       description: 'Status & dispute',
       route: '/milestone',
+      talentVisible: true,
+      clientVisible: true,
     },
     {
       id: 'performance',
@@ -31,6 +44,8 @@ export default function FlexternshipProjectDetails() {
       icon: <Star size={18} />,
       description: 'Give & get ratings',
       route: '/performance',
+      talentVisible: true,
+      clientVisible: true,
     },
   ];
 
@@ -39,7 +54,7 @@ export default function FlexternshipProjectDetails() {
       {/* TODO: Breadcrumbs */}
       {/* TODO: Project Card */}
       {/* TODO: Tab Navigation Component (pass the tabs array as props along with the route where they should be rendered) */}
-      <div className=" w-full flex flex-row items-start justify-start mt-20 gap-10">
+      <div className=" w-full flex flex-row items-start flex-wrap justify-start mt-20 gap-10">
         <LeftSideBarProjectDetails />
         <div className="flex flex-col items-start gap-5">
           <ProjectDetailsTabNavigation tabs={tabs} />
