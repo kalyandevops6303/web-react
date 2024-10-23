@@ -175,6 +175,7 @@ export const FlexternshipRoutes = [
                         ]
                     }
                 ]}
+                noPadding
             >
                 <FlexternshipClientOnboarding />
             </RoleAccessWrapper>

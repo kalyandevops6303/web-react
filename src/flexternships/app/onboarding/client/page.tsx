@@ -32,7 +32,7 @@ export default function ClientProfilePage() {
   ]
 
   return (
-    <div className='h-screen w-screen overflow-y-auto overflow-x-hidden'>
+    <div className='overflow-y-auto overflow-x-hidden'>
       {
         userDetails?.checkpoint !== FlexternUserCheckpoint.COMPLETE && (
           <RestrictedNavbar />
