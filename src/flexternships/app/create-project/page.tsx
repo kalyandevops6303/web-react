@@ -15,6 +15,7 @@ import { ModalType } from "@/flexternships/constraints/types/project-creation-ty
 
 export default function CreateFlexternProject() {
   const openModal = useProjectCreationStore((state) => state.openModal);
+  const closeModal = useProjectCreationStore((state) => state.closeModal);
   const navigate = useNavigate();
 
   const tabs = [
@@ -56,6 +57,7 @@ export default function CreateFlexternProject() {
   ]
 
   const onBack = () => {
+    closeModal();
     navigate('/dashboard');
   }
 

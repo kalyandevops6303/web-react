@@ -77,7 +77,7 @@ export const FlexternshipRoutes = [
                     },
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE, ],
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE,],
                         blockCheckpoints: [
                             {
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
@@ -207,14 +207,48 @@ export const FlexternshipRoutes = [
                 <FlexternshipClientOnboarding />
             </RoleAccessWrapper>
         ),
-      },
+    },
     {
-        path: '/create-project',
-        element: <CreateProject />,
+        path: `/create-project`,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <CreateFlexternProject />
+            </RoleAccessWrapper>
+        ),
     },
     {
         path: '/create-project/:projectId',
-        element: <CreateProject />,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <CreateFlexternProject />
+            </RoleAccessWrapper>
+        ),
     },
     {
         path: '/notifications',
@@ -307,10 +341,6 @@ export const FlexternshipRoutes = [
         meta: {
             layout: 'blank',
         }
-    },
-    {
-        path: `/flexternships/create-project`,
-        element: <CreateFlexternProject />,
     },
     {
         path: '*',

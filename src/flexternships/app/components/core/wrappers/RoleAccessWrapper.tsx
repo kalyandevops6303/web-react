@@ -56,7 +56,11 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     }
     
     // If all checks pass, render the children components
-    return children;
+    return (
+        <div className='flexternships-page px-7 pt-24'>
+            {children}
+        </div>
+    );
 }
 
 type RoleAccessWrapperProps = {
