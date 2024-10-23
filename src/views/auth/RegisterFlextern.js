@@ -194,9 +194,11 @@ const RegisterFlextern = () => {
     const { email } = values;
     const data = {};
     data.email = email;
+    const queryParams = new URLSearchParams(location.search);
+    const invitation_token = queryParams.get('invitation_token');
     if(flexternInviteType === userTypes.flexternClient) data.user_type = userTypes.client;
     else data.user_type = userTypes.talent;
-    dispatch(verifyEmailForFlextern({ data, onSuccess}));
+    dispatch(verifyEmailForFlextern({ data,invitation_token ,onSuccess}));
   };
 
   const newPassword = watch('newPassword');

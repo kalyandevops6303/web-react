@@ -10,7 +10,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'qa-auto', 'tru-dev'], description: 'Select deployment environment')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'qa-auto', 'tru-dev', 'tru-qa'], description: 'Select deployment environment')
     }
 
     stages {
@@ -20,16 +20,19 @@ pipeline {
                     def filename
                     switch (params.ENVIRONMENT) {
                         case 'dev':
-                            filename = 'env-dev.txt'
+                            filename = '/Dev/env-dev.txt'
                             break
                         case 'qa':
-                            filename = 'env-qa.txt'
+                            filename = '/QA/env-qa.txt'
                             break
                         case 'qa-auto':
-                            filename = 'env-qa-auto.txt'
+                            filename = '/QA-auto/env-qa-auto.txt'
                             break
                         case 'tru-dev':
-                            filename = 'env-tru-dev.txt'
+                            filename = '/Dev/env-tru-dev.txt'
+                            break
+			case 'tru-qa':
+                            filename = '/QA/env-tru-qa.txt'
                             break
                         default:
                             error("Unknown environment: ${params.ENVIRONMENT}")
@@ -50,7 +53,7 @@ pipeline {
                 script {
                     def fileResponse = sh(script: """
                         curl -H "Authorization: Bearer ${env.TOKEN}" \
-                        "https://graph.microsoft.com/v1.0/sites/${env.SITE_ID}/drive/root:/${env.FILENAME}"
+                        "https://graph.microsoft.com/v1.0/sites/${env.SITE_ID}/drive/root:${env.FILENAME}"
                     """, returnStdout: true).trim()
                     env.DOWNLOAD_URL = sh(script: "echo '${fileResponse}' | jq -r '.\"@microsoft.graph.downloadUrl\"'", returnStdout: true).trim()
                 }
@@ -69,14 +72,14 @@ pipeline {
                     if (!env.DOWNLOAD_URL) {
                         error("Error: Download URL is empty")
                     }
-                    sh "curl -L '${env.DOWNLOAD_URL}' --output ${env.FILENAME}"
+                    sh "curl -L '${env.DOWNLOAD_URL}' --output env-${params.ENVIRONMENT}.txt"
                 }
             }
         }
 
         stage('Archive the File') {
             steps {
-                archiveArtifacts artifacts: "${env.FILENAME}", allowEmptyArchive: false
+                archiveArtifacts artifacts: "env-${params.ENVIRONMENT}.txt", allowEmptyArchive: false
             }
         }
 
@@ -116,7 +119,14 @@ pipeline {
                             serviceName = 'tru-dev'
                             servicePort = '4112'
                             targetPort = '4112'
-			    mode='tru-dev'
+			    mode='trudev'
+                            break
+                        case 'tru-qa':
+                            composeFile = 'docker-compose.tru-qa.yml'
+                            serviceName = 'tru-qa'
+                            servicePort = '9112'
+                            targetPort = '9112'
+			    mode='truqa'
                             break
                         default:
                             composeFile = 'docker-compose.yml'

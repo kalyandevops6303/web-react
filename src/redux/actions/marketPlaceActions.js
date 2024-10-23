@@ -89,7 +89,7 @@ const getListProjects =
             metaData,
           });
         } else {
-          await getListProjectService({
+          res = await getListProjectService({
             postData: {
               ...postData,
               is_my_listings: isMyListing,

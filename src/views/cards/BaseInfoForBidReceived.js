@@ -14,13 +14,15 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
   const project = data?.project;
   const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
-  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
+  const userData = useSelector(selectUserData);
+  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {

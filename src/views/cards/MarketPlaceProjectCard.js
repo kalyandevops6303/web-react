@@ -274,12 +274,11 @@ const MarketPlaceProjectCard = ({
                         className="my-div"
                         ref={divRef}
                         style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop: '10px' }}
-                      >
-                        {parse(descriptionToShow)}
+                      >{descriptionToShow}
                       </div>
                     ) : (
                       <div className="my-div" ref={divRef}>
-                        {parse(descriptionToShow)}
+                        {descriptionToShow}
                       </div>
                     )}
                   </>
