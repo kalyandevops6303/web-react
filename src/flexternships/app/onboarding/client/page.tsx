@@ -32,8 +32,12 @@ export default function ClientProfilePage() {
   ]
 
   return (
-    <div className='h-screen w-screen overflow-y-auto overflow-x-hidden'>
-      <RestrictedNavbar />
+    <div className='overflow-y-auto overflow-x-hidden'>
+      {
+        userDetails?.checkpoint !== FlexternUserCheckpoint.COMPLETE && (
+          <RestrictedNavbar />
+        )
+      }
       <div className='flex flex-col gap-6 py-6 mx-[72px] max-w-[858px]'>
         <div className='text-grey-heading text-2xl font-medium not-italic'>
           {
