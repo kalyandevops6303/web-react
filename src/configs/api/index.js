@@ -74,6 +74,13 @@ const API = {
     reviews: `${apiOnboardingEndpoint}/api/v1/users/reviews`,
     report: `${apiAuthEndpoint}/api/v1/user/report`,
     publicTeamMembers: `${apiOnboardingEndpoint}/api/v1/team-members`,
+
+    //v2
+    talentFlextern: `${apiOnboardingEndpoint}/api/v2/talent/details`,
+    talentProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/talent/get-recommanded-projects`,
+    clientFlextern: `${apiOnboardingEndpoint}/api/v2/client/details`,
+
+
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -119,6 +126,13 @@ const API = {
 
     // files
     downloadUrl: `${apiCreateProjectEndpoint}/api/v1/download/url`,
+
+    //v2
+    activeProjectsForTalentFlextern: `${apiOnboardingEndpoint}/api/v2/talent/active-projects`,
+    upcomingProjectsForTalentFlextern: `${apiOnboardingEndpoint}/api/v2/talent/upcoming-projects`,
+    upcomingProjectsForClientFlextern: `${apiOnboardingEndpoint}/api/v2/client/upcoming-projects`,
+    activeProjectsForClientFlextern: `${apiOnboardingEndpoint}/api/v2/client/active-projects`,
+    recommendedProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/talent/get-recommended-projects`,
   },
   delegate: {
     inviteDelegate: `${apiAuthEndpoint}/api/v1/invitation/delegate`,
