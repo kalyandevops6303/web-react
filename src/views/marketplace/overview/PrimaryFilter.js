@@ -20,7 +20,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const isSecondaryLoading = useSelector((state) => state.marketPlace.loading);
   const appPermissions = useSelector(appPermissionsSelector);
   const isFlextern = useSelector((state) => state.auth?.flextern);
-  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
+  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
 
 
   const userType = userData?.user_type;
