@@ -282,7 +282,7 @@ const FlexternPersonal = () => {
       return { options: [] };
     }
   };
-  console.log(localFormData);
+
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
     if (res) {      
