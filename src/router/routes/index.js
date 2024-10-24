@@ -55,7 +55,8 @@ const getLayout = {
 };
 
 // ** Merge Routes
-const Routes = isFlexternshipApp ? FlexternshipRoutes : OneOffRoutes;
+// const Routes = isFlexternshipApp ? FlexternshipRoutes : OneOffRoutes;
+const Routes = FlexternshipRoutes;
 
 // eslint-disable-next-line consistent-return
 const getRouteMeta = (route) => {

@@ -6,6 +6,8 @@ import { useState } from 'react';
 import StartDateSVG from '../../../../assets/svgs/project-details/start-date.svg';
 import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { Button } from '../../ui/button';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { userTypes } from '@/utility/constants/Constant';
 
 const UserTypeChipClassnames = {
   TALENT: 'bg-[#FFD700] text-[#333333]',
@@ -14,11 +16,13 @@ const UserTypeChipClassnames = {
 const ProjectStatusChipClassnames = {
   OPEN: `bg-skyblue-light text-skyblue border-skyblue`,
   OPEN_LISTING: `bg-green-100 text-green-400`,
+  ONGOING: `bg-green-100 text-green-400 border-green-400`,
 };
 const desc =
   'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi, quasi voluptates voluptatum, magna inventore perferendis eos dignissimos similique reiciendis praesentium saepe illo necessitatibus molestias alias incidunt! Non at eos quia ratione alias.';
 
 const LeftSideBarProjectDetails = () => {
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
   const [showMore, setShowMore] = useState(false);
 
   const handleToggle = () => {
@@ -70,6 +74,11 @@ const LeftSideBarProjectDetails = () => {
       </div>
 
       <div className="flex flex-col items-start justify-start w-full gap-5 text-gray-600">
+        {userDetails?.userType === userTypes?.client && (
+          <h1>
+            Fixed Price : <span className="font-semibold text-gray-900">$ 135,000</span>
+          </h1>
+        )}
         <h1>
           Estimated Duration : <span className="font-semibold text-gray-900">10 Weeks</span>
         </h1>
@@ -119,24 +128,37 @@ const LeftSideBarProjectDetails = () => {
             className="bg-skyblue-light text-skyblue"
           />
         </div>
-            <div>
-            <h1 className="text-gray-900 font-semibold">Description: </h1>
-        <p>
-          {showMore ? desc : `${desc.slice(0, 100)}...`}
-          <span onClick={handleToggle} className="text-skyblue cursor-pointer">
-            {showMore ? ' Read less' : ' Read more'}
-          </span>
-        </p>
-            </div>
-      
+        <div>
+          <h1 className="text-gray-900 font-semibold">Description: </h1>
+          <p>
+            {showMore ? desc : `${desc.slice(0, 100)}...`}
+            <span onClick={handleToggle} className="text-skyblue cursor-pointer">
+              {showMore ? ' Read less' : ' Read more'}
+            </span>
+          </p>
+        </div>
 
-        <Button
-          variant="outline"
-          size="default"
-          className="w-fit px-10 py-3 mx-auto bg-[#0065C1] hover:border hover:border-[#0065C1] hover:bg-skyblue-light font-semibold hover:text-[#0065C1] text-white"
-        >
-          Message
-        </Button>
+        <div className="flex flex-row items-center w-full mx-auto flex-wrap justify-center gap-5">
+        {userDetails?.userType === userTypes?.client && ( <Button
+            variant="outline"
+            size="default"
+            className="w-fit px-10 py-3 mx-auto bg-red-600 hover:border hover:border-red-600 hover:bg-red-200 font-semibold hover:text-red-600 text-white"
+          >
+            Message
+          </Button>)}
+          <Button
+            variant="outline"
+            size="default"
+            className="w-fit px-10 py-3 mx-auto bg-[#0065C1] hover:border hover:border-[#0065C1] hover:bg-skyblue-light font-semibold hover:text-[#0065C1] text-white"
+          >
+            Message
+          </Button>
+        </div>
+        {userDetails?.userType === userTypes?.client && (
+          <h1>
+            Fixed Price : <span className="font-semibold text-gray-900">$ 135,000</span>
+          </h1>
+        )}
       </div>
     </div>
   );
