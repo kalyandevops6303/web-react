@@ -5,7 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {Button,
+import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -17,7 +18,9 @@ import {Button,
   Row,
   Spinner,
   UncontrolledTooltip,
- Progress , CardText } from 'reactstrap';
+  Progress,
+  CardText,
+} from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
@@ -26,11 +29,20 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
 import theme from '../../configs/themeVariables';
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
-import { getUserDetails, saveProfileDetails, saveCheckpointComplete } from '../../redux/actions/talentOnboardingActions';
+import {
+  getUserDetails,
+  saveProfileDetails,
+  saveCheckpointComplete,
+} from '../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading, userDetailsLoading } from '../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../services/staticServices';
-import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions , giveProgressBarColorClassName } from '../../utility/Utils';
-import { userOnboarding, userProfileEdit , userTypes } from '../../utility/constants/Constant';
+import {
+  filteredFormSchema,
+  removeEmptyKeys,
+  returnFilteredDropdownOptions,
+  giveProgressBarColorClassName,
+} from '../../utility/Utils';
+import { userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { currencies, currenciesLoading } from '../../redux/selectors/staticSelectors';
 import { getCurrencies } from '../../redux/actions/staticActions';
@@ -39,7 +51,7 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
-import "../../App.css";
+import '../../App.css';
 
 const FlexternAvailability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -160,9 +172,13 @@ const FlexternAvailability = () => {
   const localFormData = useWatch({ control });
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
@@ -173,7 +189,7 @@ const FlexternAvailability = () => {
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   const getOverallPercentageCompletion = () => {
-      setOverallPercentageCompletion(profileCompletionFlextern);
+    setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {
@@ -275,8 +291,7 @@ const FlexternAvailability = () => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    dispatch(saveCheckpointComplete(() => { }));
-
+    dispatch(saveCheckpointComplete(() => {}));
   };
 
   const loadTimezonesOptions = async (search) => {
@@ -444,7 +459,7 @@ const FlexternAvailability = () => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)} className="d-flex gap-2">
-          <div className='w-75'>
+          <div className="w-75">
             <Card className="w-100">
               <CardHeader>
                 <h4 className="m-0 mt-1">Availability</h4>
@@ -606,9 +621,9 @@ const FlexternAvailability = () => {
                                       options={
                                         watch('weekdayStartTime')
                                           ? timeOptions?.filter(
-                                            (t) =>
-                                              parseInt(t?.value, 10) > parseInt(watch('weekdayStartTime')?.value, 10),
-                                          )
+                                              (t) =>
+                                                parseInt(t?.value, 10) > parseInt(watch('weekdayStartTime')?.value, 10),
+                                            )
                                           : timeOptions
                                       }
                                       classNamePrefix="select"
@@ -816,9 +831,9 @@ const FlexternAvailability = () => {
                                       options={
                                         watch('weekendStartTime')
                                           ? timeOptions?.filter(
-                                            (t) =>
-                                              parseInt(t?.value, 10) > parseInt(watch('weekendStartTime')?.value, 10),
-                                          )
+                                              (t) =>
+                                                parseInt(t?.value, 10) > parseInt(watch('weekendStartTime')?.value, 10),
+                                            )
                                           : timeOptions
                                       }
                                       classNamePrefix="select"
@@ -934,7 +949,9 @@ const FlexternAvailability = () => {
                         />
                       )}
                     />
-                    {errors.currencyPreference && <FormFeedback>{errors.currencyPreference.label.message}</FormFeedback>}
+                    {errors.currencyPreference && (
+                      <FormFeedback>{errors.currencyPreference.label.message}</FormFeedback>
+                    )}
                   </Col>
                   <Col sm="12" md="6" lg="3" />
                   <Col sm="12" md="6" lg="3">
@@ -970,7 +987,12 @@ const FlexternAvailability = () => {
                 <h5 className="fw-bold">Back</h5>
               </div>
               <div>
-                <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <Button
+                  color="primary"
+                  outline
+                  className="d-flex align-items-center justify-content-between me-2"
+                  onClick={onSkipClick}
+                >
                   <span className="me-50">Skip</span>
                   <ChevronRight size={14} />
                 </Button>
@@ -992,47 +1014,90 @@ const FlexternAvailability = () => {
             <Card>
               <CardHeader>
                 <h4 className="m-0 mt-1">Profile Completion</h4>
-                <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                <CardText className="m-0 mt-1">
+                  Make it easier for others to find you by completing your profile.
+                </CardText>
                 <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                <Progress value={overallPercentageCompletion}
+                <Progress
+                  value={overallPercentageCompletion}
                   style={{ height: '0.5rem' }}
                   className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                 />
-
+                />
               </CardHeader>
 
               <CardBody>
                 <hr className="m-0 card-header-border" />
 
-                {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                    <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                {isTrumioTalent && (
+                  <div className="d-flex gap-1 mt-1">
+                    <div className="custom-checkbox-wrapper">
+                      <Input
+                        type="checkbox"
+                        id="customCheckbox"
+                        className="custom-checkbox-input"
+                        checked={isProjectReady}
+                      />
+                      <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                    </div>
+                    <div>
+                      <CardText className="m-0">Client Projects Ready</CardText>
+                      <b
+                        className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                        onClick={() =>
+                          navigate(
+                            returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                              ?.path || '/marketplace',
+                          )
+                        }
+                      >
+                        {isProjectReady
+                          ? 'Explore Projects'
+                          : `${
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                ?.label
+                            }`}{' '}
+                        <ChevronRight size="1.2em" />
+                      </b>
+                    </div>
                   </div>
-                  <div>
-                    <CardText className="m-0">Client Projects Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                      onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                    >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
+                )}
 
-                {isFlextern && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                    <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                {isFlextern && (
+                  <div className="d-flex gap-1 mt-1">
+                    <div className="custom-checkbox-wrapper">
+                      <Input
+                        type="checkbox"
+                        id="customCheckbox2"
+                        className="custom-checkbox-input"
+                        checked={isFlexternReady}
+                      />
+                      <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                    </div>
+                    <div>
+                      <CardText className="m-0">Flexternship Ready</CardText>
+                      <b
+                        className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                        onClick={() =>
+                          navigate(
+                            returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                              ?.path || '/dashboard',
+                          )
+                        }
+                      >
+                        {isFlexternReady
+                          ? 'Explore Flexternships'
+                          : `${
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                                ?.label
+                            }`}{' '}
+                        <ChevronRight size="1.2em" />
+                      </b>
+                    </div>
                   </div>
-                  <div>
-                    <CardText className="m-0">Flexternship Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                      onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                    >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
+                )}
               </CardBody>
             </Card>
           </Col>
-
         </Form>
       )}
     </ProfileFormContainer>

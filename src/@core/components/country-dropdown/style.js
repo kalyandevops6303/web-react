@@ -5,7 +5,8 @@ const CountryDropdownWrapper = styled.div`
   .country__select__control {
     padding-left: 12px;
     font-size: 12px;
-    width: 110px;
+    width: 90px;
+    height: 43px;
     border: 1px solid ${theme.borderInputColor};
     box-shadow: none;
     cursor: pointer;
