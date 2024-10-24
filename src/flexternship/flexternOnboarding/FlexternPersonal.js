@@ -183,7 +183,7 @@ const FlexternPersonal = () => {
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   const getOverallPercentageCompletion = () => {
-      setOverallPercentageCompletion(profileCompletionFlextern);
+    setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {
@@ -234,7 +234,7 @@ const FlexternPersonal = () => {
         dispatch(setFormDocuments(null));
         setFiles([...filtered]);
       }),
-    );  
+    );
   };
 
   const isFileValid = (file) => {
@@ -285,7 +285,7 @@ const FlexternPersonal = () => {
 
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
-    if (res) {      
+    if (res) {
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
       }
@@ -516,7 +516,7 @@ const FlexternPersonal = () => {
     if (location?.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
-      dispatch(getUserDetails(()=>{}));
+      dispatch(getUserDetails(() => {}));
       navigate(`/${userOnboarding.talent}/educational-details`);
     }
     dispatch(setResumeDataUploadedForPersonal(parseResume));
@@ -899,12 +899,22 @@ const FlexternPersonal = () => {
                   </UploadIconContainer>
                   <h5 className="fw-bold">Back</h5>
                 </div>
-                <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <div className="d-flex justify-content-end">
+                  <Button
+                    color="primary"
+                    outline
+                    className="d-flex align-items-center justify-content-between me-2"
+                    onClick={onSkipClick}
+                  >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
                   </Button>
-                  <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    className="d-flex align-items-center justify-content-between"
+                    disabled={!isValid || profileDetailsIsLoading}
+                  >
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
                     ) : (
@@ -931,34 +941,35 @@ const FlexternPersonal = () => {
                         <Info className="font-medium-3 me-50" color="#004280" />
                       </Col>
                       <Col className="w-100 ">
-                        <Row className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between">
-                          <Row style={{ color: '#004280' }}>
-                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
-                              Auto Fill {files && files?.length > 0 && 'Profile'}
-                              {files && files.length === 0 && <span> - Upload your resume</span>}
-                            </Col>
-                            <Col lg="2">
-                              {resumeParsedLoading ? (
-                                <Spinner size="sm" />
-                              ) : (
-                                !uploadingFiles.includes(files[0]) &&
-                                files &&
-                                files.length > 0 && (
-                                  <FormGroup switch>
-                                    <Input
-                                      type="switch"
-                                      checked={parseResume}
-                                      onClick={() => {
-                                        setParsedUploaded(false);
-                                        setParseResume(!parseResume);
-                                        dispatch(setResumeParsed(!parseResume));
-                                      }}
-                                    />
-                                  </FormGroup>
-                                )
-                              )}
-                            </Col>
-                          </Row>
+                        <Row
+                          style={{ color: '#004280' }}
+                          className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between"
+                        >
+                          <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
+                            Auto Fill {files && files?.length > 0 && 'Profile'}
+                            {files && files.length === 0 && <span> - Upload your resume</span>}
+                          </Col>
+                          <Col lg="2">
+                            {resumeParsedLoading ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              !uploadingFiles.includes(files[0]) &&
+                              files &&
+                              files.length > 0 && (
+                                <FormGroup switch>
+                                  <Input
+                                    type="switch"
+                                    checked={parseResume}
+                                    onClick={() => {
+                                      setParsedUploaded(false);
+                                      setParseResume(!parseResume);
+                                      dispatch(setResumeParsed(!parseResume));
+                                    }}
+                                  />
+                                </FormGroup>
+                              )
+                            )}
+                          </Col>
                         </Row>
 
                         {files?.length === 0 && (
@@ -1031,7 +1042,7 @@ const FlexternPersonal = () => {
                       <div>
                         <CardText className="m-0">Client Projects Ready</CardText>
                         <b
-                          className="text-primary cursor-pointer"
+                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
                           onClick={() =>
                             navigate(
                               returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
@@ -1065,7 +1076,7 @@ const FlexternPersonal = () => {
                       <div>
                         <CardText className="m-0">Flexternship Ready</CardText>
                         <b
-                          className="text-primary cursor-pointer"
+                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
                           onClick={() =>
                             navigate(
                               returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
@@ -1092,47 +1103,51 @@ const FlexternPersonal = () => {
           </Row>
         </Form>
       )}
-      {files?.length === 0 && (!userData?.talent_info?.resume || Object.keys(userData?.talent_info?.resume).length === 0) && (resumeModalOpen && <UploadResumeModal
-                    modal={resumeModalOpen}
-                    toggleModal={() => setResumeModalOpen(false)}
-                    uploadButton={
-                      <div className="d-flex justify-content-center mt-1 align-items-center">
-                        <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
-                          <h5
-                            style={{
-                              background: '#0065c1',
-                              color: 'white',
-                              paddingBlock: '12px',
-                              borderRadius: '5px',
-                              paddingInline: '16px',
-                            }}
-                            className="fw-bold"
-                          >
-                            Upload Resume
-                          </h5>
-                        </Label>
-                        <Controller
-                          id="resume"
-                          name="resume"
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              {...field}
-                              ref={filesRef}
-                              id="resume"
-                              type="file"
-                              max={1}
-                              accept="application/pdf"
-                              style={{ display: 'none' }}
-                              onChange={(e) => {
-                                handleFileChange(e);
-                              }}
-                            />
-                          )}
-                        />
-                      </div>
-                    }
-                  />)}
+      {files?.length === 0 &&
+        (!userData?.talent_info?.resume || Object.keys(userData?.talent_info?.resume).length === 0) &&
+        resumeModalOpen && (
+          <UploadResumeModal
+            modal={resumeModalOpen}
+            toggleModal={() => setResumeModalOpen(false)}
+            uploadButton={
+              <div className="d-flex justify-content-center mt-1 align-items-center">
+                <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
+                  <h5
+                    style={{
+                      background: '#0065c1',
+                      color: 'white',
+                      paddingBlock: '12px',
+                      borderRadius: '5px',
+                      paddingInline: '16px',
+                    }}
+                    className="fw-bold"
+                  >
+                    Upload Resume
+                  </h5>
+                </Label>
+                <Controller
+                  id="resume"
+                  name="resume"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      ref={filesRef}
+                      id="resume"
+                      type="file"
+                      max={1}
+                      accept="application/pdf"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        handleFileChange(e);
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            }
+          />
+        )}
     </ProfileFormContainer>
   );
 };

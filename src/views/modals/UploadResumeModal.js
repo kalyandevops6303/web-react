@@ -23,7 +23,12 @@ const UploadResumeModal = ({ modal, uploadButton, toggleModal }) => (
         </div>
       </div>
       <div className="d-flex align-items-center justify-content-end pb-2 pe-2">
-        <Button color="primary" outline className="me-2" onClick={toggleModal}>
+        <Button
+          color="primary"
+          outline
+          className="d-flex align-items-center justify-content-between me-2"
+          onClick={toggleModal}
+        >
           <span className="me-50">Skip</span>
           <ChevronRight size={14} />
         </Button>
