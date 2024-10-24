@@ -20,7 +20,7 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
       key={index}
       className={`${
         isActive ? activeTabClass : inactiveTabClass
-      } group ${!(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'} duration-200 hover:cursor-pointer hover:text-[#0185E4]   first:rounded-tl last:rounded-tr flex flex-row w-fit px-5 py-3 items-center justify-center gap-2`}
+      } group ${!(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'} duration-200 hover:cursor-pointer hover:text-[#0185E4]   first:rounded-tl last:rounded-tr flex flex-row w-fit px-5 py-3 items-start justify-start gap-2`}
     >
       <div
         className={`px-2 py-2 rounded-sm ${
@@ -33,7 +33,7 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
         <h1 className={`font-semibold ${isActive ? 'text-[#0185E4]' : 'text-[#9E9E9E]'} group-hover:text-[#0185E4]`}>
           {tab.title}
         </h1>
-        <h1 className={`${isActive ? 'text-[#0185E4]' : 'text-[#9E9E9E]'} group-hover:text-[#0185E4] text-xs md:text-sm`}>
+        <h1 className={`${isActive ? 'text-[#0185E4]' : 'text-[#9E9E9E]'} group-hover:text-[#0185E4] text-xs lg:text-sm`}>
           {tab.description}
         </h1>
       </div>

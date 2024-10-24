@@ -7,7 +7,7 @@ const ProjectStatusChip = ({
 }) => {
   return (
     <h1
-      className={`w-fit text-center text-sm px-2 py-1 ${className} font-semibold border  rounded-md`}
+      className={`w-fit text-center text-xs px-2 py-1 ${className} font-semibold border  rounded-md`}
     >
       {status}
     </h1>

@@ -6,6 +6,7 @@ module.exports = {
   darkMode: ['class'],
   content: [
     './index.html',
+    "./src/**/*.{js,jsx,ts,tsx}", // include all js, jsx, ts, tsx files
     "./src/flexternships/app/**/*.{js,jsx,ts,tsx}", // include all js, jsx, ts, tsx files
   ],
   theme: {

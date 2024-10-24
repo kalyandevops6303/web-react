@@ -74,9 +74,9 @@ const ProjectCard = ({
     PAYMENT_PENDING: 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
     DISPUTED: 'Disputed',
-    SIGN_REQUESTED : "Sign Requested",
-    NOT_FUNDED:"Not Funded",
-    INTIATE_FUNDS:"Initiate Funds",
+    SIGN_REQUESTED: 'Sign Requested',
+    NOT_FUNDED: 'Not Funded',
+    INTIATE_FUNDS: 'Initiate Funds',
   };
 
   const primaryStatus = {
@@ -137,7 +137,7 @@ const ProjectCard = ({
   };
 
   const handleSwitchProfileModalNavigation = () => {
-    if(!location.pathname.split('/').includes('invited')) {
+    if (!location.pathname.split('/').includes('invited')) {
       return getPath({ isActiveProject: false, projectId: data?._id });
     }
 
@@ -170,26 +170,25 @@ const ProjectCard = ({
                   </span>
                 </CardTitle>
                 <div className="d-flex flex-wrap project-stats">
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PRICE']}>
-                  <CardText className="project">
-                    {data?.pay_type?.variable_cost ? (
-                      <>Variable Price</>
-                    ) : (
-                      <>
-                        Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
-                      </>
-                    )}
-                  </CardText>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PRICE']}>
+                    <CardText className="project">
+                      {data?.pay_type?.variable_cost ? (
+                        <>Variable Price</>
+                      ) : (
+                        <>
+                          Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
+                        </>
+                      )}
+                    </CardText>
                   </PermissionWrapper>
                   {(data?.assigned_date || data?.completed_date || data?.invite_date) && (
                     <CardText className="mb-1">
                       {data?.assigned_date && (
                         <span className="me-1">
                           {data?.assigned_date
-                            ?
-                              `Assigned Date: ${convertUnixTimestampToDate(
+                            ? `Assigned Date: ${convertUnixTimestampToDate(
                                 data?.assigned_date,
-                                savedUserData?.availability?.timezone?.name ,
+                                savedUserData?.availability?.timezone?.name,
                               )}    `
                             : ''}
                         </span>
@@ -197,10 +196,9 @@ const ProjectCard = ({
                       {data?.completed_date && (
                         <span className="me-1">
                           {data?.completed_date
-                            ?
-                              `Completed Date: ${convertUnixTimestampToDate(
+                            ? `Completed Date: ${convertUnixTimestampToDate(
                                 data?.completed_date,
-                                savedUserData?.availability?.timezone?.name ,
+                                savedUserData?.availability?.timezone?.name,
                               )}   `
                             : ''}
                         </span>
@@ -208,21 +206,20 @@ const ProjectCard = ({
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
-                            ? 
-                            `Invite Date: ${convertUnixTimestampToDate(
-                              data?.invite_date,
-                              savedUserData?.availability?.timezone?.name ,
-                            )}`
+                            ? `Invite Date: ${convertUnixTimestampToDate(
+                                data?.invite_date,
+                                savedUserData?.availability?.timezone?.name,
+                              )}`
                             : ''}
                         </span>
                       )}
                     </CardText>
                   )}
                   <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.LOCATION']}>
-                  <CardText className="project d-flex align-items-center ms-25">
-                    <img src={Mpin} alt="Mpin" className="mpin" />
-                    {data?.client?.office_address?.country?.name || 'Location'}
-                  </CardText>
+                    <CardText className="project d-flex align-items-center ms-25">
+                      <img src={Mpin} alt="Mpin" className="mpin" />
+                      {data?.client?.office_address?.country?.name || 'Location'}
+                    </CardText>
                   </PermissionWrapper>
                   <CardText className=" mb-1">
                     {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
@@ -248,6 +245,10 @@ const ProjectCard = ({
                   </>
                 )}
 
+                <h1 className="bg-[#FBC02D1F] w-fit py-2 mt-5 rounded-xl px-4 text-sky-500 font-semibold">
+                  Estimated time to complete feedback 3min 30sec
+                </h1>
+
                 {isContentOverflowing && (
                   <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
                     {showFullText ? 'Show less' : 'Show more'}
@@ -255,7 +256,6 @@ const ProjectCard = ({
                 )}
               </Col>
               <Col lg="4">
-              
                 {primaryFilter !== 'terminated' ? (
                   <ProjectWithTeamUI
                     secondaryFilterForInvitedType={secondaryFilterForInvitedType}
