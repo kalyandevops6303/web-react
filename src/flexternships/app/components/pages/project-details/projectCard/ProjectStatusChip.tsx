@@ -1,17 +1,13 @@
 const ProjectStatusChip = ({
-  backgroundColor,
-  textColor,
-  borderColor,
+  className,
   status,
 }: {
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
+  className: string;
   status: string;
 }) => {
   return (
     <h1
-      className={`w-fit text-center text-sm px-2 py-1 text-[${textColor}] bg-[${backgroundColor}] font-semibold border border-[${borderColor}] rounded-md`}
+      className={`w-fit text-center text-sm px-2 py-1 ${className} font-semibold border  rounded-md`}
     >
       {status}
     </h1>

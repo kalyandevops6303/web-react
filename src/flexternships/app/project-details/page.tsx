@@ -1,12 +1,12 @@
 import { Box, Star, Users, Watch } from 'react-feather';
 import ProjectDetailsTabNavigation from '../components/pages/project-details/ProjectDetailsTabNavigation';
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
-import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
 import { useEffect } from 'react';
 import MilestoneTab from "../components/pages/project-details/tabs/milestone"
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function FlexternshipProjectDetails() {
-  const fetchUserDetails = useFlexternUserProfileStore(state => state.populateClientInfoDetails)
+  const fetchUserDetails = useFlexternUserStore(state => state.populateUserDetails)
   useEffect(()=>{
     fetchUserDetails()
   },[])
@@ -65,7 +65,7 @@ export default function FlexternshipProjectDetails() {
         </div>
       </div>
       <div className="h-10"></div>
-      <MilestoneTab />
+      {/* <MilestoneTab /> */}
     </div>
   );
 }

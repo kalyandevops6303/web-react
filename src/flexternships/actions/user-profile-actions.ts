@@ -60,7 +60,6 @@ export const upsertClientAccountInfo = async (data: FlexternClientAccountDetails
     await upsertFlexternClientAccountInfo({
         firstname: data.firstname,
         lastname: data.lastname,
-        user_type: data.user_type,
         ...(data.imageUri?.startsWith('https') ? {} : {imageUri: data.imageUri})
     });
 }
