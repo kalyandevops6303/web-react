@@ -116,18 +116,6 @@ const PrivateDashboard = () => {
     }
   };
 
-  const onDraftFlexternProjectsCheckSuccess = (res) => {
-    if (res?.has_draft_project) {
-      setSavedDraftsAvailableModal(true);
-    } else {
-      navigate('/flexternships/create-project');
-    }
-  };
-
-  const onCreateFlexternProjectClick = () => {
-    dispatch(draftProjectsCheck(onDraftFlexternProjectsCheckSuccess)); // change this to flextern project drafts check
-  };
-
   const onCreateProjectClick = () => {
     dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
   };
@@ -251,22 +239,13 @@ const PrivateDashboard = () => {
       )}
       <span className='mb-2'>
 
-      <BreadCrumbs data={[{ title: 'Dashboard' }]} />
+        <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       </span>
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
-          <span className='mr-2'>
-          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.HIRE_FLEXTERNS']}>
-            <Button color="primary" onClick={onCreateFlexternProjectClick} disabled={draftProjectsCheckIsLoading}>
-              {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Hire Flexterns'}
-            </Button>
-            </PermissionWrapper>
-          </span>
-          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.CREATE_PROJECT']}>
           <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
             {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
           </Button>
-          </PermissionWrapper>
         </DashboardHeaderWrapper>
       )}
       {userDetailsData?.team_type === userTypes.team && (
@@ -309,19 +288,19 @@ const PrivateDashboard = () => {
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.CREATE_CLUB']}>
-          <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateClub}>
-            Create Club
-          </span>
+            <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateClub}>
+              Create Club
+            </span>
           </PermissionWrapper>
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.CREATE_TEAM']}>
-          <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
-            Create Team
-          </span>
+            <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
+              Create Team
+            </span>
           </PermissionWrapper>
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.JOIN_TEAM']}>
-          <Button as="link" color="primary" onClick={handleJoinTeam}>
-            Join Team
-          </Button>
+            <Button as="link" color="primary" onClick={handleJoinTeam}>
+              Join Team
+            </Button>
           </PermissionWrapper>
         </CreateTeamButtonWrapper>
       )}
@@ -360,10 +339,10 @@ const PrivateDashboard = () => {
             </section>
           </PermissionWrapper>
           {userDetailsData?.user_type === userTypes.client && (
-              <section className="mb-2">
-                <Header className="mb-1">Open Listings</Header>
-                <OpenListing />
-              </section>
+            <section className="mb-2">
+              <Header className="mb-1">Open Listings</Header>
+              <OpenListing />
+            </section>
           )}
           {userDetailsData?.user_type === userTypes.client && (
             <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.RECOMMENDED_TEAMS']}>
@@ -394,10 +373,10 @@ const PrivateDashboard = () => {
             </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.talent && (
-              <section className="mb-2">
-                <Header className="mb-1">Invites</Header>
-                <InviteListing />
-              </section>
+            <section className="mb-2">
+              <Header className="mb-1">Invites</Header>
+              <InviteListing />
+            </section>
           )}
         </Col>
 
@@ -417,14 +396,14 @@ const PrivateDashboard = () => {
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />

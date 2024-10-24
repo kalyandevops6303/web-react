@@ -17,6 +17,9 @@ import defaultRadio from '@/flexternships/assets/icons/radios/defaultRadio.svg';
 import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSelectInput'
 import { isEmpty } from 'lodash'
 import { fetchCitiesPaginatedByState, fetchCompanyIndustriesPaginated, fetchCountriesPaginated, fetchStatesPaginatedByCountry } from '@/flexternships/services/user-management'
+import { City, State } from '@/flexternships/constraints/types/core-types'
+import { showToastMessage } from '@/flexternships/utils/core-utils'
+import { ToastType } from '@/flexternships/constraints/enums/core-enums'
 
 export default function CompanyDetails() {
     const populateClientOrgDetails = useFlexternUserProfileStore((state) => state.populateClientOrgDetails);
@@ -33,6 +36,7 @@ export default function CompanyDetails() {
         handleSubmit,
         watch,
         reset,
+        setValue,
         formState: { errors, isValid, isDirty },
     } = useForm<FlexternClientCompanyDetails>({
         mode: 'onChange',
@@ -73,14 +77,35 @@ export default function CompanyDetails() {
         }
     }, [profileDetails, reset]);
 
-    console.log("Profile Details", profileDetails)
+    useEffect(() => {
+        const resetGeoState = () => {
+            setValue('officeAddress.state', {} as State);
+        }
+        // checking if the useEffect is not triggered by preloaded profileDetails
+        if (watch('officeAddress.country')?._id !== profileDetails?.officeAddress?.country?._id) resetGeoState();
+        // checking if the geostate is something else than preloaded profileDetails
+        else if (watch('officeAddress.state')?._id !== profileDetails?.officeAddress?.state?._id) resetGeoState();
+    }, [watch('officeAddress.country'), profileDetails]);
+
+    useEffect(() => {
+        const resetGeoCity = () => {
+            setValue('officeAddress.city', {} as City);
+        }
+        // checking if the useEffect is not triggered by preloaded profileDetails
+        if (watch('officeAddress.state')?._id !== profileDetails?.officeAddress?.state?._id) resetGeoCity();
+        // checking if the geostate is something else than preloaded profileDetails
+        else if (watch('officeAddress.city')?._id !== profileDetails?.officeAddress?.city?._id) resetGeoCity();
+    }, [watch('officeAddress.state'), profileDetails]);
 
     const onContinue = async (data: FlexternClientCompanyDetails) => {
         setIsSaveLoading(true);
-        console.log(data);
-        await updateClientCompanyInfo(data);
+        try {
+            await updateClientCompanyInfo(data);
+            nextTab();
+        } catch (error) {
+            showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+        }
         setIsSaveLoading(false);
-        nextTab();
     }
 
     if (isProfileDetailsLoading) {

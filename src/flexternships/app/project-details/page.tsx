@@ -3,6 +3,7 @@ import ProjectDetailsTabNavigation from '../components/pages/project-details/Pro
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
 import { useEffect } from 'react';
+import MilestoneTab from "../components/pages/project-details/tabs/milestone"
 
 export default function FlexternshipProjectDetails() {
   const fetchUserDetails = useFlexternUserProfileStore(state => state.populateClientInfoDetails)
@@ -63,6 +64,8 @@ export default function FlexternshipProjectDetails() {
           </div>
         </div>
       </div>
+      <div className="h-10"></div>
+      <MilestoneTab />
     </div>
   );
 }

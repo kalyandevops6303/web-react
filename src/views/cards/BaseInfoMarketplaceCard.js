@@ -32,7 +32,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const userData = useSelector(selectUserData);
   const appPermissions = useSelector(appPermissionsSelector);
   const location = useLocation();
-  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
+  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
@@ -222,7 +222,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           <div onClick={(e) => handleNavigate(e)} className="d-flex w-100 align-items-center">
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                <span>{clientDetails?.title ?? clientDetails?.company_name}</span>
+                <span>{clientDetails?.title ?? (flexTern ? clientDetails?.department_name : clientDetails?.company_name)}</span>
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
                 {!isEmpty(delegateDetails) ? (

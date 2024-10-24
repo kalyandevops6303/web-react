@@ -15,13 +15,15 @@ interface MilestoneTileProps {
 }
 
 const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
-    const { status, startDate, endDate } = data;
+    const { title, status, startDate, endDate } = data;
 
     return (
         <div className="flex flex-col">
             <div className="p-[1px]">
                 <div className="flex flex-row gap-x-6">
-                    <div className="grow" />
+                    <div className="grow">
+                        {title}
+                    </div>
                     <div className="flex flex-row gap-x-8">
                         <div>{status}</div>
                         <div className="flex flex-col">

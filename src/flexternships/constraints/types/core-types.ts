@@ -51,17 +51,25 @@ export type FlexternClientDetails = {
     accountStatus: "ACTIVE"; // Assuming these are the possible account statuses
     phone: string;
     phoneCountry: {
-      code: string;
-      dialCode: string;
-      name: string;
+        code: string;
+        dialCode: string;
+        name: string;
     }
 }
 
 export type FlexternTalentDetails = {
     id: string;
     userType: UserType;
+    email: string;
+    phone: string;
+    countryCode: string;
     appRoles: Array<FlexternUserAppRole>;
     checkpoint: FlexternUserCheckpoint;
+    phoneCountry: {
+        code: string;
+        dialCode: string;
+        name: string;
+    }
 }
 
 

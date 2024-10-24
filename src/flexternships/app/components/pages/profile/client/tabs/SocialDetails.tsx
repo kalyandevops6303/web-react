@@ -4,11 +4,12 @@ import SecondaryButton from '@/flexternships/app/components/core/buttons/Seconda
 import TextInput from '@/flexternships/app/components/core/form/TextInput'
 import ClientOnboardingSuccessModal from '@/flexternships/app/components/core/modals/ClientOnboardingSuccessModal'
 import Spinner from '@/flexternships/app/components/core/Spinner'
-import { FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums'
+import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums'
 import { FlexternClientCompanySocialDetails } from '@/flexternships/constraints/types/user-profile-types'
 import { FlexternClientCompanySocialDetailsSchema } from '@/flexternships/schemas/user-profile-schemas'
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores'
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store'
+import { showToastMessage } from '@/flexternships/utils/core-utils'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
@@ -69,9 +70,13 @@ export default function SocialDetails() {
     }
     const onContinue = async (data: FlexternClientCompanySocialDetails) => {
         setIsSaveLoading(true);
-        await updateClientCompanyInfo(data);
+        try {
+            await updateClientCompanyInfo(data);
+            handleNext();
+        } catch (error) {
+            showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+        }
         setIsSaveLoading(false);
-        handleNext();
     }
 
     const addSocialLink = () => {
