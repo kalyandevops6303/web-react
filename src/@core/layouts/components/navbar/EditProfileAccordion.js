@@ -31,7 +31,6 @@ const EditProfileAccordion = () => {
   const appPermissions = useSelector(appPermissionsSelector);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const isDelegate = getItem('isDelegate');
-  console.log(userDetailsData?.app_roles[0] === userTypes.flexternClient);
 
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
@@ -155,7 +154,7 @@ const EditProfileAccordion = () => {
     }
   };
 
-  const handleEditProfileTabs = () => {
+  const renderClientEditProfileTabs = () => {
     if (userDetailsData?.user_type === userTypes.client) {
       if (isDelegate) {
         return (
@@ -267,7 +266,7 @@ const EditProfileAccordion = () => {
                 </>
               )} */}{' '}
               {handleEditTabsForTalent()}
-              {handleEditProfileTabs()}
+              {renderClientEditProfileTabs()}
               {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'CLUB' && (
                 <>
                   <div id="account-edit">
