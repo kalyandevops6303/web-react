@@ -17,7 +17,7 @@ import {
   selectTrumioTalent,
   selectUserData,
   selectTrumioIsFlextern,
-  appPermissionsSelector 
+  appPermissionsSelector,
 } from '../../../../redux/selectors/authSelectors';
 import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
 import { getItem } from '../../../../utility/localStorageControl';
@@ -31,6 +31,7 @@ const EditProfileAccordion = () => {
   const appPermissions = useSelector(appPermissionsSelector);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const isDelegate = getItem('isDelegate');
+  console.log(userDetailsData?.app_roles[0] === userTypes.flexternClient);
 
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
@@ -122,10 +123,7 @@ const EditProfileAccordion = () => {
             <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
               <span className="align-middle p-1">Social</span>
             </DropdownItem>
-            <DropdownItem
-              onClick={() => handleEditProfileForTalent('additional')}
-              className="w-100 edit-link "
-            >
+            <DropdownItem onClick={() => handleEditProfileForTalent('additional')} className="w-100 edit-link ">
               <span className="align-middle p-1">Additional Information</span>
             </DropdownItem>
           </>
@@ -151,6 +149,68 @@ const EditProfileAccordion = () => {
             <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
               <span className="align-middle p-1">Payment</span>
             </DropdownItem>
+          </>
+        );
+      }
+    }
+  };
+
+  const handleEditProfileTabs = () => {
+    if (userDetailsData?.user_type === userTypes.client) {
+      if (isDelegate) {
+        return (
+          <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
+            <span className="align-middle p-1">Account</span>
+          </DropdownItem>
+        );
+      } else if (userDetailsData?.app_roles[0] === userTypes.flexternClient) {
+        return (
+          <>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Account</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PERSONAL']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('personal')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Company</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('social')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Social</span>
+              </DropdownItem>
+            </PermissionWrapper>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Account</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PERSONAL']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('personal')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Personal</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.EDUCATION']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('education')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Education</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.AVAILABILITY']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('availability')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Availability</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
+              <DropdownItem onClick={() => handleEditProfileForClient('social')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Social</span>
+              </DropdownItem>
+            </PermissionWrapper>
           </>
         );
       }
@@ -207,45 +267,7 @@ const EditProfileAccordion = () => {
                 </>
               )} */}{' '}
               {handleEditTabsForTalent()}
-              {userDetailsData?.user_type === userTypes.client && !isDelegate && (
-                <>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
-                    <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
-                      <span className="align-middle p-1">Account</span>
-                    </DropdownItem>
-                  </PermissionWrapper>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PERSONAL']}>
-                    <DropdownItem onClick={() => handleEditProfileForClient('personal')} className="w-100 edit-link ">
-                      <span className="align-middle p-1">Personal</span>
-                    </DropdownItem>
-                  </PermissionWrapper>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.EDUCATION']}>
-                    <DropdownItem onClick={() => handleEditProfileForClient('education')} className="w-100 edit-link ">
-                      <span className="align-middle p-1">Education</span>
-                    </DropdownItem>
-                  </PermissionWrapper>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.AVAILABILITY']}>
-                    <DropdownItem
-                      onClick={() => handleEditProfileForClient('availability')}
-                      className="w-100 edit-link "
-                    >
-                      <span className="align-middle p-1">Availability</span>
-                    </DropdownItem>
-                  </PermissionWrapper>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
-                    <DropdownItem onClick={() => handleEditProfileForClient('social')} className="w-100 edit-link ">
-                      <span className="align-middle p-1">Social</span>
-                    </DropdownItem>
-                  </PermissionWrapper>
-                </>
-              )}
-              {userDetailsData?.user_type === userTypes.client && isDelegate && (
-                <>
-                  <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
-                    <span className="align-middle p-1">Account</span>
-                  </DropdownItem>
-                </>
-              )}
+              {handleEditProfileTabs()}
               {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'CLUB' && (
                 <>
                   <div id="account-edit">
