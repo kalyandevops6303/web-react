@@ -62,7 +62,7 @@ const DelegateAccordion = ({ setDelegateEmail }) => {
           className={open === '1' ? 'isActive' : ''}
           targetId="1"
         >
-          <TextWrapper>Delegate</TextWrapper>
+          <TextWrapper>Delegate(s)</TextWrapper>
         </AccordionHeader>
         <AccordionBody accordionId="1" style={{ maxHeight: '20rem' }}>
           <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>

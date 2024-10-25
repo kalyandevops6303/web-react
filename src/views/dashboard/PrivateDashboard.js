@@ -182,7 +182,7 @@ const PrivateDashboard = () => {
   };
 
   return (
-    <div className='trumio'>
+    <div className={`trumio ${userDetailsData?.user_type === userTypes.talent ? 'flex flex-col gap-1.5' : ''}`}>
       {savedDraftsAvailableModal && (
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
@@ -237,8 +237,7 @@ const PrivateDashboard = () => {
           toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
         />
       )}
-      <span className='mb-2'>
-
+      <span className="mb-2">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       </span>
       {userDetailsData?.user_type === userTypes.client && (
@@ -288,12 +287,18 @@ const PrivateDashboard = () => {
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.CREATE_CLUB']}>
-            <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateClub}>
+            <span
+              className="text-decoration-underline font-medium-2 link-primary cursor-pointer"
+              onClick={onCreateClub}
+            >
               Create Club
             </span>
           </PermissionWrapper>
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.CREATE_TEAM']}>
-            <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
+            <span
+              className="text-decoration-underline font-medium-2 link-primary cursor-pointer"
+              onClick={onCreateTeam}
+            >
               Create Team
             </span>
           </PermissionWrapper>
@@ -326,7 +331,7 @@ const PrivateDashboard = () => {
               'DASHBOARD.PROJECTS.RECOMMENDED_PROJECTS',
             ]}
           >
-            <section className="mb-2">
+            <section className="mb-2 ">
               <Header className="mb-1">Projects</Header>
               <ProjectListing />
             </section>
@@ -388,7 +393,11 @@ const PrivateDashboard = () => {
                   <AvailableTime />
                 </PermissionWrapper>
               ) : (
-                !isFlexternInvited && <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.ASSESSMENTs']}><AssessmentsOverview /></PermissionWrapper>
+                !isFlexternInvited && (
+                  <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.ASSESSMENTs']}>
+                    <AssessmentsOverview />
+                  </PermissionWrapper>
+                )
               )}
             </div>
           )}
@@ -396,14 +405,14 @@ const PrivateDashboard = () => {
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
-            // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
           <Alerts />

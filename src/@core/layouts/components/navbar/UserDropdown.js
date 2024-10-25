@@ -410,7 +410,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           )}
           <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
-            <span className="align-middle ">Customer support</span>
+            <span className="align-middle ">Contact support</span>
           </TextWrapper>
           <TextWrapper onClick={handleLogout} className="w-100 logout">
             <span className="align-middle ">Logout</span>
