@@ -65,7 +65,12 @@ import { projectFileUploadToAzureService } from '../../../services/createProject
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { deleteIdentityFile, getUserDetails, saveCheckpointComplete, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import {
+  deleteIdentityFile,
+  getUserDetails,
+  saveCheckpointComplete,
+  saveProfileDetails,
+} from '../../../redux/actions/talentOnboardingActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
@@ -207,7 +212,7 @@ const Additional = () => {
 
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
-  const getOverallPercentageCompletion = () => {  
+  const getOverallPercentageCompletion = () => {
     setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
@@ -261,7 +266,7 @@ const Additional = () => {
     const response = await identityUploadService(file.name);
     const fileWithUrl = {
       id: uuidv4(),
-      file:{
+      file: {
         name: file.name,
         size: file.size,
         lastModified: file.lastModified,
@@ -620,7 +625,10 @@ const Additional = () => {
         }
       }
 
-      if (res?.additional_info?.identity_verification && Object.keys(res.additional_info.identity_verification).length > 0) {
+      if (
+        res?.additional_info?.identity_verification &&
+        Object.keys(res.additional_info.identity_verification).length > 0
+      ) {
         const file = {
           id: uuidv4(),
           file: {
@@ -638,7 +646,7 @@ const Additional = () => {
       }
     }
 
-    dispatch(saveCheckpointComplete(() =>{}))
+    dispatch(saveCheckpointComplete(() => {}));
   };
 
   useEffect(() => {
@@ -847,8 +855,12 @@ const Additional = () => {
                               name="institutionEmail"
                               control={control}
                               render={({ field }) => (
-                                <Input {...field} placeholder="Enter your institute email id
-                                " invalid={errors.institutionEmail && true} />
+                                <Input
+                                  {...field}
+                                  placeholder="Enter your institute email id
+                                "
+                                  invalid={errors.institutionEmail && true}
+                                />
                               )}
                             />
                             {errors.institutionEmail && <FormFeedback>{errors.institutionEmail.message}</FormFeedback>}
@@ -996,14 +1008,24 @@ const Additional = () => {
                     </UploadIconContainer>
                     <h5 className="fw-bold">Back</h5>
                   </div>
-                  <div>
+                  <div className="d-flex justify-content-end">
                     {flexternBoolean && trumioTalent ? (
-                      <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                      <Button
+                        color="primary"
+                        outline
+                        className="d-flex align-items-center justify-content-between me-2"
+                        onClick={onSkipClick}
+                      >
                         <span className="me-50">Skip</span>
                         <ChevronRight size={14} />
                       </Button>
                     ) : null}
-                    <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                    <Button
+                      className="d-flex align-items-center justify-content-between"
+                      color="primary"
+                      type="submit"
+                      disabled={!isValid || profileDetailsIsLoading}
+                    >
                       {profileDetailsIsLoading ? (
                         <Spinner size="sm" />
                       ) : (

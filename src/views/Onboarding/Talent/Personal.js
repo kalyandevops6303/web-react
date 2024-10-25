@@ -331,10 +331,10 @@ const Personal = () => {
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
     if (res) {
-      setValue('role',{
-        label:  userDetailsData?.talent_info?.role?.name,
-        value:  userDetailsData?.talent_info?.role?._id,
-      },);
+      setValue('role', {
+        label: userDetailsData?.talent_info?.role?.name,
+        value: userDetailsData?.talent_info?.role?._id,
+      });
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
       }
@@ -1492,12 +1492,22 @@ const Personal = () => {
                   </UploadIconContainer>
                   <h5 className="fw-bold">Back</h5>
                 </div>
-                <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <div className="d-flex justify-content-end">
+                  <Button
+                    color="primary"
+                    outline
+                    className="d-flex align-items-center justify-content-between me-2"
+                    onClick={onSkipClick}
+                  >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
                   </Button>
-                  <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                  <Button
+                    className="d-flex align-items-center justify-content-between"
+                    color="primary"
+                    type="submit"
+                    disabled={!isValid || profileDetailsIsLoading}
+                  >
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
                     ) : (
@@ -1530,13 +1540,8 @@ const Personal = () => {
                               Auto Fill {files && files?.length > 0 && 'Profile'}
                             </span>
 
-                            {files && files.length === 0 && (
-                              <span> - Upload your resume
-                                 
-                                 </span>
-                            )}
+                            {files && files.length === 0 && <span> - Upload your resume</span>}
                           </span>
-                          
                         </div>
 
                         {files?.length === 0 && (
@@ -1547,7 +1552,6 @@ const Personal = () => {
                             >
                               <UploadIconContainer>
                                 <Upload size={18} color={theme.activeNavPillText} />
-                                
                               </UploadIconContainer>
                               <h5 className="fw-bold">Upload Resume</h5>
                             </Label>

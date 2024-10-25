@@ -437,8 +437,8 @@ const Educational = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name:  res?.talent_info?.resume?.file_name,
-            size:  res?.talent_info?.resume?.size,
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
           },
           uploadData: {
             file_key: res?.talent_info?.resume?.file_key,
@@ -454,10 +454,13 @@ const Educational = () => {
   const userData = useSelector(userDetails);
   const setResumeParsedDetails = (res) => {
     if (res) {
-      setValue('educationDetails', userData?.talent_info?.educational_institute?.map((detail) => ({
-        educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-        education: { label: detail.education.name, value: detail.education._id },
-      })))
+      setValue(
+        'educationDetails',
+        userData?.talent_info?.educational_institute?.map((detail) => ({
+          educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+          education: { label: detail.education.name, value: detail.education._id },
+        })),
+      );
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',
@@ -747,7 +750,7 @@ const Educational = () => {
                 <hr className="m-0 card-header-border" />
                 <CardBody>
                   <Row className="mb-1">
-                  <Col sm="12" md="12" lg="6">
+                    <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="skills">
                         Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
                       </Label>
@@ -804,7 +807,6 @@ const Educational = () => {
                     </Col>
                   </Row>
                   <Row className="mb-2">
-                    
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="tools">
                         Tools <i>(Top 5)</i>
@@ -848,12 +850,22 @@ const Educational = () => {
                   </UploadIconContainer>
                   <h5 className="fw-bold">Back</h5>
                 </div>
-                <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <div className="d-flex justify-content-end">
+                  <Button
+                    color="primary"
+                    outline
+                    className="d-flex align-items-center justify-content-between me-2"
+                    onClick={onSkipClick}
+                  >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
                   </Button>
-                  <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                  <Button
+                    className="d-flex align-items-center justify-content-between"
+                    color="primary"
+                    type="submit"
+                    disabled={!isValid || profileDetailsIsLoading}
+                  >
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
                     ) : (
