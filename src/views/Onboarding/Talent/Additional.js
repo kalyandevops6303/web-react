@@ -541,6 +541,7 @@ const Additional = () => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveCheckpointComplete(() => {}));
   };
 
   const onGetUserDetailsSuccess = (res) => {
@@ -646,7 +647,7 @@ const Additional = () => {
       }
     }
 
-    dispatch(saveCheckpointComplete(() => {}));
+    
   };
 
   useEffect(() => {

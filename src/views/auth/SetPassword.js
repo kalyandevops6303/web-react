@@ -158,7 +158,11 @@ const SetPassword = () => {
               )}
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
+            <p className='text-success text-xs mt-2'>
+                {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
+            </p>
           </div>
+          
           <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
           </Button>

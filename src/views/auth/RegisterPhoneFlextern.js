@@ -37,6 +37,7 @@ const RegisterPhoneFlextern = () => {
   const isLoading = useSelector(selectAuthLoading);
   const mobileData = useSelector(selectMobile);
   const isDelegate = getItem('isDelegate');
+  const [validPhoneBoolean,setValidPhoneBoolean] = useState(false) 
 
   const [selectedCountry, setSelectedCountry] = useState(
     savedFormData?.selectCountry ||
@@ -116,8 +117,10 @@ const RegisterPhoneFlextern = () => {
 
   const onSubmit = (values) => {
     if (!isValidPhoneNumber(values.mobile, selectedCountry.code)) {
+      setValidPhoneBoolean(false)
       setError('mobile', { type: 'custom', message: 'Invalid phone number' });
     } else {
+      setValidPhoneBoolean(true)
       dispatch(
         registerPhone({
           phone: values.mobile.replace(/[^\d]/g, ''),
@@ -163,7 +166,10 @@ const RegisterPhoneFlextern = () => {
               Mobile number
             </Label>
             <div className="d-flex">
-              <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} />
+              <div>
+                <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} />
+                {validPhoneBoolean && <p className='text-success text-xs mt-2'>Valid</p>}
+              </div>
               <div className="mobile-input">
                 <Controller
                   type="phone"
