@@ -1,3 +1,4 @@
+import { isFlexternshipApp } from '@/configs/api/env';
 import API from '../configs/api';
 // eslint-disable-next-line import/no-cycle
 import DataService from '../configs/dataService/dataService';
@@ -6,7 +7,7 @@ const userDataService = () => DataService.get(API.dashboard.userData);
 
 const totalReferralAmountService = () => DataService.get(API.dashboard.totalReferralAmount);
 
-const recommendedProjectsService = () => DataService.get(API.dashboard.recommendedProjects);
+const recommendedProjectsService = () => isFlexternshipApp ? DataService.get(API.dashboard.recommendedProjectsFlextern) : DataService.get(API.dashboard.recommendedProjects);
 
 const profilePercentageService = () => DataService.get(API.dashboard.profilePercentage);
 
@@ -42,9 +43,9 @@ const teamProfilePercentageService = () => DataService.get(API.dashboard.teamPro
 
 const alertService = () => DataService.get(`${API.notifications.alerts}?page=1&page_size=4`);
 
-const activeProjectsForClientService = () => DataService.get(API.dashboard.activeProjectsForClient);
+const activeProjectsForClientService = () => isFlexternshipApp ? DataService.get(API.dashboard.activeProjectsForClientFlextern) : DataService.get(API.dashboard.activeProjectsForClient);
 
-const upcomingProjectsForClientService = () => DataService.get(API.dashboard.upcomingProjectsForClient);
+const upcomingProjectsForClientService = () => isFlexternshipApp ? DataService.get(API.dashboard.upcomingProjectsForClientFlextern) : DataService.get(API.dashboard.upcomingProjectsForClient);
 
 const projectsBidsForClientService = () => DataService.get(API.dashboard.projectsBidsForClient);
 
@@ -55,9 +56,9 @@ const checkBidsAcceptedService = () =>
     bid_statuses: [],
   });
 
-const activeProjectsForTalentService = () => DataService.get(API.dashboard.activeProjectsForTalent);
+const activeProjectsForTalentService = () => isFlexternshipApp ? DataService.get(API.dashboard.activeProjectsForTalentFlextern) : DataService.get(API.dashboard.activeProjectsForTalent);
 
-const upcomingProjectsForTalentService = () => DataService.get(API.dashboard.upcomingProjectsForTalent);
+const upcomingProjectsForTalentService = () => isFlexternshipApp ? DataService.get(API.dashboard.upcomingProjectsForTalentFlextern) : DataService.get(API.dashboard.upcomingProjectsForTalent);
 
 const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeProjectsForTeam);
 

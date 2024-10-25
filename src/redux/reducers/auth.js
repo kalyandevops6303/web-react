@@ -382,7 +382,10 @@ const authSlice = createSlice({
       userDataLoading: false,
       error: action.payload,
     }),
-
+    clearPhoneData : (state) => ({
+      ...state,
+      phone: null,
+    }),
     // switch profile
     switchProfileSuccess: (state, action) => ({
       ...state,
@@ -501,6 +504,7 @@ export const {
   profileCompletionFlexternFailure,
   setFlexternshipInviteType,
   setUserLoginAttemptNo,
+  clearPhoneData,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -40,7 +40,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const navigate = useNavigate();
   const pathname = location.pathname.split('/').pop();
 
-  const flexTern = userData?.app_roles?.[0].includes('FLEXTERN');
+  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {

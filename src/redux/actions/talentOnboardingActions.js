@@ -66,7 +66,8 @@ const getResumeParsedDetails = (setResumeParsedDetails,setParseResume, fileKey, 
       setFiles([]);
     }
     dispatch(setFormDocuments(null));
-    ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
+    if (error?.code == '400') ShowToastMessage(ERROR, error?.message);
+    else ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
   }
 };
 

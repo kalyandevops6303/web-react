@@ -54,66 +54,66 @@ const DefaultRoute = '/auth';
 
 // ** Merge Routes
 export const FlexternshipRoutes = [
-  {
-    path: '/',
-    index: true,
-    element: <Navigate replace to={DefaultRoute} />,
-  },
-  {
-    path: '/dashboard',
-    element: (
-      <RoleAccessWrapper
-        allowedAppRoles={[
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
-              },
-            ],
-          },
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding/account-details',
-              },
-              {
-                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
-                redirectRoute: '/talent-onboarding/personal-details',
-              },
-            ],
-          },
-        ]}
-      >
-        <PrivateDashboard />
-      </RoleAccessWrapper>
-    ),
-  },
-  {
-    path: '/search',
-    element: <Search />,
-  },
-  {
-    path: '/profile/:userType/:userId',
-    element: <UserDetails />,
-  },
-  {
-    path: '/marketplace/*',
-    element: <MarketPlace />,
-  },
-  {
-    path: '/project-details/:projectId/*',
-    element: <ProjectDetails />,
-  },
-  {
-    path: '/project-details/:projectId/bid/:bidId',
-    element: <BidDetails />,
-  },
+    {
+        path: '/',
+        index: true,
+        element: <Navigate replace to={DefaultRoute} />,
+    },
+    {
+        path: '/dashboard',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE,],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding/account-details'
+                            },
+                            {
+                                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                                redirectRoute: '/talent-onboarding/personal-details'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <PrivateDashboard />
+            </RoleAccessWrapper >
+        ),
+    },
+    {
+        path: '/search',
+        element: <Search />,
+    },
+    {
+        path: '/profile/:userType/:userId',
+        element: <UserDetails />,
+    },
+    {
+        path: '/marketplace/*',
+        element: <MarketPlace />,
+    },
+    {
+        path: '/project-details/:projectId/*',
+        element: <ProjectDetails />,
+    },
+    {
+        path: '/project-details/:projectId/bid/:bidId',
+        element: <BidDetails />,
+    },
 
   {
     path: '/project-details/:projectId/:projectStep/doc/:docType/*',
@@ -137,182 +137,213 @@ export const FlexternshipRoutes = [
     element: <Clubs />,
   },
 
-  {
-    path: '/auth/*',
-    element: <AuthRoute />,
-    meta: {
-      layout: 'blank',
+    {
+        path: '/auth/*',
+        element: <AuthRoute />,
+        meta: {
+            layout: 'blank',
+        },
     },
-  },
-  {
-    path: '/coming-soon',
-    element: <ComingSoon />,
-    meta: {
-      layout: 'blank',
+    {
+        path: '/coming-soon',
+        element: <ComingSoon />,
+        meta: {
+            layout: 'blank',
+        },
     },
-  },
-  {
-    path: `/${userOnboarding.talent}/:section-details`,
-    element: <TalentOnboarding />,
-    meta: {
-      layout: 'blank',
+    {
+        path: `/${userOnboarding.talent}/:section-details`,
+        element: <TalentOnboarding />,
+        meta: {
+            layout: 'blank',
+        },
     },
-  },
-  {
-    path: `/client-onboarding/*`,
-    element: (
-      <RoleAccessWrapper
-        allowedAppRoles={[
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
-            allowCheckpoints: [FlexternUserCheckpoint.ACCOUNT_DETAILS],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.COMPLETE,
-                redirectRoute: '/dashboard',
-              },
-            ],
-          },
-        ]}
-      >
-        <FlexternshipClientOnboarding />
-      </RoleAccessWrapper>
-    ),
-    meta: {
-      layout: 'blank',
+    {
+        path: `/client-onboarding/*`,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.ACCOUNT_DETAILS],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                                redirectRoute: '/dashboard'
+                            }
+                        ]
+                    }
+                ]}
+                noPadding
+            >
+                <FlexternshipClientOnboarding />
+            </RoleAccessWrapper>
+        ),
+        meta: {
+            layout: 'blank',
+        },
     },
-  },
-  {
-    path: `/${userProfileEdit.talent}/:section-details`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userProfileEdit.client}/:tabId`,
-    element: (
-      <RoleAccessWrapper
-        allowedAppRoles={[
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
-              },
-            ],
-          },
-        ]}
-      >
-        <FlexternshipClientOnboarding />
-      </RoleAccessWrapper>
-    ),
-  },
-  {
-    path: '/create-project',
-    element: <CreateProject />,
-  },
-  {
-    path: '/create-project/:projectId',
-    element: <CreateProject />,
-  },
-  {
-    path: '/notifications',
-    element: <Notifications />,
-  },
-  {
-    path: '/create-bid/:projectId/:bidType/:bidId/*',
-    element: <CreateBid />,
-  },
-  {
-    path: '/team-invitation/:inviteId',
-    element: <TeamInvitation />,
-  },
-  {
-    path: '/join-request/:inviteId',
-    element: <TeamInvitation />,
-  },
-  {
-    path: '/club-invitation/:inviteId',
-    element: <ClubInvitation />,
-  },
+    {
+        path: `/${userProfileEdit.talent}/:section-details`,
+        element: <TalentOnboarding />,
+    },
+    {
+        path: `/${userProfileEdit.client}/:tabId`,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipClientOnboarding />
+            </RoleAccessWrapper>
+        ),
+    },
+    {
+        path: `/create-project`,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <CreateFlexternProject />
+            </RoleAccessWrapper>
+        ),
+    },
+    {
+        path: '/create-project/:projectId',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <CreateFlexternProject />
+            </RoleAccessWrapper>
+        ),
+    },
+    {
+        path: '/notifications',
+        element: <Notifications />,
+    },
+    {
+        path: '/create-bid/:projectId/:bidType/:bidId/*',
+        element: <CreateBid />,
+    },
+    {
+        path: '/team-invitation/:inviteId',
+        element: <TeamInvitation />,
+    },
+    {
+        path: '/join-request/:inviteId',
+        element: <TeamInvitation />,
+    },
+    {
+        path: '/club-invitation/:inviteId',
+        element: <ClubInvitation />,
+    },
 
-  {
-    path: '/create-team/:section-details',
-    element: <CreateTeam />,
-  },
-  {
-    path: '/create-team/:section-details/:id',
-    element: <CreateTeam />,
-  },
-  {
-    path: `/${userProfileEdit.team}/:section-details`,
-    element: <CreateTeam />,
-  },
-  {
-    path: '/create-club/:section-details',
-    element: <CreateClub />,
-  },
-  {
-    path: `/${userProfileEdit.club}/:section-details`,
-    element: <CreateClub />,
-  },
-  {
-    path: '/create-club/:section-details/:id',
-    element: <CreateClub />,
-  },
-  {
-    path: '/disputes/*',
-    element: <Disputes />,
-  },
-  {
-    path: '/referral-reward/*',
-    element: <ReferralAndReward />,
-  },
-  {
-    path: '/chat',
-    element: <Chat />,
-  },
-  {
-    path: '/payments',
-    element: <PaymentFullView />,
-  },
-  {
-    path: '/assessments',
-    element: <Assessments />,
-  },
-  {
-    path: '/internal/projects',
-    element: <InternalProjects />,
-  },
-  {
-    path: `/${userProfileEdit.talent}/intern-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userProfileEdit.talent}/intern-xobin-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userOnboarding.talent}/intern-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userOnboarding.talent}/intern-xobin-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `${userOnboarding.talent}/choose-program`,
-    element: <ChooseProgram />,
-    meta: {
-      layout: 'blank',
+    {
+        path: '/create-team/:section-details',
+        element: <CreateTeam />,
     },
-  },
-  {
-    path: `/flexternships/create-project`,
-    element: <CreateFlexternProject />,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+    {
+        path: '/create-team/:section-details/:id',
+        element: <CreateTeam />,
+    },
+    {
+        path: `/${userProfileEdit.team}/:section-details`,
+        element: <CreateTeam />,
+    },
+    {
+        path: '/create-club/:section-details',
+        element: <CreateClub />,
+    },
+    {
+        path: `/${userProfileEdit.club}/:section-details`,
+        element: <CreateClub />,
+    },
+    {
+        path: '/create-club/:section-details/:id',
+        element: <CreateClub />,
+    },
+    {
+        path: '/disputes/*',
+        element: <Disputes />,
+    },
+    {
+        path: '/referral-reward/*',
+        element: <ReferralAndReward />,
+    },
+    {
+        path: '/chat',
+        element: <Chat />,
+    },
+    {
+        path: '/payments',
+        element: <PaymentFullView />,
+    },
+    {
+        path: '/assessments',
+        element: <Assessments />,
+    },
+    {
+        path: '/internal/projects',
+        element: <InternalProjects />,
+    },
+    {
+        path: `/${userProfileEdit.talent}/intern-hiring`,
+        element: <TalentOnboarding />,
+    },
+    {
+        path: `/${userProfileEdit.talent}/intern-xobin-hiring`,
+        element: <TalentOnboarding />,
+    },
+    {
+        path: `/${userOnboarding.talent}/intern-hiring`,
+        element: <TalentOnboarding />,
+    },
+    {
+        path: `/${userOnboarding.talent}/intern-xobin-hiring`,
+        element: <TalentOnboarding />,
+    },
+    {
+        path: `${userOnboarding.talent}/choose-program`,
+        element: <ChooseProgram />,
+        meta: {
+            layout: 'blank',
+        }
+    },
+    {
+        path: '*',
+        element: <NotFound />,
+    },
 ];

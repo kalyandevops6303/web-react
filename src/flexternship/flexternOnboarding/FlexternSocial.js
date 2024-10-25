@@ -16,7 +16,8 @@ import {
   Label,
   Row,
   Spinner,
-  Progress, CardText
+  Progress,
+  CardText,
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,7 +38,14 @@ import {
 import AccountCreatedModal from '../../views/Onboarding/AccountCreatedModal';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
-import { filteredFormSchema, formatUrl, isEmpty, isUrlWithoutProtocol, removeEmptyKeys, giveProgressBarColorClassName } from '../../utility/Utils';
+import {
+  filteredFormSchema,
+  formatUrl,
+  isEmpty,
+  isUrlWithoutProtocol,
+  removeEmptyKeys,
+  giveProgressBarColorClassName,
+} from '../../utility/Utils';
 import { userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
@@ -60,7 +68,7 @@ import { updateParsedResumeService } from '../../services/talentOnboardingServic
 import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
-import "../../App.css";
+import '../../App.css';
 
 const FlexternSocial = () => {
   const SocialSchema = yup.object().shape({
@@ -127,9 +135,13 @@ const FlexternSocial = () => {
   const localFormData = useWatch({ control });
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
@@ -198,8 +210,7 @@ const FlexternSocial = () => {
     dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/additional-details`);
-    }
-    else if (location.pathname.includes('onboarding')) {
+    } else if (location.pathname.includes('onboarding')) {
       navigate(`/${userOnboarding.talent}/additional-details`);
     }
     dispatch(setResumeDataUploadedForSocial(parseResume));
@@ -295,7 +306,7 @@ const FlexternSocial = () => {
           setValue(
             'linkedInLink',
             savedFormData?.linkedInLink ||
-            res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
+              res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
             {
               shouldValidate: true,
             },
@@ -307,7 +318,7 @@ const FlexternSocial = () => {
           setValue(
             'twitterLink',
             savedFormData?.twitterLink ||
-            res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
+              res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
             {
               shouldValidate: true,
             },
@@ -371,8 +382,13 @@ const FlexternSocial = () => {
         if (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')) {
           setValue(
             'linkedInLink',
-            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url?.length > 0 ? (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url
-              || savedFormData?.linkedInLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url,
+            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url
+              ?.length > 0
+              ? res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url ||
+                  savedFormData?.linkedInLink
+              : userData?.talent_info?.social_links?.find(
+                  (link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn',
+                )?.url,
             {
               shouldValidate: true,
             },
@@ -381,8 +397,13 @@ const FlexternSocial = () => {
         if (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')) {
           setValue(
             'twitterLink',
-            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url?.length > 0 ? (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url
-              || savedFormData?.twitterLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url,
+            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url?.length >
+              0
+              ? res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url ||
+                  savedFormData?.twitterLink
+              : userData?.talent_info?.social_links?.find(
+                  (link) => link.platform === 'twitter' || link.platform === 'Twitter',
+                )?.url,
             {
               shouldValidate: true,
             },
@@ -392,8 +413,12 @@ const FlexternSocial = () => {
         if (res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')) {
           setValue(
             'githubLink',
-            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url?.length > 0 ? (res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url
-              || savedFormData?.githubLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url,
+            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url?.length > 0
+              ? res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url ||
+                  savedFormData?.githubLink
+              : userData?.talent_info?.social_links?.find(
+                  (link) => link.platform === 'github' || link.platform === 'GitHub',
+                )?.url,
             {
               shouldValidate: true,
             },
@@ -416,10 +441,11 @@ const FlexternSocial = () => {
               })),
             { shouldValidate: true },
           );
-        }
-        else if (userData?.talent_info?.social_links.filter(
-          (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
-        ).length > 0) {
+        } else if (
+          userData?.talent_info?.social_links.filter(
+            (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+          ).length > 0
+        ) {
           setValue(
             'otherSocialLinks',
             userData?.talent_info?.social_links
@@ -646,13 +672,23 @@ const FlexternSocial = () => {
                   </UploadIconContainer>
                   <h5 className="fw-bold">Back</h5>
                 </div>
-                <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <div className="d-flex justify-content-end">
+                  <Button
+                    color="primary"
+                    outline
+                    className="d-flex align-items-center justify-content-between me-2"
+                    onClick={onSkipClick}
+                  >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
                   </Button>
 
-                  <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    className="d-flex align-items-center justify-content-between me-2"
+                    disabled={!isValid || profileDetailsIsLoading}
+                  >
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
                     ) : (
@@ -667,7 +703,8 @@ const FlexternSocial = () => {
             </Col>
 
             <Col>
-            {((userData?.talent_info?.resume && Object.keys(userData.talent_info.resume).length > 0) || !isEmpty(files)) && (
+              {((userData?.talent_info?.resume && Object.keys(userData.talent_info.resume).length > 0) ||
+                !isEmpty(files)) && (
                 <Card>
                   <CardBody>
                     <div className="d-flex flex-column">
@@ -699,50 +736,96 @@ const FlexternSocial = () => {
                     </div>
                   </CardBody>
                 </Card>
-            )}
-            
-            <Card>
-              <CardHeader>
-                <h4 className="m-0 mt-1">Profile Completion</h4>
-                <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
-                <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                <Progress value={overallPercentageCompletion}
-                  style={{ height: '0.5rem' }}
-                  className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                />
+              )}
 
-              </CardHeader>
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1">Profile Completion</h4>
+                  <CardText className="m-0 mt-1">
+                    Make it easier for others to find you by completing your profile.
+                  </CardText>
+                  <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                  <Progress
+                    value={overallPercentageCompletion}
+                    style={{ height: '0.5rem' }}
+                    className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                  />
+                </CardHeader>
 
-              <CardBody>
-                <hr className="m-0 card-header-border" />
+                <CardBody>
+                  <hr className="m-0 card-header-border" />
 
-                {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                    <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                  </div>
-                  <div>
-                    <CardText className="m-0">Client Projects Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                      onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                    >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
+                  {isTrumioTalent && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox"
+                          className="custom-checkbox-input"
+                          checked={isProjectReady}
+                        />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                ?.path || '/marketplace',
+                            )
+                          }
+                        >
+                          {isProjectReady
+                            ? 'Explore Projects'
+                            : `${
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
+                    </div>
+                  )}
 
-                {isFlextern && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                    <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                  </div>
-                  <div>
-                    <CardText className="m-0">Flexternship Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                      onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                    >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
-              </CardBody>
-            </Card>
+                  {isFlextern && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox2"
+                          className="custom-checkbox-input"
+                          checked={isFlexternReady}
+                        />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                                ?.path || '/dashboard',
+                            )
+                          }
+                        >
+                          {isFlexternReady
+                            ? 'Explore Flexternships'
+                            : `${
+                                returnCompleteProfileDetailsCta(
+                                  userTypes.talent,
+                                  profileCompletionFlexternMissingValues,
+                                )?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Form>

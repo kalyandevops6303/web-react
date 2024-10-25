@@ -18,6 +18,7 @@ import MilestoneInfo from './MilestoneInfo';
 import SortableMilestoneCard from './SortableMilestoneCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
 
 export default function Milestones() {
   const {
@@ -33,7 +34,6 @@ export default function Milestones() {
     updateMilestonesData,
     saveDraft,
     openModal,
-    closeModal,
   } = useProjectCreationStore();
 
   const [milestoneDurationState, setMilestoneDurationState] = useState<MilestoneInfoType>(MilestoneInfoType.BALANCED);
@@ -224,9 +224,10 @@ export default function Milestones() {
         revisedEstimatedDuration={sumOfMilestoneDuration}
         onConfirm={() => {
           matchEstimatedDuration();
-          closeModal();
+          openModal(ModalType.DURATION_UPDATED);
         }}
       />
+      <DurationUpdated duration={estimatedDuration} />
     </>
   );
 }

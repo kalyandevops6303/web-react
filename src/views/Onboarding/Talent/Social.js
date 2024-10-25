@@ -211,7 +211,7 @@ const Social = () => {
     const reqData = {
       social_links,
     };
-    if(reqData){
+    if (reqData) {
       dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     }
 
@@ -257,7 +257,7 @@ const Social = () => {
           setValue(
             'linkedInLink',
             savedFormData?.linkedInLink ||
-            res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
+              res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url,
             {
               shouldValidate: true,
             },
@@ -269,7 +269,7 @@ const Social = () => {
           setValue(
             'twitterLink',
             savedFormData?.twitterLink ||
-            res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
+              res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url,
             {
               shouldValidate: true,
             },
@@ -328,9 +328,9 @@ const Social = () => {
     }
   };
 
-  useEffect(()=>{
-    console.log(files)
-  },[files])
+  useEffect(() => {
+    console.log(files);
+  }, [files]);
 
   const setResumeParsedDetails = (res) => {
     if (res) {
@@ -338,8 +338,13 @@ const Social = () => {
         if (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')) {
           setValue(
             'linkedInLink',
-            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url?.length > 0 ?  (res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url
-              || savedFormData?.linkedInLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url,
+            res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url
+              ?.length > 0
+              ? res?.social_links.find((link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn')?.url ||
+                  savedFormData?.linkedInLink
+              : userData?.talent_info?.social_links?.find(
+                  (link) => link.platform === 'linkedIn' || link.platform === 'LinkedIn',
+                )?.url,
             {
               shouldValidate: true,
             },
@@ -348,19 +353,28 @@ const Social = () => {
         if (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')) {
           setValue(
             'twitterLink',
-            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url?.length > 0 ? (res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url
-              || savedFormData?.twitterLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url ,
+            res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url?.length >
+              0
+              ? res?.social_links.find((link) => link.platform === 'twitter' || link.platform === 'Twitter')?.url ||
+                  savedFormData?.twitterLink
+              : userData?.talent_info?.social_links?.find(
+                  (link) => link.platform === 'twitter' || link.platform === 'Twitter',
+                )?.url,
             {
               shouldValidate: true,
             },
           );
         }
-        
+
         if (res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')) {
           setValue(
             'githubLink',
-            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url?.length > 0 ? ( res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url
-              || savedFormData?.githubLink) : userData?.talent_info?.social_links?.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url,
+            res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url?.length > 0
+              ? res?.social_links.find((link) => link.platform === 'github' || link.platform === 'GitHub')?.url ||
+                  savedFormData?.githubLink
+              : userData?.talent_info?.social_links?.find(
+                  (link) => link.platform === 'github' || link.platform === 'GitHub',
+                )?.url,
             {
               shouldValidate: true,
             },
@@ -383,20 +397,19 @@ const Social = () => {
               })),
             { shouldValidate: true },
           );
-        }
-        else{
+        } else {
           setValue(
             'otherSocialLinks',
-              userData?.talent_info?.social_links
-                .filter(
-                  (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
-                )
-                .map((link) => ({
-                  linkName: link.platform,
-                  link: link.url,
-                })),
-              { shouldValidate: true },
-            );
+            userData?.talent_info?.social_links
+              .filter(
+                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+              )
+              .map((link) => ({
+                linkName: link.platform,
+                link: link.url,
+              })),
+            { shouldValidate: true },
+          );
         }
       }
     }
@@ -609,13 +622,23 @@ const Social = () => {
                   </UploadIconContainer>
                   <h5 className="fw-bold">Back</h5>
                 </div>
-                <div>
-                  <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <div className="d-flex justify-content-end">
+                  <Button
+                    color="primary"
+                    outline
+                    className="d-flex align-items-center justify-content-between me-2"
+                    onClick={onSkipClick}
+                  >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
                   </Button>
 
-                  <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                  <Button
+                    className="d-flex align-items-center justify-content-between"
+                    color="primary"
+                    type="submit"
+                    disabled={!isValid || profileDetailsIsLoading}
+                  >
                     {profileDetailsIsLoading ? (
                       <Spinner size="sm" />
                     ) : (
