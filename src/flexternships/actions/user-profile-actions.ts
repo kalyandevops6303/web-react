@@ -95,3 +95,7 @@ export const nextTab = (set: any) => {
 export const previousTab = (set: any) => {
     set((state: FlexternUserProfileForm) => ({ currentTabIndex: (state.currentTabIndex > 0 ? (state.currentTabIndex - 1) : 0) }))
 }
+
+export const setCurrentTabIndex = (index: number, set: any) => {
+    set(( state: FlexternUserProfileForm)=> ({ currentTabIndex: index }) );
+}

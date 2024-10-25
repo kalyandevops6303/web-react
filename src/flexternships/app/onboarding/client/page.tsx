@@ -6,9 +6,22 @@ import CompanyDetails from '../../components/pages/profile/client/tabs/CompanyDe
 import SocialDetails from '../../components/pages/profile/client/tabs/SocialDetails'
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores'
 import { FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums'
+import { useParams } from 'react-router-dom'
+import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store'
+import { use } from 'i18next'
+import { useEffect } from 'react'
 
 export default function ClientProfilePage() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+  
+  const params=useParams();
+
+  useEffect(() => {
+      if (userDetails?.checkpoint === FlexternUserCheckpoint.COMPLETE){
+          const tabIndex= tabs.findIndex((tab) => tab.id === params.tabId);
+          useFlexternUserProfileStore((state) => state.setCurrentTabIndex(tabIndex));
+      }
+  }, [userDetails?.checkpoint]);
 
   const tabs = [
     {
