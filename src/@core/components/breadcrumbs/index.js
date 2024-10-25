@@ -26,7 +26,7 @@ const BreadCrumbs = (props) => {
           tag="li"
           key={index}
           active={!isLastItem}
-          className="text-capitalize"
+          className="text-capitalize d-flex align-items-center justify-content-center"
           // className={isLastItem ? 'text-primary' : 'body-color'}
         >
           <Wrapper {...(item.link?.length > 0 ? { to: item.link } : {})}>{item.title}</Wrapper>
@@ -36,15 +36,15 @@ const BreadCrumbs = (props) => {
   };
 
   return (
-    <div className="content-header row" style={{ display: 'contents' }}>
+    <div className="content-header row d-flex justify-content-between align-items-center">
       <div className="content-header-left col-md-9 col-12 mb-2">
         <div className="row breadcrumbs-top">
           <div className="col-12">
-            <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none col-12">
-              <Breadcrumb>
-                <BreadcrumbItem tag="li">
+            <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none">
+              <Breadcrumb className="d-flex align-items-center p-0 m-0">
+                <BreadcrumbItem tag="li" className="d-flex align-items-center">
                   <Link to="/dashboard">
-                    <Home className="mb-25" color={theme.activeColor} size={14} />
+                    <Home color={theme.activeColor} size={14} />
                   </Link>
                 </BreadcrumbItem>
                 {renderBreadCrumbs()}
@@ -56,6 +56,7 @@ const BreadCrumbs = (props) => {
     </div>
   );
 };
+
 export default BreadCrumbs;
 
 // ** PropTypes
