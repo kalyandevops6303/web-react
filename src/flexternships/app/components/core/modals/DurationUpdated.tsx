@@ -6,7 +6,7 @@ import { ModalType } from "@flexternships/types/project-creation-types"
 import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
 import TickGif from "@flexternships/assets/images/tick.gif"
 
-export default function DurationUpdated() {
+export default function DurationUpdated({ duration }: { duration: number }) {
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
   const curModal = useProjectCreationStore((state) => state.curModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
@@ -36,7 +36,7 @@ export default function DurationUpdated() {
                 We've updated estimated duration to match sum of milestone durations.
               </p>
               <p className=" text-xl font-medium text-grey-600">
-                8 wk {/*update this to dynamic value*/}
+                {duration} wk
               </p>
               <p className=" text-xs text-grey">
                 Revised Estimated Duration (in weeks)
