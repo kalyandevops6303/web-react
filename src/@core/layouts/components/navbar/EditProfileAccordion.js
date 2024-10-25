@@ -110,44 +110,70 @@ const EditProfileAccordion = () => {
       if (isFlexternInvited) {
         return (
           <>
-            <DropdownItem onClick={() => handleEditProfileForTalent('account')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Account</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('personal')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Personal</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Education</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Social</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('additional')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Additional Information</span>
-            </DropdownItem>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('account')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Account</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PERSONAL']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('personal')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Personal</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.EDUCATION']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Education</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Social</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ADDITIONAL']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('additional')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Additional Information</span>
+              </DropdownItem>
+            </PermissionWrapper>
           </>
         );
       } else {
         return (
           <>
-            <DropdownItem onClick={() => handleEditProfileForTalent('account')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Account</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('personal')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Personal</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Education</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('availability')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Availability</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Social</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => handleEditProfileForTalent('payment')} className="w-100 edit-link ">
-              <span className="align-middle p-1">Payment</span>
-            </DropdownItem>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('account')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Account</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PERSONAL']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('personal')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Personal</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.EDUCATION']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('education')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Education</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.AVAILABILITY']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('availability')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Availability</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.SOCIAL']}>
+              <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
+                <span className="align-middle p-1">Social</span>
+              </DropdownItem>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.PAYMENT']}>
+              <DropdownItem
+                onClick={() => handleEditProfileForTalent('payment')}
+                disabled={!trumioTalentBoolean}
+                className="w-100 edit-link "
+              >
+                <span className="align-middle p-1">Payment</span>
+              </DropdownItem>
+            </PermissionWrapper>
           </>
         );
       }
