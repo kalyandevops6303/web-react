@@ -22,6 +22,7 @@ import {
 import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
 import { getItem } from '../../../../utility/localStorageControl';
 import PermissionWrapper from '@/PermissionWrapper';
+import { TextWrapper } from './style';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -247,7 +248,7 @@ const EditProfileAccordion = () => {
       <Accordion open={open} toggle={toggle}>
         <AccordionItem>
           <AccordionHeader className={open === '1' ? 'isActive' : ''} targetId="1">
-            Edit Profile
+            <TextWrapper>Edit Profile</TextWrapper>
           </AccordionHeader>
 
           <div style={{ maxHeight: '9rem', overflowY: 'auto' }}>

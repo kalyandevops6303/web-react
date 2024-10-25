@@ -10,7 +10,14 @@ import Avatar from '@components/avatar';
 import { Check } from 'react-feather';
 
 // ** Reactstrap Imports
-import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip } from 'reactstrap';
+import {
+  UncontrolledDropdown,
+  DropdownMenu,
+  DropdownToggle,
+  DropdownItem,
+  UncontrolledTooltip,
+  AccordionHeader,
+} from 'reactstrap';
 
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -35,7 +42,7 @@ import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
 import DelegateAccordion from './DelegateAccordion';
-import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
+import { DeclinedButton, InreviewButton, TextWrapper, UserDropDownWrapper } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { clearAllFormData, setFormDocuments } from '../../../../redux/reducers/formData';
@@ -298,16 +305,19 @@ const UserDropdown = ({ setNavBarLoading }) => {
             </div>
           )}
           {!isDelegate && (
-            <DropdownItem onClick={handleEdit} className="w-100 edit">
-              <span className="align-middle">Public Profile</span>
-            </DropdownItem>
+            <TextWrapper onClick={handleEdit} className="w-100 edit-accordion p-4">
+              Public Profile
+            </TextWrapper>
           )}
           {!isDelegate || isDelegateProfileCreated ? (
             <EditProfileAccordion />
           ) : (
-            <DropdownItem onClick={() => navigate('/client-onboarding/account-details')} className="w-100 edit">
+            <TextWrapper
+              onClick={() => navigate('/client-onboarding/account-details')}
+              className="w-100 edit-accordion"
+            >
               <span className="align-middle">Create My Profile</span>
-            </DropdownItem>
+            </TextWrapper>
           )}
           {!isDelegate && (
             <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
@@ -399,12 +409,12 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           )}
-          <DropdownItem onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
+          <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
             <span className="align-middle ">Customer support</span>
-          </DropdownItem>
-          <DropdownItem onClick={handleLogout} className="w-100 logout">
+          </TextWrapper>
+          <TextWrapper onClick={handleLogout} className="w-100 logout">
             <span className="align-middle ">Logout</span>
-          </DropdownItem>
+          </TextWrapper>
         </DropdownMenu>
       </UserDropDownWrapper>
       {isProfileSwitchLoading && <ProfileSwitchModal modal={isProfileSwitchLoading} />}

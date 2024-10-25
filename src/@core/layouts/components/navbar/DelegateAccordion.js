@@ -24,6 +24,7 @@ import { toggleAddDelegateModal } from '../../../../redux/reducers/delegate';
 import { getDelegateInvitationStatus } from '../../../../redux/actions/delegateActions';
 import theme from '../../../../configs/themeVariables';
 import ComponentSpinner from '../../../components/spinner/Loading-spinner';
+import { TextWrapper } from './style';
 
 const DelegateAccordion = ({ setDelegateEmail }) => {
   const [open, setOpen] = useState('');
@@ -61,7 +62,7 @@ const DelegateAccordion = ({ setDelegateEmail }) => {
           className={open === '1' ? 'isActive' : ''}
           targetId="1"
         >
-          Delegate
+          <TextWrapper>Delegate</TextWrapper>
         </AccordionHeader>
         <AccordionBody accordionId="1" style={{ maxHeight: '20rem' }}>
           <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
