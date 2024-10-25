@@ -7,7 +7,7 @@ import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import DateTime from '../../lib/date-time';
-import { ProjectCardWrap } from './style';
+import { EstimatedTimeHeading, ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import ProjectWithTeamUI from './ProjectWithTeamUI';
@@ -245,15 +245,15 @@ const ProjectCard = ({
                   </>
                 )}
 
-                <h1 className="bg-[#FBC02D1F] w-fit py-2 mt-5 rounded-xl px-4 text-sky-500 font-semibold">
-                  Estimated time to complete feedback 3min 30sec
-                </h1>
+             
 
                 {isContentOverflowing && (
                   <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
                     {showFullText ? 'Show less' : 'Show more'}
                   </CardText>
                 )}
+
+<EstimatedTimeHeading>Estimated time to complete feedback 3min 30sec</EstimatedTimeHeading>
               </Col>
               <Col lg="4">
                 {primaryFilter !== 'terminated' ? (

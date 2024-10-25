@@ -8,16 +8,42 @@ import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { Button } from '../../ui/button';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { userTypes } from '@/utility/constants/Constant';
+import { ProjectStatusChipClassnames, UserTypeChipClassnames } from '@/flexternships/constraints/enums/project-enums';
 
-const UserTypeChipClassnames = {
-  TALENT: 'bg-[#FFD700] text-[#333333]',
-  CLIENT: 'text-blue-700 bg-blue-100',
-};
-const ProjectStatusChipClassnames = {
-  OPEN: `bg-skyblue-light text-skyblue border-skyblue`,
-  OPEN_LISTING: `bg-green-100 text-green-400`,
-  ONGOING: `bg-green-100 text-green-400 border-green-400`,
-};
+const dummyTags = [
+  {
+    _id: '1',
+    name: 'React',
+  },
+  {
+    _id: '2',
+    name: 'AngularJS',
+  },
+  {
+    _id: '3',
+    name: 'JavaScript',
+  },
+  {
+    _id: '4',
+    name: 'TypeScript',
+  },
+  {
+    _id: '5',
+    name: 'React',
+  },
+  {
+    _id: '6',
+    name: 'AngularJS',
+  },
+  {
+    _id: '7',
+    name: 'JavaScript',
+  },
+  {
+    _id: '8',
+    name: 'TypeScript',
+  },
+]
 const desc =
   'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi, quasi voluptates voluptatum, magna inventore perferendis eos dignissimos similique reiciendis praesentium saepe illo necessitatibus molestias alias incidunt! Non at eos quia ratione alias.';
 
@@ -91,40 +117,7 @@ const LeftSideBarProjectDetails = () => {
         <div className="flex flex-row items-start w-full justify-start gap-2">
           <h1 className="mt-1">Skills:</h1>
           <BadgeGroup
-            tags={[
-              {
-                _id: '1',
-                name: 'React',
-              },
-              {
-                _id: '1',
-                name: 'AngularJS',
-              },
-              {
-                _id: '1',
-                name: 'JavaScript',
-              },
-              {
-                _id: '1',
-                name: 'TypeScript',
-              },
-              {
-                _id: '1',
-                name: 'React',
-              },
-              {
-                _id: '1',
-                name: 'AngularJS',
-              },
-              {
-                _id: '1',
-                name: 'JavaScript',
-              },
-              {
-                _id: '1',
-                name: 'TypeScript',
-              },
-            ]}
+            tags={dummyTags}
             className="bg-skyblue-light text-skyblue"
           />
         </div>

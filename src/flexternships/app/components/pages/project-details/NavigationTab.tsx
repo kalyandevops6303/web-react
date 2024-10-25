@@ -1,12 +1,12 @@
 import { ProjectTabType } from '@/flexternships/constraints/types/project-details-types';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { userTypes } from '@/utility/constants/Constant';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) => {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  console.log(userDetails)
   const location = useLocation();
+  const param = useParams();
   const isActive = location.pathname.split('/')[3] === tab.id;
 
   const activeTabClass = 'bg-[#0185E41F] text-[#0185E4] border-b-2 border-b-[#0185E4]';
@@ -16,7 +16,7 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
 
   return (
     <Link
-      to={`/project-details/${location.pathname.split('/')[2]}/${tab.id}`}
+      to={`/project-details/${param?.projectId}/${tab.id}`}
       key={index}
       className={`${
         isActive ? activeTabClass : inactiveTabClass
