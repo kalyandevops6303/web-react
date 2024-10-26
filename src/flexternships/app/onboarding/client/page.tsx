@@ -8,7 +8,6 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores'
 import { FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums'
 import { useParams } from 'react-router-dom'
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store'
-import { use } from 'i18next'
 import { useEffect } from 'react'
 
 export default function ClientProfilePage() {
