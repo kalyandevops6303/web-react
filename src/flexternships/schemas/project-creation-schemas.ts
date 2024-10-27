@@ -1,6 +1,14 @@
 import * as yup from 'yup';
 import { dateToEpoch } from '@flexternships/utils/date-utils';
 
+const allowedFormats = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'text/plain',
+    'image/jpeg'
+  ];
+
 export const ProjectDetailsSchema = yup.object().shape({
     projectName: yup.string()
         .required('Project name is required'),
@@ -24,10 +32,11 @@ export const ProjectDetailsSchema = yup.object().shape({
         .max(3000, 'Project description must be 3000 characters or less'),
     documents: yup.array().of(yup.object().shape(
         {
+            file: yup.mixed().test("fileFormat", "Invalid file format", (value) => (value && allowedFormats.includes(value.type))),
             fileName: yup.string().required("fileName is required"),
             fileKey: yup.string().required("fileKey is required"),
             downloadUrl: yup.string().url("downloadUrl must be a valid URL"),
-            size: yup.number().required("size is required").positive("size must be a positive number"),
+            size: yup.number().required("size is required").positive("size must be a positive number").max(5 * 1024 * 1024, "File size must be less than 5MB"),
             createdAt: yup.number().required("createdAt is required").integer("createdAt must be an integer"),
         }
     )).required() // Validate each document as a URL
