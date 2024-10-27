@@ -46,7 +46,7 @@ const RegisterFlexternForm = React.memo(
           autoFocus
           control={control}
           render={({ field }) => (
-            <Input {...field} value={field.value || emailData ||''} placeholder="Enter email ID" invalid={errors.email && true} disabled/>
+            <Input {...field} value={field.value || emailData ||''} placeholder="Enter email ID" className="filled-form-text-field" invalid={errors.email && true} disabled />
           )}
         />
         {errors?.email && <FormFeedback>{errors?.email?.message}</FormFeedback>}

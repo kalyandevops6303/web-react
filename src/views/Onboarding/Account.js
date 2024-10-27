@@ -541,7 +541,7 @@ const Account = () => {
                             <Input
                               {...field}
                               placeholder="Enter mobile number"
-                              className="filled-form-control"
+                              className="filled-form-control filled-form-text-field"
                               disabled
                               invalid={errors.mobileNumber && true}
                             />
@@ -563,7 +563,7 @@ const Account = () => {
                         <Input
                           {...field}
                           placeholder="Enter email address"
-                          className="filled-form-control"
+                          className="filled-form-control filled-form-text-field"
                           disabled
                           invalid={errors.email && true}
                         />
@@ -601,7 +601,6 @@ const Account = () => {
                 ) : (
                   <>
                     <span className="me-50">Save & Continue</span>
-                    {!isDelegate && <ChevronRight size={14} />}
                   </>
                 )}
               </Button>

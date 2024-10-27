@@ -694,7 +694,6 @@ const FlexternSocial = () => {
                     ) : (
                       <>
                         <span className="me-50">Save & Continue</span>
-                        <ChevronRight size={14} />
                       </>
                     )}
                   </Button>
@@ -803,7 +802,7 @@ const FlexternSocial = () => {
                       <div>
                         <CardText className="m-0">Flexternship Ready</CardText>
                         <b
-                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                          className="text-primary cursor-pointer d-flex align-items-center "
                           onClick={() =>
                             navigate(
                               returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)

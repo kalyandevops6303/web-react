@@ -1032,7 +1032,6 @@ const Additional = () => {
                       ) : (
                         <>
                           <span className="me-50">Save & Continue</span>
-                          <ChevronRight size={14} />
                         </>
                       )}
                     </Button>
