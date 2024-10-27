@@ -231,7 +231,7 @@ const Account = () => {
       }
     }
   };
-  const buttonText = selectedImage && selectedImagePreview ? 'Edit Image' : 'Upload Image';
+  const buttonText = selectedImage && selectedImagePreview ? 'Edit Picture' : 'Update Picture';
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       setValue('countryCode', res.country_code);
@@ -408,7 +408,7 @@ const Account = () => {
   };
 
   const getOverallPercentageCompletion = () => {
-    if (isFlextern) setOverallPercentageCompletion(profileCompletionFlextern);
+    if (isFlexternInvited) setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {
@@ -433,7 +433,7 @@ const Account = () => {
           <div className="w-75">
             <Card>
               <CardHeader>
-                <h4 className="m-0 mt-1">Account Details</h4>
+                <h4 className="m-0 mt-1 text-lg font-medium">Account Details</h4>
               </CardHeader>
               <hr className="m-0 card-header-border" />
               <CardBody>
@@ -611,11 +611,11 @@ const Account = () => {
             {userType != userTypes.client && isFlexternInvited && (
               <Card>
                 <CardHeader>
-                  <h4 className="m-0 mt-1">Profile Completion</h4>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
                   <CardText className="m-0 mt-1">
                     Make it easier for others to find you by completing your profile.
                   </CardText>
-                  <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion || 0}%</h3>
+                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold">{overallPercentageCompletion || 0}%</h3>
                   <Progress
                     value={overallPercentageCompletion}
                     style={{ height: '0.5rem' }}
@@ -640,7 +640,7 @@ const Account = () => {
                       <div>
                         <CardText className="m-0">Client Projects Ready</CardText>
                         <b
-                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                          className="text-primary cursor-pointer "
                           onClick={() =>
                             navigate(
                               returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
@@ -660,7 +660,7 @@ const Account = () => {
                     </div>
                   )}
 
-                  {isFlextern && (
+                  {isFlexternInvited && (
                     <div className="d-flex gap-1 mt-1">
                       <div className="custom-checkbox-wrapper">
                         <Input
@@ -674,7 +674,7 @@ const Account = () => {
                       <div>
                         <CardText className="m-0">Flexternship Ready</CardText>
                         <b
-                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                          className="d-flex align-items-center text-primary cursor-pointer "
                           onClick={() =>
                             !userDetailsData?.talent_info
                               ? navigate('/talent-onboarding/account-details')

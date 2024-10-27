@@ -4,8 +4,8 @@ import theme from '../../../configs/themeVariables';
 const CountryDropdownWrapper = styled.div`
   .country__select__control {
     padding-left: 12px;
-    font-size: 12px;
-    width: 90px;
+    font-size: 14px;
+    width: 110px;
     height: 43px;
     border: 1px solid ${theme.borderInputColor};
     box-shadow: none;
