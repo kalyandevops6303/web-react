@@ -19,6 +19,18 @@ export const useLayout = () => {
   const setLastLayout = (value) => {
     dispatch(handleLastLayout(value));
   };
+  const handleWindowWidth = () => {
+    if (window.innerWidth < 1200) {
+      setLayout("vertical");
+    } else {
+      setLayout("horizontal");
+    }
+  }
+  useEffect(() => {
+    if (window !== undefined) {
+      window.addEventListener('resize', handleWindowWidth);
+    }
+  }, []);
 
   if (window) {
     const breakpoint = 1200;
@@ -26,6 +38,8 @@ export const useLayout = () => {
     useEffect(() => {
       if (window.innerWidth < breakpoint) {
         setLayout("vertical");
+      } else {
+        setLayout("horizontal");
       }
     }, [store.layout]);
   }

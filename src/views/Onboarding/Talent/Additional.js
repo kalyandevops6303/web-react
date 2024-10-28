@@ -316,9 +316,16 @@ const Additional = () => {
       const response = await paginatedInstitutesService(page, search);
       let myInstitution = [];
       if (location.pathname.includes('profile-edit')) {
-        myInstitution = userDetailsData?.talent_info?.educational_institute
-          .map((educationDetails) => educationDetails.institution)
-          .map((institute) => ({ label: institute.name, value: institute._id }));
+        if(talentOnboardingData?.talent_info?.educational_institute){
+          myInstitution = talentOnboardingData?.talent_info?.educational_institute
+            .map((educationDetails) => educationDetails.institution)
+            .map((institute) => ({ label: institute.name, value: institute._id }));
+        } else if (userDetailsData?.talent_info?.educational_institute) {
+
+          myInstitution = userDetailsData?.talent_info?.educational_institute
+            .map((educationDetails) => educationDetails.institution)
+            .map((institute) => ({ label: institute.name, value: institute._id }));
+        }
       } else if (location.pathname.includes('talent-onboarding')) {
         myInstitution = talentOnboardingData?.talent_info?.educational_institute
           .map((educationDetails) => educationDetails.institution)
