@@ -334,6 +334,9 @@ const API = {
     invitedProjects: `${apiOnboardingEndpoint}/api/v1/invited-projects`,
     clientName: `${apiOnboardingEndpoint}/api/v1/projects/client-names`,
     teamName: `${apiOnboardingEndpoint}/api/v1/projects/team-names`,
+
+        //v2 projects-list
+        allProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/projects`,
   },
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,

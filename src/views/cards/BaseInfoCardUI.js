@@ -128,13 +128,13 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
       <div>
         <BadgeGroup
           title="Skills"
-          data={data?.proficiency?.skills}
+          data={data?.proficiency?.skills || data?.skills_data}
           color="light-blue"
           id={`tooltip-skills-${data?._id}`}
         />
         <BadgeGroup
           title="Tools"
-          data={data?.proficiency?.tools}
+          data={data?.proficiency?.tools || data?.tools_data}
           color="light-blue"
           id={`tooltip-tools-${data?._id}`}
         />

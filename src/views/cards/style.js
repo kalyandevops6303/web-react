@@ -14,6 +14,16 @@ const CardWrap = styled.div`
   }
 `;
 
+const EstimatedTimeHeading = styled.h1`
+  background-color: #FBC02D1F;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  margin-top: 1.5rem;
+  border-radius: 0.75rem;
+  color: #0284c7;
+  font-weight: 600;
+`;
+
 const ProjectCardWrap = styled(CardWrap)`
   margin: auto;
   margin-top: 1rem;
@@ -502,4 +512,5 @@ export {
   IconWrapper,
   CustomDraftProjectBadge,
   DraftSkillsAndToolsContainer,
+  EstimatedTimeHeading,
 };

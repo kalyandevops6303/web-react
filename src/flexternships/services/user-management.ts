@@ -67,6 +67,7 @@ export const getUserDetails = async () => {
     }
     try {
         const response = await axios.get(routes.userManagement.user.getUserDetails, config);
+        console.log(response.data.data)
         return response.data.data;
     } catch (error) {
         handleError(error as Error, 'An unexpected error occurred while fetching user details');
