@@ -114,9 +114,9 @@ export default function FileUpload(props: InputProps) {
           <input
             id={name}
             type="file"
-            accept="*/pdf, */msword, */vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, */jpeg, *.jpg"
+            accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, image/jpeg, image/jpg"
             ref={fileInputRef} // Assign ref to the input
-            className={`hidden`}
+            className="hidden"
             onChange={handleFileInputChange}
           />
         </label>
