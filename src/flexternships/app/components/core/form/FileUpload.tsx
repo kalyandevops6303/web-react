@@ -10,7 +10,7 @@ import { uploadFileToUrl } from '@/flexternships/services/core-service';
 import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 
 export default function FileUpload(props: InputProps) {
-  const { name, control, error, trigger, watch, label, required, placeholder, className } = props;
+  const { name, control, error, trigger, watch, label, required, placeholder, className, acceptedFormats } = props;
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -114,7 +114,7 @@ export default function FileUpload(props: InputProps) {
           <input
             id={name}
             type="file"
-            accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, image/jpeg, image/jpg"
+            accept={acceptedFormats?.join(', ')}
             ref={fileInputRef} // Assign ref to the input
             className="hidden"
             onChange={handleFileInputChange}
@@ -135,4 +135,5 @@ type InputProps = {
   placeholder: string; // Required field
   required?: boolean; // Optional field
   className?: string; // Optional field
+  acceptedFormats?: string[]; // Optional field
 };

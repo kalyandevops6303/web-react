@@ -13,6 +13,8 @@ import { ProjectRolesFormSchema } from '@flexternships/schemas/project-creation-
 import RoleCard from './RoleCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { isEmpty } from 'lodash';
+import { useEffect } from 'react';
 
 export default function Roles() {
   const rolesData = useProjectCreationStore((state) => state.data.roles);
@@ -26,13 +28,12 @@ export default function Roles() {
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isValid },
   } = useForm<ProjectRolesForm>({
     mode: 'onChange',
     resolver: yupResolver(ProjectRolesFormSchema),
-    defaultValues: {
-      projectRoles: rolesData,
-    },
+    defaultValues: {},
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -54,6 +55,14 @@ export default function Roles() {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }
   }
+
+  useEffect(() => {
+    if (!isEmpty(rolesData)) {
+      reset({
+        projectRoles: rolesData,
+      });
+    }
+  }, [rolesData, reset]);
 
   return (
     <div className='flex flex-col'>

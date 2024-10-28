@@ -11,7 +11,7 @@
 }
 
 .secondaryEnabledButtonBlue {
-  @apply border-1 border-solid border-trublue text-trublue-secondary-500 cursor-pointer;
+  @apply border-1 border-solid border-trublue-secondary-500 text-trublue-secondary-500 cursor-pointer;
   @apply transition-transform duration-100 ease-in-out transform active:scale-95;
 }
 .secondaryEnabledButtonRed {
