@@ -55,6 +55,7 @@ export type FlexternUserProfileFormActions = {
     nextTab: () => void;
     previousTab: () => void;
     resetStore: () => void;
+    setCurrentTabIndex: (index: number) => void;
 }
 
 export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserProfileFormActions;

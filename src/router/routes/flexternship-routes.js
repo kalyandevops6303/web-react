@@ -49,7 +49,6 @@ import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
 
-
 // ** Default Route
 const DefaultRoute = '/auth';
 
@@ -116,27 +115,27 @@ export const FlexternshipRoutes = [
         element: <BidDetails />,
     },
 
-    {
-        path: '/project-details/:projectId/:projectStep/doc/:docType/*',
-        element: <ContractView />,
-    },
-    {
-        path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
-        element: <ContractView />,
-    },
-    {
-        path: '/projects/*',
-        element: <Projects />,
-    },
-    {
-        path: '/my-teams/*',
-        element: <MyTeams />,
-    },
+  {
+    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
+    element: <ContractView />,
+  },
+  {
+    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
+    element: <ContractView />,
+  },
+  {
+    path: '/projects/*',
+    element: <Projects />,
+  },
+  {
+    path: '/my-teams/*',
+    element: <MyTeams />,
+  },
 
-    {
-        path: '/clubs/*',
-        element: <Clubs />,
-    },
+  {
+    path: '/clubs/*',
+    element: <Clubs />,
+  },
 
     {
         path: '/auth/*',
@@ -189,7 +188,7 @@ export const FlexternshipRoutes = [
         element: <TalentOnboarding />,
     },
     {
-        path: `/${userProfileEdit.client}/*`,
+        path: `/${userProfileEdit.client}/:tabId`,
         element: (
             <RoleAccessWrapper
                 allowedAppRoles={[
@@ -348,4 +347,3 @@ export const FlexternshipRoutes = [
         element: <NotFound />,
     },
 ];
-
