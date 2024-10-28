@@ -6,7 +6,8 @@ const allowedFormats = [
     '*/msword',
     '*/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'text/plain',
-    '*/jpeg', */jpg'
+    '*/jpeg',
+    '*/jpg'
   ];
 
 export const ProjectDetailsSchema = yup.object().shape({
