@@ -42,6 +42,7 @@ import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import PermissionWrapper from '../../PermissionWrapper';
+import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -112,7 +113,7 @@ const PrivateDashboard = () => {
     } else if (profilePercentageData?.values_missing?.includes('company_name') && !isDelegate) {
       setCompleteProfileModal(true);
     } else {
-      navigate('/create-project');
+      handleCreateNewProject();
     }
   };
 
@@ -181,6 +182,11 @@ const PrivateDashboard = () => {
     setRaisedDisputeModal(true);
   };
 
+  const handleCreateNewProject = () => {
+    resetProjectCreationStore();
+    navigate('/create-project');
+  };
+
   return (
     <div className={`trumio ${userDetailsData?.user_type === userTypes.talent ? 'flex flex-col gap-1.5' : ''}`}>
       {savedDraftsAvailableModal && (
@@ -190,7 +196,7 @@ const PrivateDashboard = () => {
           modalText="You have project(s) in draft mode. Would you like to continue where you left off?"
           firstBtnText="Create New Project"
           secondBtnText="View Drafts"
-          firstBtnAction={() => navigate('/create-project')}
+          firstBtnAction={handleCreateNewProject}
           secondBtnAction={() =>
             navigate('/marketplace/my_listings', {
               state: {

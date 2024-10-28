@@ -10,6 +10,7 @@ import { draftProjectsCheck } from '../../../redux/actions/createProjectActions'
 import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
 import { getItem } from '../../../utility/localStorageControl';
+import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
@@ -35,12 +36,17 @@ const CreateProjectButton = () => {
     } else if (profilePercentageData?.values_missing?.includes('company_name') && !isDelegate) {
       setCompleteProfileModal(true);
     } else {
-      navigate('/create-project');
+      handleCreateNewProject();
     }
   };
 
   const onCreateProjectClick = () => {
     dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
+  };
+
+  const handleCreateNewProject = () => {
+    resetProjectCreationStore();
+    navigate('/create-project');
   };
 
   return (
@@ -59,7 +65,7 @@ const CreateProjectButton = () => {
           modalText="You have project(s) in draft mode. Would you like to continue where you left off?"
           firstBtnText="Create New Project"
           secondBtnText="View Drafts"
-          firstBtnAction={() => navigate('/create-project')}
+          firstBtnAction={handleCreateNewProject}
           secondBtnAction={() =>
             navigate('/marketplace/my_listings', {
               state: {
