@@ -4,6 +4,7 @@ import {
   getDisutedProjectListingService,
   getInvitedProjectListingService,
   getOngoingProjectListingService,
+  getProjectsListFlexternService,
   getTerminatedProjectListingService,
   getUpcomingProjectListingService,
 } from '../../services/projectServices';
@@ -67,4 +68,26 @@ const getProjectListing =
     }
   };
 
-export { getCardInfo, getProjectListing };
+const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
+    try{
+      console.log("metaData", metaData);
+      const res = await getProjectsListFlexternService({ metaData });
+      console.log(res)
+      if (res) {
+        dispatch(storeSuccessData(res?.data?.data));
+        onSuccess();
+      }else {
+        throw new Error(`Invalid project filter: ${metaData?.project_status}`);
+      }
+    }
+    catch(error){
+      onError();
+      errorHandler(error, getListErr);
+    }
+  };
+
+
+export { getCardInfo, getProjectListing, getProjectsListingFlextern };

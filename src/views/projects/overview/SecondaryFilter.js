@@ -11,7 +11,7 @@ import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { getProjectListing } from '../../../redux/actions/projectActions';
+import { getProjectListing, getProjectsListingFlextern } from '../../../redux/actions/projectActions';
 import ProjectCard from '../../cards/ProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
@@ -62,6 +62,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'Client', value: 'CLIENT' },
   ];
   const metaData = { page: 1, page_size: 10 };
+  const metaDataFlextern = { page: 1, page_size: 10, search_query: '', project_status: '', department_name: '' };
 
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -149,24 +150,37 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         }
       }
     });
+    // dispatch(
+    //   getProjectListing({
+    //     data: {
+    //       ...filterData,
+    //       search_query: searchText || '',
+    //       project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
+    //     },
+    //     metaData,
+    //     onSuccess,
+    //     onError,
+    //   }),
+    // );
+
     dispatch(
-      getProjectListing({
-        data: {
-          ...filterData,
-          search_query: searchText || '',
-          project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
+      getProjectsListingFlextern({
+        metaData: {
+          ...metaDataFlextern,
+          project_status: primaryFilter ? primaryFilter.toUpperCase() : '',
         },
-        metaData,
-        onSuccess,
-        onError,
-      }),
-    );
+      })
+    )
   }, [secondFilterState, searchText, primaryFilter]);
 
   const fetchMore = () => {
     const newMetaData = {
       ...metaData,
       // eslint-disable-next-line no-unsafe-optional-chaining
+      page: selectProjectMetaData?.current_page + 1 || 1,
+    };
+    const newFlexternMetaData = {
+      ...metaDataFlextern,
       page: selectProjectMetaData?.current_page + 1 || 1,
     };
 
@@ -181,18 +195,27 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         }
       }
     });
+    // dispatch(
+    //   getProjectListing({
+    //     data: {
+    //       ...filterData,
+    //       search_query: searchText || '',
+    //       project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
+    //     },
+    //     metaData: newMetaData,
+    //     onSuccess,
+    //     onError,
+    //   }),
+    // );
+
     dispatch(
-      getProjectListing({
-        data: {
-          ...filterData,
-          search_query: searchText || '',
-          project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
+      getProjectsListingFlextern({
+        metaData: {
+          ...metaDataFlextern,
+          project_status: primaryFilter ? primaryFilter.toUpperCase() : '',
         },
-        metaData: newMetaData,
-        onSuccess,
-        onError,
-      }),
-    );
+      })
+    )
   };
 
   const loadTeamNameOptions = async (search, prevOptions, { page }) => {
@@ -345,7 +368,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 </Col>
               )}
             </PermissionWrapper>
-            {/* // After the department name comes from new API, functionality will be implemented
+            {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
               {userType !== userTypes.team  && (
                 <Col>
@@ -423,7 +446,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   />
                 </Col>
               )}
-            </PermissionWrapper> */}
+            </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TEAM_NAME']}>
               {userType !== userTypes.team && primaryFilter !== 'invited' && (
                 <Col>
