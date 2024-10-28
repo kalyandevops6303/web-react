@@ -58,7 +58,7 @@ export default function ClientProfilePage() {
       <div className='flex flex-col gap-6 py-6 mx-[72px] max-w-[858px]'>
         <div className='text-grey-heading text-2xl font-medium not-italic'>
           {
-            (userDetails?.checkpoint === FlexternUserCheckpoint.ACCOUNT_DETAILS)
+            (userDetails?.checkpoint !== FlexternUserCheckpoint.COMPLETE)
               ? 'Onboarding'
               : 'Edit Profile'
           }
