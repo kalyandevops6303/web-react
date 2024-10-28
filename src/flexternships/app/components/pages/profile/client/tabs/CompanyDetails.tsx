@@ -22,7 +22,6 @@ import { showToastMessage } from '@/flexternships/utils/core-utils'
 import { ToastType } from '@/flexternships/constraints/enums/core-enums'
 
 export default function CompanyDetails() {
-    const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
     const populateClientOrgDetails = useFlexternUserProfileStore((state) => state.populateClientOrgDetails);
     const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
     const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
