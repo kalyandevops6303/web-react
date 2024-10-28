@@ -29,6 +29,7 @@ module.exports = {
           300: "#9C9FA1",
           500: "#6A7071",
           600: "#515759",
+          loadingText: "#9E9E9E"
         },
         success: '#28C76F',
         error: "#EA5455",
@@ -48,6 +49,7 @@ module.exports = {
       width: {
         8.5: "2.125rem",
         30: "7.5rem",
+        65: "16.125rem",
       },
       minWidth: {
         8.5: "2.125rem",

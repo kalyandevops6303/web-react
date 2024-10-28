@@ -1,24 +1,28 @@
 .horizontalFileCard {
-    @apply mb-3.5 py-4 px-6 flex flex-row justify-between items-center bg-white;
+  @apply mb-3.5 py-3 px-4 flex flex-row justify-between items-center bg-white;
 }
 
 .horizontalFileCard .fileContainer {
-    @apply flex flex-row items-center;
+  @apply flex flex-row items-center;
 }
 .horizontalFileCard .fileContainer .fileIconContainer {
-    @apply mr-4;
+  @apply mr-4;
 }
 .horizontalFileCard .fileContainer .fileName {
-    @apply text-grey-heading text-sm not-italic font-medium leading-6 max-w-lg;
+  @apply text-grey-heading text-sm not-italic font-medium leading-6 max-w-lg;
+}
+
+.loading {
+  @apply italic text-grey-loadingText text-sm  font-normal ;
 }
 
 
 .horizontalFileCard .fileInfoContainer {
-    @apply text-grey text-sm not-italic font-normal leading-5;
+  @apply text-grey text-sm not-italic font-normal leading-5;
 }
 .horizontalFileCard .fileInfoContainer .fileSize {
-    @apply pr-20;
+  @apply pr-9;
 }
 .horizontalFileCard .fileInfoContainer .fileUploadDate {
-    @apply mr-4;
+  @apply mr-8;
 }
