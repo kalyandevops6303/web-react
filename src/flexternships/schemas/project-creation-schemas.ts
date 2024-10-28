@@ -2,11 +2,11 @@ import * as yup from 'yup';
 import { dateToEpoch } from '@flexternships/utils/date-utils';
 
 const allowedFormats = [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '*/pdf',
+    '*/msword',
+    '*/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'text/plain',
-    'image/jpeg'
+    '*/jpeg', */jpg'
   ];
 
 export const ProjectDetailsSchema = yup.object().shape({
