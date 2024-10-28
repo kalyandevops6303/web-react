@@ -18,6 +18,7 @@ import { getAlertsNotifications, markNotificationAsRead } from '../../../redux/a
 import getTeamId from '../../../utility/commonUtils';
 import { getItem } from '../../../utility/localStorageControl';
 import { getProfileCompletionFlextern } from '../../../redux/actions/talentOnboardingActions';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,8 @@ const Alerts = () => {
         dispatch(getProfileCompletionFlextern());
       }
       else{
-        dispatch(getProfilePercentage());
+        if (isFlexternshipApp) dispatch(getProfileCompletionFlextern());
+        else dispatch(getProfilePercentage());
       }
   }, [userDetailsData?.user_type]);
 
@@ -146,7 +148,7 @@ const Alerts = () => {
               <CardText className="mb-50">
                 Make it easier for others to find you by <br /> completing your profile.
               </CardText>
-              <span className="font-weight-bold percentage ">{isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed}%</span>
+              <span className="font-weight-bold percentage ">{isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed}%</span>
               <Progress
                 style={{ height: '0.5rem' }}
                 className={`${giveProgressBarColorClassName(isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed)} mt-25`}
