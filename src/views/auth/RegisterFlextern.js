@@ -8,7 +8,7 @@ import { CardTitle, Label, Form, Button, FormFeedback, Spinner, Input } from 're
 import PropTypes from 'prop-types';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
-import { validations, filteredFormSchema } from '../../utility/Utils';
+import { validations, filteredFormSchema, checkPointRedirection } from '../../utility/Utils';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { selectAuthLoading, selectEmail, selectFlexternInviteType } from '../../redux/selectors/authSelectors';
@@ -46,7 +46,7 @@ const RegisterFlexternForm = React.memo(
           autoFocus
           control={control}
           render={({ field }) => (
-            <Input {...field} value={field.value || emailData ||''} placeholder="Enter email ID" invalid={errors.email && true} disabled/>
+            <Input {...field} value={field.value || emailData ||''} placeholder="Enter email ID" className="filled-form-text-field" invalid={errors.email && true} disabled />
           )}
         />
         {errors?.email && <FormFeedback>{errors?.email?.message}</FormFeedback>}
@@ -183,9 +183,9 @@ const RegisterFlextern = () => {
     }
   }, [emailData]);
  
-  const onSuccess = () => {
+  const onSuccess = (response) => {
     dispatch(clearAllFormData());
-    navigate('/auth/register-phone-flexternship');
+    checkPointRedirection({ response, navigate });
   };
 
   // extract invitation token from url
@@ -198,6 +198,7 @@ const RegisterFlextern = () => {
     const invitation_token = queryParams.get('invitation_token');
     if(flexternInviteType === userTypes.flexternClient) data.user_type = userTypes.client;
     else data.user_type = userTypes.talent;
+
     dispatch(verifyEmailForFlextern({ data,invitation_token ,onSuccess}));
   };
 

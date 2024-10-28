@@ -266,7 +266,7 @@ const verifyEmailForFlextern =
         dispatch(setTalentBooleanIsFlextern(true));
         dispatch(verifyEmailForFlexternSuccess());
         if (onSuccess) {
-          onSuccess();
+          onSuccess(res?.data?.data);
         }
       }
     } catch (error) {

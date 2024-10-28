@@ -91,34 +91,9 @@ const RegisterEmail = () => {
     navigate('/auth/email-verify');
   };
 
-  const onFlexternInviteNotFoundHandler = () => {
-    const { email } = watch();
-    dispatch(registerEmail({ email, userType, onSuccess }));
-  };
-
-  const onFlexternEmailVerifySuccess = () => {
-    dispatch(clearAllFormData());
-    navigate('/auth/register-phone-flexternship');
-  };
-
-  const checkFlexternshipEmail = (email) => {
-    const data = { email };
-    if(userType === userTypes.client)
-      data.user_type = userTypes.client;
-    else
-      data.user_type = userTypes.talent;
-    dispatch(
-      verifyEmailForFlextern({
-        data,
-        onSuccess: onFlexternEmailVerifySuccess,
-        errorHandlerInviteNotFound: onFlexternInviteNotFoundHandler,
-      }),
-    );
-  };
-
   const onSubmit = (values) => {
     const { email } = values;
-    checkFlexternshipEmail(email)
+    dispatch(registerEmail({ email, userType, onSuccess }));
   };
 
   function getButtonContent() {
@@ -126,7 +101,7 @@ const RegisterEmail = () => {
       return <Spinner size="sm" />;
     }
 
-    return "Verify"
+    return "Submit"
   }
 
   const emailValue = watch('email'); // track the value of the mobile field

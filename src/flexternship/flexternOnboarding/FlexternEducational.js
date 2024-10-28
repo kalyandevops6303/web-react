@@ -586,7 +586,7 @@ const FlexternEducational = () => {
             <Col className="w-75" xs="100" sm="100" lg="75">
               <Card className="w-100">
                 <CardHeader className="d-flex align-items-end">
-                  <h4 className="m-0 mt-1">Education</h4>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Education</h4>
                   <CustomerSupportCTA
                     type={CUSTOMER_SUPPORT_TYPES.education}
                     handleCustomerSupport={handleCustomerSupport}
@@ -777,7 +777,7 @@ const FlexternEducational = () => {
               </Card>
               <Card className="w-100">
                 <CardHeader className="d-flex align-items-end">
-                  <h4 className="m-0 mt-1">Expertise</h4>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Expertise</h4>
                   <CustomerSupportCTA
                     type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
                     handleCustomerSupport={handleCustomerSupport}
@@ -934,7 +934,6 @@ const FlexternEducational = () => {
                     ) : (
                       <>
                         <span className="me-50">Save & Continue</span>
-                        <ChevronRight size={14} />
                       </>
                     )}
                   </Button>
@@ -979,11 +978,11 @@ const FlexternEducational = () => {
 
               <Card>
                 <CardHeader>
-                  <h4 className="m-0 mt-1">Profile Completion</h4>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
                   <CardText className="m-0 mt-1">
                     Make it easier for others to find you by completing your profile.
                   </CardText>
-                  <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold">{overallPercentageCompletion}%</h3>
                   <Progress
                     value={overallPercentageCompletion}
                     style={{ height: '0.5rem' }}
@@ -1042,7 +1041,7 @@ const FlexternEducational = () => {
                       <div>
                         <CardText className="m-0">Flexternship Ready</CardText>
                         <b
-                          className="text-primary cursor-pointer"
+                          className="text-primary cursor-pointer d-flex align-items-center"
                           onClick={() =>
                             navigate(
                               returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)

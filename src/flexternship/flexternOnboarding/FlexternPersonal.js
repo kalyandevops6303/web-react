@@ -761,7 +761,7 @@ const FlexternPersonal = () => {
             <Col className="w-75" xs="100" sm="75" lg="75">
               <Card>
                 <CardHeader>
-                  <h4 className="m-0 mt-1">About</h4>
+                  <h4 className="m-0 mt-1 text-lg font-medium">About</h4>
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody>
@@ -833,7 +833,7 @@ const FlexternPersonal = () => {
                     </Col>
                   </Row>
                   <Row className="mb-1 mt-3">
-                    <h5 className="m-0">Languages</h5>
+                    <h5 className="m-0 text-lg font-medium">Languages</h5>
                   </Row>
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
@@ -920,7 +920,6 @@ const FlexternPersonal = () => {
                     ) : (
                       <>
                         <span className="me-50">Save & Continue</span>
-                        <ChevronRight size={14} />
                       </>
                     )}
                   </Button>
@@ -1013,11 +1012,11 @@ const FlexternPersonal = () => {
 
               <Card>
                 <CardHeader>
-                  <h4 className="m-0 mt-1">Profile Completion</h4>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
                   <CardText className="m-0 mt-1">
                     Make it easier for others to find you by completing your profile.
                   </CardText>
-                  <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold">{overallPercentageCompletion}%</h3>
                   <Progress
                     value={overallPercentageCompletion}
                     style={{ height: '0.5rem' }}
@@ -1076,7 +1075,7 @@ const FlexternPersonal = () => {
                       <div>
                         <CardText className="m-0">Flexternship Ready</CardText>
                         <b
-                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                          className="text-primary cursor-pointer d-flex align-items-center "
                           onClick={() =>
                             navigate(
                               returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)

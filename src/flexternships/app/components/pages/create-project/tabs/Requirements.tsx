@@ -29,6 +29,7 @@ export default function Requirements() {
     control,
     handleSubmit,
     watch,
+    trigger,
     setValue,
     formState: { errors, isValid },
   } = useForm<ProjectDetails>({
@@ -172,6 +173,9 @@ export default function Requirements() {
           <FileUpload
             name={'documents'}
             control={control}
+            error={errors.documents}
+            trigger={trigger}
+            watch={watch}
             label="Upload requirement documents (optional)"
             placeholder="Upload Document" />
 

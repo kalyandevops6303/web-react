@@ -36,7 +36,7 @@ const BreadCrumbs = (props) => {
   };
 
   return (
-    <div className="content-header row d-flex justify-content-between align-items-center">
+    <div className="content-header row" style={{ display: 'contents' }}>
       <div className="content-header-left col-md-9 col-12 mb-2">
         <div className="row breadcrumbs-top">
           <div className="col-12">

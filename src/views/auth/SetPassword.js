@@ -103,10 +103,10 @@ const SetPassword = () => {
         </CardTitle>
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
-            <Label className="form-label" for="login-email">
+            <Label className="form-label d-flex justify-content-between" for="login-email">
               Password
-            </Label>
             <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
+            </Label>
             <UncontrolledTooltip placement="right" target="info">
               <p className="m-0 text-start">
                 Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one
@@ -158,7 +158,11 @@ const SetPassword = () => {
               )}
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
+            <p className='text-success text-xs mt-2'>
+                {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
+            </p>
           </div>
+          
           <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
           </Button>

@@ -50,7 +50,6 @@ import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/p
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
 import ProjectsTab from '@/flexternships/app/project-details/projects-tab/page';
 
-
 // ** Default Route
 const DefaultRoute = '/auth';
 
@@ -84,10 +83,10 @@ export const FlexternshipRoutes = [
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
                                 redirectRoute: '/talent-onboarding/account-details'
                             },
-                            {
-                                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
-                                redirectRoute: '/talent-onboarding/personal-details'
-                            }
+                            // {
+                            //     checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                            //     redirectRoute: '/talent-onboarding/personal-details'
+                            // } removing this as for now as anyway in sign in we are checking for the checkpoint otherwise the first time it's causing after save and continue before updation of checkpoint it's going to personal details
                         ]
                     }
                 ]}
@@ -117,27 +116,27 @@ export const FlexternshipRoutes = [
         element: <BidDetails />,
     },
 
-    {
-        path: '/project-details/:projectId/:projectStep/doc/:docType/*',
-        element: <ContractView />,
-    },
-    {
-        path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
-        element: <ContractView />,
-    },
-    {
-        path: '/projects/*',
-        element: <Projects />,
-    },
-    {
-        path: '/my-teams/*',
-        element: <MyTeams />,
-    },
+  {
+    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
+    element: <ContractView />,
+  },
+  {
+    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
+    element: <ContractView />,
+  },
+  {
+    path: '/projects/*',
+    element: <Projects />,
+  },
+  {
+    path: '/my-teams/*',
+    element: <MyTeams />,
+  },
 
-    {
-        path: '/clubs/*',
-        element: <Clubs />,
-    },
+  {
+    path: '/clubs/*',
+    element: <Clubs />,
+  },
 
     {
         path: '/auth/*',
@@ -190,7 +189,7 @@ export const FlexternshipRoutes = [
         element: <TalentOnboarding />,
     },
     {
-        path: `/${userProfileEdit.client}/*`,
+        path: `/${userProfileEdit.client}/:tabId`,
         element: (
             <RoleAccessWrapper
                 allowedAppRoles={[
@@ -353,4 +352,3 @@ export const FlexternshipRoutes = [
         element: <ProjectsTab />
     }
 ];
-
