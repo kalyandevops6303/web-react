@@ -143,7 +143,6 @@ const ProjectCard = ({
 
     return switchData?.navigateTo;
   };
-
   return (
     <ProjectCardWrap>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -166,7 +165,7 @@ const ProjectCard = ({
                 </div>
                 <CardTitle className="d-flex align-items-center">
                   <span className="cursor-pointer" onClick={handleRedirection}>
-                    {data?.name}
+                    {data?.name || data?.details?.name}
                   </span>
                 </CardTitle>
                 <div className="d-flex flex-wrap project-stats">
@@ -181,23 +180,22 @@ const ProjectCard = ({
                       )}
                     </CardText>
                   </PermissionWrapper>
-                  {(data?.assigned_date || data?.completed_date || data?.invite_date) && (
+                  {(data?.assigned_date || data?.completed_date || data?.invite_date || data?.listing_details) && (
                     <CardText className="mb-1">
-                      {data?.assigned_date && (
+                      {(data?.assigned_date || data?.listing_details?.start_date_epoch) && (
                         <span className="me-1">
-                          {data?.assigned_date
-                            ? `Assigned Date: ${convertUnixTimestampToDate(
-                                data?.assigned_date,
+                          
+                             Assigned Date: ${convertUnixTimestampToDate(
+                                data?.assigned_date || data?.listing_details?.start_date_epoch,
                                 savedUserData?.availability?.timezone?.name,
-                              )}    `
-                            : ''}
+                              ) || data?.listing_details?.start_date}    
                         </span>
                       )}
-                      {data?.completed_date && (
+                      {(data?.completed_date || data?.listing_details?.end_date_epoch) && (
                         <span className="me-1">
-                          {data?.completed_date
+                          {(data?.completed_date || data?.listing_details?.end_date_epoch)
                             ? `Completed Date: ${convertUnixTimestampToDate(
-                                data?.completed_date,
+                                data?.completed_date || data?.listing_details?.end_date_epoch,
                                 savedUserData?.availability?.timezone?.name,
                               )}   `
                             : ''}
@@ -245,15 +243,13 @@ const ProjectCard = ({
                   </>
                 )}
 
-             
-
                 {isContentOverflowing && (
                   <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
                     {showFullText ? 'Show less' : 'Show more'}
                   </CardText>
                 )}
 
-<EstimatedTimeHeading>Estimated time to complete feedback 3min 30sec</EstimatedTimeHeading>
+                <EstimatedTimeHeading>Estimated time to complete feedback 3min 30sec</EstimatedTimeHeading>
               </Col>
               <Col lg="4">
                 {primaryFilter !== 'terminated' ? (

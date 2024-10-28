@@ -1,6 +1,9 @@
 type BadgeType = {
   _id: string;
   name: string;
+  created_at: number;
+  updated_at: number;
+  is_deleted: boolean;
 };
 
 const BadgeGroup = ({ className, tags }: { className?: string; tags: BadgeType[] }) => {

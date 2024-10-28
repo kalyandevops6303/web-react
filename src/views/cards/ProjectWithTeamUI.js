@@ -108,8 +108,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   const clientDetails = data?.client ?? data?.client_details;
   // eslint-disable-next-line no-unsafe-optional-chaining
-  const clientSkills = data?.proficiency?.skills ?? [];
-  const clientTools = data?.proficiency?.tools ?? [];
+  const clientSkills = (data?.proficiency?.skills || data?.skills_data) ?? [];
+  const clientTools = (data?.proficiency?.tools || data?.tools_data) ?? [];
 
   const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
     ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({

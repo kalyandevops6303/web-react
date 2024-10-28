@@ -8,4 +8,13 @@ export enum UserTypeChipClassnames {
     OPEN_LISTING = 'bg-green-100 text-green-400',
     ONGOING = 'bg-green-100 text-green-400 border-green-400',
   }
-  
+
+  export enum ProjectStatus {
+    OPEN = 'Open',
+    IN_REVIEW = 'In Review',
+    ACTIVE = 'Active',
+    ON_GOING = 'Ongoing',
+    CLOSED = 'Closed',
+    TERMINATED = 'Terminated',
+    COMPLETED = 'Completed'
+  }

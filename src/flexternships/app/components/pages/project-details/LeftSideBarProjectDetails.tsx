@@ -8,62 +8,34 @@ import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { Button } from '../../ui/button';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { userTypes } from '@/utility/constants/Constant';
-import { ProjectStatusChipClassnames, UserTypeChipClassnames } from '@/flexternships/constraints/enums/project-enums';
+import {
+  ProjectStatus,
+  ProjectStatusChipClassnames,
+  UserTypeChipClassnames,
+} from '@/flexternships/constraints/enums/project-enums';
+import { ProjectDetails } from '@/flexternships/constraints/types/project-details-types';
+import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
 
-const dummyTags = [
-  {
-    _id: '1',
-    name: 'React',
-  },
-  {
-    _id: '2',
-    name: 'AngularJS',
-  },
-  {
-    _id: '3',
-    name: 'JavaScript',
-  },
-  {
-    _id: '4',
-    name: 'TypeScript',
-  },
-  {
-    _id: '5',
-    name: 'React',
-  },
-  {
-    _id: '6',
-    name: 'AngularJS',
-  },
-  {
-    _id: '7',
-    name: 'JavaScript',
-  },
-  {
-    _id: '8',
-    name: 'TypeScript',
-  },
-]
-const desc =
-  'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi, quasi voluptates voluptatum, magna inventore perferendis eos dignissimos similique reiciendis praesentium saepe illo necessitatibus molestias alias incidunt! Non at eos quia ratione alias.';
-
-const LeftSideBarProjectDetails = () => {
+const LeftSideBarProjectDetails = ({ data }: { data: ProjectDetails }) => {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const [showMore, setShowMore] = useState(false);
-
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
-
   return (
     <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  lg:w-[25%] 2xl:w-[20%] rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
-        <div>
-          <ProjectStatusChip className={ProjectStatusChipClassnames['OPEN']} status="Open" />
-        </div>
-        <h1 className="text-[#EA5455] font-semibold">10 Days Left</h1>
+        <ProjectStatusChip
+          className={ProjectStatusChipClassnames[data?.status as keyof typeof ProjectStatusChipClassnames]}
+          status={ProjectStatus[data?.status as keyof typeof ProjectStatus]}
+        />
+
+        <h1 className="text-[#EA5455] font-semibold">
+          {calculateDays(data?.listing_details?.start_date_epoch, data?.listing_details?.end_date_epoch)?.daysLeft} Days
+          Left
+        </h1>
       </div>
-      <h1 className="font-semibold text-lg">Usage Data Collection and Payment</h1>
+      <h1 className="font-semibold text-lg">{data?.details?.name}</h1>
 
       <div className="flex flex-row items-center justify-center gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
@@ -81,14 +53,14 @@ const LeftSideBarProjectDetails = () => {
         <div className="flex flex-row items-center gap-1">
           <img src={StartDateSVG} className="w-14 h-14 rounded-full" alt="" />
           <div className="flex flex-col items-start gap-1">
-            <h1 className="font-semibold">1 Jan'24</h1>
+            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listing_details?.start_date_epoch)}</h1>
             <h1 className="text-xs">Start Date</h1>
           </div>
         </div>
         <div className="flex flex-row items-center gap-1">
           <img src={EndDateSVG} className="w-14 h-14 rounded-full" alt="" />
           <div className="flex flex-col items-start gap-1">
-            <h1 className="font-semibold">1 Jan'24</h1>
+            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listing_details?.end_date_epoch)}</h1>
             <h1 className="text-xs">End Date</h1>
           </div>
         </div>
@@ -106,25 +78,27 @@ const LeftSideBarProjectDetails = () => {
           </h1>
         )}
         <h1>
-          Estimated Duration : <span className="font-semibold text-gray-900">10 Weeks</span>
+          Estimated Duration :{' '}
+          <span className="font-semibold text-gray-900">{data?.details?.expected_duration?.duration} Weeks</span>
         </h1>
         <div className="flex flex-row items-start gap-3">
           Status :{' '}
-          <h1 className={`${ProjectStatusChipClassnames['OPEN_LISTING']} font-semibold px-2 py-1 rounded-xl`}>
+          <h1 className={`${ProjectStatusChipClassnames[data?.status as keyof typeof ProjectStatusChipClassnames]} font-semibold px-2 py-1 rounded-xl`}>
             Open Listing
           </h1>
         </div>
         <div className="flex flex-row items-start w-full justify-start gap-2">
           <h1 className="mt-1">Skills:</h1>
-          <BadgeGroup
-            tags={dummyTags}
-            className="bg-skyblue-light text-skyblue"
-          />
+          <BadgeGroup tags={data?.skills_data || []} className="bg-skyblue-light text-skyblue" />
         </div>
-        <div>
+        <div className="flex flex-row items-start w-full justify-start gap-2">
+          <h1 className="mt-1">Tools:</h1>
+          <BadgeGroup tags={data?.tools_data || []} className="bg-skyblue-light text-skyblue" />
+        </div>
+        <div className="">
           <h1 className="text-gray-900 font-semibold">Description: </h1>
           <p>
-            {showMore ? desc : `${desc.slice(0, 100)}...`}
+            {showMore ? data?.details?.description : `${data?.details?.description.slice(0, 100)}...`}
             <span onClick={handleToggle} className="text-skyblue cursor-pointer">
               {showMore ? ' Read less' : ' Read more'}
             </span>
@@ -132,13 +106,15 @@ const LeftSideBarProjectDetails = () => {
         </div>
 
         <div className="flex flex-row items-center w-full mx-auto flex-wrap justify-center gap-5">
-        {userDetails?.userType === userTypes?.client && ( <Button
-            variant="outline"
-            size="default"
-            className="w-fit px-10 py-3 mx-auto bg-red-600 hover:border hover:border-red-600 hover:bg-red-200 font-semibold hover:text-red-600 text-white"
-          >
-            Message
-          </Button>)}
+          {userDetails?.userType === userTypes?.client && (
+            <Button
+              variant="outline"
+              size="default"
+              className="w-fit px-10 py-3 mx-auto bg-red-600 hover:border hover:border-red-600 hover:bg-red-200 font-semibold hover:text-red-600 text-white"
+            >
+              Message
+            </Button>
+          )}
           <Button
             variant="outline"
             size="default"
