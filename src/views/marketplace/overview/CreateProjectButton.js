@@ -47,7 +47,7 @@ const CreateProjectButton = () => {
   const handleCreateNewProject = () => {
     resetProjectCreationStore();
     navigate('/create-project');
-  }
+  };
 
   return (
     <div>

@@ -185,7 +185,7 @@ const PrivateDashboard = () => {
   const handleCreateNewProject = () => {
     resetProjectCreationStore();
     navigate('/create-project');
-  }
+  };
 
   return (
     <div className={`trumio ${userDetailsData?.user_type === userTypes.talent ? 'flex flex-col gap-1.5' : ''}`}>

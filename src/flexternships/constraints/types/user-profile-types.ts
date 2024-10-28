@@ -1,61 +1,61 @@
-import { City, CompanyIndustry, Country, State } from "./core-types";
+import { City, CompanyIndustry, Country, State } from './core-types';
 
 export type FlexternClientAccountDetails = {
-    firstname: string;
-    lastname: string;
-    imageUri?: string; // submits file key gets public uri
-}
+  firstname: string;
+  lastname: string;
+  imageUri?: string; // submits file key gets public uri
+};
 
 export enum CompanyStrength {
-    '1-100' = 100,
-    '100-500' = 500,
-    '500-1000' = 1000,
-    '1000+' = 1001,
+  '1-100' = 100,
+  '100-500' = 500,
+  '500-1000' = 1000,
+  '1000+' = 1001,
 }
 
 export type FlexternClientCompanyDetails = {
-    department: string;
-    companyLogo: string;
-    title: string;
-    companyTagline: string;
-    companyIndustry: CompanyIndustry;
-    companyStrength: CompanyStrength;
-    officeAddress: {
-        country: Country;
-        state: State;
-        city: City;
-        streetAddress: string;
-        buildingNumber: string;
-        zipCode: string;
-    };
-}
+  department: string;
+  companyLogo: string;
+  title: string;
+  companyTagline: string;
+  companyIndustry: CompanyIndustry;
+  companyStrength: CompanyStrength;
+  officeAddress: {
+    country: Country;
+    state: State;
+    city: City;
+    streetAddress: string;
+    buildingNumber: string;
+    zipCode: string;
+  };
+};
 
 export type FlexternClientCompanySocialDetails = {
-    socialLinks: Array<{
-        platform: string;
-        url: string;
-    }>;
-}
+  socialLinks: Array<{
+    platform: string;
+    url: string;
+  }>;
+};
 
-
-export type FlexternClientProfileDetails = FlexternClientAccountDetails & FlexternClientCompanyDetails & FlexternClientCompanySocialDetails;
-
+export type FlexternClientProfileDetails = FlexternClientAccountDetails &
+  FlexternClientCompanyDetails &
+  FlexternClientCompanySocialDetails;
 
 export type FlexternUserProfileForm = {
-    currentTabIndex: number;
-    isProfileDetailsLoading: boolean;
-    profileDetails: FlexternClientProfileDetails;
-}
+  currentTabIndex: number;
+  isProfileDetailsLoading: boolean;
+  profileDetails: FlexternClientProfileDetails;
+};
 
 export type FlexternUserProfileFormActions = {
-    populateClientInfoDetails: () => Promise<void>; // includes account details
-    populateClientOrgDetails: () => Promise<void>;
-    upsertClientAccountInfo: (data: FlexternClientAccountDetails) => Promise<void>;
-    updateClientCompanyInfo: (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => Promise<void>;
-    nextTab: () => void;
-    previousTab: () => void;
-    resetStore: () => void;
-    setCurrentTabIndex: (index: number) => void;
-}
+  populateClientInfoDetails: () => Promise<void>; // includes account details
+  populateClientOrgDetails: () => Promise<void>;
+  upsertClientAccountInfo: (data: FlexternClientAccountDetails) => Promise<void>;
+  updateClientCompanyInfo: (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => Promise<void>;
+  nextTab: () => void;
+  previousTab: () => void;
+  resetStore: () => void;
+  setCurrentTabIndex: (index: number) => void;
+};
 
 export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserProfileFormActions;
