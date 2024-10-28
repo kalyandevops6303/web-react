@@ -12,31 +12,36 @@ import { useEffect } from 'react'
 
 export default function ClientProfilePage() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  
-  const params=useParams();
+  const setCurrentTabIndex = useFlexternUserProfileStore((state) => state.setCurrentTabIndex);
+
+
+  const params = useParams();
+
 
   useEffect(() => {
-      if (userDetails?.checkpoint === FlexternUserCheckpoint.COMPLETE){
-          const tabIndex= tabs.findIndex((tab) => tab.id === params.tabId);
-          useFlexternUserProfileStore((state) => state.setCurrentTabIndex(tabIndex));
+    if (userDetails?.checkpoint === FlexternUserCheckpoint.COMPLETE) {
+      const tabIndex = tabs.findIndex((tab) => tab.id === params.tabId);
+      if (tabIndex !== -1) {
+        setCurrentTabIndex(tabIndex);
       }
+    }
   }, [userDetails?.checkpoint]);
 
   const tabs = [
     {
-      id: 'account',
+      id: 'account-details',
       title: 'Account',
       icon: <Home size={18} />,
       content: <AccountDetails />,
     },
     {
-      id: 'company',
+      id: 'personal-details',
       title: 'Company',
       icon: <Briefcase size={18} />,
       content: <CompanyDetails />,
     },
     {
-      id: 'social-links',
+      id: 'social-details',
       title: 'Social Link',
       icon: <Link size={18} />,
       content: <SocialDetails />,

@@ -12,6 +12,7 @@ export const populateClientInfoDetails = async (set: any) => {
             lastname: data.client_info?.last_name,
             imageUri: data.client_info?.image_uri,
             title: data.client_info?.title,
+            department: data.client_info?.department,
         }
     }));
     set({ isProfileDetailsLoading: false });
@@ -24,7 +25,6 @@ export const populateClientOrgDetails = async (set: any) => {
         ...state,
         profileDetails: {
             ...state.profileDetails,
-            companyName: data.company_name,
             companyLogo: data.company_logo,
             companyTagline: data.company_tagline,
             companyIndustry: data.company_industry,

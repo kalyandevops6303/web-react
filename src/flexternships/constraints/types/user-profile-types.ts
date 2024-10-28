@@ -14,7 +14,7 @@ export enum CompanyStrength {
 }
 
 export type FlexternClientCompanyDetails = {
-    companyName: string;
+    department: string;
     companyLogo: string;
     title: string;
     companyTagline: string;

@@ -118,8 +118,8 @@ export const updateFlexternClientInfo = async (data: Partial<FlexternClientProfi
     if (!isEmpty(data.imageUri)) {
         formattedData.image_uri = data.imageUri;
     }
-    if (!isEmpty(data.companyName)) {
-        formattedData.company_name = data.companyName;
+    if (!isEmpty(data.department)) {
+        formattedData.department = data.department;
     }
     if (!isEmpty(data.companyLogo)) {
         formattedData.company_logo = data.companyLogo;

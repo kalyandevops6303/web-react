@@ -17,7 +17,7 @@ export const FlexternClientAccountDetailsSchema = yup.object().shape({
 });
 
 export const FlexternClientCompanyDetailsSchema = yup.object().shape({
-    companyName: yup.string()
+    department: yup.string()
         .matches(/^[a-zA-Z0-9\s]+$/, 'Company name must only contain alphanumeric characters')
         .max(50, 'Company name must not exceed 50 characters')
         .required('Company name is required'),

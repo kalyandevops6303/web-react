@@ -22,6 +22,7 @@ import { showToastMessage } from '@/flexternships/utils/core-utils'
 import { ToastType } from '@/flexternships/constraints/enums/core-enums'
 
 export default function CompanyDetails() {
+    const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
     const populateClientOrgDetails = useFlexternUserProfileStore((state) => state.populateClientOrgDetails);
     const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
     const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
@@ -42,7 +43,7 @@ export default function CompanyDetails() {
         mode: 'onChange',
         resolver: yupResolver(FlexternClientCompanyDetailsSchema),
         defaultValues: {
-            companyName: '',
+            department: '',
             companyLogo: '',
             title: '',
             companyTagline: '',
@@ -66,7 +67,7 @@ export default function CompanyDetails() {
     useEffect(() => {
         if (!isEmpty(profileDetails)) {
             reset({
-                companyName: profileDetails.companyName,
+                department: profileDetails.department,
                 companyLogo: profileDetails.companyLogo,
                 title: profileDetails.title,
                 companyTagline: profileDetails.companyTagline,
@@ -137,7 +138,7 @@ export default function CompanyDetails() {
                 </div>
                 <div className='pl-6 flex flex-wrap gap-x-6 gap-y-5'>
                     <Controller
-                        name="companyName"
+                        name="department"
                         control={control}
                         render={({ field: { value, onChange } }) => (
                             <TextInput
@@ -146,7 +147,7 @@ export default function CompanyDetails() {
                                 className='w-[393px]'
                                 label="Department Name"
                                 placeholder="Enter your department name"
-                                error={errors?.companyName?.message}
+                                error={errors?.department?.message}
                                 required
                             />
                         )}>
