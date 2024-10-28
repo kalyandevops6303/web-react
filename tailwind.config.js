@@ -87,7 +87,7 @@ module.exports = {
         'card': '0px 4px 24px 0px rgba(0, 0, 0, 0.06)',
         'table': '0px 4px 6px -1px rgba(0, 0, 0, 0.10)',
         'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
-        'primary-button': '0 0.5rem 1rem rgba(0, 101, 193, 0.35)',
+        'primary-button': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
       },
     },
   },
