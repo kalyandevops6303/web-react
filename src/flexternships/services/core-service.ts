@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { set } from 'lodash';
 
 /**
  * Uploads a file to a specified URL.
