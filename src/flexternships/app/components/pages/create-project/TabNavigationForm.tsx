@@ -25,7 +25,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
                             <div className={Styles.tabIconContainer}>
                                 {tab.icon}
                             </div>
-                            <div className={Styles.tabBody}>
+                            <div>
                                 <div className={Styles.tabTitle}>
                                     {tab.title}
                                 </div>
