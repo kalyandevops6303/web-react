@@ -48,6 +48,7 @@ import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/con
 import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
+import ProjectsTab from '@/flexternships/app/project-details/projects-tab/page';
 
 
 // ** Default Route
@@ -347,5 +348,9 @@ export const FlexternshipRoutes = [
         path: '*',
         element: <NotFound />,
     },
+    {
+        path: '/projects-tab-view',
+        element: <ProjectsTab />
+    }
 ];
 

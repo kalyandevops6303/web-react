@@ -1,0 +1,11 @@
+.tabContent {
+    @apply py-6 mb-3.5 rounded-md;
+}
+
+.tabContentHeader {
+    @apply px-6 pb-4 mb-1 border-b-1 border-grey-border text-grey-heading text-lg not-italic font-medium;
+}
+
+.tabContentBody {
+    @apply px-6 flex flex-row flex-wrap gap-x-6 gap-y-10;
+}
