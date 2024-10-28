@@ -3,7 +3,7 @@
 }
 
 .primaryEnabledButton {
-  @apply text-white bg-trublue cursor-pointer;
+  @apply text-white bg-trublue cursor-pointer hover:shadow-primary-button;
   @apply transition-transform duration-100 ease-in-out transform active:scale-95;
 }
 .primaryDisabledButton {

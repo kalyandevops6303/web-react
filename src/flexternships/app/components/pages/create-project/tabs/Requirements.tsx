@@ -178,8 +178,6 @@ export default function Requirements() {
             watch={watch}
             label="Upload requirement documents (optional)"
             placeholder="Upload Document" />
-
-
         </div>
       </div>
       <div className={Styles.buttonsContainer}>
