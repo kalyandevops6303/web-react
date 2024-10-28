@@ -83,10 +83,10 @@ export const FlexternshipRoutes = [
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
                                 redirectRoute: '/talent-onboarding/account-details'
                             },
-                            {
-                                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
-                                redirectRoute: '/talent-onboarding/personal-details'
-                            }
+                            // {
+                            //     checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                            //     redirectRoute: '/talent-onboarding/personal-details'
+                            // } removing this as for now as anyway in sign in we are checking for the checkpoint otherwise the first time it's causing after save and continue before updation of checkpoint it's going to personal details
                         ]
                     }
                 ]}

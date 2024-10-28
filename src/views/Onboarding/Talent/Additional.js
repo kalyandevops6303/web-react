@@ -541,6 +541,7 @@ const Additional = () => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveCheckpointComplete(() => {}));
   };
 
   const onGetUserDetailsSuccess = (res) => {
@@ -646,7 +647,7 @@ const Additional = () => {
       }
     }
 
-    dispatch(saveCheckpointComplete(() => {}));
+    
   };
 
   useEffect(() => {
@@ -666,7 +667,7 @@ const Additional = () => {
               <Col>
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Gender</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Gender</h4>
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
                   <CardBody>
@@ -738,7 +739,7 @@ const Additional = () => {
 
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Location</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Location</h4>
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
                   <CardBody>
@@ -774,7 +775,7 @@ const Additional = () => {
 
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Current Education</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Current Education</h4>
                     <CustomerSupportCTA
                       type={CUSTOMER_SUPPORT_TYPES.education}
                       handleCustomerSupport={handleCustomerSupport}
@@ -945,7 +946,7 @@ const Additional = () => {
 
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Identity Verification</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Identity Verification (optional)</h4>
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
                   <CardBody className="d-flex flex-column">
@@ -1031,7 +1032,6 @@ const Additional = () => {
                       ) : (
                         <>
                           <span className="me-50">Save & Continue</span>
-                          <ChevronRight size={14} />
                         </>
                       )}
                     </Button>
@@ -1043,11 +1043,11 @@ const Additional = () => {
               <Col>
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Profile Completion</h4>
-                    <CardText className="m-0 mt-1">
+                    <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
+                    <CardText className="m-0 mt-1 ">
                       Make it easier for others to find you by completing your profile.
                     </CardText>
-                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                    <h3 className="m-0 mt-1 mb-1 text-lg font-semibold">{overallPercentageCompletion}%</h3>
                     <Progress
                       value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
@@ -1108,7 +1108,7 @@ const Additional = () => {
                         <div>
                           <CardText className="m-0">Flexternship Ready</CardText>
                           <b
-                            className="text-primary cursor-pointer"
+                            className="text-primary cursor-pointer d-flex align-items-center"
                             onClick={() =>
                               navigate(
                                 returnCompleteProfileDetailsCta(
