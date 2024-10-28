@@ -13,11 +13,12 @@ import {
   ProjectStatusChipClassnames,
   UserTypeChipClassnames,
 } from '@/flexternships/constraints/enums/project-enums';
-import { ProjectDetails } from '@/flexternships/constraints/types/project-details-types';
 import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
-const LeftSideBarProjectDetails = ({ data }: { data: ProjectDetails }) => {
+const LeftSideBarProjectDetails = () => {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+  const data = useProjectsStore((state) => state.projectDetails);
   const [showMore, setShowMore] = useState(false);
   const handleToggle = () => {
     setShowMore((prev) => !prev);
@@ -39,13 +40,15 @@ const LeftSideBarProjectDetails = ({ data }: { data: ProjectDetails }) => {
 
       <div className="flex flex-row items-center justify-center gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
-          <User size={20} />
+          <img src={data?.client_info?.[0]?.image_uri} className='w-12 rounded-full h-12' alt="" />
           <h1 className={`${UserTypeChipClassnames['CLIENT']} font-semibold px-2 py-1 rounded-xl`}>Client</h1>
         </div>
 
         <div className="flex flex-col items-start gap-1">
-          <h1 className="text-[#333333] font-semibold">John Doe</h1>
-          <RatingInfo />
+          <h1 className="text-[#333333] font-semibold">
+            {data?.client_info?.[0]?.first_name ?? ''} {data?.client_info?.[0]?.last_name ?? ''}
+          </h1>
+          <RatingInfo rating={data?.client_info?.[0]?.rating || 0} projectsCount={data?.client_info?.[0]?.projects_listed_count || 0} />
         </div>
       </div>
 
@@ -83,18 +86,22 @@ const LeftSideBarProjectDetails = ({ data }: { data: ProjectDetails }) => {
         </h1>
         <div className="flex flex-row items-start gap-3">
           Status :{' '}
-          <h1 className={`${ProjectStatusChipClassnames[data?.status as keyof typeof ProjectStatusChipClassnames]} font-semibold px-2 py-1 rounded-xl`}>
-            Open Listing
+          <h1
+            className={`${
+              ProjectStatusChipClassnames[data?.status as keyof typeof ProjectStatusChipClassnames]
+            } font-semibold px-2 py-1 rounded-xl`}
+          >
+            {ProjectStatus[data?.status as keyof typeof ProjectStatus]}
           </h1>
         </div>
-        <div className="flex flex-row items-start w-full justify-start gap-2">
+        {data?.skills_data?.length! > 0 &&  <div className="flex flex-row items-start w-full justify-start gap-2">
           <h1 className="mt-1">Skills:</h1>
           <BadgeGroup tags={data?.skills_data || []} className="bg-skyblue-light text-skyblue" />
-        </div>
-        <div className="flex flex-row items-start w-full justify-start gap-2">
+        </div>}
+        {data?.tools_data?.length! > 0 && <div className="flex flex-row items-start w-full justify-start gap-2">
           <h1 className="mt-1">Tools:</h1>
           <BadgeGroup tags={data?.tools_data || []} className="bg-skyblue-light text-skyblue" />
-        </div>
+        </div>}
         <div className="">
           <h1 className="text-gray-900 font-semibold">Description: </h1>
           <p>
