@@ -9,6 +9,9 @@ import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import Spinner from '../components/core/Spinner';
 
+// tabs
+import ProjectsTab from './projects-tab/page';
+
 export default function FlexternshipProjectDetails() {
   const fetchUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
@@ -38,7 +41,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Box size={18} />,
       description: 'About work details',
       route: '/projects',
-      component: <div>Projects</div>,
+      component: <ProjectsTab />,
       talentVisible: true,
       clientVisible: false,
     },
@@ -98,9 +101,9 @@ export default function FlexternshipProjectDetails() {
           {/* <MilestoneTab /> */}
         </div>
       )}
-      <div className=" w-full mt-5 flex flex-row items-start flex-wrap justify-start gap-5">
+      <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5 max-w-screen">
         {!projectLoading ? <LeftSideBarProjectDetails data={projectDetails} /> : <div className="w-1/5"></div>}
-        <div className="flex flex-col items-start gap-5">
+        <div className="flex flex-col items-start gap-5 w-4/5">
           <ProjectDetailsTabNavigation tabs={tabs} />
         </div>
       </div>

@@ -7,7 +7,7 @@ export default function DocumentCard(props: DocumentCardProps) {
 
     return (
         <a href={link?.href}>
-            <SimpleElevatedCard className="flex items-center justify-between p-3 rounded-[6px] cursor-pointer border border-transparent hover:border-[#0578FB] shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
+            <SimpleElevatedCard className="flex items-center bg-white justify-between p-3 rounded-[6px] cursor-pointer border border-transparent hover:border-[#0578FB] shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
                 <div className="flex flex-col text-left">
                     <div className="text-[#B9B9C3] font-sans text-[12px] font-semibold leading-[16px]">{subtitle}</div>
                     <div className="text-[#5E5873] font-sans text-[16px] font-medium leading-[24px] !no-underline hover:!no-underline">{title}</div>

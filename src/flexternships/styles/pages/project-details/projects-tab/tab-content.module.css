@@ -1,5 +1,5 @@
 .tabContent {
-    @apply py-6 mb-3.5 rounded-md;
+    @apply py-6 mb-3.5 rounded-md bg-[#FAFAFA];
 }
 
 .tabContentHeader {
@@ -8,4 +8,12 @@
 
 .tabContentBody {
     @apply px-6 flex flex-row flex-wrap gap-x-6 gap-y-10;
+}
+
+.invitationCardDetailsTitle {
+    @apply text-[14px] font-medium leading-[23px] text-[#5E5873];
+}
+
+.invitationCardDetailsSubtitle {
+    @apply text-[14px] font-normal leading-[21px] text-[#6E6B7B];
 }

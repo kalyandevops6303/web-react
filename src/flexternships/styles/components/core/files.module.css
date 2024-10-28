@@ -13,7 +13,7 @@
 }
 
 .loading {
-  @apply italic text-grey-loadingText text-sm  font-normal ;
+  @apply italic text-sm  font-normal ;
 }
 
 

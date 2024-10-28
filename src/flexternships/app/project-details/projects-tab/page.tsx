@@ -38,7 +38,7 @@ export default function ProjectsTab() {
     ]
 
     return (
-        <div className="flexternships-page p-6">
+        <div className="flexternships-page py-6">
             <SimpleElevatedCard className={Styles.tabContent}>
                 <div className={Styles.tabContentHeader}>
                     Project Invitation
