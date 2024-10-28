@@ -7,6 +7,7 @@ import { dateToEpoch, formatEpochToHumanReadable } from '@flexternships/utils/da
 import { formatFileSize } from '@flexternships/utils/file-utils';
 import HorizontalFileCard from '../files/HorizontalFileCard';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
+import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 
 export default function FileUpload(props: InputProps) {
   const { name, control, error, trigger, watch, label, required, placeholder, className } = props;
@@ -104,7 +105,7 @@ export default function FileUpload(props: InputProps) {
           ))}
         </div>
       )}
-      {fields.length < 5 && (
+      {fields.length < MAX_FILE_COUNT && (
         <label htmlFor={name} className={`${Styles.formFileInput} self-start`}>
           <span className={Styles.formFileInputIconContainer}>
             <Upload className={Styles.formFileInputIcon} size={18} />
@@ -113,10 +114,10 @@ export default function FileUpload(props: InputProps) {
           <input
             id={name}
             type="file"
-            accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,image/jpeg"
+            accept="*/pdf, */msword, */vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, */jpeg, *.jpg"
             ref={fileInputRef} // Assign ref to the input
             className={`hidden`}
-                    onChange={handleFileInputChange}
+            onChange={handleFileInputChange}
           />
         </label>
       )}
