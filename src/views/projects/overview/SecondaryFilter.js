@@ -95,20 +95,20 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   });
 
   useEffect(() => {
+    console.log(secondFilterState.talent_name)
     if (secondFilterState?.department_name?.length > 0) {
-      metaDataFlextern.department_name = secondFilterState.department_name[0];
+      metaDataFlextern.department_name = secondFilterState.department_name[0]?.value;
     }
     if (secondFilterState?.status?.length > 0) {
-      metaDataFlextern.status = secondFilterState.status?.[0]?.status;
+      metaDataFlextern.status = secondFilterState.status?.[0]?.status?.value;
     }
     if (secondFilterState?.project_name?.length > 0) {
-      metaDataFlextern.project_name = secondFilterState.project_name[0].name;
+      metaDataFlextern.project_name = secondFilterState.project_name[0].label;
     }
 
     if (secondFilterState?.talent_name?.length > 0) {
-      metaDataFlextern.talent_name = secondFilterState.talent_name[0].name;
+      metaDataFlextern.talent_name = secondFilterState.talent_name[0].label;
     }
-
   }, [secondFilterState]);
 
   const onSuccess = () => {};
@@ -246,7 +246,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-
+    console.log(metaDataFlextern)
     dispatch(
       getProjectsListingFlextern({
         metaData: {
@@ -255,6 +255,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           department_name: metaDataFlextern?.department_name?.department_name || '',
           status: metaDataFlextern?.status || '',
           project_status: primaryFilter?.toUpperCase() || '',
+          talent_name: metaDataFlextern?.talent_name || '',
         },
       }),
     );
