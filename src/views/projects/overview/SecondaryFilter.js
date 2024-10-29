@@ -22,6 +22,7 @@ import {
   getDepartmentNameService,
   getProjectNames,
   getSecondaryStatuses,
+  getTalentNameService,
   getTeamNameSerive,
 } from '../../../services/projectServices';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -84,6 +85,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     department_name: [],
     status: [],
     project_name: [],
+    talent_name: [],
     client_name: [],
     project_type: [],
     user_type: [],
@@ -101,6 +103,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
     if (secondFilterState?.project_name?.length > 0) {
       metaDataFlextern.project_name = secondFilterState.project_name[0].name;
+    }
+
+    if (secondFilterState?.talent_name?.length > 0) {
+      metaDataFlextern.talent_name = secondFilterState.talent_name[0].name;
     }
 
   }, [secondFilterState]);
@@ -192,7 +198,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-    console.log('metaDataFlextern', primaryFilter);
     dispatch(
       getProjectsListingFlextern({
         metaData: {
@@ -201,6 +206,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           department_name: metaDataFlextern?.department_name?.department_name || '',
           status: metaDataFlextern?.status || '',
           project_status: primaryFilter?.toUpperCase() || '',
+          talent_name: metaDataFlextern?.talent_name || '',
         },
       }),
     );
@@ -270,11 +276,39 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   };
 
+  const loadTalentOptions = async (search, prevOptions, { page }) => {
+    try {
+      const response = await getTalentNameService(page, search);
+      const options = response?.data?.data?.data.map((option) => {
+        return {
+          value: option.talent_id,
+          label: option.talent_name,
+        };
+      });
+      return {
+        options,
+        hasMore: response?.data?.data?.metadata?.has_next_page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return { options: [], hasMore: false };
+    }
+  };
+
   const loadDepartmentNameOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getDepartmentNameService(page, search);
+
+      const options = response?.data?.data?.data.map(option => {
+        return {
+          value: option.department_name,
+          label: option.department_name,
+        };
+      })
       return {
-        options: response?.data?.data?.data,
+        options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -288,9 +322,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getSecondaryStatuses(page, search);
+        const options = response?.data?.data?.data.map((option) => {
+          return {
+            value: option.status,
+            label: option.status,
+          };
+        });
 
       return {
-        options: response?.data?.data?.data,
+        options: options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -305,8 +345,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getProjectNames(page, search);
 
+       const options = response?.data?.data?.data.map((option) => {
+         return {
+           value: option._id,
+           label: option.name,
+         };
+       });
+
       return {
-        options: response?.data?.data?.data,
+        options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -453,9 +500,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && (
+              {(userType !== userTypes.team && userType !== userTypes.client) && (
                 <Col>
-                  <Label className="form-label">Deparment Name</Label>
+                  <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
                     isClearable
                     debounceTimeout={1000}
@@ -484,7 +531,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
                     loadOptions={loadSecondaryStatusesOptions}
-                    classNamePrefix="name"
+                    classNamePrefix="select"
                     placeholder="Select status"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
@@ -492,6 +539,32 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     value={
                       secondFilterState.status.length > 0
                         ? secondFilterState?.status?.map((item) => item?.status)
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TALENT_NAME']}>
+              {userType !== userTypes.team && userType === userTypes?.client && (
+                <Col>
+                  <Label className="form-label">Talent Name</Label>
+                  <AsyncPaginate
+                    isClearable
+                    debounceTimeout={1000}
+                    additional={{ page: 1 }}
+                    loadOptions={loadTalentOptions}
+                    classNamePrefix="select"
+                    placeholder="Select talent name"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('talent_name', value)}
+                    value={
+                      secondFilterState.talent_name.length > 0
+                        ? {
+                            value: secondFilterState.talent_name[0].talent_id,
+                            label: secondFilterState.talent_name[0].talent_name,
+                          }
                         : null
                     }
                   />

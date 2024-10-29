@@ -67,6 +67,9 @@ const getProjectNames = (page, search) =>
 const getProjectCounts =  (page, search) =>
   DataService.get(`${API.project.projectCounts}?page=${page}&page_size=50&search_query=${search}`);
 
+const getTalentNameService = (page, search) =>
+  DataService.get(`${API.project.talentNames}?page=${page}&page_size=50&search_query=${search}`);
+
 export {
   getCompletedProjectListingService,
   getDisutedProjectListingService,
@@ -83,4 +86,5 @@ export {
   getSecondaryStatuses,
   getProjectNames,
   getCardServiceFlextern,
+  getTalentNameService,
 };
