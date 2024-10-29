@@ -4,7 +4,7 @@ import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
-import { getCardInfo } from '../../../redux/actions/projectActions';
+import { getCardInfo, getCardInfoFlextern } from '../../../redux/actions/projectActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import PlusUsers from '../../../assets/images/PlusUsers.svg';
 import { appPermissionsSelector } from '@src/redux/selectors/authSelectors';
@@ -16,9 +16,15 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const isLoading = useSelector((state) => state?.project?.cardInfoLoading);
   const isLoadingSecondaryFilter = useSelector((state) => state?.project?.loading);
   const appPermissions = useSelector(appPermissionsSelector);
+  const isFlextern = useSelector((state) => state.auth?.is_flextern);
 
   useEffect(() => {
-    dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
+    if(isFlextern){
+      dispatch(getCardInfoFlextern({ userType, onSuccess: () => {}, onError: () => {} }));
+    }else{
+      dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
+    }
+    
   }, []);
 
   if (isLoading && !selectCardData) {

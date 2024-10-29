@@ -1,5 +1,6 @@
 import {
   getCardService,
+  getCardServiceFlextern,
   getCompletedProjectListingService,
   getDisutedProjectListingService,
   getInvitedProjectListingService,
@@ -25,6 +26,21 @@ const getCardInfo =
     dispatch(getCardInfoReq());
     try {
       const res = await getCardService({ userType });
+      dispatch(getCardInfoSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error, getCardInfoErr);
+    }
+  };
+
+  const getCardInfoFlextern =
+  ({ onSuccess, onError, userType }) =>
+  async (dispatch) => {
+    dispatch(getCardInfoReq());
+    try {
+      const res = await getCardServiceFlextern({ userType });
+      console.log(res)
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -90,4 +106,4 @@ const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (
   };
 
 
-export { getCardInfo, getProjectListing, getProjectsListingFlextern };
+export { getCardInfo, getProjectListing, getProjectsListingFlextern, getCardInfoFlextern };

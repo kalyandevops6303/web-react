@@ -72,7 +72,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     page: 1,
     page_size: 10,
     search_query: '',
-    project_status: '',
+    status: '',
     department_name: '',
     project_name: '',
   };
@@ -192,7 +192,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-    console.log('metaDataFlextern', metaDataFlextern);
+    console.log('metaDataFlextern', primaryFilter);
     dispatch(
       getProjectsListingFlextern({
         metaData: {
@@ -200,6 +200,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           search_query: metaDataFlextern?.project_name || searchText || '',
           department_name: metaDataFlextern?.department_name?.department_name || '',
           status: metaDataFlextern?.status || '',
+          project_status: primaryFilter?.toUpperCase() || '',
         },
       }),
     );
@@ -246,6 +247,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           ...metaDataFlextern,
           search_query: metaDataFlextern?.project_name || searchText || '',
           department_name: metaDataFlextern?.department_name?.department_name || '',
+          status: metaDataFlextern?.status || '',
+          project_status: primaryFilter?.toUpperCase() || '',
         },
       }),
     );
