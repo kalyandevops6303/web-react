@@ -3,6 +3,11 @@ import { appendAuthToken } from '../utils/local-storage';
 import { handleError } from '../utils/error-utils';
 import { routes } from '../utils/api';
 
+/**
+ * Fetches the team details for a project
+ * @param projectId The ID of the project to fetch the team details for
+ * @returns The team details for the project
+ */
 export const fetchTeamDetails = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = { headers };
