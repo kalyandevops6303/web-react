@@ -150,7 +150,7 @@ useEffect(() => {
   console.log(isOpenSaveForLater)
   return (
     <HeadWrapper className={className}>
-      <div className="d-flex">
+      <div className="d-flex align-items-center">
         <div className="d-flex align-items-center">
           <ul className="navbar-nav d-xl-none">
             <NavItem className="mobile-menu me-auto">
@@ -188,12 +188,11 @@ useEffect(() => {
           <>
             <div
               className={
-                (location?.pathname?.split('/')?.[1] === 'dashboard'
-                  ? 'is-active'
-                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                (location?.pathname?.split('/')?.[1] === 'dashboard' ? 'is-active' : '') +
+                ' menu-item nav-menu-main menu-toggle hidden-xs'
               }
               onClick={() => {
-                console.log("dashboard clicked" + draftTeamPath)
+                console.log('dashboard clicked' + draftTeamPath);
                 if (draftTeamPath) {
                   dispatch(setConfirmSaveForLater(true));
                   dispatch(setNavigatingRoute('/dashboard'));
@@ -212,7 +211,11 @@ useEffect(() => {
                 onClick={() => {
                   if (draftTeamPath) {
                     dispatch(setConfirmSaveForLater(true));
-                    dispatch(setNavigatingRoute(`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`));
+                    dispatch(
+                      setNavigatingRoute(
+                        `/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`,
+                      ),
+                    );
                   } else {
                     navigate(
                       `/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`,
@@ -263,56 +266,57 @@ useEffect(() => {
             )}
 
             <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.MY_TEAM']}>
-            {isTabDisabled ? (
-              <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
-            ) : (
-              <div
-                onClick={() => {
-                  if (draftTeamPath) {
-                    dispatch(setConfirmSaveForLater(true));
-                    dispatch(setNavigatingRoute(`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`));
-                  } else {
-                    navigate(`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`);
-                    dispatch(setActiveNavTab('my-teams'));
+              {isTabDisabled ? (
+                <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
+              ) : (
+                <div
+                  onClick={() => {
+                    if (draftTeamPath) {
+                      dispatch(setConfirmSaveForLater(true));
+                      dispatch(
+                        setNavigatingRoute(`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`),
+                      );
+                    } else {
+                      navigate(`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`);
+                      dispatch(setActiveNavTab('my-teams'));
+                    }
+                  }}
+                  className={
+                    (location?.pathname?.split('/')?.[1] === 'my-teams' ||
+                    location?.state?.from?.primary === 'my-teams' ||
+                    activeTab === 'my-teams'
+                      ? 'is-active text-nowrap'
+                      : '') + ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
                   }
-                }}
-                className={
-                  (location?.pathname?.split('/')?.[1] === 'my-teams' ||
-                  location?.state?.from?.primary === 'my-teams' ||
-                  activeTab === 'my-teams'
-                    ? 'is-active text-nowrap'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
-                }
-              >
-                My Team
-              </div>
-            )}
-
+                >
+                  My Team
+                </div>
+              )}
             </PermissionWrapper>
-            
+
             <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.CLUBS']}>
-            {userData?.user_type === userTypes.talent && (
-              <div
-                onClick={() => {
-                  if (draftTeamPath) {
-                    dispatch(setConfirmSaveForLater(true));
-                    dispatch(setNavigatingRoute('/clubs/my_clubs'));
-                  } else {
-                    navigate('/clubs/my_clubs');
-                    dispatch(setActiveNavTab('clubs'));
+              {userData?.user_type === userTypes.talent && (
+                <div
+                  onClick={() => {
+                    if (draftTeamPath) {
+                      dispatch(setConfirmSaveForLater(true));
+                      dispatch(setNavigatingRoute('/clubs/my_clubs'));
+                    } else {
+                      navigate('/clubs/my_clubs');
+                      dispatch(setActiveNavTab('clubs'));
+                    }
+                  }}
+                  className={
+                    (location?.pathname?.split('/')?.[1] === 'clubs' ||
+                    location?.state?.from?.primary === 'clubs' ||
+                    activeTab === 'clubs'
+                      ? 'is-active'
+                      : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
                   }
-                }}
-                className={
-                  (location?.pathname?.split('/')?.[1] === 'clubs' ||
-                  location?.state?.from?.primary === 'clubs' ||
-                  activeTab === 'clubs'
-                    ? 'is-active'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
-                }
-              >
-                Clubs
-              </div>
-            )}
+                >
+                  Clubs
+                </div>
+              )}
             </PermissionWrapper>
           </>
         )}
