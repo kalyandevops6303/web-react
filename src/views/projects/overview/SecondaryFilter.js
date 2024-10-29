@@ -279,9 +279,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadTalentOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getTalentNameService(page, search);
-
+      const options = response?.data?.data?.data.map((option) => {
+        return {
+          value: option.talent_id,
+          label: option.talent_name,
+        };
+      });
       return {
-        options: response?.data?.data?.data,
+        options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -495,9 +500,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && (
+              {(userType !== userTypes.team && userType !== userTypes.client) && (
                 <Col>
-                  <Label className="form-label">Deparment Name</Label>
+                  <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
                     isClearable
                     debounceTimeout={1000}
@@ -526,7 +531,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
                     loadOptions={loadSecondaryStatusesOptions}
-                    classNamePrefix="name"
+                    classNamePrefix="select"
                     placeholder="Select status"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
