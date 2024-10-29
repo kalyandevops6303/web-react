@@ -12,6 +12,7 @@ import { profilePercentage, userData } from '../../../redux/selectors/dashboardS
 import { returnDetailsForMarketPlace } from '../../../utility/Utils';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
 
 const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
   const userDetailsData = useSelector(userData);
@@ -29,6 +30,7 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
     if (profilePercentageData?.values_missing?.includes('company_name')) {
       setCompleteProfileModal(true);
     } else {
+      resetProjectCreationStore();
       navigate('/create-project');
     }
   };

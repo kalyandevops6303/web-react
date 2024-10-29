@@ -1,5 +1,6 @@
 import {
   getCardService,
+  getCardServiceFlextern,
   getCompletedProjectListingService,
   getDisutedProjectListingService,
   getInvitedProjectListingService,
@@ -18,7 +19,6 @@ import {
 } from '../reducers/project';
 
 import errorHandler from '../../utility/errorHandler';
-import { getCardServiceFlextern } from '@/services/marketPlaceServices';
 
 const getCardInfo =
   ({ onSuccess, onError, userType }) =>
@@ -48,7 +48,6 @@ const getCardInfo =
       errorHandler(error, getCardInfoErr);
     }
   };
-
 
 const serviceMap = {
   ONGOING: getOngoingProjectListingService,
@@ -85,7 +84,7 @@ const getProjectListing =
     }
   };
 
-  const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (dispatch) => {
+const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
@@ -107,4 +106,4 @@ const getProjectListing =
   };
 
 
-  export { getCardInfo, getProjectListing, getProjectsListingFlextern, getCardInfoFlextern };
+export { getCardInfo, getProjectListing, getProjectsListingFlextern, getCardInfoFlextern };

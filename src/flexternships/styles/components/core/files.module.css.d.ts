@@ -3,6 +3,7 @@ declare const classNames: {
   readonly fileContainer: 'fileContainer';
   readonly fileIconContainer: 'fileIconContainer';
   readonly fileName: 'fileName';
+  readonly loading: 'loading';
   readonly fileInfoContainer: 'fileInfoContainer';
   readonly fileSize: 'fileSize';
   readonly fileUploadDate: 'fileUploadDate';

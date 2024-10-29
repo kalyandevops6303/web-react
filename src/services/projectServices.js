@@ -51,10 +51,6 @@ const getInvitedProjectListingService = ({ metaData, data }) =>
 const getTeamNameSerive = (page, search) =>
   DataService.get(`${API.project.teamName}?page=${page}&page_size=50&search_query=${search}`);
 
-const getClientNameService = (page, search) =>
-  DataService.get(`${API.project.clientName}?page=${page}&page_size=50&search_query=${search}`);
-
-
 const getDepartmentNameService = (page, search) =>
   DataService.get(`${API.project.departmentName}?page=${page}&page_size=50&search_query=${search}`);
 
@@ -66,6 +62,9 @@ const getProjectNames = (page, search) =>
 
 const getProjectCounts =  (page, search) =>
   DataService.get(`${API.project.projectCounts}?page=${page}&page_size=50&search_query=${search}`);
+
+const getClientNameService = (page, search) =>
+  DataService.get(`${API.project.clientName}?page=${page}&page_size=50&search_query=${search}`);
 
 const getTalentNameService = (page, search) =>
   DataService.get(`${API.project.talentNames}?page=${page}&page_size=50&search_query=${search}`);

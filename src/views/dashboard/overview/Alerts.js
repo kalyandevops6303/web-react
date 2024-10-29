@@ -18,6 +18,7 @@ import { getAlertsNotifications, markNotificationAsRead } from '../../../redux/a
 import getTeamId from '../../../utility/commonUtils';
 import { getItem } from '../../../utility/localStorageControl';
 import { getProfileCompletionFlextern } from '../../../redux/actions/talentOnboardingActions';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -39,17 +40,17 @@ const Alerts = () => {
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
   const isDelegate = getItem('isDelegate');
-  const isFlextern = useSelector(selectTrumioIsFlextern);
   useEffect(() => {
     dispatch(getAlertsNotifications({ priority: [1, 2], page: 1, pageSize: 4, oldData: [] }));
 
     if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
       dispatch(getTeamProfilePercentage());
-    } else if(isFlextern){
+    } else if(isFlexternshipApp){
         dispatch(getProfileCompletionFlextern());
       }
       else{
-        dispatch(getProfilePercentage());
+        if (isFlexternshipApp) dispatch(getProfileCompletionFlextern());
+        else dispatch(getProfilePercentage());
       }
   }, [userDetailsData?.user_type]);
 
@@ -146,15 +147,15 @@ const Alerts = () => {
               <CardText className="mb-50">
                 Make it easier for others to find you by <br /> completing your profile.
               </CardText>
-              <span className="font-weight-bold percentage ">{isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed}%</span>
+              <span className="font-weight-bold percentage ">{isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed}%</span>
               <Progress
                 style={{ height: '0.5rem' }}
-                className={`${giveProgressBarColorClassName(isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed)} mt-25`}
-                value={isFlextern ? profileCompletionFlextern : profilePercentageData?.profile_completed}
+                className={`${giveProgressBarColorClassName(isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed)} mt-25`}
+                value={isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed}
               />
               {returnCompleteProfileDetailsCta(
                 talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                (isFlextern ? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing),
+                (isFlexternshipApp ? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing),
               ) && (
                 <CardText
                   className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
@@ -162,7 +163,7 @@ const Alerts = () => {
                     onAddDetailsClick(
                       returnCompleteProfileDetailsCta(
                         talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                        isFlextern?  profileCompletionFlexternMissingValues :profilePercentageData?.values_missing
+                        isFlexternshipApp?  profileCompletionFlexternMissingValues :profilePercentageData?.values_missing
                       )?.path,
                     )
                   }
@@ -170,7 +171,7 @@ const Alerts = () => {
                   {
                     returnCompleteProfileDetailsCta(
                       talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                      isFlextern? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing,
+                      isFlexternshipApp? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing,
                     )?.label
                   }
                 </CardText>

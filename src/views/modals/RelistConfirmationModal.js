@@ -5,11 +5,13 @@ import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import '../custom-styles.scss';
 import Notepad from '../../assets/images/youDidIt.gif';
 import { RelistModalWrapper } from './style';
+import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
 
 const RelistConfirmationModal = ({ modal, toggleModal, setRelistListingDetailsModal }) => {
   const navigate = useNavigate();
 
   const onCreateNewProjectClick = () => {
+    resetProjectCreationStore();
     navigate('/create-project');
   };
 

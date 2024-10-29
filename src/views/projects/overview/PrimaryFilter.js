@@ -19,13 +19,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
 
   useEffect(() => {
-    if(isFlextern){
+    if (isFlextern) {
       dispatch(getCardInfoFlextern({ userType, onSuccess: () => {}, onError: () => {} }));
-    }else{
+    } else {
       dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
     }
-    
-  }, []);
+  }, [isFlextern]);
 
   if (isLoading && !selectCardData) {
     return <ComponentSpinner />;

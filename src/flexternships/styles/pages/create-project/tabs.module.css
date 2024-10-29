@@ -29,7 +29,7 @@
 }
 
 .roleCard .chevronContainer {
-  @apply absolute right-0 mt-6 mr-6;
+  @apply absolute right-0 mt-11 mr-6;
 }
 
 .roleCard .chevron {
