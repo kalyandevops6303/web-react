@@ -529,8 +529,8 @@ const ProjectModal = ({
                       Report
                     </Button>
                   )}
-
-<PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.ALL_LISTINGS.CREATE_BID']}>{(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
+              <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.CREATE_BID']}>
+                  {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
                       ? showCreateBidButton
                       : true) && (
@@ -546,17 +546,18 @@ const ProjectModal = ({
                       </Button>
                     )}
                     </PermissionWrapper>
+                    <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.VIEW_PROJECT']}>
+                    <Button color="primary" onClick={()=>
+                      navigate(`/project-details/${data?._id}/team`)
+                    }>
 
-                    <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.VIEW PROJECT']}>
-                    <Button color="primary"  onClick={()=>{
-                      navigate(`/project-details/${data?._id}/team`);
-                    }}>
-                    <span className="me-50">View Project</span>
-                    <ChevronRight size={14} />
-                      </Button>
-                    </PermissionWrapper>
-
-
+                    <>
+                      <span className="me-50">View Project</span>
+                      <ChevronRight size={14} />
+                    </>
+          
+                </Button>
+                </PermissionWrapper>
                 </div>
               )}
             </div>
