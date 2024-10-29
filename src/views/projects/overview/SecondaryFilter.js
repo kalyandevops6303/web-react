@@ -343,7 +343,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
        const options = response?.data?.data?.data.map((option) => {
          return {
            value: option._id,
-           label: option.project_name,
+           label: option.name,
          };
        });
 
