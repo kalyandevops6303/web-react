@@ -46,7 +46,7 @@ const getInvitedProjectListingService = ({ metaData, data }) =>
 
   const getProjectsListFlexternService = ({ metaData }) =>
     DataService.get(
-      `${API.project.allProjectsFlextern}?page=${metaData?.page}&page_size=${metaData?.page_size}&search_query=${metaData?.search_query}&project_status=OPEN&secondary_status=${metaData?.status}&department_name=${metaData?.department_name}`);
+      `${API.project.allProjectsFlextern}?page=${metaData?.page}&page_size=${metaData?.page_size}&search_query=${metaData?.search_query}&project_status=${metaData?.project_status}&secondary_status=${metaData?.status}&department_name=${metaData?.department_name}`);
 
 const getTeamNameSerive = (page, search) =>
   DataService.get(`${API.project.teamName}?page=${page}&page_size=50&search_query=${search}`);
@@ -66,6 +66,9 @@ const getProjectCounts =  (page, search) =>
 const getClientNameService = (page, search) =>
   DataService.get(`${API.project.clientName}?page=${page}&page_size=50&search_query=${search}`);
 
+const getTalentNameService = (page, search) =>
+  DataService.get(`${API.project.talentNames}?page=${page}&page_size=50&search_query=${search}`);
+
 export {
   getCompletedProjectListingService,
   getDisutedProjectListingService,
@@ -82,4 +85,5 @@ export {
   getSecondaryStatuses,
   getProjectNames,
   getCardServiceFlextern,
+  getTalentNameService,
 };
