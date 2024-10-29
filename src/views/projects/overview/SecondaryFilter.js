@@ -295,8 +295,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadDepartmentNameOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getDepartmentNameService(page, search);
+
+      const options = response?.data?.data?.data.map(option => {
+        return {
+          value: option.department_name,
+          label: option.department_name,
+        };
+      })
       return {
-        options: response?.data?.data?.data,
+        options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -310,9 +317,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getSecondaryStatuses(page, search);
+        const options = response?.data?.data?.data.map((option) => {
+          return {
+            value: option.status,
+            label: option.status,
+          };
+        });
 
       return {
-        options: response?.data?.data?.data,
+        options: options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -327,8 +340,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getProjectNames(page, search);
 
+       const options = response?.data?.data?.data.map((option) => {
+         return {
+           value: option._id,
+           label: option.project_name,
+         };
+       });
+
       return {
-        options: response?.data?.data?.data,
+        options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -521,7 +541,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TALENT_NAME']}>
-              {(userType !== userTypes.team && userType === userTypes?.client) && (
+              {userType !== userTypes.team && userType === userTypes?.client && (
                 <Col>
                   <Label className="form-label">Talent Name</Label>
                   <AsyncPaginate
@@ -537,9 +557,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     value={
                       secondFilterState.talent_name.length > 0
                         ? {
-                          value: secondFilterState.talent_name[0].talent_id,
-                          label: secondFilterState.talent_name[0].talent_name,
-                        }
+                            value: secondFilterState.talent_name[0].talent_id,
+                            label: secondFilterState.talent_name[0].talent_name,
+                          }
                         : null
                     }
                   />
