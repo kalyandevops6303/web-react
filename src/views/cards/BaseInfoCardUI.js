@@ -45,7 +45,6 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
       return theme.green;
     }
   };
-  console.log(data)
   return (
     <div>
       <div className="d-flex justify-content-end">

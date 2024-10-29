@@ -18,6 +18,7 @@ import {
 } from '../reducers/project';
 
 import errorHandler from '../../utility/errorHandler';
+import { getCardServiceFlextern } from '@/services/marketPlaceServices';
 
 const getCardInfo =
   ({ onSuccess, onError, userType }) =>
@@ -32,6 +33,22 @@ const getCardInfo =
       errorHandler(error, getCardInfoErr);
     }
   };
+
+  const getCardInfoFlextern =
+  ({ onSuccess, onError, userType }) =>
+  async (dispatch) => {
+    dispatch(getCardInfoReq());
+    try {
+      const res = await getCardServiceFlextern({ userType });
+      console.log(res)
+      dispatch(getCardInfoSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error, getCardInfoErr);
+    }
+  };
+
 
 const serviceMap = {
   ONGOING: getOngoingProjectListingService,
@@ -68,7 +85,7 @@ const getProjectListing =
     }
   };
 
-  export const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (dispatch) => {
+  const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
@@ -89,4 +106,5 @@ const getProjectListing =
     }
   };
 
-export { getCardInfo, getProjectListing };
+
+  export { getCardInfo, getProjectListing, getProjectsListingFlextern, getCardInfoFlextern };
