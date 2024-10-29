@@ -57,7 +57,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
 
     // If all checks pass, render the children components
     return (
-        <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-24 '}`}>
+        <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-20 '}`}>
             {children}
         </div>
     );
