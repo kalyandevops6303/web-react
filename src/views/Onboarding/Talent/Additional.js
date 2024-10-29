@@ -482,17 +482,7 @@ const Additional = () => {
     dispatch(clearAllFormData());
     // dispatch(setFormDocuments(files));
     dispatch(setFormDocuments(null));
-    if (location?.pathname.includes('profile-edit')) {
-      if (flexternBoolean && trumioTalent) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      } else if (flexternBoolean && !trumioTalent) {
-        navigate(`/dashboard`);
-      }
-    } else if (flexternBoolean && trumioTalent) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
-    } else if (flexternBoolean && !trumioTalent) {
-      navigate(`/dashboard`);
-    }
+    navigate('/marketplace/all_listings');
   };
 
   const onBackClick = () => {
@@ -519,7 +509,7 @@ const Additional = () => {
     // } else if (flexternBoolean && !trumioTalent) {
     //   navigate(`/dashboard`);
     // }
-    navigate('/dashboard');
+    navigate('/marketplace/all_listings');
   };
 
   const onSubmit = (data) => {
@@ -1017,7 +1007,7 @@ const Additional = () => {
                     <h5 className="fw-bold">Back</h5>
                   </div>
                   <div className="d-flex justify-content-end">
-                    {flexternBoolean && trumioTalent ? (
+                    {/* {flexternBoolean && trumioTalent ? ( */}
                       <Button
                         color="primary"
                         outline
@@ -1027,7 +1017,7 @@ const Additional = () => {
                         <span className="me-50">Skip</span>
                         <ChevronRight size={14} />
                       </Button>
-                    ) : null}
+                    {/* ) : null} */}
                     <Button
                       className="d-flex align-items-center justify-content-between"
                       color="primary"
