@@ -19,7 +19,7 @@ export default function SortableMilestoneCard(props: Props) {
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
     const style = {
-        transform: CSS.Transform.toString(transform),
+        transform: CSS.Translate.toString(transform),
         transition,
         maxHeight: isDragging ? '150px' : '600px',
     };
