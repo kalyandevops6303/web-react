@@ -142,12 +142,28 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       invitation_type: [typeOptions[0]],
       invitation_to: [invitedOptions[0]],
     });
-    console.log(secondFilterState);
     setSearchText('');
     if (inputRef.current) {
       inputRef.current.value = '';
     }
   };
+
+  useEffect(() => {
+    if (secondFilterState?.department_name?.length > 0) {
+      metaDataFlextern.department_name = secondFilterState.department_name[0]?.value;
+    }
+    if (secondFilterState?.status?.length > 0) {
+      metaDataFlextern.status = secondFilterState.status?.[0]?.status?.value;
+    }
+    if (secondFilterState?.project_name?.length > 0) {
+      metaDataFlextern.project_name = secondFilterState.project_name[0].label;
+    }
+
+    if (secondFilterState?.talent_name?.length > 0) {
+      metaDataFlextern.talent_name = secondFilterState.talent_name[0].label;
+    }
+  }, [secondFilterState]);
+
 
   useEffect(() => {
     setHasMore(true);
@@ -523,7 +539,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     onChange={(value) => onChangeFilter('status', value)}
                     value={
                       secondFilterState.status?.length > 0
-                        ? secondFilterState?.status?.map((item) => item?.status)
+                        ? secondFilterState?.status?.map((item) => item)
                         : null
                     }
                   />
@@ -546,10 +562,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     onChange={(value) => onChangeFilter('talent_name', value)}
                     value={
                       secondFilterState.talent_name?.length > 0
-                        ? {
-                            value: secondFilterState.talent_name[0].talent_id,
-                            label: secondFilterState.talent_name[0].talent_name,
-                          }
+                        ? secondFilterState.talent_name?.map((item) => item)
                         : null
                     }
                   />
@@ -572,10 +585,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     onChange={(value) => onChangeFilter('project_name', value)}
                     value={
                       secondFilterState.project_name?.length > 0
-                        ? {
-                            value: secondFilterState.project_name[0]._id,
-                            label: secondFilterState.project_name[0].value,
-                          }
+                        ? secondFilterState.project_name?.map((item) => item)
                         : null
                     }
                   />

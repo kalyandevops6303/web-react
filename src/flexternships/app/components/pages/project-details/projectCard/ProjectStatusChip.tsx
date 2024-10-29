@@ -1,13 +1,13 @@
+import { ProjectStatusChipClassnames } from "@/flexternships/constraints/enums/project-enums";
+
 const ProjectStatusChip = ({
-  className,
   status,
 }: {
-  className: string;
   status: string;
 }) => {
   return (
     <h1
-      className={`w-fit text-center text-xs px-2 py-1 ${className} font-semibold border  rounded-md`}
+      className={`w-fit text-center text-xs px-2 py-1  font-semibold border  rounded-md` + ProjectStatusChipClassnames[status as keyof typeof ProjectStatusChipClassnames]}
     >
       {status}
     </h1>

@@ -27,7 +27,6 @@ const LeftSideBarProjectDetails = () => {
     <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  lg:w-[25%] 2xl:w-[20%] rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
         <ProjectStatusChip
-          className={ProjectStatusChipClassnames[data?.status as keyof typeof ProjectStatusChipClassnames]}
           status={ProjectStatus[data?.status as keyof typeof ProjectStatus]}
         />
 
@@ -75,11 +74,11 @@ const LeftSideBarProjectDetails = () => {
       </div>
 
       <div className="flex flex-col items-start justify-start w-full gap-5 text-gray-600">
-        {userDetails?.userType === userTypes?.client && (
+        {/* {userDetails?.userType === userTypes?.client && (
           <h1>
             Fixed Price : <span className="font-semibold text-gray-900">$ 135,000</span>
           </h1>
-        )}
+        )} */}
         <h1>
           Estimated Duration :{' '}
           <span className="font-semibold text-gray-900">{data?.details?.expected_duration?.duration} Weeks</span>
@@ -119,7 +118,7 @@ const LeftSideBarProjectDetails = () => {
               size="default"
               className="w-fit px-10 py-3 mx-auto bg-red-600 hover:border hover:border-red-600 hover:bg-red-200 font-semibold hover:text-red-600 text-white"
             >
-              Message
+              Report
             </Button>
           )}
           <Button
@@ -130,11 +129,6 @@ const LeftSideBarProjectDetails = () => {
             Message
           </Button>
         </div>
-        {userDetails?.userType === userTypes?.client && (
-          <h1>
-            Fixed Price : <span className="font-semibold text-gray-900">$ 135,000</span>
-          </h1>
-        )}
       </div>
     </div>
   );
