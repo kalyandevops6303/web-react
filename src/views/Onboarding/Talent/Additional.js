@@ -1044,7 +1044,7 @@ const Additional = () => {
                     <CardText className="m-0 mt-1 ">
                       Make it easier for others to find you by completing your profile.
                     </CardText>
-                    <h3 className="m-0 mt-1 mb-1 text-lg font-semibold">{overallPercentageCompletion}%</h3>
+                    <h3 className="m-0 mt-1 mb-1 text-lg font-semibold text-grey">{overallPercentageCompletion}%</h3>
                     <Progress
                       value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
