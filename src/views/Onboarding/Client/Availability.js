@@ -883,12 +883,22 @@ const Availability = () => {
               </UploadIconContainer>
               <h5 className="fw-bold">Back</h5>
             </div>
-            <div>
-              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+            <div className="d-flex justify-content-end">
+              <Button
+                color="primary"
+                outline
+                className="d-flex align-items-center justify-content-between me-2"
+                onClick={onSkipClick}
+              >
                 <span className="me-50">Skip</span>
                 <ChevronRight size={14} />
               </Button>
-              <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+              <Button
+                color="primary"
+                type="submit"
+                className="d-flex align-items-center justify-content-between"
+                disabled={!isValid || profileDetailsIsLoading}
+              >
                 {profileDetailsIsLoading ? (
                   <Spinner size="sm" />
                 ) : (

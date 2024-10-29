@@ -309,14 +309,14 @@ const Step1 = ({ setStep, step }) => {
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
-          <div>
+          <div className="d-flex justify-content-end">
 
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+            <Button color="primary" outline className="d-flex align-items-center justify-content-between me-2" onClick={onSkipClick}>
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
 
-            {!isPaymentOnboardingDone && <Button color="primary" className="me-2" onClick={handleNextClick}>
+            {!isPaymentOnboardingDone && <Button color="primary" className="d-flex align-items-center justify-content-between" onClick={handleNextClick}>
               {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (
