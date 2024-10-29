@@ -3,6 +3,8 @@ import DataService from '../configs/dataService/dataService';
 
 const getCardService = () => DataService.get(`${API.project.cardInfo}`);
 
+const getCardServiceFlextern = () => DataService.get(`${API.project.cardInfoFlextern}`);
+
 const getProjectListingService = ({ metaData, data }) =>
   DataService.post(`${API.project.projects}?page=${metaData?.page}&page_size=${metaData?.page_size}`, data);
 
@@ -42,8 +44,24 @@ const getInvitedProjectListingService = ({ metaData, data }) =>
     data,
   );
 
+  const getProjectsListFlexternService = ({ metaData }) =>
+    DataService.get(
+      `${API.project.allProjectsFlextern}?page=${metaData?.page}&page_size=${metaData?.page_size}&search_query=${metaData?.search_query}&project_status=OPEN&secondary_status=${metaData?.status}&department_name=${metaData?.department_name}`);
+
 const getTeamNameSerive = (page, search) =>
   DataService.get(`${API.project.teamName}?page=${page}&page_size=50&search_query=${search}`);
+
+const getDepartmentNameService = (page, search) =>
+  DataService.get(`${API.project.departmentName}?page=${page}&page_size=50&search_query=${search}`);
+
+const getSecondaryStatuses = (page, search) =>
+  DataService.get(`${API.project.secondaryStatuses}?page=${page}&page_size=50&search_query=${search}`);
+
+const getProjectNames = (page, search) =>
+  DataService.get(`${API.project.projectNames}?page=${page}&page_size=50&search_query=${search}`);
+
+const getProjectCounts =  (page, search) =>
+  DataService.get(`${API.project.projectCounts}?page=${page}&page_size=50&search_query=${search}`);
 
 const getClientNameService = (page, search) =>
   DataService.get(`${API.project.clientName}?page=${page}&page_size=50&search_query=${search}`);
@@ -59,4 +77,9 @@ export {
   getCardService,
   getTeamNameSerive,
   getClientNameService,
+  getProjectsListFlexternService,
+  getDepartmentNameService,
+  getSecondaryStatuses,
+  getProjectNames,
+  getCardServiceFlextern,
 };

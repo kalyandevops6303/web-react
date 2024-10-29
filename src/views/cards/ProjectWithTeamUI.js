@@ -45,7 +45,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern:flexTern }));
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern: flexTern }));
     }
   };
   const handleUnLike = (e) => {
@@ -96,31 +96,31 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   const avatarGroup = data?.worker_details?.workers?.length
     ? data?.worker_details?.workers?.map((worker) => ({
-        user_type: userTypes.talent,
-        user_id: worker?.user_id,
-        title: `${worker?.first_name} ${worker?.last_name}`,
-        img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
-        placement: 'bottom',
-        imgHeight: 33,
-        imgWidth: 33,
-      }))
+      user_type: userTypes.talent,
+      user_id: worker?.user_id,
+      title: `${worker?.first_name} ${worker?.last_name}`,
+      img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    }))
     : [];
 
   const clientDetails = data?.client ?? data?.client_details;
   // eslint-disable-next-line no-unsafe-optional-chaining
-  const clientSkills = data?.proficiency?.skills ?? [];
-  const clientTools = data?.proficiency?.tools ?? [];
+  const clientSkills = (data?.proficiency?.skills || data?.skills_data) ?? [];
+  const clientTools = (data?.proficiency?.tools || data?.tools_data) ?? [];
 
   const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
     ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({
-        user_id: user?.user_id,
-        user_type: userTypes.talent,
-        title: `${user?.first_name} ${user?.last_name}`,
-        img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
-        placement: 'bottom',
-        imgHeight: 33,
-        imgWidth: 33,
-      }))
+      user_id: user?.user_id,
+      user_type: userTypes.talent,
+      title: `${user?.first_name} ${user?.last_name}`,
+      img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    }))
     : [];
 
   return (
@@ -263,9 +263,9 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
             >
               {' '}
               {pathname === 'dispute' &&
-              (userData?.user_type === userTypes.talent ||
-                userData?.user_type === userTypes.team ||
-                userData?.user_type === userTypes.club) ? (
+                (userData?.user_type === userTypes.talent ||
+                  userData?.user_type === userTypes.team ||
+                  userData?.user_type === userTypes.club) ? (
                 <div className="w-100">
                   <div className="fw-bold d-flex flex-column gap-1">
                     <div>Unresolved Disputes</div>
@@ -278,7 +278,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
               <div className="d-flex w-100">
                 <img
                   className="market-place-card-photo cursor-pointer me-75"
-                  src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
+                  src={(clientDetails?.image_uri?.length || data?.client_info?.[0]?.image_uri) ? (clientDetails?.image_uri || data?.client_info?.[0]?.image_uri) : defaultAvatar}
                   alt="avatar"
                   width={40}
                   height={50}
@@ -288,30 +288,30 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <div>
                   <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                      {data?.client?.company_name}
+                      {data?.client?.company_name || data?.client_info?.[0]?.department_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {data?.client?.first_name} {data?.client?.last_name}
+                      {data?.client?.first_name || data?.client_info?.[0]?.first_name} {data?.client?.last_name || data?.client_info?.[0]?.last_name}
                     </CardText>
                   </div>
-                  
+
                   <div className="d-flex flex-grow-1 mt-25">
-                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
-                    <RatingBadge number={data?.client?.rating ?? 0} />
+                    <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
+                      <RatingBadge number={data?.client?.rating ?? 0} />
                     </PermissionWrapper>
                     <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
-                    <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                      {data?.client?.projects_worked_on_count ?? 0} Projects
-                    </CardText>
+                      <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                        {data?.client?.projects_worked_on_count ?? 0} Projects
+                      </CardText>
                     </PermissionWrapper>
                   </div>
-                  
+
                 </div>
               </div>
             </section>
             <div
               className={
-               determineClassWhenDisputeStatus(pathname, userData)
+                determineClassWhenDisputeStatus(pathname, userData)
               }
             >
               {' '}
@@ -348,7 +348,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                             {data?.worker_details?.title}
                           </CardText>
                         </div>
-                       
+
                         <div className="d-flex flex-grow-1 mt-25">
                           <RatingBadge number={data?.worker_details?.rating ?? 0} />
                           <CardText className="ps-1 font-small-3 fw-300 rating-label">
