@@ -520,8 +520,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 </Col>
               )}
             </PermissionWrapper>
-            {/* <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TALENT_NAME']}> */}
-              {(userType !== userTypes.team) && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TALENT_NAME']}>
+              {(userType !== userTypes.team && userType === userTypes?.client) && (
                 <Col>
                   <Label className="form-label">Talent Name</Label>
                   <AsyncPaginate
@@ -545,7 +545,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   />
                 </Col>
               )}
-            {/* </PermissionWrapper> */}
+            </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PROJECT_NAME']}>
               {userType !== userTypes.team && (
                 <Col>
