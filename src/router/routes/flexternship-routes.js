@@ -66,22 +66,30 @@ export const FlexternshipRoutes = [
                 allowedAppRoles={[
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
-                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        allowCheckpoints: [],
                         blockCheckpoints: [
                             {
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
                                 redirectRoute: '/client-onboarding'
+                            },
+                            {
+                                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                                redirectRoute: '/marketplace/all_listings'
                             }
                         ]
                     },
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE,],
+                        allowCheckpoints: [],
                         blockCheckpoints: [
                             {
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
                                 redirectRoute: '/talent-onboarding/account-details'
                             },
+                            {
+                                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                                redirectRoute: '/marketplace/all_listings'
+                            }
                             // {
                             //     checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
                             //     redirectRoute: '/talent-onboarding/personal-details'
@@ -104,7 +112,11 @@ export const FlexternshipRoutes = [
     },
     {
         path: '/marketplace/*',
-        element: <MarketPlace />,
+        element: (
+            
+                <MarketPlace />
+           
+        )
     },
     {
         path: '/project-details/:projectId/*',
