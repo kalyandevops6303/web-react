@@ -22,6 +22,7 @@ import {
   getDepartmentNameService,
   getProjectNames,
   getSecondaryStatuses,
+  getTalentNameService,
   getTeamNameSerive,
 } from '../../../services/projectServices';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -84,6 +85,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     department_name: [],
     status: [],
     project_name: [],
+    talent_name: [],
     client_name: [],
     project_type: [],
     user_type: [],
@@ -101,6 +103,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
     if (secondFilterState?.project_name?.length > 0) {
       metaDataFlextern.project_name = secondFilterState.project_name[0].name;
+    }
+
+    if (secondFilterState?.talent_name?.length > 0) {
+      metaDataFlextern.talent_name = secondFilterState.talent_name[0].name;
     }
 
   }, [secondFilterState]);
@@ -192,7 +198,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-    console.log('metaDataFlextern', primaryFilter);
     dispatch(
       getProjectsListingFlextern({
         metaData: {
@@ -201,6 +206,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           department_name: metaDataFlextern?.department_name?.department_name || '',
           status: metaDataFlextern?.status || '',
           project_status: primaryFilter?.toUpperCase() || '',
+          talent_name: metaDataFlextern?.talent_name || '',
         },
       }),
     );
@@ -260,6 +266,22 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
       return {
         options: response?.data?.data?.data?.map((institute) => ({ label: institute.name, value: institute._id })),
+        hasMore: response?.data?.data?.metadata?.has_next_page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return { options: [], hasMore: false };
+    }
+  };
+
+  const loadTalentOptions = async (search, prevOptions, { page }) => {
+    try {
+      const response = await getTalentNameService(page, search);
+
+      return {
+        options: response?.data?.data?.data,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -492,6 +514,32 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     value={
                       secondFilterState.status.length > 0
                         ? secondFilterState?.status?.map((item) => item?.status)
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TALENT_NAME']}>
+              {(userType !== userTypes.team && userType === userTypes?.client) && (
+                <Col>
+                  <Label className="form-label">Talent Name</Label>
+                  <AsyncPaginate
+                    isClearable
+                    debounceTimeout={1000}
+                    additional={{ page: 1 }}
+                    loadOptions={loadTalentOptions}
+                    classNamePrefix="select"
+                    placeholder="Select talent name"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('talent_name', value)}
+                    value={
+                      secondFilterState.talent_name.length > 0
+                        ? {
+                          value: secondFilterState.talent_name[0].talent_id,
+                          label: secondFilterState.talent_name[0].talent_name,
+                        }
                         : null
                     }
                   />

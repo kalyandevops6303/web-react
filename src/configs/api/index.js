@@ -340,6 +340,7 @@ const API = {
      departmentName: `${apiOnboardingEndpoint}/api/v2/static/departments/all`,
      secondaryStatuses: `${apiOnboardingEndpoint}/api/v2/static/secondary-status/all`,
      projectNames: `${apiOnboardingEndpoint}/api/v2/static/projectNames/all`,
+     talentNames: `${apiOnboardingEndpoint}/api/v2/static/talent/all`,
      cardInfoFlextern: `${apiOnboardingEndpoint}/api/v2/project/status-counts`,
   },
   payment: {
