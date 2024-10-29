@@ -11,11 +11,12 @@ import TextInput from '@flexternships/app/components/core/form/TextInput';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectDetails } from '@flexternships/types/project-creation-types';
-import { ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
+import { allowedFormats, ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
 import { getTodayDate } from '@flexternships/utils/date-utils';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { isEmpty } from 'lodash';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -24,18 +25,18 @@ export default function Requirements() {
   const nextTab = useProjectCreationStore((state) => state.nextTab);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
 
-
   const {
     control,
     handleSubmit,
     watch,
+    reset,
     trigger,
     setValue,
     formState: { errors, isValid },
   } = useForm<ProjectDetails>({
     mode: 'onChange',
     resolver: yupResolver(ProjectDetailsSchema),
-    defaultValues: requirementsData,
+    defaultValues: {},
   });
 
   const onContinue = (data: ProjectDetails) => {
@@ -64,6 +65,20 @@ export default function Requirements() {
       setValue('totalProjectHoursEach', 0, { shouldValidate: true });
     }
   }, [estimatedDuration, estimatedWeeklyHours, setValue]);
+
+  useEffect(() => {
+    if (!isEmpty(requirementsData)) {
+      reset({
+        projectName: requirementsData.projectName,
+        estimatedStartDate: requirementsData.estimatedStartDate,
+        estimatedDuration: requirementsData.estimatedDuration === 0 ? undefined : requirementsData.estimatedDuration,
+        estimatedWeeklyHours: requirementsData.estimatedWeeklyHours === 0 ? undefined : requirementsData.estimatedWeeklyHours,
+        totalProjectHoursEach: requirementsData.totalProjectHoursEach,
+        projectDescription: requirementsData.projectDescription,
+        documents: requirementsData.documents,
+      });
+    }
+  }, [requirementsData, reset]);
 
 
   return (
@@ -177,6 +192,7 @@ export default function Requirements() {
             trigger={trigger}
             watch={watch}
             label="Upload requirement documents (optional)"
+            acceptedFormats={allowedFormats}
             placeholder="Upload Document" />
         </div>
       </div>
