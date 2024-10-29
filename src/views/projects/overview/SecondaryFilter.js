@@ -17,7 +17,13 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import '../../custom-styles.scss';
 import NoDataFoundComponent from './NoDataFoundComp';
 import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
-import { getClientNameService, getTeamNameSerive } from '../../../services/projectServices';
+import {
+  getClientNameService,
+  getDepartmentNameService,
+  getProjectNames,
+  getSecondaryStatuses,
+  getTeamNameSerive,
+} from '../../../services/projectServices';
 import { userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
@@ -62,12 +68,22 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'Client', value: 'CLIENT' },
   ];
   const metaData = { page: 1, page_size: 10 };
-  const metaDataFlextern = { page: 1, page_size: 10, search_query: '', project_status: '', department_name: '' };
+  const metaDataFlextern = {
+    page: 1,
+    page_size: 10,
+    search_query: '',
+    project_status: '',
+    department_name: '',
+    project_name: '',
+  };
 
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const [secondFilterState, setSecondFilterState] = useState({
     team_name: [],
+    department_name: [],
+    status: [],
+    project_name: [],
     client_name: [],
     project_type: [],
     user_type: [],
@@ -75,6 +91,19 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     invitation_type: [typeOptions[0]],
     invitation_to: [invitedOptions[0]],
   });
+
+  useEffect(() => {
+    if (secondFilterState?.department_name?.length > 0) {
+      metaDataFlextern.department_name = secondFilterState.department_name[0];
+    }
+    if (secondFilterState?.status?.length > 0) {
+      metaDataFlextern.status = secondFilterState.status?.[0]?.status;
+    }
+    if (secondFilterState?.project_name?.length > 0) {
+      metaDataFlextern.project_name = secondFilterState.project_name[0].name;
+    }
+
+  }, [secondFilterState]);
 
   const onSuccess = () => {};
   const onError = () => {
@@ -116,6 +145,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const handleReset = () => {
     setSecondFilterState({
       team_name: [],
+      department_name: [],
       client_name: [],
       project_type: [],
       user_type: [],
@@ -162,15 +192,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-
+    console.log('metaDataFlextern', metaDataFlextern);
     dispatch(
       getProjectsListingFlextern({
         metaData: {
           ...metaDataFlextern,
-          project_status: primaryFilter ? primaryFilter.toUpperCase() : '',
+          search_query: metaDataFlextern?.project_name || searchText || '',
+          department_name: metaDataFlextern?.department_name?.department_name || '',
+          status: metaDataFlextern?.status || '',
         },
-      })
-    )
+      }),
+    );
   }, [secondFilterState, searchText, primaryFilter]);
 
   const fetchMore = () => {
@@ -212,10 +244,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       getProjectsListingFlextern({
         metaData: {
           ...metaDataFlextern,
-          project_status: primaryFilter ? primaryFilter.toUpperCase() : '',
+          search_query: metaDataFlextern?.project_name || searchText || '',
+          department_name: metaDataFlextern?.department_name?.department_name || '',
         },
-      })
-    )
+      }),
+    );
   };
 
   const loadTeamNameOptions = async (search, prevOptions, { page }) => {
@@ -224,6 +257,53 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
       return {
         options: response?.data?.data?.data?.map((institute) => ({ label: institute.name, value: institute._id })),
+        hasMore: response?.data?.data?.metadata?.has_next_page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return { options: [], hasMore: false };
+    }
+  };
+
+  const loadDepartmentNameOptions = async (search, prevOptions, { page }) => {
+    try {
+      const response = await getDepartmentNameService(page, search);
+      return {
+        options: response?.data?.data?.data,
+        hasMore: response?.data?.data?.metadata?.has_next_page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return { options: [], hasMore: false };
+    }
+  };
+
+  const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
+    try {
+      const response = await getSecondaryStatuses(page, search);
+
+      return {
+        options: response?.data?.data?.data,
+        hasMore: response?.data?.data?.metadata?.has_next_page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return { options: [], hasMore: false };
+    }
+  };
+
+  const loadProjectNamesOptions = async (search, prevOptions, { page }) => {
+    try {
+      const response = await getProjectNames(page, search);
+
+      return {
+        options: response?.data?.data?.data,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -370,25 +450,22 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team  && (
+              {userType !== userTypes.team && (
                 <Col>
                   <Label className="form-label">Deparment Name</Label>
                   <AsyncPaginate
                     isClearable
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
-                    loadOptions={loadTeamNameOptions}
-                    classNamePrefix="name"
+                    loadOptions={loadDepartmentNameOptions}
+                    classNamePrefix="select"
                     placeholder="Select department name"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
-                    onChange={(value) => onChangeFilter('team_name', value)}
+                    onChange={(value) => onChangeFilter('department_name', value)}
                     value={
-                      secondFilterState.team_name.length > 0
-                        ? {
-                            value: secondFilterState.team_name[0].value,
-                            label: secondFilterState.team_name[0].label,
-                          }
+                      secondFilterState.department_name.length > 0
+                        ? secondFilterState.department_name?.map((item) => item)
                         : null
                     }
                   />
@@ -403,18 +480,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     isClearable
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
-                    loadOptions={loadTeamNameOptions}
+                    loadOptions={loadSecondaryStatusesOptions}
                     classNamePrefix="name"
                     placeholder="Select status"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('status', value)}
                     value={
-                      secondFilterState.team_name.length > 0
-                        ? {
-                            value: secondFilterState.team_name[0].value,
-                            label: secondFilterState.team_name[0].label,
-                          }
+                      secondFilterState.status.length > 0
+                        ? secondFilterState?.status?.map((item) => item?.status)
                         : null
                     }
                   />
@@ -429,17 +503,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     isClearable
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
-                    loadOptions={loadTeamNameOptions}
-                    classNamePrefix="name"
+                    loadOptions={loadProjectNamesOptions}
+                    classNamePrefix="select"
                     placeholder="Select project name"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
-                    onChange={(value) => onChangeFilter('team_name', value)}
+                    onChange={(value) => onChangeFilter('project_name', value)}
                     value={
-                      secondFilterState.team_name.length > 0
+                      secondFilterState.project_name.length > 0
                         ? {
-                            value: secondFilterState.team_name[0].value,
-                            label: secondFilterState.team_name[0].label,
+                            value: secondFilterState.project_name[0]._id,
+                            label: secondFilterState.project_name[0].value,
                           }
                         : null
                     }

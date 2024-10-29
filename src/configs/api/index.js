@@ -337,6 +337,10 @@ const API = {
 
      //v2 projects-list
      allProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/projects`,
+     departmentName: `${apiOnboardingEndpoint}/api/v2/static/departments/all`,
+     secondaryStatuses: `${apiOnboardingEndpoint}/api/v2/static/secondary-status/all`,
+     projectNames: `${apiOnboardingEndpoint}/api/v2/static/projectNames/all`,
+     projectCounts: `${apiOnboardingEndpoint}/api/v2/project/status-counts`,
   },
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,
