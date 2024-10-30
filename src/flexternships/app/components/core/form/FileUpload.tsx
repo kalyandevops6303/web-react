@@ -58,7 +58,6 @@ export default function FileUpload(props: InputProps) {
         const uploadRequirements = await getFileUploadUrl(file.name);
         await uploadFileToUrl(uploadRequirements.data.upload_url, file, getUploadProgress);
         const fileKey = uploadRequirements.data.file_key;
-        console.log(fields.length, fields);
         update(fieldState.length - 1, { ...fieldState[fieldState.length - 1], fileKey: fileKey, loading: false });
       }
     } catch (error: any) {

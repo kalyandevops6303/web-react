@@ -70,7 +70,6 @@ export type FlexternTalentDetails = {
         dialCode: string;
         name: string;
     }
-    user_type: string;
 }
 
 

@@ -1,4 +1,3 @@
-import { User } from 'react-feather';
 import ProjectStatusChip from './projectCard/ProjectStatusChip';
 import RatingInfo from './projectCard/RatingInfo';
 import BadgeGroup from './projectCard/BadgeGroup';
@@ -8,13 +7,13 @@ import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { Button } from '../../ui/button';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { userTypes } from '@/utility/constants/Constant';
-import {
-  ProjectStatus,
-  ProjectStatusChipClassnames,
-  UserTypeChipClassnames,
-} from '@/flexternships/constraints/enums/project-enums';
 import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+
+enum UserTypeChipClassnames {
+  TALENT = 'bg-[#FFD700] text-[#333333]',
+  CLIENT = 'text-blue-700 bg-blue-100',
+}
 
 const LeftSideBarProjectDetails = () => {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -27,7 +26,7 @@ const LeftSideBarProjectDetails = () => {
     <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  lg:w-[25%] 2xl:w-[20%] rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
         <ProjectStatusChip
-          status={ProjectStatus[data?.status as keyof typeof ProjectStatus]}
+          status={data?.status as 'OPEN' | 'IN_REVIEW' | 'ACTIVE' | 'ONGOING' | 'CLOSED' | 'TERMINATED' | 'COMPLETED'}
         />
 
         <h1 className="text-[#EA5455] font-semibold">
@@ -39,7 +38,7 @@ const LeftSideBarProjectDetails = () => {
 
       <div className="flex flex-row items-center justify-center gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
-          <img src={data?.client_info?.[0]?.image_uri} className='w-12 rounded-full h-12' alt="" />
+          <img src={data?.client_info?.[0]?.image_uri} className="w-12 rounded-full h-12" alt="" />
           <h1 className={`${UserTypeChipClassnames['CLIENT']} font-semibold px-2 py-1 rounded-xl`}>Client</h1>
         </div>
 
@@ -47,7 +46,10 @@ const LeftSideBarProjectDetails = () => {
           <h1 className="text-[#333333] font-semibold">
             {data?.client_info?.[0]?.first_name ?? ''} {data?.client_info?.[0]?.last_name ?? ''}
           </h1>
-          <RatingInfo rating={data?.client_info?.[0]?.rating || 0} projectsCount={data?.client_info?.[0]?.projects_listed_count || 0} />
+          <RatingInfo
+            rating={data?.client_info?.[0]?.rating || 0}
+            projectsCount={data?.client_info?.[0]?.projects_listed_count || 0}
+          />
         </div>
       </div>
 
@@ -85,28 +87,31 @@ const LeftSideBarProjectDetails = () => {
         </h1>
         <div className="flex flex-row items-start gap-3">
           Status :{' '}
-          <h1
-            className={`${
-              ProjectStatusChipClassnames[data?.status as keyof typeof ProjectStatusChipClassnames]
-            } font-semibold px-2 py-1 rounded-xl`}
-          >
-            {ProjectStatus[data?.status as keyof typeof ProjectStatus]}
-          </h1>
+          <ProjectStatusChip
+            status={data?.status as 'OPEN' | 'IN_REVIEW' | 'ACTIVE' | 'ONGOING' | 'CLOSED' | 'TERMINATED' | 'COMPLETED'}
+          />
         </div>
-        {data?.skills_data?.length! > 0 &&  <div className="flex flex-row items-start w-full justify-start gap-2">
-          <h1 className="mt-1">Skills:</h1>
-          <BadgeGroup tags={data?.skills_data || []} className="bg-skyblue-light text-skyblue" />
-        </div>}
-        {data?.tools_data?.length! > 0 && <div className="flex flex-row items-start w-full justify-start gap-2">
-          <h1 className="mt-1">Tools:</h1>
-          <BadgeGroup tags={data?.tools_data || []} className="bg-skyblue-light text-skyblue" />
-        </div>}
-        <div className="">
+
+        {data?.skills_data?.length! > 0 && (
+          <div className="flex flex-row items-start w-full justify-start gap-2">
+            <h1 className="mt-1">Skills:</h1>
+            <BadgeGroup tags={data?.skills_data || []} className="bg-skyblue-light text-skyblue" />
+          </div>
+        )}
+        {data?.tools_data?.length! > 0 && (
+          <div className="flex flex-row items-start w-full justify-start gap-2">
+            <h1 className="mt-1">Tools:</h1>
+            <BadgeGroup tags={data?.tools_data || []} className="bg-skyblue-light text-skyblue" />
+          </div>
+        )}
+        <div className="flex flex-col w-full ">
           <h1 className="text-gray-900 font-semibold">Description: </h1>
-          <p>
-            {showMore ? data?.details?.description : `${data?.details?.description.slice(0, 100)}...`}
+          <p className="w-full">
+            {showMore
+              ? data?.details?.description
+              : `${data?.details?.description.slice(0, 100)}` + (data?.details?.description?.length > 100 ? '...' : '')}
             <span onClick={handleToggle} className="text-skyblue cursor-pointer">
-              {showMore ? ' Read less' : ' Read more'}
+              {data?.details?.description?.length > 100 ? (showMore ? ' Read less' : ' Read more') : null}
             </span>
           </p>
         </div>
