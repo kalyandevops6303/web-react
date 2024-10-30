@@ -50,7 +50,6 @@ import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/p
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 
-
 // ** Default Route
 const DefaultRoute = '/auth';
 
@@ -155,23 +154,22 @@ export const FlexternshipRoutes = [
         path: '/project-details/:projectId/bid/:bidId',
         element: <BidDetails />,
     },
-
-  {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
-    element: <ContractView />,
-  },
-  {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
-    element: <ContractView />,
-  },
-  {
-    path: '/projects/*',
-    element: <Projects />,
-  },
-  {
-    path: '/my-teams/*',
-    element: <MyTeams />,
-  },
+    {
+        path: '/project-details/:projectId/:projectStep/doc/:docType/*',
+        element: <ContractView />,
+    },
+    {
+        path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
+        element: <ContractView />,
+    },
+    {
+        path: '/projects/*',
+        element: <Projects />,
+    },
+    {
+        path: '/my-teams/*',
+        element: <MyTeams />,
+    },
 
   {
     path: '/clubs/*',
