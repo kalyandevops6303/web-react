@@ -1,37 +1,62 @@
 import * as yup from 'yup';
 import { dateToEpoch } from '@flexternships/utils/date-utils';
+import { MAX_FILE_SIZE_ERROR, MAX_FILE_SIZE_LIMIT } from '../lib/constants';
+
+export const allowedFormats = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'image/jpeg',
+  'image/jpg',
+  'image/png'
+];
 
 export const ProjectDetailsSchema = yup.object().shape({
-    projectName: yup.string()
-        .required('Project name is required'),
-    estimatedStartDate: yup.number()
-        .required('Estimated start date is required')
-        .min(dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0))), 'Estimated start date cannot be in the past'), // Allow today
-    estimatedDuration: yup.number()
-        .required('Estimated duration is required')
-        .positive('Estimated duration should be positive')
-        .integer('Estimated duration must be an integer'),
-    estimatedWeeklyHours: yup.number()
-        .required('Estimated weekly hours are required')
-        .positive('Estimated weekly hours should be positive')
-        .max(168, 'Estimated weekly hours cannot exceed 168 hours'),
-    totalProjectHoursEach: yup.number()
-        .required('Total project hours each is required')
-        .positive('Total project hours each must be a positive number'),
-    projectDescription: yup.string()
-        .required('Project description is required')
-        .min(50, 'Project description should be atleast 50 characters')
-        .max(3000, 'Project description must be 3000 characters or less'),
-    documents: yup.array().of(yup.object().shape(
-        {
-            fileName: yup.string().required("fileName is required"),
-            fileKey: yup.string().required("fileKey is required"),
-            downloadUrl: yup.string().url("downloadUrl must be a valid URL"),
-            size: yup.number().required("size is required").positive("size must be a positive number"),
-            createdAt: yup.number().required("createdAt is required").integer("createdAt must be an integer"),
-        }
-    )).required() // Validate each document as a URL
-    // .min(1, 'At least one document is required'), // Optional: ensure at least one document is provided
+  projectName: yup.string().required('Project name is required'),
+  estimatedStartDate: yup
+    .number()
+    .required('Estimated start date is required')
+    .min(dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0))), 'Estimated start date cannot be in the past'), // Allow today
+  estimatedDuration: yup
+    .number()
+    .required('Estimated duration is required')
+    .positive('Estimated duration should be positive')
+    .integer('Estimated duration must be an integer'),
+  estimatedWeeklyHours: yup
+    .number()
+    .required('Estimated weekly hours are required')
+    .positive('Estimated weekly hours should be positive')
+    .max(168, 'Estimated weekly hours cannot exceed 168 hours'),
+  totalProjectHoursEach: yup
+    .number()
+    .required('Total project hours each is required')
+    .positive('Total project hours each must be a positive number'),
+  projectDescription: yup
+    .string()
+    .required('Project description is required')
+    .min(50, 'Project description should be atleast 50 characters')
+    .max(3000, 'Project description must be 3000 characters or less'),
+  documents: yup
+    .array()
+    .of(
+      yup.object().shape({
+        file: yup
+          .mixed()
+          .test('fileFormat', 'Invalid file format', (value) => value && allowedFormats.includes(value.type)),
+        fileName: yup.string().required('fileName is required'),
+        fileKey: yup.string().required('fileKey is required'),
+        downloadUrl: yup.string().url('downloadUrl must be a valid URL'),
+        size: yup
+          .number()
+          .required('size is required')
+          .positive('size must be a positive number')
+          .max(MAX_FILE_SIZE_LIMIT, MAX_FILE_SIZE_ERROR),
+        createdAt: yup.number().required('createdAt is required').integer('createdAt must be an integer'),
+      }),
+    )
+    .required(), // Validate each document as a URL
+  // .min(1, 'At least one document is required'), // Optional: ensure at least one document is provided
 });
 
 // Form Schema for ProjectRoles
@@ -70,7 +95,8 @@ export const MilestonesFormSchema = yup.object().shape({
                 .required('Duration is required')
                 .positive('Duration must be a positive number'),
             description: yup.string()
-                .required('Description is required'),
+                .required('Description is required')
+                .min(4, 'Description must be at least 4 characters'),
             deliverables: yup.array().of(yup.string().required('Deliverable is required'))
                 .required()
                 .min(1, 'At least one deliverable is required'),

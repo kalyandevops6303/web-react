@@ -45,7 +45,6 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
       return theme.green;
     }
   };
-
   return (
     <div>
       <div className="d-flex justify-content-end">
@@ -98,7 +97,7 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
         <div className="d-flex mb-2 align-items-center">
           <img
             className="market-place-card-photo me-75"
-            src={data?.client?.image_uri?.length ? data?.client?.image_uri : defaultAvatar}
+            src={(data?.client?.image_uri?.length || data?.client_info?.[0]?.image_uri) ? (data?.client?.image_uri || data?.client_info?.[0]?.image_uri) : defaultAvatar}
             alt="avatar"
           />
           <div className="d-flex w-100 align-items-center">
@@ -128,13 +127,13 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
       <div>
         <BadgeGroup
           title="Skills"
-          data={data?.proficiency?.skills}
+          data={data?.proficiency?.skills || data?.skills_data}
           color="light-blue"
           id={`tooltip-skills-${data?._id}`}
         />
         <BadgeGroup
           title="Tools"
-          data={data?.proficiency?.tools}
+          data={data?.proficiency?.tools || data?.tools_data}
           color="light-blue"
           id={`tooltip-tools-${data?._id}`}
         />

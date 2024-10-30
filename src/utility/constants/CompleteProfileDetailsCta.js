@@ -1,3 +1,4 @@
+import { isArray, isEmpty } from 'lodash';
 import { userProfileEdit } from './Constant';
 
 const CompleteProfileDetailsCta = {
@@ -92,47 +93,58 @@ const CompleteProfileDetailsCta = {
 
 // eslint-disable-next-line consistent-return
 const returnCompleteProfileDetailsCta = (userType, missingValues) => {
-  if (userType === 'CLIENT' && missingValues?.includes('company_name')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_name');
-    // eslint-disable-next-line no-else-return
-  } else if (userType === 'TALENT' && missingValues?.includes('tagline')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'tagline');
-  } else if (missingValues?.includes('educational_institute')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'educational_institute');
-  } else if (missingValues?.includes('availability')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'availability');
-  } else if (missingValues?.includes('payment_account')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'payment_account');
-  } else if (missingValues?.includes('social_links')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'social_links');
-  } else if (missingValues?.includes('resume')) {
-    // console.log("hello")
-    // console.log(CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'resume'))
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'resume');
-  } else if (missingValues?.includes('image_uri')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'image_uri');
-  } else if (userType === 'TALENT' && missingValues?.includes('work_experience')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'work_experience');
-  } else if (userType === 'TALENT' && missingValues?.includes('additional_info')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'additional_info');
-  } else if (
-    userType === 'TALENT' &&
-    (missingValues?.includes('languages_read') ||
-      missingValues?.includes('languages_speak') ||
-      missingValues?.includes('languages_write'))
+
+
+  if (
+    isEmpty(missingValues) ||
+    typeof missingValues !== 'object' ||
+    (typeof missingValues === 'object' && !isArray(missingValues))
   ) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'languages');
-  } else if (userType === 'CLIENT' && missingValues?.includes('company_logo')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_logo');
-  } else if (userType === 'CLIENT' && missingValues?.includes('company_strength')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_strength');
-  } else if (userType === 'TEAM' && missingValues?.includes('team_logo')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'team_logo');
-  } else if (userType === 'CLUB' && missingValues?.includes('team_logo')) {
-    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'team_logo');
-  } else {
-    return null;
+    return null
   }
+
+
+    if (userType === 'CLIENT' && missingValues?.includes('company_name')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_name');
+      // eslint-disable-next-line no-else-return
+    } else if (userType === 'TALENT' && missingValues?.includes('tagline')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'tagline');
+    } else if (missingValues?.includes('educational_institute')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'educational_institute');
+    } else if (missingValues?.includes('availability')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'availability');
+    } else if (missingValues?.includes('payment_account')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'payment_account');
+    } else if (missingValues?.includes('social_links')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'social_links');
+    } else if (missingValues?.includes('resume')) {
+      // console.log("hello")
+      // console.log(CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'resume'))
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'resume');
+    } else if (missingValues?.includes('image_uri')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'image_uri');
+    } else if (userType === 'TALENT' && missingValues?.includes('work_experience')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'work_experience');
+    } else if (userType === 'TALENT' && missingValues?.includes('additional_info')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'additional_info');
+    } else if (
+      userType === 'TALENT' &&
+      (missingValues?.includes('languages_read') ||
+        missingValues?.includes('languages_speak') ||
+        missingValues?.includes('languages_write'))
+    ) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'languages');
+    } else if (userType === 'CLIENT' && missingValues?.includes('company_logo')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_logo');
+    } else if (userType === 'CLIENT' && missingValues?.includes('company_strength')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_strength');
+    } else if (userType === 'TEAM' && missingValues?.includes('team_logo')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'team_logo');
+    } else if (userType === 'CLUB' && missingValues?.includes('team_logo')) {
+      return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'team_logo');
+    } else {
+      return null;
+    }
 };
 
 export { returnCompleteProfileDetailsCta, CompleteProfileDetailsCta };

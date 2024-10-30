@@ -69,7 +69,7 @@ export default function TextInput(props: InputProps) {
                             placeholder={placeholder}
                             className={`${Styles.formInput} ${readOnly ? Styles.formInputReadOnly : (error ? Styles.formInputError : Styles.formInputDefault)}`}
                             disabled={readOnly}
-                            value={value}
+                            value={value?.toString() ?? ''}
                             onChange={handleChange}
                         />
                         {isPassword && (

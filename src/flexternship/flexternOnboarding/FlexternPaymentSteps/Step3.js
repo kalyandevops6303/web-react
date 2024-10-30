@@ -965,12 +965,22 @@ const Step3 = ({ setStep, step }) => {
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
-          <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+          <div className="d-flex justify-content-end">
+            <Button
+              color="primary"
+              outline
+              className="d-flex align-items-center justify-content-between me-2"
+              onClick={onSkipClick}
+            >
               <span className="me-50">Skip stripe setup</span>
               <ChevronRight size={14} />
             </Button>
-            <Button color="primary" type="submit" disabled={isUsPerson ? !isConfirmed : !isAgreed}>
+            <Button
+              color="primary"
+              type="submit"
+              className="d-flex align-items-center justify-content-between"
+              disabled={isUsPerson ? !isConfirmed : !isAgreed}
+            >
               {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (

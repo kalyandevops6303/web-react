@@ -38,70 +38,70 @@ html {
 }
 
 .message__file > .message__details >.message__reaction__wrapper > .reaction {
-    margin-top: -10px !important;
+  margin-top: -10px !important;
 }
 
 .custom-checkbox-wrapper {
-    display: inline-block;
-    position: relative;
-    margin-top: 5px;
-  }
+  display: inline-block;
+  position: relative;
+  margin-top: 5px;
+}
   
-  .custom-checkbox-input {
-    opacity: 0; /* Hide the default checkbox */
-    position: absolute;
-  }
+.custom-checkbox-input {
+  opacity: 0; /* Hide the default checkbox */
+  position: absolute;
+}
   
-  .custom-checkbox-label {
-    width: 24px; /* Increased width for better tick fitting */
-    height: 24px; /* Increased height for better tick fitting */
-    display: inline-block;
-    border: 2px dashed var(--Grey-100, #CDCFD0); /* Dotted border for the circle */
-    border-radius: 50%; /* Circle shape */
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
+.custom-checkbox-label {
+  width: 24px; /* Increased width for better tick fitting */
+  height: 24px; /* Increased height for better tick fitting */
+  display: inline-block;
+  border: 2px dashed var(--Grey-100, #CDCFD0); /* Dotted border for the circle */
+  border-radius: 50%; /* Circle shape */
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
   
-  /* When the checkbox is checked, change the background to green and the border to solid */
-  .custom-checkbox-input:checked + .custom-checkbox-label {
-    border: 1px solid var(--Success, #28C76F);
-    background: var(--Success, #28C76F);
-  }
+/* When the checkbox is checked, change the background to green and the border to solid */
+.custom-checkbox-input:checked + .custom-checkbox-label {
+  border: 1px solid var(--Success, #28C76F);
+  background: var(--Success, #28C76F);
+}
   
-  /* Pseudo-element for the tick mark */
-  .custom-checkbox-label::after {
-    content: '';
-    width: 6px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    position: absolute;
-    top: 5px; 
-    /* Adjusted to fit the tick in the circle */
-    left: 8px; 
-    /* Adjusted to fit the tick in the circle */
-    transform: rotate(45deg);
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease;
-  }
+/* Pseudo-element for the tick mark */
+.custom-checkbox-label::after {
+  content: "";
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  position: absolute;
+  top: 5px; 
+  /* Adjusted to fit the tick in the circle */
+  left: 8px; 
+  /* Adjusted to fit the tick in the circle */
+  transform: rotate(45deg);
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease;
+}
   
-  /* Show the tick mark when checked */
-  .custom-checkbox-input:checked + .custom-checkbox-label::after {
-    opacity: 1; /* Display the tick mark when checked */
-  }
+/* Show the tick mark when checked */
+.custom-checkbox-input:checked + .custom-checkbox-label::after {
+  opacity: 1; /* Display the tick mark when checked */
+}
 
-  .icon-disabled svg {
-    stroke: #d1d1d1!important; 
-  }
+.icon-disabled svg {
+  stroke: #d1d1d1!important; 
+}
   
-  .icon-enabled svg {
-    stroke: #9e9e9e !important;
-  }
+.icon-enabled svg {
+  stroke: #9e9e9e !important;
+}
   
-  .icon-active svg {
-    stroke : #0185E4 !important;
-  }
+.icon-active svg {
+  stroke : #0185E4 !important;
+}
 .trumio .message__image > .message__details > .message__reaction__wrapper > .reaction {
   margin-top: -10px !important;
 }
@@ -112,4 +112,10 @@ html {
 
 .trumio .message__file > .message__details > .message__reaction__wrapper > .reaction {
   margin-top: -10px !important;
+}
+
+
+[dir] .select__control.select__control--is-disabled,
+[dir] .react-select__control.select__control--is-disabled {
+  padding: 8px;
 }

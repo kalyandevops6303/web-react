@@ -50,7 +50,6 @@ import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/p
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 
-
 // ** Default Route
 const DefaultRoute = '/auth';
 
@@ -68,26 +67,34 @@ export const FlexternshipRoutes = [
                 allowedAppRoles={[
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
-                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        allowCheckpoints: [],
                         blockCheckpoints: [
                             {
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
                                 redirectRoute: '/client-onboarding'
+                            },
+                            {
+                                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                                redirectRoute: '/marketplace/all_listings'
                             }
                         ]
                     },
                     {
                         appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE,],
+                        allowCheckpoints: [],
                         blockCheckpoints: [
                             {
                                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
                                 redirectRoute: '/talent-onboarding/account-details'
                             },
                             {
-                                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
-                                redirectRoute: '/talent-onboarding/personal-details'
+                                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                                redirectRoute: '/marketplace/all_listings'
                             }
+                            // {
+                            //     checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                            //     redirectRoute: '/talent-onboarding/personal-details'
+                            // } removing this as for now as anyway in sign in we are checking for the checkpoint otherwise the first time it's causing after save and continue before updation of checkpoint it's going to personal details
                         ]
                     }
                 ]}
@@ -106,7 +113,11 @@ export const FlexternshipRoutes = [
     },
     {
         path: '/marketplace/*',
-        element: <MarketPlace />,
+        element: (
+            
+                <MarketPlace />
+           
+        )
     },
     {
         path: '/project-details/:projectId/*',
@@ -160,10 +171,10 @@ export const FlexternshipRoutes = [
         element: <MyTeams />,
     },
 
-    {
-        path: '/clubs/*',
-        element: <Clubs />,
-    },
+  {
+    path: '/clubs/*',
+    element: <Clubs />,
+  },
 
     {
         path: '/auth/*',
@@ -202,6 +213,7 @@ export const FlexternshipRoutes = [
                         ]
                     }
                 ]}
+                noPadding
             >
                 <FlexternshipClientOnboarding />
             </RoleAccessWrapper>
@@ -215,7 +227,7 @@ export const FlexternshipRoutes = [
         element: <TalentOnboarding />,
     },
     {
-        path: `/${userProfileEdit.client}/*`,
+        path: `/${userProfileEdit.client}/:tabId`,
         element: (
             <RoleAccessWrapper
                 allowedAppRoles={[
@@ -374,4 +386,3 @@ export const FlexternshipRoutes = [
         element: <NotFound />,
     },
 ];
-

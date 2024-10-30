@@ -109,7 +109,7 @@ const Step2 = ({ setStep, step }) => {
     defaultValues: {
       taxName: savedFormData?.taxName || '',
       taxClass: savedFormData?.taxClass || '',
-      taxType:  '',
+      taxType: '',
       ssnTaxId: savedFormData?.ssnTaxId || null,
       nsnTaxId: savedFormData?.nsnTaxId || null,
     },
@@ -146,7 +146,7 @@ const Step2 = ({ setStep, step }) => {
     if (res) {
       if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type?.length > 0) {
-        setTaxUserType( res?.tax_user_type);
+        setTaxUserType(res?.tax_user_type);
       }
       if (res.tax_identification?.legal_name?.length > 0) {
         setValue('taxName', savedFormData?.taxName || res.tax_identification?.legal_name);
@@ -230,7 +230,8 @@ const Step2 = ({ setStep, step }) => {
           federal_tax_classification: data?.taxClass?.value,
           social_security_number: data?.ssnTaxId || '',
           national_taxpayer_number: data?.nsnTaxId || '',
-          tax_payer_identification_type: taxUserType === CITIZEN_TYPES.US ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
+          tax_payer_identification_type:
+            taxUserType === CITIZEN_TYPES.US ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
         },
       };
 
@@ -497,12 +498,18 @@ const Step2 = ({ setStep, step }) => {
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
-          <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+          <div className="d-flex justify-content-end">
+            <Button
+              color="primary"
+              outline
+              className="d-flex align-items-center justify-content-between me-2"
+              onClick={onSkipClick}
+            >
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
             <Button
+              className="d-flex align-items-center justify-content-between"
               color="primary"
               type="submit"
               disabled={

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { FlexternClientAccountDetails, FlexternClientCompanyDetails, FlexternClientCompanySocialDetails, FlexternClientProfileDetails, FlexternUserProfileForm, FlexternUserProfileStore } from "../constraints/types/user-profile-types";
-import { nextTab, populateClientInfoDetails, populateClientOrgDetails, previousTab, updateClientCompanyInfo, upsertClientAccountInfo } from "../actions/user-profile-actions";
+import { nextTab, populateClientInfoDetails, populateClientOrgDetails, previousTab, updateClientCompanyInfo, upsertClientAccountInfo,setCurrentTabIndex } from "../actions/user-profile-actions";
 
 const defaultInitState: FlexternUserProfileForm = {
     currentTabIndex: 0,
@@ -17,4 +17,5 @@ export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set
     upsertClientAccountInfo: async (data: FlexternClientAccountDetails) => upsertClientAccountInfo(data, set),
     updateClientCompanyInfo: async (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => updateClientCompanyInfo(data, set),
     resetStore: () => set({...defaultInitState}),
+    setCurrentTabIndex: (index: number) => setCurrentTabIndex(index, set)
 }));

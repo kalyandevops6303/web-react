@@ -10,10 +10,28 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'qa-auto', 'tru-dev', 'tru-qa'], description: 'Select deployment environment')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'tru-dev', 'tru-qa'], description: 'Select deployment environment')
+	//gitParameter(name: 'BRANCH', type: 'PT_BRANCH', description: 'Select Git branch for deployment')
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Determine which branch to check out based on the environment
+                    def branchToCheckout = params.BRANCH // Default to user-selected branch
+                    if (params.ENVIRONMENT == 'tru-qa') {
+                        branchToCheckout = 'origin/dev-test' // Override for tru-qa environment
+                    }
+                    echo "Checking out branch: ${branchToCheckout} for environment: ${params.ENVIRONMENT}"
+                    checkout([$class: 'GitSCM', 
+                        branches: [[name: "${branchToCheckout}"]],
+                        // userRemoteConfigs: [[url: repoUrl, credentialsId: 'github_access']]
+                    ])
+                }
+            }
+        }
+
         stage('Get SharePoint Access Token') {
             steps {
                 script {

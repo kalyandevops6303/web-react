@@ -24,6 +24,7 @@ import { toggleAddDelegateModal } from '../../../../redux/reducers/delegate';
 import { getDelegateInvitationStatus } from '../../../../redux/actions/delegateActions';
 import theme from '../../../../configs/themeVariables';
 import ComponentSpinner from '../../../components/spinner/Loading-spinner';
+import { TextWrapper } from './style';
 
 const DelegateAccordion = ({ setDelegateEmail }) => {
   const [open, setOpen] = useState('');
@@ -61,7 +62,7 @@ const DelegateAccordion = ({ setDelegateEmail }) => {
           className={open === '1' ? 'isActive' : ''}
           targetId="1"
         >
-          Delegate
+          <TextWrapper>Delegate(s)</TextWrapper>
         </AccordionHeader>
         <AccordionBody accordionId="1" style={{ maxHeight: '20rem' }}>
           <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
@@ -131,10 +132,10 @@ const DelegateAccordion = ({ setDelegateEmail }) => {
             <img alt="plus" src={addIcon} height={28} width={28} className="no-border-radius" />
             <span className="align-middle ">Add Delegate</span>
           </DropdownItem>
-          <DropdownItem className="w-100 text-primary d-flex justify-content-start align-items-center gap-1 border-top border-light-grey">
+          {/* <DropdownItem className="w-100 text-primary d-flex justify-content-start align-items-center gap-1 border-top border-light-grey">
             <img alt="plus" src={settingsIcon} height={28} width={28} className="no-border-radius" />
             <span className="align-middle ">Delegate Setting</span>
-          </DropdownItem>
+          </DropdownItem> */}
         </AccordionBody>
       </AccordionItem>
     </Accordion>

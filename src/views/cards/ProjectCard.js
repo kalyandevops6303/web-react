@@ -7,7 +7,7 @@ import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import DateTime from '../../lib/date-time';
-import { ProjectCardWrap } from './style';
+import { EstimatedTimeHeading, ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import ProjectWithTeamUI from './ProjectWithTeamUI';
@@ -74,9 +74,9 @@ const ProjectCard = ({
     PAYMENT_PENDING: 'Payment Pending',
     WITHDRAWN: 'Withdrawn',
     DISPUTED: 'Disputed',
-    SIGN_REQUESTED : "Sign Requested",
-    NOT_FUNDED:"Not Funded",
-    INTIATE_FUNDS:"Initiate Funds",
+    SIGN_REQUESTED: 'Sign Requested',
+    NOT_FUNDED: 'Not Funded',
+    INTIATE_FUNDS: 'Initiate Funds',
   };
 
   const primaryStatus = {
@@ -137,13 +137,12 @@ const ProjectCard = ({
   };
 
   const handleSwitchProfileModalNavigation = () => {
-    if(!location.pathname.split('/').includes('invited')) {
+    if (!location.pathname.split('/').includes('invited')) {
       return getPath({ isActiveProject: false, projectId: data?._id });
     }
 
     return switchData?.navigateTo;
   };
-
   return (
     <ProjectCardWrap>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -166,41 +165,38 @@ const ProjectCard = ({
                 </div>
                 <CardTitle className="d-flex align-items-center">
                   <span className="cursor-pointer" onClick={handleRedirection}>
-                    {data?.name}
+                    {data?.name || data?.details?.name}
                   </span>
                 </CardTitle>
                 <div className="d-flex flex-wrap project-stats">
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PRICE']}>
-                  <CardText className="project">
-                    {data?.pay_type?.variable_cost ? (
-                      <>Variable Price</>
-                    ) : (
-                      <>
-                        Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
-                      </>
-                    )}
-                  </CardText>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PRICE']}>
+                    <CardText className="project">
+                      {data?.pay_type?.variable_cost ? (
+                        <>Variable Price</>
+                      ) : (
+                        <>
+                          Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
+                        </>
+                      )}
+                    </CardText>
                   </PermissionWrapper>
-                  {(data?.assigned_date || data?.completed_date || data?.invite_date) && (
+                  {(data?.assigned_date || data?.completed_date || data?.invite_date || data?.listing_details) && (
                     <CardText className="mb-1">
-                      {data?.assigned_date && (
+                      {(data?.assigned_date || data?.listing_details?.start_date_epoch) && (
                         <span className="me-1">
-                          {data?.assigned_date
-                            ?
-                              `Assigned Date: ${convertUnixTimestampToDate(
-                                data?.assigned_date,
-                                savedUserData?.availability?.timezone?.name ,
-                              )}    `
-                            : ''}
+                          
+                             Assigned Date: {convertUnixTimestampToDate(
+                                data?.assigned_date || data?.listing_details?.start_date_epoch,
+                                savedUserData?.availability?.timezone?.name,
+                              ) || data?.listing_details?.start_date}    
                         </span>
                       )}
-                      {data?.completed_date && (
+                      {(data?.completed_date || data?.listing_details?.end_date_epoch) && (
                         <span className="me-1">
-                          {data?.completed_date
-                            ?
-                              `Completed Date: ${convertUnixTimestampToDate(
-                                data?.completed_date,
-                                savedUserData?.availability?.timezone?.name ,
+                          {(data?.completed_date || data?.listing_details?.end_date_epoch)
+                            ? `Completed Date: ${convertUnixTimestampToDate(
+                                data?.completed_date || data?.listing_details?.end_date_epoch,
+                                savedUserData?.availability?.timezone?.name,
                               )}   `
                             : ''}
                         </span>
@@ -208,21 +204,20 @@ const ProjectCard = ({
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
-                            ? 
-                            `Invite Date: ${convertUnixTimestampToDate(
-                              data?.invite_date,
-                              savedUserData?.availability?.timezone?.name ,
-                            )}`
+                            ? `Invite Date: ${convertUnixTimestampToDate(
+                                data?.invite_date,
+                                savedUserData?.availability?.timezone?.name,
+                              )}`
                             : ''}
                         </span>
                       )}
                     </CardText>
                   )}
                   <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.LOCATION']}>
-                  <CardText className="project d-flex align-items-center ms-25">
-                    <img src={Mpin} alt="Mpin" className="mpin" />
-                    {data?.client?.office_address?.country?.name || 'Location'}
-                  </CardText>
+                    <CardText className="project d-flex align-items-center ms-25">
+                      <img src={Mpin} alt="Mpin" className="mpin" />
+                      {data?.client?.office_address?.country?.name || 'Location'}
+                    </CardText>
                   </PermissionWrapper>
                   <CardText className=" mb-1">
                     {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
@@ -253,9 +248,10 @@ const ProjectCard = ({
                     {showFullText ? 'Show less' : 'Show more'}
                   </CardText>
                 )}
+
+                <EstimatedTimeHeading>Estimated time to complete feedback 3min 30sec</EstimatedTimeHeading>
               </Col>
               <Col lg="4">
-              
                 {primaryFilter !== 'terminated' ? (
                   <ProjectWithTeamUI
                     secondaryFilterForInvitedType={secondaryFilterForInvitedType}
