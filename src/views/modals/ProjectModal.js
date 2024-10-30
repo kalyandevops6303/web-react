@@ -534,7 +534,7 @@ const ProjectModal = ({
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
                       ? showCreateBidButton
                       : true) && (
-                      <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
+                      <Button color="primary" className="d-flex align-items-center justify-content-between" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
                         {checkBidLoadingIsLoading ? (
                           <Spinner size="sm" />
                         ) : (

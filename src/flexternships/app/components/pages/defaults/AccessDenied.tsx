@@ -12,7 +12,7 @@ export default function AccessDenied() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="p-8">
+            <div className="p-8 mt-14">
                 <div className="flex flex-col items-center">
                     <h2 className="mb-4 text-2xl text-center">
                         Oops!

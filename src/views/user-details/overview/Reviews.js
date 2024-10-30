@@ -14,14 +14,16 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 
 const Review = ({ data }) => (
   <ReviewWrap>
-    <img
-      src={data?.rating_by?.image_uri || avatar7}
-      alt="user"
-      style={{ borderRadius: '50%', objectFit: 'cover' }}
-      width={64}
-      height={64}
-    />
-    <div>
+    <div className="w-2/5">
+      <img
+        src={data?.rating_by?.image_uri || avatar7}
+        alt="user"
+        style={{ borderRadius: '50%', objectFit: 'cover' }}
+        width={64}
+        height={64}
+      />
+    </div>
+    <div className="3/5">
       <CardTitle className="mb-25">{`${data?.rating_by?.first_name} ${data?.rating_by?.last_name}`}</CardTitle>
       <div className="d-flex">
         <CardText className="mr-1">
