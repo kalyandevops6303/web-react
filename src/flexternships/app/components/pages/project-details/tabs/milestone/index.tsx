@@ -1,4 +1,3 @@
-import React from 'react'
 import MilestoneTile from './MilestoneTile'
 import { MilestoneFeedbackStatus, MilestoneFeedbackType, MilestoneStatus } from '@flexternships/enums/core-enums'
 import MilestoneDetails from './MilestoneDetails'
