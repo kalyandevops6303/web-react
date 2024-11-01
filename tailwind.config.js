@@ -37,7 +37,6 @@ module.exports = {
 				},
 				success: '#28C76F',
 				error: "#EA5455",
-				success: "#28C76F",
 				trublue: {
 					DEFAULT: "#0065C1",
 					secondary: {
