@@ -264,6 +264,19 @@ export const convertUnixTimestampToDate = (timestamp, timeZone) => {
   return formattedOutput;
 };
 
+export function calculateDays(timestamp1, timestamp2) {
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+  const daysBetween = Math.floor(Math.abs(timestamp1 - timestamp2) / millisecondsPerDay);
+
+  const currentTimestamp = Date.now();
+  const daysLeft = timestamp1 > currentTimestamp
+    ? Math.floor((timestamp1 - currentTimestamp) / millisecondsPerDay)
+    : 0;
+
+  return { daysBetween, daysLeft };
+}
+
 export const renderFormattedListingDate = (date) => {
   const formattedDate = date
     .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })

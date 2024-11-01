@@ -4,22 +4,28 @@ import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
-import { getCardInfo } from '../../../redux/actions/projectActions';
+import { getCardInfo, getCardInfoFlextern } from '../../../redux/actions/projectActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import PlusUsers from '../../../assets/images/PlusUsers.svg';
-import { appPermissionsSelector } from '@src/redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData } from '@src/redux/selectors/authSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
+  const userData = useSelector(selectAuthUserData);
   const selectCardData = useSelector((state) => state.project.cardData);
   const isLoading = useSelector((state) => state?.project?.cardInfoLoading);
   const isLoadingSecondaryFilter = useSelector((state) => state?.project?.loading);
   const appPermissions = useSelector(appPermissionsSelector);
+  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
 
   useEffect(() => {
-    dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
-  }, []);
+    if (flexTern) {
+      dispatch(getCardInfoFlextern({ userType, onSuccess: () => {}, onError: () => {} }));
+    } else {
+      dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
+    }
+  }, [flexTern]);
 
   if (isLoading && !selectCardData) {
     return <ComponentSpinner />;

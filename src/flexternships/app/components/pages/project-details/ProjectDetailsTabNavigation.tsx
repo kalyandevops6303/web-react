@@ -1,9 +1,23 @@
-import React from 'react'
+import { ProjectTabType } from '@/flexternships/constraints/types/project-details-types';
+import NavigationTab from './NavigationTab';
+import { useParams } from 'react-router-dom';
 
-export default function ProjectDetailsTabNavigation() {
+export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTabType[] }) {
+  const param = useParams();
   return (
-    <div>
-        Project Details Tab Navigation
+    <div className="w-full">
+      <div className=" bg-white  w-fit flex flex-row  items-start justify-start">
+        {tabs.map((tab, index) => (
+          <NavigationTab key={index} tab={tab} index={index} />
+        ))}
+      </div>
+      <div>
+        {tabs.map((tab) => {
+          if (tab.id === param['*']) {
+            return tab.component;
+          }
+        })}
+      </div>
     </div>
-  )
+  );
 }

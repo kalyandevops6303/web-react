@@ -57,12 +57,14 @@ const Educational = () => {
         }),
       }),
     ),
-    area: yup.object().shape({
-      label: yup.string(),
-      value: yup.string(),
-    })
-    .nullable()
-    .optional(),
+    area: yup
+      .object()
+      .shape({
+        label: yup.string(),
+        value: yup.string(),
+      })
+      .nullable()
+      .optional(),
     skills: yup
       .array()
       .of(
@@ -101,7 +103,7 @@ const Educational = () => {
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      educationDetails: savedFormData?.educationDetails || [{educationInstitution:"",education:""}],
+      educationDetails: savedFormData?.educationDetails || [{ educationInstitution: '', education: '' }],
       area: savedFormData?.area || null,
       skills: savedFormData?.skills || null,
       tools: savedFormData?.tools || null,
@@ -447,7 +449,6 @@ const Educational = () => {
                         <FormFeedback>
                           {errors?.educationDetails[index]?.educationInstitution &&
                             errors?.educationDetails[index]?.educationInstitution?.label?.message}
-
                         </FormFeedback>
                       )}
                   </Col>
@@ -528,9 +529,7 @@ const Educational = () => {
           </Card>
           <Card className="w-75">
             <CardHeader className="d-flex align-items-end">
-              <h4 className="m-0 mt-1">
-                Project Domain 
-              </h4>
+              <h4 className="m-0 mt-1">Project Domain</h4>
               <CustomerSupportCTA
                 type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
                 handleCustomerSupport={handleCustomerSupport}
@@ -636,12 +635,22 @@ const Educational = () => {
               </UploadIconContainer>
               <h5 className="fw-bold">Back</h5>
             </div>
-            <div>
-              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+            <div className="d-flex justify-content-end">
+              <Button
+                color="primary"
+                outline
+                className="d-flex align-items-center justify-content-between me-2"
+                onClick={onSkipClick}
+              >
                 <span className="me-50">Skip</span>
                 <ChevronRight size={14} />
               </Button>
-              <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+              <Button
+                color="primary"
+                type="submit"
+                className="d-flex align-items-center justify-content-between"
+                disabled={!isValid || profileDetailsIsLoading}
+              >
                 {profileDetailsIsLoading ? (
                   <Spinner size="sm" />
                 ) : (

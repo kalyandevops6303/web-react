@@ -106,7 +106,7 @@ const TalentOnboarding = () => {
       <div className={`${location.pathname.includes('onboarding') ? 'px-5 py-3' : 'px-3 pt-1'} `}>
         <div className="px-2">
           {location.pathname.includes('onboarding') ? (
-            <h2>Onboarding</h2>
+            <h2 className="text-2xl font-medium">Onboarding</h2>
           ) : (
             <BackButtonContainer>
               <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>

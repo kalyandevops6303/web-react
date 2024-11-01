@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
 export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
-    const { children, allowedAppRoles, fallbackRoute } = props;
+    const { children, allowedAppRoles, fallbackRoute, noPadding = false } = props;
     const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
     const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
     const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
@@ -46,18 +46,18 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
 
     if (!hasAccess) {
         // If access is denied, check for a specific redirect route
-        const redirectRoute = allowedAppRoles.find(role => 
-            userAppRoles.includes(role.appRole) && 
+        const redirectRoute = allowedAppRoles.find(role =>
+            userAppRoles.includes(role.appRole) &&
             role.blockCheckpoints.some(bc => bc.checkpoint === userCheckpoint)
         )?.blockCheckpoints.find(bc => bc.checkpoint === userCheckpoint)?.redirectRoute;
 
         // Redirect to the specific route, fallback route, or show access denied
         return redirectRoute ? <Navigate to={redirectRoute} /> : (fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />);
     }
-    
+
     // If all checks pass, render the children components
     return (
-        <div className='flexternships-page px-7 pt-24'>
+        <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-20 '}`}>
             {children}
         </div>
     );
@@ -74,4 +74,5 @@ type RoleAccessWrapperProps = {
         }[];
     }[];
     fallbackRoute?: string;
+    noPadding?: boolean;
 }

@@ -71,6 +71,11 @@ export const AccountDetailsFormContainer = styled.div`
     margin-left: 4px;
   }
 
+  .filled-form-text-field {
+    border : 1px solid ${theme.inputBorder};
+    background: linear-gradient(0deg, rgba(153, 193, 230, 0.10) 0%, rgba(153, 193, 230, 0.10) 100%), #FFF;
+  }
+  
   .filled-form-control {
     border: 1px solid ${theme.inputBorder};
   }

@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp, Plus, Trash2 } from 'react-feather';
+import { ChevronDown, ChevronUp, Plus } from 'react-feather';
 import { Controller, FieldErrors, useFieldArray } from 'react-hook-form';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleElevatedCard';
@@ -19,7 +19,7 @@ export default function SortableMilestoneCard(props: Props) {
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
     const style = {
-        transform: CSS.Transform.toString(transform),
+        transform: CSS.Translate.toString(transform),
         transition,
         maxHeight: isDragging ? '150px' : '600px',
     };
@@ -32,6 +32,12 @@ export default function SortableMilestoneCard(props: Props) {
     useEffect(() => {
         setIsExpanded((cur) => (isDragging ? false : cur));
     }, [isDragging]);
+
+    const handleRemoveDeliverable = (index: number) => {
+        if (deliverables.length > 1) {
+            removeDeliverable(index);
+        }
+    }
 
     return (
         <div ref={setNodeRef} className='w-full' style={style}>
@@ -57,7 +63,7 @@ export default function SortableMilestoneCard(props: Props) {
                                 <TextInput
                                     value={value}
                                     onChange={onChange}
-                                    className="w-[510px]"
+                                    className="w-[474px]"
                                     label={`Milestone  ${milestoneIndex + 1}`}
                                     placeholder="Enter milestone"
                                     error={errors?.title?.message}
@@ -93,7 +99,7 @@ export default function SortableMilestoneCard(props: Props) {
                                     <TextInput
                                         value={value}
                                         onChange={onChange}
-                                        className="w-[554px]"
+                                        className="w-[518px]"
                                         label="Description"
                                         placeholder="Enter description"
                                         tooltip='Describe the milestone objectives and output required'
@@ -101,55 +107,56 @@ export default function SortableMilestoneCard(props: Props) {
                                         textarea required />
                                 )}>
                             </Controller>
-                            <div className='flex flex-col gap-y-5'>
-                                <div className='flex flex-col gap-y-10'>
-                                    {
-                                        deliverables.map((field, index) => (
-                                            <div key={field.id} className='relative'>
-                                                <Controller
-                                                    name={`milestones.${milestoneIndex}.deliverables.${index}`}
-                                                    control={control}
-                                                    render={({ field: { value, onChange } }) => (
-                                                        <TextInput
-                                                            value={value}
-                                                            onChange={onChange}
-                                                            key={field.id}
-                                                            className="w-[428px]"
-                                                            label="Deliverables"
-                                                            placeholder="Enter deliverables"
-                                                            error={errors?.deliverables?.[index]?.message}
-                                                        />
-                                                    )}>
-                                                </Controller>
-                                                {
-                                                    deliverables.length > 1 && (
-                                                        <span className='absolute -right-7 bottom-[15px] text-error cursor-pointer' onClick={() => (removeDeliverable(index))}>
-                                                            <Trash2 size={18} />
-                                                        </span>
-                                                    )
-                                                }
-                                            </div>
-
-                                        ))
-                                    }
+                            <div className='flex flex-col gap-y-1'>
+                                <div className='text-xs font-normal leading-5 text-grey-500'>
+                                    Deliverables
                                 </div>
-                                <div>
-                                    <PrimaryIconText className={'mt-2'} text='Add Deliverable' icon={<Plus className={'text-trublue'} size={18} />} onClick={() => appendDeliverable('')} />
+                                <div className='flex flex-col gap-y-5'>
+                                    <div className='flex flex-col gap-y-5'>
+                                        {
+                                            deliverables.map((field, index) => (
+                                                <div key={field.id} className='flex flex-row gap-x-6 items-center'>
+                                                    <Controller
+                                                        name={`milestones.${milestoneIndex}.deliverables.${index}`}
+                                                        control={control}
+                                                        render={({ field: { value, onChange } }) => (
+                                                            <TextInput
+                                                                value={value}
+                                                                onChange={onChange}
+                                                                key={field.id}
+                                                                className="w-[428px]"
+                                                                label=""
+                                                                placeholder="Enter deliverables"
+                                                                error={errors?.deliverables?.[index]?.message}
+                                                            />
+                                                        )}>
+                                                    </Controller>
+                                                    <span className={`text-error text-xs tracking-wide font-semibold ${deliverables.length > 1 ? 'cursor-pointer' : 'opacity-60'}`} onClick={() => (handleRemoveDeliverable(index))}>
+                                                        Remove
+                                                    </span>
+                                                </div>
+
+                                            ))
+                                        }
+                                    </div>
+                                    <div>
+                                        <PrimaryIconText className={'mt-2'} text='Add Deliverable' icon={<Plus className={'text-trublue'} size={18} />} onClick={() => appendDeliverable('')} />
+                                    </div>
                                 </div>
                             </div>
+
                         </>
                     )}
                 </div>
+                {(isExpanded && removable) && (
+                    <div className="mr-6 pb-6 flex flex-row justify-end">
 
-                {/* Display the Remove Role button only if expanded */}
-                <div className="mr-6 pb-6 flex flex-row justify-end">
-
-                    {(isExpanded && removable) && (
                         <span className={Styles.errorTextButton} onClick={remove}>
                             Remove Milestone
                         </span>
-                    )}
-                </div>
+                    </div>
+                )}
+
             </SimpleElevatedCard>
         </div>
     );

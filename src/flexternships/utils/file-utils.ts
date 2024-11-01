@@ -13,7 +13,7 @@ import pptFileIcon from '@flexternships/assets/icons/file-types/pptFile.png';
 import docFileIcon from '@flexternships/assets/icons/file-types/docFile.png';
 import gifFileIcon from '@flexternships/assets/icons/file-types/gifFile.png';
 import jpgFileIcon from '@flexternships/assets/icons/file-types/jpgFile.png';
-
+import pngFileIcon from '@flexternships/assets/icons/file-types/pngFile.png';
 /**
  * Converts a file size in bytes to a human-readable string (KB, MB, GB, TB, etc.).
  * @param sizeInBytes - The file size in bytes.
@@ -65,6 +65,8 @@ export const getFileIcon = (fileName: string) => {
         return pptFileIcon;
       case 'jpg':
         return jpgFileIcon;
+      case 'png':
+        return pngFileIcon;
       case 'gif':
         return gifFileIcon;
       default:

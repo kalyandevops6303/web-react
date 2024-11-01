@@ -3,6 +3,7 @@ import { ProjectCreationFormData } from '@flexternships/types/project-creation-t
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
+import { ProjectDetails } from '../constraints/types/project-details-types';
 
 /**
  * Retrieves a file upload URL for a given filename.
@@ -172,4 +173,18 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
     } catch (error) {
         handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
     }
+}
+
+export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetails | undefined> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+      headers: headers
+  }
+
+  try {
+      const response = await axios.get(`${routes.projectManagementV2.project.getProjectById}/${projectId}`, config)
+      return response.data?.data[0] || undefined;
+  } catch (error) {
+      handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
+  }
 }

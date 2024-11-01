@@ -4,7 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {Button,
+import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -17,7 +18,8 @@ import {Button,
   Row,
   Spinner,
   UncontrolledTooltip,
- Progress } from 'reactstrap';
+  Progress,
+} from 'reactstrap';
 import { ChevronRight, Info, UserPlus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
@@ -55,7 +57,7 @@ import { convertReferralLoading } from '../../redux/selectors/referralAndRewardS
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
-import { filteredFormSchema , giveProgressBarColorClassName } from '../../utility/Utils';
+import { filteredFormSchema, giveProgressBarColorClassName } from '../../utility/Utils';
 import { getUserData } from '../../redux/actions/authActions';
 import { checkIsDelegateModeModalVisible } from '../../redux/selectors/delegateSelectors';
 import { toggleDelegateModeModal } from '../../redux/reducers/delegate';
@@ -63,7 +65,7 @@ import { selectTrumioIsFlextern, selectUserData } from '../../redux/selectors/au
 import { ProgressBarWrapper } from '../create-bid/style';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
-import "../../App.css";
+import '../../App.css';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const Account = () => {
@@ -92,9 +94,13 @@ const Account = () => {
   const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
@@ -168,7 +174,7 @@ const Account = () => {
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
   };
-  
+
   useEffect(() => {
     dispatch(setFormData({ ...savedFormData, resetPasswordModal }));
   }, [resetPasswordModal]);
@@ -225,7 +231,7 @@ const Account = () => {
       }
     }
   };
-  const buttonText = selectedImage && selectedImagePreview ? 'Edit Image' : 'Upload Image';
+  const buttonText = selectedImage && selectedImagePreview ? 'Edit Picture' : 'Update Picture';
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       setValue('countryCode', res.country_code);
@@ -321,7 +327,6 @@ const Account = () => {
         dispatch(saveClientProfileDetails(reqData, onSuccess));
       }
     }
-
   };
 
   useEffect(() => {
@@ -403,7 +408,7 @@ const Account = () => {
   };
 
   const getOverallPercentageCompletion = () => {
-      if (isFlextern) setOverallPercentageCompletion(profileCompletionFlextern);
+    if (isFlexternInvited) setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
   useEffect(() => {
@@ -425,10 +430,10 @@ const Account = () => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)} className="d-flex gap-1">
-          <div className='w-75'>
+          <div className="w-75">
             <Card>
               <CardHeader>
-                <h4 className="m-0 mt-1">Account Details</h4>
+                <h4 className="m-0 mt-1 text-lg font-medium">Account Details</h4>
               </CardHeader>
               <hr className="m-0 card-header-border" />
               <CardBody>
@@ -515,7 +520,7 @@ const Account = () => {
                     <Label className="form-label" for="mobileNumber">
                       Mobile Number
                     </Label>
-                    <Row>
+                    <Row className="d-flex align-items-center justify-content-between">
                       <Col sm="3" md="3" lg="3">
                         <div className="custom-country-disabled-dropdown">
                           <CountryDropdown
@@ -536,7 +541,7 @@ const Account = () => {
                             <Input
                               {...field}
                               placeholder="Enter mobile number"
-                              className="filled-form-control"
+                              className="filled-form-control filled-form-text-field"
                               disabled
                               invalid={errors.mobileNumber && true}
                             />
@@ -558,7 +563,7 @@ const Account = () => {
                         <Input
                           {...field}
                           placeholder="Enter email address"
-                          className="filled-form-control"
+                          className="filled-form-control filled-form-text-field"
                           disabled
                           invalid={errors.email && true}
                         />
@@ -578,6 +583,7 @@ const Account = () => {
               <Button
                 color="primary"
                 type="submit"
+                className="d-flex align-items-center justify-content-between"
                 disabled={
                   isImageUploading ||
                   convertReferralIsLoading ||
@@ -587,63 +593,116 @@ const Account = () => {
                 }
               >
                 {talentAccountDetailsIsLoading ||
-                  clientAccountDetailsIsLoading ||
-                  convertReferralIsLoading ||
-                  profileDetailsIsLoading ||
-                  profileDetailsForClientLoading ? (
+                clientAccountDetailsIsLoading ||
+                convertReferralIsLoading ||
+                profileDetailsIsLoading ||
+                profileDetailsForClientLoading ? (
                   <Spinner size="sm" />
                 ) : (
                   <>
                     <span className="me-50">Save & Continue</span>
-                    {!isDelegate && <ChevronRight size={14} />}
                   </>
                 )}
               </Button>
             </div>
           </div>
-          <div className='w-25'>
-            {userType != userTypes.client && isFlexternInvited && <Card>
-              <CardHeader>
-                <h4 className="m-0 mt-1">Profile Completion</h4>
-                <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
-                <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion || 0}%</h3>
-                <Progress value={overallPercentageCompletion}
-                  style={{ height: '0.5rem' }}
-                  className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                 />
+          <div className="w-25">
+            {userType != userTypes.client && isFlexternInvited && (
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
+                  <CardText className="m-0 mt-1">
+                    Make it easier for others to find you by completing your profile.
+                  </CardText>
+                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold text-grey">{overallPercentageCompletion || 0}%</h3>
+                  <Progress
+                    value={overallPercentageCompletion}
+                    style={{ height: '0.5rem' }}
+                    className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                  />
+                </CardHeader>
 
-              </CardHeader>
+                <CardBody>
+                  <hr className="m-0 card-header-border" />
 
-              <CardBody>
-                <hr className="m-0 card-header-border" />
+                  {isTrumioTalent && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox"
+                          className="custom-checkbox-input"
+                          checked={isProjectReady}
+                        />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer "
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                ?.path || '/marketplace',
+                            )
+                          }
+                        >
+                          {isProjectReady
+                            ? 'Explore Projects'
+                            : `${
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
+                    </div>
+                  )}
 
-                {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                    <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                  </div>
-                  <div>
-                    <CardText className="m-0">Client Projects Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                    onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                    >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
-
-                {isFlextern && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                    <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                  </div>
-                  <div>
-                    <CardText className="m-0">Flexternship Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                    onClick={() => !userDetailsData?.talent_info? navigate('/talent-onboarding/account-details') : navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                    >{isFlexternReady ? 'Explore Flexternships' : `${!userDetailsData?.talent_info? 'Add Account Details' :returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
-              </CardBody>
-            </Card>}
+                  {isFlexternInvited && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox2"
+                          className="custom-checkbox-input"
+                          checked={isFlexternReady}
+                        />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b
+                          className="d-flex align-items-center text-primary cursor-pointer "
+                          onClick={() =>
+                            !userDetailsData?.talent_info
+                              ? navigate('/talent-onboarding/account-details')
+                              : navigate(
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionFlexternMissingValues,
+                                  )?.path || '/dashboard',
+                                )
+                          }
+                        >
+                          {isFlexternReady
+                            ? 'Explore Flexternships'
+                            : `${
+                                !userDetailsData?.talent_info
+                                  ? 'Add Account Details'
+                                  : returnCompleteProfileDetailsCta(
+                                      userTypes.talent,
+                                      profileCompletionFlexternMissingValues,
+                                    )?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+            )}
           </div>
         </Form>
       )}

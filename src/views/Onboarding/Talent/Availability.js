@@ -27,7 +27,11 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
-import { getUserDetails, saveProfileDetails , saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
+import {
+  getUserDetails,
+  saveProfileDetails,
+  saveCheckpointComplete,
+} from '../../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
@@ -241,10 +245,9 @@ const Availability = () => {
       currency_preference,
       hourly_rate,
     };
-    
+
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     dispatch(saveCheckpointComplete(() => {}));
-    
   };
 
   const loadTimezonesOptions = async (search) => {
@@ -936,12 +939,22 @@ const Availability = () => {
               </UploadIconContainer>
               <h5 className="fw-bold">Back</h5>
             </div>
-            <div>
-              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+            <div className="d-flex justify-content-end">
+              <Button
+                color="primary"
+                outline
+                className="d-flex align-items-center justify-content-between me-2"
+                onClick={onSkipClick}
+              >
                 <span className="me-50">Skip</span>
                 <ChevronRight size={14} />
               </Button>
-              <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+              <Button
+                className="d-flex align-items-center justify-content-between"
+                color="primary"
+                type="submit"
+                disabled={!isValid || profileDetailsIsLoading}
+              >
                 {profileDetailsIsLoading ? (
                   <Spinner size="sm" />
                 ) : (
