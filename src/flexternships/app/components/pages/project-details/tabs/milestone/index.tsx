@@ -1,4 +1,3 @@
-import React from 'react'
 import MilestoneTile from './MilestoneTile'
 import { MilestoneStatus } from '@flexternships/enums/core-enums'
 

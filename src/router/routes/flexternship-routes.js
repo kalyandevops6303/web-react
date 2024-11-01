@@ -120,7 +120,38 @@ export const FlexternshipRoutes = [
         )
     },
     {
-        path: '/project-details/:projectId/*',
+        path: '/project-details/:projectId/:projectStep',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipProjectDetails />
+            </RoleAccessWrapper >
+        ),
+    },
+    {
+        path: '/project-details/:projectId/:projectStep/milestone/:milestoneId',
         element: (
             <RoleAccessWrapper
                 allowedAppRoles={[
