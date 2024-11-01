@@ -40,7 +40,6 @@ const getCardInfo =
     dispatch(getCardInfoReq());
     try {
       const res = await getCardServiceFlextern({ userType });
-      console.log(res)
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -89,9 +88,7 @@ const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (
       dispatch(getListReq());
     }
     try{
-      console.log("metaData", metaData);
       const res = await getProjectsListFlexternService({ metaData });
-      console.log(res)
       if (res) {
         dispatch(storeSuccessData(res?.data?.data));
         onSuccess();

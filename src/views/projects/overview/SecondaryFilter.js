@@ -94,23 +94,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     invitation_to: [invitedOptions[0]],
   });
 
-  useEffect(() => {
-    if (secondFilterState?.department_name?.length > 0) {
-      metaDataFlextern.department_name = secondFilterState.department_name[0];
-    }
-    if (secondFilterState?.status?.length > 0) {
-      metaDataFlextern.status = secondFilterState.status?.[0]?.status;
-    }
-    if (secondFilterState?.project_name?.length > 0) {
-      metaDataFlextern.project_name = secondFilterState.project_name[0].name;
-    }
-
-    if (secondFilterState?.talent_name?.length > 0) {
-      metaDataFlextern.talent_name = secondFilterState.talent_name[0].name;
-    }
-
-  }, [secondFilterState]);
-
   const onSuccess = () => {};
   const onError = () => {
     setHasMore(false);
@@ -166,8 +149,25 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   useEffect(() => {
+    if (secondFilterState?.department_name?.length > 0) {
+      metaDataFlextern.department_name = secondFilterState.department_name[0]?.value;
+    }
+    if (secondFilterState?.status?.length > 0) {
+      metaDataFlextern.status = secondFilterState.status?.[0]?.status?.value;
+    }
+    if (secondFilterState?.project_name?.length > 0) {
+      metaDataFlextern.project_name = secondFilterState.project_name[0].label;
+    }
+
+    if (secondFilterState?.talent_name?.length > 0) {
+      metaDataFlextern.talent_name = secondFilterState.talent_name[0].label;
+    }
+  }, [secondFilterState]);
+
+
+  useEffect(() => {
     setHasMore(true);
-    if (currentPreview.length === 0 || selectProjectData?.length === selectProjectMetaData?.total_records) {
+    if (currentPreview?.length === 0 || selectProjectData?.length === selectProjectMetaData?.total_records) {
       setHasMore(false);
     }
   }, [currentPreview]);
@@ -246,16 +246,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-
+    console.log(metaDataFlextern)
     dispatch(
-      getProjectsListingFlextern({
-        metaData: {
-          ...metaDataFlextern,
-          search_query: metaDataFlextern?.project_name || searchText || '',
-          department_name: metaDataFlextern?.department_name?.department_name || '',
-          status: metaDataFlextern?.status || '',
-          project_status: primaryFilter?.toUpperCase() || '',
+      getProjectListing({
+        data: {
+          ...filterData,
+          search_query: searchText || '',
+          project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
         },
+        metaData: newMetaData,
+        onSuccess,
+        onError,
       }),
     );
   };
@@ -279,9 +280,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadTalentOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getTalentNameService(page, search);
-
+      const options = response?.data?.data?.data.map((option) => {
+        return {
+          value: option.talent_id,
+          label: option.talent_name,
+        };
+      });
       return {
-        options: response?.data?.data?.data,
+        options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -417,7 +423,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   theme={selectThemeColors}
                   onChange={(value) => onChangeFilter('project_type', value)}
                   value={
-                    secondFilterState.project_type.length > 0
+                    secondFilterState.project_type?.length > 0
                       ? {
                           value: secondFilterState.project_type[0].value,
                           label: secondFilterState.project_type[0].label,
@@ -438,7 +444,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     theme={selectThemeColors}
                     onChange={(value) => onChangeFilter('invitation_by', value)}
                     value={
-                      secondFilterState.invitation_by.length > 0
+                      secondFilterState.invitation_by?.length > 0
                         ? {
                             value: secondFilterState.invitation_by[0].value,
                             label: secondFilterState.invitation_by[0].label,
@@ -460,7 +466,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     theme={selectThemeColors}
                     onChange={(value) => onChangeFilter('invitation_type', value)}
                     value={
-                      secondFilterState.invitation_type.length > 0
+                      secondFilterState?.invitation_type?.length > 0
                         ? {
                             value: secondFilterState.invitation_type[0].value,
                             label: secondFilterState.invitation_type[0].label,
@@ -482,7 +488,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     theme={selectThemeColors}
                     onChange={(value) => onChangeFilter('invitation_to', value)}
                     value={
-                      secondFilterState.invitation_to.length > 0
+                      secondFilterState.invitation_to?.length > 0
                         ? {
                             value: secondFilterState.invitation_to[0].value,
                             label: secondFilterState.invitation_to[0].label,
@@ -495,9 +501,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && (
+              {(userType !== userTypes.team && userType !== userTypes.client) && (
                 <Col>
-                  <Label className="form-label">Deparment Name</Label>
+                  <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
                     isClearable
                     debounceTimeout={1000}
@@ -509,7 +515,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('department_name', value)}
                     value={
-                      secondFilterState.department_name.length > 0
+                      secondFilterState.department_name?.length > 0
                         ? secondFilterState.department_name?.map((item) => item)
                         : null
                     }
@@ -526,14 +532,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
                     loadOptions={loadSecondaryStatusesOptions}
-                    classNamePrefix="name"
+                    classNamePrefix="select"
                     placeholder="Select status"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('status', value)}
                     value={
-                      secondFilterState.status.length > 0
-                        ? secondFilterState?.status?.map((item) => item?.status)
+                      secondFilterState.status?.length > 0
+                        ? secondFilterState?.status?.map((item) => item)
                         : null
                     }
                   />
@@ -555,11 +561,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('talent_name', value)}
                     value={
-                      secondFilterState.talent_name.length > 0
-                        ? {
-                            value: secondFilterState.talent_name[0].talent_id,
-                            label: secondFilterState.talent_name[0].talent_name,
-                          }
+                      secondFilterState.talent_name?.length > 0
+                        ? secondFilterState.talent_name?.map((item) => item)
                         : null
                     }
                   />
@@ -581,11 +584,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('project_name', value)}
                     value={
-                      secondFilterState.project_name.length > 0
-                        ? {
-                            value: secondFilterState.project_name[0]._id,
-                            label: secondFilterState.project_name[0].value,
-                          }
+                      secondFilterState.project_name?.length > 0
+                        ? secondFilterState.project_name?.map((item) => item)
                         : null
                     }
                   />
@@ -607,7 +607,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('team_name', value)}
                     value={
-                      secondFilterState.team_name.length > 0
+                      secondFilterState.team_name?.length > 0
                         ? {
                             value: secondFilterState.team_name[0].value,
                             label: secondFilterState.team_name[0].label,
@@ -633,7 +633,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('client_name', value)}
                     value={
-                      secondFilterState.client_name.length > 0
+                      secondFilterState.client_name?.length > 0
                         ? {
                             value: secondFilterState.client_name[0].value,
                             label: secondFilterState.client_name[0].label,
