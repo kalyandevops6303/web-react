@@ -25,7 +25,7 @@ const LeftSideBarProjectDetails = () => {
   };
   const daysLeft = calculateDays(data?.listing_details?.start_date_epoch, data?.listing_details?.end_date_epoch)?.daysLeft;
   return (
-    <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  xl:w-[350px] h-fit rounded-xl">
+    <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[350px] h-fit rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
         <ProjectStatusChip
           status={data?.status as 'OPEN' | 'IN_REVIEW' | 'ACTIVE' | 'ONGOING' | 'CLOSED' | 'TERMINATED' | 'COMPLETED'}

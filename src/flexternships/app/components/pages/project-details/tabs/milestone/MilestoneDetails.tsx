@@ -1,30 +1,75 @@
 import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryButton'
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText'
 import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard'
+import Spinner from '@/flexternships/app/components/core/Spinner'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/flexternships/app/components/ui/accordion'
-import React from 'react'
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums'
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores'
+import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store'
+import { showToastMessage } from '@/flexternships/utils/core-utils'
+import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils'
+import { useEffect, useState } from 'react'
 import { ArrowLeft, Check } from 'react-feather'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function MilestoneDetails() {
+    const userDetails = useFlexternUserStore((state) => state.userDetails);
+    const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
+    const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
+
+    const [isDetailsLoading, setIsDetailsLoading] = useState(true);
+
+    const navigate = useNavigate();
+    const params = useParams();
+
+    const milestoneId = params.milestoneId;
+
+    useEffect(() => {
+        const fetchMilestoneDetails = async () => {
+            if (milestoneId) {
+                setIsDetailsLoading(true);
+                try {
+                    await populateMilestoneDetails(milestoneId);
+                } catch (error: unknown) {
+                    showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching milestone details');
+                } finally {
+                    setIsDetailsLoading(false);
+                }
+            }
+        }
+        fetchMilestoneDetails();
+    }, [milestoneId])
+
     const goBackToAllMilestones = () => {
-        // navigate(-1);
+        navigate(-1);
         // TODO: Implement go back to all milestones
     }
-    const acceptMilestone = () => {
-        // TODO: Implement accept milestone
+    const handleMilestonePrimaryAction = () => {
+        // TODO: Implement accept milestone and mark as completed
     }
+
+    if (isDetailsLoading) {
+        return (
+            <div className='flex flex-col items-center justify-center min-h-48'>
+                <div className='h-8 w-8'>
+                    <Spinner />
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className='flex flex-col gap-y-6'>
             <div className='flex flex-row justify-between'>
                 <PrimaryIconText icon={<ArrowLeft className='text-white' />} text='All Milestones' onClick={goBackToAllMilestones} bgDark />
-                <PrimaryButton onClick={acceptMilestone}>
-                    Accept
+                <PrimaryButton onClick={handleMilestonePrimaryAction}>
+                    {userDetails.userType === UserType.CLIENT ? 'Accept' : 'Mark as Completed'}
                 </PrimaryButton>
             </div>
             <SimpleElevatedCard className='flex flex-col px-8 pt-6 pb-10 gap-y-10 bg-white-fa overflow-hidden'>
                 <div className='flex flex-row'>
                     <h1>
-                        Milestone 5
+                        Milestone {milestoneDetails.seq}
                     </h1>
                     <div>
                         In Progress
@@ -36,7 +81,7 @@ export default function MilestoneDetails() {
                             Start
                         </div>
                         <div className='text-lg font-semibold not-italic text-grey-heading'>
-                            Apr 12, 23
+                            {formatEpochToHumanReadable(milestoneDetails?.startDate ?? 0, true)}
                         </div>
                     </div>
                     <div className='flex flex-col gap-y-1.5'>
@@ -44,7 +89,7 @@ export default function MilestoneDetails() {
                             Duration
                         </div>
                         <div className='text-lg font-semibold not-italic text-grey-heading'>
-                            3w
+                            {milestoneDetails?.estimatedDuration?.duration}w
                         </div>
                     </div>
                     <div className='flex flex-col gap-y-1.5'>
@@ -52,7 +97,7 @@ export default function MilestoneDetails() {
                             Hours/week
                         </div>
                         <div className='text-lg font-semibold not-italic text-grey-heading'>
-                            255 hr
+                            255 hr {/* Query: Hours per week of milestone */}
                         </div>
                     </div>
                     <div className='flex flex-col gap-y-1.5'>
@@ -70,7 +115,7 @@ export default function MilestoneDetails() {
                             Milestone Name
                         </h2>
                         <p className='text-sm font-normal not-italic leading-5.5 text-grey'>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                            {milestoneDetails?.name}
                         </p>
                     </div>
                     <div className='flex flex-col gap-y-4'>
@@ -78,7 +123,7 @@ export default function MilestoneDetails() {
                             Description
                         </h2>
                         <p className='text-sm font-normal not-italic leading-5.5 text-grey'>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                            {milestoneDetails?.description}
                         </p>
                     </div>
                 </SimpleElevatedCard>

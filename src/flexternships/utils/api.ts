@@ -17,6 +17,10 @@ export const routes = {
             create: `${serviceUrls.projectManagementV2}/project`,
             saveDraft: `${serviceUrls.projectManagementV2}/project/draft/save`,
             getProjectById: `${serviceUrls.dashboardV2}/projects`,
+        },
+        milestone: {
+            getMilestonesByProjectId: `${serviceUrls.projectManagementV2}/milestones`,
+            getMilestoneDetailsById: `${serviceUrls.projectManagementV2}/single/milestone`,
         }
     },
     userManagement: {

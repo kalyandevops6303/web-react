@@ -151,7 +151,7 @@ export const FlexternshipRoutes = [
         ),
     },
     {
-        path: '/project-details/:projectId/:projectStep/milestone/:milestoneId',
+        path: '/project-details/:projectId/milestone/:milestoneId',
         element: (
             <RoleAccessWrapper
                 allowedAppRoles={[
