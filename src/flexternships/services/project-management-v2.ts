@@ -183,7 +183,95 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
 
   try {
       const response = await axios.get(`${routes.projectManagementV2.project.getProjectById}/${projectId}`, config)
-      return response.data?.data[0] || undefined;
+      const data = response.data?.data[0]?.project;
+      const projectDetailsData: ProjectDetails = {
+        "id": data._id,
+        "createdAt": data.created_at,
+        "updatedAt": data.updated_at,
+        "isDeleted": data.is_deleted,
+        "details": {
+          "name": data.details.name,
+          "description": data.details.description,
+          "expectedDuration": {
+            "duration": data.details.expected_duration.duration,
+            "durationType": data.details.expected_duration.duration_type,
+            "hoursPerWeek": data.details.expected_duration.hours_per_week
+          },
+          "expectedStartDate": data.details.expected_start_date,
+          "documents": data.details.documents.map((document: any) => ({
+            "fileName": document.file_name,
+            "fileKey": document.file_key,
+            "downloadUrl": document.download_url,
+            "size": document.size,
+            "createdAt": document.created_at
+          }))
+        },
+        "roles": {
+            "roleId": data?.roles?.role_id,
+            "proficiency": {
+              "skills": data?.roles?.proficiency.skills,
+              "tools": data?.roles?.proficiency.tools
+            },
+            "count": data?.roles?.count
+          },
+        "listingDetails": {
+          "startDate": data.listing_details.start_date,
+          "endDate": data.listing_details.end_date,
+          "startDateEpoch": data.listing_details.start_date_epoch,
+          "endDateEpoch": data.listing_details.end_date_epoch
+        },
+        "status": data.status,
+        "clientUserId": data.client_user_id,
+        "orgSlugId": data.org_slug_id,
+        "isDocumentsSent": data.is_documents_sent,
+        "isDocumentsSigned": data.is_documents_signed,
+        "clientInfo": data.client_info.map((info: any) => ({
+            "id": info._id,
+            "userId": info.user_id,
+            "companyIndustry": info.company_industry,
+            "companyLogo": info.company_logo,
+            "companyName": info.company_name,
+            "companyStrength": info.company_strength,
+            "companyTagline": info.company_tagline,
+            "createdAt": info.created_at,
+            "currencyPreference": info.currency_preference,
+            "educationalInstitute": info.educational_institute.map((edu: any) => ({
+              "institution": edu.institution
+            })),
+            "firstName": info.first_name,
+            "imageUri": info.image_uri,
+            "isDeleted": info.is_deleted,
+            "lastName": info.last_name,
+            "officeAddress": {
+              "country": info.office_address.country,
+              "state": info.office_address.state,
+              "city": info.office_address.city,
+              "streetAddress": info.office_address.street_address,
+              "houseNumber": info.office_address.house_number,
+              "zipCode": info.office_address.zip_code
+            },
+            "projectAreaOfInterest": {
+              "skills": info.project_area_of_interest.skills,
+              "tools": info.project_area_of_interest.tools,
+              "area": info.project_area_of_interest.area
+            },
+            "projectsListedCount": info.projects_listed_count,
+            "rating": info.rating,
+            "socialLinks": info.social_links.map((link: any) => ({
+              "platform": link.platform,
+              "url": link.url
+            })),
+            "title": info.title,
+            "updatedAt": info.updated_at,
+            "projectsWorkedOnCount": info.projects_worked_on_count,
+            "orgSlugId": info.org_slug_id,
+            "isOrgAdmin": info.is_org_admin,
+            "departmentName": info.department_name
+          })),
+        "skillsData": data.skills_data,
+        "toolsData": data.tools_data
+      };
+      return projectDetailsData;
   } catch (error) {
       handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
   }
