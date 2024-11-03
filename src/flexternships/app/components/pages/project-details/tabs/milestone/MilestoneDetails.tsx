@@ -125,6 +125,20 @@ export default function MilestoneDetails() {
                             {milestoneDetails?.description}
                         </p>
                     </div>
+                    <div className='flex flex-col gap-y-4'>
+                        <h2 className='text-lg font-normal not-italic text-grey-heading'>
+                            Deliverables
+                        </h2>
+                        <ul className='list-none'>
+                            {
+                                milestoneDetails.deliverables.map((deliverable, index) => (
+                                    <li key={index} className='relative pl-6 text-sm font-normal not-italic leading-5.5 text-grey before:content-["."] before:text-xl before:absolute before:left-2 before:bottom-0.5'>
+                                        {deliverable}
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </div>
                 </SimpleElevatedCard>
             </SimpleElevatedCard>
             <SimpleElevatedCard className='overflow-hidden'>
