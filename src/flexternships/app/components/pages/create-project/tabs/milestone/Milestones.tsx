@@ -142,7 +142,7 @@ export default function Milestones() {
           <DatePicker
             value={estimatedStartDate}
             onChange={handleEstimatedStartDateChange}
-            className='w-[272px]'
+            className='w-[272px] mt-5'
             label='Estimated Start Date'
             placeholder='Enter start date'
             fromDate={getTodayDate()}

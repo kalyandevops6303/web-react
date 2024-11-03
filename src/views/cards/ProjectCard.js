@@ -185,7 +185,7 @@ const ProjectCard = ({
                       {(data?.assigned_date || data?.listing_details?.start_date_epoch) && (
                         <span className="me-1">
                           
-                             Assigned Date: ${convertUnixTimestampToDate(
+                             Assigned Date: {convertUnixTimestampToDate(
                                 data?.assigned_date || data?.listing_details?.start_date_epoch,
                                 savedUserData?.availability?.timezone?.name,
                               ) || data?.listing_details?.start_date}    
@@ -233,11 +233,11 @@ const ProjectCard = ({
                         ref={divRef}
                         style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
                       >
-                        {parse(data?.details?.description)}
+                        {data?.details?.description}
                       </div>
                     ) : (
                       <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
-                        {parse(data?.details?.description)}
+                        {data?.details?.description}
                       </div>
                     )}
                   </>

@@ -316,9 +316,16 @@ const Additional = () => {
       const response = await paginatedInstitutesService(page, search);
       let myInstitution = [];
       if (location.pathname.includes('profile-edit')) {
-        myInstitution = userDetailsData?.talent_info?.educational_institute
-          .map((educationDetails) => educationDetails.institution)
-          .map((institute) => ({ label: institute.name, value: institute._id }));
+        if(talentOnboardingData?.talent_info?.educational_institute){
+          myInstitution = talentOnboardingData?.talent_info?.educational_institute
+            .map((educationDetails) => educationDetails.institution)
+            .map((institute) => ({ label: institute.name, value: institute._id }));
+        } else if (userDetailsData?.talent_info?.educational_institute) {
+
+          myInstitution = userDetailsData?.talent_info?.educational_institute
+            .map((educationDetails) => educationDetails.institution)
+            .map((institute) => ({ label: institute.name, value: institute._id }));
+        }
       } else if (location.pathname.includes('talent-onboarding')) {
         myInstitution = talentOnboardingData?.talent_info?.educational_institute
           .map((educationDetails) => educationDetails.institution)
@@ -475,17 +482,7 @@ const Additional = () => {
     dispatch(clearAllFormData());
     // dispatch(setFormDocuments(files));
     dispatch(setFormDocuments(null));
-    if (location?.pathname.includes('profile-edit')) {
-      if (flexternBoolean && trumioTalent) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      } else if (flexternBoolean && !trumioTalent) {
-        navigate(`/dashboard`);
-      }
-    } else if (flexternBoolean && trumioTalent) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
-    } else if (flexternBoolean && !trumioTalent) {
-      navigate(`/dashboard`);
-    }
+    navigate('/marketplace/all_listings');
   };
 
   const onBackClick = () => {
@@ -512,7 +509,7 @@ const Additional = () => {
     // } else if (flexternBoolean && !trumioTalent) {
     //   navigate(`/dashboard`);
     // }
-    navigate('/dashboard');
+    navigate('/marketplace/all_listings');
   };
 
   const onSubmit = (data) => {
@@ -1010,7 +1007,7 @@ const Additional = () => {
                     <h5 className="fw-bold">Back</h5>
                   </div>
                   <div className="d-flex justify-content-end">
-                    {flexternBoolean && trumioTalent ? (
+                    {/* {flexternBoolean && trumioTalent ? ( */}
                       <Button
                         color="primary"
                         outline
@@ -1020,7 +1017,7 @@ const Additional = () => {
                         <span className="me-50">Skip</span>
                         <ChevronRight size={14} />
                       </Button>
-                    ) : null}
+                    {/* ) : null} */}
                     <Button
                       className="d-flex align-items-center justify-content-between"
                       color="primary"
@@ -1047,7 +1044,7 @@ const Additional = () => {
                     <CardText className="m-0 mt-1 ">
                       Make it easier for others to find you by completing your profile.
                     </CardText>
-                    <h3 className="m-0 mt-1 mb-1 text-lg font-semibold">{overallPercentageCompletion}%</h3>
+                    <h3 className="m-0 mt-1 mb-1 text-lg font-semibold text-grey">{overallPercentageCompletion}%</h3>
                     <Progress
                       value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}

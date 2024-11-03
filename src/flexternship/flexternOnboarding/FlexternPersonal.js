@@ -935,75 +935,77 @@ const FlexternPersonal = () => {
                 <CardBody>
                   {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column">
-                    <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
-                      <Col lg="fit">
-                        <Info className="font-medium-3 me-50" color="#004280" />
-                      </Col>
-                      <Col className="w-100 ">
-                        <Row
-                          style={{ color: '#004280' }}
-                          className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between"
-                        >
-                          <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
-                            Auto Fill {files && files?.length > 0 && 'Profile'}
-                            {files && files.length === 0 && <span> - Upload your resume</span>}
-                          </Col>
-                          <Col lg="2">
-                            {resumeParsedLoading ? (
-                              <Spinner size="sm" />
-                            ) : (
-                              !uploadingFiles.includes(files[0]) &&
-                              files &&
-                              files.length > 0 && (
-                                <FormGroup switch>
-                                  <Input
-                                    type="switch"
-                                    checked={parseResume}
-                                    onClick={() => {
-                                      setParsedUploaded(false);
-                                      setParseResume(!parseResume);
-                                      dispatch(setResumeParsed(!parseResume));
-                                    }}
-                                  />
-                                </FormGroup>
-                              )
-                            )}
-                          </Col>
-                        </Row>
-
-                        {files?.length === 0 && (
-                          <>
-                            <Label
-                              for="resume"
-                              className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
-                            >
-                              <UploadIconContainer>
-                                <Upload size={18} color={theme.activeNavPillText} />
-                              </UploadIconContainer>
-                              <h5 className="fw-bold">Upload Resume</h5>
-                            </Label>
-                            <Controller
-                              id="resume"
-                              name="resume"
-                              control={control}
-                              render={({ field }) => (
-                                <Input
-                                  {...field}
-                                  ref={filesRef}
-                                  id="resume"
-                                  type="file"
-                                  max={1}
-                                  accept="application/pdf"
-                                  style={{ display: 'none' }}
-                                  onChange={(e) => {
-                                    handleFileChange(e);
-                                  }}
-                                />
+                    <div style={{ backgroundColor: '#0185E426', padding: "20px 20px 12px 20px" }}>
+                      <div className="d-flex">
+                        <Col lg="fit">
+                          <Info className="font-medium-3 me-50" color="#004280" />
+                        </Col>
+                        <Col className="w-100 ">
+                          <Row
+                            style={{ color: '#004280' }}
+                            className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between"
+                          >
+                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
+                              Auto Fill {files && files?.length > 0 && 'Profile'}
+                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            </Col>
+                            <Col lg="2">
+                              {resumeParsedLoading ? (
+                                <Spinner size="sm" />
+                              ) : (
+                                !uploadingFiles.includes(files[0]) &&
+                                files &&
+                                files.length > 0 && (
+                                  <FormGroup switch>
+                                    <Input
+                                      type="switch"
+                                      checked={parseResume}
+                                      onClick={() => {
+                                        setParsedUploaded(false);
+                                        setParseResume(!parseResume);
+                                        dispatch(setResumeParsed(!parseResume));
+                                      }}
+                                    />
+                                  </FormGroup>
+                                )
                               )}
-                            />
-                          </>
-                        )}
-                      </Col>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <div className="w-full p-2 py-0">
+                              {files?.length === 0 && (
+                                <>
+                                  <Label
+                                    for="resume"
+                                    className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
+                                  >
+                                    <h5 className="fw-bold">Upload Resume</h5>
+                                  </Label>
+                                  <Controller
+                                    id="resume"
+                                    name="resume"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <Input
+                                        {...field}
+                                        ref={filesRef}
+                                        id="resume"
+                                        type="file"
+                                        max={1}
+                                        accept="application/pdf"
+                                        style={{ display: 'none' }}
+                                        onChange={(e) => {
+                                          handleFileChange(e);
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                </>
+                              )}
+                            </div>
+                          </Row>
+                        </Col>
+                      </div>
                     </div>
                     <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
                   </div>
@@ -1016,7 +1018,7 @@ const FlexternPersonal = () => {
                   <CardText className="m-0 mt-1">
                     Make it easier for others to find you by completing your profile.
                   </CardText>
-                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold">{overallPercentageCompletion}%</h3>
+                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold text-grey">{overallPercentageCompletion}%</h3>
                   <Progress
                     value={overallPercentageCompletion}
                     style={{ height: '0.5rem' }}

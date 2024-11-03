@@ -34,6 +34,7 @@ import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
+import PermissionWrapper from '@/PermissionWrapper';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -428,7 +429,7 @@ const ProjectModal = ({
                     Report
                   </Button>
 
-                  {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') &&
+                  <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.CREATE_BID']}>{(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') &&
                     (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
                       ? showCreateBidButton
                       : true) && (
@@ -443,6 +444,15 @@ const ProjectModal = ({
                         )}
                       </Button>
                     )}
+                  </PermissionWrapper>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.VIEW PROJECT']}>
+                    <Button color="primary"  onClick={()=>{
+                      navigate(`/project-details/${data?._id}/team`);
+                    }}>
+                    <span className="me-50">View Project</span>
+                    <ChevronRight size={14} />
+                      </Button>
+                    </PermissionWrapper>
                 </div>
               )}
             </div>

@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { closeModal, jumpToTab, nextTab, openModal, previousTab, saveDraft, updateEstimatedDuration, updateEstimatedStartDate, updateListingData, updateMilestonesData, updateRequirementsData, updateRolesData } from "@flexternships/actions/project-creation-actions"
-import { Milestone, ModalType, ProjectCreationState, ProjectCreationStore, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
+import { Milestone, ModalType, ProjectCreationFormData, ProjectCreationState, ProjectCreationStore, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
 import { addDaysToEpoch, dateToEpoch } from "@flexternships/utils/date-utils";
 
 const defaultInitState: ProjectCreationState = {
@@ -11,17 +11,17 @@ const defaultInitState: ProjectCreationState = {
   data: {
     requirements: {
       projectName: "",
-      estimatedStartDate: dateToEpoch(new Date()),
-      estimatedDuration: 1,
-      estimatedWeeklyHours: 10,
-      totalProjectHoursEach: 10,
+      estimatedStartDate: 0,
+      estimatedDuration: 0,
+      estimatedWeeklyHours: 0,
+      totalProjectHoursEach: 0,
       projectDescription: "",
       documents: [],
     },
     roles: [
       {
         role: { _id: '', name: '' },
-        count: 2,
+        count: 1,
         skills: [],
         tools: []
       }
@@ -46,7 +46,7 @@ const defaultInitState: ProjectCreationState = {
       listingStartDate: dateToEpoch(new Date()),
       listingEndDate: addDaysToEpoch(dateToEpoch(new Date()), 14),
     },
-  },
+  } as ProjectCreationFormData,
 }
 
 export const useProjectCreationStore = create<ProjectCreationStore>((set, get) => ({

@@ -39,3 +39,10 @@ export const logout = () => {
   useFlexternUserProfileStore.getState().resetStore();
   useProjectCreationStore.getState().resetStore();
 };
+
+/**
+ * Resets the project creation store to its initial state.
+ */
+export const resetProjectCreationStore = () => {
+  useProjectCreationStore.getState().resetStore();
+};

@@ -4,15 +4,21 @@ import FlatProgressBar from '@flexternships/app/components/core/FlatProgressBar'
 import SavedDrafts from '@flexternships/app/components/core/modals/SavedDrafts';
 import Styles from '@flexternships/styles/pages/create-project/tab-navigation-form.module.css';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
+import { useNavigate } from 'react-router-dom';
 
 export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
     const currentTabIndex = useProjectCreationStore((state) => (state.currentTabIndex));
     const jumpToTab = useProjectCreationStore((state) => (state.jumpToTab));
 
+    const navigate = useNavigate();
     const handleTabJump = (index: number) => {
         if (index < currentTabIndex) {
             jumpToTab(index);
         }
+    }
+
+    const redirectToMyListings = () => {
+        navigate('/marketplace/my_listings');
     }
 
 
@@ -25,7 +31,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
                             <div className={Styles.tabIconContainer}>
                                 {tab.icon}
                             </div>
-                            <div className={Styles.tabBody}>
+                            <div>
                                 <div className={Styles.tabTitle}>
                                     {tab.title}
                                 </div>
@@ -44,7 +50,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
             <div className={Styles.formBodyContainer}>
                 {tabs[currentTabIndex]?.content}
             </div>
-            <SavedDrafts onConfirm={() => ''} />
+            <SavedDrafts onConfirm={redirectToMyListings} />
         </div>
     );
 }

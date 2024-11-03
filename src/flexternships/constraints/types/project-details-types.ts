@@ -27,78 +27,125 @@ export enum ProjectStatus {
     COMPLETED = 'COMPLETED'
   }
   
-  export type ProjectDetails = {
-    _id: string;
-    created_at: number;
-    updated_at: number;
-    is_deleted: boolean;
-    details: {
-      name: string;
-      description: string;
-      expected_duration: {
-        duration: number;
-        duration_type: "WEEK";
-        hours_per_week: number;
-      };
-      expected_start_date: number;
-      documents: {
-        file_name: string;
-        file_key: string;
-        download_url?: string; // Marked optional as it may be empty
-        size: number;
-        created_at: number;
-      }[];
-    };
-    roles: {
-      role_id: string;
-      proficiency: {
-        skills: string[];
-        tools: string[];
-      };
-      count: number;
-    }[];
-    listing_details: {
-      start_date: string;
-      end_date: string;
-      start_date_epoch: number;
-      end_date_epoch: number;
-    };
-    status: ProjectStatus;
-    client_user_id: string;
-    org_slug_id: string;
-    skills_data?: {
-      _id: string;
-      created_at: number;
-      updated_at: number;
-      is_deleted: boolean;
-      name: string;
-    }[];
-    tools_data?: {
-      _id: string;
-      name: string;
-      is_deleted: boolean;
-      created_at: number;
-      updated_at: number;
-      assessment?: {
-        assessment_id: number;
-        assessment_name: string;
-        created_by: string;
-        is_deleted: boolean;
-      };
-    }[];
+  export enum DurationType {
+    WEEK = "WEEK"
+  }
+ 
+type Document = {
+  fileName: string;
+  fileKey: string;
+  downloadUrl?: string;
+  size: number;
+  createdAt: number;
+};
+
+type ExpectedDuration = {
+  duration: number;
+  durationType: DurationType;
+  hoursPerWeek: number;
+};
+
+export type ProjectDetails = {
+  id: string;
+  createdAt: number;
+  updatedAt: number;
+  isDeleted: boolean;
+  details: {
+    name: string;
+    description: string;
+    expectedDuration: ExpectedDuration;
+    expectedStartDate: number;
+    documents: Document[];
   };
-  
-  
-  export type ProjectDetailsState = {
-    isProjectsLoading: boolean;
-    projectsList: ProjectDetails[];
-    projectDetails: ProjectDetails;
+  roles: ProjectRole;
+  listingDetails: ListingDetails;
+  status: ProjectStatus;
+  clientUserId: string;
+  orgSlugId: string;
+  isDocumentsSent: boolean;
+  isDocumentsSigned: boolean;
+  clientInfo?: ClientInfo[];
+  skillsData: Skill[];
+  toolsData?: Tool[];
+};
+
+type ProjectRole = {
+  roleId: string;
+  proficiency: {
+    skills: string[];
+    tools: string[];
   };
-  
-  export type ProjectDetailsActions = {
-    getProjectsList: (projectsList: ProjectDetails[]) => Promise<void>;
-    getProjectDetails: (projectId: string) => Promise<void>;
+  count: number;
+};
+
+type ListingDetails = {
+  startDate: string;
+  endDate: string;
+  startDateEpoch: number;
+  endDateEpoch: number;
+};
+
+type ClientInfo = {
+  id: string;
+  userId: string;
+  companyIndustry: string;
+  companyLogo: string;
+  companyName: string;
+  companyStrength: number;
+  companyTagline: string;
+  createdAt: number;
+  currencyPreference: string;
+  educationalInstitute: {
+    institution: string;
+  }[];
+  firstName: string;
+  imageUri: string;
+  isDeleted: boolean;
+  lastName: string;
+  officeAddress: {
+    country: string;
+    state: string;
+    city: string;
+    streetAddress: string;
+    houseNumber: string;
+    zipCode: string;
   };
-  
-  export type ProjectStore = ProjectDetailsState & ProjectDetailsActions;
-  
+  projectAreaOfInterest: {
+    skills: string[];
+    tools: string[];
+    area: string;
+  };
+  projectsListedCount: number;
+  rating: number;
+  socialLinks: {
+    platform: string;
+    url: string;
+  }[];
+  title: string;
+  updatedAt: number;
+  projectsWorkedOnCount: number;
+  orgSlugId: string;
+  isOrgAdmin: boolean;
+  departmentName: string;
+};
+
+type Skill = {
+  id: string;
+  name: string;
+  createdAt: number;
+  updatedAt: number;
+  isDeleted: boolean;
+};
+
+type Tool = Skill;
+
+export type ProjectDetailsState = {
+  isProjectsLoading: boolean;
+  projectDetails: ProjectDetails;
+};
+
+export type ProjectDetailsActions = {
+  getProjectDetails: (projectId: string) => Promise<void>;
+};
+
+export type ProjectStore = ProjectDetailsState & ProjectDetailsActions;

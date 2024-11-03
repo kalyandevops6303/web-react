@@ -72,7 +72,7 @@ const Avatar = forwardRef((props, ref) => {
             [imgClassName]: imgClassName,
             'object-fit-cover': true,
           })}
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'cover', maxHeight: '40px' }}
           src={img}
           alt="avatarImg"
           height={imgHeight && !size ? imgHeight : 32}

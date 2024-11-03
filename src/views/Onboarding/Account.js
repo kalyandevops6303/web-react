@@ -614,7 +614,7 @@ const Account = () => {
                   <CardText className="m-0 mt-1">
                     Make it easier for others to find you by completing your profile.
                   </CardText>
-                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold">{overallPercentageCompletion || 0}%</h3>
+                  <h3 className="m-0 mt-1 mb-1 text-xl font-semibold text-grey">{overallPercentageCompletion || 0}%</h3>
                   <Progress
                     value={overallPercentageCompletion}
                     style={{ height: '0.5rem' }}

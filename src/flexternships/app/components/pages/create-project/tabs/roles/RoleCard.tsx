@@ -61,7 +61,7 @@ export default function RoleCard(props: Props) {
                         )}>
                     </Controller>
 
-                    <div className='flex flex-col gap-3 mx-4'>
+                    <div className='flex flex-col gap-3 mx-4 min-w-[68px]'>
                         <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
                             Skills{' '}
                             <span className={FormFieldsStyles.requiredAsterisk}>*</span>
@@ -71,7 +71,7 @@ export default function RoleCard(props: Props) {
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-3 mx-4'>
+                    <div className='flex flex-col gap-3 mx-4 min-w-[68px]'>
                         <div className='text-grey-500 text-xs font-normal not-italic leading-5'>
                             Tools
                         </div>

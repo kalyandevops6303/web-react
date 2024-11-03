@@ -335,8 +335,13 @@ const API = {
     clientName: `${apiOnboardingEndpoint}/api/v1/projects/client-names`,
     teamName: `${apiOnboardingEndpoint}/api/v1/projects/team-names`,
 
-        //v2 projects-list
-        allProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/projects`,
+     //v2 projects-list
+     allProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/projects`,
+     departmentName: `${apiOnboardingEndpoint}/api/v2/static/departments/all`,
+     secondaryStatuses: `${apiOnboardingEndpoint}/api/v2/static/secondary-status/all`,
+     projectNames: `${apiOnboardingEndpoint}/api/v2/static/projectNames/all`,
+     talentNames: `${apiOnboardingEndpoint}/api/v2/static/talent/all`,
+     cardInfoFlextern: `${apiOnboardingEndpoint}/api/v2/project/status-counts`,
   },
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,

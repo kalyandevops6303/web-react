@@ -21,13 +21,15 @@ import PermissionWrapper from '@/PermissionWrapper';
 const determineClassWhenDisputeStatus = (pathname, userData) => {
   if (pathname === 'dispute' && userData?.user_type === userTypes.client) {
     return 'w-100  d-flex  justify-content-between';
-  } if (
+  }
+  if (
     userData?.user_type === userTypes.talent ||
     userData?.user_type === userTypes.team ||
     userData?.user_type === userTypes.club
   ) {
     return 'w-50 d-flex flex-column justify-content-between d-none';
-  } return 'w-50';
+  }
+  return 'w-50';
 };
 
 const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data }) => {
@@ -45,7 +47,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern:flexTern }));
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern: flexTern }));
     }
   };
   const handleUnLike = (e) => {
@@ -203,8 +205,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <img
                   className="market-place-card-photo me-75"
                   src={
-                    profileToShowInRightSideOfCard?.image_uri?.length
-                      ? profileToShowInRightSideOfCard?.image_uri
+                    data?.client_info?.[0]?.image_uri  ||  profileToShowInRightSideOfCard?.image_uri?.length
+                      ? data?.client_info?.[0]?.image_uri  ||  profileToShowInRightSideOfCard?.image_uri
                       : defaultAvatar
                   }
                   alt="avatar"
@@ -216,11 +218,11 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <div>
                   <div onClick={(e) => handleTalentTeamClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                      {profileToShowInRightSideOfCard?.first_name} {profileToShowInRightSideOfCard?.last_name}
+                      {data?.client_info?.[0]?.first_name || profileToShowInRightSideOfCard?.first_name  } {data?.client_info?.[0]?.last_name || profileToShowInRightSideOfCard?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
                       {profileToShowInRightSideOfCard?.user_type === userTypes.client
-                        ? profileToShowInRightSideOfCard?.company_name
+                        ? data?.client_info?.[0]?.department_name || profileToShowInRightSideOfCard?.company_name
                         : ''}
                     </CardText>
                   </div>
@@ -278,7 +280,11 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
               <div className="d-flex w-100">
                 <img
                   className="market-place-card-photo cursor-pointer me-75"
-                  src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
+                  src={
+                    clientDetails?.image_uri?.length || data?.client_info?.[0]?.image_uri
+                      ? clientDetails?.image_uri || data?.client_info?.[0]?.image_uri
+                      : defaultAvatar
+                  }
                   alt="avatar"
                   width={40}
                   height={50}
@@ -288,32 +294,32 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <div>
                   <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                      {data?.client?.company_name}
+                      {data?.client?.company_name || data?.client_info?.[0]?.department_name || ''}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {data?.client?.first_name} {data?.client?.last_name}
+                      {(data?.client?.first_name || data?.client_info?.[0]?.first_name || '') +
+                        ' ' +
+                        (data?.client?.last_name || data?.client_info?.[0]?.last_name || '')}
                     </CardText>
                   </div>
-                  
+
                   <div className="d-flex flex-grow-1 mt-25">
-                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
-                    <RatingBadge number={data?.client?.rating ?? 0} />
+                    <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
+                      <RatingBadge number={data?.client?.rating ?? 0} />
                     </PermissionWrapper>
-                    <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
-                    <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                      {data?.client?.projects_worked_on_count ?? 0} Projects
-                    </CardText>
+                    <PermissionWrapper
+                      permissions={appPermissions}
+                      permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}
+                    >
+                      <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                        {data?.client?.projects_worked_on_count ?? 0} Projects
+                      </CardText>
                     </PermissionWrapper>
                   </div>
-                  
                 </div>
               </div>
             </section>
-            <div
-              className={
-               determineClassWhenDisputeStatus(pathname, userData)
-              }
-            >
+            <div className={determineClassWhenDisputeStatus(pathname, userData)}>
               {' '}
               {pathname === 'dispute' && userData?.user_type === userTypes.client ? (
                 <div>
@@ -348,7 +354,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                             {data?.worker_details?.title}
                           </CardText>
                         </div>
-                       
+
                         <div className="d-flex flex-grow-1 mt-25">
                           <RatingBadge number={data?.worker_details?.rating ?? 0} />
                           <CardText className="ps-1 font-small-3 fw-300 rating-label">

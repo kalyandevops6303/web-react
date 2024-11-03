@@ -2,14 +2,15 @@ import * as yup from 'yup';
 import { dateToEpoch } from '@flexternships/utils/date-utils';
 import { MAX_FILE_SIZE_ERROR, MAX_FILE_SIZE_LIMIT } from '../lib/constants';
 
-const allowedFormats = [
-    '*/pdf',
-    '*/msword',
-    '*/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'text/plain',
-    '*/jpeg',
-    '*/jpg'
-  ];
+export const allowedFormats = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'image/jpeg',
+  'image/jpg',
+  'image/png'
+];
 
 export const ProjectDetailsSchema = yup.object().shape({
   projectName: yup.string().required('Project name is required'),

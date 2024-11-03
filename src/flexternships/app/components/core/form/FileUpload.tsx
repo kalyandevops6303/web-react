@@ -10,7 +10,7 @@ import { uploadFileToUrl } from '@/flexternships/services/core-service';
 import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 
 export default function FileUpload(props: InputProps) {
-  const { name, control, error, trigger, watch, label, required, placeholder, className } = props;
+  const { name, control, error, trigger, watch, label, required, placeholder, className, acceptedFormats } = props;
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -58,7 +58,6 @@ export default function FileUpload(props: InputProps) {
         const uploadRequirements = await getFileUploadUrl(file.name);
         await uploadFileToUrl(uploadRequirements.data.upload_url, file, getUploadProgress);
         const fileKey = uploadRequirements.data.file_key;
-        console.log(fields.length, fields);
         update(fieldState.length - 1, { ...fieldState[fieldState.length - 1], fileKey: fileKey, loading: false });
       }
     } catch (error: any) {
@@ -114,9 +113,9 @@ export default function FileUpload(props: InputProps) {
           <input
             id={name}
             type="file"
-            accept="*/pdf, */msword, */vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, */jpeg, *.jpg"
+            accept={acceptedFormats?.join(', ')}
             ref={fileInputRef} // Assign ref to the input
-            className={`hidden`}
+            className="hidden"
             onChange={handleFileInputChange}
           />
         </label>
@@ -135,4 +134,5 @@ type InputProps = {
   placeholder: string; // Required field
   required?: boolean; // Optional field
   className?: string; // Optional field
+  acceptedFormats?: string[]; // Optional field
 };

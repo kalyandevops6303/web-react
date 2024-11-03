@@ -45,7 +45,6 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
       return theme.green;
     }
   };
-
   return (
     <div>
       <div className="d-flex justify-content-end">
@@ -98,13 +97,14 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
         <div className="d-flex mb-2 align-items-center">
           <img
             className="market-place-card-photo me-75"
-            src={data?.client?.image_uri?.length ? data?.client?.image_uri : defaultAvatar}
+            src={(data?.client?.image_uri?.length || data?.client_info?.[0]?.image_uri) ? (data?.client?.image_uri || data?.client_info?.[0]?.image_uri) : defaultAvatar}
             alt="avatar"
           />
           <div className="d-flex w-100 align-items-center">
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                {data?.client?.first_name} {data?.client?.last_name}
+              {data?.client?.first_name || ''} {data?.client?.last_name || ''}
+
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
                 {data?.client?.company_name}
