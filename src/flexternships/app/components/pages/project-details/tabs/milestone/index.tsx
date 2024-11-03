@@ -10,9 +10,7 @@ export default function MilestoneTab() {
   const isMilestonesLoading = useProjectMilestonesStore((state) => state.isMilestonesLoading);
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
-  const param = useParams();
-  const projectId = param['projectId'];
-  const milestoneId = param['milestoneId'];
+  const { projectId, milestoneId } = useParams();
 
   useEffect(() => {
     if (projectId && isEmpty(milestoneId)) {

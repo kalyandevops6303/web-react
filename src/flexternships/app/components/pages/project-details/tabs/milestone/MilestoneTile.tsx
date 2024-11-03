@@ -41,7 +41,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
                         </div>
                         <div className='text-base text-grey-heading not-italic font-medium leading-6'>
                             {status === MilestoneStatus.COMPLETED && endDate
-                                ? formatEpochToHumanReadable(endDate)
+                                ? formatEpochToHumanReadable(endDate, true)
                                 : '-'}
                         </div>
                     </div>

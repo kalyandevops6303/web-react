@@ -1,5 +1,17 @@
 import { MilestoneStatus } from "../enums/core-enums";
 
+export type MilestoneSubmission = {
+    name: string,
+    type: "FILE" | "URL",
+    fileKey?: string,
+    description: string,
+    submittedAt: number,
+    submittedBy: {
+        name: string,
+        avatar: string
+    }
+}
+
 export type MilestoneDetails = {
     id: string,
     projectId: string,
@@ -13,6 +25,7 @@ export type MilestoneDetails = {
     },
     deliverables: string[],
     status: MilestoneStatus,
+    submissions: MilestoneSubmission[],
     milestoneBy: {
         entity: "CLIENT", // TODO: enum
         entityId: string,

@@ -57,7 +57,7 @@ export function addDaysToEpoch(epoch: number, days: number): number {
  * @returns A formatted date string (e.g., "Sep 30, 2024" or "Sep 30, 24" if truncateYear is true).
  * @throws {TypeError} If epoch is not a number.
  */
-export function formatEpochToHumanReadable(epoch: number, truncateYear = false): string {
+export function formatEpochToHumanReadable(epoch: number, truncateYear = false, includeTime = false): string {
     if (typeof epoch !== 'number') {
         throw new TypeError('Expected a number for epoch');
     }
@@ -68,6 +68,11 @@ export function formatEpochToHumanReadable(epoch: number, truncateYear = false):
         month: 'short',
         day: 'numeric',
     };
+
+    if (includeTime) {
+        options.hour = '2-digit';
+        options.minute = '2-digit';
+    }
 
     return date.toLocaleDateString('en-US', options);
 }
