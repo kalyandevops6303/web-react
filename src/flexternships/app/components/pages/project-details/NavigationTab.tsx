@@ -9,10 +9,10 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
   const param = useParams();
   const isActive = location.pathname.split('/')[3] === tab.id;
 
-  const activeTabClass = 'bg-[#0185E41F] text-[#0185E4] border-b-2 border-b-[#0185E4]';
+  const activeTabClass = 'bg-[#0185E41F] text-trublue-secondary-500 border-b-2 border-b-trublue-secondary-500';
   const inactiveTabClass = '';
-  const activeIconClass = 'bg-white text-[#0185E4]';
-  const inactiveIconClass = 'bg-[#9E9E9E1F] text-[#9E9E9E]';
+  const activeIconClass = 'bg-white text-trublue-secondary-500';
+  const inactiveIconClass = 'bg-[#9E9E9E1F] text-grey-loadingText';
 
   return (
     <Link
@@ -20,20 +20,20 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
       key={index}
       className={`${
         isActive ? activeTabClass : inactiveTabClass
-      } group ${!(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'} duration-200 hover:cursor-pointer hover:text-[#0185E4]   first:rounded-tl last:rounded-tr flex flex-row w-fit px-5 py-3 items-start justify-start gap-2`}
+      } group ${!(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'} duration-200 hover:cursor-pointer hover:text-trublue-secondary-500   first:rounded-tl last:rounded-tr flex flex-row w-fit px-5 py-3 items-start justify-start gap-2`}
     >
       <div
         className={`px-2 py-2 rounded-sm ${
           isActive ? activeIconClass : inactiveIconClass
-        } group-hover:bg-white group-hover:text-[#0185E4]`}
+        } group-hover:bg-white group-hover:text-trublue-secondary-500`}
       >
         {tab.icon}
       </div>
       <div className="flex flex-col items-start justify-center">
-        <h1 className={`font-semibold ${isActive ? 'text-[#0185E4]' : 'text-[#9E9E9E]'} group-hover:text-[#0185E4]`}>
+        <h1 className={`font-semibold text-sm ${isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'} group-hover:text-trublue-secondary-500`}>
           {tab.title}
         </h1>
-        <h1 className={`${isActive ? 'text-[#0185E4]' : 'text-[#9E9E9E]'} group-hover:text-[#0185E4] text-xs lg:text-sm`}>
+        <h1 className={`${isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'} group-hover:text-trublue-secondary-500 text-xs lg:text-sm`}>
           {tab.description}
         </h1>
       </div>
