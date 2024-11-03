@@ -48,8 +48,9 @@ import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/con
 import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
-import ProjectsTab from '@/flexternships/app/project-details/projects-tab/page';
+import ProjectsTab from '@/flexternships/app/project-details/tabs/projects/page';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
+import FlexternshipsContractView from '@/flexternships/app/project-details/sign-documents/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -114,7 +115,7 @@ export const FlexternshipRoutes = [
     },
     {
         path: '/project-details/:projectId/doc/:docType/*',
-        element: <ContractView />,
+        element: <FlexternshipsContractView />,
     },
     {
         path: '/project-details/:projectId/bid/:bidId',

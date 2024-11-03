@@ -1,24 +1,31 @@
 "use client"
 import Styles from '@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css';
-import SimpleElevatedCard from "../../components/core/cards/SimpleElevatedCard"
-import VerticalTimeline from '../../components/core/timelines/VerticalTimeline';
+import SimpleElevatedCard from "../../../components/core/cards/SimpleElevatedCard"
+import VerticalTimeline from '../../../components/core/timelines/VerticalTimeline';
 import InvitationCard from './InvitationCard';
 import DocumentCard from './DocumentCard';
+import { useParams } from 'react-router-dom';
 
 export default function ProjectsTab() {
+
+    const params = useParams();
 
     const ndaCardData = {
         title: 'NDA',
         subtitle: 'STEP 2',
         link: {
             text: '',
-            href: '/nda'
+            href: `/project-details/${params?.projectId}/doc/nda`
         }
     }
 
     const contractCardData = {
         title: 'Contract',
-        subtitle: 'STEP 3'
+        subtitle: 'STEP 3',
+        link: {
+            text: '',
+            href: `/project-details/${params?.projectId}/doc/contract`
+        }
     }
 
 

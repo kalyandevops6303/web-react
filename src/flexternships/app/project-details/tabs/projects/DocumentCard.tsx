@@ -1,4 +1,4 @@
-import SimpleElevatedCard from "../../components/core/cards/SimpleElevatedCard"
+import SimpleElevatedCard from "@flexternships/app/components/core/cards/SimpleElevatedCard"
 import { Link } from "react-router-dom";
 
 export default function DocumentCard(props: DocumentCardProps) {

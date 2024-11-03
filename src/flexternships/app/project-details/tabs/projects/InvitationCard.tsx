@@ -1,10 +1,13 @@
-import CollapsableCard from "../../components/core/cards/CollapsableCard";
+import CollapsableCard from "@flexternships/app/components/core/cards/CollapsableCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@flexternships/app/components/ui/avatar"
 
 // styles
 import Styles from "@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css"
+import { useParams } from "react-router-dom";
 
 export default function InvitationCard() {
+
+    const params = useParams();
 
     const invitationCardData = {
         title: "Invitation",
@@ -14,7 +17,7 @@ export default function InvitationCard() {
         isOpen: true,
         link: {
             text: "View Milestone(s)",
-            href: "/milestone"
+            href: `/project-details/${params?.projectId}/milestone`
         }
     }
 

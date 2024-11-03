@@ -10,7 +10,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import Spinner from '../components/core/Spinner';
 
 // tabs
-import ProjectsTab from './projects-tab/page';
+import ProjectsTab from './tabs/projects/page';
 
 export default function FlexternshipProjectDetails() {
   const fetchUserDetails = useFlexternUserStore((state) => state.populateUserDetails);

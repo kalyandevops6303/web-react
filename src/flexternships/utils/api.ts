@@ -17,6 +17,9 @@ export const routes = {
             create: `${serviceUrls.projectManagementV2}/project`,
             saveDraft: `${serviceUrls.projectManagementV2}/project/draft/save`,
             getProjectById: `${serviceUrls.dashboardV2}/projects`,
+        },
+        legal: {
+            details: `${serviceUrls.projectManagementV2}/legal/document`
         }
     },
     userManagement: {
