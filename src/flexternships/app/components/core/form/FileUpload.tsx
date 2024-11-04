@@ -43,7 +43,7 @@ export default function FileUpload(props: InputProps) {
       if (!fieldState[index].error) {
         // If no error, upload the file
         const uploadRequirements = await getFileUploadUrl(file.name);
-        await uploadFileToUrl(uploadRequirements.data.upload_url, index, file, getUploadProgress);
+        await uploadFileToUrl(uploadRequirements.data.upload_url, file, getUploadProgress, index);
         const fileKey = uploadRequirements.data.file_key;
         update(index, { ...fieldState[index], fileKey: fileKey, loading: false, uploadSuccess: true });
       }
