@@ -2,8 +2,14 @@ import { UserType } from "@/flexternships/constraints/enums/core-enums";
 import { Avatar, AvatarFallback, AvatarImage } from "@flexternships/app/components/ui/avatar"
 import PrimaryButton from "../../../core/buttons/PrimaryButton";
 import { Check, User } from "react-feather";
+import { MouseEvent } from "react";
+import { useLegalStore } from "@/flexternships/stores/legal-store";
+import Spinner from "../../../core/Spinner";
+
 export default function LegalDocSignee(props: LegalDocSigneeProps) {
-    const { userType, company, image_uri, name, role, signed, signedDate, disabled, isCurrentUser } = props;
+    const { userType, company, image_uri, name, role, signed, signedDate, disabled, isCurrentUser, onClick } = props;
+
+    const isSignDocumentLoading = useLegalStore((state) => state.legal?.isSignLegalDocumentLoading);
 
     return (
         <div className="flex items-start justify-between">
@@ -22,11 +28,11 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
                 <PrimaryButton
                     disabled={disabled}
                     className={`${signed ? "bg-white border border-[#0185E4] text-[#0185E4] text-center font-medium font-montserrat text-sm tracking-[0.4px]" : "text-white text-center font-medium font-montserrat text-sm tracking-[0.4px]"} m-0 mb-2 flex w-[208px] h-[37px] p-[10px_22px] justify-center items-center gap-[8px] shrink-0`}
-                    onClick={() => { }}
+                    onClick={onClick as any}
                 >
                     <div className={`flex items-center ${signed && "gap-2"}`}>
                         <div className="bg-[#28C76F30] rounded-full p-[2px]">{signed && <Check size="15.429px" color="#28C76F" />}</div>
-                        <div>{signed ? 'Confirmed' : (isCurrentUser ? 'Confirm Angreement' : 'Pending Agreement')}</div>
+                        {isSignDocumentLoading ? <Spinner /> : <div>{signed ? 'Confirmed' : (isCurrentUser ? 'Confirm Angreement' : 'Pending Agreement')}</div>}
                     </div>
                 </PrimaryButton>
                 <div className="text-[#6E6B7B] font-normal font-montserrat text-sm leading-[21px]">
@@ -45,7 +51,8 @@ type LegalDocSigneeProps = {
     name: string,
     role?: string,
     signed: boolean,
-    signedDate?: Date
-    disabled?: boolean
-    isCurrentUser: boolean
+    signedDate?: Date,
+    disabled?: boolean,
+    isCurrentUser: boolean,
+    onClick?: (event: MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }

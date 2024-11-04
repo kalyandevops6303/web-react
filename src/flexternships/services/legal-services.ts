@@ -20,3 +20,21 @@ export const getLegalDocDetails: (projectId: string, docType: string) => Promise
         handleError(error as Error, 'An unexpected error occurred while fetching legal document details');
     }
   }
+
+  export const signLegalDocument: (projectId: string, docType: string) => Promise<any> = async (projectId, docType) => {
+    const headers = appendAuthToken({});
+    const config = {
+        headers: headers,
+        params: {
+            project_id: projectId,
+            doc_type: docType
+        }
+    }
+  
+    try {
+        const response = await axios.put(`${routes.projectManagementV2.legal.signDocument}`, {}, config)
+        return response.data?.data || undefined;
+    } catch (error) {
+        handleError(error as Error, 'An unexpected error occurred while signing document');
+    }
+  }

@@ -1,4 +1,6 @@
-import { getLegalDocDetails } from "../services/legal-services";
+import { getLegalDocDetails, signLegalDocument } from "../services/legal-services";
+import { showToastMessage } from "../utils/core-utils";
+import { ToastType } from "../constraints/enums/core-enums";
 
 export const legalDocDetails = async (projectId: string, docType: string, set: any) => {
     set({ isLegalDetailsLoading: true });
@@ -11,4 +13,11 @@ export const legalDocDetails = async (projectId: string, docType: string, set: a
         }
     }));
     set({ isLegalDetailsLoading: false });
+}
+
+export const signDocument = async (projectId: string, docType: string, set: any) => {
+    set({ signLegalDocumentLoading: true });
+    const data:any = await signLegalDocument(projectId, docType);
+    set({ signLegalDocumentLoading: false });
+    showToastMessage(ToastType.SUCCESS, "The NDA has been signed successfully")
 }

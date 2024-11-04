@@ -4,7 +4,7 @@ import Styles from '@flexternships/styles/pages/project-details/sign-document/si
 
 import { Checkbox } from "@flexternships/app/components/ui/checkbox"
 import { DocTypes } from "@/flexternships/constraints/enums/project-enums";
-import { toLower } from "lodash";
+import { toLower, toUpper } from "lodash";
 import LegalDocSignee from "./LegalDocSignee";
 import { UserType } from "@/flexternships/constraints/enums/core-enums";
 import { useLegalStore } from "@/flexternships/stores/legal-store";
@@ -22,8 +22,24 @@ export default function LegalDocCard(props: LegalDocCardProps) {
     const projectDetails = useProjectsStore((state) => state.projectDetails);
     const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
 
+    const isSignDocumentLoading = useLegalStore((state) => state.legal?.isSignLegalDocumentLoading);
+
     const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
     const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+    const getLegalDocDetails = useLegalStore((state) => state.getLegalDocDetails);
+    const signDocument = useLegalStore((state) => state.signDocument);
+
+    const hasSigned = () => {
+        const currentUserSignature = legalDocDetails?.signatures?.filter((signature: any) => {
+            return (signature.user_id === currentUserDetails?.id)
+        })
+
+        return (currentUserSignature && currentUserSignature[0]?.is_signed);
+    }
+
+    const handleConfirmAgreement = () => {
+        signDocument(params?.projectId, toUpper(docType));
+    }
 
     const [termsRead, setTermsRead] = useState(false);
 
@@ -47,14 +63,20 @@ export default function LegalDocCard(props: LegalDocCardProps) {
             signedDate: new Date(signature.signed_on),
             userType: UserType.TALENT,
             disabled: !termsRead || (signature.user_id != currentUserDetails?.id),
-            isCurrentUser: (signature.user_id === currentUserDetails?.id)
+            isCurrentUser: (signature.user_id === currentUserDetails?.id),
+            onClick: handleConfirmAgreement
         }
     })
 
     useEffect(() => {
         populateUserDetails()
-        getProjectDetails(params?.projectId as string)
-    }, [])
+
+        if (!isSignDocumentLoading) {
+            getProjectDetails(params?.projectId as string)
+            getLegalDocDetails(params?.projectId as string, toUpper(params?.docType));
+        }
+
+    }, [isSignDocumentLoading])
 
     return (
         <SimpleElevatedCard className="w-full max-w-[1021px] p-5">
@@ -67,7 +89,7 @@ export default function LegalDocCard(props: LegalDocCardProps) {
 
             <div className="flex items-center space-x-2 my-5">
                 <Checkbox id="terms"
-                    checked={termsRead}
+                    checked={termsRead || hasSigned()}
                     onCheckedChange={() => setTermsRead(!termsRead)}
                 />
                 <label

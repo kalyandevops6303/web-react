@@ -1,4 +1,3 @@
-import { useProjectsStore } from "@/flexternships/stores/project-details-store";
 import LeftSideBarProjectDetails from "../../components/pages/project-details/LeftSideBarProjectDetails";
 import LegalDocCard from "../../components/pages/project-details/sign-documents/LegalDocCard";
 import { useParams } from "react-router-dom";

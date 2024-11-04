@@ -19,7 +19,8 @@ export const routes = {
             getProjectById: `${serviceUrls.projectManagementV2}/project/detail`,
         },
         legal: {
-            details: `${serviceUrls.projectManagementV2}/legal/document`
+            details: `${serviceUrls.projectManagementV2}/legal/document`,
+            signDocument: `${serviceUrls.projectManagementV2}/legal/document/sign`
         }
     },
     userManagement: {
