@@ -41,7 +41,6 @@ export default function MilestoneDetails() {
 
     const goBackToAllMilestones = () => {
         navigate(-1);
-        // TODO: Implement go back to all milestones
     }
     const handleMilestonePrimaryAction = () => {
         // TODO: Implement accept milestone and mark as completed
@@ -131,7 +130,7 @@ export default function MilestoneDetails() {
                         </h2>
                         <ul className='list-none'>
                             {
-                                milestoneDetails.deliverables.map((deliverable, index) => (
+                                milestoneDetails?.deliverables?.map((deliverable, index) => (
                                     <li key={index} className='relative pl-6 text-sm font-normal not-italic leading-5.5 text-grey before:content-["."] before:text-xl before:absolute before:left-2 before:bottom-0.5'>
                                         {deliverable}
                                     </li>
@@ -170,7 +169,7 @@ export default function MilestoneDetails() {
                                 </div>
                                 <div>
                                     {
-                                        milestoneDetails.submissions.map((submission, index) => (
+                                        milestoneDetails?.submissions?.map((submission, index) => (
                                             <SubmissionItem key={index} data={submission} last={index === milestoneDetails.submissions.length - 1} />
                                         ))
                                     }
