@@ -1,53 +1,53 @@
 .formContainer {
-    @apply flex flex-col max-w-6xl;
+  @apply flex flex-col max-w-6xl;
 }
 
 .tabsContainer {
-    @apply flex flex-row pt-3.5 pb-2.5;
+  @apply flex flex-row pt-3.5 pb-2.5;
 }
 
 .tab {
-    @apply flex flex-row items-center min-w-52 mr-6;
+  @apply flex flex-row items-center min-w-[212px] mr-6;
 }
 
 .tabActive {
-    @apply cursor-pointer;
+  @apply cursor-pointer;
 }
 
 .tabIconContainer {
-    @apply p-2.5 flex items-center justify-center mr-3 rounded;
+  @apply p-2.5 flex items-center justify-center mr-3 rounded;
 }
 
 .tabActive .tabIconContainer {
-    @apply text-trublue-secondary-500 text-xl bg-trublue-secondary-500 bg-opacity-12;
+  @apply text-trublue-secondary-500 text-xl bg-trublue-secondary-500 bg-opacity-12;
 }
 
 .tabInactive .tabIconContainer {
-    @apply text-grey text-xl bg-grey-50;
+  @apply text-grey text-xl bg-grey-50;
 }
 
 /* .tabBody {} */
 
 .tabTitle {
-    @apply font-sans text-sm leading-5.5 not-italic font-semibold;
+  @apply font-sans text-sm leading-5.5 not-italic font-semibold;
 }
 
 .tabSubtitle {
-    @apply font-sans text-xs leading-5 not-italic font-normal;
+  @apply font-sans text-xs leading-5 not-italic font-normal;
 }
 
 .tabActive .tabTitle, .tabActive .tabSubtitle {
-    @apply text-trublue;
+  @apply text-trublue;
 }
 
 .tabInactive .tabTitle {
-    @apply text-grey-500;
+  @apply text-grey-500;
 }
 
 .tabInactive .tabSubtitle {
-    @apply text-grey-300;
+  @apply text-grey-300;
 }
 
 .formBodyContainer {
-    @apply mt-3.5
+  @apply mt-3.5
 }

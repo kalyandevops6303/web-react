@@ -16,6 +16,7 @@ import ProjectDetailsItem from './ProjectDetailsItem';
 import RoleItem from './RoleItem';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import ShowToastMessage from '@/@core/components/toast';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
@@ -32,8 +33,7 @@ export default function Preview() {
         try {
           await createFlexternProject(formData);
         } catch (error) {
-          // TODO - Add ERROR TOAST
-          console.log("There's an error while posting the project: ", error);
+          showToastMessage(ToastType.ERROR, "Failed to create project. Please try again.");
         }
       }
 
@@ -171,7 +171,7 @@ export default function Preview() {
           </PrimaryButton>
         </div>
       </div>
-      <SuccessfulCreation recallTimeLeft={recallTimeLeft} onRecall={handleRecall} onConfirm={() => (console.log('Invite Talent'))} />
+      <SuccessfulCreation recallTimeLeft={recallTimeLeft} onRecall={handleRecall} onConfirm={() =>  ShowToastMessage('Invite Talent') } />
     </div>
   );
 }

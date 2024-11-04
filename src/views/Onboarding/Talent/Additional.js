@@ -65,7 +65,12 @@ import { projectFileUploadToAzureService } from '../../../services/createProject
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { deleteIdentityFile, getUserDetails, saveCheckpointComplete, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import {
+  deleteIdentityFile,
+  getUserDetails,
+  saveCheckpointComplete,
+  saveProfileDetails,
+} from '../../../redux/actions/talentOnboardingActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
 
@@ -207,7 +212,7 @@ const Additional = () => {
 
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
-  const getOverallPercentageCompletion = () => {  
+  const getOverallPercentageCompletion = () => {
     setOverallPercentageCompletion(profileCompletionFlextern);
   };
 
@@ -261,7 +266,7 @@ const Additional = () => {
     const response = await identityUploadService(file.name);
     const fileWithUrl = {
       id: uuidv4(),
-      file:{
+      file: {
         name: file.name,
         size: file.size,
         lastModified: file.lastModified,
@@ -311,9 +316,16 @@ const Additional = () => {
       const response = await paginatedInstitutesService(page, search);
       let myInstitution = [];
       if (location.pathname.includes('profile-edit')) {
-        myInstitution = userDetailsData?.talent_info?.educational_institute
-          .map((educationDetails) => educationDetails.institution)
-          .map((institute) => ({ label: institute.name, value: institute._id }));
+        if(talentOnboardingData?.talent_info?.educational_institute){
+          myInstitution = talentOnboardingData?.talent_info?.educational_institute
+            .map((educationDetails) => educationDetails.institution)
+            .map((institute) => ({ label: institute.name, value: institute._id }));
+        } else if (userDetailsData?.talent_info?.educational_institute) {
+
+          myInstitution = userDetailsData?.talent_info?.educational_institute
+            .map((educationDetails) => educationDetails.institution)
+            .map((institute) => ({ label: institute.name, value: institute._id }));
+        }
       } else if (location.pathname.includes('talent-onboarding')) {
         myInstitution = talentOnboardingData?.talent_info?.educational_institute
           .map((educationDetails) => educationDetails.institution)
@@ -470,17 +482,7 @@ const Additional = () => {
     dispatch(clearAllFormData());
     // dispatch(setFormDocuments(files));
     dispatch(setFormDocuments(null));
-    if (location?.pathname.includes('profile-edit')) {
-      if (flexternBoolean && trumioTalent) {
-        navigate(`/${userProfileEdit.talent}/availability-details`);
-      } else if (flexternBoolean && !trumioTalent) {
-        navigate(`/dashboard`);
-      }
-    } else if (flexternBoolean && trumioTalent) {
-      navigate(`/${userProfileEdit.talent}/availability-details`);
-    } else if (flexternBoolean && !trumioTalent) {
-      navigate(`/dashboard`);
-    }
+    navigate('/marketplace/all_listings');
   };
 
   const onBackClick = () => {
@@ -507,7 +509,7 @@ const Additional = () => {
     // } else if (flexternBoolean && !trumioTalent) {
     //   navigate(`/dashboard`);
     // }
-    navigate('/dashboard');
+    navigate('/marketplace/all_listings');
   };
 
   const onSubmit = (data) => {
@@ -536,6 +538,7 @@ const Additional = () => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveCheckpointComplete(() => {}));
   };
 
   const onGetUserDetailsSuccess = (res) => {
@@ -620,7 +623,10 @@ const Additional = () => {
         }
       }
 
-      if (res?.additional_info?.identity_verification && Object.keys(res.additional_info.identity_verification).length > 0) {
+      if (
+        res?.additional_info?.identity_verification &&
+        Object.keys(res.additional_info.identity_verification).length > 0
+      ) {
         const file = {
           id: uuidv4(),
           file: {
@@ -638,7 +644,7 @@ const Additional = () => {
       }
     }
 
-    dispatch(saveCheckpointComplete(() =>{}))
+    
   };
 
   useEffect(() => {
@@ -658,7 +664,7 @@ const Additional = () => {
               <Col>
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Gender</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Gender</h4>
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
                   <CardBody>
@@ -730,7 +736,7 @@ const Additional = () => {
 
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Location</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Location</h4>
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
                   <CardBody>
@@ -766,7 +772,7 @@ const Additional = () => {
 
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Current Education</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Current Education</h4>
                     <CustomerSupportCTA
                       type={CUSTOMER_SUPPORT_TYPES.education}
                       handleCustomerSupport={handleCustomerSupport}
@@ -847,8 +853,12 @@ const Additional = () => {
                               name="institutionEmail"
                               control={control}
                               render={({ field }) => (
-                                <Input {...field} placeholder="Enter your institute email id
-                                " invalid={errors.institutionEmail && true} />
+                                <Input
+                                  {...field}
+                                  placeholder="Enter your institute email id
+                                "
+                                  invalid={errors.institutionEmail && true}
+                                />
                               )}
                             />
                             {errors.institutionEmail && <FormFeedback>{errors.institutionEmail.message}</FormFeedback>}
@@ -933,7 +943,7 @@ const Additional = () => {
 
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Identity Verification</h4>
+                    <h4 className="m-0 mt-1 text-lg font-medium">Identity Verification (optional)</h4>
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
                   <CardBody className="d-flex flex-column">
@@ -996,20 +1006,29 @@ const Additional = () => {
                     </UploadIconContainer>
                     <h5 className="fw-bold">Back</h5>
                   </div>
-                  <div>
-                    {flexternBoolean && trumioTalent ? (
-                      <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                  <div className="d-flex justify-content-end">
+                    {/* {flexternBoolean && trumioTalent ? ( */}
+                      <Button
+                        color="primary"
+                        outline
+                        className="d-flex align-items-center justify-content-between me-2"
+                        onClick={onSkipClick}
+                      >
                         <span className="me-50">Skip</span>
                         <ChevronRight size={14} />
                       </Button>
-                    ) : null}
-                    <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                    {/* ) : null} */}
+                    <Button
+                      className="d-flex align-items-center justify-content-between"
+                      color="primary"
+                      type="submit"
+                      disabled={!isValid || profileDetailsIsLoading}
+                    >
                       {profileDetailsIsLoading ? (
                         <Spinner size="sm" />
                       ) : (
                         <>
                           <span className="me-50">Save & Continue</span>
-                          <ChevronRight size={14} />
                         </>
                       )}
                     </Button>
@@ -1021,11 +1040,11 @@ const Additional = () => {
               <Col>
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1">Profile Completion</h4>
-                    <CardText className="m-0 mt-1">
+                    <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
+                    <CardText className="m-0 mt-1 ">
                       Make it easier for others to find you by completing your profile.
                     </CardText>
-                    <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
+                    <h3 className="m-0 mt-1 mb-1 text-lg font-semibold text-grey">{overallPercentageCompletion}%</h3>
                     <Progress
                       value={overallPercentageCompletion}
                       style={{ height: '0.5rem' }}
@@ -1086,7 +1105,7 @@ const Additional = () => {
                         <div>
                           <CardText className="m-0">Flexternship Ready</CardText>
                           <b
-                            className="text-primary cursor-pointer"
+                            className="text-primary cursor-pointer d-flex align-items-center"
                             onClick={() =>
                               navigate(
                                 returnCompleteProfileDetailsCta(

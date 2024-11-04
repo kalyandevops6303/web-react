@@ -1,17 +1,21 @@
 import { create } from 'zustand';
 import {
-  FlexternProjectDetails,
-  FlexternProjectDetailStore,
   TeamMemberDetails,
+  ProjectDetails,
+  ProjectDetailsState,
+  ProjectStore,
 } from '../constraints/types/project-details-types';
-import { populateTeamDetails } from '../actions/project-details-actions';
+import { populateTeamDetails, getProjectDetails } from '../actions/project-details-actions';
 
-const defaultInitState: FlexternProjectDetails = {
+const defaultInitState: ProjectDetailsState = {
+  isProjectsLoading: false,
+  projectDetails: {} as ProjectDetails,
   teamDetails: [] as Array<TeamMemberDetails>,
 };
 
-export const useFlexternProjectDetailsStore = create<FlexternProjectDetailStore>((set, _get) => ({
+export const useProjectsStore = create<ProjectStore>((set) => ({
   ...defaultInitState,
-  populateTeamDetails: (projectId: string='') => populateTeamDetails(set, projectId),
+  getProjectDetails: async (projectId: string) => getProjectDetails(projectId, set),
+  populateTeamDetails: (projectId: string = '') => populateTeamDetails(set, projectId),
   resetStore: () => set({ ...defaultInitState }),
 }));

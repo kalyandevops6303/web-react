@@ -116,3 +116,12 @@ export const UserDropDownWrapper = styled.div`
     padding: 1rem 1.2rem;
   }
 `;
+
+export const TextWrapper = styled.div`
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #6e6b7b;
+`;

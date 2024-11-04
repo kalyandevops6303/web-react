@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner , Progress , CardText } from 'reactstrap';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner, Progress, CardText } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ProfileFormContainer, UploadIconContainer } from '../../../views/Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { CITIZEN_TYPES, userOnboarding, userProfileEdit , userTypes } from '../../../utility/constants/Constant';
+import { CITIZEN_TYPES, userOnboarding, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 
 import { saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../../views/Onboarding/AccountCreatedModal';
@@ -16,14 +16,14 @@ import {
   savePaymentDetails,
   updatePaymentDetails,
 } from '../../../redux/actions/paymentActions';
-import { handleEmailClick , giveProgressBarColorClassName } from '../../../utility/Utils';
+import { handleEmailClick, giveProgressBarColorClassName } from '../../../utility/Utils';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 import { SuccessInfoBanner } from '../../../views/assessments/style';
 
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
-import "../../../App.css";
+import '../../../App.css';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep, step }) => {
@@ -35,17 +35,23 @@ const Step1 = ({ setStep, step }) => {
   const [isWorkingInUS, setIsWorkingInUS] = useState(savedFormData?.isWorkingInUS || false);
   const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || CITIZEN_TYPES.US);
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
-  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(savedFormData?.isPaymentOnboardingDone || false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(
+    savedFormData?.isPaymentOnboardingDone || false,
+  );
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
-  const [stripeAccountText, setStripeAccountText] = useState("");
-  const [stripeAccountLink, setStripeAccountLink] = useState("");
+  const [stripeAccountText, setStripeAccountText] = useState('');
+  const [stripeAccountLink, setStripeAccountLink] = useState('');
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector((state) => state.dashboard?.profilePercentage?.values_missing);
+  const profileCompletionProjectMissingValues = useSelector(
+    (state) => state.dashboard?.profilePercentage?.values_missing,
+  );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
@@ -58,11 +64,9 @@ const Step1 = ({ setStep, step }) => {
   const getOverallPercentageCompletion = () => {
     if (isFlextern && !isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionFlextern);
-    }
-    else if (!isFlextern && isTrumioTalent) {
+    } else if (!isFlextern && isTrumioTalent) {
       setOverallPercentageCompletion(profileCompletionProject);
-    }
-    else {
+    } else {
       setOverallPercentageCompletion((profileCompletionFlextern + profileCompletionProject) / 2);
     }
   };
@@ -93,19 +97,21 @@ const Step1 = ({ setStep, step }) => {
 
   useEffect(() => {
     if (isPaymentOnboardingDone) {
-      dispatch(linkStripeAccount((res) => {
-        setStripeAccountLink(res.url);
-        const acctSegment = res.url.split('/').find((segment) => segment.startsWith('acct'));
+      dispatch(
+        linkStripeAccount((res) => {
+          setStripeAccountLink(res.url);
+          const acctSegment = res.url.split('/').find((segment) => segment.startsWith('acct'));
 
-        if (acctSegment) {
-          const prefix = acctSegment.slice(0, 4);  // 'acct'
-          const visiblePart = acctSegment.slice(-3);  // Last 3 characters
-          const hiddenPart = 'x'.repeat(acctSegment.length - 8);  // Replace the rest with 'x'
+          if (acctSegment) {
+            const prefix = acctSegment.slice(0, 4); // 'acct'
+            const visiblePart = acctSegment.slice(-3); // Last 3 characters
+            const hiddenPart = 'x'.repeat(acctSegment.length - 8); // Replace the rest with 'x'
 
-          const formattedSegment = `${prefix} ${hiddenPart} ${visiblePart}`;
-          setStripeAccountText(formattedSegment);
-        }
-      }));
+            const formattedSegment = `${prefix} ${hiddenPart} ${visiblePart}`;
+            setStripeAccountText(formattedSegment);
+          }
+        }),
+      );
     }
   }, [isPaymentOnboardingDone]);
 
@@ -156,7 +162,6 @@ const Step1 = ({ setStep, step }) => {
     }
   };
   const handleNextClick = (e) => {
-
     if (taxUserType === CITIZEN_TYPES.OTHER || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       handleEmailClick();
@@ -214,17 +219,17 @@ const Step1 = ({ setStep, step }) => {
       {accountCreatedModal && (
         <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
       )}
-      {isPaymentOnboardingDone && <SuccessInfoBanner className="d-flex px-1 py-1 mb-1 w-75">
-        <Info size={18} color={theme.succesGreenColor} className="me-50 info-banner-icon" />
-        <p className="font-medium-1 m-0 info">
-          Congratulations! You have completed setting up your Stripe account.
-        </p>
-      </SuccessInfoBanner>}
+      {isPaymentOnboardingDone && (
+        <SuccessInfoBanner className="d-flex px-1 py-1 mb-1 w-75">
+          <Info size={18} color={theme.succesGreenColor} className="me-50 info-banner-icon" />
+          <p className="font-medium-1 m-0 info">Congratulations! You have completed setting up your Stripe account.</p>
+        </SuccessInfoBanner>
+      )}
 
       <h2 className="m-0 mt-1 mb-2">STEP 1 - Tax Situation Assessment</h2>
 
       <Form>
-        <div className='d-flex gap-2'>
+        <div className="d-flex gap-2">
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Pre-Payment Set Up</h4>
@@ -269,65 +274,112 @@ const Step1 = ({ setStep, step }) => {
             </CardBody>
           </Card>
 
-          <div className='w-25'>
-            {isPaymentOnboardingDone &&
+          <div className="w-25">
+            {isPaymentOnboardingDone && (
               <Card className="w-100">
                 <CardHeader className="d-flex align-items-center">
                   <h4 className="m-0 mt-1">Stripe Account Details</h4>
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody>
-                  <div className='d-flex flex-column rounded gap-1' style={{ backgroundColor: '#0185E426', padding: 20 }}>
+                  <div
+                    className="d-flex flex-column rounded gap-1"
+                    style={{ backgroundColor: '#0185E426', padding: 20 }}
+                  >
                     <b>{stripeAccountText}</b>
-                    <a href={stripeAccountLink || "#"}>Go to Stripe</a>
+                    <a href={stripeAccountLink || '#'}>Go to Stripe</a>
                   </div>
                 </CardBody>
-              </Card>}
+              </Card>
+            )}
 
             <Card className="w-100">
               <CardHeader>
                 <h4 className="m-0 mt-1">Profile Completion</h4>
-                <CardText className="m-0 mt-1">Make it easier for others to find you by completing your profile.</CardText>
+                <CardText className="m-0 mt-1">
+                  Make it easier for others to find you by completing your profile.
+                </CardText>
                 <h3 className="m-0 mt-1 mb-1">{overallPercentageCompletion}%</h3>
-                <Progress value={overallPercentageCompletion}
+                <Progress
+                  value={overallPercentageCompletion}
                   style={{ height: '0.5rem' }}
                   className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                 />
-
+                />
               </CardHeader>
 
               <CardBody>
                 <hr className="m-0 card-header-border" />
 
-                {isTrumioTalent && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />
-                    <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                {isTrumioTalent && (
+                  <div className="d-flex gap-1 mt-1">
+                    <div className="custom-checkbox-wrapper">
+                      <Input
+                        type="checkbox"
+                        id="customCheckbox"
+                        className="custom-checkbox-input"
+                        checked={isProjectReady}
+                      />
+                      <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                    </div>
+                    <div>
+                      <CardText className="m-0">Client Projects Ready</CardText>
+                      <b
+                        className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                        onClick={() =>
+                          navigate(
+                            returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                              ?.path || '/marketplace',
+                          )
+                        }
+                      >
+                        {isProjectReady
+                          ? 'Explore Projects'
+                          : `${
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                ?.label
+                            }`}{' '}
+                        <ChevronRight size="1.2em" />
+                      </b>
+                    </div>
                   </div>
-                  <div>
-                    <CardText className="m-0">Client Projects Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                      onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.path || "/marketplace")}
-                    >{isProjectReady ? 'Explore Projects' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
+                )}
 
-                {isFlextern && <div className='d-flex gap-1 mt-1'>
-                  <div className="custom-checkbox-wrapper">
-                    <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
-                    <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                {isFlextern && (
+                  <div className="d-flex gap-1 mt-1">
+                    <div className="custom-checkbox-wrapper">
+                      <Input
+                        type="checkbox"
+                        id="customCheckbox2"
+                        className="custom-checkbox-input"
+                        checked={isFlexternReady}
+                      />
+                      <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                    </div>
+                    <div>
+                      <CardText className="m-0">Flexternship Ready</CardText>
+                      <b
+                        className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
+                        onClick={() =>
+                          navigate(
+                            returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                              ?.path || '/dashboard',
+                          )
+                        }
+                      >
+                        {isFlexternReady
+                          ? 'Explore Flexternships'
+                          : `${
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                                ?.label
+                            }`}{' '}
+                        <ChevronRight size="1.2em" />
+                      </b>
+                    </div>
                   </div>
-                  <div>
-                    <CardText className="m-0">Flexternship Ready</CardText>
-                    <b className='text-primary cursor-pointer'
-                      onClick={() => navigate(returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.path || "/dashboard")}
-                    >{isFlexternReady ? 'Explore Flexternships' : `${returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)?.label}`} <ChevronRight size="1.2em" /></b>
-                  </div>
-                </div>}
+                )}
               </CardBody>
             </Card>
           </div>
-
         </div>
         {taxUserType === CITIZEN_TYPES.OTHER || taxUserType === CITIZEN_TYPES.US ? null : (
           <Card className="w-75">
@@ -368,23 +420,33 @@ const Step1 = ({ setStep, step }) => {
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
-          <div>
-
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+          <div className="d-flex justify-content-end">
+            <Button
+              color="primary"
+              outline
+              className="d-flex align-items-center justify-content-between me-2"
+              onClick={onSkipClick}
+            >
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
 
-            {!isPaymentOnboardingDone && <Button color="primary" className="me-2" onClick={handleNextClick}>
-              {paymentDetailsLoading || stripeDetailsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">{getCTAText()}</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>}
+            {!isPaymentOnboardingDone && (
+              <Button
+                color="primary"
+                className="d-flex align-items-center justify-content-between me-2"
+                onClick={handleNextClick}
+              >
+                {paymentDetailsLoading || stripeDetailsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">{getCTAText()}</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            )}
 
             {/* <span id="get-hired-cta">
             <Button disabled={!showHiringTab} color="danger" className="me-2" onClick={onGetHiredClick}>

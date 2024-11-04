@@ -49,7 +49,7 @@ export function DatePicker(props: InputProps) {
           >
             {value ? (
               <span className={Styles.formDateFilled}>
-                {format(epochToDate(value), "PPP")}
+                {value ? format(epochToDate(value), "PPP") : placeholder}
               </span>
             ) : (
               <span className={Styles.formDatePlaceholder}>{placeholder}</span>
@@ -62,7 +62,7 @@ export function DatePicker(props: InputProps) {
       <PopoverContent className="w-auto p-0 bg-white">
         <Calendar
           mode="single"
-          selected={epochToDate(value)}
+          selected={value ? epochToDate(value) : undefined}
           onSelect={handleDateSelection}
           fromDate={fromDate}
         />
