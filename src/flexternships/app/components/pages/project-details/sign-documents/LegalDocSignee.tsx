@@ -1,17 +1,18 @@
 import { UserType } from "@/flexternships/constraints/enums/core-enums";
 import { Avatar, AvatarFallback, AvatarImage } from "@flexternships/app/components/ui/avatar"
 import PrimaryButton from "../../../core/buttons/PrimaryButton";
-import { Check } from "react-feather";
+import { Check, User } from "react-feather";
+import { useEffect } from "react";
 
 export default function LegalDocSignee(props: LegalDocSigneeProps) {
-    const { userType, company, image_uri, name, role, signed, signed_date, disabled } = props;
+    const { userType, company, image_uri, name, role, signed, signedDate, disabled } = props;
 
     return (
         <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
                 <Avatar>
                     <AvatarImage src={image_uri} />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback><User color="#6E6B7B"/></AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                     <div className="text-[#5E5873] font-medium font-montserrat">{userType === UserType.CLIENT ? company : name}</div>
@@ -31,7 +32,7 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
                     </div>
                 </PrimaryButton>
                 <div className="text-[#6E6B7B] font-normal font-montserrat text-sm leading-[21px]">
-                    <span className="font-medium">Sign on</span>: {signed && signed_date || ""}
+                    <span className="font-medium">Sign on</span>: {signedDate?.toDateString()}
                 </div>
             </div>
         </div>
@@ -46,6 +47,6 @@ type LegalDocSigneeProps = {
     name: string,
     role?: string,
     signed: boolean,
-    signed_date?: string
+    signedDate?: Date
     disabled?: boolean
 }

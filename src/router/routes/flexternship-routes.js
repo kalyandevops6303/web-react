@@ -114,6 +114,10 @@ export const FlexternshipRoutes = [
         element: <FlexternshipProjectDetails />,
     },
     {
+        path: '/project-details/:projectId/:projectStep',
+        element: <FlexternshipProjectDetails />,
+    },
+    {
         path: '/project-details/:projectId/doc/:docType/*',
         element: <FlexternshipsContractView />,
     },

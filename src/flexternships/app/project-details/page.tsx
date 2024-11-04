@@ -8,8 +8,6 @@ import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
 import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import Spinner from '../components/core/Spinner';
-
-// tabs
 import ProjectsTab from './tabs/projects/page';
 
 export default function FlexternshipProjectDetails() {
@@ -21,7 +19,7 @@ export default function FlexternshipProjectDetails() {
   useEffect(() => {
     fetchUserDetails();
     if (params?.projectId) {
-      getProjectDetails(params.projectId);
+      getProjectDetails(params?.projectId);
     }
   }, [params]);
   const tabs = [
@@ -69,10 +67,6 @@ export default function FlexternshipProjectDetails() {
 
   return (
     <div className="flexternships-page">
-      {/* TODO: Breadcrumbs */}
-      {/* TODO: Project Card */}
-
-      {/* TODO: Tab Navigation Component (pass the tabs array as props along with the route where they should be rendered) */}
       {projectLoading ? (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="w-20">
@@ -92,20 +86,18 @@ export default function FlexternshipProjectDetails() {
                 link: `/project-details/${params?.projectId}/team`,
               },
               {
-                title: params['*'] ? params['*'].charAt(0).toUpperCase() + params['*'].slice(1) : 'Unknown Tab',
-                link: `/project-details/${params?.projectId}/${params['*']}`,
+                title: params['projectStep'] ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1) : 'Unknown Tab',
+                link: `/project-details/${params?.projectId}/${params['projectStep']}`,
               },
             ]}
           />
-
-          {/* <MilestoneTab /> */}
         </div>
       )}
-      <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5 max-w-screen">
-        {!projectLoading ? <LeftSideBarProjectDetails data={projectDetails} /> : <div className="w-1/5"></div>}
-        <div className="flex flex-col items-start gap-5 w-4/5">
+      <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
+        {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-1/5"></div>}
+       {!((params['milestone'] ?? false) && (params?.['milestoneId']?.length ?? 0) > 0) && <div className="flex flex-col flex-grow items-start gap-5">
           <ProjectDetailsTabNavigation tabs={tabs} />
-        </div>
+        </div>}
       </div>
     </div>
   );

@@ -9,20 +9,15 @@ import { toUpper } from "lodash";
 export default function FlexternshipsContractView() {
 
     const params = useParams();
-    const projectDetails = useProjectsStore((state) => state.projectDetails);
     const getLegalDocDetails = useLegalStore((state) => state.getLegalDocDetails);
 
     useEffect(() => {
         getLegalDocDetails(params?.projectId, toUpper(params?.docType));
     }, [getLegalDocDetails])
 
-    useEffect(() => {
-        console.log(projectDetails)
-    }, [projectDetails])
-
     return ( 
         <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5 max-w-screen">
-            <LeftSideBarProjectDetails data={projectDetails} />
+            <LeftSideBarProjectDetails />
             <LegalDocCard 
                 docType={params?.docType as string}
             />
