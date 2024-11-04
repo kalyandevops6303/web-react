@@ -1,4 +1,3 @@
-import React from 'react';
 import { ThumbsUp } from 'react-feather';
 import Wow from '@flexternships/assets/icons/core/wow.png';
 

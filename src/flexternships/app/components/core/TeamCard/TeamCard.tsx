@@ -1,4 +1,3 @@
-import React from 'react';
 import Rating from '../rating/Rating';
 import KudosAndWow from '../kudosAndWow/KudosAndWow';
 
