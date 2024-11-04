@@ -49,7 +49,6 @@ import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
-import TeamTab from '@/flexternships/app/components/pages/project-details/tabs/team';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 
 // ** Default Route
