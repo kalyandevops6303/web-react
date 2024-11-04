@@ -6,7 +6,7 @@ import axios from 'axios';
  * @param file - The file to be uploaded.
  * @returns A Promise that resolves to the upload response.
  */
-export const uploadFileToUrl = async (url: string, file: any, setUploadProgress?: Function) => {
+export const uploadFileToUrl = async (url: string, index: number, file: any, setUploadProgress?: Function) => {
   const uploadResponse = await axios.put(url, file, {
     headers: {
       'x-ms-blob-type': 'BlockBlob',
@@ -14,7 +14,7 @@ export const uploadFileToUrl = async (url: string, file: any, setUploadProgress?
     },
     onUploadProgress: (progressEvent) => {
       const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
-      setUploadProgress && setUploadProgress(progress);
+      setUploadProgress && setUploadProgress(progress, index);
     },
   });
   return uploadResponse;

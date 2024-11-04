@@ -30,41 +30,46 @@ export default function FileUpload(props: InputProps) {
     }
   }, [error]);
 
-  const getUploadProgress = (progress: number) => {
+  const getUploadProgress = (progress: number, index: number) => {
     const fieldState = watch(name); // Get the current field state
-    update(fieldState.length - 1, { ...fieldState[fieldState.length - 1], uploadProgress: progress });
+    update(index, { ...fieldState[index], uploadProgress: progress });
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null); // Create a ref for the file input
 
+  const handleFileUpload = async (index: number, file: File ) => {
+    try {
+    const fieldState = watch(name); // Get the current field state
+      if (!fieldState[index].error) {
+        // If no error, upload the file
+        const uploadRequirements = await getFileUploadUrl(file.name);
+        await uploadFileToUrl(uploadRequirements.data.upload_url, index, file, getUploadProgress);
+        const fileKey = uploadRequirements.data.file_key;
+        update(index, { ...fieldState[index], fileKey: fileKey, loading: false, uploadSuccess: true });
+      }
+    } catch (error: any) {
+      const fieldState = watch(name); // Get the current field state
+      update(index, { ...fieldState[index], error: 'Upload failed. Please check your connection.', uploadProgress: 0, uploadError: true });
+    }
+  }
+
   const handleFileInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
-    try {
       append({
         fileName: file.name,
         file: file,
         fileKey: 'temp',
         downloadUrl: '',
         size: file.size,
+        uploadSuccess: false,
+        uploadError: false,
         loading: true,
         createdAt: dateToEpoch(new Date()),
       });
       await trigger(name); // Trigger validation on new field
       const fieldState = watch(name); // Get the current field state
-
-      if (!fieldState[fieldState.length - 1].error) {
-        // If no error, upload the file
-        const uploadRequirements = await getFileUploadUrl(file.name);
-        await uploadFileToUrl(uploadRequirements.data.upload_url, file, getUploadProgress);
-        const fileKey = uploadRequirements.data.file_key;
-        console.log(fields.length, fields);
-        update(fieldState.length - 1, { ...fieldState[fieldState.length - 1], fileKey: fileKey, loading: false });
-      }
-    } catch (error: any) {
-      const fieldState = watch(name); // Get the current field state
-      update(fieldState.length - 1, { ...fieldState[fieldState.length - 1], error: error.message, uploadProgress: 0 });
-    }
+      handleFileUpload(fieldState.length - 1, file);
 
     // Clear the file input value
     if (fileInputRef.current) {
@@ -81,6 +86,13 @@ export default function FileUpload(props: InputProps) {
     }
   };
 
+  const handleTryAgain = async (index: number) => {
+    const fieldState = watch(name); // Get the current field state
+    update(index, { ...fieldState[index], loading: true, uploadError: false, uploadSuccess: false, uploadProgress: 0, error: null });
+    handleFileUpload(index, fieldState[index].file);
+  }
+
+
   return (
     <div className={`${Styles.formFieldContainer} ${className ?? ''} grow`}>
       <div className={Styles.formInputLabelContainer}>
@@ -96,10 +108,13 @@ export default function FileUpload(props: InputProps) {
               error={item.error}
               loading={item.loading}
               uploadProgress={item.uploadProgress}
+              uploadSuccess={item.uploadSuccess}
+              uploadError={item.uploadError}
               fileSize={formatFileSize(item.size)}
               createdAt={formatEpochToHumanReadable(item.createdAt)}
               generateDownloadLink={async () => await getFileDownloadUrl(item.fileKey)}
               removable
+              tryAgain={() => handleTryAgain(index)}
               remove={() => handleRemove(index)} // Call handleRemove to remove file and clear input
             />
           ))}
