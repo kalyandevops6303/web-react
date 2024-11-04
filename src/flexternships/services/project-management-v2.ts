@@ -178,12 +178,15 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
 export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetails | undefined> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
-      headers: headers
+      headers: headers,
+      params: {
+        project_id: projectId
+      }
   }
 
   try {
-      const response = await axios?.get(`${routes?.projectManagementV2?.project?.getProjectById}/${projectId}`, config)
-      const data = response?.data?.data[0]?.project;
+      const response = await axios?.get(`${routes?.projectManagementV2?.project?.getProjectById}`, config)
+      const data = response?.data?.data;
       const projectDetailsData: ProjectDetails = {
         "id": data?._id,
         "createdAt": data?.created_at,
@@ -269,7 +272,9 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
             "departmentName": info?.department_name
           })),
         "skillsData": data?.skills_data,
-        "toolsData": data?.tools_data
+        "toolsData": data?.tools_data,
+        "orgDetails": data?.org_details,
+        "clientDetails": data?.client_details
       };
       return projectDetailsData;
   } catch (error) {

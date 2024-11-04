@@ -10,48 +10,51 @@ import { UserType } from "@/flexternships/constraints/enums/core-enums";
 import { useLegalStore } from "@/flexternships/stores/legal-store";
 import { useProjectsStore } from "@/flexternships/stores/project-details-store";
 import { useFlexternUserStore } from "@/flexternships/stores/core-stores";
+import { useParams } from "react-router-dom";
 
 export default function LegalDocCard(props: LegalDocCardProps) {
 
     const { docType } = props;
+
+    const params = useParams();
 
     const legalDocDetails = useLegalStore((state) => state.legal?.details);
     const projectDetails = useProjectsStore((state) => state.projectDetails);
     const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
 
     const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
+    const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
     const [termsRead, setTermsRead] = useState(false);
 
     const clientSigneeData = {
-        company: 'Trusted Business Systems',
-        name: 'Anil Chad',
+        company: projectDetails?.orgDetails?.company_name,
+        name: `${projectDetails?.clientDetails?.first_name} ${projectDetails?.clientDetails?.last_name}`,
         image_uri: projectDetails?.clientInfo?.[0]?.imageUri ?? '',  // Fallback if imageUri is undefined
         signed: true,
         signedDate: new Date(legalDocDetails?.updated_at),
         userType: UserType.CLIENT,
-        disabled: true
+        disabled: true,
+        isCurrentUser: false
     };
 
     const talentSigneeData = legalDocDetails?.signatures?.map((signature: any) => {
         return {
             role: signature.role,
-            name: signature.name,
-            image_uri: 'https://github.com/shadcn.png',
+            name: `${signature.first_name} ${signature.last_name}`,
+            image_uri: signature.image_uri,
             signed: signature.is_signed,
             signedDate: new Date(signature.signed_on),
             userType: UserType.TALENT,
-            disabled: !termsRead || (signature.user_id != currentUserDetails?.id)
+            disabled: !termsRead || (signature.user_id != currentUserDetails?.id),
+            isCurrentUser: (signature.user_id === currentUserDetails?.id)
         }
     })
 
     useEffect(() => {
         populateUserDetails()
+        getProjectDetails(params?.projectId as string)
     }, [])
-
-    useEffect(() => {
-        console.log(currentUserDetails)
-    }, [currentUserDetails])
 
     return (
         <SimpleElevatedCard className="w-full max-w-[1021px] p-5">
