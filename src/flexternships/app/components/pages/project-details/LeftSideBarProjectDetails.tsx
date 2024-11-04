@@ -23,7 +23,7 @@ const LeftSideBarProjectDetails = () => {
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
-  const daysLeft = calculateDays(data?.listing_details?.start_date_epoch, data?.listing_details?.end_date_epoch)?.daysLeft;
+  const daysLeft = calculateDays(data?.listingDetails?.startDateEpoch, data?.listingDetails?.endDateEpoch)?.daysLeft;
   return (
     <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  xl:w-[350px] h-fit rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
@@ -40,17 +40,17 @@ const LeftSideBarProjectDetails = () => {
 
       <div className="flex flex-row items-center justify-center gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
-          <img src={data?.client_info?.[0]?.image_uri?.length! > 0 ? data?.client_info?.[0]?.image_uri : defaultAvatar} className="w-12 rounded-full h-12" alt="" />
+          <img src={data?.clientInfo?.[0]?.imageUri?.length! > 0 ? data?.clientInfo?.[0]?.imageUri : defaultAvatar} className="w-12 rounded-full h-12" alt="" />
           <h1 className={`${UserTypeChipClassnames['CLIENT']} font-semibold px-2 py-1 rounded-xl`}>Client</h1>
         </div>
 
         <div className="flex flex-col items-start gap-1">
           <h1 className="text-[#333333] font-semibold">
-            {data?.client_info?.[0]?.first_name ?? ''} {data?.client_info?.[0]?.last_name ?? ''}
+            {data?.clientInfo?.[0]?.firstName ?? ''} {data?.clientInfo?.[0]?.lastName ?? ''}
           </h1>
           <RatingInfo
-            rating={data?.client_info?.[0]?.rating || 0}
-            projectsCount={data?.client_info?.[0]?.projects_listed_count || 0}
+            rating={data?.clientInfo?.[0]?.rating || 0}
+            projectsCount={data?.clientInfo?.[0]?.projectsListedCount || 0}
           />
         </div>
       </div>
@@ -63,14 +63,14 @@ const LeftSideBarProjectDetails = () => {
         <div className="flex flex-row items-center gap-1">
           <img src={StartDateSVG} className="w-14 h-14 rounded-full" alt="" />
           <div className="flex flex-col items-start gap-1">
-            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listing_details?.start_date_epoch)}</h1>
+            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listingDetails?.startDateEpoch)}</h1>
             <h1 className="text-xs">Start Date</h1>
           </div>
         </div>
         <div className="flex flex-row items-center gap-1">
           <img src={EndDateSVG} className="w-14 h-14 rounded-full" alt="" />
           <div className="flex flex-col items-start gap-1">
-            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listing_details?.end_date_epoch)}</h1>
+            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listingDetails?.endDateEpoch)}</h1>
             <h1 className="text-xs">End Date</h1>
           </div>
         </div>
@@ -86,7 +86,7 @@ const LeftSideBarProjectDetails = () => {
         )} */}
         <h1>
           Estimated Duration :{' '}
-          <span className="font-semibold text-gray-900">{data?.details?.expected_duration?.duration} Weeks</span>
+          <span className="font-semibold text-gray-900">{data?.details?.expectedDuration?.duration} Weeks</span>
         </h1>
         <div className="flex flex-row items-start gap-3">
           Status :{' '}
@@ -95,16 +95,16 @@ const LeftSideBarProjectDetails = () => {
           />
         </div>
 
-        {data?.skills_data?.length! > 0 && (
+        {data?.skillsData?.length! > 0 && (
           <div className="flex flex-row items-start w-full justify-start gap-2">
             <h1 className="mt-1">Skills:</h1>
-            <BadgeGroup tags={data?.skills_data || []} className="bg-skyblue-light text-skyblue" />
+            <BadgeGroup tags={data?.skillsData || []} className="bg-skyblue-light text-skyblue" />
           </div>
         )}
-        {data?.tools_data?.length! > 0 && (
+        {data?.toolsData?.length! > 0 && (
           <div className="flex flex-row items-start w-full justify-start gap-2">
             <h1 className="mt-1">Tools:</h1>
-            <BadgeGroup tags={data?.tools_data || []} className="bg-skyblue-light text-skyblue" />
+            <BadgeGroup tags={data?.toolsData || []} className="bg-skyblue-light text-skyblue" />
           </div>
         )}
         <div className="flex flex-col w-full ">
