@@ -19,7 +19,6 @@ export const populateTeamDetails = async (set: any, projectId: string): Promise<
 
 export const getProjectDetails = async (projectId: string, set: any) => {
   set({ isProjectsLoading: true });
-  const res:any = await getProjectDetailsById(projectId); 
-  console.log(res);
+  const res:any = await getProjectDetailsById(projectId);
   set({ projectDetails: res, isProjectsLoading: false });
 };

@@ -184,7 +184,6 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
   try {
       const response = await axios.get(`${routes.projectManagementV2.project.getProjectById}/${projectId}`, config)
       const data = response.data?.data[0]?.project;
-      console.log(response.data);
       const projectDetailsData: ProjectDetails = {
         "id": data._id,
         "createdAt": data.created_at,
@@ -272,10 +271,8 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         "skillsData": data.skills_data,
         "toolsData": data.tools_data
       };
-      console.log(projectDetailsData);
       return projectDetailsData;
   } catch (error) {
-    console.log(error);
       handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
   }
 }
