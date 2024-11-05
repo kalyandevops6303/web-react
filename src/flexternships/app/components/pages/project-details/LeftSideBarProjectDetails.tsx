@@ -1,7 +1,7 @@
 import ProjectStatusChip from './projectCard/ProjectStatusChip';
 import RatingInfo from './projectCard/RatingInfo';
 import BadgeGroup from './projectCard/BadgeGroup';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import StartDateSVG from '../../../../assets/svgs/project-details/start-date.svg';
 import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { Button } from '../../ui/button';
@@ -10,7 +10,6 @@ import { userTypes } from '@/utility/constants/Constant';
 import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { useParams } from 'react-router-dom';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-[#333333]',
@@ -18,20 +17,13 @@ enum UserTypeChipClassnames {
 }
 
 const LeftSideBarProjectDetails = () => {
-  const params = useParams();
   const data = useProjectsStore((state) => state.projectDetails);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  const projectDetails = useProjectsStore((state) => state.projectDetails);
-  const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const [showMore, setShowMore] = useState(false);
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
   const daysLeft = calculateDays(data?.listingDetails?.startDateEpoch, data?.listingDetails?.endDateEpoch)?.daysLeft;
-
-  useEffect(() => {
-    // getProjectDetails(params?.projectId as string);
-  }, [params])
 
   return (
     <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  xl:w-[350px] h-fit rounded-xl">
@@ -88,11 +80,6 @@ const LeftSideBarProjectDetails = () => {
 
 
       <div className="flex flex-col items-start justify-start w-full gap-5 text-gray-600">
-        {/* {userDetails?.userType === userTypes?.client && (
-          <h1>
-            Fixed Price : <span className="font-semibold text-gray-900">$ 135,000</span>
-          </h1>
-        )} */}
         <h1>
           Estimated Duration :{' '}
           <span className="font-semibold text-gray-900">{data?.details?.expectedDuration?.duration} Weeks</span>
