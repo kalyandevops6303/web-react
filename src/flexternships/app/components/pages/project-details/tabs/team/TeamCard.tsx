@@ -1,5 +1,5 @@
-import Rating from '../rating/Rating';
-import KudosAndWow from '../kudosAndWow/KudosAndWow';
+import Rating from '../../../../core/feedback/Rating';
+import KudosAndWow from '../../../../core/feedback/KudosAndWow';
 
 export default function TeamCard(props: InputProps) {
   const { rating, ratingText, ratingColor, name, profileImage, designation, kudos, wow } = props;
