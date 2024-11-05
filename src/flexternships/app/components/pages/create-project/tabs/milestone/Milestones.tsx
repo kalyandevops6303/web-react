@@ -35,6 +35,7 @@ export default function Milestones() {
     updateMilestonesData,
     saveDraft,
     openModal,
+    appendRemovedMilestoneId,
   } = useProjectCreationStore();
 
   const [milestoneDurationState, setMilestoneDurationState] = useState<MilestoneInfoType>(MilestoneInfoType.BALANCED);
@@ -101,6 +102,13 @@ export default function Milestones() {
     updateEstimatedDuration(sumOfMilestoneDuration);
     setMilestoneDurationState(MilestoneInfoType.UPDATED);
   };
+
+  const handleRemoveMilestone = (milestoneIndex: number) => {
+    if(milestones[milestoneIndex]._id) {
+      appendRemovedMilestoneId(milestones[milestoneIndex]._id);
+    }
+    remove(milestoneIndex);
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -192,7 +200,7 @@ export default function Milestones() {
                   milestoneIndex={index}
                   control={control}
                   removable={fields.length > 2}
-                  remove={() => remove(index)}
+                  remove={() => handleRemoveMilestone(index)}
                   errors={errors.milestones?.[index]}
                 />
               ))}

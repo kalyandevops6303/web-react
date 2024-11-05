@@ -105,6 +105,16 @@ export const updateListingData = (set: any, listingStartDate?: number, listingEn
   }));
 }
 
+export const appendRemovedMilestoneId = (milestoneId: string, set: any) => {
+  set((state: ProjectCreationState) => ({
+    ...state,
+    data: {
+      ...state.data,
+      removedMilestoneIds: [...(state.data.removedMilestoneIds ?? []), milestoneId],
+    },
+  }));
+}
+
 export const openModal = (modalType: ModalType, set: any) => {
   set((state: ProjectCreationState) => ({
     ...state,

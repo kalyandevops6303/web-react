@@ -15,7 +15,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
     const jumpToTab = useProjectCreationStore((state) => (state.jumpToTab));
     const closeModal = useProjectCreationStore((state) => (state.closeModal));
     const populateDraftProject = useProjectCreationStore((state) => (state.populateDraftProject));
-
+    const resetProjectCreationStore = useProjectCreationStore((state) => (state.resetStore));
     const [isDraftLoading, setIsDraftLoading] = useState(false);
 
     const navigate = useNavigate();
@@ -30,16 +30,19 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
     const redirectToMyListings = () => {
         closeModal();
         navigate('/marketplace/my_listings');
+        resetProjectCreationStore();
     }
 
     useEffect(() => {
         const populateDraftIfProjectId = async () => {
             if (projectId) {
+                resetProjectCreationStore();
                 setIsDraftLoading(true);
                 try {
                     await populateDraftProject(projectId);
                 } catch (error) {
                     showToastMessage(ToastType.ERROR, 'An unexpected error occurred while loading the draft project data');
+                    navigate('/create-project');
                 } finally {
                     setIsDraftLoading(false);
                 }

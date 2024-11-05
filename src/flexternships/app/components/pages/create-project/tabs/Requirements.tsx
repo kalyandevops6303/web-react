@@ -80,7 +80,6 @@ export default function Requirements() {
         documents: requirementsData.documents,
       });
     }
-    console.log(requirementsData);
   }, [requirementsData, reset]);
 
 

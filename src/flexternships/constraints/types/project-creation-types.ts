@@ -68,6 +68,7 @@ export type ProjectRolesForm = {
 };
 
 export type Milestone = {
+  _id?: string
   title: string
   duration: number
   description: string
@@ -88,6 +89,7 @@ export type ProjectCreationFormData = {
   roles: ProjectRole[]
   milestones: Milestone[]
   listingDetails: ListingDetails
+  removedMilestoneIds?: string[]
 }
 
 // Form State Types
@@ -111,6 +113,7 @@ export type ProjectCreationActions = {
   updateRolesData: (data: ProjectRole[]) => void
   updateMilestonesData: (data: Milestone[]) => void
   updateListingData: (listingStartDate?: number, listingEndDate?: number) => void
+  appendRemovedMilestoneId: (milestoneId: string) => void
   openModal: (modalType:ModalType) => void
   closeModal: () => void
   resetStore: () => void

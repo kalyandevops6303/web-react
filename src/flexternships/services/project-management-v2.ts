@@ -95,6 +95,7 @@ export const createFlexternProject: (projectData: ProjectCreationFormData, draft
           "end_date_epoch": projectData.listingDetails.listingEndDate,
         },
         "milestones": projectData.milestones.map((item) => ({
+                "milestone_id": item._id,
                 "name": item.title,
                 "description": item.description,
                 "estimated_duration": {
@@ -105,6 +106,7 @@ export const createFlexternProject: (projectData: ProjectCreationFormData, draft
                 // "seq": 0,
                 // "milestone_id": ""
         })),
+        "removed_milestone_ids": draftProjectId ? (projectData.removedMilestoneIds ?? []) : [],
     };
 
     try {
@@ -158,6 +160,7 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData, 
           "end_date_epoch": projectData.listingDetails.listingEndDate,
         },
         "milestones": projectData.milestones.map((item) => ({
+                "milestone_id": item._id,
                 "name": item.title,
                 "description": item.description,
                 "estimated_duration": {
@@ -168,6 +171,7 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData, 
                 // "seq": 0,
                 // "milestone_id": ""
         })),
+        "removed_milestone_ids": projectData.removedMilestoneIds || [],
     };
 
     try {
@@ -205,8 +209,8 @@ export const getFlexternProjectDraft: (projectId: string) => Promise<ProjectCrea
         },
         roles: response.data.data.roles.map((project_role: any) => ({
           role: {
-            _id: project_role._id,
-            name: project_role.name,
+            _id: project_role.role?._id,
+            name: project_role.role?.name,
           },
           count: project_role.count,
           skills: project_role.proficiency.skills.map((skill: any) => ({
@@ -219,6 +223,7 @@ export const getFlexternProjectDraft: (projectId: string) => Promise<ProjectCrea
           })),
         })),
         milestones: response.data.data.milestones?.map((milestone: any) => ({
+          _id: milestone._id,
           title: milestone.name,
           duration: milestone.estimated_duration?.duration || 0,
           description: milestone.description,

@@ -45,7 +45,6 @@ export default function Listing() {
     }
     updateListingData(listingStartDate, listingEndDate);
 
-    console.log(formatEpochToHumanReadable(listingStartDate), listingStartDate);
   }
 
   const onContinue = () => {

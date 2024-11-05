@@ -5,6 +5,8 @@ import PrimaryButton from '../buttons/PrimaryButton'
 import { getImageUploadUrl } from '@/flexternships/services/user-management'
 import { uploadFileToUrl } from '@/flexternships/services/core-service'
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover'
+import { showToastMessage } from '@/flexternships/utils/core-utils'
+import { ToastType } from '@/flexternships/constraints/enums/core-enums'
 
 
 export default function UploadProfileAvatar(props: UploadProfileAvatarProps) {
@@ -25,7 +27,7 @@ export default function UploadProfileAvatar(props: UploadProfileAvatarProps) {
             // Call onChange with the new value (assuming it's the URL of the uploaded image)
             onChange(uploadData.data.file_key);
         } catch (error) {
-            console.error('Error uploading file:', error);
+            showToastMessage(ToastType.ERROR, 'Error uploading file');
         } finally {
             setIsLoading(false);
         }
