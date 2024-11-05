@@ -48,6 +48,8 @@ import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/con
 import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
+import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
+import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -119,30 +121,118 @@ export const FlexternshipRoutes = [
         )
     },
     {
-        path: '/project-details/:projectId/*',
-        element: <ProjectDetails />,
+        path: '/project-details/:projectId',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <RedirectToTeamTab />
+            </RoleAccessWrapper >
+        ),
+    },
+    {
+        path: '/project-details/:projectId/:projectStep',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipProjectDetails />
+            </RoleAccessWrapper >
+        ),
+    },
+    {
+        path: '/project-details/:projectId/:projectStep/milestone/:milestoneId',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipProjectDetails />
+            </RoleAccessWrapper >
+        ),
     },
     {
         path: '/project-details/:projectId/bid/:bidId',
         element: <BidDetails />,
     },
-
-  {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
-    element: <ContractView />,
-  },
-  {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
-    element: <ContractView />,
-  },
-  {
-    path: '/projects/*',
-    element: <Projects />,
-  },
-  {
-    path: '/my-teams/*',
-    element: <MyTeams />,
-  },
+    {
+        path: '/project-details/:projectId/:projectStep/doc/:docType/*',
+        element: <ContractView />,
+    },
+    {
+        path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
+        element: <ContractView />,
+    },
+    {
+        path: '/projects/*',
+        element: <Projects />,
+    },
+    {
+        path: '/my-teams/*',
+        element: <MyTeams />,
+    },
 
   {
     path: '/clubs/*',

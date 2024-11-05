@@ -7,24 +7,25 @@ import Statbox from '../../user-details/overview/Statbox';
 import { getCardInfo, getCardInfoFlextern } from '../../../redux/actions/projectActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import PlusUsers from '../../../assets/images/PlusUsers.svg';
-import { appPermissionsSelector } from '@src/redux/selectors/authSelectors';
+import { appPermissionsSelector, selectAuthUserData } from '@src/redux/selectors/authSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
+  const userData = useSelector(selectAuthUserData);
   const selectCardData = useSelector((state) => state.project.cardData);
   const isLoading = useSelector((state) => state?.project?.cardInfoLoading);
   const isLoadingSecondaryFilter = useSelector((state) => state?.project?.loading);
   const appPermissions = useSelector(appPermissionsSelector);
-  const isFlextern = useSelector((state) => state.auth?.is_flextern);
+  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
 
   useEffect(() => {
-    if (isFlextern) {
+    if (flexTern) {
       dispatch(getCardInfoFlextern({ userType, onSuccess: () => {}, onError: () => {} }));
     } else {
       dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
     }
-  }, [isFlextern]);
+  }, [flexTern]);
 
   if (isLoading && !selectCardData) {
     return <ComponentSpinner />;
