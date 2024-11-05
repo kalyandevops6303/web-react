@@ -113,6 +113,9 @@ jobs:
           npm install
           npm run build
 
+      - name: Check if dist exists
+        run: if [ ! -d "./dist" ]; then echo "dist directory not found"; exit 1; fi
+
       - name: Upload to blob storage
         run: |
           today=$(date +%d-%m-%Y-%H.%M)
