@@ -1,3 +1,7 @@
 .simpleElevatedCard {
     @apply shadow-card rounded-md;
 }
+
+.collapsableCard {
+    @apply rounded-[6px] bg-[rgba(5,120,251,0.05)] p-3 no-underline flex
+}

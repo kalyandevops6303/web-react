@@ -25,3 +25,8 @@ export enum UserTypeChipClassnames {
     TERMINATED = 'Terminated',
     COMPLETED = 'Completed'
   }
+
+  export const enum DocTypes {
+    NDA = 'NDA',
+    CONTRACT = 'CONTRACT',
+  }
