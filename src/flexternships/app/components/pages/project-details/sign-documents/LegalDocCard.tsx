@@ -57,7 +57,7 @@ export default function LegalDocCard(props: LegalDocCardProps) {
 
   const talentSigneeData = legalDocDetails?.signatures?.map((signature: any) => {
     return {
-      role: signature.role,
+      role: signature.role_name,
       name: `${signature.first_name} ${signature.last_name}`,
       image_uri: signature.image_uri,
       signed: signature.is_signed,
