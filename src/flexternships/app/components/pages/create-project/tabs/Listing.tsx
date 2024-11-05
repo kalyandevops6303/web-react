@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft } from 'react-feather';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
@@ -8,29 +8,35 @@ import TextInput from '@flexternships/app/components/core/form/TextInput';
 import Tooltip from '@flexternships/app/components/core/Tooltip';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
-import { addDaysToEpoch, dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
+import { addDaysToEpoch, dateToEpoch, epochDifferenceInDays, epochToDate, formatEpochToHumanReadable, getTodayDate } from '@flexternships/utils/date-utils';
 
 import selectedRadioIcon from '@flexternships/assets/icons/radios/selectedRadio.svg';
 import defaultRadioIcon from '@flexternships/assets/icons/radios/defaultRadio.svg';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { isEmpty } from 'lodash';
+import { ListingChoice } from '@/flexternships/constraints/types/project-creation-types';
+import { useParams } from 'react-router-dom';
 
 export default function Listing() {
   const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);
+  const listingData = useProjectCreationStore((state) => state.data.listingDetails);
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
   const nextTab = useProjectCreationStore((state) => (state.nextTab));
   const updateListingData = useProjectCreationStore((state) => state.updateListingData);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
 
-  const [listingChoice, setListingChoice] = useState<"immediate" | "later">("immediate");
+  const [listingChoice, setListingChoice] = useState<ListingChoice>(ListingChoice.IMMEDIATE);
   const [delistAfterForImmediate, setDelistAfterForImmediate] = useState<number>(30); // in days
   const [listingStartDateEpochForLater, setListingStartDateEpochForLater] = useState<number>(dateToEpoch(new Date())); // in epoch
   const [delistAfterForLater, setDelistAfterForLater] = useState<number>(30); // in days
 
+  const { projectId } = useParams();
+
   const formatAndUpdateData = () => {
     let listingStartDate: number, listingEndDate: number;
-    if (listingChoice === "immediate") {
+    if (listingChoice === ListingChoice.IMMEDIATE) {
       listingStartDate = dateToEpoch(new Date());
       listingEndDate = addDaysToEpoch(listingStartDate, delistAfterForImmediate);;
     } else {
@@ -38,6 +44,8 @@ export default function Listing() {
       listingEndDate = addDaysToEpoch(listingStartDate, delistAfterForLater);
     }
     updateListingData(listingStartDate, listingEndDate);
+
+    console.log(formatEpochToHumanReadable(listingStartDate), listingStartDate);
   }
 
   const onContinue = () => {
@@ -53,11 +61,23 @@ export default function Listing() {
   const onSaveDraft = async () => {
     try {
       formatAndUpdateData();
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }
   }
+
+  useEffect(() => {
+    if (!isEmpty(listingData)) {
+      setListingChoice(epochToDate(listingData.listingStartDate) <= getTodayDate() ? ListingChoice.IMMEDIATE : ListingChoice.LATER);
+      if(epochToDate(listingData.listingStartDate) <= getTodayDate()) {
+        setDelistAfterForImmediate(epochDifferenceInDays(listingData.listingStartDate, listingData.listingEndDate));
+      } else {
+        setDelistAfterForLater(epochDifferenceInDays(listingData.listingStartDate, listingData.listingEndDate));
+        setListingStartDateEpochForLater(listingData.listingStartDate);
+      }
+    }
+  }, [listingData]);
 
   return (
     <>
@@ -67,9 +87,9 @@ export default function Listing() {
         </div>
         <div className={Styles.tabContentBody}>
           <div className='flex flex-col w-full gap-7 pt-6'>
-            <div className={Styles.listImmediatelyContainer} onClick={() => setListingChoice("immediate")}>
+            <div className={Styles.listImmediatelyContainer} onClick={() => setListingChoice(ListingChoice.IMMEDIATE)}>
               <div className={Styles.listingRadio}>
-                <img src={listingChoice === "immediate" ? selectedRadioIcon : defaultRadioIcon} alt={listingChoice === "immediate" ? "selected" : "default"} />
+                <img src={listingChoice === ListingChoice.IMMEDIATE ? selectedRadioIcon : defaultRadioIcon} alt={listingChoice === ListingChoice.IMMEDIATE ? "selected" : "default"} />
               </div>
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>
@@ -98,9 +118,9 @@ export default function Listing() {
                 </div>
               </div>
             </div>
-            <div className={Styles.listLaterContainer} onClick={() => setListingChoice("later")}>
+            <div className={Styles.listLaterContainer} onClick={() => setListingChoice(ListingChoice.LATER)}>
               <div className={Styles.listingRadio}>
-                <img src={listingChoice === "later" ? selectedRadioIcon : defaultRadioIcon} alt={listingChoice === "later" ? "selected" : "default"} />
+                <img src={listingChoice === ListingChoice.LATER ? selectedRadioIcon : defaultRadioIcon} alt={listingChoice === ListingChoice.LATER ? "selected" : "default"} />
               </div>
               <div className={Styles.listingRadioContent}>
                 <div className={Styles.listingRadioTitle}>

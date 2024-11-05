@@ -16,6 +16,7 @@ import ProjectDetailsItem from './ProjectDetailsItem';
 import RoleItem from './RoleItem';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { useParams } from 'react-router-dom';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
@@ -27,10 +28,12 @@ export default function Preview() {
 
   const [recallTimeLeft, setRecallTimeLeft] = useState<number>(-1);
 
+  const { projectId } = useParams();
+
   useEffect(() => {
       const postProject = async () => {
         try {
-          await createFlexternProject(formData);
+          await createFlexternProject(formData, projectId);
         } catch (error) {
           // TODO - Add ERROR TOAST
           console.log("There's an error while posting the project: ", error);
@@ -58,7 +61,7 @@ export default function Preview() {
 
   const onSaveDraft = async () => {
     try {
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }

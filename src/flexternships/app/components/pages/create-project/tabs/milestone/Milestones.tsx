@@ -19,6 +19,7 @@ import SortableMilestoneCard from './SortableMilestoneCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
+import { useParams } from 'react-router-dom';
 
 export default function Milestones() {
   const {
@@ -71,6 +72,8 @@ export default function Milestones() {
       };
     }, [estimatedDuration, milestonesData]),
   });
+
+  const { projectId } = useParams();
 
   const { fields, append, remove, move } = useFieldArray({ control, name: 'milestones' });
   const milestones = useWatch({ control, name: "milestones" });
@@ -128,7 +131,7 @@ export default function Milestones() {
   const onSaveDraft = async () => {
     try {
       updateMilestonesData(watch('milestones'));
-      await saveDraft();
+      await saveDraft(projectId);
     } catch (error) {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }

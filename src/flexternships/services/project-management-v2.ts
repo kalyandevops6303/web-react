@@ -54,10 +54,13 @@ export const getFileDownloadUrl = async (fileKey: string) => {
  * @returns A Promise that resolves to the created project ID or undefined.
  * @throws {Error} If the project creation fails or an unexpected error occurs.
  */
-export const createFlexternProject: (projectData: ProjectCreationFormData) => Promise<string | undefined> = async (projectData) => {
+export const createFlexternProject: (projectData: ProjectCreationFormData, draftProjectId?: string) => Promise<string | undefined> = async (projectData, draftProjectId) => {
     const headers = appendAuthToken({});
     const config = {
-        headers: headers
+        headers: headers,
+        params: {
+          project_id: draftProjectId,
+        }
     }
     const formattedProjectData = {
         "details": {
@@ -117,7 +120,7 @@ export const createFlexternProject: (projectData: ProjectCreationFormData) => Pr
  * @returns A Promise that resolves to the created draft project ID or undefined.
  * @throws {Error} If the project draft creation fails or an unexpected error occurs.
  */
-export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) => Promise<string | undefined> = async (projectData) => {
+export const createFlexternProjectDraft: (projectData: ProjectCreationFormData, draftProjectId?: string) => Promise<string | undefined> = async (projectData, draftProjectId) => {
     const headers = appendAuthToken({});
     const config = {
         headers: headers
@@ -143,8 +146,8 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
             {
                 "role_id": item.role._id || null,
                 "proficiency": {
-                  "skills": item.skills.map((skill)=>(skill._id)),
-                  "tools": item.tools.map((tool) => (tool._id)),
+                  "skills": item.skills?.map((skill)=>(skill._id)) || [],
+                  "tools": item.tools?.map((tool) => (tool._id)) || [],
                 },
                 "count": item.count,
             }
@@ -167,9 +170,66 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData) 
     };
 
     try {
-        const response = await axios.post(routes.projectManagementV2.project.saveDraft, formattedProjectData, config)
+        const response = await axios.post(`${routes.projectManagementV2.project.saveDraft}${draftProjectId ? `?project_id=${draftProjectId}` : ''}`, formattedProjectData, config)
         return response.data?.project_id || undefined;
     } catch (error) {
         handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
     }
+}
+
+export const getFlexternProjectDraft: (projectId: string) => Promise<ProjectCreationFormData | undefined> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+      headers: headers,
+      params: {
+          project_id: projectId,
+      }
+  }
+  try {
+      const response = await axios.get(routes.projectManagementV2.project.getDraft, config);
+      const formattedDraftData = {
+        requirements: {
+          projectName: response.data.data.details.name || '',
+          estimatedStartDate: response.data.data.details.expected_start_date || undefined,
+          estimatedDuration: (response.data.data.details.expected_duration?.duration || 0),
+          estimatedWeeklyHours: (response.data.data.details.expected_duration?.hours_per_week || 0),
+          totalProjectHoursEach: (response.data.data.details.expected_duration?.duration || 0) * (response.data.data.details.expected_duration?.hours_per_week || 0),
+          projectDescription: response.data.data.details.description || '',
+          documents: response.data.data.details.documents?.map((document: any) => ({
+            fileName: document.file_name,
+            fileKey: document.file_key,
+            size: document.size,
+            createdAt: document.created_at,
+          })) || [],
+        },
+        roles: response.data.data.roles.map((project_role: any) => ({
+          role: {
+            _id: project_role._id,
+            name: project_role.name,
+          },
+          count: project_role.count,
+          skills: project_role.proficiency.skills.map((skill: any) => ({
+            _id: skill._id,
+            name: skill.name,
+          })),
+          tools: project_role.proficiency.tools.map((tool: any) => ({
+            _id: tool._id,
+            name: tool.name,
+          })),
+        })),
+        milestones: response.data.data.milestones?.map((milestone: any) => ({
+          title: milestone.name,
+          duration: milestone.estimated_duration?.duration || 0,
+          description: milestone.description,
+          deliverables: milestone.deliverables,
+        })),
+        listingDetails: {
+          listingStartDate: response.data?.data?.listing_details?.start_date_epoch || undefined,
+          listingEndDate: response.data?.data?.listing_details?.end_date_epoch || undefined,
+        },
+      }
+      return formattedDraftData;
+  } catch (error) {
+      handleError(error as Error, 'An unexpected error occurred while retrieving the Flextern project draft');
+  }
 }

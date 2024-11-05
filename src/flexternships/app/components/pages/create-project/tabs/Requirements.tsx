@@ -17,6 +17,7 @@ import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
+import { useParams } from 'react-router-dom';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -38,6 +39,7 @@ export default function Requirements() {
     resolver: yupResolver(ProjectDetailsSchema),
     defaultValues: {},
   });
+  const { projectId } = useParams();
 
   const onContinue = (data: ProjectDetails) => {
     updateRequirementsData(data);
@@ -48,7 +50,7 @@ export default function Requirements() {
     const data = watch();
     updateRequirementsData(data);
     try {
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }
@@ -78,6 +80,7 @@ export default function Requirements() {
         documents: requirementsData.documents,
       });
     }
+    console.log(requirementsData);
   }, [requirementsData, reset]);
 
 

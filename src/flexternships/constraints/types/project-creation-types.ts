@@ -16,6 +16,11 @@ export enum MilestoneInfoType {
   UPDATED = "updated"
 }
 
+export enum ListingChoice {
+  IMMEDIATE = "immediate",
+  LATER = "later"
+}
+
 
 // Form Data Types
 type Skill = {
@@ -98,7 +103,8 @@ export type ProjectCreationActions = {
   nextTab: () => void
   previousTab: () => void
   jumpToTab: (tabIndex: number) => void
-  saveDraft: () => Promise<string | undefined>
+  saveDraft: (draftProjectId?: string) => Promise<string | undefined>
+  populateDraftProject: (projectId: string) => Promise<void>
   updateEstimatedDuration: (duration: number) => void
   updateEstimatedStartDate: (date: number) => void
   updateRequirementsData: (data: ProjectDetails) => void
