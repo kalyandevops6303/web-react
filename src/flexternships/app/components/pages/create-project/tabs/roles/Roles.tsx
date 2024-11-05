@@ -108,7 +108,7 @@ export default function Roles() {
             Save as Draft
           </SecondaryButton>
           <PrimaryButton
-            onClick={handleSubmit(onContinue, (formErrors) => console.log('Validation Errors:', formErrors))}
+            onClick={handleSubmit(onContinue, (formErrors) => {console.log(formErrors);})}
             disabled={!isValid}
           >
             Continue

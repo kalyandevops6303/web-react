@@ -233,11 +233,11 @@ const ProjectCard = ({
                         ref={divRef}
                         style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
                       >
-                        {parse(data?.details?.description)}
+                        {data?.details?.description}
                       </div>
                     ) : (
                       <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
-                        {parse(data?.details?.description)}
+                        {data?.details?.description}
                       </div>
                     )}
                   </>

@@ -172,4 +172,18 @@ pipeline {
             }
         }
     }
+  post {
+    always {
+        script {
+            def paramsSubtitle = "Build with parameters:"
+            def paramsSummary = """
+                JOB_NAME=${env.JOB_NAME}
+                ENVIRONMENT=${params.ENVIRONMENT}
+                BRANCH=${params.BRANCH}
+            """.stripIndent().trim()
+ 
+            currentBuild.description = "${paramsSubtitle}\n${paramsSummary}"
+        }
+     }
+  }
 }

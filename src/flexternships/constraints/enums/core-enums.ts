@@ -3,6 +3,12 @@ export enum UserType {
     TALENT = 'TALENT',
 }
 
+export enum MilestoneStatus {
+    ACTIVE = 'ACTIVE',
+    COMPLETED = 'COMPLETED',
+    INACTIVE = 'INACTIVE',
+}
+
 export enum FlexternUserAppRole {
     // CLIENT = 'CLIENT',
     // TALENT = 'TALENT',

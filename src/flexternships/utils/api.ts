@@ -1,6 +1,7 @@
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const serviceUrls = {
+    dashboardV2: `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}/api/v2`,
     projectManagementV2: `${baseUrl}/projectv2/api/v1`,
     userManagement: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v1`,
     userManagementV2: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v2`,
@@ -16,6 +17,7 @@ export const routes = {
             create: `${serviceUrls.projectManagementV2}/project`,
             saveDraft: `${serviceUrls.projectManagementV2}/project/draft/save`,
             getDraft: `${serviceUrls.projectManagementV2}/project/draft/get`,
+            getProjectById: `${serviceUrls.dashboardV2}/projects`,
         }
     },
     userManagement: {
@@ -59,6 +61,9 @@ export const routes = {
         password: {
             changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
         }
+    },
+    projectDetails: {
+        teamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
     }
     
 }

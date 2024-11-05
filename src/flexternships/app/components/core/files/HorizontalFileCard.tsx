@@ -16,6 +16,9 @@ export default function HorizontalFileCard(props: Props) {
     generateDownloadLink,
     loading,
     uploadProgress,
+    uploadSuccess,
+    uploadError,
+    tryAgain,
   } = props;
   const handleClick = async () => {
     const downloadResponse = await generateDownloadLink();
@@ -23,7 +26,9 @@ export default function HorizontalFileCard(props: Props) {
   };
   return (
     <SimpleElevatedCard
-      className={`${Styles.horizontalFileCard} ${className ?? ''} ${error ? 'border border-error border-solid' : ''} h-[3.875rem]`}
+      className={`${Styles.horizontalFileCard} ${className ?? ''} ${
+        error ? 'border border-error border-solid' : ''
+      } h-[3.875rem]`}
     >
       <div className={`${Styles.fileContainer} cursor-pointer`} onClick={handleClick}>
         {/* TODO: Image */}
@@ -36,11 +41,13 @@ export default function HorizontalFileCard(props: Props) {
         {loading ? (
           <>
             {error ? (
-              <div className="p-2 text-error text-sm font-medium tracking-wide not-italic self-center mr-8">{error}</div>
-            ):(
+              <div className="p-2 text-error text-sm font-medium tracking-wide not-italic self-center mr-8">
+                {error}
+              </div>
+            ) : (
               <span className={`${Styles.loading} mr-8`}>Uploading document, this will only take a few seconds.</span>
             )}
-            <Progress value={uploadProgress} className="w-65 h-3 bg-grey-50 mr-8" />
+            <Progress value={uploadProgress} className={`h-3 bg-grey-50 mr-8 ${uploadError ? 'w-32' : 'w-65'}`} />
           </>
         ) : (
           <div className={Styles.fileInfoContainer}>
@@ -49,12 +56,30 @@ export default function HorizontalFileCard(props: Props) {
           </div>
         )}
         {removable && (
-          <div
-            className=" cursor-pointer"
-            onClick={remove}
-          >
-            <X className='w-5 h-5'/>
-          </div>
+          <>
+            {uploadSuccess ? (
+              <div
+                className="p-2 text-error text-sm font-semibold tracking-wide not-italic self-center cursor-pointer"
+                onClick={remove}
+              >
+                Remove
+              </div>
+            ) : (
+              <>
+                {uploadError && (
+                  <div
+                    className="p-2 text-error text-sm font-semibold tracking-wide not-italic self-center cursor-pointer mr-8"
+                    onClick={tryAgain}
+                  >
+                    Try Again
+                  </div>
+                )}
+                <div className=" cursor-pointer" onClick={remove}>
+                  <X className="w-5 h-5" />
+                </div>
+              </>
+            )}
+          </>
         )}
       </div>
     </SimpleElevatedCard>
@@ -69,7 +94,10 @@ type Props = {
   removable?: boolean;
   className?: string;
   remove?: () => void;
+  tryAgain?: () => void;
   generateDownloadLink: () => Promise<any>;
   loading?: boolean;
   uploadProgress?: number;
+  uploadSuccess?: boolean;
+  uploadError?: boolean;
 };

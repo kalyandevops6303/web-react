@@ -103,7 +103,8 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
           <div className="d-flex w-100 align-items-center">
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                {data?.client?.first_name} {data?.client?.last_name}
+              {data?.client?.first_name || ''} {data?.client?.last_name || ''}
+
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
                 {data?.client?.company_name}

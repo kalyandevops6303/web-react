@@ -31,6 +31,10 @@ module.exports = {
           600: "#515759",
           loadingText: "#9E9E9E"
         },
+        skyblue:{
+          DEFAULT: "#00B0FF",
+          light: "#00B0FF1F",
+        },
         success: '#28C76F',
         error: "#EA5455",
         success: "#28C76F",

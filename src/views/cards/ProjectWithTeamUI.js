@@ -21,13 +21,15 @@ import PermissionWrapper from '@/PermissionWrapper';
 const determineClassWhenDisputeStatus = (pathname, userData) => {
   if (pathname === 'dispute' && userData?.user_type === userTypes.client) {
     return 'w-100  d-flex  justify-content-between';
-  } if (
+  }
+  if (
     userData?.user_type === userTypes.talent ||
     userData?.user_type === userTypes.team ||
     userData?.user_type === userTypes.club
   ) {
     return 'w-50 d-flex flex-column justify-content-between d-none';
-  } return 'w-50';
+  }
+  return 'w-50';
 };
 
 const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data }) => {
@@ -96,14 +98,14 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   const avatarGroup = data?.worker_details?.workers?.length
     ? data?.worker_details?.workers?.map((worker) => ({
-      user_type: userTypes.talent,
-      user_id: worker?.user_id,
-      title: `${worker?.first_name} ${worker?.last_name}`,
-      img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    }))
+        user_type: userTypes.talent,
+        user_id: worker?.user_id,
+        title: `${worker?.first_name} ${worker?.last_name}`,
+        img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+        placement: 'bottom',
+        imgHeight: 33,
+        imgWidth: 33,
+      }))
     : [];
 
   const clientDetails = data?.client ?? data?.client_details;
@@ -113,14 +115,14 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
     ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({
-      user_id: user?.user_id,
-      user_type: userTypes.talent,
-      title: `${user?.first_name} ${user?.last_name}`,
-      img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    }))
+        user_id: user?.user_id,
+        user_type: userTypes.talent,
+        title: `${user?.first_name} ${user?.last_name}`,
+        img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
+        placement: 'bottom',
+        imgHeight: 33,
+        imgWidth: 33,
+      }))
     : [];
 
   return (
@@ -203,8 +205,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <img
                   className="market-place-card-photo me-75"
                   src={
-                    profileToShowInRightSideOfCard?.image_uri?.length
-                      ? profileToShowInRightSideOfCard?.image_uri
+                    data?.client_info?.[0]?.image_uri  ||  profileToShowInRightSideOfCard?.image_uri?.length
+                      ? data?.client_info?.[0]?.image_uri  ||  profileToShowInRightSideOfCard?.image_uri
                       : defaultAvatar
                   }
                   alt="avatar"
@@ -216,11 +218,11 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <div>
                   <div onClick={(e) => handleTalentTeamClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                      {profileToShowInRightSideOfCard?.first_name} {profileToShowInRightSideOfCard?.last_name}
+                      {data?.client_info?.[0]?.first_name || profileToShowInRightSideOfCard?.first_name  } {data?.client_info?.[0]?.last_name || profileToShowInRightSideOfCard?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
                       {profileToShowInRightSideOfCard?.user_type === userTypes.client
-                        ? profileToShowInRightSideOfCard?.company_name
+                        ? data?.client_info?.[0]?.department_name || profileToShowInRightSideOfCard?.company_name
                         : ''}
                     </CardText>
                   </div>
@@ -263,9 +265,9 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
             >
               {' '}
               {pathname === 'dispute' &&
-                (userData?.user_type === userTypes.talent ||
-                  userData?.user_type === userTypes.team ||
-                  userData?.user_type === userTypes.club) ? (
+              (userData?.user_type === userTypes.talent ||
+                userData?.user_type === userTypes.team ||
+                userData?.user_type === userTypes.club) ? (
                 <div className="w-100">
                   <div className="fw-bold d-flex flex-column gap-1">
                     <div>Unresolved Disputes</div>
@@ -278,7 +280,11 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
               <div className="d-flex w-100">
                 <img
                   className="market-place-card-photo cursor-pointer me-75"
-                  src={(clientDetails?.image_uri?.length || data?.client_info?.[0]?.image_uri) ? (clientDetails?.image_uri || data?.client_info?.[0]?.image_uri) : defaultAvatar}
+                  src={
+                    clientDetails?.image_uri?.length || data?.client_info?.[0]?.image_uri
+                      ? clientDetails?.image_uri || data?.client_info?.[0]?.image_uri
+                      : defaultAvatar
+                  }
                   alt="avatar"
                   width={40}
                   height={50}
@@ -288,10 +294,12 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <div>
                   <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                      {data?.client?.company_name || data?.client_info?.[0]?.department_name}
+                      {data?.client?.company_name || data?.client_info?.[0]?.department_name || ''}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {data?.client?.first_name || data?.client_info?.[0]?.first_name} {data?.client?.last_name || data?.client_info?.[0]?.last_name}
+                      {(data?.client?.first_name || data?.client_info?.[0]?.first_name || '') +
+                        ' ' +
+                        (data?.client?.last_name || data?.client_info?.[0]?.last_name || '')}
                     </CardText>
                   </div>
 
@@ -299,21 +307,19 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.RATING']}>
                       <RatingBadge number={data?.client?.rating ?? 0} />
                     </PermissionWrapper>
-                    <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}>
+                    <PermissionWrapper
+                      permissions={appPermissions}
+                      permissionName={['PROJECT.PROJECT_DETAILS.PROJECTS_COUNT']}
+                    >
                       <CardText className="ps-1 font-small-3 fw-300 rating-label">
                         {data?.client?.projects_worked_on_count ?? 0} Projects
                       </CardText>
                     </PermissionWrapper>
                   </div>
-
                 </div>
               </div>
             </section>
-            <div
-              className={
-                determineClassWhenDisputeStatus(pathname, userData)
-              }
-            >
+            <div className={determineClassWhenDisputeStatus(pathname, userData)}>
               {' '}
               {pathname === 'dispute' && userData?.user_type === userTypes.client ? (
                 <div>
