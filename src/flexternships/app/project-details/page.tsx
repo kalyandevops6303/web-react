@@ -86,7 +86,9 @@ export default function FlexternshipProjectDetails() {
                 link: `/project-details/${params?.projectId}/team`,
               },
               {
-                title: params['projectStep'] ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1) : 'Unknown Tab',
+                title: params['projectStep']
+                  ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
+                  : 'Unknown Tab',
                 link: `/project-details/${params?.projectId}/${params['projectStep']}`,
               },
             ]}
@@ -95,9 +97,11 @@ export default function FlexternshipProjectDetails() {
       )}
       <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
         {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-1/5"></div>}
-       {!((params['milestone'] ?? false) && (params?.['milestoneId']?.length ?? 0) > 0) && <div className="flex flex-col flex-grow items-start gap-5">
-          <ProjectDetailsTabNavigation tabs={tabs} />
-        </div>}
+        {!((params['milestone'] ?? false) && (params?.['milestoneId']?.length ?? 0) > 0) && (
+          <div className="flex flex-col flex-grow items-start gap-5">
+            <ProjectDetailsTabNavigation tabs={tabs} />
+          </div>
+        )}
       </div>
     </div>
   );

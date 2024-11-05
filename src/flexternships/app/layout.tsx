@@ -1,4 +1,4 @@
-import "@flexternships/styles/tailwind.css";
+import '@flexternships/styles/tailwind.css';
 // import { Montserrat } from 'next/font/google';
 // import { ThemeProvider } from "@flexternships/app/components/theme-provider"
 
@@ -12,9 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <>
       <html lang="en" suppressHydrationWarning>
         <head />
-        <body>
-          {children}
-        </body>
+        <body>{children}</body>
         {/* <body className={`${montserrat.variable} font-sans`}>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
             {children}
@@ -22,5 +20,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </body> */}
       </html>
     </>
-  )
+  );
 }

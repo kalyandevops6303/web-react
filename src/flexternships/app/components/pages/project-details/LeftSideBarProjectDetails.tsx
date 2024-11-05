@@ -107,7 +107,8 @@ const LeftSideBarProjectDetails = () => {
           <p className="w-full">
             {showMore
               ? data?.details?.description
-              : `${data?.details?.description?.slice(0, 100)}` + (data?.details?.description?.length > 100 ? '...' : '')}
+              : `${data?.details?.description?.slice(0, 100)}` +
+                (data?.details?.description?.length > 100 ? '...' : '')}
             <span onClick={handleToggle} className="text-skyblue cursor-pointer">
               {data?.details?.description?.length > 100 ? (showMore ? ' Read less' : ' Read more') : null}
             </span>
