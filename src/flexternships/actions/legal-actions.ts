@@ -4,7 +4,7 @@ import { ToastType } from "../constraints/enums/core-enums";
 
 export const legalDocDetails = async (projectId: string, docType: string, set: any) => {
     set({ isLegalDetailsLoading: true });
-    const data:any = await getLegalDocDetails(projectId, docType);
+    const data: any = await getLegalDocDetails(projectId, docType);
     set((state: any) => ({
         ...state,
         legal: {
@@ -16,8 +16,9 @@ export const legalDocDetails = async (projectId: string, docType: string, set: a
 }
 
 export const signDocument = async (projectId: string, docType: string, set: any) => {
-    set({ signLegalDocumentLoading: true });
-    const data:any = await signLegalDocument(projectId, docType);
-    set({ signLegalDocumentLoading: false });
-    showToastMessage(ToastType.SUCCESS, "The NDA has been signed successfully")
+    set({ isSignLegalDocumentLoading: true });
+    await signLegalDocument(projectId, docType);
+    set({ isSignLegalDocumentLoading: false });
+    await legalDocDetails(projectId, docType, set);
+    showToastMessage(ToastType.SUCCESS, `The ${docType} has been signed successfully`)
 }

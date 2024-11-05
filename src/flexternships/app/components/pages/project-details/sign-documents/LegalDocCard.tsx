@@ -11,6 +11,7 @@ import { useLegalStore } from "@/flexternships/stores/legal-store";
 import { useProjectsStore } from "@/flexternships/stores/project-details-store";
 import { useFlexternUserStore } from "@/flexternships/stores/core-stores";
 import { useParams } from "react-router-dom";
+import Spinner from "../../../core/Spinner";
 
 export default function LegalDocCard(props: LegalDocCardProps) {
 
@@ -23,6 +24,7 @@ export default function LegalDocCard(props: LegalDocCardProps) {
     const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
 
     const isSignDocumentLoading = useLegalStore((state) => state.legal?.isSignLegalDocumentLoading);
+    const isLegalDetailsLoading = useLegalStore((state) => state.isLegalDetailsLoading);
 
     const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
     const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
@@ -70,22 +72,20 @@ export default function LegalDocCard(props: LegalDocCardProps) {
 
     useEffect(() => {
         populateUserDetails()
-
         if (!isSignDocumentLoading) {
             getProjectDetails(params?.projectId as string)
             getLegalDocDetails(params?.projectId as string, toUpper(params?.docType));
         }
-
     }, [isSignDocumentLoading])
 
     return (
         <SimpleElevatedCard className="w-full max-w-[1021px] p-5">
             <div className={Styles.contentHeader}>Standard {docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'}</div>
-            <SimpleElevatedCard className="bg-white p-5 ">
+            {isLegalDetailsLoading ? <div className="d-flex justify-center"><Spinner /></div> : <SimpleElevatedCard className="bg-white p-5 ">
                 <div className={Styles.contentHeader}>{docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'}</div>
                 <div dangerouslySetInnerHTML={{ __html: legalDocDetails?.doc_content }} className="text-[#5E5873] font-montserrat text-[16px] font-normal leading-[24px] max-h-[700px] overflow-y-scroll">
                 </div>
-            </SimpleElevatedCard>
+            </SimpleElevatedCard>}
 
             <div className="flex items-center space-x-2 my-5">
                 <Checkbox id="terms"
@@ -100,19 +100,19 @@ export default function LegalDocCard(props: LegalDocCardProps) {
                 </label>
             </div>
 
-            <div className="mt-10">
+            {!isLegalDetailsLoading && <div className="mt-10">
                 <div className="text-[#6E6B7B] font-semibold font-montserrat text-base leading-[21px] mb-3">Client</div>
                 <LegalDocSignee {...clientSigneeData} />
-            </div>
+            </div>}
 
-            <div className="mt-10">
+            {!isLegalDetailsLoading && <div className="mt-10">
                 <div className="text-[#6E6B7B] font-semibold font-montserrat text-base leading-[21px] mb-3">Team name / Team member</div>
                 {talentSigneeData?.map((item: any) => (
                     <div className="my-5">
-                        <LegalDocSignee {...item} />
+                        <LegalDocSignee {...item} key={item?.name} />
                     </div>
                 ))}
-            </div>
+            </div>}
 
 
         </SimpleElevatedCard>
