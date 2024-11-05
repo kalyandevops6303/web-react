@@ -35,8 +35,13 @@ export default function Preview() {
       const postProject = async () => {
         try {
           await createFlexternProject(formData, projectId);
-        } catch (error) {
-          showToastMessage(ToastType.ERROR, "Failed to create project. Please try again.");
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            closeModal();
+            showToastMessage(ToastType.ERROR, error.message);
+          } else {
+            showToastMessage(ToastType.ERROR, 'Failed to create project. Please try again.');
+          }
         }
       }
 
