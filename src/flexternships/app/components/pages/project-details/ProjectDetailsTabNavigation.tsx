@@ -14,7 +14,7 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
           <NavigationTab key={index} tab={tab} index={index} />
         ))}
       </div>
-      <div className='px-5 py-2'>
+      <div className='py-2'>
         {tabs.map((tab) => {
           if (tab.id === param['projectStep']) {
             return tab.component;

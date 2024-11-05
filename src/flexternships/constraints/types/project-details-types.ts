@@ -1,36 +1,45 @@
-
+export type TeamMemberDetails = {
+  name?: string;
+  profileImage?: string;
+  designation?: string;
+  rating?: number;
+  ratingText?: string;
+  ratingColor?: string;
+  kudos?: number;
+  wow?: number;
+};
 
 export type ProjectTabType = {
-    id: string,
-    title: string,
-    icon: JSX.Element,
-    description: string,
-    route: string,
-    component: JSX.Element,
-    talentVisible: boolean,
-    clientVisible: boolean
-}
+  id: string;
+  title: string;
+  icon: JSX.Element;
+  description: string;
+  route: string;
+  component: JSX.Element;
+  talentVisible: boolean;
+  clientVisible: boolean;
+};
 
 export type BreadCrumbType = {
-    title: string,
-    link: string
-}
+  title: string;
+  link: string;
+};
 
 export enum ProjectStatus {
-    DRAFT = 'DRAFT',
-    OPEN = 'OPEN',
-    IN_REVIEW = 'IN_REVIEW',
-    ACTIVE = 'ACTIVE',
-    ON_GOING = 'ON_GOING',
-    CLOSED = 'CLOSED',
-    TERMINATED = 'TERMINATED',
-    COMPLETED = 'COMPLETED'
-  }
-  
-  export enum DurationType {
-    WEEK = "WEEK"
-  }
- 
+  DRAFT = 'DRAFT',
+  OPEN = 'OPEN',
+  IN_REVIEW = 'IN_REVIEW',
+  ACTIVE = 'ACTIVE',
+  ON_GOING = 'ON_GOING',
+  CLOSED = 'CLOSED',
+  TERMINATED = 'TERMINATED',
+  COMPLETED = 'COMPLETED',
+}
+
+export enum DurationType {
+  WEEK = 'WEEK',
+}
+
 type Document = {
   fileName: string;
   fileKey: string;
@@ -144,10 +153,13 @@ type Tool = Skill;
 export type ProjectDetailsState = {
   isProjectsLoading: boolean;
   projectDetails: ProjectDetails;
+  teamDetails: Array<TeamMemberDetails>;
 };
 
 export type ProjectDetailsActions = {
   getProjectDetails: (projectId: string) => Promise<void>;
+  populateTeamDetails: (projectId?: string) => Promise<void>;
+  resetStore: () => void;
 };
 
 export type ProjectStore = ProjectDetailsState & ProjectDetailsActions;

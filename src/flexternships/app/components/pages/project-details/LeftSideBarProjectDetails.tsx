@@ -32,16 +32,17 @@ const LeftSideBarProjectDetails = () => {
           status={data?.status as 'OPEN' | 'IN_REVIEW' | 'ACTIVE' | 'ONGOING' | 'CLOSED' | 'TERMINATED' | 'COMPLETED'}
         />
 
-        {daysLeft > 0 && <h1 className="text-[#EA5455] font-semibold">
-          {daysLeft} Days
-          Left
-        </h1>}
+        {daysLeft > 0 && <h1 className="text-[#EA5455] font-semibold">{daysLeft} Days Left</h1>}
       </div>
       <h1 className="font-semibold text-lg">{data?.details?.name}</h1>
 
       <div className="flex flex-row items-center justify-center gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
-          <img src={data?.clientInfo?.[0]?.imageUri?.length! > 0 ? data?.clientInfo?.[0]?.imageUri : defaultAvatar} className="w-12 rounded-full h-12" alt="" />
+          <img
+            src={data?.clientInfo?.[0]?.imageUri?.length! > 0 ? data?.clientInfo?.[0]?.imageUri : defaultAvatar}
+            className="w-12 rounded-full h-12"
+            alt=""
+          />
           <h1 className={`${UserTypeChipClassnames['CLIENT']} font-semibold px-2 py-1 rounded-xl`}>Client</h1>
         </div>
 
@@ -76,8 +77,6 @@ const LeftSideBarProjectDetails = () => {
           </div>
         </div>
       </div>
-
-
 
       <div className="flex flex-col items-start justify-start w-full gap-5 text-gray-600">
         <h1>
