@@ -235,7 +235,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
             "companyTagline": info.company_tagline,
             "createdAt": info.created_at,
             "currencyPreference": info.currency_preference,
-            "educationalInstitute": info.educational_institute.map((edu: any) => ({
+            "educationalInstitute": info.educational_institute?.map((edu: any) => ({
               "institution": edu.institution
             })),
             "firstName": info.first_name,
@@ -243,21 +243,21 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
             "isDeleted": info.is_deleted,
             "lastName": info.last_name,
             "officeAddress": {
-              "country": info.office_address.country,
-              "state": info.office_address.state,
-              "city": info.office_address.city,
-              "streetAddress": info.office_address.street_address,
-              "houseNumber": info.office_address.house_number,
-              "zipCode": info.office_address.zip_code
+              "country": info.office_address?.country,
+              "state": info.office_address?.state,
+              "city": info.office_address?.city,
+              "streetAddress": info.office_address?.street_address,
+              "houseNumber": info.office_address?.house_number,
+              "zipCode": info.office_address?.zip_code
             },
             "projectAreaOfInterest": {
-              "skills": info.project_area_of_interest.skills,
-              "tools": info.project_area_of_interest.tools,
-              "area": info.project_area_of_interest.area
+              "skills": info.project_area_of_interest?.skills,
+              "tools": info.project_area_of_interest?.tools,
+              "area": info.project_area_of_interest?.area
             },
             "projectsListedCount": info.projects_listed_count,
             "rating": info.rating,
-            "socialLinks": info.social_links.map((link: any) => ({
+            "socialLinks": info.social_links?.map((link: any) => ({
               "platform": link.platform,
               "url": link.url
             })),

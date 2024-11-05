@@ -49,6 +49,7 @@ import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
+import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -118,6 +119,37 @@ export const FlexternshipRoutes = [
                 <MarketPlace />
            
         )
+    },
+    {
+        path: '/project-details/:projectId',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <RedirectToTeamTab />
+            </RoleAccessWrapper >
+        ),
     },
     {
         path: '/project-details/:projectId/:projectStep',

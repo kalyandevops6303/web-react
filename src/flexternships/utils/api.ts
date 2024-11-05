@@ -60,6 +60,9 @@ export const routes = {
         password: {
             changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
         }
+    },
+    projectDetails: {
+        teamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
     }
     
 }
