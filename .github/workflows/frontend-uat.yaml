@@ -116,7 +116,8 @@ jobs:
       - name: Check if dist exists
         run: |
           echo "Listing files after build:"
-          ls -R
+          pwd
+          ls -R ./dist
 
       - name: Upload to blob storage
         run: |
