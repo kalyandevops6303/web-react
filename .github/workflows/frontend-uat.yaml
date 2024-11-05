@@ -85,9 +85,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: uat
+          ref: ${{ vars.BRANCH }}
           submodules: true
-    
+
       - name: Install Azure cli
         run: |
           sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
