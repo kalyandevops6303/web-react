@@ -9,7 +9,6 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
 
-  console.log(param)
   return (
     <div className="w-full">
       <div className=" bg-white  w-fit flex flex-row  items-start justify-start">
