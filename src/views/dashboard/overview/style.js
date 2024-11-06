@@ -3,10 +3,10 @@ import theme from '../../../configs/themeVariables';
 import { CardWrapper } from '../../styled';
 
 const gradeColors = {
-  "Novice": "#FBC02D",
-  "Intermediate": "#00BCD4",
-  "Proficient": "#7C4DFF",
-  "Mastery": "#414DFD",
+  Novice: '#FBC02D',
+  Intermediate: '#00BCD4',
+  Proficient: '#7C4DFF',
+  Mastery: '#414DFD',
 };
 
 const RewardCardWrapper = styled(CardWrapper)`
@@ -651,5 +651,5 @@ export {
   InReviewButton,
   NewTagWrap,
   AssessmentResultIndicator,
-  AssessmentResultText
+  AssessmentResultText,
 };

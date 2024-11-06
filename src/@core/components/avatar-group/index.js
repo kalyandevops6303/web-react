@@ -37,7 +37,10 @@ const AvatarGroup = (props) => {
       const ItemTag = item.tag || 'div';
       const tooltipId =
         (item?.tooltipId || item.title) &&
-        `tooltip-${(item?.tooltipId ?? item.title)?.split(' ').join('-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
+        `tooltip-${(item?.tooltipId ?? item.title)
+          ?.split(' ')
+          .join('-')
+          .replace(/[^a-zA-Z0-9-_]/g, '')}`;
 
       return (
         <Fragment key={i}>

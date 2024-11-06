@@ -187,7 +187,10 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                             )}
                             <td className="table-cell-td cell-submitted-on m-auto">
                               <p className="fw-normal m-auto">
-                                {convertUnixTimestampToDate(file?.created_at, savedUserData?.availability?.timezone?.name )}
+                                {convertUnixTimestampToDate(
+                                  file?.created_at,
+                                  savedUserData?.availability?.timezone?.name,
+                                )}
                               </p>
                             </td>
                             <td className="m-auto table-cell-td cell-action">

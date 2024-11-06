@@ -23,7 +23,6 @@ import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardi
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 import { userDetails } from '@/redux/selectors/talentOnboardingSelectors';
 
-
 const FlexternTabs = ({ tabNames, active }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -98,11 +97,11 @@ const FlexternTabs = ({ tabNames, active }) => {
     const isDisabled = false;
     return (
       <NavItem
-      onClick={() => {
-        if (!isDisabled) {
-          onTabClick(location.pathname.includes('profile-edit') ? editPath : onboardingPath);
-        }
-      }}
+        onClick={() => {
+          if (!isDisabled) {
+            onTabClick(location.pathname.includes('profile-edit') ? editPath : onboardingPath);
+          }
+        }}
       >
         <NavLink
           active={isActive}
@@ -183,14 +182,14 @@ const FlexternTabs = ({ tabNames, active }) => {
   // }, []);
 
   useEffect(() => {
-    if(isFlextern) dispatch(getProfileCompletionFlextern());
+    if (isFlextern) dispatch(getProfileCompletionFlextern());
     if (trumioTalent) dispatch(getProfilePercentage());
   }, [userData]);
 
   return (
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       {/* <div className="mb-2 d-flex justify-content-center gap-2"> */}
-        {/* <ProgramCheckBox active={isFlextern} completed={isFlexternReady}>
+      {/* <ProgramCheckBox active={isFlextern} completed={isFlexternReady}>
           {isFlexternReady ? (
             <>
               <Input type="checkbox" id="customCheckbox2" className="custom-checkbox-input" checked={isFlexternReady} />
@@ -204,7 +203,7 @@ const FlexternTabs = ({ tabNames, active }) => {
             </div>
           )}
         </ProgramCheckBox> */}
-        {/* <ProgramCheckBox active={selectProgram?.trumio_talent} completed={isProjectReady}>
+      {/* <ProgramCheckBox active={selectProgram?.trumio_talent} completed={isProjectReady}>
           {isProjectReady && selectProgram?.trumio_talent ? (
             <>
               <Input type="checkbox" id="customCheckbox" className="custom-checkbox-input" checked={isProjectReady} />

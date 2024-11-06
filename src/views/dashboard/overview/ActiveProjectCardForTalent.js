@@ -95,13 +95,14 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
               <div className="design-planning">
-                <p className="mb-25 details-box-title">
-                  Due Date
-                </p>
+                <p className="mb-25 details-box-title">Due Date</p>
                 <p className="mb-0 details-box">
-                   {`${
-                  convertUnixTimestampToDate(data?.current_milestone?.due_date, savedUserData?.availability?.timezone?.name ) || '-'
-                }`}
+                  {`${
+                    convertUnixTimestampToDate(
+                      data?.current_milestone?.due_date,
+                      savedUserData?.availability?.timezone?.name,
+                    ) || '-'
+                  }`}
                 </p>
               </div>
               <p className="active-project-milestone-name">{data?.current_milestone?.name}</p>

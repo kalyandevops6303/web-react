@@ -12,7 +12,11 @@ const CustomerSupportCTA = ({ type, handleCustomerSupport }) => (
         handleCustomerSupport(
           type === CUSTOMER_SUPPORT_TYPES.education
             ? [CUSTOMER_SUPPORT_TYPES.missing_institute]
-            : [CUSTOMER_SUPPORT_TYPES.missing_skill, CUSTOMER_SUPPORT_TYPES.missing_tool, CUSTOMER_SUPPORT_TYPES.missing_assessment],
+            : [
+                CUSTOMER_SUPPORT_TYPES.missing_skill,
+                CUSTOMER_SUPPORT_TYPES.missing_tool,
+                CUSTOMER_SUPPORT_TYPES.missing_assessment,
+              ],
         )
       }
       className="primary cursor-pointer"

@@ -19,27 +19,26 @@ import {
   confirmDialogImgStyle,
   crossIconStyle,
   crossIconContainerStyle,
-  confirmDialogInputStyle
+  confirmDialogInputStyle,
 } from './style';
 
 import warningIcon from './resources/warning-icon.png';
 import crossIcon from './resources/cross-icon.png';
 
 class CometChatEditGroupNameDialog extends React.Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props);
+    this.state = {
+      name: '',
+    };
+  }
 
-        this.state = {
-            name: ""
-        }
-    }
-
-    componentDidMount() {
-        this.setState({
-            name: this.props.initialGroupName
-        })
-    }
+  componentDidMount() {
+    this.setState({
+      name: this.props.initialGroupName,
+    });
+  }
 
   render() {
     const confirmButtonText = this.props?.confirmButtonText
@@ -78,10 +77,16 @@ class CometChatEditGroupNameDialog extends React.Component {
                 {description}
               </div>
               <div>
-                <input className="comfirm__dialog_input" css={confirmDialogInputStyle()} type="text" value={this.state.name} 
-                onChange={(event) => this.setState({
-                    name: event.target.value
-                })}
+                <input
+                  className="comfirm__dialog_input"
+                  css={confirmDialogInputStyle()}
+                  type="text"
+                  value={this.state.name}
+                  onChange={(event) =>
+                    this.setState({
+                      name: event.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="confirm__dialog__content__note" css={confirmDialogContentNoteStyle()}>

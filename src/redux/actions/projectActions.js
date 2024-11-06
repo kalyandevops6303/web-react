@@ -34,7 +34,7 @@ const getCardInfo =
     }
   };
 
-  const getCardInfoFlextern =
+const getCardInfoFlextern =
   ({ onSuccess, onError, userType }) =>
   async (dispatch) => {
     dispatch(getCardInfoReq());
@@ -83,24 +83,24 @@ const getProjectListing =
     }
   };
 
-const getProjectsListingFlextern = ({ metaData, onSuccess, onError }) => async (dispatch) => {
+const getProjectsListingFlextern =
+  ({ metaData, onSuccess, onError }) =>
+  async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
-    try{
+    try {
       const res = await getProjectsListFlexternService({ metaData });
       if (res) {
         dispatch(storeSuccessData(res?.data?.data));
         onSuccess();
-      }else {
+      } else {
         throw new Error(`Invalid project filter: ${metaData?.project_status}`);
       }
-    }
-    catch(error){
+    } catch (error) {
       onError();
       errorHandler(error, getListErr);
     }
   };
-
 
 export { getCardInfo, getProjectListing, getProjectsListingFlextern, getCardInfoFlextern };

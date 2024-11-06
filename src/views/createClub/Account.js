@@ -194,16 +194,8 @@ const Account = ({ setDraftSavedModal }) => {
   const buttonText = selectedImage && selectedImagePreview ? 'Edit Club Logo' : 'Upload Club Logo';
 
   const isAnyFieldNotEmpty = () => {
-    const {
-      clubName,
-      clubTagline,
-      clubIntroduction,
-      interests,
-      tools,
-      skills,
-      educationInstitution,
-    } = watch();
-  
+    const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = watch();
+
     // Check if any field is not in its initial state
     if (
       clubName !== '' ||
@@ -216,9 +208,9 @@ const Account = ({ setDraftSavedModal }) => {
     ) {
       return true;
     }
-  
+
     return false;
-  };  
+  };
 
   useEffect(() => {
     if (isOpenSaveForLater) {
@@ -286,8 +278,8 @@ const Account = ({ setDraftSavedModal }) => {
 
   useEffect(() => {
     if (!location.pathname.includes('/create-club')) {
-     // When navigating away from the '/create-club' route, remove the localStorage item
-     localStorage.removeItem('clubCreateData');
+      // When navigating away from the '/create-club' route, remove the localStorage item
+      localStorage.removeItem('clubCreateData');
     }
   }, [location.pathname]);
 
@@ -1247,18 +1239,20 @@ const Account = ({ setDraftSavedModal }) => {
             </CardBody>
           </Card>
           <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
-          {!location?.pathname?.includes(('/club-profile-edit')) &&  <Button
-              onClick={() => {
-                saveAsDraftClicked.current = true;
-                handleSubmit(onDraftSubmit());
-              }}
-              color="primary"
-              className="me-2"
-              outline
-              disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading || !isAnyFieldNotEmpty()}
-            >
-              {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
-            </Button>}
+            {!location?.pathname?.includes('/club-profile-edit') && (
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onDraftSubmit());
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={saveDraftIsClubLoading || updateTeamIsLoading || isImageUploading || !isAnyFieldNotEmpty()}
+              >
+                {saveDraftIsClubLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+            )}
             <div>
               <Button
                 color="primary"

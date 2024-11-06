@@ -38,35 +38,35 @@ const CreateTeam = () => {
   }, [dispatch]);
 
   return (
-    <div className='trumio'>
-    <div className={`${location.pathname.includes('create-team') ? 'px-5 py-2' : 'px-3 pt-1'} `}>
-      <div className="px-2">
-        {location.pathname.includes('create-team') ? (
-          <CircularBackButtonContainer
-            className="d-flex align-items-center cursor-pointer"
-            onClick={() =>{
-              dispatch(setConfirmSaveForLater(true));
-              dispatch(setNavigatingRoute('/dashboard'));
-            }}
-          >
-            <div className="back-icon-container">
-              <ArrowLeft size={18} color={theme.white} />
-            </div>
-            <p className="fw-light mb-0 ms-50 font-medium-2">Create Team</p>
-          </CircularBackButtonContainer>
-        ) : (
-          <BackButtonContainer>
-            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-              <div className="add-icon-container">
+    <div className="trumio">
+      <div className={`${location.pathname.includes('create-team') ? 'px-5 py-2' : 'px-3 pt-1'} `}>
+        <div className="px-2">
+          {location.pathname.includes('create-team') ? (
+            <CircularBackButtonContainer
+              className="d-flex align-items-center cursor-pointer"
+              onClick={() => {
+                dispatch(setConfirmSaveForLater(true));
+                dispatch(setNavigatingRoute('/dashboard'));
+              }}
+            >
+              <div className="back-icon-container">
                 <ArrowLeft size={18} color={theme.white} />
               </div>
-              <h5 className="fw-normal">Back</h5>
-            </div>
-          </BackButtonContainer>
-        )}
-        <Tabs tabNames={tabNames} active={active} />
+              <p className="fw-light mb-0 ms-50 font-medium-2">Create Team</p>
+            </CircularBackButtonContainer>
+          ) : (
+            <BackButtonContainer>
+              <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+                <div className="add-icon-container">
+                  <ArrowLeft size={18} color={theme.white} />
+                </div>
+                <h5 className="fw-normal">Back</h5>
+              </div>
+            </BackButtonContainer>
+          )}
+          <Tabs tabNames={tabNames} active={active} />
+        </div>
       </div>
-    </div>
     </div>
   );
 };

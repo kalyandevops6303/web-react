@@ -205,9 +205,9 @@ const milestoneSlice = createSlice({
       milestoneDisputeMetadata: null,
     }),
     setShowSaveForLater: (state, action) => ({
-      ...state, 
+      ...state,
       showSaveForLater: action.payload,
-    })
+    }),
   },
 });
 
@@ -242,7 +242,7 @@ export const {
   getDraftArtifactsRequest,
   getDraftArtifactsSuccess,
   getDraftArtifactsFailure,
-  setShowSaveForLater
+  setShowSaveForLater,
 } = milestoneSlice.actions;
 
 export default milestoneSlice.reducer;

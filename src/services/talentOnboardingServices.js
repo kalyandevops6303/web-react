@@ -42,5 +42,5 @@ export {
   deleteResumeService,
   identityUploadService,
   identityDeleteService,
-  profileCompletionFlexternService
+  profileCompletionFlexternService,
 };

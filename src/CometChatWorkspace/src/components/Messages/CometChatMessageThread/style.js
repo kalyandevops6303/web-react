@@ -70,7 +70,7 @@ export const headerCloseStyle = (img, context) => {
     height: '10px',
     mask: `url(${img}) center center no-repeat`,
     // backgroundColor: `${context.theme.primaryColor}`,
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
   };
 };
 
@@ -126,11 +126,11 @@ export const parentMessageStyle = (message) => {
       display: 'none',
     },
     '.message__wrapper, .message__file__wrapper': {
-      width: '100%'
+      width: '100%',
     },
     '.message__content__wrapper': {
-      backgroundColor: 'white'
-    }
+      backgroundColor: 'white',
+    },
   };
 };
 

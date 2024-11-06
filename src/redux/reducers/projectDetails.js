@@ -428,7 +428,7 @@ const projectDetails = createSlice({
     withdrawProjectRequest: (state) => ({
       ...state,
       withdrawProjectLoading: true,
-      error:null,
+      error: null,
     }),
 
     withdrawProjectSuccess: (state) => ({
@@ -439,7 +439,7 @@ const projectDetails = createSlice({
       ...state,
       withdrawProjectLoading: false,
       error: action.payload,
-    }),  
+    }),
     relistProjectRequest: (state) => ({
       ...state,
       relistProjectLoading: true,
@@ -586,11 +586,11 @@ const projectDetails = createSlice({
       downloadCertificateLoading: false,
       error: action.payload,
     }),
-    getContractData: (state,action) => ({
+    getContractData: (state, action) => ({
       ...state,
       contractData: action.payload,
       error: null,
-    })
+    }),
   },
 });
 

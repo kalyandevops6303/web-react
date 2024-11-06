@@ -31,7 +31,9 @@ const ClubCreatedModal = ({ modal, toggleModal }) => {
           />
           <div>
             <h2 className="modal-heading">Request Submitted</h2>
-            <p className="fw-light modal-body-text w-75 mt-2">Your request to create a Trumio Club account has been received. </p>
+            <p className="fw-light modal-body-text w-75 mt-2">
+              Your request to create a Trumio Club account has been received.{' '}
+            </p>
             <p className="fw-light modal-body-text w-75 mt-2">We will get back to you shortly. </p>
           </div>
         </div>

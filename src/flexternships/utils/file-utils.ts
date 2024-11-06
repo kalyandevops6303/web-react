@@ -21,14 +21,14 @@ import pngFileIcon from '@flexternships/assets/icons/file-types/pngFile.png';
  * @returns A string with the file size in the appropriate unit.
  */
 export function formatFileSize(sizeInBytes: number, decimalPlaces: number = 2): string {
-    if (sizeInBytes === 0) return "0 Bytes";
+  if (sizeInBytes === 0) return '0 Bytes';
 
-    const units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-    const k = 1024;
-    const i = Math.floor(Math.log(sizeInBytes) / Math.log(k));
-    const size = parseFloat((sizeInBytes / Math.pow(k, i)).toFixed(decimalPlaces));
+  const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const k = 1024;
+  const i = Math.floor(Math.log(sizeInBytes) / Math.log(k));
+  const size = parseFloat((sizeInBytes / Math.pow(k, i)).toFixed(decimalPlaces));
 
-    return `${size} ${units[i]}`;
+  return `${size} ${units[i]}`;
 }
 
 /**
@@ -37,39 +37,39 @@ export function formatFileSize(sizeInBytes: number, decimalPlaces: number = 2): 
  * @returns path to the icon for the file type.
  */
 export const getFileIcon = (fileName: string) => {
-    let splitName = fileName.split('.');
-    const ext = splitName[splitName.length - 1].toLowerCase();
+  let splitName = fileName.split('.');
+  const ext = splitName[splitName.length - 1].toLowerCase();
 
-    switch (ext) {
-      case 'psd':
-        return psdFileIcon;
-      case 'svg':
-        return svgFileIcon;
-      case 'txt':
-        return txtFileIcon;
-      case 'xls':
-        return xlsFileIcon;
-      case 'zip':
-        return zipFileIcon;
-      case 'ai':
-        return aiFileIcon;
-      case 'avi':
-        return aviFileIcon;
-      case 'mkv':
-        return mkvFileIcon;
-      case 'mp3':
-        return mp3FileIcon;
-      case 'pdf':
-        return pdfFileIcon;
-      case 'ppt':
-        return pptFileIcon;
-      case 'jpg':
-        return jpgFileIcon;
-      case 'png':
-        return pngFileIcon;
-      case 'gif':
-        return gifFileIcon;
-      default:
-        return docFileIcon;
-    }
-  };
+  switch (ext) {
+    case 'psd':
+      return psdFileIcon;
+    case 'svg':
+      return svgFileIcon;
+    case 'txt':
+      return txtFileIcon;
+    case 'xls':
+      return xlsFileIcon;
+    case 'zip':
+      return zipFileIcon;
+    case 'ai':
+      return aiFileIcon;
+    case 'avi':
+      return aviFileIcon;
+    case 'mkv':
+      return mkvFileIcon;
+    case 'mp3':
+      return mp3FileIcon;
+    case 'pdf':
+      return pdfFileIcon;
+    case 'ppt':
+      return pptFileIcon;
+    case 'jpg':
+      return jpgFileIcon;
+    case 'png':
+      return pngFileIcon;
+    case 'gif':
+      return gifFileIcon;
+    default:
+      return docFileIcon;
+  }
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, CardText } from 'reactstrap';
-import parse from "html-react-parser";
+import parse from 'html-react-parser';
 import { UserBioWrap } from './style';
 
 const UserBio = ({ isTalentView, isTeamView, isClient, data }) => (

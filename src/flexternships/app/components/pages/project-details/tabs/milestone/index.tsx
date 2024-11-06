@@ -1,5 +1,5 @@
-import MilestoneTile from './MilestoneTile'
-import MilestoneDetails from './MilestoneDetails'
+import MilestoneTile from './MilestoneTile';
+import MilestoneDetails from './MilestoneDetails';
 import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
@@ -19,38 +19,36 @@ export default function MilestoneTab() {
   }, [projectId]);
 
   if (milestoneId) {
-    return <MilestoneDetails />
+    return <MilestoneDetails />;
   }
 
   if (isMilestonesLoading) {
     return (
-      <div className='flex flex-col items-center justify-center min-h-48'>
-        <div className='h-8 w-8'>
+      <div className="flex flex-col items-center justify-center min-h-48">
+        <div className="h-8 w-8">
           <Spinner />
         </div>
       </div>
-    )
+    );
   }
 
   if (isEmpty(projectMilestones)) {
     return (
-      <div className='flex flex-col items-center justify-center min-h-48'>
-        <div className='text-grey-heading text-base font-medium'>No milestones found</div>
+      <div className="flex flex-col items-center justify-center min-h-48">
+        <div className="text-grey-heading text-base font-medium">No milestones found</div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className='flex flex-col gap-4 py-5'>
+    <div className="flex flex-col gap-4 py-5">
       {/* TODO: MilestoneTile */}
-      {
-        projectMilestones.map((milestone) => (
-          <MilestoneTile data={milestone} />
-        ))
-      }
+      {projectMilestones.map((milestone) => (
+        <MilestoneTile data={milestone} />
+      ))}
       {/* <div>
         <MilestoneDetails />
       </div> */}
     </div>
-  )
+  );
 }

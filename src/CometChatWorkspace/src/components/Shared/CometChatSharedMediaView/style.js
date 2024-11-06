@@ -178,7 +178,7 @@ export const itemStyle = (state, props, img, context) => {
     itemTypeStyle = {
       display: 'flex',
       alignItems: 'center',
-      width: "90%",
+      width: '90%',
       '> a': {
         maxWidth: '100%',
         maxHeight: '100%',
@@ -203,8 +203,8 @@ export const itemStyle = (state, props, img, context) => {
           width: 'calc(100% - 30px)',
         },
         '.media_items': {
-          flexDirection: 'column'
-        }
+          flexDirection: 'column',
+        },
       },
     };
   }

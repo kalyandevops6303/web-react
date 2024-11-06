@@ -1,13 +1,13 @@
 // ** React Imports
-import { Link } from "react-router-dom";
-import { Fragment, useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+import { Fragment, useEffect, useState } from 'react';
 
 // ** Third Party Components
-import * as Icon from "react-feather";
-import classnames from "classnames";
+import * as Icon from 'react-feather';
+import classnames from 'classnames';
 
 // ** Custom Component
-import Autocomplete from "@components/autocomplete";
+import Autocomplete from '@components/autocomplete';
 
 // ** Reactstrap Imports
 import {
@@ -18,22 +18,18 @@ import {
   DropdownToggle,
   UncontrolledTooltip,
   UncontrolledDropdown,
-} from "reactstrap";
+} from 'reactstrap';
 
 // ** Store & Actions
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getBookmarks,
-  updateBookmarked,
-  handleSearchQuery,
-} from "@store/navbar";
+import { useDispatch, useSelector } from 'react-redux';
+import { getBookmarks, updateBookmarked, handleSearchQuery } from '@store/navbar';
 
 const NavbarBookmarks = (props) => {
   // ** Props
   const { setMenuVisibility } = props;
 
   // ** State
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   const [openSearch, setOpenSearch] = useState(false);
 
   // ** Store Vars
@@ -55,9 +51,7 @@ const NavbarBookmarks = (props) => {
             <NavItem key={item.target} className="d-none d-lg-block">
               <NavLink tag={Link} to={item.link} id={item.target}>
                 <IconTag className="ficon" />
-                <UncontrolledTooltip target={item.target}>
-                  {item.title}
-                </UncontrolledTooltip>
+                <UncontrolledTooltip target={item.target}>{item.title}</UncontrolledTooltip>
               </NavLink>
             </NavItem>
           );
@@ -101,7 +95,7 @@ const NavbarBookmarks = (props) => {
   };
 
   // ** Removes query in store
-  const handleClearQueryInStore = () => dispatch(handleSearchQuery(""));
+  const handleClearQueryInStore = () => dispatch(handleSearchQuery(''));
 
   // ** Loops through Bookmarks Array to return Bookmarks
   const onKeyDown = (e) => {
@@ -119,7 +113,7 @@ const NavbarBookmarks = (props) => {
   // ** Function to handle Bookmarks visibility
   const handleBookmarkVisibility = () => {
     setOpenSearch(!openSearch);
-    setValue("");
+    setValue('');
     handleClearQueryInStore();
   };
 
@@ -140,7 +134,7 @@ const NavbarBookmarks = (props) => {
   // ** Function to clear input value
   const handleClearInput = (setUserInput) => {
     if (!openSearch) {
-      setUserInput("");
+      setUserInput('');
       handleClearQueryInStore();
     }
   };
@@ -149,10 +143,7 @@ const NavbarBookmarks = (props) => {
     <Fragment>
       <ul className="navbar-nav d-xl-none">
         <NavItem className="mobile-menu me-auto">
-          <NavLink
-            className="nav-menu-main menu-toggle hidden-xs is-active"
-            onClick={() => setMenuVisibility(true)}
-          >
+          <NavLink className="nav-menu-main menu-toggle hidden-xs is-active" onClick={() => setMenuVisibility(true)}>
             <Icon.Menu className="ficon" />
           </NavLink>
         </NavItem>
@@ -165,7 +156,7 @@ const NavbarBookmarks = (props) => {
             <Icon.Star className="ficon text-warning" />
           </NavLink>
           <div
-            className={classnames("bookmark-input search-input", {
+            className={classnames('bookmark-input search-input', {
               show: openSearch,
             })}
           >
@@ -174,22 +165,18 @@ const NavbarBookmarks = (props) => {
             </div>
             {openSearch && store.suggestions.length ? (
               <Autocomplete
-                wrapperClass={classnames("search-list search-list-bookmark", {
+                wrapperClass={classnames('search-list search-list-bookmark', {
                   show: openSearch,
                 })}
                 className="form-control"
-                suggestions={
-                  !value.length ? store.bookmarks : store.suggestions
-                }
+                suggestions={!value.length ? store.bookmarks : store.suggestions}
                 filterKey="title"
                 autoFocus={true}
                 defaultSuggestions
                 suggestionLimit={!value.length ? store.bookmarks.length : 6}
                 placeholder="Search..."
                 externalClick={handleExternalClick}
-                clearInput={(userInput, setUserInput) =>
-                  handleClearInput(setUserInput)
-                }
+                clearInput={(userInput, setUserInput) => handleClearInput(setUserInput)}
                 onKeyDown={onKeyDown}
                 value={value}
                 onChange={handleInputChange}
@@ -199,22 +186,16 @@ const NavbarBookmarks = (props) => {
                   filteredData,
                   activeSuggestion,
                   onSuggestionItemClick,
-                  onSuggestionItemHover
+                  onSuggestionItemHover,
                 ) => {
-                  const IconTag = Icon[item.icon ? item.icon : "X"];
+                  const IconTag = Icon[item.icon ? item.icon : 'X'];
                   return (
                     <li
                       key={i}
-                      onMouseEnter={() =>
-                        onSuggestionItemHover(filteredData.indexOf(item))
-                      }
-                      className={classnames(
-                        "suggestion-item d-flex align-items-center justify-content-between",
-                        {
-                          active:
-                            filteredData.indexOf(item) === activeSuggestion,
-                        }
-                      )}
+                      onMouseEnter={() => onSuggestionItemHover(filteredData.indexOf(item))}
+                      className={classnames('suggestion-item d-flex align-items-center justify-content-between', {
+                        active: filteredData.indexOf(item) === activeSuggestion,
+                      })}
                     >
                       <Link
                         to={item.link}
@@ -224,7 +205,7 @@ const NavbarBookmarks = (props) => {
                           handleClearQueryInStore();
                         }}
                         style={{
-                          width: "calc(90%)",
+                          width: 'calc(90%)',
                         }}
                       >
                         <div className="d-flex justify-content-start align-items-center overflow-hidden">
@@ -234,8 +215,8 @@ const NavbarBookmarks = (props) => {
                       </Link>
                       <Icon.Star
                         size={17.5}
-                        className={classnames("bookmark-icon float-end", {
-                          "text-warning": item.isBookmarked,
+                        className={classnames('bookmark-icon float-end', {
+                          'text-warning': item.isBookmarked,
                         })}
                         onClick={() => handleBookmarkUpdate(item.id)}
                       />

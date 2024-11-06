@@ -37,9 +37,9 @@ export default function FileUpload(props: InputProps) {
 
   const fileInputRef = useRef<HTMLInputElement>(null); // Create a ref for the file input
 
-  const handleFileUpload = async (index: number, file: File ) => {
+  const handleFileUpload = async (index: number, file: File) => {
     try {
-    const fieldState = watch(name); // Get the current field state
+      const fieldState = watch(name); // Get the current field state
       if (!fieldState[index].error) {
         // If no error, upload the file
         const uploadRequirements = await getFileUploadUrl(file.name);
@@ -49,27 +49,32 @@ export default function FileUpload(props: InputProps) {
       }
     } catch (error: any) {
       const fieldState = watch(name); // Get the current field state
-      update(index, { ...fieldState[index], error: 'Upload failed. Please check your connection.', uploadProgress: 0, uploadError: true });
+      update(index, {
+        ...fieldState[index],
+        error: 'Upload failed. Please check your connection.',
+        uploadProgress: 0,
+        uploadError: true,
+      });
     }
-  }
+  };
 
   const handleFileInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
-      append({
-        fileName: file.name,
-        file: file,
-        fileKey: 'temp',
-        downloadUrl: '',
-        size: file.size,
-        uploadSuccess: false,
-        uploadError: false,
-        loading: true,
-        createdAt: dateToEpoch(new Date()),
-      });
-      await trigger(name); // Trigger validation on new field
-      const fieldState = watch(name); // Get the current field state
-      handleFileUpload(fieldState.length - 1, file);
+    append({
+      fileName: file.name,
+      file: file,
+      fileKey: 'temp',
+      downloadUrl: '',
+      size: file.size,
+      uploadSuccess: false,
+      uploadError: false,
+      loading: true,
+      createdAt: dateToEpoch(new Date()),
+    });
+    await trigger(name); // Trigger validation on new field
+    const fieldState = watch(name); // Get the current field state
+    handleFileUpload(fieldState.length - 1, file);
 
     // Clear the file input value
     if (fileInputRef.current) {
@@ -88,10 +93,16 @@ export default function FileUpload(props: InputProps) {
 
   const handleTryAgain = async (index: number) => {
     const fieldState = watch(name); // Get the current field state
-    update(index, { ...fieldState[index], loading: true, uploadError: false, uploadSuccess: false, uploadProgress: 0, error: null });
+    update(index, {
+      ...fieldState[index],
+      loading: true,
+      uploadError: false,
+      uploadSuccess: false,
+      uploadProgress: 0,
+      error: null,
+    });
     handleFileUpload(index, fieldState[index].file);
-  }
-
+  };
 
   return (
     <div className={`${Styles.formFieldContainer} ${className ?? ''} grow`}>

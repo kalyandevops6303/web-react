@@ -68,36 +68,36 @@ const Clubs = () => {
   };
 
   return (
-    <div className='trumio'>
-    <ClubContainer>
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs data={[{ title: 'Clubs', link: '/clubs' }, { title: primaryEnum[primaryFilter] }]} />
-        <div className="relist-btn-wrapper">
-                      <Button
-                        color="primary"
-                        outline
-                        className="relist-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('/clubs/my_clubs', { state: { isDraftClubs: true } });
-                        }}
-                      >
-                      View Drafts
-                      </Button>
-                    </div>
-      </div>
-      <PrimaryFilter
-        selected={primaryFilter}
-        handlePrimaryChangeFilter={handlePrimaryChangeFilter}
-        isTab={isTab}
-        userType={userData?.user_type}
-      />
-      <Routes>
-        <Route path="all_clubs" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="my_clubs" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-        <Route path="favourites" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
-      </Routes>
-    </ClubContainer>
+    <div className="trumio">
+      <ClubContainer>
+        <div className="d-flex justify-content-between">
+          <BreadCrumbs data={[{ title: 'Clubs', link: '/clubs' }, { title: primaryEnum[primaryFilter] }]} />
+          <div className="relist-btn-wrapper">
+            <Button
+              color="primary"
+              outline
+              className="relist-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate('/clubs/my_clubs', { state: { isDraftClubs: true } });
+              }}
+            >
+              View Drafts
+            </Button>
+          </div>
+        </div>
+        <PrimaryFilter
+          selected={primaryFilter}
+          handlePrimaryChangeFilter={handlePrimaryChangeFilter}
+          isTab={isTab}
+          userType={userData?.user_type}
+        />
+        <Routes>
+          <Route path="all_clubs" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+          <Route path="my_clubs" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+          <Route path="favourites" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        </Routes>
+      </ClubContainer>
     </div>
   );
 };

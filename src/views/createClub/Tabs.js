@@ -72,10 +72,14 @@ const Tabs = ({ tabNames, active }) => {
         </Nav>
         <TabContent activeTab={active}>
           <TabPane tabId={tabNames.Account}>
-            {(isAccountDetailsRoute || location.pathname === `/${userProfileEdit.club}/account-details`) && <Account setDraftSavedModal={setDraftSavedModal} />}
+            {(isAccountDetailsRoute || location.pathname === `/${userProfileEdit.club}/account-details`) && (
+              <Account setDraftSavedModal={setDraftSavedModal} />
+            )}
           </TabPane>
           <TabPane tabId={tabNames.Profile}>
-            {(isProfileDetailsRoute || location.pathname === `/${userProfileEdit.club}/profile-details`) && <Profile setDraftSavedModal={setDraftSavedModal} />}
+            {(isProfileDetailsRoute || location.pathname === `/${userProfileEdit.club}/profile-details`) && (
+              <Profile setDraftSavedModal={setDraftSavedModal} />
+            )}
           </TabPane>
         </TabContent>
       </TabsContainer>

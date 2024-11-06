@@ -41,7 +41,7 @@ const CreateBid = () => {
   };
 
   useEffect(() => {
-    dispatch(setFormData({...savedFormData,currentStep}));
+    dispatch(setFormData({ ...savedFormData, currentStep }));
     let percent = 0;
     if (currentStep === 'team') {
       percent = 30;
@@ -56,15 +56,13 @@ const CreateBid = () => {
   }, [currentStep]);
 
   return (
-    <div className='trumio'>
+    <div className="trumio">
       {draftSavedModal && (
         <DraftSavedModal
           modal={draftSavedModal}
           toggleModal={toggleDraftSavedModal}
           path="Marketplace > My Bids > Drafts Or View Draft"
-          onPrimaryBtnClick={() =>
-            navigate('/marketplace/my_bids',)
-          }
+          onPrimaryBtnClick={() => navigate('/marketplace/my_bids')}
         />
       )}
       <BreadCrumbs

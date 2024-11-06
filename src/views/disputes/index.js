@@ -192,7 +192,7 @@ const index = () => {
   );
 
   return (
-    <div className='trumio'>
+    <div className="trumio">
       {raiseDisputeModal && (
         <RaiseDisputeModal
           modal={raiseDisputeModal}

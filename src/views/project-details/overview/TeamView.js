@@ -148,7 +148,12 @@ const InvitedMemberComponent = () => {
                         <div style={{ flex: '2' }} className="me-2">
                           <span className="key">Invited on</span>
                           <CardText className="value">
-                            {data?.created_at ? convertUnixTimestampToDate(data?.created_at, savedUserData?.availability?.timezone?.name ) : '-'}
+                            {data?.created_at
+                              ? convertUnixTimestampToDate(
+                                  data?.created_at,
+                                  savedUserData?.availability?.timezone?.name,
+                                )
+                              : '-'}
                           </CardText>
                         </div>
                         <div style={{ flex: '1' }} className="me-1 d-none">

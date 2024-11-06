@@ -26,7 +26,9 @@ const MarketPlaceContainer = styled.div`
 
 const SecondaryFiltersWrapper = ({ primaryFilter }) => {
   const userData = useSelector(selectAuthUserData);
-  return <SecondaryFilters userType={userData?.user_type} appRole={userData?.app_roles?.[0]} primaryFilter={primaryFilter} />;
+  return (
+    <SecondaryFilters userType={userData?.user_type} appRole={userData?.app_roles?.[0]} primaryFilter={primaryFilter} />
+  );
 };
 SecondaryFiltersWrapper.propTypes = {
   primaryFilter: PropTypes.string,
@@ -61,10 +63,9 @@ const MarketPlace = () => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
     setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
-    if(isFlextern){
+    if (isFlextern) {
       dispatch(getProfileCompletionFlextern());
-    }
-    else{
+    } else {
       dispatch(getProfilePercentage());
     }
     dispatch(clearProjectData());
@@ -90,72 +91,72 @@ const MarketPlace = () => {
   };
 
   return (
-    <div className='trumio'>
-    <MarketPlaceContainer>
-      <BreadCrumbs
-        data={[
-          { title: 'Marketplace', link: '/marketplace/all_listings' },
-          {
-            title:
-              userData?.user_type === userTypes.client && primaryEnum[primaryFilter] === 'My bids'
-                ? 'Bid Received'
-                : primaryEnum[primaryFilter],
-          },
-        ]}
-      />
-      <CreateProjectButton />
-      <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
-      <Routes>
-        <Route
-          path="all_listings"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.ALL_LISTINGS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
+    <div className="trumio">
+      <MarketPlaceContainer>
+        <BreadCrumbs
+          data={[
+            { title: 'Marketplace', link: '/marketplace/all_listings' },
+            {
+              title:
+                userData?.user_type === userTypes.client && primaryEnum[primaryFilter] === 'My bids'
+                  ? 'Bid Received'
+                  : primaryEnum[primaryFilter],
+            },
+          ]}
         />
-        <Route
-          path="my_listings"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.MY_LISTINGS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="my_bids"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.BIDS_RECEIVED']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="clients"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.CLIENTS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="talents"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENTS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="teams"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TEAMS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-      </Routes>
-    </MarketPlaceContainer>
+        <CreateProjectButton />
+        <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
+        <Routes>
+          <Route
+            path="all_listings"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.ALL_LISTINGS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="my_listings"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.MY_LISTINGS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="my_bids"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.BIDS_RECEIVED']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="clients"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.CLIENTS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="talents"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENTS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="teams"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TEAMS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+        </Routes>
+      </MarketPlaceContainer>
     </div>
   );
 };

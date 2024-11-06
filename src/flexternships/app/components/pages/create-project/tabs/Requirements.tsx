@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
@@ -51,7 +51,6 @@ export default function Requirements() {
   }, [watch('projectName')]);
 
   const onContinue = async (data: ProjectDetails) => {
-
     // BE validation for project name
     setIsContinueLoading(true);
     let isProjectNameValid = true;
@@ -80,7 +79,7 @@ export default function Requirements() {
     try {
       await saveAsDraft(projectId);
     } catch (error) {
-      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
   };
 
@@ -102,14 +101,14 @@ export default function Requirements() {
         projectName: requirementsData.projectName,
         estimatedStartDate: requirementsData.estimatedStartDate,
         estimatedDuration: requirementsData.estimatedDuration === 0 ? undefined : requirementsData.estimatedDuration,
-        estimatedWeeklyHours: requirementsData.estimatedWeeklyHours === 0 ? undefined : requirementsData.estimatedWeeklyHours,
+        estimatedWeeklyHours:
+          requirementsData.estimatedWeeklyHours === 0 ? undefined : requirementsData.estimatedWeeklyHours,
         totalProjectHoursEach: requirementsData.totalProjectHoursEach,
         projectDescription: requirementsData.projectDescription,
         documents: requirementsData.documents,
       });
     }
   }, [requirementsData, reset]);
-
 
   return (
     <div className="flex flex-col">
@@ -128,10 +127,10 @@ export default function Requirements() {
                 label="Project Name"
                 placeholder="Enter project name"
                 error={errors.projectName?.message || projectNameError}
-                required />
-            )}>
-
-          </Controller>
+                required
+              />
+            )}
+          ></Controller>
           <Controller
             name="estimatedStartDate"
             control={control}
@@ -144,9 +143,10 @@ export default function Requirements() {
                 placeholder="Enter start date"
                 error={errors.estimatedStartDate?.message}
                 fromDate={getTodayDate()}
-                required />
-            )}>
-          </Controller>
+                required
+              />
+            )}
+          ></Controller>
           <Controller
             name="estimatedDuration"
             control={control}
@@ -160,10 +160,10 @@ export default function Requirements() {
                 placeholder="Enter duration"
                 extra="wk"
                 error={errors.estimatedDuration?.message}
-                required />
-            )}>
-
-          </Controller>
+                required
+              />
+            )}
+          ></Controller>
           <Controller
             name="estimatedWeeklyHours"
             control={control}
@@ -177,11 +177,10 @@ export default function Requirements() {
                 placeholder="Enter estimation"
                 extra="hrs/wk"
                 error={errors.estimatedWeeklyHours?.message}
-                required />
-
-            )}>
-
-          </Controller>
+                required
+              />
+            )}
+          ></Controller>
 
           <Controller
             name="totalProjectHoursEach"
@@ -195,10 +194,10 @@ export default function Requirements() {
                 label="Total Project Hours per Flextern"
                 placeholder="Add duration & hours/week"
                 extra="hrs/flextern"
-                readOnly />
-            )}>
-
-          </Controller>
+                readOnly
+              />
+            )}
+          ></Controller>
           <Controller
             name="projectDescription"
             control={control}
@@ -211,9 +210,11 @@ export default function Requirements() {
                 label="Project Description"
                 placeholder="Enter project background and requirements"
                 error={errors.projectDescription?.message}
-                required textarea />
-            )}>
-          </Controller>
+                required
+                textarea
+              />
+            )}
+          ></Controller>
 
           <FileUpload
             name={'documents'}
@@ -223,14 +224,12 @@ export default function Requirements() {
             watch={watch}
             label="Upload requirement documents (optional)"
             acceptedFormats={allowedFormats}
-            placeholder="Upload Document" />
+            placeholder="Upload Document"
+          />
         </div>
       </div>
       <div className={Styles.buttonsContainer}>
-        <SecondaryButton
-          className="mr-6"
-          onClick={onSaveDraft}
-          loading={isSaveDraftLoading}>
+        <SecondaryButton className="mr-6" onClick={onSaveDraft} loading={isSaveDraftLoading}>
           Save as Draft
         </SecondaryButton>
         <PrimaryButton onClick={handleSubmit(onContinue)} loading={isContinueLoading} disabled={!isValid}>

@@ -1,6 +1,6 @@
 // ** Store Imports
-import { handleFooterType } from "@store/layout";
-import { useDispatch, useSelector } from "react-redux";
+import { handleFooterType } from '@store/layout';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useFooterType = () => {
   // ** Hooks

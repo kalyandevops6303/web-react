@@ -147,7 +147,7 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
                 <div className="d-flex flex-column gap-1 justify-content-between">
                   {data?.creation_status === 'DRAFT' && <div className="draft-badge">Draft</div>}
                   <CardTitle className="card-title mb-1 d-flex justify-space-between">
-                    <span>{data?.name || <b className='text-secondary'>(Untitled Team)</b>}</span>
+                    <span>{data?.name || <b className="text-secondary">(Untitled Team)</b>}</span>
                   </CardTitle>
                   {/* <span className="me-3">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}

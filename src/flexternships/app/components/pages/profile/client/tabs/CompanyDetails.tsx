@@ -340,11 +340,7 @@ export default function CompanyDetails() {
             Skip
             <ChevronRight size={18} />
           </SecondaryButton>
-          <PrimaryButton
-            onClick={handleSubmit(onContinue)}
-            disabled={!isValid}
-            loading={isSaveLoading}
-          >
+          <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid} loading={isSaveLoading}>
             Save & Continue
           </PrimaryButton>
         </div>

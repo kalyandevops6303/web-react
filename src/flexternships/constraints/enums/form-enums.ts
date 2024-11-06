@@ -1,4 +1,4 @@
 export enum TextInputType {
-    ALPHANUMERIC = "alphanumeric",
-    NUMERIC = "numeric",
+  ALPHANUMERIC = 'alphanumeric',
+  NUMERIC = 'numeric',
 }

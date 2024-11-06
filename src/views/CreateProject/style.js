@@ -177,7 +177,7 @@ export const RequirementsFormContainer = styled.div`
   .form-check-label.form-label {
     color: ${theme.checkboxLabel};
   }
-  
+
   .form-label-lg {
     color: ${theme.checkboxLabel};
     font-size: 16px !important;

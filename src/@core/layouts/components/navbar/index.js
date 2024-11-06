@@ -84,8 +84,10 @@ const ThemeNavbar = (props) => {
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
   const appPermissions = useSelector(appPermissionsSelector);
   const saveArtifactDraftPath = /^\/project-details\/[a-zA-Z0-9_-]+\/milestone-details\/[a-zA-Z0-9_-]+$/;
-  const draftTeamPath = location?.pathname.includes(
-    '/create-team/profile-details') || location?.pathname.includes('/create-club/account-details') || location?.pathname.includes('/create-club/profile-details');
+  const draftTeamPath =
+    location?.pathname.includes('/create-team/profile-details') ||
+    location?.pathname.includes('/create-club/account-details') ||
+    location?.pathname.includes('/create-club/profile-details');
   const isTabDisabled = userData?.club_status === clubStatus.IN_REVIEW;
 
   // ** Props
@@ -117,37 +119,37 @@ const ThemeNavbar = (props) => {
   useEffect(() => {
     const path = location?.pathname?.split?.('/')?.[1];
     switch (path) {
-        case 'notifications':
-        case 'search':
-        case undefined: 
-            dispatch(setActiveNavTab(''));
-            break;
-        case 'marketplace':
-            dispatch(setActiveNavTab('marketplace'));
-            break;
-        case 'projects':
-            dispatch(setActiveNavTab('projects'));
-            break;
-        case 'dashboard':
-            dispatch(setActiveNavTab('dashboard'));
-            break;
-        case 'my-teams':
-            dispatch(setActiveNavTab('my-teams'));
-            break;
-        default:
-            dispatch(setActiveNavTab('')); 
-            break;
+      case 'notifications':
+      case 'search':
+      case undefined:
+        dispatch(setActiveNavTab(''));
+        break;
+      case 'marketplace':
+        dispatch(setActiveNavTab('marketplace'));
+        break;
+      case 'projects':
+        dispatch(setActiveNavTab('projects'));
+        break;
+      case 'dashboard':
+        dispatch(setActiveNavTab('dashboard'));
+        break;
+      case 'my-teams':
+        dispatch(setActiveNavTab('my-teams'));
+        break;
+      default:
+        dispatch(setActiveNavTab(''));
+        break;
     }
-}, [location,location?.pathname]);
+  }, [location, location?.pathname]);
 
-useEffect(() => {
-  if (!location.pathname.includes('/create-club')) {
-   localStorage.removeItem('clubCreateData');
-  }
-}, [location.pathname]);
+  useEffect(() => {
+    if (!location.pathname.includes('/create-club')) {
+      localStorage.removeItem('clubCreateData');
+    }
+  }, [location.pathname]);
 
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
-  console.log(isOpenSaveForLater)
+  console.log(isOpenSaveForLater);
   return (
     <HeadWrapper className={className}>
       <div className="d-flex align-items-center">

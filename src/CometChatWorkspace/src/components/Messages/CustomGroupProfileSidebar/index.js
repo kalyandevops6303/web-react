@@ -466,7 +466,7 @@ class CustomGroupProfileSidebar extends React.Component {
       default:
         break;
     }
-    this.props.actionGenerated(action, messages, key, group, options)
+    this.props.actionGenerated(action, messages, key, group, options);
   };
 
   errorHandler = (errorCode) => {
@@ -1081,7 +1081,7 @@ class CustomGroupProfileSidebar extends React.Component {
             groupAvatarSrc: file_url,
           });
 
-          this.context.setItem(group)
+          this.context.setItem(group);
         },
         (error) => {
           console.log('Group avatar update failed', error);
@@ -1109,8 +1109,8 @@ class CustomGroupProfileSidebar extends React.Component {
         console.log('Group name updated successfully');
         this.context.setItem(group);
         this.setState({
-          groupName: name
-        })
+          groupName: name,
+        });
       },
       (error) => {
         console.log('Group name update failed', error);
@@ -1137,9 +1137,9 @@ class CustomGroupProfileSidebar extends React.Component {
         <CometChatEditGroupNameDialog
           {...this.props}
           // type={'member'}
-          title={"Edit Group Name"}
-          description={""}
-          note={""}
+          title={'Edit Group Name'}
+          description={''}
+          note={''}
           onConfirm={this.saveName}
           onCancel={() => {
             this.setState({ isNameEditOn: false });
@@ -1201,13 +1201,13 @@ class CustomGroupProfileSidebar extends React.Component {
                 />
 
                 {this.isGroupAdmin() && (
-                    <Edit2
-                      className="about__name__icon"
-                      css={aboutNameIconStyle()}
-                      size={16}
-                      color="#0185E4"
-                      onClick={this.turnOnNameEdit}
-                    /> 
+                  <Edit2
+                    className="about__name__icon"
+                    css={aboutNameIconStyle()}
+                    size={16}
+                    color="#0185E4"
+                    onClick={this.turnOnNameEdit}
+                  />
                 )}
               </div>
             </div>
@@ -1219,7 +1219,7 @@ class CustomGroupProfileSidebar extends React.Component {
                 containerHeight="225px"
                 theme={this.props.theme}
                 lang={this.context.language}
-              // lang={this.context.language}
+                // lang={this.context.language}
               />
             </div>
 

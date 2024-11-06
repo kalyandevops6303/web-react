@@ -66,31 +66,30 @@ export default function FlexternshipProjectDetails() {
 
   return (
     <div className="flexternships-page">
-      {
-        projectLoading ? (
-          <div className='h-5'></div>
-        ) : (
-          <div className="flex flex-col items-start gap-5">
-            <BreadCrumbs
-              steps={[
-                {
-                  title: 'Projects',
-                  link: '/projects/ongoing',
-                },
-                {
-                  title: projectDetails?.details?.name ?? 'Unknown Project',
-                  link: `/project-details/${params?.projectId}/team`,
-                },
-                {
-                  title: params['projectStep']
-                    ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
-                    : 'Unknown Tab',
-                  link: `/project-details/${params?.projectId}/${params['projectStep']}`,
-                },
-              ]}
-            />
-          </div>
-        )}
+      {projectLoading ? (
+        <div className="h-5"></div>
+      ) : (
+        <div className="flex flex-col items-start gap-5">
+          <BreadCrumbs
+            steps={[
+              {
+                title: 'Projects',
+                link: '/projects/ongoing',
+              },
+              {
+                title: projectDetails?.details?.name ?? 'Unknown Project',
+                link: `/project-details/${params?.projectId}/team`,
+              },
+              {
+                title: params['projectStep']
+                  ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
+                  : 'Unknown Tab',
+                link: `/project-details/${params?.projectId}/${params['projectStep']}`,
+              },
+            ]}
+          />
+        </div>
+      )}
       <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
         {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
         <div className="flex flex-col flex-grow items-start max-w-5xl gap-5">

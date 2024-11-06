@@ -1,10 +1,10 @@
-"use client"
-import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
-import { ModalType } from "@flexternships/types/project-creation-types"
-import CloseModalButton from "../buttons/CloseModalButton"
-import PrimaryButton from "../buttons/PrimaryButton"
-import ChecklistGif from "@flexternships/assets/images/checklist.gif"
-import { useNavigate } from "react-router-dom"
+'use client';
+import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
+import { ModalType } from '@flexternships/types/project-creation-types';
+import CloseModalButton from '../buttons/CloseModalButton';
+import PrimaryButton from '../buttons/PrimaryButton';
+import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import { useNavigate } from 'react-router-dom';
 
 export default function SuccessfulCreation(props: Props) {
   const { onRecall, onConfirm, recallTimeLeft } = props;
@@ -20,50 +20,40 @@ export default function SuccessfulCreation(props: Props) {
   const handleClose = () => {
     closeModal();
     // redirect
-    navigate("/dashboard");
-  }
+    navigate('/dashboard');
+  };
 
   return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-        <div className="relative w-full min-w-[40rem] max-w-sm rounded-lg bg-white pt-13 pr-8 pb-8 pl-6  shadow-lg">
-          <CloseModalButton onClick={handleClose} />
-          <div className="flex">
-            <div className="height-full mr-[0.87rem] flex w-48 min-w-48 items-center justify-center">
-              {/* Icon can be replaced with an actual icon */}
-              <img
-                src={ChecklistGif}
-                className=" w-full"
-                width={100}
-                height={100}
-                alt="Drafts available icon"
-              />
-            </div>
-            <div>
-              <h2 className=" text-2xl font-medium text-grey-heading">Project Created Successfully</h2>
-              <p className="my-4 text-lg text-grey">
-                Your project listing will go live on your selected start date. Build your talent pool next.
-              </p>
-              <div className="mt-11 flex justify-end">
-                {
-                  recallTimeLeft>0 && (
-                    <button onClick={onRecall} className="text-error mr-6" >
-                      Oops Recall ({recallTimeLeft})
-                    </button>
-                  )
-                }
-                <PrimaryButton onClick={onConfirm}>
-                  Close
-                </PrimaryButton>
-              </div>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+      <div className="relative w-full min-w-[40rem] max-w-sm rounded-lg bg-white pt-13 pr-8 pb-8 pl-6  shadow-lg">
+        <CloseModalButton onClick={handleClose} />
+        <div className="flex">
+          <div className="height-full mr-[0.87rem] flex w-48 min-w-48 items-center justify-center">
+            {/* Icon can be replaced with an actual icon */}
+            <img src={ChecklistGif} className=" w-full" width={100} height={100} alt="Drafts available icon" />
+          </div>
+          <div>
+            <h2 className=" text-2xl font-medium text-grey-heading">Project Created Successfully</h2>
+            <p className="my-4 text-lg text-grey">
+              Your project listing will go live on your selected start date. Build your talent pool next.
+            </p>
+            <div className="mt-11 flex justify-end">
+              {recallTimeLeft > 0 && (
+                <button onClick={onRecall} className="text-error mr-6">
+                  Oops Recall ({recallTimeLeft})
+                </button>
+              )}
+              <PrimaryButton onClick={onConfirm}>Close</PrimaryButton>
             </div>
           </div>
         </div>
       </div>
-  )
+    </div>
+  );
 }
 
-type Props = { 
-  onRecall: () => void
-  recallTimeLeft: number
-  onConfirm: () => void
-}
+type Props = {
+  onRecall: () => void;
+  recallTimeLeft: number;
+  onConfirm: () => void;
+};

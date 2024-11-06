@@ -270,9 +270,7 @@ export function calculateDays(timestamp1, timestamp2) {
   const daysBetween = Math.floor(Math.abs(timestamp1 - timestamp2) / millisecondsPerDay);
 
   const currentTimestamp = Date.now();
-  const daysLeft = timestamp1 > currentTimestamp
-    ? Math.floor((timestamp1 - currentTimestamp) / millisecondsPerDay)
-    : 0;
+  const daysLeft = timestamp1 > currentTimestamp ? Math.floor((timestamp1 - currentTimestamp) / millisecondsPerDay) : 0;
 
   return { daysBetween, daysLeft };
 }
@@ -870,22 +868,22 @@ export const getMissingName = (type, values) => {
 };
 export const checkPointRedirection = ({ response, navigate }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
-    if(response?.is_flextern) {
+    if (response?.is_flextern) {
       navigate('/auth/register-phone-flexternship');
     } else {
       navigate('/auth/register-phone');
     }
   } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
-    if(response?.app_roles?.includes('FLEXTERN_CLIENT')) {
+    if (response?.app_roles?.includes('FLEXTERN_CLIENT')) {
       navigate(`/${response.user_type.toLowerCase()}-onboarding`);
     } else navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
   } else if (response?.checkpoint === checkPoints.PROFILE_DETAILS) {
-    if(response?.app_roles?.includes('FLEXTERN_CLIENT')) {
+    if (response?.app_roles?.includes('FLEXTERN_CLIENT')) {
       navigate(`/${response.user_type.toLowerCase()}-onboarding`);
-    }else navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
+    } else navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
   } else if (response?.checkpoint === checkPoints.COMPLETE) {
     navigate('/dashboard');
-  } else if(response?.checkpoint === checkPoints?.CREATE_PASSWORD){
+  } else if (response?.checkpoint === checkPoints?.CREATE_PASSWORD) {
     navigate('/auth/set-password');
   }
 };

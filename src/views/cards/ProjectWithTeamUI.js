@@ -205,8 +205,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <img
                   className="market-place-card-photo me-75"
                   src={
-                    data?.client_info?.[0]?.image_uri  ||  profileToShowInRightSideOfCard?.image_uri?.length
-                      ? data?.client_info?.[0]?.image_uri  ||  profileToShowInRightSideOfCard?.image_uri
+                    data?.client_info?.[0]?.image_uri || profileToShowInRightSideOfCard?.image_uri?.length
+                      ? data?.client_info?.[0]?.image_uri || profileToShowInRightSideOfCard?.image_uri
                       : defaultAvatar
                   }
                   alt="avatar"
@@ -218,7 +218,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 <div>
                   <div onClick={(e) => handleTalentTeamClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                      {data?.client_info?.[0]?.first_name || profileToShowInRightSideOfCard?.first_name  } {data?.client_info?.[0]?.last_name || profileToShowInRightSideOfCard?.last_name}
+                      {data?.client_info?.[0]?.first_name || profileToShowInRightSideOfCard?.first_name}{' '}
+                      {data?.client_info?.[0]?.last_name || profileToShowInRightSideOfCard?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
                       {profileToShowInRightSideOfCard?.user_type === userTypes.client

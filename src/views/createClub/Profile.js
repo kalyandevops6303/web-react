@@ -144,7 +144,7 @@ const Profile = ({ setDraftSavedModal }) => {
 
   const onBackClick = () => {
     const savedData = localStorage.getItem('clubCreateData');
-    
+
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.club}/account-details`);
     } else if (params?.id) {

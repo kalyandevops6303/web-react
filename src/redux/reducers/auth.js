@@ -20,8 +20,8 @@ const initialState = {
   cometChatToken: '',
   checkAdmin: null,
   checkAdminLoading: false,
-  flextern : null,
-  trumio_talent:null,
+  flextern: null,
+  trumio_talent: null,
   is_flextern: null,
   profileCompletionFlextern: null,
   profileCompletionFlexternLoading: false,
@@ -112,31 +112,31 @@ const authSlice = createSlice({
     }),
 
     // Verify Email for  Flextern
-    verifyEmailForFlexternRequest : (state) => ({
+    verifyEmailForFlexternRequest: (state) => ({
       ...state,
-      loading:true,
+      loading: true,
       error: null,
     }),
 
-    verifyEmailForFlexternSuccess : (state) => ({
+    verifyEmailForFlexternSuccess: (state) => ({
       ...state,
-      loading:false,
+      loading: false,
       isEmailVerified: true,
     }),
 
-    verifyEmailForFlexternFailure : (state,action) => ({
+    verifyEmailForFlexternFailure: (state, action) => ({
       ...state,
-      loading:false,
+      loading: false,
       error: action.payload,
     }),
     // set flexternship invite type
 
-    setFlexternshipInviteType: (state,action) => ({
+    setFlexternshipInviteType: (state, action) => ({
       ...state,
-      flexternshipInviteType: action.payload
+      flexternshipInviteType: action.payload,
     }),
 
-    setUserLoginAttemptNo: (state,action) => ({
+    setUserLoginAttemptNo: (state, action) => ({
       ...state,
       userLoginAttemptNo: action.payload,
     }),
@@ -145,10 +145,10 @@ const authSlice = createSlice({
     verifyRequestInvitationFlexternToken: (state) => ({
       ...state,
       loading: true,
-      error:null,
+      error: null,
     }),
 
-    verifyRequestInvitationFlexternTokenSuccess: (state,action) => ({
+    verifyRequestInvitationFlexternTokenSuccess: (state, action) => ({
       ...state,
       loading: false,
       email: action.payload,
@@ -175,7 +175,7 @@ const authSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
-    
+
     // Set  Password
     setPasswordRequest: (state) => ({
       ...state,
@@ -287,15 +287,15 @@ const authSlice = createSlice({
       googleAuthLoading: false,
       error: action.payload,
     }),
-    setTalentBooleansFlextern: (state,action) => ({
+    setTalentBooleansFlextern: (state, action) => ({
       ...state,
       flextern: action.payload,
     }),
-    setTalentBooleanTrumioTalent : (state,action) => ({
+    setTalentBooleanTrumioTalent: (state, action) => ({
       ...state,
       trumio_talent: action.payload,
     }),
-    setTalentBooleanIsFlextern : (state,action) => ({
+    setTalentBooleanIsFlextern: (state, action) => ({
       ...state,
       is_flextern: action.payload,
     }),
@@ -350,7 +350,6 @@ const authSlice = createSlice({
       ...state,
       loading: false,
       appPermissions: action.payload,
-
     }),
 
     getAppPermissionsFailure: (state, action) => ({
@@ -382,7 +381,7 @@ const authSlice = createSlice({
       userDataLoading: false,
       error: action.payload,
     }),
-    clearPhoneData : (state) => ({
+    clearPhoneData: (state) => ({
       ...state,
       phone: null,
     }),
@@ -414,22 +413,22 @@ const authSlice = createSlice({
       error: action.payload,
     }),
     profileCompletionFlexternRequest: (state) => ({
-      ...state, 
-      profileCompletionFlexternLoading: true, 
-      error: null 
+      ...state,
+      profileCompletionFlexternLoading: true,
+      error: null,
     }),
     profileCompletionFlexternSuccess: (state, action) => ({
-      ...state, 
-      profileCompletionFlexternLoading: false, 
+      ...state,
+      profileCompletionFlexternLoading: false,
       profileCompletionFlextern: action.payload,
-      error: null 
+      error: null,
     }),
     profileCompletionFlexternFailure: (state, action) => ({
-      ...state, 
-      profileCompletionFlextern: null, 
-      profileCompletionFlexternLoading: false, 
-      error: action.payload 
-    })
+      ...state,
+      profileCompletionFlextern: null,
+      profileCompletionFlexternLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -499,8 +498,8 @@ export const {
   setTalentBooleanTrumioTalent,
   setTalentBooleansFlextern,
   setTalentBooleanIsFlextern,
-  profileCompletionFlexternRequest, 
-  profileCompletionFlexternSuccess, 
+  profileCompletionFlexternRequest,
+  profileCompletionFlexternSuccess,
   profileCompletionFlexternFailure,
   setFlexternshipInviteType,
   setUserLoginAttemptNo,

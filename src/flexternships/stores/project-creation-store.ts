@@ -1,7 +1,30 @@
-import { create } from "zustand"
-import { appendRemovedMilestoneId, closeModal, jumpToTab, nextTab, openModal, populateDraftProject, previousTab, saveDraft, updateEstimatedDuration, updateEstimatedStartDate, updateListingData, updateMilestonesData, updateRequirementsData, updateRolesData } from "@flexternships/actions/project-creation-actions"
-import { Milestone, ModalType, ProjectCreationFormData, ProjectCreationState, ProjectCreationStore, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
-import { addDaysToEpoch, dateToEpoch } from "@flexternships/utils/date-utils";
+import { create } from 'zustand';
+import {
+  appendRemovedMilestoneId,
+  closeModal,
+  jumpToTab,
+  nextTab,
+  openModal,
+  populateDraftProject,
+  previousTab,
+  saveDraft,
+  updateEstimatedDuration,
+  updateEstimatedStartDate,
+  updateListingData,
+  updateMilestonesData,
+  updateRequirementsData,
+  updateRolesData,
+} from '@flexternships/actions/project-creation-actions';
+import {
+  Milestone,
+  ModalType,
+  ProjectCreationFormData,
+  ProjectCreationState,
+  ProjectCreationStore,
+  ProjectDetails,
+  ProjectRole,
+} from '@flexternships/types/project-creation-types';
+import { addDaysToEpoch, dateToEpoch } from '@flexternships/utils/date-utils';
 
 const defaultInitState: ProjectCreationState = {
   currentTabIndex: 0,
@@ -10,12 +33,12 @@ const defaultInitState: ProjectCreationState = {
   isSaveDraftLoading: false,
   data: {
     requirements: {
-      projectName: "",
+      projectName: '',
       estimatedStartDate: 0,
       estimatedDuration: 0,
       estimatedWeeklyHours: 0,
       totalProjectHoursEach: 0,
-      projectDescription: "",
+      projectDescription: '',
       documents: [],
     },
     roles: [
@@ -23,32 +46,36 @@ const defaultInitState: ProjectCreationState = {
         role: { _id: '', name: '' },
         count: 1,
         skills: [],
-        tools: []
-      }
+        tools: [],
+      },
     ],
-    milestones: [{
-      title: 'Plan and Design',
-      duration: 0.25, // percentage of the total duration
-      description: '',
-      deliverables: ['Plan', 'Design'],
-    }, {
-      title: 'Execute/Implement',
-      duration: 0.5, // percentage of the total duration
-      description: '',
-      deliverables: ['Execute', 'Implement'],
-    }, {
-      title: 'Publish/Deploy',
-      duration: 0.25, // percentage of the total duration
-      description: '',
-      deliverables: ['Publish', 'Deploy'],
-    }],
+    milestones: [
+      {
+        title: 'Plan and Design',
+        duration: 0.25, // percentage of the total duration
+        description: '',
+        deliverables: ['Plan', 'Design'],
+      },
+      {
+        title: 'Execute/Implement',
+        duration: 0.5, // percentage of the total duration
+        description: '',
+        deliverables: ['Execute', 'Implement'],
+      },
+      {
+        title: 'Publish/Deploy',
+        duration: 0.25, // percentage of the total duration
+        description: '',
+        deliverables: ['Publish', 'Deploy'],
+      },
+    ],
     listingDetails: {
       listingStartDate: dateToEpoch(new Date()),
       listingEndDate: addDaysToEpoch(dateToEpoch(new Date()), 14),
     },
     removedMilestoneIds: [],
   } as ProjectCreationFormData,
-}
+};
 
 export const useProjectCreationStore = create<ProjectCreationStore>((set, get) => ({
   ...defaultInitState,
@@ -62,9 +89,10 @@ export const useProjectCreationStore = create<ProjectCreationStore>((set, get) =
   updateRequirementsData: (data: ProjectDetails) => updateRequirementsData(data, set),
   updateRolesData: (data: ProjectRole[]) => updateRolesData(data, set),
   updateMilestonesData: (data: Milestone[]) => updateMilestonesData(data, set),
-  updateListingData: (listingStartDate?: number, listingEndDate?: number) => updateListingData(set, listingStartDate, listingEndDate),
+  updateListingData: (listingStartDate?: number, listingEndDate?: number) =>
+    updateListingData(set, listingStartDate, listingEndDate),
   appendRemovedMilestoneId: (milestoneId: string) => appendRemovedMilestoneId(milestoneId, set),
   openModal: (modalType: ModalType) => openModal(modalType, set),
   closeModal: () => closeModal(set),
-  resetStore: () => set({...defaultInitState}),
+  resetStore: () => set({ ...defaultInitState }),
 }));

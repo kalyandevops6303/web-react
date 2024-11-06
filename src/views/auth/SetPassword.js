@@ -27,7 +27,6 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 
-
 const SetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,13 +36,12 @@ const SetPassword = () => {
   const savedFormData = useSelector(formData);
   const isFlextern = useSelector(selectTrumioIsFlextern);
   useEffect(() => {
-    if(isFlextern && isPasswordSet) {
+    if (isFlextern && isPasswordSet) {
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
       setTimeout(() => {
         navigate('/auth/login');
       }, 6000);
-    }
-    else if (isPasswordSet && !isFlextern) {
+    } else if (isPasswordSet && !isFlextern) {
       navigate('/auth/register-phone');
     }
   }, [isPasswordSet, navigate]);
@@ -105,7 +103,7 @@ const SetPassword = () => {
           <div className="mb-2">
             <Label className="form-label d-flex justify-content-between" for="login-email">
               Password
-            <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
+              <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
             </Label>
             <UncontrolledTooltip placement="right" target="info">
               <p className="m-0 text-start">
@@ -158,11 +156,11 @@ const SetPassword = () => {
               )}
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
-            <p className='text-success text-xs mt-2'>
-                {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
+            <p className="text-success text-xs mt-2">
+              {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
             </p>
           </div>
-          
+
           <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
           </Button>

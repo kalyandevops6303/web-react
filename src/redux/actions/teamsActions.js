@@ -134,15 +134,14 @@ const updateDraftTeam =
   };
 
 const checkDraftTeam =
-  ({ setSavedDraftsAvailableModal, checkType, onNavigation , onSuccess, onError }) =>
+  ({ setSavedDraftsAvailableModal, checkType, onNavigation, onSuccess, onError }) =>
   async (dispatch) => {
     try {
       dispatch(saveDraftTeamRequest());
       const res = await checkDraftTeamService(checkType);
       if (res?.data?.data?.has_draft_team) {
         setSavedDraftsAvailableModal(true);
-      }
-      else{
+      } else {
         onNavigation();
       }
       onSuccess();

@@ -327,81 +327,85 @@ const ProjectModal = ({
                 </Col>
               </Row>
               <Row className="mb-2">
-              {!isEmpty(data?.pay_type) && (
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.CURRENCY']}>
-                  <Col lg="5">
-                    <div>
-                      <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
-                      <CardText className="project-name">Currency</CardText>
-                    </div>
-                  </Col>
+                {!isEmpty(data?.pay_type) && (
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.CURRENCY']}>
+                    <Col lg="5">
+                      <div>
+                        <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
+                        <CardText className="project-name">Currency</CardText>
+                      </div>
+                    </Col>
 
-                  <Col lg="3">
-                    <div>
-                      <CardTitle className="mb-25 fw-bolder">
-                        {data?.pay_type?.fixed_cost
-                          ? ` Fixed - 
+                    <Col lg="3">
+                      <div>
+                        <CardTitle className="mb-25 fw-bolder">
+                          {data?.pay_type?.fixed_cost
+                            ? ` Fixed - 
                         ${data?.pay_type?.currency?.code} ${data?.pay_type?.fixed_cost}`
-                          : 'Variable'}
-                      </CardTitle>
-                      <CardText className="project-name">Payment Type</CardText>
-                    </div>
-                  </Col>
-                </PermissionWrapper>
-              )}
-              {!isEmpty(data?.nda) && (
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.NDA']}>
-                  <Col lg="4">
-                    <div>
-                      <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'Yes' : 'No'}</CardTitle>
-                      <CardText className="project-name">NDA</CardText>
-                    </div>
-                  </Col>
-                </PermissionWrapper>
-              )}
+                            : 'Variable'}
+                        </CardTitle>
+                        <CardText className="project-name">Payment Type</CardText>
+                      </div>
+                    </Col>
+                  </PermissionWrapper>
+                )}
+                {!isEmpty(data?.nda) && (
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.NDA']}>
+                    <Col lg="4">
+                      <div>
+                        <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'Yes' : 'No'}</CardTitle>
+                        <CardText className="project-name">NDA</CardText>
+                      </div>
+                    </Col>
+                  </PermissionWrapper>
+                )}
               </Row>
               <Row className="mb-2">
                 {!isEmpty(data.availability) && (
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.AVAILABILTY']}>
-                  <>
-                    <Col lg="5">
-                      <AvailableTimeComp
-                        timeZone={data?.availability?.timezone?.abbreviation}
-                        weekdaysData={data?.availability?.weekdays_avl}
-                        weekendsData={data?.availability?.weekends_avl}
-                      />
-                    </Col>
-                    <Col lg="3">
-                      <div>
-                        <CardTitle className="mb-25 fw-bolder">{data?.availability?.time_overlap} hr</CardTitle>
-                        <CardText className="project-name">Minimum Overlap</CardText>
-                      </div>
-                    </Col>
-                  </>
-                </PermissionWrapper>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.AVAILABILTY']}>
+                    <>
+                      <Col lg="5">
+                        <AvailableTimeComp
+                          timeZone={data?.availability?.timezone?.abbreviation}
+                          weekdaysData={data?.availability?.weekdays_avl}
+                          weekendsData={data?.availability?.weekends_avl}
+                        />
+                      </Col>
+                      <Col lg="3">
+                        <div>
+                          <CardTitle className="mb-25 fw-bolder">{data?.availability?.time_overlap} hr</CardTitle>
+                          <CardText className="project-name">Minimum Overlap</CardText>
+                        </div>
+                      </Col>
+                    </>
+                  </PermissionWrapper>
                 )}
                 <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.BIDS']}>
-                {(location.pathname.split('/').includes('my_listings') ||
-                  (location.pathname.split('/').includes('my_bids') &&
-                    selectUserDetailsData?.user_type === userTypes.client)) && (
-                  <Col lg="4">
-                    {bidsReceivedAvatarGroup?.length ? (
-                      <div className="d-flex align-items-center">
-                        {bidsReceivedAvatarGroup?.length > 3 ? (
-                          <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
-                        ) : (
-                          <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
-                        )}
-                        <div className="total-count px-75 ms-1">
-                          <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+                  {(location.pathname.split('/').includes('my_listings') ||
+                    (location.pathname.split('/').includes('my_bids') &&
+                      selectUserDetailsData?.user_type === userTypes.client)) && (
+                    <Col lg="4">
+                      {bidsReceivedAvatarGroup?.length ? (
+                        <div className="d-flex align-items-center">
+                          {bidsReceivedAvatarGroup?.length > 3 ? (
+                            <AvatarGroup
+                              size="sm"
+                              className="ms-25 mb-50"
+                              data={bidsReceivedAvatarGroup?.slice(0, 3)}
+                            />
+                          ) : (
+                            <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                          )}
+                          <div className="total-count px-75 ms-1">
+                            <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <CardTitle className="mb-25 fw-bolder">None</CardTitle>
-                    )}
-                    <CardText className="project-name">Bids Received</CardText>
-                  </Col>
-                )}
+                      ) : (
+                        <CardTitle className="mb-25 fw-bolder">None</CardTitle>
+                      )}
+                      <CardText className="project-name">Bids Received</CardText>
+                    </Col>
+                  )}
                 </PermissionWrapper>
               </Row>
             </CardBody>
@@ -529,35 +533,37 @@ const ProjectModal = ({
                       Report
                     </Button>
                   )}
-              <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.CREATE_BID']}>
-                  {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
-                    (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
-                      ? showCreateBidButton
-                      : true) && (
-                      <Button color="primary" className="d-flex align-items-center justify-content-between" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
-                        {checkBidLoadingIsLoading ? (
-                          <Spinner size="sm" />
-                        ) : (
-                          <>
-                            <span className="me-50">Create Bid</span>
-                            <ChevronRight size={14} />
-                          </>
-                        )}
-                      </Button>
-                    )}
-                    </PermissionWrapper>
-                    <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.VIEW_PROJECT']}>
-                    <Button color="primary" onClick={()=>
-                      navigate(`/project-details/${data?._id}/team`)
-                    }>
-
-                    <>
-                      <span className="me-50">View Project</span>
-                      <ChevronRight size={14} />
-                    </>
-          
-                </Button>
-                </PermissionWrapper>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.CREATE_BID']}>
+                    {(data?.status === projectStatusEnum.OPEN || data?.status === projectStatusEnum.IN_REVIEW) &&
+                      (selectUserDetailsData?.user_type === userTypes.team &&
+                      selectUserDetailsData?.team_type === 'CLUB'
+                        ? showCreateBidButton
+                        : true) && (
+                        <Button
+                          color="primary"
+                          className="d-flex align-items-center justify-content-between"
+                          disabled={checkBidLoadingIsLoading}
+                          onClick={handleCreateBid}
+                        >
+                          {checkBidLoadingIsLoading ? (
+                            <Spinner size="sm" />
+                          ) : (
+                            <>
+                              <span className="me-50">Create Bid</span>
+                              <ChevronRight size={14} />
+                            </>
+                          )}
+                        </Button>
+                      )}
+                  </PermissionWrapper>
+                  <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.VIEW_PROJECT']}>
+                    <Button color="primary" onClick={() => navigate(`/project-details/${data?._id}/team`)}>
+                      <>
+                        <span className="me-50">View Project</span>
+                        <ChevronRight size={14} />
+                      </>
+                    </Button>
+                  </PermissionWrapper>
                 </div>
               )}
             </div>

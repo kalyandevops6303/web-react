@@ -91,81 +91,81 @@ const MyTeams = () => {
   };
 
   return (
-    <div className='trumio'>
-    <TeamsContainer>
-      <div className="d-flex justify-content-between w-100">
-        <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
-        <div className="relist-btn-wrapper">
-          <Button
-            color="primary"
-            outline
-            className="relist-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate('/my-teams/teams', { state: { isDraftTeams: true } });
-            }}
-          >
-            View Drafts
-          </Button>
+    <div className="trumio">
+      <TeamsContainer>
+        <div className="d-flex justify-content-between w-100">
+          <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
+          <div className="relist-btn-wrapper">
+            <Button
+              color="primary"
+              outline
+              className="relist-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate('/my-teams/teams', { state: { isDraftTeams: true } });
+              }}
+            >
+              View Drafts
+            </Button>
+          </div>
         </div>
-      </div>
-      <PrimaryFilter
-        selected={primaryFilter}
-        handlePrimaryChangeFilter={handlePrimaryChangeFilter}
-        isTab={isTab}
-        userType={userData?.user_type}
-      />
-      <Routes>
-        <Route
-          path="teams"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAMS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
+        <PrimaryFilter
+          selected={primaryFilter}
+          handlePrimaryChangeFilter={handlePrimaryChangeFilter}
+          isTab={isTab}
+          userType={userData?.user_type}
         />
-        <Route
-          path="clients"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.CLIENTS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="talents"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAM_MEMBERS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="join_requests"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.JOIN_REQUESTS']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="favourites"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.FAVOURITES']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-        <Route
-          path="recommendation"
-          element={
-            <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.RECOMMENDED']}>
-              <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
-            </PermissionWrapper>
-          }
-        />
-      </Routes>
-    </TeamsContainer>
+        <Routes>
+          <Route
+            path="teams"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAMS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="clients"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.CLIENTS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="talents"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.TEAM_MEMBERS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="join_requests"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.JOIN_REQUESTS']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="favourites"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.FAVOURITES']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+          <Route
+            path="recommendation"
+            element={
+              <PermissionWrapper permissions={appPermissions} permissionName={['MY_TEAM.RECOMMENDED']}>
+                <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+              </PermissionWrapper>
+            }
+          />
+        </Routes>
+      </TeamsContainer>
     </div>
   );
 };

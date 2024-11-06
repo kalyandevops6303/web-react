@@ -53,7 +53,13 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile, filteredFormSchema, getFileSize, removeEmptyKeys, renderFilePreview } from '../../../utility/Utils';
+import {
+  downloadUploadedFile,
+  filteredFormSchema,
+  getFileSize,
+  removeEmptyKeys,
+  renderFilePreview,
+} from '../../../utility/Utils';
 import { saveDraftProject } from '../../../redux/actions/createProjectActions';
 import {
   draftProjectDetailsLoading,
@@ -1046,15 +1052,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                       <FormFeedback>{errors.preferredWorkingTimeZone.label.message}</FormFeedback>
                     )}
                     <Label className="form-label-lg h6 mt-2" for="minTimeOverlapHr">
-                    Select the minimum project time overlap.<span className="label-asterisk">*</span>
+                      Select the minimum project time overlap.<span className="label-asterisk">*</span>
                     </Label>
                     <Controller
                       id="minTimeOverlapHr"
                       name="minTimeOverlapHr"
                       control={control}
-                      render={({ field }) => (
-                        <CustomSlider sliderValue={field.value} onChange={field.onChange}/>
-                      )}
+                      render={({ field }) => <CustomSlider sliderValue={field.value} onChange={field.onChange} />}
                     />
                     {errors.minTimeOverlapHr && <FormFeedback>{errors.minTimeOverlapHr.message}</FormFeedback>}
                   </Col>
