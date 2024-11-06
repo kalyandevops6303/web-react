@@ -12,7 +12,7 @@ export default function TeamTab(props: InputProps) {
     populateTeamDetails(projectId);
   }, [populateTeamDetails]);
   return (
-    <div className="w-[64.8125rem]  rounded-md bg-grey-light shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
+    <div className="w-[64.8125rem] my-2 rounded-md bg-grey-light shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
       <div className=" w-full pt-6">
         <p className="text-lg px-6 pb-3 font-medium text-grey-heading">Project Team</p>
         <svg xmlns="http://www.w3.org/2000/svg" width="1039" height="2" viewBox="0 0 1039 2" fill="none">

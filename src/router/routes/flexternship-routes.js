@@ -110,12 +110,66 @@ export const FlexternshipRoutes = [
         element: <MarketPlace />,
     },
     {
-        path: '/project-details/:projectId/*',
-        element: <FlexternshipProjectDetails />,
+        path: '/project-details/:projectId',
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipProjectDetails />
+            </RoleAccessWrapper >
+        ),
     },
     {
         path: '/project-details/:projectId/:projectStep',
-        element: <FlexternshipProjectDetails />,
+        element: (
+            <RoleAccessWrapper
+                allowedAppRoles={[
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/client-onboarding'
+                            }
+                        ]
+                    },
+                    {
+                        appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+                        allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+                        blockCheckpoints: [
+                            {
+                                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                                redirectRoute: '/talent-onboarding'
+                            }
+                        ]
+                    }
+                ]}
+            >
+                <FlexternshipProjectDetails />
+            </RoleAccessWrapper >
+        ),
     },
     {
         path: '/project-details/:projectId/milestone/:milestoneId',
@@ -147,6 +201,8 @@ export const FlexternshipRoutes = [
                 <FlexternshipProjectDetails />
             </RoleAccessWrapper >
         ),
+    },
+    {
         path: '/project-details/:projectId/doc/:docType/*',
         element: <FlexternshipsContractView />,
     },

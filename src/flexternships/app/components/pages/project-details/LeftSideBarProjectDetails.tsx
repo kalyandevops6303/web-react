@@ -6,10 +6,10 @@ import StartDateSVG from '../../../../assets/svgs/project-details/start-date.svg
 import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { Button } from '../../ui/button';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { userTypes } from '@/utility/constants/Constant';
 import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -105,7 +105,7 @@ const LeftSideBarProjectDetails = () => {
         )}
         <div className="flex flex-col w-full ">
           <h1 className="text-gray-900 font-medium">Description: </h1>
-          <p className="w-full font-normal">
+          <p className="w-full break-all font-normal">
             {showMore
               ? data?.details?.description
               : `${data?.details?.description?.slice(0, 100)}` +
@@ -117,13 +117,13 @@ const LeftSideBarProjectDetails = () => {
         </div>
 
         <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
-          {userDetails?.userType === userTypes?.client && (
+          {userDetails.userType === UserType.CLIENT && (
             <Button
               variant="outline"
               size="default"
               className="w-fit px-10 py-3 mx-auto bg-red-600 hover:border hover:border-red-600 hover:bg-red-200 font-semibold hover:text-red-600 text-white"
             >
-              Report
+              Terminate
             </Button>
           )}
           <Button
