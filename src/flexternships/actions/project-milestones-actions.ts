@@ -1,3 +1,4 @@
+import { mockMilestonesList } from '../mocks/milestone-data';
 import { getMilestonesByProjectId, getMilestoneDetailsById } from '../services/project-management-v2';
 
 export const populateProjectMilestones = async (projectId: string, set: any) => {
@@ -54,26 +55,7 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
         },
         deliverables: milestoneDetails.deliverables,
         status: milestoneDetails.status,
-        submissions: milestoneDetails.submissions || [{
-            name: "Documentation-1.pdf",
-            type: "FILE",
-            fileKey: "projects/6710beb143ecdeaeffde0616/013cca3a-0ee9-4f33-b581-43837a618bf8.pdf",
-            description: "This is a description for submission",
-            submittedAt: 1730614547000,
-            submittedBy: {
-                name: "John Doe",
-                avatar: "https://via.placeholder.com/150"
-            }
-        }, {
-            name: "https://www.google.com",
-            type: "URL",
-            description: "This is a description for submission-2",
-            submittedAt: 1730614547000,
-            submittedBy: {
-                name: "John Doe",
-                avatar: "https://via.placeholder.com/150"
-            }
-        }],
+        submissions: milestoneDetails.submissions || mockMilestonesList,
         milestoneBy: {
             entity: milestoneDetails.milestone_by.entity,
             entityId: milestoneDetails.milestone_by.entity_id,
