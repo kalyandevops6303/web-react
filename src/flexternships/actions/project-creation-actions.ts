@@ -1,4 +1,4 @@
-import { createFlexternProjectDraft } from "@flexternships/services/project-management-v2"
+import { createFlexternProjectDraft, getFlexternProjectDraft } from "@flexternships/services/project-management-v2"
 import { Milestone, ModalType, ProjectCreationState, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
 
 export const nextTab = (set: any) => {
@@ -15,12 +15,12 @@ export const jumpToTab = (tabIndex: number, set: any) => {
   set({ currentTabIndex: tabIndex })
 }
 
-export const saveDraft = async (get: any, set: any) => {
+export const saveDraft = async (get: any, set: any, draftProjectId?: string) => {
   const draftData = get().data;
   set({ isSaveDraftLoading: true })
   let projectId = undefined;
   try {
-    projectId = await createFlexternProjectDraft(draftData);
+    projectId = await createFlexternProjectDraft(draftData, draftProjectId);
     openModal(ModalType.DRAFT_SAVED, set);
   } catch (error) {
     throw new Error("An unexpected error occurred while saving the draft");
@@ -28,6 +28,13 @@ export const saveDraft = async (get: any, set: any) => {
     set({ isSaveDraftLoading: false });
   }
   return projectId;
+}
+
+export const populateDraftProject = async (projectId: string, set: any) => {
+  const draftData = await getFlexternProjectDraft(projectId);
+  if (draftData) {
+    set({ data: draftData });
+  }
 }
 
 export const updateEstimatedDuration = (duration: number, set: any) => {
@@ -94,6 +101,16 @@ export const updateListingData = (set: any, listingStartDate?: number, listingEn
         listingStartDate: listingStartDate ?? state.data.listingDetails.listingStartDate,
         listingEndDate: listingEndDate ?? state.data.listingDetails.listingEndDate
       },
+    },
+  }));
+}
+
+export const appendRemovedMilestoneId = (milestoneId: string, set: any) => {
+  set((state: ProjectCreationState) => ({
+    ...state,
+    data: {
+      ...state.data,
+      removedMilestoneIds: [...(state.data.removedMilestoneIds ?? []), milestoneId],
     },
   }));
 }

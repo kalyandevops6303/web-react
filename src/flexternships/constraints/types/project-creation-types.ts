@@ -16,6 +16,11 @@ export enum MilestoneInfoType {
   UPDATED = "updated"
 }
 
+export enum ListingChoice {
+  IMMEDIATE = "immediate",
+  LATER = "later"
+}
+
 
 // Form Data Types
 type Skill = {
@@ -63,6 +68,7 @@ export type ProjectRolesForm = {
 };
 
 export type Milestone = {
+  _id?: string
   title: string
   duration: number
   description: string
@@ -83,6 +89,7 @@ export type ProjectCreationFormData = {
   roles: ProjectRole[]
   milestones: Milestone[]
   listingDetails: ListingDetails
+  removedMilestoneIds?: string[]
 }
 
 // Form State Types
@@ -98,13 +105,15 @@ export type ProjectCreationActions = {
   nextTab: () => void
   previousTab: () => void
   jumpToTab: (tabIndex: number) => void
-  saveDraft: () => Promise<string | undefined>
+  saveDraft: (draftProjectId?: string) => Promise<string | undefined>
+  populateDraftProject: (projectId: string) => Promise<void>
   updateEstimatedDuration: (duration: number) => void
   updateEstimatedStartDate: (date: number) => void
   updateRequirementsData: (data: ProjectDetails) => void
   updateRolesData: (data: ProjectRole[]) => void
   updateMilestonesData: (data: Milestone[]) => void
   updateListingData: (listingStartDate?: number, listingEndDate?: number) => void
+  appendRemovedMilestoneId: (milestoneId: string) => void
   openModal: (modalType:ModalType) => void
   closeModal: () => void
   resetStore: () => void

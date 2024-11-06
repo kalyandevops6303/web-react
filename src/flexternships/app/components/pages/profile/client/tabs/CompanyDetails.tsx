@@ -341,7 +341,7 @@ export default function CompanyDetails() {
             <ChevronRight size={18} />
           </SecondaryButton>
           <PrimaryButton
-            onClick={handleSubmit(onContinue, (errors) => console.log(errors))}
+            onClick={handleSubmit(onContinue)}
             disabled={!isValid}
             loading={isSaveLoading}
           >

@@ -9,6 +9,7 @@ import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import Spinner from '../components/core/Spinner';
 import ProjectsTab from './tabs/projects/page';
+import TeamTab from '../components/pages/project-details/tabs/team';
 
 export default function FlexternshipProjectDetails() {
   const fetchUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
@@ -29,7 +30,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Users size={18} />,
       description: 'Team list & Permission',
       route: '/team',
-      component: <div>Team</div>,
+      component: <TeamTab />,
       talentVisible: true,
       clientVisible: true,
     },
