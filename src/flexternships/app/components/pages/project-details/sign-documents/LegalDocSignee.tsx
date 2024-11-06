@@ -59,7 +59,7 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
                 <Spinner white />
               </div>
             ) : (
-              <div>{signed ? 'Confirmed' : isCurrentUser ? 'Confirm Angreement' : 'Pending Agreement'}</div>
+              <div>{signed ? 'Confirmed' : isCurrentUser ? 'Confirm Agreement' : 'Pending Agreement'}</div>
             )}
           </div>
         </PrimaryButton>
