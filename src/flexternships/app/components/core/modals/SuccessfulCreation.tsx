@@ -52,8 +52,8 @@ export default function SuccessfulCreation(props: Props) {
                   )
                 }
                 <PrimaryButton onClick={onConfirm}>
-                  Invite Talent
-                  </PrimaryButton>
+                  Close
+                </PrimaryButton>
               </div>
             </div>
           </div>

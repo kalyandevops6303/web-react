@@ -346,3 +346,19 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
       handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
   }
 }
+
+export const verifyProjectName: (projectName: string) => Promise<void> = async (projectName) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      name: projectName,
+    }
+  }
+
+  try {
+    await axios.get(routes.projectManagementV2.project.verifyProjectName, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while verifying the project name');
+  }
+}
