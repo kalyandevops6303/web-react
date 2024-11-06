@@ -91,7 +91,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-              LayoutWrapper
+                LayoutWrapper
               : Fragment;
 
           // eslint-disable-next-line no-param-reassign

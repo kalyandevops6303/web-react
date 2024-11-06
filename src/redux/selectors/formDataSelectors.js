@@ -20,8 +20,23 @@ const fileKey = createSelector(formDataSelector, (state) => state.fileKey);
 
 const resumeDataUploadedForPersonal = createSelector(formDataSelector, (state) => state.resumeDataUploadedForPersonal);
 
-const resumeDataUploadedForEducation = createSelector(formDataSelector, (state) => state.resumeDataUploadedForEducation);
+const resumeDataUploadedForEducation = createSelector(
+  formDataSelector,
+  (state) => state.resumeDataUploadedForEducation,
+);
 
 const resumeDataUploadedForSocial = createSelector(formDataSelector, (state) => state.resumeDataUploadedForSocial);
 
-export { formData, formDocuments, formImage, resumeParsed, isFormImageRemoved, confirmSaveForLater, navigatingRoute, fileKey, resumeDataUploadedForPersonal, resumeDataUploadedForEducation, resumeDataUploadedForSocial };
+export {
+  formData,
+  formDocuments,
+  formImage,
+  resumeParsed,
+  isFormImageRemoved,
+  confirmSaveForLater,
+  navigatingRoute,
+  fileKey,
+  resumeDataUploadedForPersonal,
+  resumeDataUploadedForEducation,
+  resumeDataUploadedForSocial,
+};

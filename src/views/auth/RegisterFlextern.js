@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate ,useLocation} from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ import theme from '../../configs/themeVariables';
 import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
 import TermsModal from '../modals/TermsModal';
 import SigninWithGoogle from './components/SigninWithGoogle';
-import { validateRequestFlexTernToken ,verifyEmailForFlextern} from '../../redux/actions/authActions';
+import { validateRequestFlexTernToken, verifyEmailForFlextern } from '../../redux/actions/authActions';
 import { userTypes } from '../../utility/constants/Constant';
 
 const RegisterFlexternForm = React.memo(
@@ -30,12 +30,12 @@ const RegisterFlexternForm = React.memo(
     setTermsModal,
     setAgreeTerms,
     isLoading,
-    emailData
+    emailData,
   }) => (
     <Form className="auth-login-form mt-2" onSubmit={onSubmit}>
       <div className="mb-2">
         <Label className="form-label" for="email">
-          Email ID <span style={{"color" : `${theme.red}`}}>*</span>
+          Email ID <span style={{ color: `${theme.red}` }}>*</span>
         </Label>
 
         <Controller
@@ -46,7 +46,14 @@ const RegisterFlexternForm = React.memo(
           autoFocus
           control={control}
           render={({ field }) => (
-            <Input {...field} value={field.value || emailData ||''} placeholder="Enter email ID" className="filled-form-text-field" invalid={errors.email && true} disabled />
+            <Input
+              {...field}
+              value={field.value || emailData || ''}
+              placeholder="Enter email ID"
+              className="filled-form-text-field"
+              invalid={errors.email && true}
+              disabled
+            />
           )}
         />
         {errors?.email && <FormFeedback>{errors?.email?.message}</FormFeedback>}
@@ -95,7 +102,7 @@ const RegisterFlexternForm = React.memo(
         </div>
         {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
       </div>
-      <Button color="primary" block type="submit" disabled={ isLoading || !agreeTerms}>
+      <Button color="primary" block type="submit" disabled={isLoading || !agreeTerms}>
         {isLoading ? <Spinner size="sm" /> : 'Mobile Verification'}
       </Button>
     </Form>
@@ -111,7 +118,7 @@ RegisterFlexternForm.propTypes = {
   setTermsModal: PropTypes.func.isRequired,
   setAgreeTerms: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  emailData : PropTypes.string.isRequired,
+  emailData: PropTypes.string.isRequired,
 };
 
 const RegisterFlextern = () => {
@@ -128,13 +135,13 @@ const RegisterFlextern = () => {
   const togglePrivacyPolicyModal = () => setPrivacyPolicyModal(!privacyPolicyModal);
   const toggleTermsModal = () => setTermsModal(!termsModal);
   const inviteHeader = {
-    "FLEXTERN_CLIENT" : {
-      title: "Client Sign up 🔐"
+    FLEXTERN_CLIENT: {
+      title: 'Client Sign up 🔐',
     },
-    "FLEXTERN_TALENT" : {
-      title: "Flextern Sign up 🔐"
-    }
-  }
+    FLEXTERN_TALENT: {
+      title: 'Flextern Sign up 🔐',
+    },
+  };
 
   const flexternInviteType = useSelector(selectFlexternInviteType);
 
@@ -162,9 +169,9 @@ const RegisterFlextern = () => {
     const queryParams = new URLSearchParams(location.search);
     const requestToken = queryParams.get('invitation_token');
     if (requestToken) {
-        dispatch(validateRequestFlexTernToken({ requestToken }));
+      dispatch(validateRequestFlexTernToken({ requestToken }));
     }
-  },[emailData]);
+  }, [emailData]);
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
@@ -174,7 +181,7 @@ const RegisterFlextern = () => {
   useEffect(() => {
     if (savedFormData || emailData) {
       const requiredFields = filteredFormSchema({
-        savedData: {...savedFormData, email: emailData || savedFormData?.email},
+        savedData: { ...savedFormData, email: emailData || savedFormData?.email },
         formSchemaFields: schema.fields,
       });
       reset(requiredFields);
@@ -182,7 +189,7 @@ const RegisterFlextern = () => {
       trigger(keysWithValues);
     }
   }, [emailData]);
- 
+
   const onSuccess = (response) => {
     dispatch(clearAllFormData());
     checkPointRedirection({ response, navigate });
@@ -196,10 +203,10 @@ const RegisterFlextern = () => {
     data.email = email;
     const queryParams = new URLSearchParams(location.search);
     const invitation_token = queryParams.get('invitation_token');
-    if(flexternInviteType === userTypes.flexternClient) data.user_type = userTypes.client;
+    if (flexternInviteType === userTypes.flexternClient) data.user_type = userTypes.client;
     else data.user_type = userTypes.talent;
 
-    dispatch(verifyEmailForFlextern({ data,invitation_token ,onSuccess}));
+    dispatch(verifyEmailForFlextern({ data, invitation_token, onSuccess }));
   };
 
   const newPassword = watch('newPassword');
@@ -239,7 +246,7 @@ const RegisterFlextern = () => {
           <Label>
             <small>Already have a trumio account?</small>
           </Label>
-          <Label onClick={()=>dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
+          <Label onClick={() => dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>

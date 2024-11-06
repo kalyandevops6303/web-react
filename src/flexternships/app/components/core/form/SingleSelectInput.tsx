@@ -1,5 +1,5 @@
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
-import { Controller } from "react-hook-form";
+import { Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { PaginatedData } from '@/flexternships/services/user-management';
 import { GroupBase, OptionsOrGroups } from 'react-select';
@@ -20,15 +20,19 @@ export default function SingleSelectInput(props: InputProps) {
     disabled = false,
   } = props;
 
-  const loadHandler = async (search: string, _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>, additional: { page: number } | undefined = { page: 1 }) => {
+  const loadHandler = async (
+    search: string,
+    _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>,
+    additional: { page: number } | undefined = { page: 1 },
+  ) => {
     const page = additional.page;
     const data = await loadOptions(page, pageSize, search);
     return {
-      options: data.data.map(choice => ({ label: choice.name, value: choice._id })),
+      options: data.data.map((choice) => ({ label: choice.name, value: choice._id })),
       hasMore: data.metadata.has_next_page,
-      additional: { page: page + 1 }
-    }
-  }
+      additional: { page: page + 1 },
+    };
+  };
 
   return (
     <div className={`${Styles.formFieldContainer} ${className ?? ''}`}>
@@ -42,7 +46,11 @@ export default function SingleSelectInput(props: InputProps) {
         control={control}
         render={({ field: { value, onChange } }) => (
           <AsyncPaginate
-            value={!isEmpty(value) && !isEmpty(value.name) && !isEmpty(value._id) ? { label: value.name, value: value._id } : null}
+            value={
+              !isEmpty(value) && !isEmpty(value.name) && !isEmpty(value._id)
+                ? { label: value.name, value: value._id }
+                : null
+            }
             loadOptions={loadHandler}
             onChange={(newValue) => {
               if (newValue) {
@@ -53,7 +61,7 @@ export default function SingleSelectInput(props: InputProps) {
             }}
             isDisabled={disabled}
             maxMenuHeight={maxMenuHeight}
-            placeholder={placeholder}  // Direct string for placeholder
+            placeholder={placeholder} // Direct string for placeholder
             classNames={{
               control: () => `
                 ${error ? Styles.formInputError : Styles.formInputDefault}
@@ -64,13 +72,18 @@ export default function SingleSelectInput(props: InputProps) {
               singleValue: () => 'text-sm text-grey-600 font-normal leading-5.5 not-italic',
               option: (state) => `
                 text-xs font-normal leading-5 not-italic
-                ${state.isSelected ? 'bg-trublue-secondary-500 text-white' : state.isFocused ? 'bg-trublue-secondary-50' : 'bg-white text-grey-600'}
+                ${
+                  state.isSelected
+                    ? 'bg-trublue-secondary-500 text-white'
+                    : state.isFocused
+                    ? 'bg-trublue-secondary-50'
+                    : 'bg-white text-grey-600'
+                }
               `,
               dropdownIndicator: () => (disabled ? 'text-grey-muted' : 'text-grey-300'),
               indicatorSeparator: () => 'hidden',
             }}
           />
-
         )}
       />
       {error && <p className={Styles.formInputErrorMessage}>{error}</p>}
@@ -95,4 +108,4 @@ type InputProps = {
 type OptionType = {
   label: string;
   value: string;
-}
+};

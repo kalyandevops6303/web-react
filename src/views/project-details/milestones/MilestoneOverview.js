@@ -33,7 +33,7 @@ const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (userData?.user_type === userTypes.client || !showSaveForLater) 
+    if (userData?.user_type === userTypes.client || !showSaveForLater)
       navigate(`/project-details/${param?.projectId}/milestone`);
     else {
       dispatch(setConfirmSaveForLater(true));
@@ -94,7 +94,12 @@ const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
                 Raise Dispute
               </Button>
               {selectedMilestone?.status === 'IN_REVIEW' && userData?.user_type === userTypes.client && (
-                <Button onClick={handleAccept} className="d-contents" color="primary" disabled={projectDetailsData?.status === "DISPUTED"}>
+                <Button
+                  onClick={handleAccept}
+                  className="d-contents"
+                  color="primary"
+                  disabled={projectDetailsData?.status === 'DISPUTED'}
+                >
                   Accept & Pay
                 </Button>
               )}

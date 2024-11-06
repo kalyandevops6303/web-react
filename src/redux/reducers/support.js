@@ -45,36 +45,36 @@ const supportSlice = createSlice({
       error: action.payload,
     }),
     supportListRequest: (state) => ({
-      ...state, 
+      ...state,
       supportListLoading: false,
-      error: null
+      error: null,
     }),
     supportListSuccess: (state, action) => ({
-      ...state, 
+      ...state,
       supportList: action.payload.data,
       supportListLoading: false,
-      error: null
+      error: null,
     }),
     supportListFailure: (state, action) => ({
-      ...state, 
-      supportListLoading: false, 
-      error: action.payload
+      ...state,
+      supportListLoading: false,
+      error: action.payload,
     }),
     deleteRequestInitiate: (state) => ({
-      ...state, 
-      deleteRequestLoading: true, 
-      error: null 
+      ...state,
+      deleteRequestLoading: true,
+      error: null,
     }),
     deleteRequestSuccess: (state) => ({
-      ...state, 
-      deleteRequestLoading: false, 
-      error: null 
+      ...state,
+      deleteRequestLoading: false,
+      error: null,
     }),
     deleteRequestFailure: (state, action) => ({
-      ...state, 
-      deleteRequestLoading: false, 
-      error: action.payload
-    })
+      ...state,
+      deleteRequestLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -82,15 +82,15 @@ export const {
   supportRequest,
   supportSuccess,
   supportFailure,
-  supportListRequest, 
-  supportListSuccess, 
+  supportListRequest,
+  supportListSuccess,
   supportListFailure,
   getSupportCountRequest,
   getSupportCountSuccess,
   getSupportCountFailure,
-  deleteRequestInitiate, 
-  deleteRequestSuccess, 
-  deleteRequestFailure
+  deleteRequestInitiate,
+  deleteRequestSuccess,
+  deleteRequestFailure,
 } = supportSlice.actions;
 
 export default supportSlice.reducer;

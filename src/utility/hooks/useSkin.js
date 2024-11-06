@@ -1,9 +1,9 @@
 // ** React Imports
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 // ** Store Imports
-import { handleSkin } from "@store/layout";
-import { useDispatch, useSelector } from "react-redux";
+import { handleSkin } from '@store/layout';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useSkin = () => {
   // ** Hooks
@@ -20,16 +20,16 @@ const useSkin = () => {
 
     // ** Define classnames for skins
     const classNames = {
-      dark: "dark-layout",
-      bordered: "bordered-layout",
-      "semi-dark": "semi-dark-layout",
+      dark: 'dark-layout',
+      bordered: 'bordered-layout',
+      'semi-dark': 'semi-dark-layout',
     };
 
     // ** Remove all classes from Body on mount
     element.classList.remove(...element.classList);
 
     // ** If skin is not light add skin class
-    if (store.skin !== "light") {
+    if (store.skin !== 'light') {
       element.classList.add(classNames[store.skin]);
     }
   }, [store.skin]);

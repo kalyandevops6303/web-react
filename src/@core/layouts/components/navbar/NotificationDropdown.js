@@ -1,35 +1,27 @@
 // ** React Imports
-import { Fragment } from "react";
+import { Fragment } from 'react';
 
 // ** Custom Components
-import Avatar from "@components/avatar";
+import Avatar from '@components/avatar';
 
 // ** Third Party Components
-import classnames from "classnames";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Bell, X, Check, AlertTriangle } from "react-feather";
+import classnames from 'classnames';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { Bell, X, Check, AlertTriangle } from 'react-feather';
 
 // ** Reactstrap Imports
-import {
-  Button,
-  Badge,
-  Input,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
-} from "reactstrap";
+import { Button, Badge, Input, DropdownMenu, DropdownItem, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
 
 // ** Avatar Imports
-import avatar3 from "@src/assets/images/portrait/small/avatar-s-3.jpg";
-import avatar15 from "@src/assets/images/portrait/small/avatar-s-15.jpg";
+import avatar3 from '@src/assets/images/portrait/small/avatar-s-3.jpg';
+import avatar15 from '@src/assets/images/portrait/small/avatar-s-15.jpg';
 
 const NotificationDropdown = () => {
   // ** Notification Array
   const notificationsArray = [
     {
       img: avatar3,
-      subtitle: "Won the monthly best seller badge.",
+      subtitle: 'Won the monthly best seller badge.',
       title: (
         <p className="media-heading">
           <span className="fw-bolder">Congratulation Sam 🎉</span>winner!
@@ -38,7 +30,7 @@ const NotificationDropdown = () => {
     },
     {
       img: avatar15,
-      subtitle: "You have 10 unread messages.",
+      subtitle: 'You have 10 unread messages.',
       title: (
         <p className="media-heading">
           <span className="fw-bolder">New message</span>&nbsp;received
@@ -46,9 +38,9 @@ const NotificationDropdown = () => {
       ),
     },
     {
-      avatarContent: "MD",
-      color: "light-danger",
-      subtitle: "MD Inc. order updated",
+      avatarContent: 'MD',
+      color: 'light-danger',
+      subtitle: 'MD Inc. order updated',
       title: (
         <p className="media-heading">
           <span className="fw-bolder">Revised Order 👋</span>&nbsp;checkout
@@ -59,19 +51,14 @@ const NotificationDropdown = () => {
       title: <h6 className="fw-bolder me-auto mb-0">System Notifications</h6>,
       switch: (
         <div className="form-check form-switch">
-          <Input
-            type="switch"
-            name="customSwitch"
-            id="exampleCustomSwitch"
-            defaultChecked
-          />
+          <Input type="switch" name="customSwitch" id="exampleCustomSwitch" defaultChecked />
         </div>
       ),
     },
     {
       avatarIcon: <X size={14} />,
-      color: "light-danger",
-      subtitle: "USA Server is down due to hight CPU usage",
+      color: 'light-danger',
+      subtitle: 'USA Server is down due to hight CPU usage',
       title: (
         <p className="media-heading">
           <span className="fw-bolder">Server down</span>&nbsp;registered
@@ -80,8 +67,8 @@ const NotificationDropdown = () => {
     },
     {
       avatarIcon: <Check size={14} />,
-      color: "light-success",
-      subtitle: "Last month sales report generated",
+      color: 'light-success',
+      subtitle: 'Last month sales report generated',
       title: (
         <p className="media-heading">
           <span className="fw-bolder">Sales report</span>&nbsp;generated
@@ -90,8 +77,8 @@ const NotificationDropdown = () => {
     },
     {
       avatarIcon: <AlertTriangle size={14} />,
-      color: "light-warning",
-      subtitle: "BLR Server using high memory",
+      color: 'light-warning',
+      subtitle: 'BLR Server using high memory',
       title: (
         <p className="media-heading">
           <span className="fw-bolder">High memory</span>&nbsp;usage
@@ -116,7 +103,7 @@ const NotificationDropdown = () => {
             <a
               key={index}
               className="d-flex"
-              href={item.switch ? "#" : "/"}
+              href={item.switch ? '#' : '/'}
               onClick={(e) => {
                 if (!item.switch) {
                   e.preventDefault();
@@ -124,9 +111,9 @@ const NotificationDropdown = () => {
               }}
             >
               <div
-                className={classnames("list-item d-flex", {
-                  "align-items-start": !item.switch,
-                  "align-items-center": item.switch,
+                className={classnames('list-item d-flex', {
+                  'align-items-start': !item.switch,
+                  'align-items-center': item.switch,
                 })}
               >
                 {!item.switch ? (
@@ -150,9 +137,7 @@ const NotificationDropdown = () => {
                     </div>
                     <div className="list-item-body flex-grow-1">
                       {item.title}
-                      <small className="notification-text">
-                        {item.subtitle}
-                      </small>
+                      <small className="notification-text">{item.subtitle}</small>
                     </div>
                   </Fragment>
                 ) : (
@@ -171,16 +156,8 @@ const NotificationDropdown = () => {
   /*eslint-enable */
 
   return (
-    <UncontrolledDropdown
-      tag="li"
-      className="dropdown-notification nav-item me-25"
-    >
-      <DropdownToggle
-        tag="a"
-        className="nav-link"
-        href="/"
-        onClick={(e) => e.preventDefault()}
-      >
+    <UncontrolledDropdown tag="li" className="dropdown-notification nav-item me-25">
+      <DropdownToggle tag="a" className="nav-link" href="/" onClick={(e) => e.preventDefault()}>
         <Bell size={21} />
         <Badge pill color="danger" className="badge-up">
           5

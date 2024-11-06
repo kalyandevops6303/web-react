@@ -121,9 +121,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
       case userTypes.team:
         return (
           <div className="design-planning mt-1 bottom-detail-elements project-amount">
-            <p className="mb-25 details-box-title">
-              Amount
-            </p>
+            <p className="mb-25 details-box-title">Amount</p>
             <p className="mb-0 details-box">{`${
               data?.project?.pay_type.currency?.code === 'USD' ? '$' : data?.project?.pay_type.currency?.code
             } ${roundOfAmount(data?.project?.amount)}`}</p>
@@ -132,12 +130,8 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
       case userTypes.client:
         return !data?.pay_type?.variable_cost ? (
           <div className="design-planning mt-1 bottom-detail-elements">
-            <p className="mb-25 details-box-title">
-              Amount
-            </p>
-            <p
-              className="mb-0 details-box"
-            >{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</p>
+            <p className="mb-25 details-box-title">Amount</p>
+            <p className="mb-0 details-box">{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</p>
           </div>
         ) : null;
       default:
@@ -228,31 +222,30 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
                 />
               </div>
               <div>
-                {
-                  data?.request_entity === userTypes.team && (                  
+                {data?.request_entity === userTypes.team && (
                   <UserSection
                     totalCount={
-                      data?.invitation_by?.team_members_count || data?.invitation_by?.workers_count || data?.workers_count
+                      data?.invitation_by?.team_members_count ||
+                      data?.invitation_by?.workers_count ||
+                      data?.workers_count
                     }
                     tagName={userTypes.team}
                     name={data?.invitation_by?.name}
                     users={users}
                     projectName={data?.project?.details?.name}
-                  />)
-                }
+                  />
+                )}
               </div>
             </div>
-              <div className='d-flex justify-content-between'>
-                <div className="design-planning mt-1 bottom-detail-elements">
-                  <p className="mb-25 details-box-title">
-                    Start date
-                  </p>
-                  <p className="mb-0 details-box">{`${
-                    DateTime.fromMillis(data?.project?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
-                  }`}</p>
-                </div>
-                {renderAmountBasedOnRequestEntity()}
+            <div className="d-flex justify-content-between">
+              <div className="design-planning mt-1 bottom-detail-elements">
+                <p className="mb-25 details-box-title">Start date</p>
+                <p className="mb-0 details-box">{`${
+                  DateTime.fromMillis(data?.project?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
+                }`}</p>
               </div>
+              {renderAmountBasedOnRequestEntity()}
+            </div>
           </div>
           <div
             onClick={handleRedirect}

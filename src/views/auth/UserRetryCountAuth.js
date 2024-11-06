@@ -38,9 +38,10 @@ const UserRetryCountAuth = () => {
         <p>Your account is disabled.</p>
         <p>
           Please try again in{' '}
-          <span className ="font-semibold">
+          <span className="font-semibold">
             {minutes}:{seconds.toString().padStart(2, '0')}
-          </span> {''}
+          </span>{' '}
+          {''}
           mins.
         </p>
       </div>

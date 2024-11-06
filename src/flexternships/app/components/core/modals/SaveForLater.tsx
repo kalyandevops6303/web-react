@@ -1,13 +1,13 @@
-"use client"
-import { useState } from "react"
-import PrimaryButton from "../buttons/PrimaryButton"
-import SecondaryButton from "../buttons/SecondaryButton"
-import CloseModalButton from "../buttons/CloseModalButton"
-import SavedGif from "@flexternships/assets/images/saved.gif"
-import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
-import { ModalType } from "@flexternships/types/project-creation-types"
-import { showToastMessage } from "@flexternships/utils/core-utils"
-import { ToastType } from "@flexternships/enums/core-enums"
+'use client';
+import { useState } from 'react';
+import PrimaryButton from '../buttons/PrimaryButton';
+import SecondaryButton from '../buttons/SecondaryButton';
+import CloseModalButton from '../buttons/CloseModalButton';
+import SavedGif from '@flexternships/assets/images/saved.gif';
+import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
+import { ModalType } from '@flexternships/types/project-creation-types';
+import { showToastMessage } from '@flexternships/utils/core-utils';
+import { ToastType } from '@flexternships/enums/core-enums';
 
 export default function SaveForLater(props: Props) {
   const { onCancel } = props;
@@ -16,7 +16,7 @@ export default function SaveForLater(props: Props) {
   const curModal = useProjectCreationStore((state) => state.curModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
   const saveDraft = useProjectCreationStore((state) => state.saveDraft);
-  
+
   if (!isOpen || curModal !== ModalType.SAVE_FOR_LATER) {
     return null;
   }
@@ -25,13 +25,13 @@ export default function SaveForLater(props: Props) {
     setIsSaving(true);
     try {
       await saveDraft();
-      showToastMessage(ToastType.SUCCESS, "Draft saved successfully");
+      showToastMessage(ToastType.SUCCESS, 'Draft saved successfully');
     } catch (error) {
-      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     } finally {
       setIsSaving(false);
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
@@ -39,13 +39,7 @@ export default function SaveForLater(props: Props) {
         <CloseModalButton onClick={closeModal} />
         <div className="flex">
           <div className="height-full mr-[1.44rem] flex min-w-48 w-48 items-center justify-center">
-            <img
-              src={SavedGif}
-              className=" w-full"
-              width={100}
-              height={100}
-              alt="Save for later icon"
-            />
+            <img src={SavedGif} className=" w-full" width={100} height={100} alt="Save for later icon" />
           </div>
           <div>
             <h2 className=" text-2xl font-medium text-grey-heading">Save For Later</h2>
@@ -54,15 +48,17 @@ export default function SaveForLater(props: Props) {
               <SecondaryButton onClick={onCancel} cancel={true} className=" mr-6" disabled={isSaving}>
                 Discard
               </SecondaryButton>
-              <PrimaryButton onClick={handleSaveAsDraft} loading={isSaving}>Save as Draft</PrimaryButton>
+              <PrimaryButton onClick={handleSaveAsDraft} loading={isSaving}>
+                Save as Draft
+              </PrimaryButton>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type Props = {
-  onCancel: () => void
+  onCancel: () => void;
 };

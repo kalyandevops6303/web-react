@@ -80,7 +80,7 @@ const ClientOnboarding = () => {
   }
 
   return (
-    <div className='trumio'>
+    <div className="trumio">
       {location.pathname.includes('onboarding') && <Header />}
 
       <div className={`${location.pathname.includes('onboarding') ? 'px-5 py-3' : 'px-3 pt-1'} `}>

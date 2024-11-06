@@ -43,11 +43,9 @@ const handleErrorCode = async (err, callBack) => {
       setItem('expiredError', true);
       if (accessToken) {
         showErrorNotification('Session expired!');
-        
       }
       if (fcmToken) {
         try {
-          
           // Not needed because access token is already expried and unsubscribed API need valid token
           // await fcmUnsubscribeService(fcmToken);
           await messaging?.deleteToken();

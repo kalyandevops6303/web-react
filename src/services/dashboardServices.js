@@ -7,7 +7,10 @@ const userDataService = () => DataService.get(API.dashboard.userData);
 
 const totalReferralAmountService = () => DataService.get(API.dashboard.totalReferralAmount);
 
-const recommendedProjectsService = () => isFlexternshipApp ? DataService.get(API.dashboard.recommendedProjectsFlextern) : DataService.get(API.dashboard.recommendedProjects);
+const recommendedProjectsService = () =>
+  isFlexternshipApp
+    ? DataService.get(API.dashboard.recommendedProjectsFlextern)
+    : DataService.get(API.dashboard.recommendedProjects);
 
 const profilePercentageService = () => DataService.get(API.dashboard.profilePercentage);
 
@@ -43,9 +46,15 @@ const teamProfilePercentageService = () => DataService.get(API.dashboard.teamPro
 
 const alertService = () => DataService.get(`${API.notifications.alerts}?page=1&page_size=4`);
 
-const activeProjectsForClientService = () => isFlexternshipApp ? DataService.get(API.dashboard.activeProjectsForClientFlextern) : DataService.get(API.dashboard.activeProjectsForClient);
+const activeProjectsForClientService = () =>
+  isFlexternshipApp
+    ? DataService.get(API.dashboard.activeProjectsForClientFlextern)
+    : DataService.get(API.dashboard.activeProjectsForClient);
 
-const upcomingProjectsForClientService = () => isFlexternshipApp ? DataService.get(API.dashboard.upcomingProjectsForClientFlextern) : DataService.get(API.dashboard.upcomingProjectsForClient);
+const upcomingProjectsForClientService = () =>
+  isFlexternshipApp
+    ? DataService.get(API.dashboard.upcomingProjectsForClientFlextern)
+    : DataService.get(API.dashboard.upcomingProjectsForClient);
 
 const projectsBidsForClientService = () => DataService.get(API.dashboard.projectsBidsForClient);
 
@@ -56,9 +65,15 @@ const checkBidsAcceptedService = () =>
     bid_statuses: [],
   });
 
-const activeProjectsForTalentService = () => isFlexternshipApp ? DataService.get(API.dashboard.activeProjectsForTalentFlextern) : DataService.get(API.dashboard.activeProjectsForTalent);
+const activeProjectsForTalentService = () =>
+  isFlexternshipApp
+    ? DataService.get(API.dashboard.activeProjectsForTalentFlextern)
+    : DataService.get(API.dashboard.activeProjectsForTalent);
 
-const upcomingProjectsForTalentService = () => isFlexternshipApp ? DataService.get(API.dashboard.upcomingProjectsForTalentFlextern) : DataService.get(API.dashboard.upcomingProjectsForTalent);
+const upcomingProjectsForTalentService = () =>
+  isFlexternshipApp
+    ? DataService.get(API.dashboard.upcomingProjectsForTalentFlextern)
+    : DataService.get(API.dashboard.upcomingProjectsForTalent);
 
 const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeProjectsForTeam);
 
@@ -77,7 +92,10 @@ const updateCardStatusService = ({ data, switch_team_id }) => {
 const downloadUrlService = (fileKey) => DataService.get(`${API.dashboard.downloadUrl}?file_key=${fileKey}`);
 
 const reportEntityService = (data) => DataService.post(API.dashboard.reportEntity, data);
-const checkReportEntityService = (data) => DataService.get(`${API.dashboard.checkIfReported}?reported_entity_type=${data?.reported_entity_type}&reported_entity_id=${data?.reported_entity_id}`);
+const checkReportEntityService = (data) =>
+  DataService.get(
+    `${API.dashboard.checkIfReported}?reported_entity_type=${data?.reported_entity_type}&reported_entity_id=${data?.reported_entity_id}`,
+  );
 
 export {
   alertService,

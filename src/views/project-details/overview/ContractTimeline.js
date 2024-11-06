@@ -12,7 +12,12 @@ import {
   selectContractData,
   selectContractTimeline,
 } from '../../../redux/selectors/projectDetailsSelectors';
-import { convertUnixTimestampToDate, getContractStepLabel, getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
+import {
+  convertUnixTimestampToDate,
+  getContractStepLabel,
+  getProjectStatus,
+  getTimeLineDotColor,
+} from '../../../utility/Utils';
 import { selectSavedUserData, selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -50,7 +55,9 @@ const ContractTimeline = () => {
           <div className="timeline-single-item">
             <h6 className="mb-25">{getProjectStatus({ status: item?.status, type: 'CONTRACT' })}</h6>
             <span className="d-block mb-1">
-              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name ) : '-'}
+              {item?.signed_on
+                ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name)
+                : '-'}
             </span>
             {item?.status !== 'PROJECT_FUNDED' && item?.status !== 'PROJECT_COMPLETED' && (
               <NameInfo name={item.name} info={item.role} img={item?.image_uri} />
@@ -58,7 +65,9 @@ const ContractTimeline = () => {
           </div>
           <div className="meta-data">
             <span className="time ms-auto">
-              {item?.signed_on ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name ) : '-'}
+              {item?.signed_on
+                ? convertUnixTimestampToDate(item?.signed_on, savedUserData?.availability?.timezone?.name)
+                : '-'}
             </span>
             {item?.status !== 'PROJECT_FUNDED' && item?.status !== 'PROJECT_COMPLETED' && (
               <span onClick={() => navigate(`doc/contract/${item?.document_id}`)} className="d-none card-cta">
@@ -127,7 +136,12 @@ const ContractTimeline = () => {
                       <div className="me-1">
                         <span className="key">Updated at</span>
                         <CardText className="value">
-                            {contractData?.updated_at ? convertUnixTimestampToDate(contractData?.updated_at, savedUserData?.availability?.timezone?.name ) : '-'}
+                          {contractData?.updated_at
+                            ? convertUnixTimestampToDate(
+                                contractData?.updated_at,
+                                savedUserData?.availability?.timezone?.name,
+                              )
+                            : '-'}
                         </CardText>
                       </div>
                     </div>
@@ -145,7 +159,12 @@ const ContractTimeline = () => {
                 <div className="me-1">
                   <span className="key">Terminated at</span>
                   <CardText className="value">
-                         {contractData?.contract_terminated_at ? convertUnixTimestampToDate(contractData?.contract_terminated_at, savedUserData?.availability?.timezone?.name ) : '-'}
+                    {contractData?.contract_terminated_at
+                      ? convertUnixTimestampToDate(
+                          contractData?.contract_terminated_at,
+                          savedUserData?.availability?.timezone?.name,
+                        )
+                      : '-'}
                   </CardText>
                 </div>
               </div>

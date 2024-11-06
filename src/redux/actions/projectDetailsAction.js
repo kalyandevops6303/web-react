@@ -228,7 +228,7 @@ const checkDocumentActivated =
         // if (resNDA.data.data.show_document) {
         //   dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
         // }
-        
+
         dispatch(checkDocumentActivatedSuccess({ ndaData: resNDA.data.data }));
 
         if (resNDA.data.data.is_signed) {

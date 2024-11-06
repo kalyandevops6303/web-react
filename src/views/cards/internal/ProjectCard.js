@@ -12,10 +12,7 @@ import NewTag from '../../../@core/components/new-tag';
 import { getModifiedProjectResponse } from '../../../utility/Utils';
 import BaseInfoMarketplaceCard from '../BaseInfoMarketplaceCard';
 
-const ProjectCard = ({
-  isExpanded,
-  data,
-}) => {
+const ProjectCard = ({ isExpanded, data }) => {
   const project = data?.project;
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
@@ -63,11 +60,9 @@ const ProjectCard = ({
     }
   }, []);
 
-
   const handleShowProject = () => {
     setShowModal(true);
   };
-
 
   const descriptionToShow = project?.details?.description ?? project?.description;
 
@@ -81,10 +76,7 @@ const ProjectCard = ({
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
-                    <Badge
-                      className={`${project?.status} truncate-1`}
-                      color="badge"
-                    >
+                    <Badge className={`${project?.status} truncate-1`} color="badge">
                       {statusEnum[project?.status]}
                     </Badge>
                   </CustomBadge>
@@ -138,21 +130,14 @@ const ProjectCard = ({
                 )}
               </Col>
               <Col lg="4">
-                <BaseInfoMarketplaceCard
-                  isSearchPage={false}
-                  data={data}
-                />
+                <BaseInfoMarketplaceCard isSearchPage={false} data={data} />
               </Col>
             </Row>
           </CardBody>
         </Elevate>
       </Card>
       {showModal && (
-        <ProjectModal
-          data={getModifiedProjectResponse({ data })}
-          modal={showModal}
-          toggleModal={handleToggle}
-        />
+        <ProjectModal data={getModifiedProjectResponse({ data })} modal={showModal} toggleModal={handleToggle} />
       )}
     </ProjectCardWrap>
   );

@@ -21,7 +21,12 @@ import {
   getListReq,
   getUsersSuccess,
 } from '../reducers/marketPlace';
-import { makeFavService, makeProjectFavService, makeProjectFavServiceFlextern, removeFavService } from '../../services/profileServices';
+import {
+  makeFavService,
+  makeProjectFavService,
+  makeProjectFavServiceFlextern,
+  removeFavService,
+} from '../../services/profileServices';
 import { userTypes } from '../../utility/constants/Constant';
 import { favUnfavError, favUnfavRequest, favUnfavSuccess } from '../reducers/favUnfav';
 
@@ -159,7 +164,7 @@ const makeFav =
 
     try {
       if (project_id) {
-        flexTern ? await makeProjectFavServiceFlextern(project_id)  : await makeProjectFavService(project_id);
+        flexTern ? await makeProjectFavServiceFlextern(project_id) : await makeProjectFavService(project_id);
       } else {
         await makeFavService(user_id, user_type);
       }

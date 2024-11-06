@@ -13,13 +13,12 @@ import { selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
 import FlexternTabs from '../../../flexternship/flexternOnboarding/FlexternTabs';
 
 const TalentOnboarding = () => {
-  
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isFlexternInvited = useSelector(selectTrumioIsFlextern);
   const tabNames = isFlexternInvited
-  ? {
+    ? {
         Account: '1',
         Personal: '2',
         Educational: '3',
@@ -100,7 +99,7 @@ const TalentOnboarding = () => {
   }, []);
 
   return (
-    <div className='trumio'>
+    <div className="trumio">
       {location.pathname.includes('onboarding') && <Header />}
 
       <div className={`${location.pathname.includes('onboarding') ? 'px-5 py-3' : 'px-3 pt-1'} `}>

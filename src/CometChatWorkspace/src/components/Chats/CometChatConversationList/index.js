@@ -421,7 +421,7 @@ class CometChatConversationList extends React.Component {
       (this.getContext().type === '' || Object.keys(this.getContext().item).length === 0) &&
       message?.hasOwnProperty('deliveredAt') === false
     ) {
-      CometChat.markAsDelivered(message).catch((error) => { });
+      CometChat.markAsDelivered(message).catch((error) => {});
     }
   };
 
@@ -1091,35 +1091,38 @@ class CometChatConversationList extends React.Component {
     };
 
     CometChat.getConversation(group.guid, 'group').then(
-      conversation => {
-        newConversationObj.lastMessage = conversation.lastMessage
-      }, error => {
+      (conversation) => {
+        newConversationObj.lastMessage = conversation.lastMessage;
+      },
+      (error) => {
         console.log('error while fetching a conversation', error);
-      }
+      },
     );
 
-    this.setState((prevState) => {
-      const conversationList = [...prevState.conversationlist];
-      const existingConversationIndex = conversationList.findIndex(
-        (conversationObj) =>
-          conversationObj.conversationType === 'group' && conversationObj.conversationWith.guid === group.guid,
-      );
+    this.setState(
+      (prevState) => {
+        const conversationList = [...prevState.conversationlist];
+        const existingConversationIndex = conversationList.findIndex(
+          (conversationObj) =>
+            conversationObj.conversationType === 'group' && conversationObj.conversationWith.guid === group.guid,
+        );
 
-      if (existingConversationIndex === -1) {
-        conversationList.unshift(newConversationObj); // Add to the beginning of the array
-      } else {
-        conversationList[existingConversationIndex] = newConversationObj;
-      }
+        if (existingConversationIndex === -1) {
+          conversationList.unshift(newConversationObj); // Add to the beginning of the array
+        } else {
+          conversationList[existingConversationIndex] = newConversationObj;
+        }
 
-      return {
-        conversationlist: conversationList,
-        filteredConversations: conversationList,
-        showGroupChat: false
-      };
-    }, () => {
-      this.forceUpdate()
-    });
-
+        return {
+          conversationlist: conversationList,
+          filteredConversations: conversationList,
+          showGroupChat: false,
+        };
+      },
+      () => {
+        this.forceUpdate();
+      },
+    );
   };
 
   GroupActionHandler = (action, group) => {
@@ -1230,8 +1233,9 @@ class CometChatConversationList extends React.Component {
               ? 'Delete Group'
               : 'Delete Chat'
           }
-          description={`Are you sure you want to delete the ${this.state.conversationToBeDeleted.conversationType === CometChat.RECEIVER_TYPE.GROUP ? 'group' : 'chat'
-            } permanently?`}
+          description={`Are you sure you want to delete the ${
+            this.state.conversationToBeDeleted.conversationType === CometChat.RECEIVER_TYPE.GROUP ? 'group' : 'chat'
+          } permanently?`}
           note="The complete chat data including the attachments will be lost"
           onConfirm={this.onDeleteConfirm}
           onCancel={() => {
@@ -1423,7 +1427,7 @@ class CometChatConversationList extends React.Component {
 CometChatConversationList.defaultProps = {
   lang: Translator.getDefaultLanguage(),
   theme: theme,
-  onItemClick: () => { },
+  onItemClick: () => {},
   _parent: '',
 };
 

@@ -16,7 +16,7 @@ import { OnBoardWrap } from './style';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
-import { registerPhone ,verifyPhone} from '../../redux/actions/authActions';
+import { registerPhone, verifyPhone } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectMobile } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import { formData } from '../../redux/selectors/formDataSelectors';
@@ -37,7 +37,7 @@ const RegisterPhoneFlextern = () => {
   const isLoading = useSelector(selectAuthLoading);
   const mobileData = useSelector(selectMobile);
   const isDelegate = getItem('isDelegate');
-  const [validPhoneBoolean,setValidPhoneBoolean] = useState(false) 
+  const [validPhoneBoolean, setValidPhoneBoolean] = useState(false);
 
   const [selectedCountry, setSelectedCountry] = useState(
     savedFormData?.selectCountry ||
@@ -76,7 +76,7 @@ const RegisterPhoneFlextern = () => {
     return () => {
       dispatch(clearAllFormData());
       dispatch(clearPhoneData());
-    }
+    };
   }, [localFormData]);
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const RegisterPhoneFlextern = () => {
     return () => {
       dispatch(clearAllFormData());
       dispatch(clearPhoneData());
-    }
+    };
   }, []);
 
   const handleCountryChange = (value) => {
@@ -117,10 +117,10 @@ const RegisterPhoneFlextern = () => {
 
   const onSubmit = (values) => {
     if (!isValidPhoneNumber(values.mobile, selectedCountry.code)) {
-      setValidPhoneBoolean(false)
+      setValidPhoneBoolean(false);
       setError('mobile', { type: 'custom', message: 'Invalid phone number' });
     } else {
-      setValidPhoneBoolean(true)
+      setValidPhoneBoolean(true);
       dispatch(
         registerPhone({
           phone: values.mobile.replace(/[^\d]/g, ''),
@@ -135,24 +135,25 @@ const RegisterPhoneFlextern = () => {
   const onVerifyOtpSuccess = () => {
     navigate('/auth/set-password');
     dispatch(clearAllFormData());
-
   };
 
   const verifyOtp = async () => {
     const response = await dispatch(
-      verifyPhone({
-        phone: mobileData.phone,
-        country_code: mobileData?.selectedCountry.dial_code,
-        code,
-        country_id: mobileData?.selectedCountry?._id,
-        
-      },onVerifyOtpSuccess),
+      verifyPhone(
+        {
+          phone: mobileData.phone,
+          country_code: mobileData?.selectedCountry.dial_code,
+          code,
+          country_id: mobileData?.selectedCountry?._id,
+        },
+        onVerifyOtpSuccess,
+      ),
     );
     setError(response);
     dispatch(clearAllFormData());
   };
 
-  const mobileValue = watch('mobile')
+  const mobileValue = watch('mobile');
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -168,7 +169,7 @@ const RegisterPhoneFlextern = () => {
             <div className="d-flex">
               <div>
                 <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} />
-                {validPhoneBoolean && <p className='text-success text-xs mt-2'>Valid</p>}
+                {validPhoneBoolean && <p className="text-success text-xs mt-2">Valid</p>}
               </div>
               <div className="mobile-input">
                 <Controller
@@ -213,7 +214,7 @@ const RegisterPhoneFlextern = () => {
                 color: '#000',
                 fontWeight: '500',
                 caretColor: 'blue',
-                backgroundColor: `${booleanSent ? "#ffffff" :"#F9FDFF" }`
+                backgroundColor: `${booleanSent ? '#ffffff' : '#F9FDFF'}`,
               }}
               focusStyle={{
                 border: `1px solid ${theme.primary}`,
@@ -237,7 +238,6 @@ const RegisterPhoneFlextern = () => {
                 Verify OTP
               </Button>
               <ResendOTPComp isPhoneResend />
-
             </>
           )}
         </Form>

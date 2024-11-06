@@ -133,20 +133,14 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
-                <p className="mb-25 details-box-title">
-                  Start Date
-                </p>
+                <p className="mb-25 details-box-title">Start Date</p>
                 <p className="mb-0 details-box">
-                 {`${convertUnixTimestampToDate(data?.start_date, savedUserData?.availability?.timezone?.name )}`}
+                  {`${convertUnixTimestampToDate(data?.start_date, savedUserData?.availability?.timezone?.name)}`}
                 </p>
               </div>
               <div className="design-planning">
-                <p className="mb-25 details-box-title">
-                  Amount
-                </p>
-                <p className="mb-0 details-box">
-                  ${roundOfAmount(data?.amount)}
-                </p>
+                <p className="mb-25 details-box-title">Amount</p>
+                <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
               </div>
             </div>
           </div>

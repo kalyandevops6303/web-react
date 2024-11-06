@@ -16,7 +16,7 @@ import EducationTabInactiveImg from '../../../assets/images/educationTabInactive
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import InternHiring from './InternHiring';
 import InternXobinHiring from './InternXobinHiring';
-import { getQuestionsLink, getShowHiringTab } from "../../../redux/actions/hiringActions";
+import { getQuestionsLink, getShowHiringTab } from '../../../redux/actions/hiringActions';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 
@@ -51,14 +51,14 @@ const Tabs = ({ tabNames, active }) => {
     <TabsContainer className="pt-2" isEditing={location.pathname.includes('profile-edit')}>
       <Nav pills className="mb-2">
         <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
-        <NavItem
-          onClick={() => {
-            console.log('location.pathname', location.pathname);
-            if (location.pathname.includes('profile-edit')) {
-              onTabClick(`/${userProfileEdit.talent}/account-details`);
-            }
-          }}
-        >
+          <NavItem
+            onClick={() => {
+              console.log('location.pathname', location.pathname);
+              if (location.pathname.includes('profile-edit')) {
+                onTabClick(`/${userProfileEdit.talent}/account-details`);
+              }
+            }}
+          >
             <NavLink
               active={
                 location.pathname === `/${userOnboarding.talent}/account-details` ||

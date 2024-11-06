@@ -10,7 +10,7 @@ import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
-import { selectFlexternBoolean, selectUserData,selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
+import { selectFlexternBoolean, selectUserData, selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
@@ -31,7 +31,9 @@ const Alerts = () => {
   const notificationsData = useSelector(notifications);
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
-  const profileCompletionFlexternMissingValues = useSelector((state) => state.auth?.profileCompletionFlextern?.values_missing);
+  const profileCompletionFlexternMissingValues = useSelector(
+    (state) => state.auth?.profileCompletionFlextern?.values_missing,
+  );
 
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
   const isFlexternProfileCompleted = profileCompletionFlextern === 100;
@@ -45,13 +47,12 @@ const Alerts = () => {
 
     if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
       dispatch(getTeamProfilePercentage());
-    } else if(isFlexternshipApp){
-        dispatch(getProfileCompletionFlextern());
-      }
-      else{
-        if (isFlexternshipApp) dispatch(getProfileCompletionFlextern());
-        else dispatch(getProfilePercentage());
-      }
+    } else if (isFlexternshipApp) {
+      dispatch(getProfileCompletionFlextern());
+    } else {
+      if (isFlexternshipApp) dispatch(getProfileCompletionFlextern());
+      else dispatch(getProfilePercentage());
+    }
   }, [userDetailsData?.user_type]);
 
   useEffect(() => {
@@ -63,7 +64,7 @@ const Alerts = () => {
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-    console.log(path)
+    console.log(path);
     navigate(path);
   };
 
@@ -138,7 +139,7 @@ const Alerts = () => {
             </Link>
           )}
         </CardHeader>
-        {!isProfileCompleted && !isDelegate && !isFlexternProfileCompleted &&(
+        {!isProfileCompleted && !isDelegate && !isFlexternProfileCompleted && (
           <Card className="card-inside">
             <CardHeader>
               <CardTitle tag="h4">Profile Completion!</CardTitle>
@@ -147,15 +148,19 @@ const Alerts = () => {
               <CardText className="mb-50">
                 Make it easier for others to find you by <br /> completing your profile.
               </CardText>
-              <span className="font-weight-bold percentage ">{isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed}%</span>
+              <span className="font-weight-bold percentage ">
+                {isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed}%
+              </span>
               <Progress
                 style={{ height: '0.5rem' }}
-                className={`${giveProgressBarColorClassName(isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed)} mt-25`}
+                className={`${giveProgressBarColorClassName(
+                  isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed,
+                )} mt-25`}
                 value={isFlexternshipApp ? profileCompletionFlextern : profilePercentageData?.profile_completed}
               />
               {returnCompleteProfileDetailsCta(
                 talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                (isFlexternshipApp ? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing),
+                isFlexternshipApp ? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing,
               ) && (
                 <CardText
                   className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
@@ -163,7 +168,9 @@ const Alerts = () => {
                     onAddDetailsClick(
                       returnCompleteProfileDetailsCta(
                         talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                        isFlexternshipApp?  profileCompletionFlexternMissingValues :profilePercentageData?.values_missing
+                        isFlexternshipApp
+                          ? profileCompletionFlexternMissingValues
+                          : profilePercentageData?.values_missing,
                       )?.path,
                     )
                   }
@@ -171,7 +178,9 @@ const Alerts = () => {
                   {
                     returnCompleteProfileDetailsCta(
                       talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
-                      isFlexternshipApp? profileCompletionFlexternMissingValues : profilePercentageData?.values_missing,
+                      isFlexternshipApp
+                        ? profileCompletionFlexternMissingValues
+                        : profilePercentageData?.values_missing,
                     )?.label
                   }
                 </CardText>

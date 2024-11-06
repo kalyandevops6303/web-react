@@ -11,7 +11,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
 import InfoIcon from '../../assets/images/timeline-info-icon.png';
-import { getProfilePercentage, updateInvitation , getMyTeam } from '../../redux/actions/dashboardActions';
+import { getProfilePercentage, updateInvitation, getMyTeam } from '../../redux/actions/dashboardActions';
 import { getTeams, getWhoInvited } from '../../redux/actions/teamsActions';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import theme from '../../configs/themeVariables';
@@ -64,10 +64,9 @@ const ClubInvitation = () => {
   const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      if(isFlextern){
+      if (isFlextern) {
         dispatch(getProfileCompletionFlextern());
-      }
-      else{
+      } else {
         dispatch(getProfilePercentage());
       }
     }
@@ -136,7 +135,7 @@ const ClubInvitation = () => {
   }
 
   return (
-    <div className='trumio'>
+    <div className="trumio">
       <BreadCrumbs data={breadCrumb} />
       {completeProfileModal && (
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />

@@ -209,17 +209,11 @@ const Login = () => {
             {isLoading ? <Spinner size="sm" /> : 'Sign in'}
           </Button>
           {/* <div className="form-check mb-1"> */}
-            <div className="d-flex justify-content-center fw-bold w-full mt-1">
-              <Label
-                tag={Link}
-                to="/auth/forgot-password"
-                color="primary"
-                className="form-check-label"
-                for="remember-me"
-              >
-                <small>Forgot Password?</small>
-              </Label>
-            </div>
+          <div className="d-flex justify-content-center fw-bold w-full mt-1">
+            <Label tag={Link} to="/auth/forgot-password" color="primary" className="form-check-label" for="remember-me">
+              <small>Forgot Password?</small>
+            </Label>
+          </div>
           {/* </div> */}
         </Form>
         {/* <div className="divider my-2 custom-divider">

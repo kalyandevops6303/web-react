@@ -59,14 +59,13 @@ const TeamInvitation = () => {
     setCompleteProfileModal(false);
     setAccpetModal(false);
     setRejectModal(false);
-  };  
+  };
   const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      if(isFlextern){
+      if (isFlextern) {
         dispatch(getProfileCompletionFlextern());
-      }
-      else{
+      } else {
         dispatch(getProfilePercentage());
       }
     }
@@ -86,7 +85,7 @@ const TeamInvitation = () => {
           setIsStatusUpdating(false);
           setAccpetModal(false);
           dispatch(getTeams({ onSuccess: () => {} }));
-          dispatch(getMyTeam())
+          dispatch(getMyTeam());
         },
         onError: () => {
           setIsStatusUpdating(false);
@@ -135,7 +134,7 @@ const TeamInvitation = () => {
   }
 
   return (
-    <div className='trumio'>
+    <div className="trumio">
       <BreadCrumbs data={breadCrumb} />
       {completeProfileModal && (
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />

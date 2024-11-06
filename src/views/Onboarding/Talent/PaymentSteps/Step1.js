@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner , UncontrolledTooltip } from 'reactstrap';
-import { ChevronLeft, ChevronRight , Info } from 'react-feather';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner, UncontrolledTooltip } from 'reactstrap';
+import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -33,12 +33,14 @@ const Step1 = ({ setStep, step }) => {
   const [isWorkingInUS, setIsWorkingInUS] = useState(savedFormData?.isWorkingInUS || false);
   const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || CITIZEN_TYPES.US);
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
-  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(savedFormData?.isPaymentOnboardingDone || false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(
+    savedFormData?.isPaymentOnboardingDone || false,
+  );
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
-  const [stripeAccountText, setStripeAccountText] = useState("");
-  const [stripeAccountLink, setStripeAccountLink] = useState("");
+  const [stripeAccountText, setStripeAccountText] = useState('');
+  const [stripeAccountLink, setStripeAccountLink] = useState('');
 
   useEffect(() => {
     dispatch(setFormData({ ...savedFormData, step }));
@@ -62,19 +64,21 @@ const Step1 = ({ setStep, step }) => {
 
   useEffect(() => {
     if (isPaymentOnboardingDone) {
-      dispatch(linkStripeAccount((res) => {
-        setStripeAccountLink(res.url);
-        const acctSegment = res.url.split('/').find((segment) => segment.startsWith('acct'));
+      dispatch(
+        linkStripeAccount((res) => {
+          setStripeAccountLink(res.url);
+          const acctSegment = res.url.split('/').find((segment) => segment.startsWith('acct'));
 
-        if (acctSegment) {
-          const prefix = acctSegment.slice(0, 4);  // 'acct'
-          const visiblePart = acctSegment.slice(-3);  // Last 3 characters
-          const hiddenPart = 'x'.repeat(acctSegment.length - 8);  // Replace the rest with 'x'
+          if (acctSegment) {
+            const prefix = acctSegment.slice(0, 4); // 'acct'
+            const visiblePart = acctSegment.slice(-3); // Last 3 characters
+            const hiddenPart = 'x'.repeat(acctSegment.length - 8); // Replace the rest with 'x'
 
-          const formattedSegment = `${prefix} ${hiddenPart} ${visiblePart}`;
-          setStripeAccountText(formattedSegment);
-        }
-      }));
+            const formattedSegment = `${prefix} ${hiddenPart} ${visiblePart}`;
+            setStripeAccountText(formattedSegment);
+          }
+        }),
+      );
     }
   }, [isPaymentOnboardingDone]);
 
@@ -125,7 +129,6 @@ const Step1 = ({ setStep, step }) => {
     }
   };
   const handleNextClick = (e) => {
-
     if (taxUserType === CITIZEN_TYPES.OTHER || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       handleEmailClick();
@@ -171,8 +174,7 @@ const Step1 = ({ setStep, step }) => {
   const onGetHiredClick = () => {
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/intern-xobin-hiring`);
-    }
-    else {
+    } else {
       navigate(`/${userOnboarding.talent}/intern-xobin-hiring`);
     }
   };
@@ -180,8 +182,7 @@ const Step1 = ({ setStep, step }) => {
   const onGetHiredClick2 = () => {
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/intern-hiring`);
-    }
-    else {
+    } else {
       navigate(`/${userOnboarding.talent}/intern-hiring`);
     }
   };
@@ -203,17 +204,17 @@ const Step1 = ({ setStep, step }) => {
       {accountCreatedModal && (
         <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
       )}
-      {isPaymentOnboardingDone && <SuccessInfoBanner className="d-flex px-1 py-1 mb-1 w-75">
-        <Info size={18} color={theme.succesGreenColor} className="me-50 info-banner-icon" />
-        <p className="font-medium-1 m-0 info">
-        Congratulations! You have completed setting up your Stripe account.
-        </p>
-      </SuccessInfoBanner>}
+      {isPaymentOnboardingDone && (
+        <SuccessInfoBanner className="d-flex px-1 py-1 mb-1 w-75">
+          <Info size={18} color={theme.succesGreenColor} className="me-50 info-banner-icon" />
+          <p className="font-medium-1 m-0 info">Congratulations! You have completed setting up your Stripe account.</p>
+        </SuccessInfoBanner>
+      )}
 
       <h2 className="m-0 mt-1 mb-2">STEP 1 - Tax Situation Assessment</h2>
-      
+
       <Form>
-        <div className='d-flex gap-3'>
+        <div className="d-flex gap-3">
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Pre-Payment Set Up</h4>
@@ -257,18 +258,20 @@ const Step1 = ({ setStep, step }) => {
               </div>
             </CardBody>
           </Card>
-          {isPaymentOnboardingDone && <Card className="w-25">
-            <CardHeader className="d-flex align-items-center">
-              <h4 className="m-0 mt-1">Stripe Account Details</h4>
-            </CardHeader>
-            <hr className="m-0 card-header-border" />
-            <CardBody>
-              <div className='d-flex flex-column rounded gap-1' style={{ backgroundColor: '#0185E426', padding: 20 }}>
-                <b>{stripeAccountText}</b>
-                <a href={stripeAccountLink || "#"}>Go to Stripe</a>
-              </div>
-            </CardBody>
-          </Card>}
+          {isPaymentOnboardingDone && (
+            <Card className="w-25">
+              <CardHeader className="d-flex align-items-center">
+                <h4 className="m-0 mt-1">Stripe Account Details</h4>
+              </CardHeader>
+              <hr className="m-0 card-header-border" />
+              <CardBody>
+                <div className="d-flex flex-column rounded gap-1" style={{ backgroundColor: '#0185E426', padding: 20 }}>
+                  <b>{stripeAccountText}</b>
+                  <a href={stripeAccountLink || '#'}>Go to Stripe</a>
+                </div>
+              </CardBody>
+            </Card>
+          )}
         </div>
         {taxUserType === CITIZEN_TYPES.OTHER || taxUserType === CITIZEN_TYPES.US ? null : (
           <Card className="w-75">
@@ -310,23 +313,33 @@ const Step1 = ({ setStep, step }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div className="d-flex justify-content-end">
-
-            <Button color="primary" outline className="d-flex align-items-center justify-content-between me-2" onClick={onSkipClick}>
+            <Button
+              color="primary"
+              outline
+              className="d-flex align-items-center justify-content-between me-2"
+              onClick={onSkipClick}
+            >
               <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
 
-            {!isPaymentOnboardingDone && <Button color="primary" className="d-flex align-items-center justify-content-between" onClick={handleNextClick}>
-              {paymentDetailsLoading || stripeDetailsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">{getCTAText()}</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>}
-            
+            {!isPaymentOnboardingDone && (
+              <Button
+                color="primary"
+                className="d-flex align-items-center justify-content-between"
+                onClick={handleNextClick}
+              >
+                {paymentDetailsLoading || stripeDetailsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">{getCTAText()}</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            )}
+
             {/* <span id="get-hired-cta">
             <Button disabled={!showHiringTab} color="danger" className="me-2" onClick={onGetHiredClick}>
               <span className="me-50">Get Hired </span>

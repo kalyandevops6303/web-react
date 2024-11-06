@@ -68,15 +68,12 @@ const getDocumentTimelineService = ({ project_id, doc_type }) =>
   DataService.get(`${API.projectDetails.getDocumentTimeline}?project_id=${project_id}&doc_type=${doc_type}`);
 
 const sendDocumentService = ({ project_id, doc_type, data, validity }) =>
-  DataService.post(
-    `${API.projectDetails.sendDocument}`,
-    {
-      project_id,
-      doc_type,
-      validity,
-      doc_content: data
-    }
-  );
+  DataService.post(`${API.projectDetails.sendDocument}`, {
+    project_id,
+    doc_type,
+    validity,
+    doc_content: data,
+  });
 
 const signContractByTalentServive = ({ project_id, doc_type, role }) =>
   DataService.put(

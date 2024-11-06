@@ -219,7 +219,7 @@ const CreateProject = () => {
   }, [params]);
 
   return (
-    <div className='trumio'>
+    <div className="trumio">
       {draftSavedModal && (
         <DraftSavedModal
           modal={draftSavedModal}

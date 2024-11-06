@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   teams: [],
   teamCreated: {},
-  isTeamsLoading:false,
+  isTeamsLoading: false,
   updateTeamLoading: false,
   draftTeam: {},
   saveDraftTeamLoading: false,
@@ -42,7 +42,7 @@ const teamSlice = createSlice({
       ...state,
       getDraftTeamLoading: true,
     }),
-    getDraftTeamSuccess: (state,action) => ({
+    getDraftTeamSuccess: (state, action) => ({
       ...state,
       getDraftTeamLoading: false,
       draftTeam: action.payload,

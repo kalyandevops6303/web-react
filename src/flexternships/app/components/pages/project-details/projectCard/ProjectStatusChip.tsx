@@ -1,8 +1,8 @@
-import { ProjectStatus, ProjectStatusChipClassnames } from "@/flexternships/constraints/enums/project-enums";
+import { ProjectStatus, ProjectStatusChipClassnames } from '@/flexternships/constraints/enums/project-enums';
 
 const ProjectStatusChip = ({
   status,
-  rounded=false,
+  rounded = false,
 }: {
   status: keyof typeof ProjectStatusChipClassnames;
   rounded?: boolean;
@@ -20,7 +20,9 @@ const ProjectStatusChip = ({
   const statusClass = ProjectStatusChipClassnames[status];
   return (
     <h1
-      className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-${rounded ? '2xl': 'lg'} ${statusClass} `}
+      className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-${
+        rounded ? '2xl' : 'lg'
+      } ${statusClass} `}
     >
       {ProjectStatus[status]}
     </h1>

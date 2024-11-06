@@ -18,8 +18,6 @@ import ViewAllCard from './ExtraCardWithCount';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
 import { appPermissionsSelector } from '@src/redux/selectors/authSelectors';
-;
-
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';

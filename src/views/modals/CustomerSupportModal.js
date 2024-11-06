@@ -115,7 +115,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
     resolver: yupResolver(CustomerSupportSchema),
     defaultValues: {
       issueType: defaultOption,
-      assessment
+      assessment,
     },
   });
 
@@ -412,10 +412,10 @@ CustomerSupportModal.propTypes = {
 
 CustomerSupportModal.defaultProps = {
   modal: false,
-  toggleModal: () => { },
+  toggleModal: () => {},
   primaryFilter: '',
   projectDetail: null,
   selectedTimeline: null,
-  onSuccess: () => { },
+  onSuccess: () => {},
   defaultSelected: [],
 };

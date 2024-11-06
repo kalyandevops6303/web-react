@@ -27,7 +27,7 @@ class CometChatUI extends React.Component {
       showProfileSideBar: false,
       avatar: null,
       presence: null,
-      updateGroupActionMessages: false
+      updateGroupActionMessages: false,
     };
 
     this.navBarRef = React.createRef();
@@ -48,19 +48,18 @@ class CometChatUI extends React.Component {
       console.warn('User details not found in localStorage.');
       return;
     }
-    try{
+    try {
       let userDetailsParsed = JSON.parse(JSON.parse(userDetails));
-      console.log(typeof userDetailsParsed)
+      console.log(typeof userDetailsParsed);
       if (userDetailsParsed && typeof userDetailsParsed === 'object') {
         delete userDetailsParsed['metadata'];
-  
+
         let stringifiedUserDetails = JSON.stringify(JSON.stringify(userDetailsParsed));
         localStorage.setItem(userDetailsKey, stringifiedUserDetails);
       } else {
         console.warn('Parsed user details are not an object.');
       }
-    }
-    catch(error){
+    } catch (error) {
       console.warn('Error parsing user details:', error);
     }
   };
@@ -90,8 +89,8 @@ class CometChatUI extends React.Component {
   actionHandler = (action, item, count, ...otherProps) => {
     this.setState({
       ...this.state,
-      updateGroupActionMessages: true
-    })
+      updateGroupActionMessages: true,
+    });
     switch (action) {
       case enums.ACTIONS['TOGGLE_SIDEBAR']:
         this.toggleSideBar();
@@ -147,10 +146,10 @@ class CometChatUI extends React.Component {
 
   setUpdateGroupActionMessages = (value) => {
     this.setState({
-      ...this.state, 
-      updateGroupActionMessages: value
-    })
-  }
+      ...this.state,
+      updateGroupActionMessages: value,
+    });
+  };
 
   render() {
     let messageScreen = (

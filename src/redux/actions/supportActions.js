@@ -1,4 +1,9 @@
-import { deleteRequestService, getRequestsService, getSupportCount, supportServive } from '../../services/supportServices';
+import {
+  deleteRequestService,
+  getRequestsService,
+  getSupportCount,
+  supportServive,
+} from '../../services/supportServices';
 import errorHandler from '../../utility/errorHandler';
 import {
   deleteRequestFailure,
@@ -17,16 +22,16 @@ import {
 
 const customerSupport =
   ({ data, onSuccess }) =>
-    async (dispatch) => {
-      dispatch(supportRequest());
-      try {
-        const res = await supportServive(data);
-        dispatch(supportSuccess(res.data.data));
-        onSuccess();
-      } catch (error) {
-        errorHandler(error, supportFailure);
-      }
-    };
+  async (dispatch) => {
+    dispatch(supportRequest());
+    try {
+      const res = await supportServive(data);
+      dispatch(supportSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, supportFailure);
+    }
+  };
 
 const getCustomerSupportCount = () => async (dispatch) => {
   dispatch(getSupportCountRequest());
@@ -38,24 +43,28 @@ const getCustomerSupportCount = () => async (dispatch) => {
   }
 };
 
-const getCustomerSupportList = ({ data }) => async (dispatch) => {
-  dispatch(supportListRequest());
-  try {
-    const res = await getRequestsService(data);
-    dispatch(supportListSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, supportListFailure);
-  }
-};
+const getCustomerSupportList =
+  ({ data }) =>
+  async (dispatch) => {
+    dispatch(supportListRequest());
+    try {
+      const res = await getRequestsService(data);
+      dispatch(supportListSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, supportListFailure);
+    }
+  };
 
-const deleteRequest = ({data}) => async (dispatch) => {
-  dispatch(deleteRequestInitiate());
-  try {
-    await deleteRequestService(data);
-    dispatch(deleteRequestSuccess());
-  } catch (error) {
-    errorHandler(error, deleteRequestFailure);
-  }
-};
+const deleteRequest =
+  ({ data }) =>
+  async (dispatch) => {
+    dispatch(deleteRequestInitiate());
+    try {
+      await deleteRequestService(data);
+      dispatch(deleteRequestSuccess());
+    } catch (error) {
+      errorHandler(error, deleteRequestFailure);
+    }
+  };
 
 export { customerSupport, getCustomerSupportCount, getCustomerSupportList, deleteRequest };

@@ -1,21 +1,37 @@
-import { create } from "zustand";
-import { FlexternClientAccountDetails, FlexternClientCompanyDetails, FlexternClientCompanySocialDetails, FlexternClientProfileDetails, FlexternUserProfileForm, FlexternUserProfileStore } from "../constraints/types/user-profile-types";
-import { nextTab, populateClientInfoDetails, populateClientOrgDetails, previousTab, updateClientCompanyInfo, upsertClientAccountInfo,setCurrentTabIndex } from "../actions/user-profile-actions";
+import { create } from 'zustand';
+import {
+  FlexternClientAccountDetails,
+  FlexternClientCompanyDetails,
+  FlexternClientCompanySocialDetails,
+  FlexternClientProfileDetails,
+  FlexternUserProfileForm,
+  FlexternUserProfileStore,
+} from '../constraints/types/user-profile-types';
+import {
+  nextTab,
+  populateClientInfoDetails,
+  populateClientOrgDetails,
+  previousTab,
+  updateClientCompanyInfo,
+  upsertClientAccountInfo,
+  setCurrentTabIndex,
+} from '../actions/user-profile-actions';
 
 const defaultInitState: FlexternUserProfileForm = {
-    currentTabIndex: 0,
-    isProfileDetailsLoading: false,
-    profileDetails: {} as FlexternClientProfileDetails,
-}
+  currentTabIndex: 0,
+  isProfileDetailsLoading: false,
+  profileDetails: {} as FlexternClientProfileDetails,
+};
 
 export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set, _get) => ({
-    ...defaultInitState,
-    populateClientInfoDetails: () => populateClientInfoDetails(set),
-    populateClientOrgDetails: () => populateClientOrgDetails(set),
-    nextTab: () => nextTab(set),
-    previousTab: () => previousTab(set),
-    upsertClientAccountInfo: async (data: FlexternClientAccountDetails) => upsertClientAccountInfo(data, set),
-    updateClientCompanyInfo: async (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => updateClientCompanyInfo(data, set),
-    resetStore: () => set({...defaultInitState}),
-    setCurrentTabIndex: (index: number) => setCurrentTabIndex(index, set)
+  ...defaultInitState,
+  populateClientInfoDetails: () => populateClientInfoDetails(set),
+  populateClientOrgDetails: () => populateClientOrgDetails(set),
+  nextTab: () => nextTab(set),
+  previousTab: () => previousTab(set),
+  upsertClientAccountInfo: async (data: FlexternClientAccountDetails) => upsertClientAccountInfo(data, set),
+  updateClientCompanyInfo: async (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) =>
+    updateClientCompanyInfo(data, set),
+  resetStore: () => set({ ...defaultInitState }),
+  setCurrentTabIndex: (index: number) => setCurrentTabIndex(index, set),
 }));

@@ -1,7 +1,18 @@
 /* eslint-disable no-nested-ternary */
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, CardBody, CardText, Input, ModalBody, ModalHeader, Table, UncontrolledTooltip } from 'reactstrap';
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardText,
+  Input,
+  ModalBody,
+  ModalHeader,
+  Table,
+  UncontrolledTooltip,
+} from 'reactstrap';
 import { ChevronDown, ChevronUp, Copy, Info } from 'react-feather';
 import classnames from 'classnames';
 import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText, userTypes } from '../../../utility/constants/Constant';
@@ -55,13 +66,16 @@ const PaymentTable = () => {
   const dispatch = useDispatch();
 
   const onSubmit = () => {
-    dispatch(invitePaymentDelegate({ email, onSuccess }))
-  }
+    dispatch(invitePaymentDelegate({ email, onSuccess }));
+  };
 
   const onSuccess = () => {
-    ShowToastMessage(SUCCESS, 'The email containing the sign-up link has been successfully sent to the payment delegate');
-    setShowPaymentDelegateModal(false)
-  }
+    ShowToastMessage(
+      SUCCESS,
+      'The email containing the sign-up link has been successfully sent to the payment delegate',
+    );
+    setShowPaymentDelegateModal(false);
+  };
 
   const handleCopyToClipboard = (text) => {
     // eslint-disable-next-line no-undef
@@ -96,9 +110,7 @@ const PaymentTable = () => {
             className="ms-50"
           />
         </div>
-        <span>
-          {convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name)}
-        </span>
+        <span>{convertUnixTimestampToDate(date, savedUserData?.availability?.timezone?.name)}</span>
       </div>
     ),
   });
@@ -139,7 +151,7 @@ const PaymentTable = () => {
 
   useEffect(() => {
     if (projectDetailsData?._id) {
-      dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => { }));
+      dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => {}));
     }
 
     return () => {
@@ -298,8 +310,6 @@ const PaymentTable = () => {
     background: isSelected ? theme.selectedBlugBg : '',
   });
 
-
-
   return (
     <>
       {makePaymentModal && (
@@ -334,12 +344,12 @@ const PaymentTable = () => {
                       {/* {!isTeam ? <th className="checkboxCol"> </th> : null} */}
                       <th className="checkboxCol"> </th>
                       <th className="ps-0">Milestone</th>
-                      <th>{ }</th>
+                      <th>{}</th>
                       <th>Status</th>
-                      <th>{ }</th>
+                      <th>{}</th>
                       <th>Amount</th>
                       {/* {!isTeam ? <th> </th> : null} */}
-                      <th>{ }</th>
+                      <th>{}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -403,36 +413,37 @@ const PaymentTable = () => {
                               </Badge>
                             </CustomBadge>
                           </td>
-                          <td>{ }</td>
+                          <td>{}</td>
                           <td className="amountCol">$ {roundOfAmount(getTotalCost(item))}</td>{' '}
-                          {(isPaymentDone(item) && isClient) || (isPaymentDone(item) && item?.status === 'COMPLETED') ? (
+                          {(isPaymentDone(item) && isClient) ||
+                          (isPaymentDone(item) && item?.status === 'COMPLETED') ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
                           ) : !isPaymentDone(item) ? (
-                            <td>{ }</td>
+                            <td>{}</td>
                           ) : (
-                            <td>{ }</td>
+                            <td>{}</td>
                           )}
                         </tr>
 
                         {item?._id === open && isPaymentDone(item) ? (
                           milestoneTransactionLoading ? (
                             <tr>
-                              <td colSpan={3}>{ }</td>
+                              <td colSpan={3}>{}</td>
                               <td>Loading...</td>
-                              <td colSpan={3}>{ }</td>
+                              <td colSpan={3}>{}</td>
                             </tr>
                           ) : (
                             <>
                               {isClient ? (
                                 <tr style={{ borderBottom: '1px solid white' }}>
-                                  <td>{ }</td>
+                                  <td>{}</td>
                                   <td className="ps-0">
                                     <div className="d-flex flex-column">
                                       <span>Amount</span>
                                       <span>{`${applicationFee?.name}`}</span>
                                     </div>
                                   </td>
-                                  <td colSpan={3}>{ }</td>
+                                  <td colSpan={3}>{}</td>
 
                                   <td>
                                     <div className="d-flex flex-column">
@@ -457,7 +468,7 @@ const PaymentTable = () => {
                                 </tr>
                               ) : null}
                               <tr>
-                                <td>{ }</td>
+                                <td>{}</td>
                                 <td className="ps-0">
                                   <TransactionTimeline transactionData={timelineData} />
                                 </td>
@@ -474,7 +485,7 @@ const PaymentTable = () => {
                                     isClient={isClient}
                                   />
                                 </td>
-                                <td>{ }</td>
+                                <td>{}</td>
                                 <td colSpan={2}>
                                   <PaymentBy paymentBy={milestoneTransactionDetails} />
                                 </td>
@@ -492,24 +503,20 @@ const PaymentTable = () => {
               <>
                 <div className="d-flex w-100 mt-2 justify-content-between">
                   <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
-                    {`${applicationFee?.name ?? ''} ${(trumioFeeBeforeDiscount !== applicationFee?.min_fee) ? `(${applicationFee?.percentage ?? 0}%)` : ''}`}
+                    {`${applicationFee?.name ?? ''} ${
+                      trumioFeeBeforeDiscount !== applicationFee?.min_fee ? `(${applicationFee?.percentage ?? 0}%)` : ''
+                    }`}
                   </CardText>
-                  <CardText>
-                    {`$${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}
-                  </CardText>{' '}
+                  <CardText>{`$${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}</CardText>{' '}
                 </div>
-                {
-                  applicationFee?.discount_coupon?.code && (
-                    <div className="d-flex w-100 mt-1 justify-content-between">
-                      <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
-                        {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
-                      </CardText>
-                      <CardText>
-                        {`- $${Number.isNaN(trumioFeeDiscount) ? 0 : trumioFeeDiscount}`}
-                      </CardText>{' '}
-                    </div>
-                  )
-                }
+                {applicationFee?.discount_coupon?.code && (
+                  <div className="d-flex w-100 mt-1 justify-content-between">
+                    <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                      {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
+                    </CardText>
+                    <CardText>{`- $${Number.isNaN(trumioFeeDiscount) ? 0 : trumioFeeDiscount}`}</CardText>{' '}
+                  </div>
+                )}
               </>
             )}
             <hr />
@@ -526,7 +533,13 @@ const PaymentTable = () => {
 
             {showPaymentCalculation && !isAllMilestonePaid && selectedPaymentId?.length > 0 && (
               <div className="d-flex justify-content-end w-100 mt-5 gap-1">
-                <Button onClick={() => setShowPaymentDelegateModal(true)} className="d-contents" color="primary" outline disabled={isPaymentDisabled()}>
+                <Button
+                  onClick={() => setShowPaymentDelegateModal(true)}
+                  className="d-contents"
+                  color="primary"
+                  outline
+                  disabled={isPaymentDisabled()}
+                >
                   Add Payment Delegate
                 </Button>
                 <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
@@ -537,26 +550,23 @@ const PaymentTable = () => {
           </CardBody>
         </Card>
       )}
-      {
-        showPaymentDelegateModal &&
-        <Modal isOpen={showPaymentDelegateModal} contentClassName="custom-modal-style" className="modal-dialog-centered">
+      {showPaymentDelegateModal && (
+        <Modal
+          isOpen={showPaymentDelegateModal}
+          contentClassName="custom-modal-style"
+          className="modal-dialog-centered"
+        >
           <ModalHeader toggle={() => setShowPaymentDelegateModal(!showPaymentDelegateModal)} />
           <ModalBody className="pt-0 px-5">
             <h2 className="font-large-1 text-center mb-2 mt-2">Add Payment Delegate</h2>
 
-            <div className='d-flex flex-column gap-2'>
-
+            <div className="d-flex flex-column gap-2">
               <div>
                 <label>Delegate Email</label>
-                <Input
-                  placeholder='Enter Email ID'
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                />
+                <Input placeholder="Enter Email ID" onChange={(e) => setEmail(e.target.value)} value={email} />
               </div>
 
-
-              <div className='mobile-input'>
+              <div className="mobile-input">
                 <label>Project Name</label>
                 <AccountDetailsFormContainer>
                   <Input
@@ -572,17 +582,14 @@ const PaymentTable = () => {
               </div>
             </div>
 
-            <div className='d-flex justify-content-end mt-2'>
-              <Button color='primary'
-                onClick={onSubmit}
-              >
+            <div className="d-flex justify-content-end mt-2">
+              <Button color="primary" onClick={onSubmit}>
                 {paymentDelegateInviteLoading ? <Spinner size="sm" /> : 'Send Invite'}
               </Button>
             </div>
-
           </ModalBody>
         </Modal>
-      }
+      )}
     </>
   );
 };

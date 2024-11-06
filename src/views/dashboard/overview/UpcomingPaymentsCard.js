@@ -23,22 +23,22 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
   const savedUserData = useSelector(selectSavedUserData);
   const dispatch = useDispatch();
   const paymentStatusEnum = {
-    PENDING : {
+    PENDING: {
       label: 'Payment Pending',
-      className : 'PENDING'
+      className: 'PENDING',
     },
-    FAILED : {
+    FAILED: {
       label: 'Retry Payment',
-      className : 'RETRY_PAYMENT'
+      className: 'RETRY_PAYMENT',
     },
-    INTIATED : {
+    INTIATED: {
       label: 'Payment Initiated',
-      className : 'INITIATED'
+      className: 'INITIATED',
     },
-    PROCESSING : {
+    PROCESSING: {
       label: 'Payment Processing',
-      className : 'PROCESSING',
-    }
+      className: 'PROCESSING',
+    },
   };
   const updateCard = () => {
     const postData = {
@@ -76,7 +76,7 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
         {!data?.is_read && <NewTag />}
         <CardBody>
           {savedUserData?.user_type === userTypes.client && data?.payment_status ? (
-            <CustomBadge >
+            <CustomBadge>
               <Badge className={`${paymentStatusEnum[data?.payment_status].className}`} color="badge">
                 {paymentStatusEnum[data?.payment_status].label}
               </Badge>

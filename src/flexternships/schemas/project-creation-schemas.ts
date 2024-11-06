@@ -9,7 +9,7 @@ export const allowedFormats = [
   'text/plain',
   'image/jpeg',
   'image/jpg',
-  'image/png'
+  'image/png',
 ];
 
 export const ProjectDetailsSchema = yup.object().shape({
@@ -61,45 +61,58 @@ export const ProjectDetailsSchema = yup.object().shape({
 
 // Form Schema for ProjectRoles
 export const ProjectRolesFormSchema = yup.object().shape({
-    projectRoles: yup.array().of(yup.object().shape(
-        {
-            role: yup.object().shape(
-                {
-                    _id: yup.string().required("Role ID is required"),
-                    name: yup.string().required("Role name is required"),
-                }
-            ),
-            count: yup.number().min(1, "Role count should be atleast 1").required(),
-            skills: yup.array().of(yup.object().shape(
-                {
-                    _id: yup.string().required("Skill ID is required"),
-                    name: yup.string().required("Skill name is required"),
-                }
-            )).required().min(1, "At least one skill is required"),
-            tools: yup.array().of(yup.object().shape(
-                {
-                    _id: yup.string().required("Tool ID is required"),
-                    name: yup.string().required("Tool name is required"),
-                }
-            )).required(), // Optional: can enforce minimum if required
-        }
-    )).required().min(1)//.min(1, "At least one project role is required")
+  projectRoles: yup
+    .array()
+    .of(
+      yup.object().shape({
+        role: yup.object().shape({
+          _id: yup.string().required('Role ID is required'),
+          name: yup.string().required('Role name is required'),
+        }),
+        count: yup.number().min(1, 'Role count should be atleast 1').required(),
+        skills: yup
+          .array()
+          .of(
+            yup.object().shape({
+              _id: yup.string().required('Skill ID is required'),
+              name: yup.string().required('Skill name is required'),
+            }),
+          )
+          .required()
+          .min(1, 'At least one skill is required'),
+        tools: yup
+          .array()
+          .of(
+            yup.object().shape({
+              _id: yup.string().required('Tool ID is required'),
+              name: yup.string().required('Tool name is required'),
+            }),
+          )
+          .required(), // Optional: can enforce minimum if required
+      }),
+    )
+    .required()
+    .min(1), //.min(1, "At least one project role is required")
 });
 
 export const MilestonesFormSchema = yup.object().shape({
-    milestones: yup.array().of(yup.object().shape(
-        {
-            title: yup.string()
-                .required('Title is required'),
-            duration: yup.number()
-                .required('Duration is required')
-                .positive('Duration must be a positive number'),
-            description: yup.string()
-                .required('Description is required')
-                .min(4, 'Description must be at least 4 characters'),
-            deliverables: yup.array().of(yup.string().required('Deliverable is required'))
-                .required()
-                .min(1, 'At least one deliverable is required'),
-        }
-    )).required().min(2, "At least two milestones are required")
-})
+  milestones: yup
+    .array()
+    .of(
+      yup.object().shape({
+        title: yup.string().required('Title is required'),
+        duration: yup.number().required('Duration is required').positive('Duration must be a positive number'),
+        description: yup
+          .string()
+          .required('Description is required')
+          .min(4, 'Description must be at least 4 characters'),
+        deliverables: yup
+          .array()
+          .of(yup.string().required('Deliverable is required'))
+          .required()
+          .min(1, 'At least one deliverable is required'),
+      }),
+    )
+    .required()
+    .min(2, 'At least two milestones are required'),
+});

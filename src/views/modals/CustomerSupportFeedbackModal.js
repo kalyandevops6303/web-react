@@ -42,5 +42,5 @@ FeedbackForCustomerSupportModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   modalHeading: 'Thanks for contacting us!',
-  modalText: 'We’ll get back to you soon.'
+  modalText: 'We’ll get back to you soon.',
 };

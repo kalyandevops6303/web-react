@@ -2,16 +2,26 @@ import { isFlexternshipApp } from '@/configs/api/env';
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const getTalentService = (data) => isFlexternshipApp ? DataService.get(`${API.profile.talentFlextern}/${data}`) :  DataService.get(`${API.profile.talent}/${data}`);
+const getTalentService = (data) =>
+  isFlexternshipApp
+    ? DataService.get(`${API.profile.talentFlextern}/${data}`)
+    : DataService.get(`${API.profile.talent}/${data}`);
 
-const getTalentProjectService = (data) => isFlexternshipApp ? DataService.get(API.profile.talentProjectsFlextern, data) : DataService.get(API.profile.talentProjects, data);
+const getTalentProjectService = (data) =>
+  isFlexternshipApp
+    ? DataService.get(API.profile.talentProjectsFlextern, data)
+    : DataService.get(API.profile.talentProjects, data);
 
 const getClientService = (data, projectId) => {
   if (projectId) {
-    return isFlexternshipApp ? DataService.get(`${API.profile.clientFlextern}/${data}?project_id=${projectId}`) : DataService.get(`${API.profile.client}/${data}?project_id=${projectId}`);
+    return isFlexternshipApp
+      ? DataService.get(`${API.profile.clientFlextern}/${data}?project_id=${projectId}`)
+      : DataService.get(`${API.profile.client}/${data}?project_id=${projectId}`);
   }
 
-  return isFlexternshipApp ? DataService.get(`${API.profile.clientFlextern}/${data}`) : DataService.get(`${API.profile.client}/${data}`);
+  return isFlexternshipApp
+    ? DataService.get(`${API.profile.clientFlextern}/${data}`)
+    : DataService.get(`${API.profile.client}/${data}`);
 };
 
 const getClientProjectService = (data) => DataService.get(API.profile.clientProjects, data);

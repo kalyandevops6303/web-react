@@ -71,8 +71,8 @@ export const OnBoardWrap = styled.div`
     height: 78vh;
   }
   .filled-form-text-field {
-    border : 1px solid ${theme.inputBorder};
-    background: linear-gradient(0deg, rgba(153, 193, 230, 0.10) 0%, rgba(153, 193, 230, 0.10) 100%), #FFF;
+    border: 1px solid ${theme.inputBorder};
+    background: linear-gradient(0deg, rgba(153, 193, 230, 0.1) 0%, rgba(153, 193, 230, 0.1) 100%), #fff;
   }
   .create-pw-pic {
     margin-left: 7rem;

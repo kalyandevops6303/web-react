@@ -29,7 +29,6 @@ import RegisterDelegate from './RegisterDelegate';
 import RegisterFlextern from './RegisterFlextern';
 import RegisterPhoneFlextern from './RegisterPhoneFlextern';
 
-
 const AuthRoute = () => {
   const userType = useSelector(selectUserType);
   const routes = [
@@ -59,7 +58,7 @@ const AuthRoute = () => {
     },
     {
       path: '/register-phone',
-      element: <RegisterPhone  />,
+      element: <RegisterPhone />,
     },
     {
       path: '/register-phone-flexternship',
@@ -123,19 +122,19 @@ const AuthRoute = () => {
     return <img src={WelcomePic} alt="bg-pic" className="me-8 welcome-pic" />;
   };
   return (
-    <div className='trumio'>
-    <OnBoardWrap>
-      <Suspense fallback={<Spinner />}>
-        <Routes>
-          <Route path="/" element={<UserType />} />
-          {routes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
-        </Routes>
+    <div className="trumio">
+      <OnBoardWrap>
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            <Route path="/" element={<UserType />} />
+            {routes.map((route) => (
+              <Route key={route.path} path={route.path} element={route.element} />
+            ))}
+          </Routes>
 
-        <div className="w-100">{window.innerWidth > 1024 && renderImage()}</div>
-      </Suspense>
-    </OnBoardWrap>
+          <div className="w-100">{window.innerWidth > 1024 && renderImage()}</div>
+        </Suspense>
+      </OnBoardWrap>
     </div>
   );
 };

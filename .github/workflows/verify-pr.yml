@@ -1,4 +1,5 @@
-# This workflow verifies that the project builds successfully on all pull requests
+# This workflow runs formatting checks and build verification on pull requests
+# Each job will appear as a separate check in the GitHub PR interface
 
 name: Verify Pull Request
 
@@ -8,41 +9,52 @@ on:
     branches: ['*']
 
 jobs:
-  build:
-    # Use the latest Ubuntu runner
+  # Separate job for formatting checks
+  format:
+    name: Check Formatting
     runs-on: ubuntu-latest
-
     steps:
-    # Check out the repository code
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      # Set up Node environment
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.18.0'
+      # Cache Yarn dependencies
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      # Install dependencies
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --prefer-offline
+      # Run Prettier check - this will show as a separate check in GitHub
+      - name: Check Prettier formatting
+        run: yarn format:check
 
-    # Set up Node.js environment
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20.18.0'
-
-    # Cache dependencies
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/yarn
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-
-    # Install project dependencies using Yarn
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile --prefer-offline
-
-    # Attempt to build the project
-    - name: Build project
-      run: yarn build
-
-    # Check if the build was successful
-    - name: Check for build errors
-      run: |
-        if [ $? -ne 0 ]; then
-          echo "Build failed. Please fix the errors before merging."
-          exit 1
-        fi
+  # Separate job for build verification
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Set up Node environment
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.18.0'
+      # Cache Yarn dependencies
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      # Install dependencies
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --prefer-offline
+      # Build the project
+      - name: Build project
+        run: yarn build

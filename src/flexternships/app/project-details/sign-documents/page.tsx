@@ -19,13 +19,16 @@ export default function FlexternshipsContractView() {
 
   return (
     <div>
-      <div className='flex items-center gap-1 cursor-pointer'
+      <div
+        className="flex items-center gap-1 cursor-pointer"
         onClick={() => navigate(`/project-details/${params?.projectId}/projects`)}
       >
-        <div className='p-1 bg-[#0185E4] w-min text-white rounded-full'>
+        <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
           <ArrowLeft size="20px" />
         </div>
-        <div className='text-[#0185E4] font-montserrat text-[16px] font-light leading-normal' >Sign {toUpper(params?.docType) === DocTypes.NDA ? 'NDA' : 'Contract'}</div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
+          Sign {toUpper(params?.docType) === DocTypes.NDA ? 'NDA' : 'Contract'}
+        </div>
       </div>
       <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5 max-w-screen">
         <LeftSideBarProjectDetails />

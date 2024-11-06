@@ -184,15 +184,18 @@ class CometChatMessages extends React.PureComponent {
       this.directCallCustomMessageAction = this.getContext().directCallCustomMessageAction.trim();
     }
 
-    if (prevProps.data != this.props.data && this.props.updateGroupActionMessages && this.context.type === "group") {
+    if (prevProps.data != this.props.data && this.props.updateGroupActionMessages && this.context.type === 'group') {
       CometChat.getConversation(this.context.item.guid, 'group').then(
         (conversation) => {
-          if (this.state.messageList.length > 0 && this.state.messageList.slice(-1)[0].id != conversation.lastMessage.id) {
+          if (
+            this.state.messageList.length > 0 &&
+            this.state.messageList.slice(-1)[0].id != conversation.lastMessage.id
+          ) {
             this.setState({
               ...this.state,
               messageList: [...this.state.messageList, conversation.lastMessage],
             });
-            
+
             this.props.setUpdateGroupActionMessages(false);
           }
         },

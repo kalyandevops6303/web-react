@@ -430,7 +430,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   theme={selectThemeColors}
                   onChange={(value) => onChangeFilter('status', value)}
                   value={
-                     secondFilterState?.status?.length > 0
+                    secondFilterState?.status?.length > 0
                       ? { value: secondFilterState?.status[0]?.value, label: secondFilterState?.status[0]?.label }
                       : null
                   }

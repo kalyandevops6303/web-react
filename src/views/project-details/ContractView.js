@@ -103,10 +103,9 @@ const ContractView = () => {
   useEffect(() => {
     dispatch(getAppConfig());
     dispatch(getDocument({ document_id: param?.docId || '', project_id: param?.projectId, doc_type: getDocType() }));
-    if(isFlextern){
+    if (isFlextern) {
       dispatch(getProfileCompletionFlextern());
-    }
-    else{
+    } else {
       dispatch(getProfilePercentage());
     }
   }, []);
@@ -211,219 +210,221 @@ const ContractView = () => {
   // After both party have signed in NDA/Contract view => Note: Client has 7(payment_validity) days to make payment for milestones or project will be terminated
 
   return (
-    <div className='trumio'>
-    <ContractDetailsWrap>
-      <BackButtonContainer className="p-0 mb-1">
-        <div onClick={() => navigate(-1)} className="p-0 d-flex">
-          <BackIconContainer>
-            <ArrowLeft size={18} color={theme.white} />
-          </BackIconContainer>
-          <h4 className="m-0 fw-light blue-text mt-25 mx-50">{`Sign ${CapitalizeDocType()}`}</h4>
-        </div>
-      </BackButtonContainer>
-      <Row>
-        <Col lg="3">
-          <LeftSidebarProfile isInvited isClient={false} data={currentProfile} isEditable={false} />
-        </Col>
-        <Col lg="9">
-          <Card className="gray-bg ">
-            <CardTitle className="main-card-title gray-bg">{`Standard ${CapitalizeDocType()} ${
-              !isFreshDoc ? '(View only)' : ''
-            }`}</CardTitle>
-            <CardBody>
-              {appConfig && (
-                <AlertAndNote
-                  documentExtention={appConfig?.doc_sig_completion?.validity || 0}
-                  paymentExtention={appConfig?.payment_completion?.validity || 0}
-                />
-              )}
-              <Card>
-                <CardBody className="contract-card-body">
-                  <div className="d-flex justify-content-between ">
-                    <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
-                    <div className="d-flex gap-1 align-items-center mb-75">
-                      {isAcceptModalOpen && (
-                        <ConfirmContractModal
-                          modalData={acceptModalData}
-                          toggleModal={toggleAcceptModal}
-                          modal={isAcceptModalOpen}
-                          onAccept={
-                            userType === userTypes.client ? handleSendDocByClient : () => handleSignDoc(acceptModalData)
-                          }
-                          docType={getDocType()}
-                          project_id={param?.projectId}
-                        />
-                      )}
-                      {isFreshDoc &&
-                        userType === userTypes.client &&
-                        !document?.is_nda_sent &&
-                        !document?.is_contract_sent && (
-                          <span className="icon-bg cursor-pointer" onClick={toggleModal}>
-                            <img src={EditImg} alt="edit" />
-                          </span>
-                        )}
-                      {completeProfileModal && (
-                        <CompleteProfileModal
-                          modal={completeProfileModal}
-                          toggleModal={toggleCompleteProfileModal}
-                          modalInfoText="confirm agreement"
-                        />
-                      )}
-
-                      {isEditModalOpen && (
-                        <EditContractModal
-                          setDocumentData={setDocumentData}
-                          toggleModal={toggleModal}
-                          data={documentData}
-                          modal={isEditModalOpen}
-                          docType={getDocType()}
-                          project_id={param?.projectId}
-                        />
-                      )}
-                      <span className="icon-bg cursor-pointer" onClick={() => downloadPdf(documentData)}>
-                        <img src={DownloadImg} alt="download" />
-                      </span>
-                    </div>
-                  </div>
-                  <div className="contract-text-container">{ReactHtmlParser(documentData)}</div>
-                </CardBody>
-              </Card>
-              {isFreshDoc && (
-                <div>
-                  {(document?.is_contract_sent === false ||
-                    document?.is_nda_sent === false ||
-                    isUserNotSigned(updatedWorkers, userData?._id)) && (
-                    <div className="d-flex justify-content-between checkbox-wrap">
-                      <Label className="checkbox-label" for="contract-sign">
-                        <Input
-                          onChange={onCheckChange}
-                          checked={checked}
-                          className="me-75"
-                          type="checkbox"
-                          id="contract-sign"
-                          name="agreeTerms"
-                        />
-                        I have read the terms and conditions of the contract
-                      </Label>
-                    </div>
-                  )}
-                </div>
-              )}
-              {checkError && <FormFeedback>Please confirm that you have read the Terms and Conditions</FormFeedback>}
-              <div className="team-sign-section mt-2">
-                <h6 className="fw-bolder">Client</h6>
-                <div className="d-flex justify-content-between mb-1">
-                  <NameInfo
-                    img={document?.client_details?.image_uri}
-                    name={document?.client_details?.name}
-                    info={document?.client_details?.role}
+    <div className="trumio">
+      <ContractDetailsWrap>
+        <BackButtonContainer className="p-0 mb-1">
+          <div onClick={() => navigate(-1)} className="p-0 d-flex">
+            <BackIconContainer>
+              <ArrowLeft size={18} color={theme.white} />
+            </BackIconContainer>
+            <h4 className="m-0 fw-light blue-text mt-25 mx-50">{`Sign ${CapitalizeDocType()}`}</h4>
+          </div>
+        </BackButtonContainer>
+        <Row>
+          <Col lg="3">
+            <LeftSidebarProfile isInvited isClient={false} data={currentProfile} isEditable={false} />
+          </Col>
+          <Col lg="9">
+            <Card className="gray-bg ">
+              <CardTitle className="main-card-title gray-bg">{`Standard ${CapitalizeDocType()} ${
+                !isFreshDoc ? '(View only)' : ''
+              }`}</CardTitle>
+              <CardBody>
+                {appConfig && (
+                  <AlertAndNote
+                    documentExtention={appConfig?.doc_sig_completion?.validity || 0}
+                    paymentExtention={appConfig?.payment_completion?.validity || 0}
                   />
+                )}
+                <Card>
+                  <CardBody className="contract-card-body">
+                    <div className="d-flex justify-content-between ">
+                      <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
+                      <div className="d-flex gap-1 align-items-center mb-75">
+                        {isAcceptModalOpen && (
+                          <ConfirmContractModal
+                            modalData={acceptModalData}
+                            toggleModal={toggleAcceptModal}
+                            modal={isAcceptModalOpen}
+                            onAccept={
+                              userType === userTypes.client
+                                ? handleSendDocByClient
+                                : () => handleSignDoc(acceptModalData)
+                            }
+                            docType={getDocType()}
+                            project_id={param?.projectId}
+                          />
+                        )}
+                        {isFreshDoc &&
+                          userType === userTypes.client &&
+                          !document?.is_nda_sent &&
+                          !document?.is_contract_sent && (
+                            <span className="icon-bg cursor-pointer" onClick={toggleModal}>
+                              <img src={EditImg} alt="edit" />
+                            </span>
+                          )}
+                        {completeProfileModal && (
+                          <CompleteProfileModal
+                            modal={completeProfileModal}
+                            toggleModal={toggleCompleteProfileModal}
+                            modalInfoText="confirm agreement"
+                          />
+                        )}
+
+                        {isEditModalOpen && (
+                          <EditContractModal
+                            setDocumentData={setDocumentData}
+                            toggleModal={toggleModal}
+                            data={documentData}
+                            modal={isEditModalOpen}
+                            docType={getDocType()}
+                            project_id={param?.projectId}
+                          />
+                        )}
+                        <span className="icon-bg cursor-pointer" onClick={() => downloadPdf(documentData)}>
+                          <img src={DownloadImg} alt="download" />
+                        </span>
+                      </div>
+                    </div>
+                    <div className="contract-text-container">{ReactHtmlParser(documentData)}</div>
+                  </CardBody>
+                </Card>
+                {isFreshDoc && (
                   <div>
-                    <Button
-                      style={{ minWidth: '14.5rem' }}
-                      disabled={
-                        isFreshDoc === false ||
-                        userType !== userTypes.client ||
-                        document?.is_contract_sent ||
-                        document?.is_nda_sent || 
-                        !checked
-                      }
-                      onClick={() =>
-                        handleOpenAcceptModal({
-                          name: `${projectInfo?.client_details?.first_name} ${projectInfo?.client_details?.last_name}`,
-                          role: projectInfo?.client_details?.company_name,
-                        })
-                      }
-                      color="primary"
-                      className="btn-sm-block mb-25 mt-1"
-                    >
-                      {document?.is_contract_sent || document?.is_nda_sent
-                        ? 'Confirmed Agreement'
-                        : 'Confirm Agreement'}
-                    </Button>
-                    {document?.client_signed_document_date ? (
-                      <CardText className="">
-                        Signed on:{' '}
-                        {document?.client_signed_document_date
-                          ? DateTime?.fromMillis(document?.client_signed_document_date)?.toFormat('MMM dd, yy')
-                          : ''}
-                      </CardText>
-                    ) : (
-                      ''
+                    {(document?.is_contract_sent === false ||
+                      document?.is_nda_sent === false ||
+                      isUserNotSigned(updatedWorkers, userData?._id)) && (
+                      <div className="d-flex justify-content-between checkbox-wrap">
+                        <Label className="checkbox-label" for="contract-sign">
+                          <Input
+                            onChange={onCheckChange}
+                            checked={checked}
+                            className="me-75"
+                            type="checkbox"
+                            id="contract-sign"
+                            name="agreeTerms"
+                          />
+                          I have read the terms and conditions of the contract
+                        </Label>
+                      </div>
                     )}
                   </div>
-                </div>
-              </div>
-
-              <div className="team-sign-section mt-2" style={{ maxHeight: '26rem', overflowY: 'auto' }}>
-                <h6 className="fw-bolder">{updatedWorkers?.length > 0 ? 'Team' : ''} </h6>
-                {updatedWorkers?.map((worker) => (
-                  <div key={worker?.user_id} className="d-flex mb-1 justify-content-between">
+                )}
+                {checkError && <FormFeedback>Please confirm that you have read the Terms and Conditions</FormFeedback>}
+                <div className="team-sign-section mt-2">
+                  <h6 className="fw-bolder">Client</h6>
+                  <div className="d-flex justify-content-between mb-1">
                     <NameInfo
-                      img={worker?.image_uri}
-                      name={worker?.accepted_date > 0 ? `${worker?.first_name} ${worker?.last_name}` : ''}
-                      info={worker?.role}
+                      img={document?.client_details?.image_uri}
+                      name={document?.client_details?.name}
+                      info={document?.client_details?.role}
                     />
                     <div>
-                      {worker?.accepted_date === 0 ? (
-                        <Button
-                          disabled={userType === userTypes.client}
-                          outline
-                          color="primary"
-                          type="secondary"
-                          className="btn-sm-block mb-25 mt-1"
-                          onClick={() => navigate(`/project-details/${projectInfo?._id}/team`)}
-                        >
-                          {userType === userTypes.client ? 'Member not yet assigned' : 'Assign team member'}
-                        </Button>
-                      ) : userData?._id === worker?.user_id ? (
-                        <Button
-                          style={{ minWidth: '14.5rem' }}
-                          onClick={() => {
-                            if (
-                              profilePercentageData?.values_missing?.includes('company_name') ||
-                              profilePercentageData?.values_missing?.includes('educational_institute') ||
-                              profilePercentageData?.values_missing?.includes('availability') ||
-                              profilePercentageData?.values_missing?.includes('payment_account')
-                            ) {
-                              toggleCompleteProfileModal();
-                            } else {
-                              handleOpenAcceptModal({
-                                name: `${worker?.first_name} ${worker?.last_name}`,
-                                role: worker?.role,
-                              });
-                            }
-                          }}
-                          disabled={isFreshDoc === false || worker?.is_signed || !checked}
-                          color="primary"
-                          className="btn-sm-block mb-25 mt-1"
-                        >
-                          {worker?.is_signed ? 'Confirmed Agreement' : 'Confirm Agreement'}
-                        </Button>
+                      <Button
+                        style={{ minWidth: '14.5rem' }}
+                        disabled={
+                          isFreshDoc === false ||
+                          userType !== userTypes.client ||
+                          document?.is_contract_sent ||
+                          document?.is_nda_sent ||
+                          !checked
+                        }
+                        onClick={() =>
+                          handleOpenAcceptModal({
+                            name: `${projectInfo?.client_details?.first_name} ${projectInfo?.client_details?.last_name}`,
+                            role: projectInfo?.client_details?.company_name,
+                          })
+                        }
+                        color="primary"
+                        className="btn-sm-block mb-25 mt-1"
+                      >
+                        {document?.is_contract_sent || document?.is_nda_sent
+                          ? 'Confirmed Agreement'
+                          : 'Confirm Agreement'}
+                      </Button>
+                      {document?.client_signed_document_date ? (
+                        <CardText className="">
+                          Signed on:{' '}
+                          {document?.client_signed_document_date
+                            ? DateTime?.fromMillis(document?.client_signed_document_date)?.toFormat('MMM dd, yy')
+                            : ''}
+                        </CardText>
                       ) : (
-                        <Button
-                          style={{ minWidth: '14.5rem' }}
-                          disabled
-                          color="primary"
-                          className="btn-sm-block mb-25 mt-1"
-                        >
-                          {worker?.is_signed ? 'Confirmed Agreement' : 'Pending Agreement'}
-                        </Button>
+                        ''
                       )}
-
-                      <CardText className="">
-                        <span className={!worker?.is_signed && 'invisible'}>Signed on: </span>
-                        {worker?.signed_on ? DateTime?.fromMillis(worker?.signed_on)?.toFormat('MMM dd, yy') : ''}
-                      </CardText>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
-    </ContractDetailsWrap>
+                </div>
+
+                <div className="team-sign-section mt-2" style={{ maxHeight: '26rem', overflowY: 'auto' }}>
+                  <h6 className="fw-bolder">{updatedWorkers?.length > 0 ? 'Team' : ''} </h6>
+                  {updatedWorkers?.map((worker) => (
+                    <div key={worker?.user_id} className="d-flex mb-1 justify-content-between">
+                      <NameInfo
+                        img={worker?.image_uri}
+                        name={worker?.accepted_date > 0 ? `${worker?.first_name} ${worker?.last_name}` : ''}
+                        info={worker?.role}
+                      />
+                      <div>
+                        {worker?.accepted_date === 0 ? (
+                          <Button
+                            disabled={userType === userTypes.client}
+                            outline
+                            color="primary"
+                            type="secondary"
+                            className="btn-sm-block mb-25 mt-1"
+                            onClick={() => navigate(`/project-details/${projectInfo?._id}/team`)}
+                          >
+                            {userType === userTypes.client ? 'Member not yet assigned' : 'Assign team member'}
+                          </Button>
+                        ) : userData?._id === worker?.user_id ? (
+                          <Button
+                            style={{ minWidth: '14.5rem' }}
+                            onClick={() => {
+                              if (
+                                profilePercentageData?.values_missing?.includes('company_name') ||
+                                profilePercentageData?.values_missing?.includes('educational_institute') ||
+                                profilePercentageData?.values_missing?.includes('availability') ||
+                                profilePercentageData?.values_missing?.includes('payment_account')
+                              ) {
+                                toggleCompleteProfileModal();
+                              } else {
+                                handleOpenAcceptModal({
+                                  name: `${worker?.first_name} ${worker?.last_name}`,
+                                  role: worker?.role,
+                                });
+                              }
+                            }}
+                            disabled={isFreshDoc === false || worker?.is_signed || !checked}
+                            color="primary"
+                            className="btn-sm-block mb-25 mt-1"
+                          >
+                            {worker?.is_signed ? 'Confirmed Agreement' : 'Confirm Agreement'}
+                          </Button>
+                        ) : (
+                          <Button
+                            style={{ minWidth: '14.5rem' }}
+                            disabled
+                            color="primary"
+                            className="btn-sm-block mb-25 mt-1"
+                          >
+                            {worker?.is_signed ? 'Confirmed Agreement' : 'Pending Agreement'}
+                          </Button>
+                        )}
+
+                        <CardText className="">
+                          <span className={!worker?.is_signed && 'invisible'}>Signed on: </span>
+                          {worker?.signed_on ? DateTime?.fromMillis(worker?.signed_on)?.toFormat('MMM dd, yy') : ''}
+                        </CardText>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </ContractDetailsWrap>
     </div>
   );
 };

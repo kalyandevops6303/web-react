@@ -28,33 +28,32 @@ const InternalProjects = () => {
         page: page,
         page_size: pageSize,
       },
-      data: {}
-    }
+      data: {},
+    };
     try {
-      const { data } = await getAllProjectsService(postData)
+      const { data } = await getAllProjectsService(postData);
       setProjectsMetadata({
         currentPage: data?.data?.metadata?.current_page,
         pageSize: data?.data?.metadata?.page_size,
         hasNextPage: data?.data?.metadata?.has_next_page,
       });
       if (append) {
-        setProjectsData((cur) => ([...cur, ...data?.data?.data]));
+        setProjectsData((cur) => [...cur, ...data?.data?.data]);
       } else {
         setProjectsData(data?.data?.data);
       }
       setIsLoading(false);
-
     } catch (err) {
-      ShowToastMessage(ERROR, err?.response?.data?.errorData?.message || "Something went wrong!");
+      ShowToastMessage(ERROR, err?.response?.data?.errorData?.message || 'Something went wrong!');
       setIsLoading(false);
     }
-  }
+  };
 
   const fetchMore = async () => {
-    await fetchProjects(projectsMetadata?.currentPage + 1, (projectsMetadata?.pageSize || 10), true);
-  }
+    await fetchProjects(projectsMetadata?.currentPage + 1, projectsMetadata?.pageSize || 10, true);
+  };
 
-  const NoDataFoundComponent = () => (<div className="d-flex justify-content-center">No data found</div>)
+  const NoDataFoundComponent = () => <div className="d-flex justify-content-center">No data found</div>;
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -63,41 +62,35 @@ const InternalProjects = () => {
   }, []);
 
   return (
-    <div className='trumio'>
-    <ProjectsContainer>
-      {isLoading ? (
-        <ComponentSpinner />
-      ) : (
-        <ResponsiveGrid>
-          <InfiniteScroll
-            dataLength={projectsData?.length}
-            next={fetchMore}
-            hasMore={projectsMetadata?.hasNextPage}
-            endMessage={
-              <div className="d-flex justify-content-center ">
-                {projectsData?.length === 0 ? (
-                  <NoDataFoundComponent />
-                ) : (
-                  ''
-                )}
-              </div>
-            }
-            loader={<div className="d-flex justify-content-center"><ComponentSpinner/></div>}
-            className="responsive-grid"
-          >
-            {projectsData?.map((item) => {
-              return (
-                <ProjectCard
-                  key={item?._id || item?.id}
-                  data={item}
-                  isExpanded={false}
-                />
-              );
-            })}
-          </InfiniteScroll>
-        </ResponsiveGrid>
-      )}
-    </ProjectsContainer>
+    <div className="trumio">
+      <ProjectsContainer>
+        {isLoading ? (
+          <ComponentSpinner />
+        ) : (
+          <ResponsiveGrid>
+            <InfiniteScroll
+              dataLength={projectsData?.length}
+              next={fetchMore}
+              hasMore={projectsMetadata?.hasNextPage}
+              endMessage={
+                <div className="d-flex justify-content-center ">
+                  {projectsData?.length === 0 ? <NoDataFoundComponent /> : ''}
+                </div>
+              }
+              loader={
+                <div className="d-flex justify-content-center">
+                  <ComponentSpinner />
+                </div>
+              }
+              className="responsive-grid"
+            >
+              {projectsData?.map((item) => {
+                return <ProjectCard key={item?._id || item?.id} data={item} isExpanded={false} />;
+              })}
+            </InfiniteScroll>
+          </ResponsiveGrid>
+        )}
+      </ProjectsContainer>
     </div>
   );
 };

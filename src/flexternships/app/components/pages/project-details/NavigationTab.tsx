@@ -18,9 +18,9 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
     <Link
       to={`/project-details/${param?.projectId}/${tab.id}`}
       key={index}
-      className={`${
-        isActive ? activeTabClass : inactiveTabClass
-      } group ${!(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'} duration-200 hover:cursor-pointer hover:text-trublue-secondary-500   first:rounded-tl last:rounded-tr flex flex-row w-fit px-5 py-3 items-start justify-start gap-2`}
+      className={`${isActive ? activeTabClass : inactiveTabClass} group ${
+        !(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'
+      } duration-200 hover:cursor-pointer hover:text-trublue-secondary-500   first:rounded-tl last:rounded-tr flex flex-row w-fit px-5 py-3 items-start justify-start gap-2`}
     >
       <div
         className={`px-2 py-2 rounded-sm ${
@@ -30,10 +30,18 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
         {tab.icon}
       </div>
       <div className="flex flex-col items-start justify-center">
-        <h1 className={`font-semibold text-sm ${isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'} group-hover:text-trublue-secondary-500`}>
+        <h1
+          className={`font-semibold text-sm ${
+            isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'
+          } group-hover:text-trublue-secondary-500`}
+        >
           {tab.title}
         </h1>
-        <h1 className={`${isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'} group-hover:text-trublue-secondary-500 text-xs lg:text-sm`}>
+        <h1
+          className={`${
+            isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'
+          } group-hover:text-trublue-secondary-500 text-xs lg:text-sm`}
+        >
           {tab.description}
         </h1>
       </div>
