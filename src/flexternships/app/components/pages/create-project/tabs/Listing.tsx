@@ -8,7 +8,7 @@ import TextInput from '@flexternships/app/components/core/form/TextInput';
 import Tooltip from '@flexternships/app/components/core/Tooltip';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
-import { addDaysToEpoch, dateToEpoch, epochDifferenceInDays, epochToDate, formatEpochToHumanReadable, getTodayDate } from '@flexternships/utils/date-utils';
+import { addDaysToEpoch, dateToEpoch, epochDifferenceInDays, epochToDate, getTodayDate } from '@flexternships/utils/date-utils';
 
 import selectedRadioIcon from '@flexternships/assets/icons/radios/selectedRadio.svg';
 import defaultRadioIcon from '@flexternships/assets/icons/radios/defaultRadio.svg';
