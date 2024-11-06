@@ -15,6 +15,7 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { isEmpty } from 'lodash';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 export default function Roles() {
   const rolesData = useProjectCreationStore((state) => state.data.roles);
@@ -35,6 +36,7 @@ export default function Roles() {
     resolver: yupResolver(ProjectRolesFormSchema),
     defaultValues: {},
   });
+  const { projectId } = useParams();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -50,7 +52,7 @@ export default function Roles() {
   const onSaveDraft = async () => {
     try {
       updateRolesData(watch('projectRoles'));
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }
@@ -106,7 +108,7 @@ export default function Roles() {
             Save as Draft
           </SecondaryButton>
           <PrimaryButton
-            onClick={handleSubmit(onContinue, (formErrors) => {console.log(formErrors);})}
+            onClick={handleSubmit(onContinue)}
             disabled={!isValid}
           >
             Continue

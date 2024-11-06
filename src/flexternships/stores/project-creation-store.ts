@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { closeModal, jumpToTab, nextTab, openModal, previousTab, saveDraft, updateEstimatedDuration, updateEstimatedStartDate, updateListingData, updateMilestonesData, updateRequirementsData, updateRolesData } from "@flexternships/actions/project-creation-actions"
+import { appendRemovedMilestoneId, closeModal, jumpToTab, nextTab, openModal, populateDraftProject, previousTab, saveDraft, updateEstimatedDuration, updateEstimatedStartDate, updateListingData, updateMilestonesData, updateRequirementsData, updateRolesData } from "@flexternships/actions/project-creation-actions"
 import { Milestone, ModalType, ProjectCreationFormData, ProjectCreationState, ProjectCreationStore, ProjectDetails, ProjectRole } from "@flexternships/types/project-creation-types"
 import { addDaysToEpoch, dateToEpoch } from "@flexternships/utils/date-utils";
 
@@ -46,6 +46,7 @@ const defaultInitState: ProjectCreationState = {
       listingStartDate: dateToEpoch(new Date()),
       listingEndDate: addDaysToEpoch(dateToEpoch(new Date()), 14),
     },
+    removedMilestoneIds: [],
   } as ProjectCreationFormData,
 }
 
@@ -54,13 +55,15 @@ export const useProjectCreationStore = create<ProjectCreationStore>((set, get) =
   nextTab: () => nextTab(set),
   previousTab: () => previousTab(set),
   jumpToTab: (tabIndex: number) => jumpToTab(tabIndex, set),
-  saveDraft: async () => saveDraft(get, set),
+  saveDraft: async (draftProjectId?: string) => saveDraft(get, set, draftProjectId),
+  populateDraftProject: async (projectId: string) => populateDraftProject(projectId, set),
   updateEstimatedDuration: (duration: number) => updateEstimatedDuration(duration, set),
   updateEstimatedStartDate: (date: number) => updateEstimatedStartDate(date, set),
   updateRequirementsData: (data: ProjectDetails) => updateRequirementsData(data, set),
   updateRolesData: (data: ProjectRole[]) => updateRolesData(data, set),
   updateMilestonesData: (data: Milestone[]) => updateMilestonesData(data, set),
   updateListingData: (listingStartDate?: number, listingEndDate?: number) => updateListingData(set, listingStartDate, listingEndDate),
+  appendRemovedMilestoneId: (milestoneId: string) => appendRemovedMilestoneId(milestoneId, set),
   openModal: (modalType: ModalType) => openModal(modalType, set),
   closeModal: () => closeModal(set),
   resetStore: () => set({...defaultInitState}),

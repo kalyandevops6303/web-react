@@ -16,7 +16,7 @@ import ProjectDetailsItem from './ProjectDetailsItem';
 import RoleItem from './RoleItem';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import ShowToastMessage from '@/@core/components/toast';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => (state.previousTab));
@@ -25,15 +25,23 @@ export default function Preview() {
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
   const openModal = useProjectCreationStore((state) => state.openModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
-
+  const resetProjectCreationStore = useProjectCreationStore((state) => state.resetStore);
   const [recallTimeLeft, setRecallTimeLeft] = useState<number>(-1);
+
+  const { projectId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
       const postProject = async () => {
         try {
-          await createFlexternProject(formData);
-        } catch (error) {
-          showToastMessage(ToastType.ERROR, "Failed to create project. Please try again.");
+          await createFlexternProject(formData, projectId);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            closeModal();
+            showToastMessage(ToastType.ERROR, error.message);
+          } else {
+            showToastMessage(ToastType.ERROR, 'Failed to create project. Please try again.');
+          }
         }
       }
 
@@ -58,10 +66,16 @@ export default function Preview() {
 
   const onSaveDraft = async () => {
     try {
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }
+  }
+
+  const closeSuccessfulCreation = () => {
+    resetProjectCreationStore();
+    closeModal();
+    navigate('/marketplace/my_listings');
   }
 
 
@@ -171,7 +185,7 @@ export default function Preview() {
           </PrimaryButton>
         </div>
       </div>
-      <SuccessfulCreation recallTimeLeft={recallTimeLeft} onRecall={handleRecall} onConfirm={() =>  ShowToastMessage('Invite Talent') } />
+      <SuccessfulCreation recallTimeLeft={recallTimeLeft} onRecall={handleRecall} onConfirm={closeSuccessfulCreation} />
     </div>
   );
 }

@@ -11,6 +11,8 @@ export default function SavedDrafts(props: Props) {
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
   const curModal = useProjectCreationStore((state) => state.curModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
+  const resetProjectCreationStore = useProjectCreationStore((state) => state.resetStore);
+  
   const navigate = useNavigate();
 
   if (!isOpen || curModal !== ModalType.DRAFT_SAVED) {
@@ -19,8 +21,8 @@ export default function SavedDrafts(props: Props) {
 
   const handleClose = () => {
     closeModal();
-    // redirect using navigate
     navigate("/dashboard");
+    resetProjectCreationStore();
   }
 
   return (

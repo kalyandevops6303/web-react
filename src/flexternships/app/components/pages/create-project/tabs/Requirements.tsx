@@ -1,7 +1,7 @@
 "use client";
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
@@ -17,6 +17,8 @@ import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
+import { useParams } from 'react-router-dom';
+import { verifyProjectName } from '@/flexternships/services/project-management-v2';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -24,6 +26,9 @@ export default function Requirements() {
   const updateRequirementsData = useProjectCreationStore((state) => state.updateRequirementsData);
   const nextTab = useProjectCreationStore((state) => state.nextTab);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
+
+  const [isContinueLoading, setIsContinueLoading] = useState<boolean>(false);
+  const [projectNameError, setProjectNameError] = useState<string>('');
 
   const {
     control,
@@ -39,7 +44,32 @@ export default function Requirements() {
     defaultValues: {},
   });
 
-  const onContinue = (data: ProjectDetails) => {
+  const { projectId } = useParams();
+
+  useEffect(() => {
+    setProjectNameError('');
+  }, [watch('projectName')]);
+
+  const onContinue = async (data: ProjectDetails) => {
+
+    // BE validation for project name
+    setIsContinueLoading(true);
+    let isProjectNameValid = true;
+    try {
+      await verifyProjectName(data.projectName);
+    } catch (error: unknown) {
+      isProjectNameValid = false;
+      if (error instanceof Error) {
+        setProjectNameError(error.message);
+      } else {
+        setProjectNameError('An unexpected error occurred while verifying the project name');
+      }
+    } finally {
+      setIsContinueLoading(false);
+    }
+    if (!isProjectNameValid) return;
+
+    // Continue if project name is valid
     updateRequirementsData(data);
     nextTab();
   };
@@ -48,7 +78,7 @@ export default function Requirements() {
     const data = watch();
     updateRequirementsData(data);
     try {
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
       showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
     }
@@ -97,7 +127,7 @@ export default function Requirements() {
                 type={TextInputType.ALPHANUMERIC}
                 label="Project Name"
                 placeholder="Enter project name"
-                error={errors.projectName?.message}
+                error={errors.projectName?.message || projectNameError}
                 required />
             )}>
 
@@ -141,10 +171,10 @@ export default function Requirements() {
               <TextInput
                 value={value}
                 onChange={onChange}
-                className="w-[272px]" 
-                type={TextInputType.NUMERIC} 
+                className="w-[272px]"
+                type={TextInputType.NUMERIC}
                 label="Estimated Hours / Week per Flextern"
-                placeholder="Enter estimation" 
+                placeholder="Enter estimation"
                 extra="hrs/wk"
                 error={errors.estimatedWeeklyHours?.message}
                 required />
@@ -160,10 +190,10 @@ export default function Requirements() {
               <TextInput
                 value={value}
                 onChange={onChange}
-                className="w-[272px]" 
-                type={TextInputType.NUMERIC} 
-                label="Total Project Hours per Flextern" 
-                placeholder="Add duration & hours/week" 
+                className="w-[272px]"
+                type={TextInputType.NUMERIC}
+                label="Total Project Hours per Flextern"
+                placeholder="Add duration & hours/week"
                 extra="hrs/flextern"
                 readOnly />
             )}>
@@ -176,10 +206,10 @@ export default function Requirements() {
               <TextInput
                 value={value}
                 onChange={onChange}
-                className="w-full" 
-                type={TextInputType.ALPHANUMERIC} 
-                label="Project Description" 
-                placeholder="Enter project background and requirements" 
+                className="w-full"
+                type={TextInputType.ALPHANUMERIC}
+                label="Project Description"
+                placeholder="Enter project background and requirements"
                 error={errors.projectDescription?.message}
                 required textarea />
             )}>
@@ -197,13 +227,13 @@ export default function Requirements() {
         </div>
       </div>
       <div className={Styles.buttonsContainer}>
-        <SecondaryButton 
-          className="mr-6" 
-          onClick={onSaveDraft} 
+        <SecondaryButton
+          className="mr-6"
+          onClick={onSaveDraft}
           loading={isSaveDraftLoading}>
-            Save as Draft
-          </SecondaryButton>
-        <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>
+          Save as Draft
+        </SecondaryButton>
+        <PrimaryButton onClick={handleSubmit(onContinue)} loading={isContinueLoading} disabled={!isValid}>
           Continue
         </PrimaryButton>
       </div>

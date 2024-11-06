@@ -226,8 +226,8 @@ const deleteDraftProject = (projectId, onSuccess) => async (dispatch) => {
   dispatch(deleteDraftProjectRequest());
   try {
     const res = await deleteDraftProjectService(projectId);
-    dispatch(deleteDraftProjectSuccess(res.data.data));
-    ShowToastMessage(SUCCESS, res.data.data);
+    dispatch(deleteDraftProjectSuccess(res?.data?.data?.message || 'Draft Project Deleted Successfully'));
+    ShowToastMessage(SUCCESS, res?.data?.data?.message || 'Draft Project Deleted Successfully');
     onSuccess();
   } catch (error) {
     errorHandler(error, deleteDraftProjectFailure);
