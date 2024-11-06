@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import FlatProgressBar from '@flexternships/app/components/core/FlatProgressBar';
 import SavedDrafts from '@flexternships/app/components/core/modals/SavedDrafts';
@@ -94,9 +94,9 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
 }
 
 type TabProp = {
-    id: string
-    title: string,
-    subtitle: string,
-    icon: React.ReactNode,
-    content: React.ReactNode,
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  content: React.ReactNode;
 };

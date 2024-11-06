@@ -8,7 +8,7 @@ import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
 import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import Spinner from '../components/core/Spinner';
-import TeamTab from '../components/pages/project-details/tabs/team';
+import ProjectsTab from './tabs/projects/page';
 
 export default function FlexternshipProjectDetails() {
   const fetchUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
@@ -19,7 +19,7 @@ export default function FlexternshipProjectDetails() {
   useEffect(() => {
     fetchUserDetails();
     if (params?.projectId) {
-      getProjectDetails(params.projectId);
+      getProjectDetails(params?.projectId);
     }
   }, [params]);
   const tabs = [
@@ -29,7 +29,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Users size={18} />,
       description: 'Team list & Permission',
       route: '/team',
-      component: <TeamTab />,
+      component: <div>Team</div>,
       talentVisible: true,
       clientVisible: true,
     },
@@ -39,7 +39,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Box size={18} />,
       description: 'About work details',
       route: '/projects',
-      component: <div>Projects</div>,
+      component: <ProjectsTab />,
       talentVisible: true,
       clientVisible: false,
     },
@@ -86,18 +86,22 @@ export default function FlexternshipProjectDetails() {
                 link: `/project-details/${params?.projectId}/team`,
               },
               {
-                title: params['projectStep'] ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1) : 'Unknown Tab',
+                title: params['projectStep']
+                  ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
+                  : 'Unknown Tab',
                 link: `/project-details/${params?.projectId}/${params['projectStep']}`,
               },
             ]}
           />
         </div>
       )}
-      <div className=" w-full mt-5 flex flex-row items-start flex-wrap justify-start gap-5">
+      <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
         {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-1/5"></div>}
-       {!((params['milestone'] ?? false) && (params?.['milestoneId']?.length ?? 0) > 0) && <div className="flex flex-col flex-grow items-start gap-5">
-          <ProjectDetailsTabNavigation tabs={tabs} />
-        </div>}
+        {!((params['milestone'] ?? false) && (params?.['milestoneId']?.length ?? 0) > 0) && (
+          <div className="flex flex-col flex-grow items-start gap-5">
+            <ProjectDetailsTabNavigation tabs={tabs} />
+          </div>
+        )}
       </div>
     </div>
   );

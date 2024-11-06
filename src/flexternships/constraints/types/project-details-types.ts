@@ -76,6 +76,8 @@ export type ProjectDetails = {
   clientInfo?: ClientInfo[];
   skillsData: Skill[];
   toolsData?: Tool[];
+  orgDetails?: Record<string, any>;
+  clientDetails?: Record<string, any>;
 };
 
 type ProjectRole = {

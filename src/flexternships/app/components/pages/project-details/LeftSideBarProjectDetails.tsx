@@ -24,6 +24,7 @@ const LeftSideBarProjectDetails = () => {
     setShowMore((prev) => !prev);
   };
   const daysLeft = calculateDays(data?.listingDetails?.startDateEpoch, data?.listingDetails?.endDateEpoch)?.daysLeft;
+
   return (
     <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  xl:w-[350px] h-fit rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
@@ -106,7 +107,8 @@ const LeftSideBarProjectDetails = () => {
           <p className="w-full">
             {showMore
               ? data?.details?.description
-              : `${data?.details?.description.slice(0, 100)}` + (data?.details?.description?.length > 100 ? '...' : '')}
+              : `${data?.details?.description?.slice(0, 100)}` +
+                (data?.details?.description?.length > 100 ? '...' : '')}
             <span onClick={handleToggle} className="text-skyblue cursor-pointer">
               {data?.details?.description?.length > 100 ? (showMore ? ' Read less' : ' Read more') : null}
             </span>

@@ -3,7 +3,9 @@ import NavigationTab from './NavigationTab';
 import { useParams } from 'react-router-dom';
 
 export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTabType[] }) {
+
   const param = useParams();
+
   return (
     <div className="w-full">
       <div className=" bg-white  w-fit flex flex-row  items-start justify-start">
