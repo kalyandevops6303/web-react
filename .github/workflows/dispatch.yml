@@ -3,11 +3,21 @@ name: Tag Dispatch & Release
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        description: 'Choose Deployment environment'
+        required: true
+        type: choice
+        options:
+          - tru-uat
+          - tru-prod
+          - uat
+          - prod
       branch:
         description: 'Target branch to push the tag'
         required: true
         type: choice
         options:
+          - dev-test
           - uat
           - production
       version_type:
@@ -18,15 +28,22 @@ on:
           - major
           - minor
           - patch
-      tag_pattern:
-        description: 'Tag pattern for the selected branch'
+      release_type:
+        description: 'Rollout (New release) or Rollback (Previous release)'
         required: true
         type: choice
         options:
-          - uat_*
-          - tru-uat_*
-          - v*
-          - tru-prod_v*
+          - roll-out
+          - roll-back
+      # tag_pattern:
+      #   description: 'Tag pattern for the selected branch'
+      #   required: true
+      #   type: choice
+      #   options:
+      #     - uat_*
+      #     - tru-uat_*
+      #     - v*
+      #     - tru-prod_v*
 
 jobs:
   tag-dispatch:
@@ -35,6 +52,20 @@ jobs:
       contents: write 
 
     steps:
+    - name: Branch and Tag 
+      id: set_branch_and_tag
+      run: |
+        case "${{ github.event.inputs.environment }}" in
+          uat) branch="${{ github.event.inputs.branch }}"; tag="uat_v*" ;;
+          prod) branch="${{ github.event.inputs.branch }}"; tag="v*" ;;
+          tru-uat) branch="${{ github.event.inputs.branch }}"; tag="tru-uat_v*" ;;
+          tru-prod) branch="${{ github.event.inputs.branch }}"; tag="tru-prod_v*" ;;
+          *) echo "Invalid environment specified"; exit 1 ;;
+        esac
+        echo "branch=$branch" >> $GITHUB_ENV
+        echo "tag=$tag" >> $GITHUB_ENV
+        echo "::set-output name=tag::$tag"
+    
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
@@ -48,70 +79,144 @@ jobs:
     - name: Current branch
       run: git branch
 
-    - name: Get Latest Tag
-      id: get_latest_tag
+    # - name: Get Latest Tag
+    #   id: get_latest_tag
+    #   run: |
+    #     branch=${{ github.event.inputs.branch }}
+    #     tag_pattern=${{ github.event.inputs.tag_pattern }}
+
+    #     if [ "$branch" = "production" ]; then
+    #       if [[ "$tag_pattern" != "v*" && "$tag_pattern" != "tru-prod_v*" ]]; then
+    #         echo "Invalid tag pattern for production branch. Use 'v*' or 'tru-prod_v*'."
+    #         exit 1
+    #       fi
+    #     elif [ "$branch" = "uat" ]; then
+    #       if [[ "$tag_pattern" != "uat_*" && "$tag_pattern" != "tru-uat_*" ]]; then
+    #         echo "Invalid tag pattern for uat branch. Use 'uat_*' or 'tru-uat_*'."
+    #         exit 1
+    #       fi
+    #     fi
+
+    #     TAG=$(git tag -l "$tag_pattern" | sort -V --reverse | sed -n 1p)
+    #     echo "latest_tag=$TAG" >> $GITHUB_ENV
+    #     [[ -z "${TAG}" ]] && echo "No tag found..." || echo "Tag found: ${TAG}"
+
+    - name: Getting Latest Tags
+      id: get_tags
       run: |
-        branch=${{ github.event.inputs.branch }}
-        tag_pattern=${{ github.event.inputs.tag_pattern }}
-
-        if [ "$branch" = "production" ]; then
-          if [[ "$tag_pattern" != "v*" && "$tag_pattern" != "tru-prod_v*" ]]; then
-            echo "Invalid tag pattern for production branch. Use 'v*' or 'tru-prod_v*'."
-            exit 1
-          fi
-        elif [ "$branch" = "uat" ]; then
-          if [[ "$tag_pattern" != "uat_*" && "$tag_pattern" != "tru-uat_*" ]]; then
-            echo "Invalid tag pattern for uat branch. Use 'uat_*' or 'tru-uat_*'."
-            exit 1
-          fi
-        fi
-
-        TAG=$(git tag -l "$tag_pattern" | sort -V --reverse | sed -n 1p)
-        echo "latest_tag=$TAG" >> $GITHUB_ENV
-        [[ -z "${TAG}" ]] && echo "No tag found..." || echo "Tag found: ${TAG}"
-
-    - name: Increment Tag
-      id: increment_tag
-      run: |
-        latest_tag=${{ env.latest_tag }}
-        version_type=${{ github.event.inputs.version_type }}
+        tags=($(git tag -l "$tag" | sort -V --reverse))
         
-        if [ -z "$latest_tag" ]; then
-          echo "No previous tag found. Exiting."
+        if [ ${#tags[@]} -lt 2 ]; then
+          echo "Error: Not enough tags found for rollback."
           exit 1
         fi
-        
-        # Extract the prefix and version number
-        prefix="${latest_tag%%v*}"  # Extract everything before 'v'
-        version="${latest_tag#${prefix}v}"  # Extract everything after 'prefixv'
-        
-        IFS='.' read -r -a version_parts <<< "$version"
-        
-        major=${version_parts[0]}
-        minor=${version_parts[1]}
-        patch=${version_parts[2]}
-        
-        case $version_type in
-          major)
-            major=$((major + 1))
-            minor=0
-            patch=0
-            ;;
-          minor)
-            minor=$((minor + 1))
-            patch=0
-            ;;
-          patch)
-            patch=$((patch + 1))
-            ;;
-        esac
-        
-        new_tag="${prefix}v${major}.${minor}.${patch}"
+
+        latest_tag=${tags[0]}
+        second_latest_tag=${tags[1]}
+
+        echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+        echo "second_latest_tag=$second_latest_tag" >> $GITHUB_ENV
+
+    - name: Update Tag Based on Release Type
+      id: update_tag
+      run: |
+        release_type=${{ github.event.inputs.release_type }}
+        version_type=${{ github.event.inputs.version_type }}
+        branch=${{ github.event.inputs.branch }}
+
+        if [ "$release_type" = "roll-out" ]; then
+          # Increment version based on version_type
+          prefix="${latest_tag%%v*}"  # Extract everything before 'v'
+          version="${latest_tag#${prefix}v}"  # Extract everything after 'prefixv'
+          IFS='.' read -r -a version_parts <<< "$version"
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+          
+          case $version_type in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+          esac
+          
+          new_tag="${prefix}v${major}.${minor}.${patch}"
+        else
+          # Use second-most recent tag for rollback
+          new_tag="${second_latest_tag}"
+        fi
         
         echo "next_tag=$new_tag" >> $GITHUB_ENV
         echo "Next tag: $new_tag"
+        echo "::set-output name=new_tag::$new_tag"
+        echo "::set-output name=branch::$branch"
+        echo "::set-output name=release_type::$release_type"
+
+    - name: Install GitHub CLI
+      run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+    - name: Set  in Repository Variable
+      run: |
+        branch=${{ steps.update_tag.outputs.branch }}  
+        release_type=${{ steps.update_tag.outputs.release_type }}
+        new_tag=${{ steps.update_tag.outputs.new_tag }}
+                
+        gh variable set BRANCH --body "$branch"
+        gh variable set RELEASE_TYPE --body "$release_type"
+        gh variable set TAG --body "$new_tag"
+      env:
+        GH_TOKEN: ${{ secrets.TAG_TOKEN }}
+
+
+    # - name: Increment Tag
+    #   id: increment_tag
+    #   run: |
+    #     latest_tag=${{ env.latest_tag }}
+    #     version_type=${{ github.event.inputs.version_type }}
+        
+    #     if [ -z "$latest_tag" ]; then
+    #       echo "No previous tag found. Exiting."
+    #       exit 1
+    #     fi
+        
+    #     # Extract the prefix and version number
+    #     prefix="${latest_tag%%v*}"  # Extract everything before 'v'
+    #     version="${latest_tag#${prefix}v}"  # Extract everything after 'prefixv'
+        
+    #     IFS='.' read -r -a version_parts <<< "$version"
+        
+    #     major=${version_parts[0]}
+    #     minor=${version_parts[1]}
+    #     patch=${version_parts[2]}
+        
+    #     case $version_type in
+    #       major)
+    #         major=$((major + 1))
+    #         minor=0
+    #         patch=0
+    #         ;;
+    #       minor)
+    #         minor=$((minor + 1))
+    #         patch=0
+    #         ;;
+    #       patch)
+    #         patch=$((patch + 1))
+    #         ;;
+    #     esac
+        
+    #     new_tag="${prefix}v${major}.${minor}.${patch}"
+        
+    #     echo "next_tag=$new_tag" >> $GITHUB_ENV
+    #     echo "Next tag: $new_tag"
 
     - name: Push new tag
+      if: ${{ github.event.inputs.release_type == 'roll-out' }}
       env:
         GITHUB_TOKEN: ${{ secrets.TAG_TOKEN }}
       run: |
@@ -120,6 +225,7 @@ jobs:
         git push origin $new_tag
 
     - name: Create GitHub Release
+      if: ${{ github.event.inputs.release_type == 'roll-out' }}
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -128,5 +234,20 @@ jobs:
         tag_name: ${{ env.next_tag }}
         release_name: ${{ env.next_tag }}
         body: 'Description of the release'
+        draft: false
+        prerelease: false
+
+## Roll-back conditions
+             
+    - name: Create GitHub Release
+      if: ${{ github.event.inputs.release_type == 'roll-back' }}
+      id: create_rollback_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TAG_TOKEN }}
+      with:
+        tag_name: "${{ env.next_tag }}-run-${{ github.run_number }}"
+        release_name: "${{ env.next_tag }}-run-${{ github.run_number }}" 
+        body: 'Roll-back release'
         draft: false
         prerelease: false

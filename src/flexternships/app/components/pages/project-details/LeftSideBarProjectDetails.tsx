@@ -23,7 +23,8 @@ const LeftSideBarProjectDetails = () => {
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
-  const daysLeft = calculateDays(data?.listing_details?.start_date_epoch, data?.listing_details?.end_date_epoch)?.daysLeft;
+  const daysLeft = calculateDays(data?.listingDetails?.startDateEpoch, data?.listingDetails?.endDateEpoch)?.daysLeft;
+
   return (
     <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 w-full md:w-[350px] h-fit rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
@@ -31,26 +32,27 @@ const LeftSideBarProjectDetails = () => {
           status={data?.status as 'OPEN' | 'IN_REVIEW' | 'ACTIVE' | 'ONGOING' | 'CLOSED' | 'TERMINATED' | 'COMPLETED'}
         />
 
-        {daysLeft > 0 && <h1 className="text-error font-semibold">
-          {daysLeft} Days
-          Left
-        </h1>}
+        {daysLeft > 0 && <h1 className="text-[#EA5455] font-semibold">{daysLeft} Days Left</h1>}
       </div>
       <h1 className="font-medium text-lg">{data?.details?.name}</h1>
 
       <div className="flex flex-row items-center justify-center gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
-          <img src={data?.client_info?.[0]?.image_uri?.length! > 0 ? data?.client_info?.[0]?.image_uri : defaultAvatar} className="w-9 rounded-full h-9" alt="" />
-          <h1 className={`${UserTypeChipClassnames['CLIENT']} font-semibold text-xs px-2 py-1 rounded-xl`}>Client</h1>
+          <img
+            src={data?.clientInfo?.[0]?.imageUri?.length! > 0 ? data?.clientInfo?.[0]?.imageUri : defaultAvatar}
+            className="w-12 rounded-full h-12"
+            alt=""
+          />
+          <h1 className={`${UserTypeChipClassnames['CLIENT']} font-semibold px-2 py-1 rounded-xl`}>Client</h1>
         </div>
 
-        <div className="flex flex-col items-start">
-          <h1 className="text-[#333333] text-base">
-            {data?.client_info?.[0]?.first_name ?? ''} {data?.client_info?.[0]?.last_name ?? ''}
+        <div className="flex flex-col items-start gap-1">
+          <h1 className="text-[#333333] font-semibold">
+            {data?.clientInfo?.[0]?.firstName ?? ''} {data?.clientInfo?.[0]?.lastName ?? ''}
           </h1>
           <RatingInfo
-            rating={data?.client_info?.[0]?.rating || 0}
-            projectsCount={data?.client_info?.[0]?.projects_listed_count || 0}
+            rating={data?.clientInfo?.[0]?.rating || 0}
+            projectsCount={data?.clientInfo?.[0]?.projectsListedCount || 0}
           />
         </div>
       </div>
@@ -60,33 +62,26 @@ const LeftSideBarProjectDetails = () => {
         <hr className="w-full mt-1 text-gray-300" />
       </div>
       <div className="w-full flex flex-row  items-center justify-start gap-5">
-        <div className="flex flex-row items-center gap-2">
-          <img src={StartDateSVG} className="w-12 h-12 rounded-full" alt="" />
-          <div className="flex flex-col items-start">
-            <h1 className="font-medium">{convertUnixTimestampToDate(data?.listing_details?.start_date_epoch)}</h1>
+        <div className="flex flex-row items-center gap-1">
+          <img src={StartDateSVG} className="w-14 h-14 rounded-full" alt="" />
+          <div className="flex flex-col items-start gap-1">
+            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listingDetails?.startDateEpoch)}</h1>
             <h1 className="text-xs">Start Date</h1>
           </div>
         </div>
-        <div className="flex flex-row items-center gap-2">
-          <img src={EndDateSVG} className="w-12 h-12 rounded-full" alt="" />
-          <div className="flex flex-col items-start">
-            <h1 className="font-medium">{convertUnixTimestampToDate(data?.listing_details?.end_date_epoch)}</h1>
+        <div className="flex flex-row items-center gap-1">
+          <img src={EndDateSVG} className="w-14 h-14 rounded-full" alt="" />
+          <div className="flex flex-col items-start gap-1">
+            <h1 className="font-semibold">{convertUnixTimestampToDate(data?.listingDetails?.endDateEpoch)}</h1>
             <h1 className="text-xs">End Date</h1>
           </div>
         </div>
       </div>
 
-
-
-      <div className="flex flex-col items-start justify-start w-full gap-4 text-gray-600 text-sm">
-        {/* {userDetails?.userType === userTypes?.client && (
-          <h1>
-            Fixed Price : <span className="font-semibold text-gray-900">$ 135,000</span>
-          </h1>
-        )} */}
+      <div className="flex flex-col items-start justify-start w-full gap-5 text-gray-600">
         <h1>
           Estimated Duration :{' '}
-          <span className="font-medium ">{data?.details?.expected_duration?.duration} Weeks</span>
+          <span className="font-semibold text-gray-900">{data?.details?.expectedDuration?.duration} Weeks</span>
         </h1>
         <div className="flex flex-row items-start gap-3">
           Status :{' '}
@@ -96,16 +91,16 @@ const LeftSideBarProjectDetails = () => {
           />
         </div>
 
-        {data?.skills_data?.length! > 0 && (
+        {data?.skillsData?.length! > 0 && (
           <div className="flex flex-row items-start w-full justify-start gap-2">
             <h1 className="mt-1">Skills:</h1>
-            <BadgeGroup tags={data?.skills_data || []} className="bg-skyblue-light text-skyblue" />
+            <BadgeGroup tags={data?.skillsData || []} className="bg-skyblue-light text-skyblue" />
           </div>
         )}
-        {data?.tools_data?.length! > 0 && (
+        {data?.toolsData?.length! > 0 && (
           <div className="flex flex-row items-start w-full justify-start gap-2">
             <h1 className="mt-1">Tools:</h1>
-            <BadgeGroup tags={data?.tools_data || []} className="bg-skyblue-light text-skyblue" />
+            <BadgeGroup tags={data?.toolsData || []} className="bg-skyblue-light text-skyblue" />
           </div>
         )}
         <div className="flex flex-col w-full ">
@@ -113,7 +108,8 @@ const LeftSideBarProjectDetails = () => {
           <p className="w-full font-normal">
             {showMore
               ? data?.details?.description
-              : `${data?.details?.description.slice(0, 100)}` + (data?.details?.description?.length > 100 ? '...' : '')}
+              : `${data?.details?.description?.slice(0, 100)}` +
+                (data?.details?.description?.length > 100 ? '...' : '')}
             <span onClick={handleToggle} className="text-skyblue cursor-pointer">
               {data?.details?.description?.length > 100 ? (showMore ? ' Read less' : ' Read more') : null}
             </span>

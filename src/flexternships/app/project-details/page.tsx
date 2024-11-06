@@ -6,6 +6,7 @@ import MilestoneTab from '../components/pages/project-details/tabs/milestone';
 import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
 import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import ProjectsTab from './tabs/projects/page';
 
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
@@ -15,7 +16,7 @@ export default function FlexternshipProjectDetails() {
 
   useEffect(() => {
     if (params?.projectId) {
-      getProjectDetails(params.projectId);
+      getProjectDetails(params?.projectId);
     }
   }, [params]);
 
@@ -36,7 +37,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Box size={18} />,
       description: 'About work details',
       route: '/projects',
-      component: <div>Projects</div>,
+      component: <ProjectsTab />,
       talentVisible: true,
       clientVisible: false,
     },
@@ -65,9 +66,9 @@ export default function FlexternshipProjectDetails() {
   return (
     <div className="flexternships-page">
       {
-      projectLoading ? (
-        <div className='h-5'></div>
-      ): (
+        projectLoading ? (
+          <div className='h-5'></div>
+        ) : (
           <div className="flex flex-col items-start gap-5">
             <BreadCrumbs
               steps={[
@@ -80,14 +81,15 @@ export default function FlexternshipProjectDetails() {
                   link: `/project-details/${params?.projectId}/team`,
                 },
                 {
-                  title: params['projectStep'] ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1) : 'Unknown Tab',
+                  title: params['projectStep']
+                    ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
+                    : 'Unknown Tab',
                   link: `/project-details/${params?.projectId}/${params['projectStep']}`,
                 },
               ]}
             />
           </div>
-        )
-      }
+        )}
       <div className=" w-full mt-5 flex flex-row items-start flex-wrap md:flex-nowrap justify-start gap-5">
         {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
         <div className="flex flex-col flex-grow items-start gap-5">

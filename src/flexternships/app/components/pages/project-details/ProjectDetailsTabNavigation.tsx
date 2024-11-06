@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
 export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTabType[] }) {
+
   const param = useParams();
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
