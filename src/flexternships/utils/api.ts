@@ -25,6 +25,10 @@ export const routes = {
       details: `${serviceUrls.projectManagementV2}/legal/document`,
       signDocument: `${serviceUrls.projectManagementV2}/legal/document/sign`,
     },
+    milestone: {
+      getMilestonesByProjectId: `${serviceUrls.projectManagementV2}/milestones`,
+      getMilestoneDetailsById: `${serviceUrls.projectManagementV2}/single/milestone`,
+    }
   },
   userManagement: {
     static: {
@@ -67,8 +71,5 @@ export const routes = {
     password: {
       changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
     },
-  },
-  projectDetails: {
-    teamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
-  },
+  }
 };

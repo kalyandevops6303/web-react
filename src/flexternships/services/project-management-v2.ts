@@ -182,6 +182,12 @@ export const createFlexternProjectDraft: (projectData: ProjectCreationFormData, 
     }
 }
 
+/**
+ * Retrieves a draft Flextern project by project ID.
+ * @param projectId - The ID of the draft project to retrieve.
+ * @returns A Promise that resolves to the project creation form data or undefined.
+ * @throws {Error} If the draft project retrieval fails or an unexpected error occurs.
+ */
 export const getFlexternProjectDraft: (projectId: string) => Promise<ProjectCreationFormData | undefined> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -239,6 +245,14 @@ export const getFlexternProjectDraft: (projectId: string) => Promise<ProjectCrea
       handleError(error as Error, 'An unexpected error occurred while retrieving the Flextern project draft');
   }
 }
+
+
+/**
+ * Retrieves project details by project ID.
+ * @param projectId - The ID of the project to retrieve details for.
+ * @returns A Promise that resolves to the project details or undefined.
+ * @throws {Error} If the project details retrieval fails or an unexpected error occurs.
+ */
 export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetails | undefined> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -347,6 +361,52 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
   }
 }
 
+/**
+ * Retrieves all milestones for a given project.
+ * @param projectId - The ID of the project to retrieve milestones for.
+ * @returns A Promise that resolves to the project milestones data.
+ * @throws {Error} If the milestones retrieval fails or an unexpected error occurs.
+ */
+export const getMilestonesByProjectId = async (projectId: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+      headers: headers
+  }
+
+  try {
+    const response = await axios.get(`${routes.projectManagementV2.milestone.getMilestonesByProjectId}?project_id=${projectId}`, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching project milestones');
+  }
+}
+
+/**
+ * Retrieves detailed information for a specific milestone.
+ * @param milestoneId - The ID of the milestone to retrieve details for.
+ * @returns A Promise that resolves to the milestone details data.
+ * @throws {Error} If the milestone details retrieval fails or an unexpected error occurs.
+ */
+export const getMilestoneDetailsById = async (milestoneId: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+      headers: headers
+  }
+
+  try {
+    const response = await axios.get(`${routes.projectManagementV2.milestone.getMilestoneDetailsById}?milestone_id=${milestoneId}`, config);
+    return response.data.data[0];
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching milestone details');
+  }
+}
+
+/**
+ * Verifies if a project name is available and valid.
+ * @param projectName - The project name to verify.
+ * @returns A Promise that resolves when the project name is verified.
+ * @throws {Error} If the project name verification fails or an unexpected error occurs.
+ */
 export const verifyProjectName: (projectName: string) => Promise<void> = async (projectName) => {
   const headers = appendAuthToken({});
   const config = {

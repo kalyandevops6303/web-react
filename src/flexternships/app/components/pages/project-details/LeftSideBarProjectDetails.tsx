@@ -6,13 +6,13 @@ import StartDateSVG from '../../../../assets/svgs/project-details/start-date.svg
 import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { Button } from '../../ui/button';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { userTypes } from '@/utility/constants/Constant';
 import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
 
 enum UserTypeChipClassnames {
-  TALENT = 'bg-[#FFD700] text-[#333333]',
+  TALENT = 'bg-[#FFD700] text-error',
   CLIENT = 'text-blue-700 bg-blue-100',
 }
 
@@ -26,7 +26,7 @@ const LeftSideBarProjectDetails = () => {
   const daysLeft = calculateDays(data?.listingDetails?.startDateEpoch, data?.listingDetails?.endDateEpoch)?.daysLeft;
 
   return (
-    <div className="bg-white flex flex-col items-start gap-5 px-6 py-5 w-full md:w-[50%]  xl:w-[350px] h-fit rounded-xl">
+    <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 w-full md:w-[350px] h-fit rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
         <ProjectStatusChip
           status={data?.status as 'OPEN' | 'IN_REVIEW' | 'ACTIVE' | 'ONGOING' | 'CLOSED' | 'TERMINATED' | 'COMPLETED'}
@@ -34,7 +34,7 @@ const LeftSideBarProjectDetails = () => {
 
         {daysLeft > 0 && <h1 className="text-[#EA5455] font-semibold">{daysLeft} Days Left</h1>}
       </div>
-      <h1 className="font-semibold text-lg">{data?.details?.name}</h1>
+      <h1 className="font-medium text-lg">{data?.details?.name}</h1>
 
       <div className="flex flex-row items-center justify-center gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
@@ -58,7 +58,7 @@ const LeftSideBarProjectDetails = () => {
       </div>
 
       <div className="w-full">
-        <h1 className="text-xl font-semibold">Project Details</h1>
+        <h1 className="text-lg font-medium">Project Details</h1>
         <hr className="w-full mt-1 text-gray-300" />
       </div>
       <div className="w-full flex flex-row  items-center justify-start gap-5">
@@ -87,6 +87,7 @@ const LeftSideBarProjectDetails = () => {
           Status :{' '}
           <ProjectStatusChip
             status={data?.status as 'OPEN' | 'IN_REVIEW' | 'ACTIVE' | 'ONGOING' | 'CLOSED' | 'TERMINATED' | 'COMPLETED'}
+            rounded={true}
           />
         </div>
 
@@ -103,8 +104,8 @@ const LeftSideBarProjectDetails = () => {
           </div>
         )}
         <div className="flex flex-col w-full ">
-          <h1 className="text-gray-900 font-semibold">Description: </h1>
-          <p className="w-full">
+          <h1 className="text-gray-900 font-medium">Description: </h1>
+          <p className="w-full break-all font-normal">
             {showMore
               ? data?.details?.description
               : `${data?.details?.description?.slice(0, 100)}` +
@@ -116,19 +117,19 @@ const LeftSideBarProjectDetails = () => {
         </div>
 
         <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
-          {userDetails?.userType === userTypes?.client && (
+          {userDetails.userType === UserType.CLIENT && (
             <Button
               variant="outline"
               size="default"
               className="w-fit px-10 py-3 mx-auto bg-red-600 hover:border hover:border-red-600 hover:bg-red-200 font-semibold hover:text-red-600 text-white"
             >
-              Report
+              Terminate
             </Button>
           )}
           <Button
             variant="outline"
             size="default"
-            className="w-fit px-10 py-3 mx-auto bg-[#0065C1] hover:border hover:border-[#0065C1] hover:bg-skyblue-light font-semibold hover:text-[#0065C1] text-white"
+            className="w-fit px-8 py-2 mx-auto bg-trublue hover:border hover:border-trublue hover:bg-skyblue-light font-semibold hover:text-trublue text-white"
           >
             Message
           </Button>

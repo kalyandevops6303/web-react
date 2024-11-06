@@ -3,15 +3,26 @@ export enum UserType {
     TALENT = 'TALENT',
 }
 
+// Subject to changer as per BE
 export enum MilestoneStatus {
     ACTIVE = 'ACTIVE',
     COMPLETED = 'COMPLETED',
     INACTIVE = 'INACTIVE',
 }
+// Subject to changer as per BE
+export enum MilestoneFeedbackType {
+    TEAM_FEEDBACK = 'TEAM_FEEDBACK',
+    INDIVIDUAL_FEEDBACK = 'INDIVIDUAL_FEEDBACK',
+    SELF_FEEDBACK = 'SELF_FEEDBACK',
+    PEER_FEEDBACK = 'PEER_FEEDBACK',
+}
+// Subject to changer as per BE
+export enum MilestoneFeedbackStatus {
+    PENDING = 'PENDING',
+    COMPLETED = 'COMPLETED',
+}
 
 export enum FlexternUserAppRole {
-    // CLIENT = 'CLIENT',
-    // TALENT = 'TALENT',
     FLEXTERN_CLIENT = 'FLEXTERN_CLIENT',
     FLEXTERN_TALENT = 'FLEXTERN_TALENT',
 }

@@ -51,21 +51,28 @@ export function addDaysToEpoch(epoch: number, days: number): number {
 
 
 /**
- * Utility to convert epoch time to a human-readable date format.
- * @param epoch - The epoch time (milliseconds since 1970-01-01).
- * @returns A formatted date string (e.g., "Sep 30, 2024").
+ * Converts epoch time to a human-readable date format.
+ * @param epoch - The epoch time in milliseconds since 1970-01-01.
+ * @param truncateYear - Optional. If true, displays year in 2-digit format. Default is false.
+ * @returns A formatted date string (e.g., "Sep 30, 2024" or "Sep 30, 24" if truncateYear is true).
+ * @throws {TypeError} If epoch is not a number.
  */
-export function formatEpochToHumanReadable(epoch: number): string {
+export function formatEpochToHumanReadable(epoch: number, truncateYear = false, includeTime = false): string {
     if (typeof epoch !== 'number') {
         throw new TypeError('Expected a number for epoch');
     }
 
     const date = new Date(epoch);
     const options: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
+        year: truncateYear ? '2-digit' : 'numeric',
         month: 'short',
         day: 'numeric',
     };
+
+    if (includeTime) {
+        options.hour = '2-digit';
+        options.minute = '2-digit';
+    }
 
     return date.toLocaleDateString('en-US', options);
 }

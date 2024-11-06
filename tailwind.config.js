@@ -31,13 +31,12 @@ module.exports = {
           600: "#515759",
           loadingText: "#9E9E9E"
         },
-        skyblue:{
+        skyblue: {
           DEFAULT: "#00B0FF",
           light: "#00B0FF1F",
         },
         success: '#28C76F',
         error: "#EA5455",
-        success: "#28C76F",
         trublue: {
           DEFAULT: "#0065C1",
           secondary: {
@@ -65,7 +64,7 @@ module.exports = {
       padding: {
         13: "3.25rem",
       },
-      margin:{
+      margin: {
         17: "4.25rem",
       },
       fontFamily: {
@@ -93,6 +92,20 @@ module.exports = {
         'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
         'primary-button': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
       },
+      keyframes: {
+        'accordion-down': {
+          from: {height: '0'},
+          to: {height: 'var(--radix-accordion-content-height)'}
+        },
+        'accordion-up': {
+          from: {height: 'var(--radix-accordion-content-height)'},
+          to: {height: '0'}
+        }
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out'
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

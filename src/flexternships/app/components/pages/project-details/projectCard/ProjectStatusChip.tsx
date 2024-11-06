@@ -2,8 +2,10 @@ import { ProjectStatus, ProjectStatusChipClassnames } from "@/flexternships/cons
 
 const ProjectStatusChip = ({
   status,
+  rounded=false,
 }: {
   status: keyof typeof ProjectStatusChipClassnames;
+  rounded?: boolean;
 }) => {
   enum ProjectStatusChipClassnames {
     OPEN = 'bg-skyblue-light text-skyblue border border-skyblue',
@@ -18,7 +20,7 @@ const ProjectStatusChip = ({
   const statusClass = ProjectStatusChipClassnames[status];
   return (
     <h1
-      className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-md ${statusClass} `}
+      className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-${rounded ? '2xl': 'lg'} ${statusClass} `}
     >
       {ProjectStatus[status]}
     </h1>
