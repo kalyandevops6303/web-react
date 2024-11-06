@@ -74,7 +74,7 @@ const SetNewPassword = () => {
           <div className="mb-2">
             <Label className="form-label d-flex justify-content-between" for="login-email">
               New Password
-            <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
+              <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
             </Label>
             <UncontrolledTooltip placement="right" target="info">
               <p className="m-0 text-start">
@@ -103,8 +103,6 @@ const SetNewPassword = () => {
             {newPassword && <PasswordStrengthMeter password={newPassword} />}
 
             {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
-
-            
           </div>
           <div className="mb-3">
             <Label className="form-label" for="login-email">
@@ -128,8 +126,8 @@ const SetNewPassword = () => {
               )}
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
-            <p className='text-success text-xs mt-2'>
-                {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
+            <p className="text-success text-xs mt-2">
+              {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
             </p>
           </div>
           <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>

@@ -33,10 +33,9 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
   `;
   const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
-    if(isFlextern){
+    if (isFlextern) {
       dispatch(getProfileCompletionFlextern());
-    }
-    else{
+    } else {
       dispatch(getProfilePercentage());
     }
   }, []);

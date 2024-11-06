@@ -9,8 +9,8 @@ import { formatDate, roundOfAmount } from '../../../utility/Utils';
 const TeamPayments = ({ teamPayments, milestonesData, selectedMilestoneIndex = 0 }) => {
   const nextMileStoneDate = milestonesData[selectedMilestoneIndex + 1]?.start_date;
   const amount =
-    milestonesData.filter((item) => item?.status === 'ON_GOING' || item?.status === 'YET_TO_START')[0]?.estimated_cost ??
-    '-';
+    milestonesData.filter((item) => item?.status === 'ON_GOING' || item?.status === 'YET_TO_START')[0]
+      ?.estimated_cost ?? '-';
   const [historyModalState, setHistoryModalState] = useState({
     isOpen: false,
     payments: [],
@@ -34,7 +34,10 @@ const TeamPayments = ({ teamPayments, milestonesData, selectedMilestoneIndex = 0
       <hr />
       <div className="p-2 pt-1 w-100">
         {teamPayments.map((item, index) => {
-          const paidAmount = item.payments.reduce((acc, curr) => (curr?.status === 'PAID' ? acc + curr.amount : acc), 0);
+          const paidAmount = item.payments.reduce(
+            (acc, curr) => (curr?.status === 'PAID' ? acc + curr.amount : acc),
+            0,
+          );
           return (
             <div
               onClick={() => {

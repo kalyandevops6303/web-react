@@ -1,6 +1,6 @@
 // ** Store Imports
-import { handleNavbarColor } from "@store/layout";
-import { useDispatch, useSelector } from "react-redux";
+import { handleNavbarColor } from '@store/layout';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useNavbarColor = () => {
   // ** Hooks

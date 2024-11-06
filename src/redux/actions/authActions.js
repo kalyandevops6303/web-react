@@ -105,7 +105,6 @@ import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
 import { logout as logoutZustand } from '@flexternships/utils/core-utils';
 
-
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
     await fcmSubscribeService(fcmToken);
@@ -128,7 +127,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
   dispatch(loginRequest());
   try {
     const res = await loginService({ email: username, password });
-    if(!isEmpty(res?.data?.data)) {
+    if (!isEmpty(res?.data?.data)) {
       dispatch(setUserTypeSuccess(res?.data?.data?.user_type));
       setItem('access_token', res.data.data.access_token);
       setItem('access_token_expires', res.data.data.access_token_expires);
@@ -141,8 +140,8 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       // if (res.data.)
       window.dataLayer.push({ user_id: res.data.data.user_id });
       onSuccess(res.data.data);
-      if(res.data?.data?.user_type === userTypes.talent) {
-        if(res.data?.data?.is_flextern) {
+      if (res.data?.data?.user_type === userTypes.talent) {
+        if (res.data?.data?.is_flextern) {
           dispatch(setTalentBooleanIsFlextern(res.data?.data?.is_flextern));
         } else {
           dispatch(setTalentBooleanIsFlextern(false));
@@ -162,32 +161,29 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       }
     }
   } catch (error) {
-    if (error?.response?.data?.errorData?.errorCode === 403 ) {
+    if (error?.response?.data?.errorData?.errorCode === 403) {
       const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
-      dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt,10)));
+      dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
       // ShowToastMessage(ERROR,error?.response?.data?.errorData?.message.match(/'([^']+)'/)[1])
-      dispatch(loginFailure())
+      dispatch(loginFailure());
     } else {
       errorHandler(error, loginFailure);
     }
   }
-
-  
 };
-
 
 const getFlexternVariables = (onSuccessFlexternVariables) => async (dispatch) => {
   try {
     const res = await getFlexternVariablesService();
-    if(!isEmpty(res?.data?.data)) {
-      dispatch(setTalentBooleansFlextern(res?.data?.data?.flextern))
+    if (!isEmpty(res?.data?.data)) {
+      dispatch(setTalentBooleansFlextern(res?.data?.data?.flextern));
       dispatch(setTalentBooleanTrumioTalent(res?.data?.data?.trumio_talent));
       onSuccessFlexternVariables(res?.data?.data);
     }
   } catch (error) {
     errorHandler(error);
   }
-}
+};
 
 const loginUserWithGoogle =
   ({ id_token, user_type, onError, onSuccess }) =>
@@ -243,7 +239,7 @@ const verifyEmail = (data) => async (dispatch) => {
     setItem('access_token_expires', res.data.data.access_token_expires);
     setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-    dispatch(setTalentBooleanIsFlextern(false)) // making sure for normal talent onboarding or client onboarding the checkpoints are properly navigated
+    dispatch(setTalentBooleanIsFlextern(false)); // making sure for normal talent onboarding or client onboarding the checkpoints are properly navigated
     dispatch(verifyEmailSuccess());
     return null;
   } catch (error) {
@@ -253,11 +249,11 @@ const verifyEmail = (data) => async (dispatch) => {
 };
 
 const verifyEmailForFlextern =
-  ({ data, onSuccess,invitation_token ,errorHandlerInviteNotFound }) =>
+  ({ data, onSuccess, invitation_token, errorHandlerInviteNotFound }) =>
   async (dispatch) => {
     dispatch(verifyEmailForFlexternRequest());
     try {
-      const res = await verifyEmailForFlexternService(data,invitation_token);
+      const res = await verifyEmailForFlexternService(data, invitation_token);
       if (!isEmpty(res?.data?.data)) {
         setItem('access_token', res.data.data.access_token);
         setItem('access_token_expires', res.data.data.access_token_expires);
@@ -270,10 +266,7 @@ const verifyEmailForFlextern =
         }
       }
     } catch (error) {
-      if (
-        error?.response?.data?.errorData?.errorCode === 404 &&
-        errorHandlerInviteNotFound
-      ) {
+      if (error?.response?.data?.errorData?.errorCode === 404 && errorHandlerInviteNotFound) {
         errorHandlerInviteNotFound();
       } else {
         errorHandler(error, verifyEmailForFlexternFailure);
@@ -491,16 +484,18 @@ const checkIsAdmin = (teamId) => async (dispatch) => {
   }
 };
 
-const validateRequestFlexTernToken = ({ requestToken}) => async (dispatch) => {
+const validateRequestFlexTernToken =
+  ({ requestToken }) =>
+  async (dispatch) => {
     dispatch(verifyRequestInvitationFlexternToken());
     try {
       const res = await checkRequestValidation(requestToken);
       dispatch(verifyRequestInvitationFlexternTokenSuccess(res.data?.data?.email_invited));
       dispatch(setFlexternshipInviteType(res.data?.data?.user_type));
-    } catch(error) {
+    } catch (error) {
       errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
     }
-}
+  };
 const getAppPermissions = () => async (dispatch) => {
   dispatch(getAppPermissionsRequest());
   try {
@@ -511,8 +506,6 @@ const getAppPermissions = () => async (dispatch) => {
     errorHandler(error, getAppPermissionsFailure);
   }
 };
-
-
 
 export {
   switchProfile,

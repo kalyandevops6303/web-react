@@ -56,11 +56,11 @@ export const messageImgWrapper = (context) => {
       padding: '2px 2px',
     },
     video: {
-      maxWidth: "350px",
+      maxWidth: '350px',
       borderRadius: '12px',
       display: 'inherit',
-      height: "100%"
-    }
+      height: '100%',
+    },
   };
 };
 
@@ -86,7 +86,7 @@ export const messageReactionsWrapperStyle = () => {
     zIndex: 2,
     '> .reaction': {
       marginTop: '-10px',
-    }
+    },
   };
 };
 

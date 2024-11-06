@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
 
 const gradeColors = {
-  "Novice": "#FBC02D",
-  "Intermediate": "#00BCD4",
-  "Proficient": "#7C4DFF",
-  "Mastery": "#414DFD",
-}
+  Novice: '#FBC02D',
+  Intermediate: '#00BCD4',
+  Proficient: '#7C4DFF',
+  Mastery: '#414DFD',
+};
 
 const getPadding = (props) => {
   if (props.time) {
@@ -411,18 +411,18 @@ const AssessedSkillGradeBar = styled.div`
   align-self: stretch;
   border-radius: 6px;
   background: ${({ grade }) => gradeColors[grade] || 'gray'};
-`
+`;
 
 const AssessmentResultText = styled.div`
   text-transform: uppercase;
   color: ${({ grade }) => gradeColors[grade] || 'gray'};
-`
+`;
 
 const ModalCardItem = styled.div`
   box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06);
   padding: 20px;
   margin-bottom: 30px;
-`
+`;
 
 export {
   ActionButtonWrapper,
@@ -438,5 +438,5 @@ export {
   DetailsHeaderSection,
   AssessedSkillGradeBar,
   AssessmentResultText,
-  ModalCardItem
+  ModalCardItem,
 };

@@ -79,7 +79,7 @@ const TopStatCards = () => {
 
   return (
     <Row>
-       <Col>
+      <Col>
         <StatboxWrap isMarketPlaceTab>
           <CardBody>
             <div className="d-flex align-items-center justify-content-between">

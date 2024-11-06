@@ -29,7 +29,7 @@ import WithdrawModal from '../../modals/WithdrawModal';
 
 const displaySecondaryStatusTextOnSideBar = (projectDetailsData, statusEnum, statusDisplay, savedUserData) => {
   // checking whether the project has secondary status or not
- 
+
   let secondary_status_text;
   if (savedUserData?.user_type === 'CLIENT') {
     secondary_status_text = projectDetailsData?.secondary_status
@@ -347,20 +347,8 @@ const LeftSidebarProjectDetails = () => {
                   <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
                   <CardText className="mb-0 ms-25">
                     {projectDetailsData?.client_delegate
-                      ? `${
-                          `${projectDetailsData?.client_delegate?.first_name 
-                          } ${ 
-                          projectDetailsData?.client_delegate?.last_name}`
-                        } (${
-                          `${projectDetailsData?.client_details?.first_name 
-                          } ${ 
-                          projectDetailsData?.client_details?.last_name}`
-                        })`
-                      : `${
-                          `${projectDetailsData?.client_details?.first_name 
-                          } ${ 
-                          projectDetailsData?.client_details?.last_name}`
-                        }`}
+                      ? `${`${projectDetailsData?.client_delegate?.first_name} ${projectDetailsData?.client_delegate?.last_name}`} (${`${projectDetailsData?.client_details?.first_name} ${projectDetailsData?.client_details?.last_name}`})`
+                      : `${`${projectDetailsData?.client_details?.first_name} ${projectDetailsData?.client_details?.last_name}`}`}
                   </CardText>
                 </div>
               </div>

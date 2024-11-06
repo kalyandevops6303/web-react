@@ -2,7 +2,17 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardSubtitle, Col, UncontrolledTooltip, Spinner } from 'reactstrap';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  CardTitle,
+  CardSubtitle,
+  Col,
+  UncontrolledTooltip,
+  Spinner,
+} from 'reactstrap';
 import { Link } from 'react-feather';
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { AcceptModalWrapper, ArtifactsModalWrap } from './style';
@@ -17,16 +27,19 @@ const RemoveArtifactsModal = ({ onSuccess, modal, toggleModal, data, milestoneId
   const deleteDraftMilestoneLoading = useSelector(isDeleteDraftMilestoneLoading);
   const dispatch = useDispatch();
   const deleteDraftArtifact = () => {
-   if(data?.doc_id){
-    dispatch(deleteDraftMilestone({
-      milestoneId , data:[data?.doc_id], onSuccess
-    }));
-   }
-   else{
-    onSuccess();
-   }
+    if (data?.doc_id) {
+      dispatch(
+        deleteDraftMilestone({
+          milestoneId,
+          data: [data?.doc_id],
+          onSuccess,
+        }),
+      );
+    } else {
+      onSuccess();
+    }
   };
-  
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={onClose} />
@@ -69,7 +82,7 @@ const RemoveArtifactsModal = ({ onSuccess, modal, toggleModal, data, milestoneId
               Cancel
             </Button>
             <Button color="primary" onClick={deleteDraftArtifact}>
-            {deleteDraftMilestoneLoading ? <Spinner size="sm" /> : <span>Remove</span>}
+              {deleteDraftMilestoneLoading ? <Spinner size="sm" /> : <span>Remove</span>}
             </Button>
           </div>
         </AcceptModalWrapper>

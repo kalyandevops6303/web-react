@@ -32,7 +32,12 @@ import {
   identityFileSuccess,
   identityFileFailure,
 } from '../reducers/talentOnboarding';
-import { cometChatLogin, profileCompletionFlexternFailure, profileCompletionFlexternRequest, profileCompletionFlexternSuccess } from '../reducers/auth';
+import {
+  cometChatLogin,
+  profileCompletionFlexternFailure,
+  profileCompletionFlexternRequest,
+  profileCompletionFlexternSuccess,
+} from '../reducers/auth';
 import { scanAndProcessFiles } from '../../utility/Utils';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
@@ -42,7 +47,7 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
   try {
     const res = await userDetailsService();
-    if(onGetUserDetailsSuccess) {
+    if (onGetUserDetailsSuccess) {
       onGetUserDetailsSuccess(res.data.data);
     }
     dispatch(userDetailsSuccess(res.data.data));
@@ -51,7 +56,7 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   }
 };
 
-const getResumeParsedDetails = (setResumeParsedDetails,setParseResume, fileKey, setFiles) => async (dispatch) => {
+const getResumeParsedDetails = (setResumeParsedDetails, setParseResume, fileKey, setFiles) => async (dispatch) => {
   await dispatch(resumeParsedDetailsRequest());
   try {
     const res = await parsedResumeService(fileKey);
@@ -172,7 +177,7 @@ const getProfileCompletionFlextern = () => async (dispatch) => {
   } catch (error) {
     errorHandler(error, profileCompletionFlexternFailure);
   }
-}
+};
 
 export {
   getUserDetails,
@@ -183,5 +188,5 @@ export {
   saveSocialProfileDetails,
   deleteResume,
   deleteIdentityFile,
-  getProfileCompletionFlextern
+  getProfileCompletionFlextern,
 };

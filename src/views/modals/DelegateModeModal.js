@@ -15,15 +15,15 @@ const DelegateModeModal = ({ modal, toggleModal }) => {
   const userDetailsData = useSelector(selectUserData);
 
   // const userName = `${userDetailsData?.client_info?.first_name} ${userDetailsData?.client_info?.last_name}`;
-const adminUserName = `${userDetailsData?.admin_client_info?.first_name} ${userDetailsData?.admin_client_info?.last_name}`;
+  const adminUserName = `${userDetailsData?.admin_client_info?.first_name} ${userDetailsData?.admin_client_info?.last_name}`;
 
-const delegateType = getItem('delegateType');
+  const delegateType = getItem('delegateType');
 
   const onClose = () => {
     setItem('markDelegateModeModalAsSeen', true);
     toggleModal();
   };
-//  console.log('userDetailsData', userDetailsData);
+  //  console.log('userDetailsData', userDetailsData);
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style delete-modal" className="modal-dialog-centered">
       <ModalHeader toggle={onClose} />
@@ -34,9 +34,13 @@ const delegateType = getItem('delegateType');
               <img className="object-cover" src={DelegateModeGif} width={150} height={150} alt="AccountCreated" />
             </div>
             <div>
-              <CardTitle className="modal-heading">{delegateType === delegateTypes.payment_delegate ? 'Payment Delegate' : 'Delegate Mode'}</CardTitle>
+              <CardTitle className="modal-heading">
+                {delegateType === delegateTypes.payment_delegate ? 'Payment Delegate' : 'Delegate Mode'}
+              </CardTitle>
               <CardSubtitle className="mb-2 fw-light subtitle">
-                {delegateType === delegateTypes.payment_delegate ? 'You will be making payments on behalf of the following user:' : 'You’re in delegate mode. You will be performing actions on behalf of the user'}
+                {delegateType === delegateTypes.payment_delegate
+                  ? 'You will be making payments on behalf of the following user:'
+                  : 'You’re in delegate mode. You will be performing actions on behalf of the user'}
               </CardSubtitle>
               {userDetailsData && (
                 <DelegateNameCard

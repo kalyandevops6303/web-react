@@ -77,4 +77,3 @@ WithdrawModal.defaultProps = {
   toggleModal: () => {},
   projectDetailsData: {},
 };
-

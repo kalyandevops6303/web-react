@@ -436,7 +436,7 @@ const PaymentHistory = () => {
         page: paymentHistoryData?.metadata?.current_page + 1,
         pageSize: 10,
         oldData: paymentHistoryData?.data,
-        filters
+        filters,
       }),
     );
   };

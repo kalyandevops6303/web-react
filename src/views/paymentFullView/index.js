@@ -24,7 +24,7 @@ const PaymentFullView = () => {
   }, []);
 
   return (
-   <div className='trumio'>
+    <div className="trumio">
       <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PAYMENT_METRICS']}>
         <BreadCrumbs data={[{ title: 'Dashboard', link: '/dashboard' }, { title: 'Payments' }]} />
 

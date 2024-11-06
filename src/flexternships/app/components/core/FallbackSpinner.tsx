@@ -6,9 +6,9 @@ export default function FallbackSpinner() {
   return (
     <div className="flex flex-col justify-center items-center h-screen">
       <img className="h-10" src={logo} alt="logo" />
-      <div className='mt-3 size-12'>
+      <div className="mt-3 size-12">
         <Spinner />
       </div>
     </div>
   );
-};
+}

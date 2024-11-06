@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, CardBody, CardHeader, CardSubtitle, CardTitle, CardText, Label, NavLink, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardSubtitle,
+  CardTitle,
+  CardText,
+  Label,
+  NavLink,
+  Modal,
+  ModalHeader,
+  ModalBody,
+} from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
 import { ChevronRight, Link } from 'react-feather';
 import { ProfileFormContainer } from '../style';
@@ -16,22 +29,21 @@ const PRODUCT_MANAGER_ASSESSMENT = 'https://trumiotest.xobin.com/wc/assessment/L
 
 const listings = [
   {
-    name: "Full Stack Engineer (Intern)",
-    type: "GITHUB"
+    name: 'Full Stack Engineer (Intern)',
+    type: 'GITHUB',
   },
   {
-    name: "AI-ML Engineer (Intern)",
-    type: "GITHUB"
+    name: 'AI-ML Engineer (Intern)',
+    type: 'GITHUB',
   },
   {
-    name: "Product Manager (Intern)",
-    type: "XOBIN",
-    redirectURL: "https://trumiotest.xobin.com/wc/assessment/QTEIBB1S6DG"
-  }
-]
+    name: 'Product Manager (Intern)',
+    type: 'XOBIN',
+    redirectURL: 'https://trumiotest.xobin.com/wc/assessment/QTEIBB1S6DG',
+  },
+];
 
 const InternHiringItem = ({ listing }) => {
-
   const dispatch = useDispatch();
 
   const [githubLink, setGithubLink] = useState('');
@@ -46,12 +58,12 @@ const InternHiringItem = ({ listing }) => {
     console.log('GitHub Link:', githubLink);
     console.log('File:', file);
 
-    setShowSubmitModal(true)
+    setShowSubmitModal(true);
   };
 
   useEffect(() => {
     dispatch(getQuestionsLink());
-  }, [])
+  }, []);
 
   return (
     <Card className="w-75">
@@ -60,15 +72,21 @@ const InternHiringItem = ({ listing }) => {
       </CardHeader>
       <hr className="m-0 card-header-border" />
 
-      {listing?.type === "XOBIN" ?
+      {listing?.type === 'XOBIN' ? (
         <CardBody>
-          <CardText>Thank you for showing interest in Trumio. Click on <b>Take Assessment</b> and answer the questions within this assessment to the best of your ability.</CardText>
+          <CardText>
+            Thank you for showing interest in Trumio. Click on <b>Take Assessment</b> and answer the questions within
+            this assessment to the best of your ability.
+          </CardText>
           <CardText>Before you start with the assessment, make sure to:</CardText>
           <ul>
             <li>Take up this assessment on a laptop or desktop rather than on a mobile phone.</li>
             <li>Close all other applications and browser tabs to ensure no distractions.</li>
             <li>Block time to start and finish the assessment in one go. Please make sure you are not interrupted.</li>
-            <li>Please take up the test in Incognito window to avoid browser extensions/plugins interference and ensure a seamless test experience.</li>
+            <li>
+              Please take up the test in Incognito window to avoid browser extensions/plugins interference and ensure a
+              seamless test experience.
+            </li>
           </ul>
           <a href={listing?.redirectURL}>
             <Button color="primary" className="ml-2 mr-1 mt-2">
@@ -76,11 +94,19 @@ const InternHiringItem = ({ listing }) => {
             </Button>
           </a>
         </CardBody>
-        :
+      ) : (
         <CardBody>
-          <CardText>Thank you for showing interest in Trumio. Find your problem statement below, and build a solution to the best of your ability.  </CardText>
-          <CardText className="d-flex">Find your problem statement here:  &nbsp;
-            <NavLink href={questionsLink || "#"} target="_blank" className="text-primary d-flex align-items-center gap-1 ">
+          <CardText>
+            Thank you for showing interest in Trumio. Find your problem statement below, and build a solution to the
+            best of your ability.{' '}
+          </CardText>
+          <CardText className="d-flex">
+            Find your problem statement here: &nbsp;
+            <NavLink
+              href={questionsLink || '#'}
+              target="_blank"
+              className="text-primary d-flex align-items-center gap-1 "
+            >
               <b>Problem Statement</b>
             </NavLink>
           </CardText>
@@ -92,9 +118,11 @@ const InternHiringItem = ({ listing }) => {
 
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label for="githubLink"><b>GitHub Link</b></Label>
+              <Label for="githubLink">
+                <b>GitHub Link</b>
+              </Label>
               <Input
-                style={{ marginBottom: "-20px" }}
+                style={{ marginBottom: '-20px' }}
                 type="url"
                 name="githubLink"
                 id="githubLink"
@@ -105,17 +133,20 @@ const InternHiringItem = ({ listing }) => {
               />
             </FormGroup>
             <FormGroup>
-              <Label for="fileUpload"><b>Upload File</b></Label>
-              <Input
-                type="file"
-                name="file"
-                id="fileUpload"
-                onChange={(e) => setFile(e.target.files[0])}
-              />
+              <Label for="fileUpload">
+                <b>Upload File</b>
+              </Label>
+              <Input type="file" name="file" id="fileUpload" onChange={(e) => setFile(e.target.files[0])} />
             </FormGroup>
-            <Button type="submit" color="primary">Submit</Button>
+            <Button type="submit" color="primary">
+              Submit
+            </Button>
 
-            <Modal isOpen={showSubmitModal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
+            <Modal
+              isOpen={showSubmitModal}
+              contentClassName="custom-modal-style"
+              className="modal-dialog-centered modal-lg"
+            >
               <ModalHeader toggle={() => setShowSubmitModal(false)} />
               <ModalBody>
                 <AcceptModalWrapper>
@@ -126,29 +157,27 @@ const InternHiringItem = ({ listing }) => {
                       <CardSubtitle className="mb-1 modal-body-text">
                         <b>Note:</b> You will only be able to submit once.
                       </CardSubtitle>
-
                     </div>
                   </div>
                   <div className="d-flex gap-1  justify-content-end">
-                    <Button outline color="primary" onClick={() => { }}>
+                    <Button outline color="primary" onClick={() => {}}>
                       Cancel
                     </Button>
-                    <Button color="primary" onClick={() => { }}>
+                    <Button color="primary" onClick={() => {}}>
                       Submit
                     </Button>
                   </div>
                 </AcceptModalWrapper>
               </ModalBody>
             </Modal>
-
           </Form>
-        </CardBody>}
+        </CardBody>
+      )}
     </Card>
-  )
-}
+  );
+};
 
 const InternHiring = () => {
-
   const navigate = useNavigate();
 
   return (
@@ -158,11 +187,7 @@ const InternHiring = () => {
       ))}
 
       <div className="d-flex justify-content-end w-75">
-        <Button
-          onClick={() => navigate("/dashboard")}
-          color="primary"
-          type="submit"
-        >
+        <Button onClick={() => navigate('/dashboard')} color="primary" type="submit">
           <span className="me-50">Continue</span>
           <ChevronRight size={14} />
         </Button>

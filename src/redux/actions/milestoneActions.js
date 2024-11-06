@@ -139,43 +139,49 @@ const markComplete =
     }
   };
 
-const saveDraftMilestone = ({milestoneId, data, onSuccess,  redirection, isOpenSaveForLater}) => async (dispatch) => {
-  dispatch(draftMilestoneRequest());
-  try {
-    const res = await saveDraftMilestoneService(milestoneId, data);
-    dispatch(draftMilestoneSuccess(res.data.data));
-    if (isOpenSaveForLater) {
-      redirection();
-    } else {
-      onSuccess();
+const saveDraftMilestone =
+  ({ milestoneId, data, onSuccess, redirection, isOpenSaveForLater }) =>
+  async (dispatch) => {
+    dispatch(draftMilestoneRequest());
+    try {
+      const res = await saveDraftMilestoneService(milestoneId, data);
+      dispatch(draftMilestoneSuccess(res.data.data));
+      if (isOpenSaveForLater) {
+        redirection();
+      } else {
+        onSuccess();
+      }
+    } catch (error) {
+      errorHandler(error, draftMilestoneFailure);
     }
-  } catch (error) {
-    errorHandler(error, draftMilestoneFailure);
-  }
-};
+  };
 
-const getDraftMilestone = ({milestoneId, onGetSavedMilestone , onSuccess}) => async (dispatch) => {
-  dispatch(getDraftArtifactsRequest());
-  try {
-    const res = await getDraftMilestoneService(milestoneId);
-   await dispatch(getDraftArtifactsSuccess(res.data.data));
-    await onGetSavedMilestone(res.data.data);
-    onSuccess();
-  } catch (error) {
-    errorHandler(error, getDraftArtifactsFailure);
-  }
-};
+const getDraftMilestone =
+  ({ milestoneId, onGetSavedMilestone, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(getDraftArtifactsRequest());
+    try {
+      const res = await getDraftMilestoneService(milestoneId);
+      await dispatch(getDraftArtifactsSuccess(res.data.data));
+      await onGetSavedMilestone(res.data.data);
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, getDraftArtifactsFailure);
+    }
+  };
 
-const deleteDraftMilestone = ({milestoneId, data ,onSuccess}) => async (dispatch) => {
-  dispatch(deleteDraftMilestoneRequest());
-  try {
-    await deleteDraftMilestoneService(milestoneId,data);
-    dispatch(deleteDraftMilestoneSuccess());
-    onSuccess();
-  } catch (error) {
-    errorHandler(error, deleteDraftMilestoneFailure);
-  }
-};
+const deleteDraftMilestone =
+  ({ milestoneId, data, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(deleteDraftMilestoneRequest());
+    try {
+      await deleteDraftMilestoneService(milestoneId, data);
+      dispatch(deleteDraftMilestoneSuccess());
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, deleteDraftMilestoneFailure);
+    }
+  };
 
 export {
   getMilestoneDetail,

@@ -310,106 +310,106 @@ const ProjectDetails = () => {
   const milestoneDetails = params?.['*'].includes('milestone-details');
 
   return (
-    <div className='trumio'>
-    <ProjectDetailsWrapper>
-      <div className="top-head">
-        <div className="fixed-header">
-          <BreadCrumbs
-            data={
-              isInviteView
-                ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
-                : generalBreadcrumb
-            }
-          />
+    <div className="trumio">
+      <ProjectDetailsWrapper>
+        <div className="top-head">
+          <div className="fixed-header">
+            <BreadCrumbs
+              data={
+                isInviteView
+                  ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
+                  : generalBreadcrumb
+              }
+            />
+          </div>
         </div>
-      </div>
-      <Row className="mt-3">
-        <Col lg="3">
-          {isInviteView && invitedByData && <InviteMemberCard />}
-          {projectDetailsData?.completed_certificates && downloadCertificateURL && !isClient && (
-            <DownloadCertificate downloadUrl={downloadCertificateURL} />
-          )}
-          <LeftSidebarProjectDetails />
-          <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.MILESTONE_PAYMENT']}>
-            {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
-          </PermissionWrapper>
-        </Col>
-        <Col lg="9">
-          {!milestoneDetails && (
-            <ProjectDetailsNavbar
-              steps={isInviteView ? stepsArrayInvite : stepsArray}
-              currentStep={currentStep}
-              onChangeStep={changeStep}
-            />
-          )}
-          <Routes>
-            <Route
-              path="bid"
-              element={
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.BID']}>
-                  <BidView />
-                </PermissionWrapper>
-              }
-            />
+        <Row className="mt-3">
+          <Col lg="3">
+            {isInviteView && invitedByData && <InviteMemberCard />}
+            {projectDetailsData?.completed_certificates && downloadCertificateURL && !isClient && (
+              <DownloadCertificate downloadUrl={downloadCertificateURL} />
+            )}
+            <LeftSidebarProjectDetails />
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.MILESTONE_PAYMENT']}>
+              {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
+            </PermissionWrapper>
+          </Col>
+          <Col lg="9">
+            {!milestoneDetails && (
+              <ProjectDetailsNavbar
+                steps={isInviteView ? stepsArrayInvite : stepsArray}
+                currentStep={currentStep}
+                onChangeStep={changeStep}
+              />
+            )}
+            <Routes>
+              <Route
+                path="bid"
+                element={
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.BID']}>
+                    <BidView />
+                  </PermissionWrapper>
+                }
+              />
 
-            <Route
-              path="milestone"
-              element={
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.MILESTONE']}>
-                  <Milestone selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />
-                </PermissionWrapper>
-              }
-            />
+              <Route
+                path="milestone"
+                element={
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.MILESTONE']}>
+                    <Milestone selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />
+                  </PermissionWrapper>
+                }
+              />
 
-            <Route
-              path="payment"
-              element={
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.PAYMENT']}>
-                  <PaymentTab />
-                </PermissionWrapper>
-              }
-            />
+              <Route
+                path="payment"
+                element={
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.PAYMENT']}>
+                    <PaymentTab />
+                  </PermissionWrapper>
+                }
+              />
 
-            <Route
-              path="team"
-              element={
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.TEAM']}>
-                  <TeamView />
-                </PermissionWrapper>
-              }
-            />
+              <Route
+                path="team"
+                element={
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.TEAM']}>
+                    <TeamView />
+                  </PermissionWrapper>
+                }
+              />
 
-            <Route
-              path="rating"
-              element={
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.RATING']}>
-                  <RatingView />
-                </PermissionWrapper>
-              }
-            />
+              <Route
+                path="rating"
+                element={
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.RATING']}>
+                    <RatingView />
+                  </PermissionWrapper>
+                }
+              />
 
-            <Route
-              path="infrastructure"
-              element={
-                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.INFRASTRUCTURE']}>
-                  <InfrastructureView />
-                </PermissionWrapper>
-              }
-            />
+              <Route
+                path="infrastructure"
+                element={
+                  <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT_DETAIL.INFRASTRUCTURE']}>
+                    <InfrastructureView />
+                  </PermissionWrapper>
+                }
+              />
 
-            <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
-            <Route path="milestone/project-invitation/:inviteId" element={<BidMilestone />} />
-            <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
-            <Route
-              path="milestone-details/:milestoneId"
-              element={
-                <MilestoneDetails selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />
-              }
-            />
-          </Routes>
-        </Col>
-      </Row>
-    </ProjectDetailsWrapper>
+              <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
+              <Route path="milestone/project-invitation/:inviteId" element={<BidMilestone />} />
+              <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
+              <Route
+                path="milestone-details/:milestoneId"
+                element={
+                  <MilestoneDetails selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />
+                }
+              />
+            </Routes>
+          </Col>
+        </Row>
+      </ProjectDetailsWrapper>
     </div>
   );
 };

@@ -36,7 +36,7 @@ const CometChatEmojiKeyboard = (props) => {
     const handleClickOutside = (event) => {
       if (componentRef.current && !componentRef.current.contains(event.target)) {
         console.log('Clicked outside');
-        props.onClose()
+        props.onClose();
       }
     };
 
@@ -47,7 +47,7 @@ const CometChatEmojiKeyboard = (props) => {
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
     };
-  }, [])
+  }, []);
 
   const handleEvent = (obj) => {
     props.onClick(obj);
@@ -144,7 +144,7 @@ const CometChatEmojiKeyboard = (props) => {
 // Specifies the default values for props:
 CometChatEmojiKeyboard.defaultProps = {
   hideSearch: false,
-  onClick: () => { },
+  onClick: () => {},
   style: {
     width: '100%',
     height: '250px',

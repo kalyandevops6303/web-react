@@ -22,10 +22,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const isFlextern = useSelector((state) => state.auth?.flextern);
   const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
 
-
   const userType = userData?.user_type;
   useEffect(() => {
-    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {}, flexTern: flexTern }));
+    dispatch(
+      getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {}, flexTern: flexTern }),
+    );
   }, [flexTern]);
 
   if (isLoading && !selectCardData) {
@@ -41,7 +42,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   return (
     <Row className="primary-row">
       <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.ALL_LISTINGS']}>
-        <Col  md={5} lg={3} xl={2} onClick={() => handlePrimaryCard('all_listings')}>
+        <Col md={5} lg={3} xl={2} onClick={() => handlePrimaryCard('all_listings')}>
           <Statbox
             isActive={selected === 'all_listings'}
             isMarketPlaceTab

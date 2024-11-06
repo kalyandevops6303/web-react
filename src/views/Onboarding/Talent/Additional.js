@@ -316,12 +316,11 @@ const Additional = () => {
       const response = await paginatedInstitutesService(page, search);
       let myInstitution = [];
       if (location.pathname.includes('profile-edit')) {
-        if(talentOnboardingData?.talent_info?.educational_institute){
+        if (talentOnboardingData?.talent_info?.educational_institute) {
           myInstitution = talentOnboardingData?.talent_info?.educational_institute
             .map((educationDetails) => educationDetails.institution)
             .map((institute) => ({ label: institute.name, value: institute._id }));
         } else if (userDetailsData?.talent_info?.educational_institute) {
-
           myInstitution = userDetailsData?.talent_info?.educational_institute
             .map((educationDetails) => educationDetails.institution)
             .map((institute) => ({ label: institute.name, value: institute._id }));
@@ -643,8 +642,6 @@ const Additional = () => {
         setFiles([file]);
       }
     }
-
-    
   };
 
   useEffect(() => {
@@ -1008,15 +1005,15 @@ const Additional = () => {
                   </div>
                   <div className="d-flex justify-content-end">
                     {/* {flexternBoolean && trumioTalent ? ( */}
-                      <Button
-                        color="primary"
-                        outline
-                        className="d-flex align-items-center justify-content-between me-2"
-                        onClick={onSkipClick}
-                      >
-                        <span className="me-50">Skip</span>
-                        <ChevronRight size={14} />
-                      </Button>
+                    <Button
+                      color="primary"
+                      outline
+                      className="d-flex align-items-center justify-content-between me-2"
+                      onClick={onSkipClick}
+                    >
+                      <span className="me-50">Skip</span>
+                      <ChevronRight size={14} />
+                    </Button>
                     {/* ) : null} */}
                     <Button
                       className="d-flex align-items-center justify-content-between"

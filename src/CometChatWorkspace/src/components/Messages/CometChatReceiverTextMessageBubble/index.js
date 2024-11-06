@@ -22,7 +22,13 @@ import * as enums from '../../../util/enums.js';
 
 import Translator from '../../../resources/localization/translator';
 import { theme } from '../../../resources/theme';
-import { convertFileSize, downloadFile, getFileIcon, getUserColor, handleLinkOpen } from '../../../util/HelperFunctions';
+import {
+  convertFileSize,
+  downloadFile,
+  getFileIcon,
+  getUserColor,
+  handleLinkOpen,
+} from '../../../util/HelperFunctions';
 import { downloadUrlService } from '../../../../../services/dashboardServices.js';
 
 import {
@@ -255,24 +261,27 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     this.setState({
       isMilestoneFileLoading: true,
     });
-    console.log("Start Downloading...")
+    console.log('Start Downloading...');
     const res = await downloadUrlService(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileKey);
-    await downloadFile({ data: { download_url: res.data.data }, file_name: this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName });
+    await downloadFile({
+      data: { download_url: res.data.data },
+      file_name: this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName,
+    });
     this.setState({
       isMilestoneFileLoading: false,
     });
-    console.log("Downloaded");
-  }
+    console.log('Downloaded');
+  };
 
   handleMilestoneLinkClick = () => {
     handleLinkOpen(this.props.message?.metadata?.milestoneAttachment?.artifact?.url);
-  }
+  };
 
   handleMilestoneTileClick = () => {
     try {
       if (this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS') {
         this.handleMilestoneFileClick();
-        console.log("Docs")
+        console.log('Docs');
       } else if (this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'LINKS') {
         this.handleMilestoneLinkClick();
       } else {
@@ -284,7 +293,7 @@ class CometChatReceiverTextMessageBubble extends React.Component {
         isMilestoneFileLoading: false,
       });
     }
-  }
+  };
 
   render() {
     let avatar = null,
@@ -342,7 +351,11 @@ class CometChatReceiverTextMessageBubble extends React.Component {
             </div>
           </div>
           <div css={milestoneBodyStyle()} className="milestone__body">
-            <div onClick={this.handleMilestoneTileClick} css={milestoneAttachmentTileStyle()} className="attachment__tile">
+            <div
+              onClick={this.handleMilestoneTileClick}
+              css={milestoneAttachmentTileStyle()}
+              className="attachment__tile"
+            >
               {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
                 <div css={milestoneAttachmentTileAvatarContainerStyle()} className="attachment__tile__avatar">
                   <img
@@ -354,31 +367,29 @@ class CometChatReceiverTextMessageBubble extends React.Component {
               <div css={milestoneAttachmentTileBodyStyle()} className="attachment__tile__body">
                 {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
                   <div css={milestoneAttachmentFileNameStyle()} className="attachment__filename">
-                    {
-                      this.state.isMilestoneFileLoading ? 'Downloading...' : (
-                        (this.props.fileCharLimit &&
-                          (this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName.length >
-                            this.props.fileCharLimit)) ? (this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName
-                              .slice(0, this.props.fileCharLimit) + '...') : (this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName))
-                    }
+                    {this.state.isMilestoneFileLoading
+                      ? 'Downloading...'
+                      : this.props.fileCharLimit &&
+                        this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName.length >
+                          this.props.fileCharLimit
+                      ? this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName.slice(
+                          0,
+                          this.props.fileCharLimit,
+                        ) + '...'
+                      : this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName}
                   </div>
                 )}
                 {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'LINKS' && (
-                  <div
-                    css={milestoneAttachmentFileNameStyle()}
-                    className="attachment__filename"
-                  >
+                  <div css={milestoneAttachmentFileNameStyle()} className="attachment__filename">
                     {this.props.message?.metadata?.milestoneAttachment?.artifact?.urlName}
                   </div>
                 )}
 
-                {
-                  this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
-                    <div css={milestoneAttachmentFileSizeStyle()} className="attachment__filesize">
-                      {convertFileSize(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileSize)}
-                    </div>
-                  )
-                }
+                {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
+                  <div css={milestoneAttachmentFileSizeStyle()} className="attachment__filesize">
+                    {convertFileSize(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileSize)}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -433,7 +444,7 @@ class CometChatReceiverTextMessageBubble extends React.Component {
 // Specifies the default values for props:
 CometChatReceiverTextMessageBubble.defaultProps = {
   theme: theme,
-  actionGenerated: () => { },
+  actionGenerated: () => {},
 };
 
 CometChatReceiverTextMessageBubble.propTypes = {

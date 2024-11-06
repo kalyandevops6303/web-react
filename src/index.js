@@ -39,7 +39,6 @@ import './@core/scss/core.scss';
 import './assets/scss/style.scss';
 import './index.css';
 
-
 // ** Service Worker
 import * as serviceWorker from './serviceWorker';
 import Error from './views/Error';

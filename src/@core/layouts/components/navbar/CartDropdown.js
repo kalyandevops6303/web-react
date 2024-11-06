@@ -1,32 +1,21 @@
 // ** React Imports
-import { Link } from "react-router-dom";
-import { useEffect, Fragment, useState } from "react";
+import { Link } from 'react-router-dom';
+import { useEffect, Fragment, useState } from 'react';
 
 // ** Third Party Components
-import InputNumber from "rc-input-number";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { ShoppingCart, X, Plus, Minus } from "react-feather";
+import InputNumber from 'rc-input-number';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { ShoppingCart, X, Plus, Minus } from 'react-feather';
 
 // ** Reactstrap Imports
-import {
-  Dropdown,
-  DropdownMenu,
-  DropdownToggle,
-  DropdownItem,
-  Badge,
-  Button,
-} from "reactstrap";
+import { Dropdown, DropdownMenu, DropdownToggle, DropdownItem, Badge, Button } from 'reactstrap';
 
 // ** Store & Actions
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getCartItems,
-  deleteCartItem,
-  getProduct,
-} from "@src/views/apps/ecommerce/store";
+import { useDispatch, useSelector } from 'react-redux';
+import { getCartItems, deleteCartItem, getProduct } from '@src/views/apps/ecommerce/store';
 
 // ** Styles
-import "@styles/react/libs/input-number/input-number.scss";
+import '@styles/react/libs/input-number/input-number.scss';
 
 const CartDropdown = () => {
   // ** State
@@ -68,18 +57,9 @@ const CartDropdown = () => {
 
               return (
                 <div key={item.id} className="list-item align-items-center">
-                  <img
-                    className="d-block rounded me-1"
-                    src={item.image}
-                    alt={item.name}
-                    width="62"
-                  />
+                  <img className="d-block rounded me-1" src={item.image} alt={item.name} width="62" />
                   <div className="list-item-body flex-grow-1">
-                    <X
-                      size={14}
-                      className="cart-item-remove"
-                      onClick={() => dispatch(deleteCartItem(item.id))}
-                    />
+                    <X size={14} className="cart-item-remove" onClick={() => dispatch(deleteCartItem(item.id))} />
                     <div className="media-heading">
                       <h6 className="cart-item-title">
                         <Link
@@ -111,17 +91,9 @@ const CartDropdown = () => {
           <li className="dropdown-menu-footer">
             <div className="d-flex justify-content-between mb-1">
               <h6 className="fw-bolder mb-0">Total:</h6>
-              <h6 className="text-primary fw-bolder mb-0">
-                ${Number(total.toFixed(2))}
-              </h6>
+              <h6 className="text-primary fw-bolder mb-0">${Number(total.toFixed(2))}</h6>
             </div>
-            <Button
-              tag={Link}
-              to="/apps/ecommerce/checkout"
-              color="primary"
-              block
-              onClick={toggle}
-            >
+            <Button tag={Link} to="/apps/ecommerce/checkout" color="primary" block onClick={toggle}>
               Checkout
             </Button>
           </li>
@@ -133,12 +105,7 @@ const CartDropdown = () => {
   };
 
   return (
-    <Dropdown
-      isOpen={dropdownOpen}
-      toggle={toggle}
-      tag="li"
-      className="dropdown-cart nav-item me-25"
-    >
+    <Dropdown isOpen={dropdownOpen} toggle={toggle} tag="li" className="dropdown-cart nav-item me-25">
       <DropdownToggle tag="a" className="nav-link position-relative">
         <ShoppingCart className="ficon" />
         {store.cart.length > 0 ? (
@@ -147,11 +114,7 @@ const CartDropdown = () => {
           </Badge>
         ) : null}
       </DropdownToggle>
-      <DropdownMenu
-        end
-        tag="ul"
-        className="dropdown-menu-media dropdown-cart mt-0"
-      >
+      <DropdownMenu end tag="ul" className="dropdown-menu-media dropdown-cart mt-0">
         <li className="dropdown-menu-header">
           <DropdownItem tag="div" className="d-flex" header>
             <h4 className="notification-title mb-0 me-auto">My Cart</h4>

@@ -1,4 +1,11 @@
-import { apiAuthEndpoint, apiOnboardingEndpoint, apiCreateProjectEndpoint, apiCreateProjectAIEndpoint, apiPaymentEndPoint, apiProjectInfraEndpoint } from './env';
+import {
+  apiAuthEndpoint,
+  apiOnboardingEndpoint,
+  apiCreateProjectEndpoint,
+  apiCreateProjectAIEndpoint,
+  apiPaymentEndPoint,
+  apiProjectInfraEndpoint,
+} from './env';
 
 const API = {
   auth: {
@@ -54,7 +61,7 @@ const API = {
     profileResumeUpload: `${apiAuthEndpoint}/api/v1/talent/resume`,
     identityUpload: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
     identityDelete: `${apiAuthEndpoint}/api/v1/flextern/identity/verification`,
-    profileCompletionFlextern: `${apiAuthEndpoint}/api/v1/flextern/profile-percentage`
+    profileCompletionFlextern: `${apiAuthEndpoint}/api/v1/flextern/profile-percentage`,
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,
@@ -79,8 +86,6 @@ const API = {
     talentFlextern: `${apiOnboardingEndpoint}/api/v2/talent/details`,
     talentProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/talent/get-recommanded-projects`,
     clientFlextern: `${apiOnboardingEndpoint}/api/v2/client/details`,
-
-
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -335,13 +340,13 @@ const API = {
     clientName: `${apiOnboardingEndpoint}/api/v1/projects/client-names`,
     teamName: `${apiOnboardingEndpoint}/api/v1/projects/team-names`,
 
-     //v2 projects-list
-     allProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/projects`,
-     departmentName: `${apiOnboardingEndpoint}/api/v2/static/departments/all`,
-     secondaryStatuses: `${apiOnboardingEndpoint}/api/v2/static/secondary-status/all`,
-     projectNames: `${apiOnboardingEndpoint}/api/v2/static/projectNames/all`,
-     talentNames: `${apiOnboardingEndpoint}/api/v2/static/talent/all`,
-     cardInfoFlextern: `${apiOnboardingEndpoint}/api/v2/project/status-counts`,
+    //v2 projects-list
+    allProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/projects`,
+    departmentName: `${apiOnboardingEndpoint}/api/v2/static/departments/all`,
+    secondaryStatuses: `${apiOnboardingEndpoint}/api/v2/static/secondary-status/all`,
+    projectNames: `${apiOnboardingEndpoint}/api/v2/static/projectNames/all`,
+    talentNames: `${apiOnboardingEndpoint}/api/v2/static/talent/all`,
+    cardInfoFlextern: `${apiOnboardingEndpoint}/api/v2/project/status-counts`,
   },
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,

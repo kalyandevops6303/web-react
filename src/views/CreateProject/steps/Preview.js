@@ -356,8 +356,13 @@ const Preview = ({
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {listingDetails?.listingOption === 'select-duration'
-                  ? 
-                  `${convertUnixTimestampToDate(listingDetails?.startDate, savedUserData?.availability?.timezone?.name )} - ${convertUnixTimestampToDate(listingDetails?.endDate, savedUserData?.availability?.timezone?.name )}`
+                  ? `${convertUnixTimestampToDate(
+                      listingDetails?.startDate,
+                      savedUserData?.availability?.timezone?.name,
+                    )} - ${convertUnixTimestampToDate(
+                      listingDetails?.endDate,
+                      savedUserData?.availability?.timezone?.name,
+                    )}`
                   : `${listingDetails?.duration}d`}
               </h4>
               <p className="font-medium-1 fw-normal">Listing Duration</p>

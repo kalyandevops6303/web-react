@@ -62,10 +62,9 @@ const InvitationView = () => {
   const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      if(isFlextern){
+      if (isFlextern) {
         dispatch(getProfileCompletionFlextern());
-      }
-      else{
+      } else {
         dispatch(getProfilePercentage());
       }
     }

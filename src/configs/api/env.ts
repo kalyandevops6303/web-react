@@ -1,4 +1,4 @@
-export const isFlexternshipApp: boolean = (import.meta.env.VITE_IS_FLEXTERNSHIP_APP === 'true');
+export const isFlexternshipApp: boolean = import.meta.env.VITE_IS_FLEXTERNSHIP_APP === 'true';
 
 // API ENDPOINTS
 const baseUrl = import.meta.env.VITE_API_BASE_URL;

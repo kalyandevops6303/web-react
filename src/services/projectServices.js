@@ -44,9 +44,10 @@ const getInvitedProjectListingService = ({ metaData, data }) =>
     data,
   );
 
-  const getProjectsListFlexternService = ({ metaData }) =>
-    DataService.get(
-      `${API.project.allProjectsFlextern}?page=${metaData?.page}&page_size=${metaData?.page_size}&search_query=${metaData?.search_query}&project_status=${metaData?.project_status}&secondary_status=${metaData?.status}&talent_name=${metaData?.talent_name}&department_name=${metaData?.department_name}`);
+const getProjectsListFlexternService = ({ metaData }) =>
+  DataService.get(
+    `${API.project.allProjectsFlextern}?page=${metaData?.page}&page_size=${metaData?.page_size}&search_query=${metaData?.search_query}&project_status=${metaData?.project_status}&secondary_status=${metaData?.status}&talent_name=${metaData?.talent_name}&department_name=${metaData?.department_name}`,
+  );
 
 const getTeamNameSerive = (page, search) =>
   DataService.get(`${API.project.teamName}?page=${page}&page_size=50&search_query=${search}`);
@@ -60,7 +61,7 @@ const getSecondaryStatuses = (page, search) =>
 const getProjectNames = (page, search) =>
   DataService.get(`${API.project.projectNames}?page=${page}&page_size=50&search_query=${search}`);
 
-const getProjectCounts =  (page, search) =>
+const getProjectCounts = (page, search) =>
   DataService.get(`${API.project.projectCounts}?page=${page}&page_size=50&search_query=${search}`);
 
 const getClientNameService = (page, search) =>

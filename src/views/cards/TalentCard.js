@@ -140,34 +140,41 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                     </CardText>
                     <div className="d-flex teamcard-flex-cloumn">
                       <div className="d-flex mr-2">
-                      <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENT_DETAILS.RATING']}>
-                        <RatingBadge number={data?.rating ?? 0} />
+                        <PermissionWrapper
+                          permissions={appPermissions}
+                          permissionName={['MARKETPLACE.TALENT_DETAILS.RATING']}
+                        >
+                          <RatingBadge number={data?.rating ?? 0} />
                         </PermissionWrapper>
-                        <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENT_DETAILS.PROJECTS_COUNT']}>
-                        <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                          {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
-                        </CardText>
+                        <PermissionWrapper
+                          permissions={appPermissions}
+                          permissionName={['MARKETPLACE.TALENT_DETAILS.PROJECTS_COUNT']}
+                        >
+                          <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                            {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
+                          </CardText>
                         </PermissionWrapper>
                       </div>
-                      <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENT_DETAILS.LOCATION']}>
-                      <div className="d-flex margin-none" style={{ marginLeft: '20px' }}>
-                        {locationDetails ? (
-                          <div className="d-flex align-items-center">
-                            <MapPin size={20} className="me-50" />
-                            <TextToolTip
-                              text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
-                              id={`tooltip-location-${data?.user_id}`}
-                            />
-                          </div>
-                        ) : null}
-                      </div>
+                      <PermissionWrapper
+                        permissions={appPermissions}
+                        permissionName={['MARKETPLACE.TALENT_DETAILS.LOCATION']}
+                      >
+                        <div className="d-flex margin-none" style={{ marginLeft: '20px' }}>
+                          {locationDetails ? (
+                            <div className="d-flex align-items-center">
+                              <MapPin size={20} className="me-50" />
+                              <TextToolTip
+                                text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
+                                id={`tooltip-location-${data?.user_id}`}
+                              />
+                            </div>
+                          ) : null}
+                        </div>
                       </PermissionWrapper>
                     </div>
                   </Col>
                 </div>
-                <div className="mt-2">
-                  {data?.professional_intro && parse(data?.professional_intro)}
-                </div>
+                <div className="mt-2">{data?.professional_intro && parse(data?.professional_intro)}</div>
               </div>
               <div className="w-25 teamcard-width">
                 <IconWrapper className="d-flex flex-column align-items-start pt-50">

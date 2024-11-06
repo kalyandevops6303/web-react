@@ -68,7 +68,7 @@ export const getFileIcon = (fileName) => {
 };
 
 export const convertFileSize = (fileSizeBytes) => {
-  if(!fileSizeBytes) {
+  if (!fileSizeBytes) {
     return '';
   }
   // Define suffixes for different file sizes

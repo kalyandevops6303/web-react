@@ -64,7 +64,8 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
       {!isFirstTwoMilestonePaid ? (
         <div>
           <span>
-            Complete payment for the <b>first two</b> milestones to start the project. This does not apply for projects with only 1 milestone.
+            Complete payment for the <b>first two</b> milestones to start the project. This does not apply for projects
+            with only 1 milestone.
           </span>
         </div>
       ) : null}

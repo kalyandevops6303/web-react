@@ -1,19 +1,19 @@
 // ** React Imports
-import { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 // ** Third Party Components
-import classnames from "classnames";
-import { useTranslation } from "react-i18next";
+import classnames from 'classnames';
+import { useTranslation } from 'react-i18next';
 
 // ** Reactstrap Imports
-import { Collapse, Badge } from "reactstrap";
+import { Collapse, Badge } from 'reactstrap';
 
 // ** Vertical Menu Items Component
-import VerticalNavMenuItems from "./VerticalNavMenuItems";
+import VerticalNavMenuItems from './VerticalNavMenuItems';
 
 // ** Utils
-import { hasActiveChild, removeChildren } from "@layouts/utils";
+import { hasActiveChild, removeChildren } from '@layouts/utils';
 
 const VerticalNavMenuGroup = ({
   item,
@@ -49,17 +49,11 @@ const VerticalNavMenuGroup = ({
       if (item.children) {
         removeChildren(item.children, openGroup, groupActive);
       }
-    } else if (
-      activeGroup.includes(item.id) ||
-      currentActiveGroup.includes(item.id)
-    ) {
+    } else if (activeGroup.includes(item.id) || currentActiveGroup.includes(item.id)) {
       // ** If Group clicked is Active Group
 
       // ** If Active group is closed and clicked again, we should open active group else close active group
-      if (
-        !activeGroup.includes(item.id) &&
-        currentActiveGroup.includes(item.id)
-      ) {
+      if (!activeGroup.includes(item.id) && currentActiveGroup.includes(item.id)) {
         activeGroup.push(item.id);
       } else {
         activeGroup.splice(activeGroup.indexOf(item.id), 1);
@@ -117,11 +111,7 @@ const VerticalNavMenuGroup = ({
       if (groupActive.includes(id) || groupOpen.includes(id)) {
         return true;
       }
-    } else if (
-      groupActive.includes(id) &&
-      menuCollapsed &&
-      menuHover === false
-    ) {
+    } else if (groupActive.includes(id) && menuCollapsed && menuHover === false) {
       return false;
     } else {
       return null;
@@ -130,20 +120,14 @@ const VerticalNavMenuGroup = ({
 
   return (
     <li
-      className={classnames("nav-item has-sub", {
+      className={classnames('nav-item has-sub', {
         open: openClassCondition(item.id),
-        "menu-collapsed-open": groupActive.includes(item.id),
-        "sidebar-group-active":
-          groupActive.includes(item.id) ||
-          groupOpen.includes(item.id) ||
-          currentActiveGroup.includes(item.id),
+        'menu-collapsed-open': groupActive.includes(item.id),
+        'sidebar-group-active':
+          groupActive.includes(item.id) || groupOpen.includes(item.id) || currentActiveGroup.includes(item.id),
       })}
     >
-      <Link
-        className="d-flex align-items-center"
-        to="/"
-        onClick={(e) => onCollapseClick(e, item)}
-      >
+      <Link className="d-flex align-items-center" to="/" onClick={(e) => onCollapseClick(e, item)}>
         {item.icon}
         <span className="menu-title text-truncate">{t(item.title)}</span>
 
@@ -156,12 +140,7 @@ const VerticalNavMenuGroup = ({
 
       {/* Render Child Recursively Through VerticalNavMenuItems Component */}
       <ul className="menu-content">
-        <Collapse
-          isOpen={
-            (groupActive && groupActive.includes(item.id)) ||
-            (groupOpen && groupOpen.includes(item.id))
-          }
-        >
+        <Collapse isOpen={(groupActive && groupActive.includes(item.id)) || (groupOpen && groupOpen.includes(item.id))}>
           <VerticalNavMenuItems
             {...rest}
             items={item.children}

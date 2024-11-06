@@ -1,217 +1,245 @@
 import errorHandler from '../../utility/errorHandler';
-import { userAssessmentsService, allAssessmentsService, deleteAssessmentService, toggleAssessmentHiddenService, addAssessmentService, assessmentLinkService, deleteNonAssessmentService, prepopulateService, teamAssessmentsService } from '../../services/assessmentServices';
 import {
-    userAssessmentsRequest,
-    userAssessmentsFailure,
-    userAssessmentsSuccess,
-    allAssessmentsRequest,
-    allAssessmentsFailure,
-    allAssessmentsSuccess,
-    deleteAssessmentsRequest,
-    deleteAssessmentsFailure,
-    deleteAssessmentsSuccess,
-    toggleAssessmentHiddenRequest,
-    toggleAssessmentHiddenFailure,
-    toggleAssessmentHiddenSuccess,
-    addAssessmentRequest,
-    addAssessmentFailure,
-    addAssessmentSuccess,
-    assessmentLinkRequest,
-    assessmentLinkFailure,
-    assessmentLinkSuccess,
-    deleteNonAssessmentsFailure,
-    deleteNonAssessmentsRequest,
-    deleteNonAssessmentsSuccess,
-    prepopulateRequest,
-    prepopulateSuccess,
-    prepopulateFailure,
-    teamAssessmentsRequest,
-    teamAssessmentsSuccess,
-    teamAssessmentsFailure
+  userAssessmentsService,
+  allAssessmentsService,
+  deleteAssessmentService,
+  toggleAssessmentHiddenService,
+  addAssessmentService,
+  assessmentLinkService,
+  deleteNonAssessmentService,
+  prepopulateService,
+  teamAssessmentsService,
+} from '../../services/assessmentServices';
+import {
+  userAssessmentsRequest,
+  userAssessmentsFailure,
+  userAssessmentsSuccess,
+  allAssessmentsRequest,
+  allAssessmentsFailure,
+  allAssessmentsSuccess,
+  deleteAssessmentsRequest,
+  deleteAssessmentsFailure,
+  deleteAssessmentsSuccess,
+  toggleAssessmentHiddenRequest,
+  toggleAssessmentHiddenFailure,
+  toggleAssessmentHiddenSuccess,
+  addAssessmentRequest,
+  addAssessmentFailure,
+  addAssessmentSuccess,
+  assessmentLinkRequest,
+  assessmentLinkFailure,
+  assessmentLinkSuccess,
+  deleteNonAssessmentsFailure,
+  deleteNonAssessmentsRequest,
+  deleteNonAssessmentsSuccess,
+  prepopulateRequest,
+  prepopulateSuccess,
+  prepopulateFailure,
+  teamAssessmentsRequest,
+  teamAssessmentsSuccess,
+  teamAssessmentsFailure,
 } from '../reducers/assessment';
 import { getCustomerSupportList } from './supportActions';
 import { isEmpty } from '../../utility/Utils';
 
 function transformData(data) {
-    const result = {};
+  const result = {};
 
-    data?.forEach(candidate => {
-        const userId = candidate.user_id;
-        if (!isEmpty(candidate.assessments)) {
-            candidate.assessments.forEach(assessment => {
-                if (assessment.assessment_grade) {
-                    const { assessment_name, assessment_grade } = assessment;
-                    if (!result[assessment_name]) {
-                        result[assessment_name] = {};
-                    }
-                    if (!result[assessment_name][assessment_grade]) {
-                        result[assessment_name][assessment_grade] = [];
-                    }
-                    // Add user_id to the assessment object
-                    result[assessment_name][assessment_grade].push({
-                        ...assessment,
-                        user_id: userId
-                    });
-                }
-            });
+  data?.forEach((candidate) => {
+    const userId = candidate.user_id;
+    if (!isEmpty(candidate.assessments)) {
+      candidate.assessments.forEach((assessment) => {
+        if (assessment.assessment_grade) {
+          const { assessment_name, assessment_grade } = assessment;
+          if (!result[assessment_name]) {
+            result[assessment_name] = {};
+          }
+          if (!result[assessment_name][assessment_grade]) {
+            result[assessment_name][assessment_grade] = [];
+          }
+          // Add user_id to the assessment object
+          result[assessment_name][assessment_grade].push({
+            ...assessment,
+            user_id: userId,
+          });
         }
-    });
+      });
+    }
+  });
 
-    return result;
+  return result;
 }
 
-
-const getUserAssessments = ({ id } = {}) => async (dispatch) => {
+const getUserAssessments =
+  ({ id } = {}) =>
+  async (dispatch) => {
     dispatch(userAssessmentsRequest());
     try {
-        const res = await userAssessmentsService({ id });
-        dispatch(userAssessmentsSuccess(res.data.data));
+      const res = await userAssessmentsService({ id });
+      dispatch(userAssessmentsSuccess(res.data.data));
     } catch (error) {
-        errorHandler(error, userAssessmentsFailure);
+      errorHandler(error, userAssessmentsFailure);
     }
-}
+  };
 
-const getTeamAssessments = ({ id }) => async (dispatch) => {
+const getTeamAssessments =
+  ({ id }) =>
+  async (dispatch) => {
     dispatch(teamAssessmentsRequest());
     try {
-        const res = await teamAssessmentsService({ id });
-        const transformedRes = transformData(res.data.data);
-        dispatch(teamAssessmentsSuccess(transformedRes));
+      const res = await teamAssessmentsService({ id });
+      const transformedRes = transformData(res.data.data);
+      dispatch(teamAssessmentsSuccess(transformedRes));
     } catch (error) {
-        errorHandler(error, teamAssessmentsFailure);
+      errorHandler(error, teamAssessmentsFailure);
     }
-}
+  };
 
 const getAllAssessments = () => async (dispatch) => {
-    dispatch(allAssessmentsRequest());
-    try {
-        const res = await allAssessmentsService();
-        const { data: { data: { skills, roles, tools } } } = res;
-        dispatch(allAssessmentsSuccess([
-            ...skills
-                .filter(({ assessment }) => assessment?.assessment_id)
-                .map(({ assessment, _id, name }) => ({
-                    assessment_id: assessment.assessment_id,
-                    assessment_name: assessment.assessment_name,
-                    str_type: "SKILLS",
-                    _id,
-                    str_name: name
-                })),
-            ...roles
-                .filter(({ assessment }) => assessment?.assessment_id)
-                .map(({ assessment, _id, name }) => ({
-                    assessment_id: assessment.assessment_id,
-                    assessment_name: assessment.assessment_name,
-                    str_type: "ROLES",
-                    _id,
-                    str_name: name
-                })),
-            ...tools
-                .filter(({ assessment }) => assessment?.assessment_id)
-                .map(({ assessment, _id, name }) => ({
-                    assessment_id: assessment.assessment_id,
-                    assessment_name: assessment.assessment_name,
-                    str_type: "TOOLS",
-                    _id,
-                    str_name: name
-                }))
-        ]));
+  dispatch(allAssessmentsRequest());
+  try {
+    const res = await allAssessmentsService();
+    const {
+      data: {
+        data: { skills, roles, tools },
+      },
+    } = res;
+    dispatch(
+      allAssessmentsSuccess([
+        ...skills
+          .filter(({ assessment }) => assessment?.assessment_id)
+          .map(({ assessment, _id, name }) => ({
+            assessment_id: assessment.assessment_id,
+            assessment_name: assessment.assessment_name,
+            str_type: 'SKILLS',
+            _id,
+            str_name: name,
+          })),
+        ...roles
+          .filter(({ assessment }) => assessment?.assessment_id)
+          .map(({ assessment, _id, name }) => ({
+            assessment_id: assessment.assessment_id,
+            assessment_name: assessment.assessment_name,
+            str_type: 'ROLES',
+            _id,
+            str_name: name,
+          })),
+        ...tools
+          .filter(({ assessment }) => assessment?.assessment_id)
+          .map(({ assessment, _id, name }) => ({
+            assessment_id: assessment.assessment_id,
+            assessment_name: assessment.assessment_name,
+            str_type: 'TOOLS',
+            _id,
+            str_name: name,
+          })),
+      ]),
+    );
+  } catch (error) {
+    errorHandler(error, allAssessmentsFailure);
+  }
+};
 
-    } catch (error) {
-        errorHandler(error, allAssessmentsFailure);
-    }
-}
-
-const deleteAssessment = ({ assessmentId, strType, id }) => async (dispatch) => {
+const deleteAssessment =
+  ({ assessmentId, strType, id }) =>
+  async (dispatch) => {
     dispatch(deleteAssessmentsRequest());
     try {
-        await deleteAssessmentService({ assessmentId, strType, id });
-        dispatch(deleteAssessmentsSuccess());
-        dispatch(getUserAssessments());
-        dispatch(getAllAssessments());
+      await deleteAssessmentService({ assessmentId, strType, id });
+      dispatch(deleteAssessmentsSuccess());
+      dispatch(getUserAssessments());
+      dispatch(getAllAssessments());
     } catch (error) {
-        errorHandler(error, deleteAssessmentsFailure);
+      errorHandler(error, deleteAssessmentsFailure);
     }
-}
+  };
 
-const toggleAssessmentHidden = ({ assessmentId }) => async (dispatch) => {
+const toggleAssessmentHidden =
+  ({ assessmentId }) =>
+  async (dispatch) => {
     dispatch(toggleAssessmentHiddenRequest());
     try {
-        await toggleAssessmentHiddenService({ assessmentId });
-        dispatch(toggleAssessmentHiddenSuccess());
+      await toggleAssessmentHiddenService({ assessmentId });
+      dispatch(toggleAssessmentHiddenSuccess());
     } catch (error) {
-        errorHandler(error, toggleAssessmentHiddenFailure);
+      errorHandler(error, toggleAssessmentHiddenFailure);
     }
-}
+  };
 
-const addAssessment = ({ assessmentName, assessmentId, strType, id }) => async (dispatch) => {
+const addAssessment =
+  ({ assessmentName, assessmentId, strType, id }) =>
+  async (dispatch) => {
     dispatch(addAssessmentRequest());
     try {
-        await addAssessmentService({ assessmentName, assessmentId, strType, id });
-        dispatch(addAssessmentSuccess());
-        dispatch(getUserAssessments());
-        dispatch(getAllAssessments());
+      await addAssessmentService({ assessmentName, assessmentId, strType, id });
+      dispatch(addAssessmentSuccess());
+      dispatch(getUserAssessments());
+      dispatch(getAllAssessments());
     } catch (error) {
-        errorHandler(error, addAssessmentFailure);
+      errorHandler(error, addAssessmentFailure);
     }
-}
+  };
 
-const getAssessmentLink = ({ assessmentName, assessmentId }) => async (dispatch) => {
+const getAssessmentLink =
+  ({ assessmentName, assessmentId }) =>
+  async (dispatch) => {
     dispatch(assessmentLinkRequest());
     try {
-        const res = await assessmentLinkService({ assessmentName, assessmentId });
-        dispatch(assessmentLinkSuccess(res.data.data.invite_link));
+      const res = await assessmentLinkService({ assessmentName, assessmentId });
+      dispatch(assessmentLinkSuccess(res.data.data.invite_link));
     } catch (error) {
-        errorHandler(error, assessmentLinkFailure);
+      errorHandler(error, assessmentLinkFailure);
     }
-}
+  };
 
-const deleteNonAssessment = ({ strType, id }) => async (dispatch) => {
+const deleteNonAssessment =
+  ({ strType, id }) =>
+  async (dispatch) => {
     dispatch(deleteNonAssessmentsRequest());
     try {
-        await deleteNonAssessmentService({ strType, id });
-        dispatch(deleteNonAssessmentsSuccess());
-        dispatch(getUserAssessments());
-        dispatch(getAllAssessments());
-        dispatch(getCustomerSupportList({
-            data: {
-                issue_types: [
-                    "missing_assessment"
-                ]
-            }
-        }));
+      await deleteNonAssessmentService({ strType, id });
+      dispatch(deleteNonAssessmentsSuccess());
+      dispatch(getUserAssessments());
+      dispatch(getAllAssessments());
+      dispatch(
+        getCustomerSupportList({
+          data: {
+            issue_types: ['missing_assessment'],
+          },
+        }),
+      );
     } catch (error) {
-        errorHandler(error, deleteNonAssessmentsFailure);
+      errorHandler(error, deleteNonAssessmentsFailure);
     }
-}
+  };
 
 const prepopulateAssessments = () => async (dispatch) => {
-    dispatch(prepopulateRequest());
-    try {
-        await prepopulateService();
-        dispatch(prepopulateSuccess());
-        dispatch(getUserAssessments());
-        dispatch(getAllAssessments());
-        dispatch(getCustomerSupportList({
-            data: {
-                issue_types: [
-                    "missing_assessment"
-                ]
-            }
-        }));
-    } catch (error) {
-        errorHandler(error, prepopulateFailure);
-    }
-}
+  dispatch(prepopulateRequest());
+  try {
+    await prepopulateService();
+    dispatch(prepopulateSuccess());
+    dispatch(getUserAssessments());
+    dispatch(getAllAssessments());
+    dispatch(
+      getCustomerSupportList({
+        data: {
+          issue_types: ['missing_assessment'],
+        },
+      }),
+    );
+  } catch (error) {
+    errorHandler(error, prepopulateFailure);
+  }
+};
 
 export {
-    getUserAssessments,
-    getAllAssessments,
-    deleteAssessment,
-    toggleAssessmentHidden,
-    addAssessment,
-    getAssessmentLink,
-    deleteNonAssessment,
-    prepopulateAssessments,
-    getTeamAssessments
-}
+  getUserAssessments,
+  getAllAssessments,
+  deleteAssessment,
+  toggleAssessmentHidden,
+  addAssessment,
+  getAssessmentLink,
+  deleteNonAssessment,
+  prepopulateAssessments,
+  getTeamAssessments,
+};

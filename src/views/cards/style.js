@@ -15,7 +15,7 @@ const CardWrap = styled.div`
 `;
 
 const EstimatedTimeHeading = styled.h1`
-  background-color: #FBC02D1F;
+  background-color: #fbc02d1f;
   width: fit-content;
   padding: 0.5rem 1rem;
   margin-top: 1.5rem;
@@ -174,14 +174,14 @@ const TeamCardWrap = styled(CardWrap)`
     }
   }
 
-  .draft-badge{
+  .draft-badge {
     background: ${theme.draftStatusBadgeBg};
     width: fit-content;
     padding: 0.2rem 0.8rem;
-    border-radius:1rem;
-    color:black;
+    border-radius: 1rem;
+    color: black;
     font-weight: 600;
-}
+  }
 
   @media only screen and (max-device-width: 600px) {
     .teamcard-flex-cloumn {

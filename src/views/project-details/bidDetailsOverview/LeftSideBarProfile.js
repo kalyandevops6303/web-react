@@ -70,10 +70,9 @@ const LeftSidebarProfile = ({
   useEffect(() => {
     if (showProfilePercent) {
       if (isTalentView || isClient) {
-        if(isFlextern){
+        if (isFlextern) {
           dispatch(getProfileCompletionFlextern());
-        }
-        else{
+        } else {
           dispatch(getProfilePercentage());
         }
       }

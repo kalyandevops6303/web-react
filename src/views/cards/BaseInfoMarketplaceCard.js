@@ -222,7 +222,9 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           <div onClick={(e) => handleNavigate(e)} className="d-flex w-100 align-items-center">
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                <span>{clientDetails?.title ?? (flexTern ? clientDetails?.department_name : clientDetails?.company_name)}</span>
+                <span>
+                  {clientDetails?.title ?? (flexTern ? clientDetails?.department_name : clientDetails?.company_name)}
+                </span>
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
                 {!isEmpty(delegateDetails) ? (
@@ -244,19 +246,20 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                 )}
               </CardText>
             </div>
-            
+
             <div className="d-flex flex-grow-1">
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.RATING']}>
-              <RatingBadge number={clientDetails?.rating || 0} />
+              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.RATING']}>
+                <RatingBadge number={clientDetails?.rating || 0} />
               </PermissionWrapper>
-              <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.PROJECTS_COUNT']}>
-              <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {clientDetails?.projects_worked_on_count ?? 0} Projects
-              </CardText>
+              <PermissionWrapper
+                permissions={appPermissions}
+                permissionName={['MARKETPLACE.PROJECT_DETAILS.PROJECTS_COUNT']}
+              >
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                  {clientDetails?.projects_worked_on_count ?? 0} Projects
+                </CardText>
               </PermissionWrapper>
             </div>
-             
-           
           </div>
         </div>
       )}
@@ -294,25 +297,31 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
       )}
       {location.pathname.split('/').includes('my_listings') && (
         <BidsReceivedWrapper>
-           <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.BIDS_RECEIVED']}>
-          <p className="wrapper-title mb-50">Bids Received</p>
+          <PermissionWrapper
+            permissions={appPermissions}
+            permissionName={['MARKETPLACE.PROJECT_DETAILS.BIDS_RECEIVED']}
+          >
+            <p className="wrapper-title mb-50">Bids Received</p>
           </PermissionWrapper>
           <div className="d-flex align-items-center justify-content-between">
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.BIDS_RECEIVED']}>
-            {bidsReceivedAvatarGroup?.length === 0 ? (
-              <p className="m-0">None</p>
-            ) : (
-              <div className="d-flex align-items-center">
-                {bidsReceivedAvatarGroup?.length > 3 ? (
-                  <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
-                ) : (
-                  <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
-                )}
-                <div className="total-count px-75 ms-1">
-                  <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+            <PermissionWrapper
+              permissions={appPermissions}
+              permissionName={['MARKETPLACE.PROJECT_DETAILS.BIDS_RECEIVED']}
+            >
+              {bidsReceivedAvatarGroup?.length === 0 ? (
+                <p className="m-0">None</p>
+              ) : (
+                <div className="d-flex align-items-center">
+                  {bidsReceivedAvatarGroup?.length > 3 ? (
+                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
+                  ) : (
+                    <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                  )}
+                  <div className="total-count px-75 ms-1">
+                    <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
             </PermissionWrapper>
             {data?.project?.status === 'LISTING_EXPIRED' || data?.project?.status === 'WITHDRAWN' ? (
               <div className="d-flex justify-content-end relist-btn-wrapper">

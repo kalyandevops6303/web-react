@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    reportDetails: null,
-    reportLoading: false,
-    checkReportLoading: false,
-    alreadyReported: false,
-    checkReportError: null,
-    reportError: null,
+  reportDetails: null,
+  reportLoading: false,
+  checkReportLoading: false,
+  alreadyReported: false,
+  checkReportError: null,
+  reportError: null,
 };
 
 const reportSlice = createSlice({
@@ -49,12 +49,12 @@ const reportSlice = createSlice({
 });
 
 export const {
-    reportRequest,
-    reportSuccess,
-    reportFailure,
-    checkReportRequest,
-    checkReportSuccess,
-    checkReportFailure,
+  reportRequest,
+  reportSuccess,
+  reportFailure,
+  checkReportRequest,
+  checkReportSuccess,
+  checkReportFailure,
 } = reportSlice.actions;
 
 export default reportSlice.reducer;

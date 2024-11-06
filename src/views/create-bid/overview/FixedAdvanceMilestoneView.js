@@ -252,15 +252,21 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   };
 
   const calculateMilestoneValues = (milestoneIndex) => {
-    const milestoneDuration = allMilestones && allMilestones[milestoneIndex]?.workers
-      ?.filter((worker) => worker.isChecked && worker.duration)
-      ?.reduce((max, worker) => Math.max(max, worker.duration), 0);
-    const milestoneHours = allMilestones && allMilestones[milestoneIndex]?.workers
-      ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
-      ?.reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
-    const milestoneCost = allMilestones && allMilestones[milestoneIndex]?.workers
-      ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
-      ?.reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
+    const milestoneDuration =
+      allMilestones &&
+      allMilestones[milestoneIndex]?.workers
+        ?.filter((worker) => worker.isChecked && worker.duration)
+        ?.reduce((max, worker) => Math.max(max, worker.duration), 0);
+    const milestoneHours =
+      allMilestones &&
+      allMilestones[milestoneIndex]?.workers
+        ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
+        ?.reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
+    const milestoneCost =
+      allMilestones &&
+      allMilestones[milestoneIndex]?.workers
+        ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
+        ?.reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
 
     return { milestoneDuration, milestoneHours, milestoneCost };
   };
@@ -636,7 +642,9 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
 
   useEffect(() => {
     if (savedFormData?.estimatedStartDate)
-    setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
+      setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), {
+        shouldValidate: true,
+      });
   }, [savedFormData]);
 
   const onGetBidDetailsSuccess = (res) => {
@@ -645,7 +653,9 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
       } else if (savedFormData?.estimatedStartDate) {
-        setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
+        setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), {
+          shouldValidate: true,
+        });
       }
       if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
@@ -1298,15 +1308,16 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
                                             )}
                                         </Col>
                                         <Col sm="12" md="12" lg="4">
-                                          {getValues('milestones') && getValues('milestones')[milestoneIndex]?.deliverables?.length > 1 && (
-                                            <Button
-                                              type="button"
-                                              color="flat-danger"
-                                              onClick={() => handleRemoveDeliverable(milestoneIndex, index)}
-                                            >
-                                              Remove
-                                            </Button>
-                                          )}
+                                          {getValues('milestones') &&
+                                            getValues('milestones')[milestoneIndex]?.deliverables?.length > 1 && (
+                                              <Button
+                                                type="button"
+                                                color="flat-danger"
+                                                onClick={() => handleRemoveDeliverable(milestoneIndex, index)}
+                                              >
+                                                Remove
+                                              </Button>
+                                            )}
                                         </Col>
                                       </Row>
                                     ))}
@@ -1358,8 +1369,7 @@ const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
             <CardBody>
               <Row className="mb-1">
                 <Label className="form-label">
-                  Upload detailed submission document (optional){' '}
-                  <Info size={18} color={theme.infoIcon} id="document" />
+                  Upload detailed submission document (optional) <Info size={18} color={theme.infoIcon} id="document" />
                   <UncontrolledTooltip placement="right" target="document">
                     <div className="d-flex flex-column align-items-start">
                       <p className="m-0">Allowed file types:</p>

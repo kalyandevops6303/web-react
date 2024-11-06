@@ -935,7 +935,7 @@ const FlexternPersonal = () => {
                 <CardBody>
                   {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column">
-                    <div style={{ backgroundColor: '#0185E426', padding: "20px 20px 12px 20px" }}>
+                    <div style={{ backgroundColor: '#0185E426', padding: '20px 20px 12px 20px' }}>
                       <div className="d-flex">
                         <Col lg="fit">
                           <Info className="font-medium-3 me-50" color="#004280" />

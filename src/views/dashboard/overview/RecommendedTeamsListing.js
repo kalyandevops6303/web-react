@@ -141,7 +141,6 @@ const RecommendedTeamsListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-
     dispatch(getRecommendedTeamsForClient());
   }, []);
 

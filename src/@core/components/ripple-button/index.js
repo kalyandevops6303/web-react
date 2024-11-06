@@ -1,14 +1,14 @@
 // ** React Imports
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 // ** Third Party Components
-import classnames from "classnames";
+import classnames from 'classnames';
 
 // ** Reactstrap Imports
-import { Button } from "reactstrap";
+import { Button } from 'reactstrap';
 
 // ** Styles
-import "./ripple-button.scss";
+import './ripple-button.scss';
 
 const RippleButton = ({ className, children, onClick, ...rest }) => {
   // ** States
@@ -43,7 +43,7 @@ const RippleButton = ({ className, children, onClick, ...rest }) => {
 
   return (
     <Button
-      className={classnames("waves-effect", {
+      className={classnames('waves-effect', {
         [className]: className,
       })}
       onClick={(e) => {

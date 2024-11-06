@@ -9,7 +9,7 @@ const CustomSlider = ({ sliderValue, onChange, max = 12 }) => {
 
   const handleMove = (clientX) => {
     if (sliderRef.current) {
-       // Get the bounding rectangle of the slider element
+      // Get the bounding rectangle of the slider element
       const rect = sliderRef.current.getBoundingClientRect();
       // Calculate the percentage of the slider width where the interaction occurred
       // (clientX - rect.left) gives us the x-coordinate relative to the slider's left edge
@@ -55,7 +55,7 @@ const CustomSlider = ({ sliderValue, onChange, max = 12 }) => {
   useEffect(() => {
     document.addEventListener('mouseup', handleDragEnd);
     document.addEventListener('mousemove', handleDragMove);
-    // touch events for mobile support 
+    // touch events for mobile support
     document.addEventListener('touchend', handleDragEnd);
     document.addEventListener('touchmove', handleDragMove);
 
@@ -80,11 +80,7 @@ const CustomSlider = ({ sliderValue, onChange, max = 12 }) => {
     <div className="slider-container">
       <div className="slider" ref={sliderRef} onMouseDown={handleDragStart} onTouchStart={handleDragStart}>
         <div className="slider__progress" style={{ width: `${(value / max) * 100}%` }} />
-        <div
-          className="slider__thumb"
-          style={{ left: `${(value / max) * 100}%` }}
-          onMouseEnter={handleMouseEnter}
-        >
+        <div className="slider__thumb" style={{ left: `${(value / max) * 100}%` }} onMouseEnter={handleMouseEnter}>
           <div className={`slider__tooltip ${showTooltip || sliderValue > 0 ? 'slider__tooltip--visible' : ''}`}>
             {value.toString().padStart(2, '0')} Hrs
           </div>

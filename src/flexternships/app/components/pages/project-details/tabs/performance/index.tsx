@@ -1,6 +1,3 @@
-
 export default function PerformanceTab() {
-  return (
-    <div>Performance Tab</div>
-  )
+  return <div>Performance Tab</div>;
 }
