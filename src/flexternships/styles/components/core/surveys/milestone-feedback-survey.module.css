@@ -1,0 +1,7 @@
+.root {
+  @apply text-red-500;
+}
+
+.navigationComplete {
+  @apply bg-trublue-secondary-500;
+}
