@@ -1,0 +1,227 @@
+.mainRoot {
+  /* Base styles for the main container */
+}
+
+.rootScroll {
+  /* Styles for scrollable root */
+}
+
+.empty {
+  /* Styles for empty state */
+}
+
+.root {
+  /* Root styles */
+}
+
+.columnsAutoWidth {
+  /* Styles for auto-width columns */
+}
+
+.noHeader {
+  /* Styles when no header is present */
+}
+
+.hasFooter {
+  /* Styles when footer is present */
+}
+
+.tableWrapper {
+  /* Styles for table wrapper */
+}
+
+.rootAlternateRows {
+  /* Styles for alternating row colors */
+}
+
+.content {
+  /* Content area styles */
+}
+
+.cell {
+  /* Cell styles */
+}
+
+.cellResponsiveTitle {
+  /* Responsive title cell styles */
+}
+
+.row {
+  /* Row styles */
+}
+
+.rowDelayedEnter {
+  /* Delayed enter animation styles */
+}
+
+.rowEnter {
+  /* Enter animation styles */
+}
+
+.rowLeave {
+  /* Leave animation styles */
+}
+
+.rowHasPanel {
+  /* Styles for rows with panels */
+}
+
+.rowHasEndActions {
+  /* Styles for rows with end actions */
+}
+
+.expandedRow {
+  /* Expanded row styles */
+}
+
+.itemCell {
+  /* Item cell styles */
+}
+
+.headerCell {
+  /* Header cell styles */
+}
+
+.rowTextCell {
+  /* Text cell styles */
+}
+
+.footerCell {
+  /* Footer cell styles */
+}
+
+.columnTitleCell {
+  /* Column title cell styles */
+}
+
+.cellRequiredText {
+  /* Required text styles */
+}
+
+.button {
+  /* Button styles */
+}
+
+.detailRow {
+  /* Detail row styles */
+}
+
+.detailButton {
+  /* Detail button styles */
+}
+
+.detailButtonExpanded {
+  /* Expanded detail button styles */
+}
+
+.detailIcon {
+  /* Detail icon styles */
+}
+
+.detailIconExpanded {
+  /* Expanded detail icon styles */
+}
+
+.detailIconId {
+  /* Detail icon ID styles */
+}
+
+.detailIconExpandedId {
+  /* Expanded detail icon ID styles */
+}
+
+.detailPanelCell {
+  /* Detail panel cell styles */
+}
+
+.detailRowCell {
+  /* Detail row cell styles */
+}
+
+.actionsCellPrefix {
+  /* Action cell prefix styles */
+}
+
+.actionsCell {
+  /* Actions cell styles */
+}
+
+.actionsCellDrag {
+  /* Drag action cell styles */
+}
+
+.buttonAdd {
+  /* Add button styles */
+}
+
+.buttonRemove {
+  /* Remove button styles */
+}
+
+.iconAdd {
+  /* Add icon styles */
+}
+
+.iconRemove {
+  /* Remove icon styles */
+}
+
+.dragElementDecorator {
+  /* Drag element decorator styles */
+}
+
+.iconDragElement {
+  /* Drag element icon styles */
+}
+
+.footer {
+  /* Footer styles */
+}
+
+.footerTotalCell {
+  /* Footer total cell styles */
+}
+
+.emptyRowsSection {
+  /* Empty rows section styles */
+}
+
+.iconDrag {
+  /* Drag icon styles */
+}
+
+.ghostRow {
+  /* Ghost row styles */
+}
+
+.draggedRow {
+  /* Dragged row styles */
+}
+
+.emptyCell {
+  /* Empty cell styles */
+}
+
+.verticalCell {
+  /* Vertical cell styles */
+}
+
+.cellQuestionWrapper {
+  /* Cell question wrapper styles */
+}
+
+.errorsCell {
+  /* Errors cell styles */
+}
+
+.errorsCellTop {
+  /* Top errors cell styles */
+}
+
+.errorsCellBottom {
+  /* Bottom errors cell styles */
+}
+
+.compact {
+  /* Compact styles */
+}
