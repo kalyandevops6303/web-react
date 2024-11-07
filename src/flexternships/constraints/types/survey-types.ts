@@ -8,7 +8,6 @@ export type SurveyJson = {
   elements: SurveyElement[];
 };
 
-
 // CSS Types
 export type SurveyNavigationCss = {
   complete: string;

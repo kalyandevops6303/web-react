@@ -56,7 +56,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     panel: SurveyPanelStyles,
     paneldynamic: {
       ...SurveyPanelDynamicStyles,
-      tabs: SurveyPanelDynamicTabsStyles
+      tabs: SurveyPanelDynamicTabsStyles,
     },
     page: SurveyPageStyles,
     question: SurveyQuestionStyles,
@@ -87,8 +87,8 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     list: SurveyListStyles,
     actionBar: SurveyActionBarStyles,
     variables: SurveyVariablesStyles,
-    tagbox: SurveyTagboxStyles
+    tagbox: SurveyTagboxStyles,
   };
-  
+
   return <Survey model={survey} />;
 }
