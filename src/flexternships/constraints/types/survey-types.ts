@@ -1,11 +1,39 @@
-export type SurveyElement = {
+// Data Model Types
+type SurveyElement = {
+  type: string;
   name: string;
   title: string;
-  type: string;
+  placeholder?: string;
+  rateType?: string;
+  displayMode?: string;
+  rateValues?: Array<{ value: number; text?: string }> | number[];
+  minRateDescription?: string;
+  maxRateDescription?: string;
+  isRequired?: boolean;
+  html?: string;
+  choices?: string[] | Array<{ value: string; text: string }>;
+  labelTrue?: string;
+  labelFalse?: string;
+  showCommentArea?: boolean;
+  api?: string;
+  autoGenerate?: boolean;
+  minDecriptionValue?: string;
+  maxDecriptionValue?: string;
+  rateMax?: number;
+};
+
+type SurveyPage = {
+  name: string;
+  description: string;
+  elements: SurveyElement[];
 };
 
 export type SurveyJson = {
-  elements: SurveyElement[];
+  title: string;
+  pages: SurveyPage[];
+  showProgressBar: string;
+  progressBarType: string;
+  completeText: string;
 };
 
 // CSS Types

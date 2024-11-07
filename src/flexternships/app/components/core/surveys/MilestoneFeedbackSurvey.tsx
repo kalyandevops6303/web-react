@@ -1,3 +1,12 @@
+/**
+ * Survey component using SurveyJS library
+ *
+ * References:
+ * - Adding custom icons to registry: https://surveyjs.io/form-library/examples/custom-icons/reactjs#content-code
+ * - Adding custom css: https://surveyjs.io/form-library/examples/customize-survey-with-css/reactjs#content-code
+ * - SurveyJS React Documentation: https://surveyjs.io/form-library/documentation/get-started-react
+ */
+
 // import 'survey-core/defaultV2.min.css';
 import { Model, Survey, SurveyModel } from 'survey-react-ui';
 import { SurveyJson } from '@/flexternships/constraints/types/survey-types';
@@ -46,7 +55,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   // create a survey
   const survey = new Model(surveyJson);
 
-  // Adding event listeners
+  // Add completion handler
   survey.onComplete.add(onComplete);
 
   // Add custom styles
