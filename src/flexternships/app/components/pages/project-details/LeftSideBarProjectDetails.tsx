@@ -66,9 +66,7 @@ const LeftSideBarProjectDetails = () => {
           <h1 className="text-[#333333] font-semibold">
             {data?.clientInfo?.firstName ?? ''} {data?.clientInfo?.lastName ?? ''}
           </h1>
-          {data?.clientInfo?.rating && <RatingInfo
-            rating={data?.clientInfo?.rating || 0}
-          />}
+          {data?.clientInfo?.rating && <RatingInfo rating={data?.clientInfo?.rating || 0} />}
         </div>
       </div>
 
@@ -105,7 +103,12 @@ const LeftSideBarProjectDetails = () => {
           </div>
         </div>
         <div className="flex flex-row items-start gap-3">
-          Status : <ProjectStatusChip status={secondaryStatus as keyof typeof SecondaryStatus | keyof typeof ProjectStatus} statusType={StatusType?.SECONDARY} rounded={true} />
+          Status :{' '}
+          <ProjectStatusChip
+            status={secondaryStatus as keyof typeof SecondaryStatus | keyof typeof ProjectStatus}
+            statusType={StatusType?.SECONDARY}
+            rounded={true}
+          />
         </div>
 
         {(data?.skillsData?.length! > 0 || data?.toolsData?.length! > 0) && (
@@ -137,10 +140,7 @@ const LeftSideBarProjectDetails = () => {
               Terminate
             </PrimaryButton>
           )}
-          <PrimaryButton
-            onClick={() => {}}
-            className="w-fit px-10 py-3 mx-auto"
-          >
+          <PrimaryButton onClick={() => {}} className="w-fit px-10 py-3 mx-auto">
             Message
           </PrimaryButton>
         </div>

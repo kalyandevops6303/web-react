@@ -1,8 +1,6 @@
 import FilledStar from '@src/assets/images/filler_star.png';
 
-const RatingInfo = ({rating}:{
-  rating: number;
-}) => {
+const RatingInfo = ({ rating }: { rating: number }) => {
   return (
     <div className="flex flex-row items-center gap-2 text-xs">
       <div className="bg-orange-100 px-1 gap-1 py-1 flex flex-row items-center">

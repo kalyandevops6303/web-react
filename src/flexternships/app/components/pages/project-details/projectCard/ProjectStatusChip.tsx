@@ -64,15 +64,20 @@ const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatu
   }
 
   const statusClass =
-    statusType === StatusType?.PRIMARY 
+    statusType === StatusType?.PRIMARY
       ? ProjectStatusChipClassnames[status as keyof typeof ProjectStatusChipClassnames]
       : SecondaryStatusChipClassNames[status as keyof typeof SecondaryStatusChipClassNames];
 
   return (
-    <h1 className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-md rounded-${
+    <h1
+      className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-md rounded-${
         rounded ? '2xl' : 'lg'
-      } ${statusClass}`}>
-      {(statusType === StatusType?.PRIMARY ? ProjectStatus[status as keyof typeof ProjectStatus] : SecondaryStatus[status as keyof typeof SecondaryStatus] )?.toString() || status}
+      } ${statusClass}`}
+    >
+      {(statusType === StatusType?.PRIMARY
+        ? ProjectStatus[status as keyof typeof ProjectStatus]
+        : SecondaryStatus[status as keyof typeof SecondaryStatus]
+      )?.toString() || status}
     </h1>
   );
 };
