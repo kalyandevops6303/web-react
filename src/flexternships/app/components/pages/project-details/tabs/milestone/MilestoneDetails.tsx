@@ -103,7 +103,7 @@ export default function MilestoneDetails() {
             <div className="text-lg font-semibold not-italic text-grey-heading">In Progress</div>
           </div>
         </div>
-        <SimpleElevatedCard className="flex flex-col p-6 gap-y-6 overflow-hidden">
+        <SimpleElevatedCard className="flex flex-col p-6 gap-y-6 overflow-hidden bg-white">
           <div className="flex flex-col gap-y-4">
             <h2 className="text-lg font-normal not-italic text-grey-heading">Milestone Name</h2>
             <p className="text-sm font-normal not-italic leading-5.5 text-grey">{milestoneDetails?.name}</p>
@@ -126,6 +126,39 @@ export default function MilestoneDetails() {
             </ul>
           </div>
         </SimpleElevatedCard>
+        <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
+          <h2 className="text-lg font-normal not-italic text-grey-heading">Submissions</h2>
+          <p className="text-sm font-normal not-italic leading-5.5 text-grey">
+            <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
+              <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[212px]">
+                  File Name
+                </div>
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[319px]">
+                  Description
+                </div>
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[126px]">
+                  Submitted By
+                </div>
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
+                  Submitted On
+                </div>
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[122px]">
+                  Action
+                </div>
+              </div>
+              <div>
+                {milestoneDetails?.submissions?.map((submission, index) => (
+                  <SubmissionItem
+                    key={index}
+                    data={submission}
+                    last={index === milestoneDetails.submissions.length - 1}
+                  />
+                ))}
+              </div>
+            </div>
+          </p>
+        </div>
       </SimpleElevatedCard>
       <SimpleElevatedCard className="overflow-hidden">
         <Accordion type="single" collapsible className="w-full">
@@ -137,7 +170,7 @@ export default function MilestoneDetails() {
               <div className="shadow-table w-full mt-6 border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
                 <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
                   <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[212px]">
-                    Name
+                    File Name
                   </div>
                   <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[319px]">
                     Description
@@ -158,6 +191,7 @@ export default function MilestoneDetails() {
                       key={index}
                       data={submission}
                       last={index === milestoneDetails.submissions.length - 1}
+                      viewOnly
                     />
                   ))}
                 </div>

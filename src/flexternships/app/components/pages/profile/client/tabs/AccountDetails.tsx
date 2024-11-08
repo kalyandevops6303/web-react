@@ -72,8 +72,12 @@ export default function AccountDetails() {
     try {
       await upsertClientAccountInfo(data);
       nextTab();
-    } catch (error) {
-      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        showToastMessage(ToastType.ERROR, error.message);
+      } else {
+        showToastMessage(ToastType.ERROR, 'Failed to save account details. Please try again.');
+      }
     }
     setIsSaveLoading(false);
   };

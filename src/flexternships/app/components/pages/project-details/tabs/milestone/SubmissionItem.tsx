@@ -6,10 +6,10 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { useState } from 'react';
-import { Download, ExternalLink, Link } from 'react-feather';
+import { Download, ExternalLink, Link, Trash2 } from 'react-feather';
 
 export default function SubmissionItem(props: Props) {
-  const { last = false, data } = props;
+  const { last = false, data, viewOnly = false } = props;
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
 
@@ -44,11 +44,14 @@ export default function SubmissionItem(props: Props) {
     }
   };
 
+  const handleDeleteClick = () => {
+    // TODO: Implement delete functionality
+  }
+
   return (
     <div
-      className={`flex flex-row min-h-[52px] items-center border-solid border-grey-c2 px-1.5 ${
-        last ? '' : 'border-b-1'
-      }`}
+      className={`flex flex-row min-h-[52px] items-center border-solid border-grey-c2 px-1.5 ${last ? '' : 'border-b-1'
+        }`}
     >
       <div className="py-4 px-2.5 w-[212px] flex flex-row items-center gap-x-3">
         <span>
@@ -82,6 +85,16 @@ export default function SubmissionItem(props: Props) {
             <ExternalLink size={24} />
           )}
         </span>
+        {
+          !viewOnly && (
+            <span
+              className="flex items-center justify-center bg-opacity-[0.12] bg-error rounded-full p-2 text-error cursor-pointer"
+              onClick={handleDeleteClick}
+            >
+              <Trash2 size={24} />
+            </span>
+          )
+        }
       </div>
     </div>
   );
@@ -90,4 +103,5 @@ export default function SubmissionItem(props: Props) {
 type Props = {
   last?: boolean;
   data: MilestoneSubmission;
+  viewOnly?: boolean;
 };

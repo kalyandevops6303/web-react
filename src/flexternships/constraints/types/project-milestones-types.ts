@@ -1,6 +1,7 @@
 import { MilestoneStatus } from '../enums/core-enums';
 
 export type MilestoneSubmission = {
+  _id: string;
   name: string;
   type: 'FILE' | 'URL';
   fileKey?: string;
