@@ -4,7 +4,6 @@ import BadgeGroup from './projectCard/BadgeGroup';
 import { useEffect, useState } from 'react';
 import StartDateSVG from '../../../../assets/svgs/project-details/start-date.svg';
 import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
-import { Button } from '../../ui/button';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
@@ -14,7 +13,6 @@ import { Paperclip } from 'react-feather';
 import { ProjectStatus, SecondaryStatus, StatusType } from '@/flexternships/constraints/enums/project-enums';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
-import CloseModalButton from '../../core/buttons/CloseModalButton';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',

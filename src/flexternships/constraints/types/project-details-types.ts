@@ -82,7 +82,7 @@ export type ProjectDetails = {
   orgSlugId: string;
   isDocumentsSent: boolean;
   isDocumentsSigned: boolean;
-  clientInfo?: ClientInfo;
+  clientInfo: ClientInfo;
   skillsData: Skill[];
   toolsData?: Tool[];
   clientDetails?: ClientInfo;
