@@ -92,7 +92,7 @@ export default function FlexternshipProjectDetails() {
       )}
       <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
         {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
-        <div className="flex flex-col flex-grow items-start max-w-5xl gap-5">
+        <div className="flex flex-col flex-grow items-start gap-5">
           <ProjectDetailsTabNavigation tabs={tabs} />
         </div>
       </div>

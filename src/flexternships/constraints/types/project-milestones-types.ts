@@ -1,15 +1,21 @@
 import { MilestoneStatus } from '../enums/core-enums';
-
-export type MilestoneSubmission = {
-  _id: string;
+export type MilestoneArtifact = {
+  artifactId: string;
+  type: 'DOCUMENTS' | 'LINKS';
+  status: 'DRAFT' | 'SUBMITTED';
   name: string;
-  type: 'FILE' | 'URL';
-  fileKey?: string;
   description: string;
-  submittedAt: number;
   submittedBy: {
     name: string;
     avatar: string;
+  };
+  submittedAt: number;
+  metadata: {
+    // file props
+    fileKey?: string;
+    size?: number;
+    // link props
+    url?: string;
   };
 };
 
@@ -26,7 +32,6 @@ export type MilestoneDetails = {
   };
   deliverables: string[];
   status: MilestoneStatus;
-  submissions: MilestoneSubmission[];
   milestoneBy: {
     entity: 'CLIENT'; // TODO: enum
     entityId: string;
@@ -60,3 +65,17 @@ export type ProjectMilestonesActions = {
 };
 
 export type ProjectMilestonesStore = ProjectMilestonesState & ProjectMilestonesActions;
+
+export type MilestoneArtifactsState = {
+  draftArtifacts: MilestoneArtifact[];
+  submittedArtifacts: MilestoneArtifact[];
+};
+export type MilestoneArtifactsActions = {
+  saveDraftArtifacts: () => Promise<void>;
+  submitDraftArtifacts: () => Promise<void>;
+  setDraftArtifacts: (artifacts: MilestoneArtifact[]) => void;
+  setSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => void;
+  resetDraftArtifacts: () => void;
+};
+
+export type MilestoneArtifactsStore = MilestoneArtifactsState & MilestoneArtifactsActions;

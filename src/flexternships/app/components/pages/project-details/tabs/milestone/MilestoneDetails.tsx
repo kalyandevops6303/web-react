@@ -10,17 +10,19 @@ import {
 } from '@/flexternships/app/components/ui/accordion';
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
+import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Check } from 'react-feather';
+import { ArrowLeft, Check, Plus } from 'react-feather';
 import { useNavigate, useParams } from 'react-router-dom';
 import SubmissionItem from './SubmissionItem';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
+  const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
+  const submittedArtifacts = useMilestoneArtifactsStore((state) => state.submittedArtifacts);
   const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
 
   const [isDetailsLoading, setIsDetailsLoading] = useState(true);
@@ -62,7 +64,7 @@ export default function MilestoneDetails() {
   }
 
   return (
-    <div className="flex flex-col gap-y-6">
+    <div className="flex flex-col gap-y-6 max-w-[1040px]">
       <div className="flex flex-row justify-between">
         <PrimaryIconText
           icon={<ArrowLeft className="text-white" />}
@@ -126,39 +128,50 @@ export default function MilestoneDetails() {
             </ul>
           </div>
         </SimpleElevatedCard>
-        <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
-          <h2 className="text-lg font-normal not-italic text-grey-heading">Submissions</h2>
-          <p className="text-sm font-normal not-italic leading-5.5 text-grey">
-            <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
-              <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[212px]">
-                  File Name
+        {
+          userDetails.userType === UserType.TALENT && (
+            <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
+              <h2 className="text-lg font-normal not-italic text-grey-heading">Submissions</h2>
+              <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
+                <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
+                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
+                    File Name
+                  </div>
+                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
+                    Description
+                  </div>
+                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
+                    Uploaded On
+                  </div>
+                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
+                    Action
+                  </div>
                 </div>
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[319px]">
-                  Description
-                </div>
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[126px]">
-                  Submitted By
-                </div>
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
-                  Submitted On
-                </div>
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[122px]">
-                  Action
+                <div className="text-sm font-normal not-italic leading-5.5 text-grey">
+                  {draftArtifacts.map((submission, index) => (
+                    <SubmissionItem
+                      key={index}
+                      data={submission}
+                      last={index === draftArtifacts.length - 1}
+                    />
+                  ))}
                 </div>
               </div>
-              <div>
-                {milestoneDetails?.submissions?.map((submission, index) => (
-                  <SubmissionItem
-                    key={index}
-                    data={submission}
-                    last={index === milestoneDetails.submissions.length - 1}
-                  />
-                ))}
+              <div className='flex flex-col gap-y-7 text-trublue-secondary-500'>
+                <PrimaryIconText
+                  icon={<Plus size={12} />}
+                  text="Add Document"
+                  onClick={() => {}}
+                />
+                <PrimaryIconText
+                  icon={<Plus size={12} />}
+                  text="Add Link"
+                  onClick={() => {}}
+                />
               </div>
             </div>
-          </p>
-        </div>
+          )
+        }
       </SimpleElevatedCard>
       <SimpleElevatedCard className="overflow-hidden">
         <Accordion type="single" collapsible className="w-full">
@@ -186,11 +199,11 @@ export default function MilestoneDetails() {
                   </div>
                 </div>
                 <div>
-                  {milestoneDetails?.submissions?.map((submission, index) => (
+                  {submittedArtifacts.map((submission, index) => (
                     <SubmissionItem
                       key={index}
                       data={submission}
-                      last={index === milestoneDetails.submissions.length - 1}
+                      last={index === submittedArtifacts.length - 1}
                       viewOnly
                     />
                   ))}
