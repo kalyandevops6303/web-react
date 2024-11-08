@@ -7,7 +7,7 @@ import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfil
 import babel from 'vite-plugin-babel';
 import postCssRtl from 'postcss-rtl';
 // import Checker from 'vite-plugin-checker';
-import sassDts from 'vite-plugin-sass-dts';
+// import sassDts from 'vite-plugin-sass-dts';
 import tailwindcss from 'tailwindcss';
 
 const loadJsFilesAsJsx = (): Plugin => ({
@@ -35,7 +35,7 @@ export default defineConfig({
     }),
     loadJsFilesAsJsx(),
     // Checker({ typescript: true }), TODO: To uncomment this checker to check type errors strictly
-    sassDts(),
+    // sassDts(),
   ],
   mode: process.env.VITE_ENV_MODE || 'test',
   define: {

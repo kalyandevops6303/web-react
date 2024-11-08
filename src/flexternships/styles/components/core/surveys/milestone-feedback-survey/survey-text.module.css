@@ -1,0 +1,39 @@
+.root {
+  /* Base text input styles */
+}
+
+.small {
+  /* Styles for small text input */
+}
+
+.controlDisabled {
+  /* Styles for disabled state */
+}
+
+.controlReadOnly {
+  /* Styles for readonly state */
+}
+
+.controlPreview {
+  /* Styles for preview state */
+}
+
+.constrolWithCharacterCounter {
+  /* Styles when character counter is present */
+}
+
+.characterCounterBig {
+  /* Styles for large character counter */
+}
+
+.content {
+  /* Content area styles */
+}
+
+.remainingCharacterCounter {
+  /* Character counter styles */
+}
+
+.onError {
+  /* Error state styles */
+}

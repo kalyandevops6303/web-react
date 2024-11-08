@@ -1,0 +1,163 @@
+.root {
+  /* Base styles */
+}
+
+.popup {
+  /* Popup styles */
+}
+
+.small {
+  /* Small variant */
+}
+
+.selectWrapper {
+  /* Select wrapper styles */
+}
+
+.other {
+  /* Other styles */
+}
+
+.onError {
+  /* Error state */
+}
+
+.label {
+  /* Label styles */
+}
+
+.itemSvgIconId {
+  /* SVG icon ID */
+}
+
+.item {
+  /* Item styles */
+}
+
+.itemDisabled {
+  /* Disabled item */
+}
+
+.itemChecked {
+  /* Checked item */
+}
+
+.itemHover {
+  /* Hover state */
+}
+
+.itemControl {
+  /* Item control */
+}
+
+.itemDecorator {
+  /* Item decorator */
+}
+
+.itemEnter {
+  /* Enter animation */
+}
+
+.itemLeave {
+  /* Leave animation */
+}
+
+.cleanButton {
+  /* Clean button */
+}
+
+.cleanButtonSvg {
+  /* Clean button SVG */
+}
+
+.cleanButtonIconId {
+  /* Clean button icon ID */
+}
+
+.cleanItemButton {
+  /* Clean item button */
+}
+
+.cleanItemButtonSvg {
+  /* Clean item button SVG */
+}
+
+.cleanItemButtonIconId {
+  /* Clean item button icon ID */
+}
+
+.chevronButton {
+  /* Chevron button */
+}
+
+.chevronButtonSvg {
+  /* Chevron button SVG */
+}
+
+.chevronButtonIconId {
+  /* Chevron button icon ID */
+}
+
+.control {
+  /* Control styles */
+}
+
+.controlValue {
+  /* Control value */
+}
+
+.controlValueItems {
+  /* Control value items */
+}
+
+.placeholderInput {
+  /* Placeholder input */
+}
+
+.controlEditable {
+  /* Editable control */
+}
+
+.controlDisabled {
+  /* Disabled control */
+}
+
+.controlReadOnly {
+  /* Read-only control */
+}
+
+.controlPreview {
+  /* Preview control */
+}
+
+.controlEmpty {
+  /* Empty control */
+}
+
+.controlLabel {
+  /* Control label */
+}
+
+.filterStringInput {
+  /* Filter string input */
+}
+
+.materialDecorator {
+  /* Material decorator */
+}
+
+.hint {
+  /* Hint styles */
+}
+
+.hintPrefix {
+  /* Hint prefix */
+}
+
+.hintSuffix {
+  /* Hint suffix */
+}
+
+.hintSuffixWrapper {
+  /* Hint suffix wrapper */
+}
