@@ -53,7 +53,9 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
           <p className="w-[40.5rem] text-grey-600 text-sm font-medium leading-snug pt-8">
             {recognitionType === RecognitionType.WOW ? RecognitionSubHeading.WOW : RecognitionSubHeading.KUDOS}
           </p>
-          <p className="mt-[1.63rem] text-grey-heading text-lg font-medium">Selected {selectedCount}/{teamMember.length}</p>
+          <p className="mt-[1.63rem] text-grey-heading text-lg font-medium">
+            Selected {selectedCount}/{teamMember.length}
+          </p>
           <div className="mt-4 flex items-center flex-wrap gap-7">
             {teamMember?.map((teamMember, index) => (
               <div
@@ -78,9 +80,16 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
                     className="w-8 h-8"
                   />
                 ) : (
-                  <img src={ThumbsUp} style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}} className="w-8 h-8" />
+                  <img
+                    src={ThumbsUp}
+                    style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
+                    className="w-8 h-8"
+                  />
                 )}
-                <img src={teamMember.profileImage || defaultAvatar} className="w-9 h-9 rounded-[50%] border-[0.25rem] border-white" />
+                <img
+                  src={teamMember.profileImage || defaultAvatar}
+                  className="w-9 h-9 rounded-[50%] border-[0.25rem] border-white"
+                />
                 <p className="min-w-[7.875rem] text-sm font-normal text-grey-heading">{teamMember.name}</p>
               </div>
             ))}
