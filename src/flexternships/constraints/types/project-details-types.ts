@@ -1,3 +1,18 @@
+export enum ProjectStatus {
+  DRAFT = 'DRAFT',
+  OPEN = 'OPEN',
+  IN_REVIEW = 'IN_REVIEW',
+  ACTIVE = 'ACTIVE',
+  ON_GOING = 'ON_GOING',
+  CLOSED = 'CLOSED',
+  TERMINATED = 'TERMINATED',
+  COMPLETED = 'COMPLETED',
+}
+
+export enum DurationType {
+  WEEK = 'WEEK',
+}
+
 export type TeamMemberDetails = {
   name?: string;
   profileImage?: string;
@@ -7,6 +22,11 @@ export type TeamMemberDetails = {
   ratingColor?: string;
   kudos?: number;
   wow?: number;
+};
+
+export type BadgeType = {
+  id: string;
+  name: string;
 };
 
 export type ProjectTabType = {
@@ -25,21 +45,6 @@ export type BreadCrumbType = {
   link: string;
 };
 
-export enum ProjectStatus {
-  DRAFT = 'DRAFT',
-  OPEN = 'OPEN',
-  IN_REVIEW = 'IN_REVIEW',
-  ACTIVE = 'ACTIVE',
-  ON_GOING = 'ON_GOING',
-  CLOSED = 'CLOSED',
-  TERMINATED = 'TERMINATED',
-  COMPLETED = 'COMPLETED',
-}
-
-export enum DurationType {
-  WEEK = 'WEEK',
-}
-
 type Document = {
   fileName: string;
   fileKey: string;
@@ -54,6 +59,10 @@ type ExpectedDuration = {
   hoursPerWeek: number;
 };
 
+type StatusLog = {
+  [key: string]: Array<{ [subKey: string]: number }>;
+};
+
 export type ProjectDetails = {
   id: string;
   createdAt: number;
@@ -66,27 +75,23 @@ export type ProjectDetails = {
     expectedStartDate: number;
     documents: Document[];
   };
-  roles: ProjectRole;
+  roles: ProjectRole[];
   listingDetails: ListingDetails;
   status: ProjectStatus;
   clientUserId: string;
   orgSlugId: string;
   isDocumentsSent: boolean;
   isDocumentsSigned: boolean;
-  clientInfo?: ClientInfo[];
+  clientInfo?: ClientInfo;
   skillsData: Skill[];
   toolsData?: Tool[];
-  orgDetails?: Record<string, any>;
-  clientDetails?: Record<string, any>;
+  clientDetails?: ClientInfo;
+  secondaryStatus: SecondaryStatus;
 };
 
 type ProjectRole = {
-  roleId: string;
-  proficiency: {
-    skills: string[];
-    tools: string[];
-  };
-  count: number;
+  id: string;
+  name: string;
 };
 
 type ListingDetails = {
@@ -143,12 +148,23 @@ type ClientInfo = {
 type Skill = {
   id: string;
   name: string;
-  createdAt: number;
-  updatedAt: number;
-  isDeleted: boolean;
 };
 
 type Tool = Skill;
+
+type SecondaryStatus = {
+  id: string;
+  createdAt: number;
+  updatedAt: number;
+  isDeleted: boolean;
+  statusLog: StatusLog;
+  next: string;
+  entity: {
+    entityType: string;
+    entityId: string;
+  };
+  projectId: string;
+};
 
 export type ProjectDetailsState = {
   isProjectsLoading: boolean;

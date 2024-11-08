@@ -1,8 +1,7 @@
 import FilledStar from '@src/assets/images/filler_star.png';
 
-const RatingInfo = ({rating, projectsCount}:{
+const RatingInfo = ({rating}:{
   rating: number;
-  projectsCount: number;
 }) => {
   return (
     <div className="flex flex-row items-center gap-2">
@@ -10,7 +9,6 @@ const RatingInfo = ({rating, projectsCount}:{
         <img height={14} src={FilledStar} alt="Filled star" />
         <h1 className="font-semibold">{parseFloat(rating.toFixed(1))}</h1>
       </div>
-      <h1>{projectsCount} Projects</h1>
     </div>
   );
 };

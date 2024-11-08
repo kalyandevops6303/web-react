@@ -1,10 +1,5 @@
-type BadgeType = {
-  id: string;
-  name: string;
-  createdAt: number;
-  updatedAt: number;
-  isDeleted: boolean;
-};
+import { BadgeType } from "@/flexternships/constraints/types/project-details-types";
+
 
 const BadgeGroup = ({ className, tags }: { className?: string; tags: BadgeType[] }) => {
   return (
