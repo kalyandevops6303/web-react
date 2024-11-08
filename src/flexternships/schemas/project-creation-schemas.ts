@@ -43,7 +43,7 @@ export const ProjectDetailsSchema = yup.object().shape({
       yup.object().shape({
         file: yup
           .mixed()
-          .test('fileFormat', 'Invalid file format', (value) => value && allowedFormats.includes(value.type)),
+          .test('fileFormat', 'Invalid file format', (value:File) => value && allowedFormats.includes(value.type)).optional(),
         fileName: yup.string().required('fileName is required'),
         fileKey: yup.string().required('fileKey is required'),
         downloadUrl: yup.string().url('downloadUrl must be a valid URL'),
