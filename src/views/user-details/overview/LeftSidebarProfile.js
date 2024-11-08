@@ -25,7 +25,12 @@ import { CustomBadge } from '../../styled';
 import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { appPermissionsSelector, selectAuthUserData, selectTrumioIsFlextern, selectUserData } from '../../../redux/selectors/authSelectors';
+import {
+  appPermissionsSelector,
+  selectAuthUserData,
+  selectTrumioIsFlextern,
+  selectUserData,
+} from '../../../redux/selectors/authSelectors';
 // import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';

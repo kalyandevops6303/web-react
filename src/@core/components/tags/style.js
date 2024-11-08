@@ -12,7 +12,7 @@ const Tagwrapper = styled.div`
     display: flex;
     align-items: center;
     padding: 0 6px;
-    margin: ${props => props.noMargin ? "0" : "0 0.1rem 0 0.8rem"};
+    margin: ${(props) => (props.noMargin ? '0' : '0 0.1rem 0 0.8rem')};
   }
   .dot {
     height: 6px;

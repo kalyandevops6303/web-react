@@ -54,7 +54,7 @@ export enum UserTypeChipClassnames {
     INITIATE_FUNDS: 'Initiate Funds',
   };
 
-  export const enum DocTypes {
-    NDA = 'NDA',
-    CONTRACT = 'CONTRACT',
-  }
+export const enum DocTypes {
+  NDA = 'NDA',
+  CONTRACT = 'CONTRACT',
+}

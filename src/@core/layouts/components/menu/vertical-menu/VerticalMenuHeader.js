@@ -1,25 +1,19 @@
 // ** React Imports
-import { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 
 // ** Icons Imports
-import { Disc, X, Circle } from "react-feather";
+import { Disc, X, Circle } from 'react-feather';
 
 // ** Config
-import themeConfig from "@configs/themeConfig";
+import themeConfig from '@configs/themeConfig';
 
 // ** Utils
-import { getUserData, getHomeRouteForLoggedInUser } from "@utils";
+import { getUserData, getHomeRouteForLoggedInUser } from '@utils';
 
 const VerticalMenuHeader = (props) => {
   // ** Props
-  const {
-    menuCollapsed,
-    setMenuCollapsed,
-    setMenuVisibility,
-    setGroupOpen,
-    menuHover,
-  } = props;
+  const { menuCollapsed, setMenuCollapsed, setMenuVisibility, setGroupOpen, menuHover } = props;
 
   // ** Vars
   const user = getUserData();
@@ -56,10 +50,7 @@ const VerticalMenuHeader = (props) => {
     <div className="navbar-header">
       <ul className="nav navbar-nav flex-row">
         <li className="nav-item me-auto">
-          <NavLink
-            to={user ? getHomeRouteForLoggedInUser(user.role) : "/"}
-            className="navbar-brand"
-          >
+          <NavLink to={user ? getHomeRouteForLoggedInUser(user.role) : '/'} className="navbar-brand">
             <span className="brand-logo">
               <img src={themeConfig.app.appLogoImage} alt="logo" />
             </span>
@@ -69,11 +60,7 @@ const VerticalMenuHeader = (props) => {
         <li className="nav-item nav-toggle">
           <div className="nav-link modern-nav-toggle cursor-pointer">
             <Toggler />
-            <X
-              onClick={() => setMenuVisibility(false)}
-              className="toggle-icon icon-x d-block d-xl-none"
-              size={20}
-            />
+            <X onClick={() => setMenuVisibility(false)} className="toggle-icon icon-x d-block d-xl-none" size={20} />
           </div>
         </li>
       </ul>

@@ -138,7 +138,10 @@ const LeftSidebarProjectDetails = () => {
               <span className="info-key">Posted date:</span>
               <CardText className="info-value ">
                 {' '}
-                {convertUnixTimestampToDate(projectDetailsData?.listing_details?.start_date_epoch, savedUserData?.availability?.timezone?.name )}
+                {convertUnixTimestampToDate(
+                  projectDetailsData?.listing_details?.start_date_epoch,
+                  savedUserData?.availability?.timezone?.name,
+                )}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (

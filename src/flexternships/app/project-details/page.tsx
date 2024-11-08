@@ -3,25 +3,24 @@ import ProjectDetailsTabNavigation from '../components/pages/project-details/Pro
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
 import { useEffect } from 'react';
 import MilestoneTab from '../components/pages/project-details/tabs/milestone';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
 import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
-import Spinner from '../components/core/Spinner';
 import ProjectsTab from './tabs/projects/page';
+import TeamTab from '../components/pages/project-details/tabs/team';
 
 export default function FlexternshipProjectDetails() {
-  const fetchUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectLoading = useProjectsStore((state) => state.isProjectsLoading);
   const params: Readonly<Params<string>> = useParams();
+
   useEffect(() => {
-    fetchUserDetails();
     if (params?.projectId) {
       getProjectDetails(params?.projectId);
     }
   }, [params]);
+
   const tabs = [
     {
       id: 'team',
@@ -29,7 +28,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Users size={18} />,
       description: 'Team list & Permission',
       route: '/team',
-      component: <div>Team</div>,
+      component: <TeamTab />,
       talentVisible: true,
       clientVisible: true,
     },
@@ -68,11 +67,7 @@ export default function FlexternshipProjectDetails() {
   return (
     <div className="flexternships-page">
       {projectLoading ? (
-        <div className="fixed inset-0 flex items-center justify-center">
-          <div className="w-20">
-            <Spinner />
-          </div>
-        </div>
+        <div className="h-5"></div>
       ) : (
         <div className="flex flex-col items-start gap-5">
           <BreadCrumbs
@@ -96,12 +91,10 @@ export default function FlexternshipProjectDetails() {
         </div>
       )}
       <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
-        {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-1/5"></div>}
-        {!((params['milestone'] ?? false) && (params?.['milestoneId']?.length ?? 0) > 0) && (
-          <div className="flex flex-col flex-grow items-start gap-5">
-            <ProjectDetailsTabNavigation tabs={tabs} />
-          </div>
-        )}
+        {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
+        <div className="flex flex-col flex-grow items-start max-w-5xl gap-5">
+          <ProjectDetailsTabNavigation tabs={tabs} />
+        </div>
       </div>
     </div>
   );

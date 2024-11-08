@@ -16,11 +16,19 @@ export const routes = {
     project: {
       create: `${serviceUrls.projectManagementV2}/project`,
       saveDraft: `${serviceUrls.projectManagementV2}/project/draft/save`,
+      getDraft: `${serviceUrls.projectManagementV2}/project/draft/get`,
+      getProjectDetailsById: `${serviceUrls.projectManagementV2}/project/detail`,
+      getProjectTeamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
+      verifyProjectName: `${serviceUrls.projectManagementV2}/project/verify-name`,
       getProjectById: `${serviceUrls.projectManagementV2}/project/detail`,
     },
     legal: {
       details: `${serviceUrls.projectManagementV2}/legal/document`,
       signDocument: `${serviceUrls.projectManagementV2}/legal/document/sign`,
+    },
+    milestone: {
+      getMilestonesByProjectId: `${serviceUrls.projectManagementV2}/milestones`,
+      getMilestoneDetailsById: `${serviceUrls.projectManagementV2}/single/milestone`,
     },
   },
   userManagement: {
@@ -64,8 +72,5 @@ export const routes = {
     password: {
       changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
     },
-  },
-  projectDetails: {
-    teamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
   },
 };

@@ -23,10 +23,15 @@ const SaveForLaterModal = ({ modal, toggleModal, draftAction, redirectionRoute, 
             </div>
           </div>
           <div className="d-flex justify-content-end align-items-center mb-2">
-            <Button color="danger" outline className="me-2" onClick={()=>{
-              toggleModal();
-              navigate(redirectionRoute);
-            }}>
+            <Button
+              color="danger"
+              outline
+              className="me-2"
+              onClick={() => {
+                toggleModal();
+                navigate(redirectionRoute);
+              }}
+            >
               Discard
             </Button>
             <Button

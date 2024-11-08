@@ -23,14 +23,14 @@ const userTypes = {
   talent: 'TALENT',
   team: 'TEAM',
   club: 'CLUB',
-  flexternTalent : 'FLEXTERN_TALENT',
-  flexternClient : 'FLEXTERN_CLIENT',
+  flexternTalent: 'FLEXTERN_TALENT',
+  flexternClient: 'FLEXTERN_CLIENT',
 };
 
 const appRoles = {
   flexternClient: 'FLEXTERN_CLIENT',
   flexternTalent: 'FLEXTERN_TALENT',
-}
+};
 
 const teamTypes = {
   team: 'TEAM',
@@ -100,9 +100,7 @@ const clubStatusesOptions = [
   { label: 'Drafts', value: 'DRAFT' },
 ];
 
-const statusesOptions = [
-  { label: 'Open', value: 'OPEN' },
-];
+const statusesOptions = [{ label: 'Open', value: 'OPEN' }];
 const projectTypesOptions = [
   { label: 'Fixed', value: 'FIXED' },
   { label: 'Variable', value: 'VARIABLE' },
@@ -228,7 +226,7 @@ const bidStages = {
 const delegateTypes = {
   payment_delegate: 'PAYMENT_DELEGATE',
   full_access: 'FULL_ACCESS',
-}
+};
 
 const CUSTOMER_SUPPORT_TYPES = {
   missing_institute: 'missing_institute',
@@ -270,21 +268,18 @@ const generateYearArrays = () => {
   const startYear = currentYear - 7;
   const endYear = currentYear + 6;
 
-  const generateYearRange = (start, end) => 
-    Array.from(
-      { length: end - start + 1 },
-      (_, index) => {
-        const year = start + index;
-        return { label: year.toString(), value: year };
-      }
-    );
+  const generateYearRange = (start, end) =>
+    Array.from({ length: end - start + 1 }, (_, index) => {
+      const year = start + index;
+      return { label: year.toString(), value: year };
+    });
 
   return {
     studyYears: generateYearRange(startYear, currentYear),
-    graduationYears: generateYearRange(startYear, endYear)
+    graduationYears: generateYearRange(startYear, endYear),
   };
 };
-const {studyYears,graduationYears} = generateYearArrays();
+const { studyYears, graduationYears } = generateYearArrays();
 
 export {
   ERROR_CODES,

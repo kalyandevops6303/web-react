@@ -21,10 +21,8 @@ export default function Web() {
   return (
     <>
       <main className="flex h-screen items-center justify-center gap-2">
-        <h1>
-          Welcome to TruNext App - Flexternships Demo
-        </h1>
+        <h1>Welcome to TruNext App - Flexternships Demo</h1>
       </main>
     </>
-  )
+  );
 }

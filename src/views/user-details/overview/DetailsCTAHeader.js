@@ -81,7 +81,7 @@ const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
           setAccpetModal(false);
           dispatch(getRequestStatusSuccess(null));
           dispatch(makeTeamMemberSuccess());
-          dispatch(getMyTeam())
+          dispatch(getMyTeam());
         },
         onError: () => {
           setIsStatusUpdating(false);

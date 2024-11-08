@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChevronLeft, Plus } from 'react-feather';
@@ -15,6 +15,7 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { isEmpty } from 'lodash';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 export default function Roles() {
   const rolesData = useProjectCreationStore((state) => state.data.roles);
@@ -35,6 +36,7 @@ export default function Roles() {
     resolver: yupResolver(ProjectRolesFormSchema),
     defaultValues: {},
   });
+  const { projectId } = useParams();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -46,15 +48,14 @@ export default function Roles() {
     nextTab();
   };
 
-
   const onSaveDraft = async () => {
     try {
       updateRolesData(watch('projectRoles'));
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
-      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
-  }
+  };
 
   useEffect(() => {
     if (!isEmpty(rolesData)) {
@@ -65,11 +66,11 @@ export default function Roles() {
   }, [rolesData, reset]);
 
   return (
-    <div className='flex flex-col'>
+    <div className="flex flex-col">
       <div className={Styles.tabContent}>
         <div className={Styles.tabContentHeader}>Required Roles</div>
         <div className={`${Styles.tabContentBody} mt-6`}>
-          <div className='w-full'>
+          <div className="w-full">
             {fields.map((field, index) => (
               <RoleCard
                 key={field.id}
@@ -92,23 +93,12 @@ export default function Roles() {
         </div>
       </div>
       <div className={Styles.bottomActionsContainer}>
-        <PrimaryIconText
-          text="Back"
-          icon={<ChevronLeft className="text-trublue" size={18} />}
-          onClick={previousTab}
-        />
+        <PrimaryIconText text="Back" icon={<ChevronLeft className="text-trublue" size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton
-            className="mr-6"
-            onClick={onSaveDraft}
-            loading={isSaveDraftLoading}
-          >
+          <SecondaryButton className="mr-6" onClick={onSaveDraft} loading={isSaveDraftLoading}>
             Save as Draft
           </SecondaryButton>
-          <PrimaryButton
-            onClick={handleSubmit(onContinue, (formErrors) => {console.log(formErrors);})}
-            disabled={!isValid}
-          >
+          <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>
             Continue
           </PrimaryButton>
         </div>

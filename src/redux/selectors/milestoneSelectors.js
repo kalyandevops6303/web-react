@@ -6,6 +6,9 @@ export const draftMilestonesData = createSelector(mileStoneSelector, (milestone)
 
 export const draftMilestoneLoading = createSelector(mileStoneSelector, (milestone) => milestone.draftMilestoneLoading);
 
-export const isDeleteDraftMilestoneLoading = createSelector(mileStoneSelector, (milestone) => milestone.isDeleteDraftMilestoneLoading);
+export const isDeleteDraftMilestoneLoading = createSelector(
+  mileStoneSelector,
+  (milestone) => milestone.isDeleteDraftMilestoneLoading,
+);
 
 export const draftArtifactsLoading = createSelector(mileStoneSelector, (milestone) => milestone.draftArtifactsLoading);

@@ -27,7 +27,7 @@ const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false), flexTern:flexTern }));
+      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false), flexTern: flexTern }));
     }
   };
   const handleUnLike = (e) => {
@@ -115,20 +115,22 @@ const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
         </div>
       </IconWrapper>
 
-      {project && <div>
-        <BadgeGroup
-          title="Skills"
-          data={project?.skills_required}
-          color="light-blue"
-          id={`tooltip-skills-project-${project?._id}`}
-        />
-        <BadgeGroup
-          title="Tools"
-          data={project?.tools_required}
-          color="light-blue"
-          id={`tooltip-tools-project-${project?._id}`}
-        />
-      </div>}
+      {project && (
+        <div>
+          <BadgeGroup
+            title="Skills"
+            data={project?.skills_required}
+            color="light-blue"
+            id={`tooltip-skills-project-${project?._id}`}
+          />
+          <BadgeGroup
+            title="Tools"
+            data={project?.tools_required}
+            color="light-blue"
+            id={`tooltip-tools-project-${project?._id}`}
+          />
+        </div>
+      )}
       <BidsReceivedWrapper>
         <p className="wrapper-title mb-50">Bids Received</p>
         {bidsReceivedAvatarGroup?.length ? (

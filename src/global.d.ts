@@ -43,7 +43,6 @@ declare module '*.module.css' {
   export default classes;
 }
 
-
 declare interface ImportMeta {
   env: {
     VITE_BUGSNAG_API_KEY: string;

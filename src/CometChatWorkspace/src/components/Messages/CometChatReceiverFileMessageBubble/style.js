@@ -18,7 +18,6 @@ export const messageWrapperStyle = () => {
     width: 'auto',
     flex: '1 1',
     alignSelf: 'stretch',
- 
   };
 };
 

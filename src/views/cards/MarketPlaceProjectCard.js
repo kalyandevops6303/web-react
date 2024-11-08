@@ -243,23 +243,29 @@ const MarketPlaceProjectCard = ({
                   <span className="cursor-pointer">{project?.details?.name ?? project?.name}</span>
                 </CardTitle>
                 <div className="d-flex gap-sm-5 flex-wrap project-stats">
-                <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.PRICE']} >
-                  <CardText className="project">
-                    <>
-                      {project?.pay_type} Price &nbsp;
-                      {project?.total_cost > 0 ? `${project?.total_cost} ${project?.currency_symbol}` : ''}
-                    </>
-                  </CardText>
+                  <PermissionWrapper
+                    permissions={appPermissions}
+                    permissionName={['MARKETPLACE.PROJECT_DETAILS.PRICE']}
+                  >
+                    <CardText className="project">
+                      <>
+                        {project?.pay_type} Price &nbsp;
+                        {project?.total_cost > 0 ? `${project?.total_cost} ${project?.currency_symbol}` : ''}
+                      </>
+                    </CardText>
                   </PermissionWrapper>
-                  <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.PROJECT_DETAILS.LOCATION']} >
-                  <CardText className="project d-flex align-items-center">
-                    <img src={Mpin} alt="Mpin" className="mpin" />
-                    {project?.client?.office_address?.country?.name ||
-                      project?.client_details?.office_address?.country?.name ||
-                      data?.client?.country_name ||
-                      project?.country_name ||
-                      'Location'}
-                  </CardText>
+                  <PermissionWrapper
+                    permissions={appPermissions}
+                    permissionName={['MARKETPLACE.PROJECT_DETAILS.LOCATION']}
+                  >
+                    <CardText className="project d-flex align-items-center">
+                      <img src={Mpin} alt="Mpin" className="mpin" />
+                      {project?.client?.office_address?.country?.name ||
+                        project?.client_details?.office_address?.country?.name ||
+                        data?.client?.country_name ||
+                        project?.country_name ||
+                        'Location'}
+                    </CardText>
                   </PermissionWrapper>
                   <CardText className=" mb-1">
                     {`Posted ${project?.posted_date ? DateTime?.fromMillis(project?.posted_date)?.toRelative() : '-'}`}
@@ -274,7 +280,8 @@ const MarketPlaceProjectCard = ({
                         className="my-div"
                         ref={divRef}
                         style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop: '10px' }}
-                      >{descriptionToShow}
+                      >
+                        {descriptionToShow}
                       </div>
                     ) : (
                       <div className="my-div" ref={divRef}>

@@ -188,13 +188,13 @@ const CustomBadge = styled.span`
   }
   .CLIENT {
     background: ${(props) => (props.bordered ? '#fff' : `#005EFF1f`)} !important;
-    color: #005EFF;
+    color: #005eff;
     border: ${(props) => (props.bordered ? `1px solid #005EFF` : 'none')};
   }
   .CLUB,
   .TEAM {
     background: ${(props) => (props.bordered ? '#fff' : `#30D6D21f`)} !important;
-    color: #30D6D2;
+    color: #30d6d2;
     border: ${(props) => (props.bordered ? `1px solid #30D6D2` : 'none')};
   }
 

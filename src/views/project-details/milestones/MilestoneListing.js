@@ -41,10 +41,10 @@ const getCompletedDate = (mile, savedUserData) => {
   switch (true) {
     // To set the completed date for older milestones, since it was blank
     case mile.end_date === 0 && mile?.status === 'COMPLETED':
-      result = convertUnixTimestampToDate(mile.updated_at, savedUserData?.availability?.timezone?.name );
+      result = convertUnixTimestampToDate(mile.updated_at, savedUserData?.availability?.timezone?.name);
       break;
     case mile.end_date > 0:
-      result = convertUnixTimestampToDate(mile.end_date, savedUserData?.availability?.timezone?.name );
+      result = convertUnixTimestampToDate(mile.end_date, savedUserData?.availability?.timezone?.name);
       break;
     default:
       result = '-';
@@ -125,7 +125,9 @@ const MilestoneListing = ({ milestonesData }) => {
                   <div className="ms-2">
                     <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
                     <CardText className="fw-bolder fs-5 mb-0">
-                      { mile.start_date ? convertUnixTimestampToDate(mile.start_date, savedUserData?.availability?.timezone?.name ) : '-'}
+                      {mile.start_date
+                        ? convertUnixTimestampToDate(mile.start_date, savedUserData?.availability?.timezone?.name)
+                        : '-'}
                     </CardText>
                   </div>
                   <div className="mx-2">

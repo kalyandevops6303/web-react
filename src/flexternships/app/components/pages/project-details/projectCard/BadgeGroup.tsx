@@ -10,7 +10,9 @@ const BadgeGroup = ({ className, tags }: { className?: string; tags: BadgeType[]
         </h1>
       ))}
       {tags?.length > 4 && (
-        <h1 className={`text-sm px-2 py-1 ${className} bg-white border-0 font-semibold rounded-md`}>+{tags?.length - 3}</h1>
+        <h1 className={`text-xs px-2 py-1 ${className} bg-white border-0 font-semibold rounded-md`}>
+          +{tags?.length - 3}
+        </h1>
       )}
     </div>
   );

@@ -5,11 +5,11 @@
  * @throws {Error} If the access token is not found in local storage.
  */
 export const appendAuthToken = (dict: any) => {
-    const token = localStorage.getItem('access_token');
-    if (token === null) {
-        throw new Error("Access token not found");
-    }
+  const token = localStorage.getItem('access_token');
+  if (token === null) {
+    throw new Error('Access token not found');
+  }
 
-    // Append the token to the dictionary
-    return { ...dict, Authorization: `Bearer ${token}` };
+  // Append the token to the dictionary
+  return { ...dict, Authorization: `Bearer ${token}` };
 };

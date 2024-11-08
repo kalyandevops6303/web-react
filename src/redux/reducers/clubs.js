@@ -107,7 +107,7 @@ const clubSlice = createSlice({
       ...state,
       getDraftClubLoading: true,
     }),
-    getDraftClubSuccess: (state,action) => ({
+    getDraftClubSuccess: (state, action) => ({
       ...state,
       getDraftClubLoading: false,
       draftClub: action.payload,

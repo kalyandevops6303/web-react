@@ -614,7 +614,9 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
 
   useEffect(() => {
     if (savedFormData?.estimatedStartDate)
-    setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
+      setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), {
+        shouldValidate: true,
+      });
   }, [savedFormData]);
 
   const onGetBidDetailsSuccess = (res) => {
@@ -623,7 +625,9 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
       if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
       } else if (savedFormData?.estimatedStartDate) {
-        setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), { shouldValidate: true });
+        setValue('estimatedStartDate', new Date(validateDate(savedFormData?.estimatedStartDate)), {
+          shouldValidate: true,
+        });
       }
       if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
@@ -1306,8 +1310,7 @@ const VariableAdvanceMilestoneView = ({ setDraftSavedModal }) => {
             <CardBody>
               <Row className="mb-1">
                 <Label className="form-label">
-                  Upload detailed submission document (optional){' '}
-                  <Info size={18} color={theme.infoIcon} id="document" />
+                  Upload detailed submission document (optional) <Info size={18} color={theme.infoIcon} id="document" />
                   <UncontrolledTooltip placement="right" target="document">
                     <div className="d-flex flex-column align-items-start">
                       <p className="m-0">Allowed file types:</p>

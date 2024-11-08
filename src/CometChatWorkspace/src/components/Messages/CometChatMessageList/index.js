@@ -482,13 +482,13 @@ class CometChatMessageList extends React.PureComponent {
   //mark the message as delivered
   markMessageAsDelivered = (message) => {
     if (message.sender?.uid !== this.state.loggedInUser?.uid && message?.hasOwnProperty('deliveredAt') === false) {
-      CometChat.markAsDelivered(message).catch((error) => { });
+      CometChat.markAsDelivered(message).catch((error) => {});
     }
   };
 
   markMessageAsRead = (message, type) => {
     if (message?.hasOwnProperty('readAt') === false) {
-      CometChat.markAsRead(message).catch((error) => { });
+      CometChat.markAsRead(message).catch((error) => {});
     }
   };
 
@@ -526,7 +526,10 @@ class CometChatMessageList extends React.PureComponent {
 
   messageReceivedHandler = (message, type) => {
     //handling dom lag - increment count only for main message list
-    if (message?.hasOwnProperty('parentMessageId') === false && this.props?.hasOwnProperty('parentMessageId') === false) {
+    if (
+      message?.hasOwnProperty('parentMessageId') === false &&
+      this.props?.hasOwnProperty('parentMessageId') === false
+    ) {
       ++this.messageCount;
       //if the user has not scrolled in chat window(scroll is at the bottom of the chat window)
       if (this.messagesEnd.scrollHeight - this.messagesEnd.scrollTop - this.messagesEnd.clientHeight <= 1) {
@@ -599,7 +602,10 @@ class CometChatMessageList extends React.PureComponent {
 
   customMessageReceivedHandler = (message, type) => {
     //handling dom lag - increment count only for main message list
-    if (message?.hasOwnProperty('parentMessageId') === false && this.props?.hasOwnProperty('parentMessageId') === false) {
+    if (
+      message?.hasOwnProperty('parentMessageId') === false &&
+      this.props?.hasOwnProperty('parentMessageId') === false
+    ) {
       ++this.messageCount;
 
       //if the user has not scrolled in chat window(scroll is at the bottom of the chat window)

@@ -44,7 +44,6 @@ import InternalProjects from '../../views/internal/projects';
 import NotFound from '../../views/NotFound';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
 
-
 // ** Default Route
 const DefaultRoute = '/auth';
 
@@ -236,11 +235,10 @@ export const OneOffRoutes = [
     element: <ChooseProgram />,
     meta: {
       layout: 'blank',
-    }
+    },
   },
   {
     path: '*',
     element: <NotFound />,
   },
 ];
-

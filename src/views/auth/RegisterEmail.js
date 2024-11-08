@@ -101,7 +101,7 @@ const RegisterEmail = () => {
       return <Spinner size="sm" />;
     }
 
-    return "Submit"
+    return 'Submit';
   }
 
   const emailValue = watch('email'); // track the value of the mobile field

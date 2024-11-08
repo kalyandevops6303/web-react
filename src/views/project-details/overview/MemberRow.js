@@ -71,7 +71,9 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview, teamMembersCount }) =>
               <div className="me-2">
                 <span className="key">Accepted on</span>
                 <CardText className="value">
-                  {data?.accepted_date ? convertUnixTimestampToDate(data?.accepted_date, savedUserData?.availability?.timezone?.name ) : '-'}
+                  {data?.accepted_date
+                    ? convertUnixTimestampToDate(data?.accepted_date, savedUserData?.availability?.timezone?.name)
+                    : '-'}
                 </CardText>
               </div>
               <div className="me-1 d-none">

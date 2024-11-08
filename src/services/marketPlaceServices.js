@@ -11,11 +11,11 @@ const getListProjectService = ({ postData, searchText, metaData }) =>
     postData,
   );
 
-  const getListProjectServiceFlextern = ({ postData, searchText, metaData }) =>
-    DataService.post(
-      `${API.marketplace.listProjectFlextern}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
-      postData,
-    );
+const getListProjectServiceFlextern = ({ postData, searchText, metaData }) =>
+  DataService.post(
+    `${API.marketplace.listProjectFlextern}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    postData,
+  );
 
 const getReceivedBidProjectService = ({ postData, searchText, metaData }) =>
   DataService.post(
@@ -35,11 +35,11 @@ const getTalentsService = ({ postData, searchText, metaData }) =>
     postData,
   );
 
-  const getTalentsServiceFlextern = ({ postData, searchText, metaData }) =>
-    DataService.post(
-      `${API.marketplace.listTalentsFlextern}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
-      postData,
-    );
+const getTalentsServiceFlextern = ({ postData, searchText, metaData }) =>
+  DataService.post(
+    `${API.marketplace.listTalentsFlextern}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    postData,
+  );
 
 const getClientsService = ({ postData, searchText, metaData }) =>
   DataService.post(

@@ -287,10 +287,8 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   }, [selectedMilestone?._id]);
 
   useEffect(() => {
-    if (allLinks?.length > 0 || allDocuments?.length > 0)
-      dispatch(setShowSaveForLater(true));
-    else
-      dispatch(setShowSaveForLater(false));
+    if (allLinks?.length > 0 || allDocuments?.length > 0) dispatch(setShowSaveForLater(true));
+    else dispatch(setShowSaveForLater(false));
   }, [allLinks, allDocuments]);
 
   const onDrop = async (acceptedFiles, rejectedFiles) => {

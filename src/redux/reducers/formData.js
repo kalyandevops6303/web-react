@@ -30,7 +30,7 @@ const formData = createSlice({
       ...state,
       formImage: action.payload,
     }),
-    setResumeParsed: (state,action) => ({
+    setResumeParsed: (state, action) => ({
       ...state,
       parseResume: action.payload,
     }),
@@ -72,7 +72,19 @@ const formData = createSlice({
   },
 });
 
-export const { setFormData, setFormDocuments, setFormImage, setResumeParsed, setIsFormImageRemoved, clearAllFormData, setConfirmSaveForLater, setNavigatingRoute, setFileKey , setResumeDataUploadedForPersonal, setResumeDataUploadedForEducation, setResumeDataUploadedForSocial } =
-  formData.actions;
+export const {
+  setFormData,
+  setFormDocuments,
+  setFormImage,
+  setResumeParsed,
+  setIsFormImageRemoved,
+  clearAllFormData,
+  setConfirmSaveForLater,
+  setNavigatingRoute,
+  setFileKey,
+  setResumeDataUploadedForPersonal,
+  setResumeDataUploadedForEducation,
+  setResumeDataUploadedForSocial,
+} = formData.actions;
 
 export default formData.reducer;

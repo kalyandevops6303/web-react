@@ -90,18 +90,17 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                   <div className="design-planning mb-0">
                     <CardText className="mb-25">Expired Date</CardText>
                     <h6 className="mb-0 expired-listing-text">
-                     {`${
-                      convertUnixTimestampToDate(data?.exipiry_date, savedUserData?.availability?.timezone?.name ) || '-'
-                    }`}
+                      {`${
+                        convertUnixTimestampToDate(data?.exipiry_date, savedUserData?.availability?.timezone?.name) ||
+                        '-'
+                      }`}
                     </h6>
                   </div>
                 </div>
                 <div className="design-planning-wrapper mb-0 w-50">
                   <div className="design-planning mb-0 w-100">
                     <CardText className="mb-25">Bids</CardText>
-                    <h6 className="mb-0 expired-listing-text">
-                    {data?.total_bids}
-                    </h6>
+                    <h6 className="mb-0 expired-listing-text">{data?.total_bids}</h6>
                   </div>
                 </div>
               </div>
@@ -120,19 +119,18 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
                     <CardText className="mb-25">Posted Date</CardText>
                     <h6 className="mb-0">
                       {/* {`${DateTime.fromMillis(data?.created_at).toFormat('MMM dd, yy') || '-'}`} */}
-                      {`${convertUnixTimestampToDate(data?.created_at, savedUserData?.availability?.timezone?.name ) || '-'}`}
+                      {`${
+                        convertUnixTimestampToDate(data?.created_at, savedUserData?.availability?.timezone?.name) || '-'
+                      }`}
                     </h6>
                   </div>
                 </div>
                 <div className="design-planning-wrapper mb-0 w-50">
                   <div className="design-planning mb-0 w-100">
                     <CardText className="mb-25">Bids</CardText>
-                    <h6 className="mb-0">
-                      {data?.total_bids}
-                    </h6>
+                    <h6 className="mb-0">{data?.total_bids}</h6>
                   </div>
                 </div>
-
               </div>
               <div
                 onClick={viewDetails}

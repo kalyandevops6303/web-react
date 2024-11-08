@@ -171,10 +171,9 @@ const BidMilestone = () => {
   const isFlextern = useSelector(selectFlexternBoolean);
   useEffect(() => {
     if (!profilePercentageData) {
-      if(isFlextern){
+      if (isFlextern) {
         dispatch(getProfileCompletionFlextern());
-      }
-      else{
+      } else {
         dispatch(getProfilePercentage());
       }
     }
@@ -210,7 +209,7 @@ const BidMilestone = () => {
           setIsStatusUpdating(false);
           ShowToastMessage(SUCCESS, 'Request accepted');
           dispatch(getTeams({ onSuccess: onGetTeams }));
-          dispatch(getMyTeam())
+          dispatch(getMyTeam());
         },
         onError: () => {
           setIsStatusUpdating(false);
@@ -291,8 +290,8 @@ const BidMilestone = () => {
           <CardBody className="main-card-body details">
             <div>
               <CardText className="value">
-                  {bidData?.project_start_date
-                  ? convertUnixTimestampToDate(bidData?.project_start_date , savedUserData?.availability?.timezone?.name )
+                {bidData?.project_start_date
+                  ? convertUnixTimestampToDate(bidData?.project_start_date, savedUserData?.availability?.timezone?.name)
                   : '-'}
               </CardText>
               <div className="d-flex align-items-center m-0">
@@ -361,9 +360,9 @@ const BidMilestone = () => {
                       <p className="content-header mb-25">Deliverables</p>
                       <p className="m-0 content-description">
                         {milestone?.deliverables?.map((deliverable, deliverableIndex) =>
-                          (deliverableIndex + 1 === milestone?.deliverables?.length
+                          deliverableIndex + 1 === milestone?.deliverables?.length
                             ? `${deliverable}`
-                            : `${deliverable}, `),
+                            : `${deliverable}, `,
                         )}
                       </p>
                     </>

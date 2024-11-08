@@ -149,9 +149,15 @@ const DraftProjectModal = ({ modal, toggleModal, data, setDeleteDraftModal }) =>
                       data?.listing_details?.start_date_epoch &&
                       data?.listing_details?.end_date_epoch ? (
                         <>
-                          {convertUnixTimestampToDate(data?.listing_details?.start_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
-                         to{' '}
-                         {convertUnixTimestampToDate(data?.listing_details?.end_date_epoch, selectSavedUserDetailsData?.availability?.timezone?.name )}
+                          {convertUnixTimestampToDate(
+                            data?.listing_details?.start_date_epoch,
+                            selectSavedUserDetailsData?.availability?.timezone?.name,
+                          )}
+                          to{' '}
+                          {convertUnixTimestampToDate(
+                            data?.listing_details?.end_date_epoch,
+                            selectSavedUserDetailsData?.availability?.timezone?.name,
+                          )}
                         </>
                       ) : (
                         <p className="empty-text m-0 mb-25">

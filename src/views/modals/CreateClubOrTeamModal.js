@@ -20,9 +20,25 @@ const CreateClubOrTeamModal = ({ modal, toggleModal, defaultSelectedGroup }) => 
 
   const onNextClick = () => {
     if (selectedGroup === teamTypes.club) {
-      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.club, onNavigation: () => navigate('/create-club/account-details'), onSuccess: () => { }, onError: () => { } }));
+      dispatch(
+        checkDraftTeam({
+          setSavedDraftsAvailableModal,
+          checkType: teamTypes.club,
+          onNavigation: () => navigate('/create-club/account-details'),
+          onSuccess: () => {},
+          onError: () => {},
+        }),
+      );
     } else if (selectedGroup === teamTypes.team) {
-      dispatch(checkDraftTeam({ setSavedDraftsAvailableModal, checkType: teamTypes.team, onNavigation: () => navigate('/create-team/profile-details'), onSuccess: () => { }, onError: () => { } }));
+      dispatch(
+        checkDraftTeam({
+          setSavedDraftsAvailableModal,
+          checkType: teamTypes.team,
+          onNavigation: () => navigate('/create-team/profile-details'),
+          onSuccess: () => {},
+          onError: () => {},
+        }),
+      );
     }
   };
 
@@ -32,7 +48,9 @@ const CreateClubOrTeamModal = ({ modal, toggleModal, defaultSelectedGroup }) => 
         <SavedDraftsAvailableModal
           modal={savedDraftsAvailableModal}
           toggleModal={toggleSavedDraftsAvailableModal}
-          modalText={`You have a ${selectedGroup === 'CLUB' ? 'Club' : 'Team'} in draft mode. Would you like to continue where you left off from the drafts?`}
+          modalText={`You have a ${
+            selectedGroup === 'CLUB' ? 'Club' : 'Team'
+          } in draft mode. Would you like to continue where you left off from the drafts?`}
           firstBtnText={`Create New ${selectedGroup === 'CLUB' ? 'Club' : 'Team'}`}
           secondBtnText="View Draft"
           firstBtnAction={() => {
@@ -126,5 +144,5 @@ CreateClubOrTeamModal.propTypes = {
 
 CreateClubOrTeamModal.defaultProps = {
   modal: false,
-  toggleModal: () => { },
+  toggleModal: () => {},
 };

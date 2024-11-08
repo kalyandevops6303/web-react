@@ -187,7 +187,7 @@ const deleteDraftClub =
     }
   };
 
-  const getDraftClubById =
+const getDraftClubById =
   ({ id, onSuccess, onError, onGetDraftClubDetails }) =>
   async (dispatch) => {
     try {
@@ -250,5 +250,5 @@ export {
   updateDraftClub,
   checkDraftClub,
   deleteDraftClub,
-  getDraftClubById
+  getDraftClubById,
 };

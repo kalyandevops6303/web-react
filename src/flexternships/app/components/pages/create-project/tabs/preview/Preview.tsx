@@ -16,162 +16,187 @@ import ProjectDetailsItem from './ProjectDetailsItem';
 import RoleItem from './RoleItem';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import ShowToastMessage from '@/@core/components/toast';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function Preview() {
-  const previousTab = useProjectCreationStore((state) => (state.previousTab));
+  const previousTab = useProjectCreationStore((state) => state.previousTab);
   const formData = useProjectCreationStore((state) => state.data);
   const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
   const openModal = useProjectCreationStore((state) => state.openModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
-
+  const resetProjectCreationStore = useProjectCreationStore((state) => state.resetStore);
   const [recallTimeLeft, setRecallTimeLeft] = useState<number>(-1);
 
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
-      const postProject = async () => {
-        try {
-          await createFlexternProject(formData);
-        } catch (error) {
-          showToastMessage(ToastType.ERROR, "Failed to create project. Please try again.");
+    const postProject = async () => {
+      try {
+        await createFlexternProject(formData, projectId);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          closeModal();
+          showToastMessage(ToastType.ERROR, error.message);
+        } else {
+          showToastMessage(ToastType.ERROR, 'Failed to create project. Please try again.');
         }
       }
+    };
 
-      if (recallTimeLeft > 0) {
-        const timer = setTimeout(() => setRecallTimeLeft((cur) => (cur - 1)), 1000);
-        return () => clearTimeout(timer);
-      } else if(recallTimeLeft===0) {
-        postProject();
-      }
-    }, [recallTimeLeft, formData]);
-
-    const handlePost = () => {
-      setRecallTimeLeft(5);
-      openModal(ModalType.PROJECT_CREATED);
+    if (recallTimeLeft > 0) {
+      const timer = setTimeout(() => setRecallTimeLeft((cur) => cur - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (recallTimeLeft === 0) {
+      postProject();
     }
+  }, [recallTimeLeft, formData]);
 
-    const handleRecall = () => {
-      setRecallTimeLeft(-1);
-      closeModal();
-    }
+  const handlePost = () => {
+    setRecallTimeLeft(5);
+    openModal(ModalType.PROJECT_CREATED);
+  };
 
+  const handleRecall = () => {
+    setRecallTimeLeft(-1);
+    closeModal();
+  };
 
   const onSaveDraft = async () => {
     try {
-      await saveAsDraft();
+      await saveAsDraft(projectId);
     } catch (error) {
-      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
-  }
+  };
 
+  const closeSuccessfulCreation = () => {
+    resetProjectCreationStore();
+    closeModal();
+    navigate('/marketplace/my_listings');
+  };
 
   return (
     <div className={Styles.previewTab}>
       <div className={`${Styles.tabContent} shadow-card`}>
-        <div className={Styles.tabContentHeader}>
-          Project Details
-        </div>
+        <div className={Styles.tabContentHeader}>Project Details</div>
         <div className={Styles.previewCardBody}>
-          <ProjectDetailsItem className='w-[460px] mb-5' title='Project name' value={formData.requirements.projectName || 'NaN'} />
-          <ProjectDetailsItem className='w-[280px] mb-5' title='Estimated Duration' value={`${formData.requirements.estimatedDuration} weeks`} tooltip='Estimated duration of the project in weeks' />
-          <ProjectDetailsItem className='w-[280px] mb-5' title='Listing Duration' value={`${formatEpochToHumanReadable(formData.listingDetails.listingStartDate)} to ${formatEpochToHumanReadable(formData.listingDetails.listingEndDate)}`} />
-          <ProjectDetailsItem className='w-[208px]' title='Estimated Start Date' value={formatEpochToHumanReadable(formData.requirements.estimatedStartDate)} />
-          <ProjectDetailsItem className='w-[228px]' title='Total Milestones' value={`${formData.milestones.length}` || 'NaN'} greymatter={`in ${formData.requirements.estimatedDuration} Weeks`} />
-          <ProjectDetailsItem className='w-[280px]' title='Estimated Hours/Week per Flextern' value={`${formData.requirements.estimatedWeeklyHours}hrs weekly`} tooltip='Estimated weekly work-hours for each flextern' />
-          <ProjectDetailsItem className='w-[280px]' title='Total Project Hours per Flextern' value={`${formData.requirements.totalProjectHoursEach}hrs`} tooltip='Total project hours for each flextern' />
+          <ProjectDetailsItem
+            className="w-[460px] mb-5"
+            title="Project name"
+            value={formData.requirements.projectName || 'NaN'}
+          />
+          <ProjectDetailsItem
+            className="w-[280px] mb-5"
+            title="Estimated Duration"
+            value={`${formData.requirements.estimatedDuration} weeks`}
+            tooltip="Estimated duration of the project in weeks"
+          />
+          <ProjectDetailsItem
+            className="w-[280px] mb-5"
+            title="Listing Duration"
+            value={`${formatEpochToHumanReadable(
+              formData.listingDetails.listingStartDate,
+            )} to ${formatEpochToHumanReadable(formData.listingDetails.listingEndDate)}`}
+          />
+          <ProjectDetailsItem
+            className="w-[208px]"
+            title="Estimated Start Date"
+            value={formatEpochToHumanReadable(formData.requirements.estimatedStartDate)}
+          />
+          <ProjectDetailsItem
+            className="w-[228px]"
+            title="Total Milestones"
+            value={`${formData.milestones.length}` || 'NaN'}
+            greymatter={`in ${formData.requirements.estimatedDuration} Weeks`}
+          />
+          <ProjectDetailsItem
+            className="w-[280px]"
+            title="Estimated Hours/Week per Flextern"
+            value={`${formData.requirements.estimatedWeeklyHours}hrs weekly`}
+            tooltip="Estimated weekly work-hours for each flextern"
+          />
+          <ProjectDetailsItem
+            className="w-[280px]"
+            title="Total Project Hours per Flextern"
+            value={`${formData.requirements.totalProjectHoursEach}hrs`}
+            tooltip="Total project hours for each flextern"
+          />
         </div>
       </div>
       <div className={`${Styles.tabContent} shadow-card`}>
-        <div className={Styles.tabContentHeader}>
-          Project Description
-        </div>
+        <div className={Styles.tabContentHeader}>Project Description</div>
         <div className={Styles.previewCardBody}>
-          <div className='mt-5 w-full text-grey-heading text-base not-italic font-normal leading-6'>
-            {
-              formData.requirements.projectDescription || 'NaN'
-            }
+          <div className="mt-5 w-full text-grey-heading text-base not-italic font-normal leading-6">
+            {formData.requirements.projectDescription || 'NaN'}
           </div>
         </div>
       </div>
       {/* TODO: Project File */}
-      {
-        formData.requirements.documents.map((item, index) => (
-          <HorizontalFileCard key={index} fileName={item.fileName} fileSize={formatFileSize(item.size)} createdAt={formatEpochToHumanReadable(item.createdAt)} generateDownloadLink={async () => (await getFileDownloadUrl(item.fileKey))} />
-        ))
-      }
+      {formData.requirements.documents.map((item, index) => (
+        <HorizontalFileCard
+          key={index}
+          fileName={item.fileName}
+          fileSize={formatFileSize(item.size)}
+          createdAt={formatEpochToHumanReadable(item.createdAt)}
+          generateDownloadLink={async () => await getFileDownloadUrl(item.fileKey)}
+        />
+      ))}
       <div className={`${Styles.tabContent} shadow-card`}>
-        <div className={Styles.tabContentHeader}>
-          Roles
-        </div>
+        <div className={Styles.tabContentHeader}>Roles</div>
         <div className={Styles.previewCardBody}>
           <div className={Styles.rolesPreview}>
             <div className={Styles.rolesPreviewHeader}>
-              <div className={`${Styles.rolesPreviewHeaderItem} w-[240px]`}>
-                Role
-              </div>
-              <div className={`${Styles.rolesPreviewHeaderItem} w-[100px]`}>
-                Count
-              </div>
-              <div className={`${Styles.rolesPreviewHeaderItem} grow`}>
-                Skills
-              </div>
-              <div className={`${Styles.rolesPreviewHeaderItem} grow`}>
-                Tools
-              </div>
+              <div className={`${Styles.rolesPreviewHeaderItem} w-[240px]`}>Role</div>
+              <div className={`${Styles.rolesPreviewHeaderItem} w-[100px]`}>Count</div>
+              <div className={`${Styles.rolesPreviewHeaderItem} grow`}>Skills</div>
+              <div className={`${Styles.rolesPreviewHeaderItem} grow`}>Tools</div>
             </div>
             <div>
-              {
-                formData.roles.map((role, index) => (
-                  <RoleItem key={index} data={role} last={formData.roles.length === index + 1} />
-                ))
-              }
+              {formData.roles.map((role, index) => (
+                <RoleItem key={index} data={role} last={formData.roles.length === index + 1} />
+              ))}
             </div>
           </div>
         </div>
       </div>
       <div className={`${Styles.tabContent} shadow-card`}>
-        <div className={Styles.tabContentHeader}>
-          Milestones
-        </div>
+        <div className={Styles.tabContentHeader}>Milestones</div>
         <div className={Styles.previewCardBody}>
           <div className={Styles.milestonesPreview}>
             <div className={Styles.milestonesPreviewHeader}>
-              <div className={`${Styles.milestonesPreviewHeaderItem} w-[200px]`}>
-                Milestone Count
-              </div>
-              <div className={`${Styles.milestonesPreviewHeaderItem} w-[120px]`}>
-                Duration
-              </div>
-              <div className={`${Styles.milestonesPreviewHeaderItem} grow`}>
-                Milestone Name
-              </div>
+              <div className={`${Styles.milestonesPreviewHeaderItem} w-[200px]`}>Milestone Count</div>
+              <div className={`${Styles.milestonesPreviewHeaderItem} w-[120px]`}>Duration</div>
+              <div className={`${Styles.milestonesPreviewHeaderItem} grow`}>Milestone Name</div>
             </div>
             <div className={Styles.milestonesPreviewBody}>
-              {
-                formData.milestones.map((item, index) => (
-                  <MilestoneItem key={index} data={item} milestoneIndex={index} last={formData.milestones.length === index + 1} />
-                ))
-              }
+              {formData.milestones.map((item, index) => (
+                <MilestoneItem
+                  key={index}
+                  data={item}
+                  milestoneIndex={index}
+                  last={formData.milestones.length === index + 1}
+                />
+              ))}
             </div>
           </div>
         </div>
       </div>
       <div className={Styles.bottomActionsContainer}>
         {/* Make this a separate component */}
-        <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
+        <PrimaryIconText text="Back" icon={<ChevronLeft className="text-trublue" size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton className='mr-6' onClick={onSaveDraft} loading={isSaveDraftLoading}>
+          <SecondaryButton className="mr-6" onClick={onSaveDraft} loading={isSaveDraftLoading}>
             Save as Draft
           </SecondaryButton>
           <PrimaryButton onClick={handlePost}>
-            <span className='mr-2'>
-              Post
-            </span>
+            <span className="mr-2">Post</span>
             <ChevronRight size={18} />
           </PrimaryButton>
         </div>
       </div>
-      <SuccessfulCreation recallTimeLeft={recallTimeLeft} onRecall={handleRecall} onConfirm={() =>  ShowToastMessage('Invite Talent') } />
+      <SuccessfulCreation recallTimeLeft={recallTimeLeft} onRecall={handleRecall} onConfirm={closeSuccessfulCreation} />
     </div>
   );
 }

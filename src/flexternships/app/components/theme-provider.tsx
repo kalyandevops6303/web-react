@@ -5,9 +5,9 @@
 // import * as React from "react"
 
 // export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  // return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+// return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 // }
 
-export function ThemeProvider({ children, ...props }:any) {
-  return <div {...props}>{children}</div>
+export function ThemeProvider({ children, ...props }: any) {
+  return <div {...props}>{children}</div>;
 }

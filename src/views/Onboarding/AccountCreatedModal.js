@@ -13,10 +13,9 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
   const getOnboardingType = () => {
     const route = window.location.pathname;
-  
+
     if (route.includes('talent-onboarding')) {
       return userTypes.talent;
     } else if (route.includes('client-onboarding')) {
@@ -24,7 +23,7 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
     } else {
       return null;
     }
-  }
+  };
 
   const onClose = () => {
     dispatch(setLoggedInStatus());
@@ -39,7 +38,7 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
 
   return (
     <>
-      {getOnboardingType() === userTypes?.talent ?
+      {getOnboardingType() === userTypes?.talent ? (
         <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
           <ModalHeader toggle={onClose} />
           <ModalBody>
@@ -56,7 +55,9 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
               <div className="pe-3">
                 <h2 className="fw-normal">Account Created!</h2>
                 <p className="fw-light mt-2">Take assessment to inrease your discoverability on Trumio.</p>
-                <p className="fw-light mt-2"><b>Assessment: </b>Increase your chance of getting hired by taking assessments.</p>
+                <p className="fw-light mt-2">
+                  <b>Assessment: </b>Increase your chance of getting hired by taking assessments.
+                </p>
               </div>
             </div>
           </ModalBody>
@@ -73,7 +74,7 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
             </Link>
           </ModalFooter>
         </Modal>
-        :
+      ) : (
         <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
           <ModalHeader toggle={onClose} />
           <ModalBody>
@@ -101,7 +102,7 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
             </Link>
           </ModalFooter>
         </Modal>
-      }
+      )}
     </>
   );
 };
@@ -115,5 +116,5 @@ AccountCreatedModal.propTypes = {
 
 AccountCreatedModal.defaultProps = {
   modal: false,
-  toggleModal: () => { },
+  toggleModal: () => {},
 };

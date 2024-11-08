@@ -164,7 +164,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [secondFilterState]);
 
-
   useEffect(() => {
     setHasMore(true);
     if (currentPreview?.length === 0 || selectProjectData?.length === selectProjectMetaData?.total_records) {
@@ -246,7 +245,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-    console.log(metaDataFlextern)
+    console.log(metaDataFlextern);
     dispatch(
       getProjectListing({
         data: {
@@ -302,12 +301,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getDepartmentNameService(page, search);
 
-      const options = response?.data?.data?.data.map(option => {
+      const options = response?.data?.data?.data.map((option) => {
         return {
           value: option.department_name,
           label: option.department_name,
         };
-      })
+      });
       return {
         options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
@@ -323,12 +322,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getSecondaryStatuses(page, search);
-        const options = response?.data?.data?.data.map((option) => {
-          return {
-            value: option.status,
-            label: option.status,
-          };
-        });
+      const options = response?.data?.data?.data.map((option) => {
+        return {
+          value: option.status,
+          label: option.status,
+        };
+      });
 
       return {
         options: options,
@@ -346,12 +345,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getProjectNames(page, search);
 
-       const options = response?.data?.data?.data.map((option) => {
-         return {
-           value: option._id,
-           label: option.name,
-         };
-       });
+      const options = response?.data?.data?.data.map((option) => {
+        return {
+          value: option._id,
+          label: option.name,
+        };
+      });
 
       return {
         options,
@@ -501,7 +500,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {(userType !== userTypes.team && userType !== userTypes.client) && (
+              {userType !== userTypes.team && userType !== userTypes.client && (
                 <Col>
                   <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
@@ -537,11 +536,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     theme={selectThemeColors}
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('status', value)}
-                    value={
-                      secondFilterState.status?.length > 0
-                        ? secondFilterState?.status?.map((item) => item)
-                        : null
-                    }
+                    value={secondFilterState.status?.length > 0 ? secondFilterState?.status?.map((item) => item) : null}
                   />
                 </Col>
               )}

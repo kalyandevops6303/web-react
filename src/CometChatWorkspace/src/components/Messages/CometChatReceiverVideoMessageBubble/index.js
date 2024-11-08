@@ -163,8 +163,7 @@ class CometChatReceiverVideoMessageBubble extends React.Component {
           {toolTipView}
           <div css={messageWrapperStyle()} className="message__wrapper">
             <div css={messageImgWrapper(this.context)} onClick={this.open} className="message__video__wrapper">
-              <video controls src={this.state.fileData?.fileUrl}
-              ></video>
+              <video controls src={this.state.fileData?.fileUrl}></video>
             </div>
           </div>
 
@@ -185,7 +184,7 @@ class CometChatReceiverVideoMessageBubble extends React.Component {
 
 // Specifies the default values for props:
 CometChatReceiverVideoMessageBubble.defaultProps = {
-  actionGenerated: () => { },
+  actionGenerated: () => {},
 };
 
 CometChatReceiverVideoMessageBubble.propTypes = {

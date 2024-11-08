@@ -35,8 +35,13 @@ const RelistSuccessModal = ({ modal, toggleModal, projectRelistData }) => {
                 Listing Duration:{' '}
                 <span className="fw-bolder">
                   {projectRelistData?.listingOption === 'select-duration'
-                    ? 
-                      `${convertUnixTimestampToDate(projectRelistData?.startDate, savedUserData?.availability?.timezone?.name )} - ${convertUnixTimestampToDate(projectRelistData?.endDate, savedUserData?.availability?.timezone?.name )}`
+                    ? `${convertUnixTimestampToDate(
+                        projectRelistData?.startDate,
+                        savedUserData?.availability?.timezone?.name,
+                      )} - ${convertUnixTimestampToDate(
+                        projectRelistData?.endDate,
+                        savedUserData?.availability?.timezone?.name,
+                      )}`
                     : `${projectRelistData?.duration} Days`}
                 </span>
               </p>

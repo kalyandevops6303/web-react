@@ -74,7 +74,7 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
   }, []);
 
   const onSuccess = () => {
-    dispatch(setFormData({...savedFormData,oldPassword:'',newPassword:'',cnfPassword:''}));
+    dispatch(setFormData({ ...savedFormData, oldPassword: '', newPassword: '', cnfPassword: '' }));
     toggleModal();
   };
 
@@ -89,10 +89,12 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-reset-password-modal-style" className="modal-dialog-centered ">
-      <ModalHeader toggle={()=>{
-            dispatch(setFormData({...savedFormData,oldPassword:'',newPassword:'',cnfPassword:''}));
-            toggleModal();
-      }} />
+      <ModalHeader
+        toggle={() => {
+          dispatch(setFormData({ ...savedFormData, oldPassword: '', newPassword: '', cnfPassword: '' }));
+          toggleModal();
+        }}
+      />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ModalBody>
           <div className="px-3">
@@ -186,10 +188,16 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
         </ModalBody>
         <ModalFooter>
           <div className="pb-1">
-            <Button color="primary" type="button" className="me-2" outline onClick={()=>{
-            dispatch(setFormData({...savedFormData,oldPassword:'',newPassword:'',cnfPassword:''}));
-            toggleModal();
-      }}>
+            <Button
+              color="primary"
+              type="button"
+              className="me-2"
+              outline
+              onClick={() => {
+                dispatch(setFormData({ ...savedFormData, oldPassword: '', newPassword: '', cnfPassword: '' }));
+                toggleModal();
+              }}
+            >
               Cancel
             </Button>
             <Button color="primary" type="submit" disabled={!oldPassword || !newPassword || !cnfPassword || isLoading}>

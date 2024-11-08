@@ -3,9 +3,10 @@ import { ProjectStatus, SecondaryStatus, StatusType } from '@/flexternships/cons
 interface ProjectStatusChipProps {
   status: keyof typeof SecondaryStatus | keyof typeof ProjectStatus;
   statusType: keyof typeof StatusType;
+  rounded?: boolean;
 }
 
-const ProjectStatusChip = ({ status, statusType }: ProjectStatusChipProps) => {
+const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatusChipProps) => {
   enum ProjectStatusChipClassnames {
     OPEN = 'bg-skyblue-light text-skyblue border border-skyblue',
     IN_REVIEW = 'bg-yellow-100 text-yellow-600 border border-yellow-400',
@@ -63,13 +64,15 @@ const ProjectStatusChip = ({ status, statusType }: ProjectStatusChipProps) => {
   }
 
   const statusClass =
-    statusType === StatusType?.PRIMARY && status in ProjectStatusChipClassnames
+    statusType === StatusType?.PRIMARY 
       ? ProjectStatusChipClassnames[status as keyof typeof ProjectStatusChipClassnames]
       : SecondaryStatusChipClassNames[status as keyof typeof SecondaryStatusChipClassNames];
 
   return (
-    <h1 className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-md ${statusClass}`}>
-      {(statusType === StatusType?.PRIMARY ? ProjectStatus[status as keyof typeof ProjectStatus] : SecondaryStatus[status as keyof typeof SecondaryStatus] )?.toString() || status.toString()}
+    <h1 className={`w-fit text-center text-xs px-2 py-1 font-semibold border rounded-md rounded-${
+        rounded ? '2xl' : 'lg'
+      } ${statusClass}`}>
+      {(statusType === StatusType?.PRIMARY ? ProjectStatus[status as keyof typeof ProjectStatus] : SecondaryStatus[status as keyof typeof SecondaryStatus] )?.toString() || status}
     </h1>
   );
 };

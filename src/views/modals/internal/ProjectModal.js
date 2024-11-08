@@ -69,11 +69,7 @@ const ViewProjectDetailModalWrap = styled.div`
   }
 `;
 
-const ProjectModal = ({
-  modal,
-  toggleModal,
-  data,
-}) => {
+const ProjectModal = ({ modal, toggleModal, data }) => {
   const dispatch = useDispatch();
 
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
@@ -154,7 +150,10 @@ const ProjectModal = ({
                       {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {convertUnixTimestampToDate(document?.created_at, selectSavedUserDetailsData?.availability?.timezone?.name)}
+                      {convertUnixTimestampToDate(
+                        document?.created_at,
+                        selectSavedUserDetailsData?.availability?.timezone?.name,
+                      )}
                     </Col>
                   </Row>
                 ))}
@@ -188,6 +187,6 @@ ProjectModal.propTypes = {
 
 ProjectModal.defaultProps = {
   modal: false,
-  toggleModal: () => { },
+  toggleModal: () => {},
   data: {},
 };

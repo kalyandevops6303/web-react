@@ -136,7 +136,9 @@ class CustomProfileSidebar extends React.Component {
     const startTime = weekdaysAvailability?.start_time;
     const endTime = weekdaysAvailability?.end_time;
 
-    const workingHours = weekdaysAvailability ? `${weekdays} ${this.toTwelveHourString(startTime)} - ${this.toTwelveHourString(endTime)}` : 'Not Available';
+    const workingHours = weekdaysAvailability
+      ? `${weekdays} ${this.toTwelveHourString(startTime)} - ${this.toTwelveHourString(endTime)}`
+      : 'Not Available';
 
     return (
       <React.Fragment>

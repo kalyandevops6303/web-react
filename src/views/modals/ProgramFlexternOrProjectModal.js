@@ -4,14 +4,13 @@ import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate} from 'react-router-dom';
-import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button} from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
+import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button } from 'reactstrap';
 import toast from 'react-hot-toast';
 import { CreateBidRadioOption } from '../styled';
 import { selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
 import { saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
 import { setTalentBooleanTrumioTalent, setTalentBooleansFlextern } from '../../redux/reducers/auth';
-
 
 const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
   const dispatch = useDispatch();
@@ -34,16 +33,16 @@ const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
     navigate('/talent-onboarding/account-details');
   };
   const onNextClick = () => {
-     const { flextern , trumio_talent } = selectedPrograms;
-     const reqData = {};
-     reqData.flextern = flextern;
-     reqData.trumio_talent = trumio_talent;  
-     dispatch(setTalentBooleansFlextern(flextern));
-     dispatch(setTalentBooleanTrumioTalent(trumio_talent));
-     dispatch(saveTalentAccountDetails(reqData, onSuccess));
+    const { flextern, trumio_talent } = selectedPrograms;
+    const reqData = {};
+    reqData.flextern = flextern;
+    reqData.trumio_talent = trumio_talent;
+    dispatch(setTalentBooleansFlextern(flextern));
+    dispatch(setTalentBooleanTrumioTalent(trumio_talent));
+    dispatch(saveTalentAccountDetails(reqData, onSuccess));
   };
   const checkNotPickedProgram = () => {
-    if( selectedPrograms.flextern ||selectedPrograms.trumio_talent){
+    if (selectedPrograms.flextern || selectedPrograms.trumio_talent) {
       toggleModal();
     } else {
       toast.error('Please select at least one program');
@@ -51,7 +50,7 @@ const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
   };
 
   useEffect(() => {
-    if(trumioIsFlextern) {
+    if (trumioIsFlextern) {
       setSelectedPrograms((prev) => ({
         ...prev,
         flextern: trumioIsFlextern,
@@ -64,7 +63,7 @@ const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
         trumio_talent: true,
       }));
     }
-  },[trumioIsFlextern]);
+  }, [trumioIsFlextern]);
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={checkNotPickedProgram} />
@@ -76,14 +75,14 @@ const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
             <CreateBidRadioOption
               className="d-flex"
               active={selectedPrograms.flextern}
-            //   onClick={() => handleCheckboxChange('flexternship')}
+              //   onClick={() => handleCheckboxChange('flexternship')}
             >
               <div className="form-check form-check-inline checkbox-custom-margin">
                 <Input
                   type="checkbox"
                   id="simple"
                   checked={selectedPrograms.flextern}
-                //   disabled={createBidLoadingIsLoading || changeBidTypeIsLoading}
+                  //   disabled={createBidLoadingIsLoading || changeBidTypeIsLoading}
                   onChange={() => handleCheckboxChange('flextern')}
                 />
                 <div className="label">
@@ -99,14 +98,14 @@ const ProgramFlexternorProjectModal = ({ modal, toggleModal }) => {
             <CreateBidRadioOption
               className="d-flex"
               active={selectedPrograms.trumio_talent}
-            //   onClick={() => handleCheckboxChange('project')}
+              //   onClick={() => handleCheckboxChange('project')}
             >
               <div className="form-check form-check-inline checkbox-custom-margin">
                 <Input
                   type="checkbox"
                   id="advance"
                   checked={selectedPrograms.trumio_talent}
-                //   disabled={createBidLoadingIsLoading || changeBidTypeIsLoading}
+                  //   disabled={createBidLoadingIsLoading || changeBidTypeIsLoading}
                   onClick={() => handleCheckboxChange('trumio_talent')}
                 />
                 <div className="label">

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Info } from "react-feather";
+import React, { useState } from 'react';
+import { Info } from 'react-feather';
 
 interface TooltipProps {
   content: string;
@@ -18,15 +18,13 @@ const Tooltip: React.FC<TooltipProps> = ({ content, className }) => {
   };
 
   return (
-    <div 
-        className={`relative inline-block ${className ?? ''}`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+    <div
+      className={`relative inline-block ${className ?? ''}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* Info icon */}
-      <div
-        className="flex items-center justify-center text-grey-200"
-      >
+      <div className="flex items-center justify-center text-grey-200">
         <Info size={16} />
       </div>
 

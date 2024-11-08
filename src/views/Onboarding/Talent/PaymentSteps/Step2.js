@@ -230,7 +230,8 @@ const Step2 = ({ setStep, step }) => {
           federal_tax_classification: data?.taxClass?.value,
           social_security_number: data?.ssnTaxId || '',
           national_taxpayer_number: data?.nsnTaxId || '',
-          tax_payer_identification_type: taxUserType === CITIZEN_TYPES.US ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
+          tax_payer_identification_type:
+            taxUserType === CITIZEN_TYPES.US ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
         },
       };
 

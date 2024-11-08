@@ -4,7 +4,10 @@ const talentOnboardingSelector = (state) => state.talentOnboarding;
 
 export const userDetails = createSelector(talentOnboardingSelector, (talentOnboarding) => talentOnboarding.userDetails);
 
-export const identityFileLoading = createSelector(talentOnboardingSelector, (talentOnboarding) => talentOnboarding.identityFileLoading);
+export const identityFileLoading = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.identityFileLoading,
+);
 
 export const resumeParsedDetails = createSelector(
   talentOnboardingSelector,

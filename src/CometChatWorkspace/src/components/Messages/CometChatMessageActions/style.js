@@ -39,7 +39,7 @@ export const messageActionStyle = (props, context, loggedInUser) => {
     // ...alignment,
     // ...topPos,
     // ...direction,
-    right: "-50px",
+    right: '-50px',
   };
 };
 
@@ -57,9 +57,9 @@ export const groupButtonStyle = (img, context, deleteOption) => {
       }
     : {
         backgroundColor: `${context.theme.secondaryTextColor}!important`,
-        "&:hover": {
+        '&:hover': {
           backgroundColor: `${context.theme.primaryColor}!important`,
-        }
+        },
       };
 
   return {

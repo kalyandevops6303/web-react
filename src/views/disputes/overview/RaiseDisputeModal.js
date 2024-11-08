@@ -70,7 +70,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail, f
       fetchMilestoneDisutes();
     }
     dispatch(getDisputesCount());
-    dispatch(getProjectDetails({projectId: projectDetail?.value, isBidView: false}));
+    dispatch(getProjectDetails({ projectId: projectDetail?.value, isBidView: false }));
     toggleModal();
   };
 

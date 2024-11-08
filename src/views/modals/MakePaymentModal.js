@@ -220,22 +220,24 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
               <>
                 <div className="d-flex justify-content-between px-1">
                   <CardText style={{ fontSize: '16px' }}>
-                    {`${applicationFee?.name ?? ''} ${(trumioFeeBeforeDiscount!==applicationFee?.min_fee) ? `(${applicationFee?.percentage ?? 0}%)`:''}`}
+                    {`${applicationFee?.name ?? ''} ${
+                      trumioFeeBeforeDiscount !== applicationFee?.min_fee ? `(${applicationFee?.percentage ?? 0}%)` : ''
+                    }`}
                   </CardText>
-                  <CardText style={{ fontSize: '16px' }}>{`$ ${Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount}`}</CardText>
+                  <CardText style={{ fontSize: '16px' }}>{`$ ${
+                    Number.isNaN(trumioFeeBeforeDiscount) ? 0 : trumioFeeBeforeDiscount
+                  }`}</CardText>
                 </div>
-                {
-                  applicationFee?.discount_coupon?.code && (
-                    <div className="d-flex justify-content-between px-1">
-                      <CardText style={{ fontSize: '16px' }}>
-                        {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
-                      </CardText>
-                      <CardText style={{ fontSize: '16px' }}>
-                        {`- $ ${Number.isNaN(trumioFeeDiscount) ? 0 : trumioFeeDiscount}`}
-                      </CardText>
-                    </div>
-                  )
-                }
+                {applicationFee?.discount_coupon?.code && (
+                  <div className="d-flex justify-content-between px-1">
+                    <CardText style={{ fontSize: '16px' }}>
+                      {`Discount (${applicationFee?.discount_coupon?.code ?? 0})`}
+                    </CardText>
+                    <CardText style={{ fontSize: '16px' }}>
+                      {`- $ ${Number.isNaN(trumioFeeDiscount) ? 0 : trumioFeeDiscount}`}
+                    </CardText>
+                  </div>
+                )}
                 <hr className="m-0 card-header-border" />
                 <div className="d-flex justify-content-between p-1">
                   <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
@@ -274,7 +276,7 @@ MakePaymentModal.propTypes = {
 
 MakePaymentModal.defaultProps = {
   modal: false,
-  toggleModal: () => { },
+  toggleModal: () => {},
   selectedMilestoneIds: [],
   selectedAndDisabledPaymentId: [],
 };

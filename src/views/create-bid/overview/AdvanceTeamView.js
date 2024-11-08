@@ -112,7 +112,7 @@ const AdvanceTeamView = ({ setDraftSavedModal }) => {
   const [allTeamMembersOptions, setAllTeamMembersOptions] = useState(null);
   const [fieldErrors, setFieldErrors] = useState(
     fields?.map((field) => {
-        return { ...field, sameNameError: false };
+      return { ...field, sameNameError: false };
     }),
   );
 
@@ -150,7 +150,7 @@ const AdvanceTeamView = ({ setDraftSavedModal }) => {
     const { projectRolesDetails } = data;
 
     const allFields = fieldErrors?.map((field) => {
-        return { ...field, sameNameError: false };
+      return { ...field, sameNameError: false };
     });
 
     setFieldErrors(allFields);

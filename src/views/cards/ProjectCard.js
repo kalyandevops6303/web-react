@@ -184,16 +184,16 @@ const ProjectCard = ({
                     <CardText className="mb-1">
                       {(data?.assigned_date || data?.listing_details?.start_date_epoch) && (
                         <span className="me-1">
-                          
-                             Assigned Date: {convertUnixTimestampToDate(
-                                data?.assigned_date || data?.listing_details?.start_date_epoch,
-                                savedUserData?.availability?.timezone?.name,
-                              ) || data?.listing_details?.start_date}    
+                          Assigned Date:{' '}
+                          {convertUnixTimestampToDate(
+                            data?.assigned_date || data?.listing_details?.start_date_epoch,
+                            savedUserData?.availability?.timezone?.name,
+                          ) || data?.listing_details?.start_date}
                         </span>
                       )}
                       {(data?.completed_date || data?.listing_details?.end_date_epoch) && (
                         <span className="me-1">
-                          {(data?.completed_date || data?.listing_details?.end_date_epoch)
+                          {data?.completed_date || data?.listing_details?.end_date_epoch
                             ? `Completed Date: ${convertUnixTimestampToDate(
                                 data?.completed_date || data?.listing_details?.end_date_epoch,
                                 savedUserData?.availability?.timezone?.name,

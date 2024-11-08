@@ -1,14 +1,14 @@
 // ** React Imports
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 
 // ** Core Layout Import
 // !Do not remove the Layout import
-import Layout from "@layouts/VerticalLayout";
+import Layout from '@layouts/VerticalLayout';
 
 // ** Menu Items Array
-import navigation from "@src/navigation/vertical";
+import navigation from '@src/navigation/vertical';
 
-const VerticalLayout = (props) => 
+const VerticalLayout = (props) => (
   // const [menuData, setMenuData] = useState([])
 
   // ** For ServerSide navigation
@@ -16,11 +16,8 @@ const VerticalLayout = (props) =>
   //   axios.get(URL).then(response => setMenuData(response.data))
   // }, [])
 
-   (
-    <Layout menuData={navigation} {...props}>
-      <Outlet />
-    </Layout>
-  )
-;
-
+  <Layout menuData={navigation} {...props}>
+    <Outlet />
+  </Layout>
+);
 export default VerticalLayout;

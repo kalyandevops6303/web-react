@@ -19,6 +19,7 @@ import SortableMilestoneCard from './SortableMilestoneCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
+import { useParams } from 'react-router-dom';
 
 export default function Milestones() {
   const {
@@ -34,6 +35,7 @@ export default function Milestones() {
     updateMilestonesData,
     saveDraft,
     openModal,
+    appendRemovedMilestoneId,
   } = useProjectCreationStore();
 
   const [milestoneDurationState, setMilestoneDurationState] = useState<MilestoneInfoType>(MilestoneInfoType.BALANCED);
@@ -60,9 +62,10 @@ export default function Milestones() {
             return milestoneItem;
           }
 
-          const duration = index === totalMilestones - 1
-            ? Math.max(1, Math.abs(estimatedDuration - runningTotal)) // Last item ensures remaining duration is >= 1
-            : Math.ceil(milestoneItem.duration * estimatedDuration);
+          const duration =
+            index === totalMilestones - 1
+              ? Math.max(1, Math.abs(estimatedDuration - runningTotal)) // Last item ensures remaining duration is >= 1
+              : Math.ceil(milestoneItem.duration * estimatedDuration);
 
           runningTotal += duration;
 
@@ -72,8 +75,10 @@ export default function Milestones() {
     }, [estimatedDuration, milestonesData]),
   });
 
+  const { projectId } = useParams();
+
   const { fields, append, remove, move } = useFieldArray({ control, name: 'milestones' });
-  const milestones = useWatch({ control, name: "milestones" });
+  const milestones = useWatch({ control, name: 'milestones' });
 
   const sumOfMilestoneDuration = useMemo(() => {
     return milestones.reduce((total, { duration }) => {
@@ -87,9 +92,9 @@ export default function Milestones() {
   useEffect(() => {
     if (durationDiff > 0) {
       setMilestoneDurationState(MilestoneInfoType.OVERSHOT);
-    } else if(durationDiff < 0) {
+    } else if (durationDiff < 0) {
       setMilestoneDurationState(MilestoneInfoType.UNDERSHOT);
-    } else if(milestoneDurationState!==MilestoneInfoType.UPDATED) {
+    } else if (milestoneDurationState !== MilestoneInfoType.UPDATED) {
       setMilestoneDurationState(MilestoneInfoType.BALANCED);
     }
   }, [durationDiff, milestoneDurationState, sumOfMilestoneDuration]);
@@ -99,11 +104,18 @@ export default function Milestones() {
     setMilestoneDurationState(MilestoneInfoType.UPDATED);
   };
 
+  const handleRemoveMilestone = (milestoneIndex: number) => {
+    if (milestones[milestoneIndex]._id) {
+      appendRemovedMilestoneId(milestones[milestoneIndex]._id);
+    }
+    remove(milestoneIndex);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = fields.findIndex(field => field.id === active.id);
-      const newIndex = fields.findIndex(field => field.id === over.id);
+      const oldIndex = fields.findIndex((field) => field.id === active.id);
+      const newIndex = fields.findIndex((field) => field.id === over.id);
       move(oldIndex, newIndex);
     }
   };
@@ -128,11 +140,11 @@ export default function Milestones() {
   const onSaveDraft = async () => {
     try {
       updateMilestonesData(watch('milestones'));
-      await saveDraft();
+      await saveDraft(projectId);
     } catch (error) {
-      showToastMessage(ToastType.ERROR, "Failed to save draft. Please try again.");
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
-  }
+  };
 
   return (
     <>
@@ -142,18 +154,20 @@ export default function Milestones() {
           <DatePicker
             value={estimatedStartDate}
             onChange={handleEstimatedStartDateChange}
-            className='w-[272px] mt-5'
-            label='Estimated Start Date'
-            placeholder='Enter start date'
+            className="w-[272px] mt-5"
+            label="Estimated Start Date"
+            placeholder="Enter start date"
             fromDate={getTodayDate()}
             required
           />
           <div className={Styles.durationContainer}>
             <div className={Styles.durationTitle}>Estimated Duration (in weeks)</div>
-            <div className='flex flex-col items-end relative'>
+            <div className="flex flex-col items-end relative">
               <span className={Styles.durationValue}>
                 {estimatedDuration} wk
-                {milestoneDurationState === MilestoneInfoType.UPDATED && <span className={Styles.milestoneDurationUpdatedTag}>Updated</span>}
+                {milestoneDurationState === MilestoneInfoType.UPDATED && (
+                  <span className={Styles.milestoneDurationUpdatedTag}>Updated</span>
+                )}
               </span>
               {durationDiff !== 0 && (
                 <span className={`${Styles.durationValueDiff} ${durationDiff < 0 ? Styles.undershot : Styles.exceed}`}>
@@ -169,14 +183,14 @@ export default function Milestones() {
         <div className={Styles.tabContentHeader}>Milestones</div>
         <div className={`${Styles.milestonesContentBody} mt-6`}>
           {durationDiff !== 0 && (
-            <MilestoneInfo 
+            <MilestoneInfo
               updateHandler={() => {
                 if (durationDiff < 0) {
                   openModal(ModalType.DURATION_UNDERSHOT);
                 } else if (durationDiff > 0) {
                   openModal(ModalType.DURATION_OVERSHOT);
                 }
-              }} 
+              }}
               infoType={milestoneDurationState}
             />
           )}
@@ -189,29 +203,25 @@ export default function Milestones() {
                   milestoneIndex={index}
                   control={control}
                   removable={fields.length > 2}
-                  remove={() => remove(index)}
+                  remove={() => handleRemoveMilestone(index)}
                   errors={errors.milestones?.[index]}
                 />
               ))}
             </SortableContext>
           </DndContext>
           <PrimaryIconText
-            className='mt-2'
-            text='Add Milestone'
-            icon={<Plus className='text-trublue' size={18} />}
+            className="mt-2"
+            text="Add Milestone"
+            icon={<Plus className="text-trublue" size={18} />}
             onClick={() => append({ title: '', duration: 1, description: '', deliverables: [' '] })}
           />
         </div>
       </div>
 
       <div className={Styles.bottomActionsContainer}>
-        <PrimaryIconText text='Back' icon={<ChevronLeft className='text-trublue' size={18} />} onClick={previousTab} />
+        <PrimaryIconText text="Back" icon={<ChevronLeft className="text-trublue" size={18} />} onClick={previousTab} />
         <div className={Styles.buttonsContainer}>
-          <SecondaryButton
-            className='mr-6'
-            onClick={onSaveDraft}
-            loading={isSaveDraftLoading}
-          >
+          <SecondaryButton className="mr-6" onClick={onSaveDraft} loading={isSaveDraftLoading}>
             Save as Draft
           </SecondaryButton>
           <PrimaryButton onClick={handleSubmit(onContinue)} disabled={!isValid}>

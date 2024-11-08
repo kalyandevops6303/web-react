@@ -1,16 +1,18 @@
-"use client"
-import PrimaryButton from "../buttons/PrimaryButton"
-import SecondaryButton from "../buttons/SecondaryButton"
-import CloseModalButton from "../buttons/CloseModalButton"
-import { useProjectCreationStore } from "@flexternships/stores/project-creation-store"
-import { ModalType } from "@flexternships/types/project-creation-types"
-import ChecklistGif from "@flexternships/assets/images/checklist.gif"
-import { useNavigate } from "react-router-dom"
+'use client';
+import PrimaryButton from '../buttons/PrimaryButton';
+import SecondaryButton from '../buttons/SecondaryButton';
+import CloseModalButton from '../buttons/CloseModalButton';
+import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
+import { ModalType } from '@flexternships/types/project-creation-types';
+import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import { useNavigate } from 'react-router-dom';
 
 export default function SavedDrafts(props: Props) {
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
   const curModal = useProjectCreationStore((state) => state.curModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
+  const resetProjectCreationStore = useProjectCreationStore((state) => state.resetStore);
+
   const navigate = useNavigate();
 
   if (!isOpen || curModal !== ModalType.DRAFT_SAVED) {
@@ -19,9 +21,9 @@ export default function SavedDrafts(props: Props) {
 
   const handleClose = () => {
     closeModal();
-    // redirect using navigate
-    navigate("/dashboard");
-  }
+    navigate('/dashboard');
+    resetProjectCreationStore();
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
@@ -30,13 +32,7 @@ export default function SavedDrafts(props: Props) {
         <div className="flex">
           <div className="height-full mr-10 flex w-30 min-w-30 items-center justify-center">
             {/* Icon can be replaced with an actual icon */}
-            <img
-              src={ChecklistGif}
-              className=" w-full"
-              width={100}
-              height={100}
-              alt="Draft Saved icon"
-            />
+            <img src={ChecklistGif} className=" w-full" width={100} height={100} alt="Draft Saved icon" />
           </div>
           <div>
             <h2 className=" text-2xl font-medium text-grey-heading">Draft Saved</h2>
@@ -46,9 +42,7 @@ export default function SavedDrafts(props: Props) {
             <p className=" text-base text-grey">
               <span className="font-semibold">Note:</span> To find your drafts please go to,
             </p>
-            <p className=" text-base font-semibold text-grey">
-              Marketplace &gt; My Listings &gt; Drafts Or View Draft
-            </p>
+            <p className=" text-base font-semibold text-grey">Marketplace &gt; My Listings &gt; Drafts Or View Draft</p>
             <div className="mt-12 flex justify-end">
               <SecondaryButton onClick={handleClose} className=" mr-6">
                 Close
@@ -59,9 +53,9 @@ export default function SavedDrafts(props: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type Props = {
-  onConfirm: () => void
+  onConfirm: () => void;
 };

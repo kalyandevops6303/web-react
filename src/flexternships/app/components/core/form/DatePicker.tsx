@@ -1,28 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import { format } from "date-fns";
-import { ChevronDown } from "react-feather";
-import { Calendar } from "@flexternships/app/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@flexternships/app/components/ui/popover";
-import Styles from "@flexternships/styles/components/core/form-fields.module.css";
-import { dateToEpoch, epochToDate } from "@flexternships/utils/date-utils";
+import React from 'react';
+import { format } from 'date-fns';
+import { ChevronDown } from 'react-feather';
+import { Calendar } from '@flexternships/app/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@flexternships/app/components/ui/popover';
+import Styles from '@flexternships/styles/components/core/form-fields.module.css';
+import { dateToEpoch, epochToDate } from '@flexternships/utils/date-utils';
 
 export function DatePicker(props: InputProps) {
-  const {
-    label,
-    value,
-    onChange,
-    required,
-    placeholder,
-    className,
-    error,
-    fromDate,
-  } = props;
+  const { label, value, onChange, required, placeholder, className, error, fromDate } = props;
 
   const calendarRef = React.useRef<HTMLButtonElement>(null);
 
@@ -37,20 +24,14 @@ export function DatePicker(props: InputProps) {
   return (
     <Popover>
       <PopoverTrigger ref={calendarRef} asChild>
-        <div className={`${Styles.formFieldContainer} ${className || ""}`}>
+        <div className={`${Styles.formFieldContainer} ${className || ''}`}>
           <div className={Styles.formInputLabelContainer}>
             <span className={Styles.formInputLabel}>{label}</span>
             {required && <span className={Styles.requiredAsterisk}>*</span>}
           </div>
-          <div
-            className={`${Styles.formDateInput} ${
-              error ? Styles.formInputError : Styles.formInputDefault
-            }`}
-          >
+          <div className={`${Styles.formDateInput} ${error ? Styles.formInputError : Styles.formInputDefault}`}>
             {value ? (
-              <span className={Styles.formDateFilled}>
-                {value ? format(epochToDate(value), "PPP") : placeholder}
-              </span>
+              <span className={Styles.formDateFilled}>{value ? format(epochToDate(value), 'PPP') : placeholder}</span>
             ) : (
               <span className={Styles.formDatePlaceholder}>{placeholder}</span>
             )}
@@ -73,7 +54,7 @@ export function DatePicker(props: InputProps) {
 
 type InputProps = {
   label: string;
-  value: number; 
+  value: number;
   onChange: (newVal: number) => void;
   required?: boolean;
   placeholder?: string;
