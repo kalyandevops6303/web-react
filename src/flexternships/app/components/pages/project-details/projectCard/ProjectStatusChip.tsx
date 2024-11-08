@@ -1,7 +1,7 @@
-import { ProjectStatus, SecondaryStatus, StatusType } from '@/flexternships/constraints/enums/project-enums';
+import { PrimaryProjectStatus , SecondaryProjectStatus, StatusType } from '@/flexternships/constraints/enums/project-enums';
 
 interface ProjectStatusChipProps {
-  status: keyof typeof SecondaryStatus | keyof typeof ProjectStatus;
+  status: keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus ;
   statusType: keyof typeof StatusType;
   rounded?: boolean;
 }
@@ -45,22 +45,6 @@ const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatu
     INVITED = 'bg-purple-50 text-purple-600',
     UPDATED = 'bg-purple-50 text-purple-600',
     PENDING = 'bg-orange-50 text-orange-600',
-    PAYMENT_DUE = 'bg-orange-50 text-orange-600',
-    INITIATED = 'bg-blue-50 text-blue-600',
-    PAYMENT_INITIATED = 'bg-blue-50 text-blue-600',
-    CHECKOUT_PAID = 'bg-cyan-50 text-cyan-600',
-    TRANSFER_PAID = 'bg-green-50 text-green-600',
-    PAID_AMOUNT = 'bg-green-50 text-green-600',
-    FAILED = 'bg-red-50 text-red-600',
-    PAYMENT_FAILED = 'bg-red-50 text-red-600',
-    RETRY_PAYMENT = 'bg-red-100 text-red-900',
-    PAYMENT_PROCESSING = 'bg-purple-50 text-purple-600',
-    PROCESSING = 'bg-purple-50 text-purple-600',
-    PAYMENT_SUCCESSFUL = 'bg-emerald-50 text-emerald-600',
-    SUCCESSFUL = 'bg-emerald-50 text-emerald-600',
-    FUNDS_AVAILABLE = 'bg-cyan-50 text-cyan-600',
-    FUNDED = 'bg-cyan-50 text-cyan-600',
-    NOT_FUNDED = 'bg-gray-100 text-gray-600',
   }
 
   const statusClass =
@@ -75,8 +59,8 @@ const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatu
       } ${statusClass}`}
     >
       {(statusType === StatusType?.PRIMARY
-        ? ProjectStatus[status as keyof typeof ProjectStatus]
-        : SecondaryStatus[status as keyof typeof SecondaryStatus]
+        ? PrimaryProjectStatus [status as keyof typeof PrimaryProjectStatus ]
+        : SecondaryProjectStatus[status as keyof typeof SecondaryProjectStatus]
       )?.toString() || status}
     </h1>
   );

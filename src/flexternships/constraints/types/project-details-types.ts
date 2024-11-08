@@ -1,13 +1,4 @@
-export enum ProjectStatus {
-  DRAFT = 'DRAFT',
-  OPEN = 'OPEN',
-  IN_REVIEW = 'IN_REVIEW',
-  ACTIVE = 'ACTIVE',
-  ON_GOING = 'ON_GOING',
-  CLOSED = 'CLOSED',
-  TERMINATED = 'TERMINATED',
-  COMPLETED = 'COMPLETED',
-}
+import { PrimaryProjectStatus } from "../enums/project-enums";
 
 export enum DurationType {
   WEEK = 'WEEK',
@@ -77,7 +68,7 @@ export type ProjectDetails = {
   };
   roles: ProjectRole[];
   listingDetails: ListingDetails;
-  status: ProjectStatus;
+  status: PrimaryProjectStatus ;
   clientUserId: string;
   orgSlugId: string;
   isDocumentsSent: boolean;

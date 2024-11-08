@@ -19,7 +19,7 @@ export enum StatusType {
   SECONDARY = 'SECONDARY',
 }
 
-export enum ProjectStatus {
+export enum PrimaryProjectStatus  {
   OPEN = 'Open',
   IN_REVIEW = 'In Review',
   ACTIVE = 'Active',
@@ -30,7 +30,7 @@ export enum ProjectStatus {
   COMPLETED = 'Completed',
 }
 
-export const SecondaryStatus = {
+export const SecondaryProjectStatus = {
   OPEN: 'Open',
   TO_BE_LISTED: 'To Be Listed',
   IN_REVIEW: 'In Review',
