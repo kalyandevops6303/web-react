@@ -47,11 +47,13 @@ export default function SubmissionItem(props: Props) {
 
   const handleDeleteClick = () => {
     // TODO: Implement delete functionality
-  }
+  };
 
   return (
     <div
-      className={`flex flex-row min-h-[52px] items-center border-solid border-grey-c2 px-1.5 ${last ? '' : 'border-b-1'}`}
+      className={`flex flex-row min-h-[52px] items-center border-solid border-grey-c2 px-1.5 ${
+        last ? '' : 'border-b-1'
+      }`}
     >
       <div className={`py-4 px-2.5 ${viewOnly ? 'w-[212px]' : 'w-[231px]'} flex flex-row items-center gap-x-3`}>
         <span>
@@ -61,44 +63,34 @@ export default function SubmissionItem(props: Props) {
             <Link className="text-grey" size={24} />
           )}
         </span>
-        {
-          (viewOnly || (data.type === 'DOCUMENTS')) ? (
-            <span className="truncate w-[175px]">
-              {data.name}
-            </span>
-          ) : (
-            <TextInput
-              label=''
-              value={data.name}
-              onChange={() => { }}
-              placeholder="Enter name"
-              className='w-[175px]'
-            />
-          )
-        }
+        {viewOnly || data.type === 'DOCUMENTS' ? (
+          <span className="truncate w-[175px]">{data.name}</span>
+        ) : (
+          <TextInput label="" value={data.name} onChange={() => {}} placeholder="Enter name" className="w-[175px]" />
+        )}
       </div>
       <div className={`py-4 px-2.5 ${viewOnly ? 'w-[319px]' : 'w-[420px]'} break-all`}>
-        {
-          viewOnly ? (
-            <span>{data.description}</span>
-          ) : (
-            <TextInput
-              label=''
-              value={data.description}
-              onChange={() => { }}
-              placeholder="Enter description"
-              className='w-[400px]'
-            />
-          )
-        }
+        {viewOnly ? (
+          <span>{data.description}</span>
+        ) : (
+          <TextInput
+            label=""
+            value={data.description}
+            onChange={() => {}}
+            placeholder="Enter description"
+            className="w-[400px]"
+          />
+        )}
       </div>
-      {
-        viewOnly && (
-          <div className="py-4 px-2.5 w-[126px] flex items-center justify-center">
-            <img className="w-8 h-8 rounded-full object-cover" src={data.submittedBy.avatar} alt={data.submittedBy.name} />
-          </div>
-        )
-      }
+      {viewOnly && (
+        <div className="py-4 px-2.5 w-[126px] flex items-center justify-center">
+          <img
+            className="w-8 h-8 rounded-full object-cover"
+            src={data.submittedBy.avatar}
+            alt={data.submittedBy.name}
+          />
+        </div>
+      )}
 
       <div className="py-4 px-2.5 w-[194px]">{formatEpochToHumanReadable(data.submittedAt, false, true)}</div>
       <div className={`py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3`}>
@@ -118,16 +110,14 @@ export default function SubmissionItem(props: Props) {
             <ExternalLink size={24} />
           )}
         </span>
-        {
-          !viewOnly && (
-            <span
-              className="flex items-center justify-center bg-opacity-[0.12] bg-error rounded-full p-2 text-error cursor-pointer"
-              onClick={handleDeleteClick}
-            >
-              <Trash2 size={24} />
-            </span>
-          )
-        }
+        {!viewOnly && (
+          <span
+            className="flex items-center justify-center bg-opacity-[0.12] bg-error rounded-full p-2 text-error cursor-pointer"
+            onClick={handleDeleteClick}
+          >
+            <Trash2 size={24} />
+          </span>
+        )}
       </div>
     </div>
   );

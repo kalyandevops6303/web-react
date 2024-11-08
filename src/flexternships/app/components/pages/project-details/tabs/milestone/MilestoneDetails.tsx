@@ -128,50 +128,36 @@ export default function MilestoneDetails() {
             </ul>
           </div>
         </SimpleElevatedCard>
-        {
-          userDetails.userType === UserType.TALENT && (
-            <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
-              <h2 className="text-lg font-normal not-italic text-grey-heading">Submissions</h2>
-              <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
-                <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
-                    File Name
-                  </div>
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
-                    Description
-                  </div>
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
-                    Uploaded On
-                  </div>
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
-                    Action
-                  </div>
+        {userDetails.userType === UserType.TALENT && (
+          <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
+            <h2 className="text-lg font-normal not-italic text-grey-heading">Submissions</h2>
+            <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
+              <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
+                  File Name
                 </div>
-                <div className="text-sm font-normal not-italic leading-5.5 text-grey">
-                  {draftArtifacts.map((submission, index) => (
-                    <SubmissionItem
-                      key={index}
-                      data={submission}
-                      last={index === draftArtifacts.length - 1}
-                    />
-                  ))}
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
+                  Description
+                </div>
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
+                  Uploaded On
+                </div>
+                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
+                  Action
                 </div>
               </div>
-              <div className='flex flex-col gap-y-7 text-trublue-secondary-500'>
-                <PrimaryIconText
-                  icon={<Plus size={12} />}
-                  text="Add Document"
-                  onClick={() => {}}
-                />
-                <PrimaryIconText
-                  icon={<Plus size={12} />}
-                  text="Add Link"
-                  onClick={() => {}}
-                />
+              <div className="text-sm font-normal not-italic leading-5.5 text-grey">
+                {draftArtifacts.map((submission, index) => (
+                  <SubmissionItem key={index} data={submission} last={index === draftArtifacts.length - 1} />
+                ))}
               </div>
             </div>
-          )
-        }
+            <div className="flex flex-col gap-y-7 text-trublue-secondary-500">
+              <PrimaryIconText icon={<Plus size={12} />} text="Add Document" onClick={() => {}} />
+              <PrimaryIconText icon={<Plus size={12} />} text="Add Link" onClick={() => {}} />
+            </div>
+          </div>
+        )}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="overflow-hidden">
         <Accordion type="single" collapsible className="w-full">

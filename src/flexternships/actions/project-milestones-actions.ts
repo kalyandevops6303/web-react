@@ -82,45 +82,49 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
 
   set({ milestoneDetails: formattedMilestoneDetails });
 
-  setDraftArtifacts((milestoneDetails?.milestone_artifact_details_draft || []).map(((artifact: any) => ({
-    artifactId: artifact.artifact_id,
-    type: artifact.type,
-    status: artifact.status,
-    name: artifact.name,
-    description: artifact.description,
-    submittedBy: {
-      name: artifact.submitted_by?.name,
-      avatar: artifact.submitted_by?.avatar,
-    },
-    submittedAt: artifact.submitted_at,
-    metadata: {
-      // file props
-      fileKey: artifact.metadata?.file_key,
-      size: artifact.metadata?.size,
-      // link props
-      url: artifact.metadata?.url,
-    },
-  }))));
+  setDraftArtifacts(
+    (milestoneDetails?.milestone_artifact_details_draft || []).map((artifact: any) => ({
+      artifactId: artifact.artifact_id,
+      type: artifact.type,
+      status: artifact.status,
+      name: artifact.name,
+      description: artifact.description,
+      submittedBy: {
+        name: artifact.submitted_by?.name,
+        avatar: artifact.submitted_by?.avatar,
+      },
+      submittedAt: artifact.submitted_at,
+      metadata: {
+        // file props
+        fileKey: artifact.metadata?.file_key,
+        size: artifact.metadata?.size,
+        // link props
+        url: artifact.metadata?.url,
+      },
+    })),
+  );
 
-  setSubmittedArtifacts((milestoneDetails?.milestone_artifact_details_submitted || []).map(((artifact: any) => ({
-    artifactId: artifact.artifact_id,
-    type: artifact.type,
-    status: artifact.status,
-    name: artifact.name,
-    description: artifact.description,
-    submittedBy: {
-      name: artifact.submitted_by?.name,
-      avatar: artifact.submitted_by?.avatar,
-    },
-    submittedAt: artifact.submitted_at,
-    metadata: {
-      // file props
-      fileKey: artifact.metadata?.file_key,
-      size: artifact.metadata?.size,
-      // link props
-      url: artifact.metadata?.url,
-    },
-  }))));
+  setSubmittedArtifacts(
+    (milestoneDetails?.milestone_artifact_details_submitted || []).map((artifact: any) => ({
+      artifactId: artifact.artifact_id,
+      type: artifact.type,
+      status: artifact.status,
+      name: artifact.name,
+      description: artifact.description,
+      submittedBy: {
+        name: artifact.submitted_by?.name,
+        avatar: artifact.submitted_by?.avatar,
+      },
+      submittedAt: artifact.submitted_at,
+      metadata: {
+        // file props
+        fileKey: artifact.metadata?.file_key,
+        size: artifact.metadata?.size,
+        // link props
+        url: artifact.metadata?.url,
+      },
+    })),
+  );
 };
 
 export const saveDraftArtifacts = async (get: any, set: any) => {

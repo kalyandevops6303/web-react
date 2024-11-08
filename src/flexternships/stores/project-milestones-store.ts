@@ -7,7 +7,12 @@ import {
   ProjectMilestonesState,
   ProjectMilestonesStore,
 } from '../constraints/types/project-milestones-types';
-import { populateProjectMilestones, populateMilestoneDetails, submitDraftArtifacts, saveDraftArtifacts } from '../actions/project-milestones-actions';
+import {
+  populateProjectMilestones,
+  populateMilestoneDetails,
+  submitDraftArtifacts,
+  saveDraftArtifacts,
+} from '../actions/project-milestones-actions';
 
 const defaultProjectMilestonesInitState: ProjectMilestonesState = {
   isMilestonesLoading: true,
