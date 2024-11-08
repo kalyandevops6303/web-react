@@ -557,12 +557,12 @@ const ProjectModal = ({
                       )}
                   </PermissionWrapper>
                   <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.VIEW_PROJECT']}>
-                    <Button color="primary" onClick={() => navigate(`/project-details/${data?._id}/team`)}>
+                    {data?.is_invited && <Button color="primary" onClick={() => navigate(`/project-details/${data?._id}/team`)}>
                       <>
                         <span className="me-50">View Project</span>
                         <ChevronRight size={14} />
                       </>
-                    </Button>
+                    </Button>}
                   </PermissionWrapper>
                 </div>
               )}
