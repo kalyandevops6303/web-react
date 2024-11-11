@@ -1,7 +1,6 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 
-
 export default function MilestoneFeedback() {
   const milestoneFeedbackData = [
     {
