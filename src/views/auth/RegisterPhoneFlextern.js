@@ -204,7 +204,6 @@ const RegisterPhoneFlextern = () => {
               numInputs={4}
               separator={<span style={{ width: '12px' }} />}
               isInputNum
-              // shouldAutoFocus
               inputStyle={{
                 border: `1px solid ${theme.OTPborderColor}`,
                 borderRadius: '8px',
@@ -217,9 +216,11 @@ const RegisterPhoneFlextern = () => {
                 backgroundColor: `${booleanSent ? '#ffffff' : '#F9FDFF'}`,
               }}
               focusStyle={{
-                border: `1px solid ${theme.primary}`,
+                border: `1px solid ${booleanSent ? theme.primary : theme.OTPborderColor}`,
                 outline: 'none',
               }}
+              shouldAutoFocus={false}
+              isDisabled={!booleanSent}
             />{' '}
           </FormGroup>
           {!booleanSent ? (

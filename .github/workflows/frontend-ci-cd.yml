@@ -1,0 +1,114 @@
+name: frontend-ci-cd
+on:
+  workflow_dispatch:
+  release:
+    types: 
+      - published
+
+jobs:
+  frontend-ci-cd:
+    #if: |
+      # startsWith(github.ref, 'refs/tags/uat_v') ||
+      # github.event.release.target_commitish == 'uat'
+    runs-on: ubuntu-latest
+    #runs-on: [self-hosted, linux, X64, trumio-orgrunner]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ vars.BRANCH }}
+          submodules: true
+    
+      - name: Install Azure cli
+        run: |
+          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+          AZ_REPO=$(lsb_release -cs)
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+          sudo apt-get update
+          sudo apt-get install azure-cli
+
+      - name: Set Azure environment
+        id: azure
+        run: |
+            if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
+                echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID_UAT }}" >> $GITHUB_ENV
+                echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+                echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+                echo "azure_clientsecret=${{ secrets.AZURE_CLIENT_SECRET_UAT }}" >> $GITHUB_ENV
+            else
+                echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+                echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+                echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+                echo "azure_clientsecret=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+            fi
+        shell: bash
+  
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: '{"clientId":"${{ env.azure_clientid }}","clientSecret":"${{ env.azure_clientsecret }}","subscriptionId":"${{ env.azure_subscriptionid }}","tenantId":"${{ env.azure_tenantid }}"}'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Set environment variable
+        run: |
+            if [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
+                echo "VITE_ENV_MODE=uat" >> $GITHUB_ENV
+                echo "storage=azusctruatwebsa" >> $GITHUB_ENV
+                echo "backup_directory=uat-frontend-backup" >> $GITHUB_ENV
+                echo "cdn_endpoint=trumiouatfdcdn" >> $GITHUB_ENV
+                echo "cdn_domain=uat.trumio.ai" >> $GITHUB_ENV
+
+            elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat ]]; then
+                echo "VITE_ENV_MODE=tru-uat" >> $GITHUB_ENV
+                echo "storage=azusctrtruuatwebsa" >> $GITHUB_ENV
+                echo "backup_directory=tru-uat-frontend-backup" >> $GITHUB_ENV
+                echo "cdn_endpoint=trumio-tru-uat-fdcdn" >> $GITHUB_ENV
+                echo "cdn_domain=tru-uat.trumio.ai" >> $GITHUB_ENV
+
+            elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
+                echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
+                echo "storage=azusctrwebsa" >> $GITHUB_ENV
+                echo "backup_directory=prod-frontend-backup" >> $GITHUB_ENV
+                echo "cdn_endpoint=trumioprodcdn" >> $GITHUB_ENV
+                echo "cdn_domain=app.trumio.ai" >> $GITHUB_ENV
+
+            elif [[ "${{ vars.ENVIRONMENT }}" == tru-prod ]]; then
+                echo "VITE_ENV_MODE=tru-production" >> $GITHUB_ENV
+                echo "storage=azusctrtruprodwebsa" >> $GITHUB_ENV
+                echo "backup_directory=tru-prod-frontend-backup" >> $GITHUB_ENV
+                echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
+                echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV
+            fi
+
+      - name: Echo VITE variable
+        run: echo ${{ env.VITE_ENV_MODE }}
+        
+      - name: Install Dependencies and Build
+        run: |
+          npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
+          npm run build
+
+      - name: Upload to blob storage
+        run: |
+          today=$(date +%d-%m-%Y-%H.%M)
+          az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d "${{ env.backup_directory }}/frontend-$today" --source ./dist
+
+      - name: Delete blob storage
+        run: az storage blob delete-batch --account-name ${{ env.storage }} --auth-mode login --source '$web' --pattern '*'
+
+      - name: Upload to blob storage
+        run: az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d '$web' --source ./dist
+
+      - name: Purge CDN endpoint
+        run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name ${{ env.cdn_endpoint }} --domains ${{ env.cdn_domain }} --content-paths '/*'
+
+      # Azure logout
+      - name: logout
+        run: |
+          az logout
+        if: always()

@@ -57,7 +57,7 @@ export default function HorizontalFileCard(props: Props) {
         )}
         {removable && (
           <>
-            {uploadSuccess ? (
+            {uploadSuccess !== false ? (
               <div
                 className="p-2 text-error text-sm font-semibold tracking-wide not-italic self-center cursor-pointer"
                 onClick={remove}
