@@ -1,5 +1,6 @@
 import Rating from '../../../../core/feedback/Rating';
 import KudosAndWow from '../../../../core/feedback/KudosAndWow';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 export default function TeamCard(props: InputProps) {
   const { rating, ratingText, ratingColor, name, profileImage, designation, kudos, wow } = props;
@@ -8,7 +9,7 @@ export default function TeamCard(props: InputProps) {
       <div className=" flex items-center">
         <div
           style={{
-            backgroundImage: `url(${profileImage})`,
+            backgroundImage: `${profileImage ? `url(${profileImage})` : defaultAvatar}`,
           }}
           className="w-8 h-8 rounded-[1rem] bg-lightgray bg-center bg-cover bg-no-repeat mr-4"
         ></div>

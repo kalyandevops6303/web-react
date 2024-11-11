@@ -61,7 +61,7 @@ export default function FileUpload(props: InputProps) {
   const handleFileInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
-    append({
+    let newField = {
       fileName: file.name,
       file: file,
       fileKey: 'temp',
@@ -71,7 +71,11 @@ export default function FileUpload(props: InputProps) {
       uploadError: false,
       loading: true,
       createdAt: dateToEpoch(new Date()),
-    });
+    };
+    if (!acceptedFormats?.includes(file.type)) {
+      Object.assign(newField, { error: 'Invalid file format.' });
+    }
+    append(newField);
     await trigger(name); // Trigger validation on new field
     const fieldState = watch(name); // Get the current field state
     handleFileUpload(fieldState.length - 1, file);
