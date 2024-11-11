@@ -48,7 +48,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   }, []);
 
   const getScoreLabel = (score: number) => {
-    return 'Good';
+    if (score) return 'Good';
   };
 
   const getHeaderContent = (individualFeedback: any) => {
