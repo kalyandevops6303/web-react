@@ -78,7 +78,7 @@ jobs:
                 echo "cdn_domain=app.trumio.ai" >> $GITHUB_ENV
 
             elif [[ "${{ vars.ENVIRONMENT }}" == tru-prod ]]; then
-                echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
+                echo "VITE_ENV_MODE=tru-production" >> $GITHUB_ENV
                 echo "storage=azusctrtruprodwebsa" >> $GITHUB_ENV
                 echo "backup_directory=tru-prod-frontend-backup" >> $GITHUB_ENV
                 echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
