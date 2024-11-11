@@ -84,6 +84,9 @@ jobs:
                 echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
                 echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV
             fi
+
+      - name: Echo VITE variable
+        run: echo ${{ env.VITE_ENV_MODE }}
         
       - name: Install Dependencies and Build
         run: |
