@@ -16,6 +16,11 @@ export enum MilestoneArtifactStatus {
   SUBMITTED = 'SUBMITTED',
 }
 
+export enum MilestoneArtifactType {
+  DOCUMENTS = 'DOCUMENTS',
+  LINKS = 'LINKS',
+}
+
 // Subject to changer as per BE
 export enum MilestoneFeedbackType {
   TEAM_FEEDBACK = 'TEAM_FEEDBACK',

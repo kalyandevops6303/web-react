@@ -1,4 +1,3 @@
-import TextInput from '@/flexternships/app/components/core/form/TextInput';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { MilestoneArtifact } from '@/flexternships/constraints/types/project-milestones-types';
@@ -7,10 +6,10 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { useState } from 'react';
-import { Download, ExternalLink, Link, Trash2 } from 'react-feather';
+import { Download, ExternalLink, Link } from 'react-feather';
 
-export default function SubmissionItem(props: Props) {
-  const { last = false, data, viewOnly = false } = props;
+export default function SubmittedArtifactItem(props: Props) {
+  const { last = false, data } = props;
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
 
@@ -34,7 +33,7 @@ export default function SubmissionItem(props: Props) {
     if (data.type !== 'LINKS' || !data.metadata.url) {
       return;
     }
-    window.open(data.name, '_blank');
+    window.open(data.metadata.url, '_blank');
   };
 
   const handleMainActionClick = () => {
@@ -45,55 +44,32 @@ export default function SubmissionItem(props: Props) {
     }
   };
 
-  const handleDeleteClick = () => {
-    // TODO: Implement delete functionality
-  };
-
   return (
     <div
       className={`flex flex-row min-h-[52px] items-center border-solid border-grey-c2 px-1.5 ${
         last ? '' : 'border-b-1'
       }`}
     >
-      <div className={`py-4 px-2.5 ${viewOnly ? 'w-[212px]' : 'w-[231px]'} flex flex-row items-center gap-x-3`}>
+      <div className="py-4 px-2.5 w-[212px] flex flex-row items-center gap-x-3">
         <span>
           {data.type === 'DOCUMENTS' ? (
-            <img className="h-6" src={getFileIcon(data.name)} alt={data.name} />
+            <img className="h-6" src={getFileIcon(data.metadata?.fileName ?? '')} alt={data.metadata?.fileName ?? ''} />
           ) : (
             <Link className="text-grey" size={24} />
           )}
         </span>
-        {viewOnly || data.type === 'DOCUMENTS' ? (
-          <span className="truncate w-[175px]">{data.name}</span>
-        ) : (
-          <TextInput label="" value={data.name} onChange={() => {}} placeholder="Enter name" className="w-[175px]" />
-        )}
+        <span className="truncate w-[175px]">
+          {data.type === 'DOCUMENTS' ? data.metadata?.fileName : data.metadata?.url}
+        </span>
       </div>
-      <div className={`py-4 px-2.5 ${viewOnly ? 'w-[319px]' : 'w-[420px]'} break-all`}>
-        {viewOnly ? (
-          <span>{data.description}</span>
-        ) : (
-          <TextInput
-            label=""
-            value={data.description}
-            onChange={() => {}}
-            placeholder="Enter description"
-            className="w-[400px]"
-          />
-        )}
+      <div className="py-4 px-2.5 w-[319px] break-all">
+        <span>{data.description}</span>
       </div>
-      {viewOnly && (
-        <div className="py-4 px-2.5 w-[126px] flex items-center justify-center">
-          <img
-            className="w-8 h-8 rounded-full object-cover"
-            src={data.submittedBy.avatar}
-            alt={data.submittedBy.name}
-          />
-        </div>
-      )}
-
-      <div className="py-4 px-2.5 w-[194px]">{formatEpochToHumanReadable(data.submittedAt, false, true)}</div>
-      <div className={`py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3`}>
+      <div className="py-4 px-2.5 w-[126px] flex items-center justify-center">
+        <img className="w-8 h-8 rounded-full object-cover" src={data.submittedBy.avatar} alt={data.submittedBy.name} />
+      </div>
+      <div className="py-4 px-2.5 w-[194px]">{formatEpochToHumanReadable(data.updatedAt ?? 0, false, true)}</div>
+      <div className="py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3">
         <span
           className="flex items-center justify-center bg-trublue-light rounded-full p-2 text-trublue-secondary-500 cursor-pointer"
           onClick={handleMainActionClick}
@@ -110,14 +86,6 @@ export default function SubmissionItem(props: Props) {
             <ExternalLink size={24} />
           )}
         </span>
-        {!viewOnly && (
-          <span
-            className="flex items-center justify-center bg-opacity-[0.12] bg-error rounded-full p-2 text-error cursor-pointer"
-            onClick={handleDeleteClick}
-          >
-            <Trash2 size={24} />
-          </span>
-        )}
       </div>
     </div>
   );
@@ -126,5 +94,4 @@ export default function SubmissionItem(props: Props) {
 type Props = {
   last?: boolean;
   data: MilestoneArtifact;
-  viewOnly?: boolean;
 };

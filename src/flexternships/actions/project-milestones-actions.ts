@@ -1,4 +1,10 @@
-import { getMilestonesByProjectId, getMilestoneDetailsById } from '../services/project-management-v2';
+import { MilestoneArtifactStatus, MilestoneStatus } from '../constraints/enums/core-enums';
+import {
+  getMilestonesByProjectId,
+  getMilestoneDetailsById,
+  putArtifactsByMilestoneId,
+  updateMilestoneStatus,
+} from '../services/project-management-v2';
 import { useMilestoneArtifactsStore } from '../stores/project-milestones-store';
 
 export const populateProjectMilestones = async (projectId: string, set: any) => {
@@ -41,8 +47,8 @@ export const populateProjectMilestones = async (projectId: string, set: any) => 
 };
 
 export const populateMilestoneDetails = async (milestoneId: string, set: any) => {
-  const setDraftArtifacts = useMilestoneArtifactsStore.getState().setDraftArtifacts;
-  const setSubmittedArtifacts = useMilestoneArtifactsStore.getState().setSubmittedArtifacts;
+  const updateDraftArtifacts = useMilestoneArtifactsStore.getState().updateDraftArtifacts;
+  const updateSubmittedArtifacts = useMilestoneArtifactsStore.getState().updateSubmittedArtifacts;
 
   const milestoneDetails = await getMilestoneDetailsById(milestoneId);
 
@@ -82,13 +88,13 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
 
   set({ milestoneDetails: formattedMilestoneDetails });
 
-  setDraftArtifacts(
+  updateDraftArtifacts(
     (milestoneDetails?.milestone_artifact_details_draft || []).map((artifact: any) => ({
       artifactId: artifact.artifact_id,
       type: artifact.type,
       status: artifact.status,
-      name: artifact.name,
       description: artifact.description,
+      uploadedAt: artifact.uploaded_at,
       submittedBy: {
         name: artifact.submitted_by?.name,
         avatar: artifact.submitted_by?.avatar,
@@ -96,6 +102,7 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
       submittedAt: artifact.submitted_at,
       metadata: {
         // file props
+        fileName: artifact.metadata?.file_name,
         fileKey: artifact.metadata?.file_key,
         size: artifact.metadata?.size,
         // link props
@@ -104,13 +111,14 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
     })),
   );
 
-  setSubmittedArtifacts(
+  updateSubmittedArtifacts(
     (milestoneDetails?.milestone_artifact_details_submitted || []).map((artifact: any) => ({
       artifactId: artifact.artifact_id,
       type: artifact.type,
       status: artifact.status,
       name: artifact.name,
       description: artifact.description,
+      uploadedAt: artifact.uploaded_at,
       submittedBy: {
         name: artifact.submitted_by?.name,
         avatar: artifact.submitted_by?.avatar,
@@ -118,6 +126,7 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
       submittedAt: artifact.submitted_at,
       metadata: {
         // file props
+        fileName: artifact.metadata?.file_name,
         fileKey: artifact.metadata?.file_key,
         size: artifact.metadata?.size,
         // link props
@@ -127,10 +136,27 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
   );
 };
 
-export const saveDraftArtifacts = async (get: any, set: any) => {
-  // TODO: Implement save draft artifacts
+export const putDraftArtifacts = async (
+  status: MilestoneArtifactStatus,
+  milestoneId: string,
+  projectId: string,
+  get: any,
+  set: any,
+) => {
+  const draftArtifacts = get().draftArtifacts;
+  const removedArtifactIds = get().removedArtifactIds;
+  await putArtifactsByMilestoneId(status, milestoneId, projectId, draftArtifacts, removedArtifactIds);
+  set({ draftArtifacts: [], removedArtifactIds: [] });
 };
 
-export const submitDraftArtifacts = async (get: any, set: any) => {
-  // TODO: Implement submit draft artifacts
+export const appendToRemovedArtifactIds = (artifactId: string, get: any, set: any) => {
+  set({ removedArtifactIds: [...get().removedArtifactIds, artifactId] });
+};
+
+export const markMilestoneAsCompleted = async (milestoneId: string) => {
+  await updateMilestoneStatus(milestoneId, MilestoneStatus.IN_REVIEW);
+};
+
+export const acceptMilestone = async (milestoneId: string) => {
+  await updateMilestoneStatus(milestoneId, MilestoneStatus.COMPLETED);
 };

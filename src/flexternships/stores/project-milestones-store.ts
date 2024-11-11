@@ -4,15 +4,19 @@ import {
   MilestoneArtifactsState,
   MilestoneArtifactsStore,
   MilestoneDetails,
+  MilestoneDraftArtifact,
   ProjectMilestonesState,
   ProjectMilestonesStore,
 } from '../constraints/types/project-milestones-types';
 import {
   populateProjectMilestones,
   populateMilestoneDetails,
-  submitDraftArtifacts,
-  saveDraftArtifacts,
+  appendToRemovedArtifactIds,
+  putDraftArtifacts,
+  markMilestoneAsCompleted,
+  acceptMilestone,
 } from '../actions/project-milestones-actions';
+import { MilestoneArtifactStatus } from '../constraints/enums/core-enums';
 
 const defaultProjectMilestonesInitState: ProjectMilestonesState = {
   isMilestonesLoading: true,
@@ -24,18 +28,24 @@ export const useProjectMilestonesStore = create<ProjectMilestonesStore>((set) =>
   ...defaultProjectMilestonesInitState,
   populateProjectMilestones: async (projectId: string) => populateProjectMilestones(projectId, set),
   populateMilestoneDetails: async (milestoneId: string) => populateMilestoneDetails(milestoneId, set),
+  markMilestoneAsCompleted: async (milestoneId: string) => markMilestoneAsCompleted(milestoneId),
+  acceptMilestone: async (milestoneId: string) => acceptMilestone(milestoneId),
 }));
 
 const defaultMilestoneArtifactsInitState: MilestoneArtifactsState = {
   draftArtifacts: [],
   submittedArtifacts: [],
+  removedArtifactIds: [],
 };
 
 export const useMilestoneArtifactsStore = create<MilestoneArtifactsStore>((set, get) => ({
   ...defaultMilestoneArtifactsInitState,
-  saveDraftArtifacts: () => saveDraftArtifacts(get, set),
-  submitDraftArtifacts: () => submitDraftArtifacts(get, set),
-  setDraftArtifacts: (artifacts: MilestoneArtifact[]) => set({ draftArtifacts: artifacts }),
-  setSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => set({ submittedArtifacts: artifacts }),
+  saveDraftArtifacts: async (milestoneId: string, projectId: string) =>
+    putDraftArtifacts(MilestoneArtifactStatus.DRAFT, milestoneId, projectId, get, set),
+  submitDraftArtifacts: async (milestoneId: string, projectId: string) =>
+    putDraftArtifacts(MilestoneArtifactStatus.SUBMITTED, milestoneId, projectId, get, set),
+  updateDraftArtifacts: (artifacts: MilestoneDraftArtifact[]) => set({ draftArtifacts: artifacts }),
+  updateSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => set({ submittedArtifacts: artifacts }),
+  appendToRemovedArtifactIds: (artifactId: string) => appendToRemovedArtifactIds(artifactId, get, set),
   resetDraftArtifacts: () => set({ ...defaultMilestoneArtifactsInitState }),
 }));

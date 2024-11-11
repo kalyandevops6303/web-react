@@ -1,17 +1,35 @@
-import { MilestoneStatus } from '../enums/core-enums';
+import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../enums/core-enums';
+
 export type MilestoneArtifact = {
   artifactId: string;
-  type: 'DOCUMENTS' | 'LINKS';
-  status: 'DRAFT' | 'SUBMITTED';
-  name: string;
+  type: MilestoneArtifactType;
+  status: MilestoneArtifactStatus;
   description: string;
+  updatedAt: number;
   submittedBy: {
     name: string;
     avatar: string;
   };
-  submittedAt: number;
   metadata: {
     // file props
+    fileName?: string;
+    fileKey?: string;
+    size?: number;
+    // link props
+    url?: string;
+    createdAt?: number;
+  };
+};
+
+export type MilestoneDraftArtifact = {
+  artifactId?: string;
+  type: MilestoneArtifactType;
+  status: MilestoneArtifactStatus.DRAFT;
+  description?: string;
+  uploadedAt: number;
+  metadata: {
+    // file props
+    fileName?: string;
     fileKey?: string;
     size?: number;
     // link props
@@ -62,19 +80,23 @@ export type ProjectMilestonesState = {
 export type ProjectMilestonesActions = {
   populateProjectMilestones: (projectId: string) => Promise<void>;
   populateMilestoneDetails: (milestoneId: string) => Promise<void>;
+  markMilestoneAsCompleted: (milestoneId: string) => Promise<void>;
+  acceptMilestone: (milestoneId: string) => Promise<void>;
 };
 
 export type ProjectMilestonesStore = ProjectMilestonesState & ProjectMilestonesActions;
 
 export type MilestoneArtifactsState = {
-  draftArtifacts: MilestoneArtifact[];
+  draftArtifacts: MilestoneDraftArtifact[];
   submittedArtifacts: MilestoneArtifact[];
+  removedArtifactIds: string[];
 };
 export type MilestoneArtifactsActions = {
-  saveDraftArtifacts: () => Promise<void>;
-  submitDraftArtifacts: () => Promise<void>;
-  setDraftArtifacts: (artifacts: MilestoneArtifact[]) => void;
-  setSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => void;
+  saveDraftArtifacts: (milestoneId: string, projectId: string) => Promise<void>;
+  submitDraftArtifacts: (milestoneId: string, projectId: string) => Promise<void>;
+  updateDraftArtifacts: (artifacts: MilestoneDraftArtifact[]) => void;
+  updateSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => void;
+  appendToRemovedArtifactIds: (artifactId: string) => void;
   resetDraftArtifacts: () => void;
 };
 

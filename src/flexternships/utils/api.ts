@@ -2,7 +2,8 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const serviceUrls = {
   dashboardV2: `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}/api/v2`,
-  projectManagementV2: `${baseUrl}/projectv2/api/v1`,
+  // projectManagementV2: `${baseUrl}/projectv2/api/v1`,
+  projectManagementV2: `http://localhost:8000/projectv2/api/v1`,
   userManagement: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v1`,
   userManagementV2: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v2`,
 };
@@ -28,6 +29,8 @@ export const routes = {
     milestone: {
       getMilestonesByProjectId: `${serviceUrls.projectManagementV2}/milestones`,
       getMilestoneDetailsById: `${serviceUrls.projectManagementV2}/single/milestone`,
+      putArtifactsByMilestoneId: `${serviceUrls.projectManagementV2}/milestones/submission`,
+      updateStatus: `${serviceUrls.projectManagementV2}/update-status/milestones`,
     },
   },
   userManagement: {

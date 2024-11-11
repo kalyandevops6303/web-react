@@ -16,14 +16,15 @@ import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Check, Plus } from 'react-feather';
 import { useNavigate, useParams } from 'react-router-dom';
-import SubmissionItem from './SubmissionItem';
+import DraftArtifacts from './artifacts/DraftArtifacts';
+import SubmittedArtifacts from './artifacts/SubmittedArtifacts';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
-  const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
-  const submittedArtifacts = useMilestoneArtifactsStore((state) => state.submittedArtifacts);
   const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
+  const markMilestoneAsCompleted = useProjectMilestonesStore((state) => state.markMilestoneAsCompleted);
+  const acceptMilestone = useProjectMilestonesStore((state) => state.acceptMilestone);
 
   const [isDetailsLoading, setIsDetailsLoading] = useState(true);
 
@@ -50,7 +51,13 @@ export default function MilestoneDetails() {
     navigate(-1);
   };
   const handleMilestonePrimaryAction = () => {
-    // TODO: Implement accept milestone and mark as completed
+    if (!milestoneId) return;
+
+    if (userDetails.userType === UserType.CLIENT) {
+      acceptMilestone(milestoneId);
+    } else {
+      markMilestoneAsCompleted(milestoneId);
+    }
   };
 
   if (isDetailsLoading) {
@@ -128,36 +135,7 @@ export default function MilestoneDetails() {
             </ul>
           </div>
         </SimpleElevatedCard>
-        {userDetails.userType === UserType.TALENT && (
-          <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
-            <h2 className="text-lg font-normal not-italic text-grey-heading">Submissions</h2>
-            <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
-              <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
-                  File Name
-                </div>
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
-                  Description
-                </div>
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
-                  Uploaded On
-                </div>
-                <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
-                  Action
-                </div>
-              </div>
-              <div className="text-sm font-normal not-italic leading-5.5 text-grey">
-                {draftArtifacts.map((submission, index) => (
-                  <SubmissionItem key={index} data={submission} last={index === draftArtifacts.length - 1} />
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-col gap-y-7 text-trublue-secondary-500">
-              <PrimaryIconText icon={<Plus size={12} />} text="Add Document" onClick={() => {}} />
-              <PrimaryIconText icon={<Plus size={12} />} text="Add Link" onClick={() => {}} />
-            </div>
-          </div>
-        )}
+        {userDetails.userType === UserType.TALENT && <DraftArtifacts />}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="overflow-hidden">
         <Accordion type="single" collapsible className="w-full">
@@ -166,35 +144,7 @@ export default function MilestoneDetails() {
               <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
             </AccordionTrigger>
             <AccordionContent className="">
-              <div className="shadow-table w-full mt-6 border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
-                <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[212px]">
-                    File Name
-                  </div>
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[319px]">
-                    Description
-                  </div>
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[126px]">
-                    Submitted By
-                  </div>
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
-                    Submitted On
-                  </div>
-                  <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[122px]">
-                    Action
-                  </div>
-                </div>
-                <div>
-                  {submittedArtifacts.map((submission, index) => (
-                    <SubmissionItem
-                      key={index}
-                      data={submission}
-                      last={index === submittedArtifacts.length - 1}
-                      viewOnly
-                    />
-                  ))}
-                </div>
-              </div>
+              <SubmittedArtifacts />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
