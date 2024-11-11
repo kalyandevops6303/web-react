@@ -83,6 +83,7 @@ jobs:
                 echo "backup_directory=tru-prod-frontend-backup" >> $GITHUB_ENV
                 echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
                 echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV
+            fi
         
       - name: Install Dependencies and Build
         run: |
