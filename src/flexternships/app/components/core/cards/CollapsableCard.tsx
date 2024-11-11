@@ -2,7 +2,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@f
 
 import Styles from '@flexternships/styles/components/core/cards.module.css';
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 export default function CollapsableCard(props: CollapsableCardProps) {
   const { children, isCollapsible, bordered, isOpen, headerContent, className, white } = props;

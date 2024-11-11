@@ -42,7 +42,7 @@ export default function MilestoneFeedback() {
   ];
 
   const getScoreLabel = (score: number) => {
-    return 'Good';
+    if (score) return 'Good';
   };
 
   const getHeaderContent = (peerFeedback: any) => {
