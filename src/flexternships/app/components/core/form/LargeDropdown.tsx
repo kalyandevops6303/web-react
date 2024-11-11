@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'react-feather';
-import SimpleElevatedCard from '../cards/SimpleElevatedCard';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
+
   DropdownMenuTrigger,
 } from '@flexternships/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 
 export default function LargeDropdown(props: LargeDropdownProps) {
   const { defaultSelected, options, onChange } = props;
@@ -20,7 +16,6 @@ export default function LargeDropdown(props: LargeDropdownProps) {
   const [selected, setSelected] = useState(defaultSelected);
 
   useEffect(() => {
-    console.log(selected?.value);
     onChange(selected?.value);
   }, [selected]);
 

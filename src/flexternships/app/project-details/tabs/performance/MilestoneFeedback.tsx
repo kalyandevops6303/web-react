@@ -1,7 +1,6 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
-import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
-import { User } from 'react-feather';
+
 
 export default function MilestoneFeedback() {
   const milestoneFeedbackData = [
@@ -51,7 +50,7 @@ export default function MilestoneFeedback() {
     const { milestone_name, score } = peerFeedback;
 
     return (
-      <div className="flex items-center justify-between w-full mr-5">
+      <div className="flex items-center justify-between w-full mr-5 h-10">
         <div className="flex items-center gap-2">
           <div className="flex flex-col text-left">
             <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">

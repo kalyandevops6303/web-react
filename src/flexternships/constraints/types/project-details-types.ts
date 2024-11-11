@@ -154,12 +154,15 @@ export type ProjectDetailsState = {
   isProjectsLoading: boolean;
   projectDetails: ProjectDetails;
   teamDetails: Array<TeamMemberDetails>;
+  projectInvitationDetails: any;
+  isProjectInvitationDetailsLoading: boolean;
 };
 
 export type ProjectDetailsActions = {
   getProjectDetails: (projectId: string) => Promise<void>;
   populateTeamDetails: (projectId?: string) => Promise<void>;
   resetStore: () => void;
+  getProjectInvitationDetails: (projectId: string) => Promise<void>;
 };
 
 export type ProjectStore = ProjectDetailsState & ProjectDetailsActions;

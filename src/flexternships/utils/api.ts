@@ -20,6 +20,7 @@ export const routes = {
       getProjectDetailsById: `${serviceUrls.projectManagementV2}/project/detail`,
       getProjectTeamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
       verifyProjectName: `${serviceUrls.projectManagementV2}/project/verify-name`,
+      getProjectInvitationDetails: `${serviceUrls.projectManagementV2}/project/invitation-details`,
     },
     legal: {
       details: `${serviceUrls.projectManagementV2}/legal/document`,

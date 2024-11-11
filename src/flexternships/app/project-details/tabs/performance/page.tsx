@@ -6,16 +6,63 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import IndividualFeedback from './IndividualFeedback';
 import MilestoneFeedback from './MilestoneFeedback';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { FeedbackTypes } from '@/flexternships/constraints/enums/feedback-enums';
 
 export default function PerformanceTab() {
   const { projectId, milestoneId } = useParams();
 
-  const isMilestonesLoading = useProjectMilestonesStore((state) => state.isMilestonesLoading);
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
 
+  const currentUserType = useFlexternUserStore((state) => state.userDetails?.userType);
+
   const [feedbackType, setFeedbackType] = useState('self');
   const [milsetoneSelected, setMilestoneSelected] = useState(projectMilestones[0] || null);
+
+  const getDefaultFeedbackType = () => {
+    if (currentUserType === UserType.CLIENT) {
+      return {
+        displayText: 'Team',
+        value: 'team',
+      };
+    } else {
+      return {
+        displayText: 'Self',
+        value: 'self',
+      };
+    }
+  };
+
+  const getFeedbackTypeOptions = () => {
+    let options = [];
+    if (currentUserType === UserType.CLIENT) {
+      options = [
+        {
+          displayText: 'Team',
+          value: 'team',
+        },
+        {
+          displayText: 'Individual',
+          value: 'individual',
+        },
+      ];
+    } else {
+      options = [
+        {
+          displayText: 'Self',
+          value: 'self',
+        },
+        {
+          displayText: 'Peer',
+          value: 'peer',
+        },
+      ];
+    }
+
+    return options;
+  };
 
   useEffect(() => {
     if (projectId && isEmpty(milestoneId)) {
@@ -23,25 +70,9 @@ export default function PerformanceTab() {
     }
   }, [projectId]);
 
-  // useEffect(() => {
-  //     console.log(projectMilestones);
-  // }, [projectMilestones])
-
   const feedbackTypeDropdownData = {
-    defaultSelected: {
-      displayText: 'Self',
-      value: 'self',
-    },
-    options: [
-      {
-        displayText: 'Self',
-        value: 'self',
-      },
-      {
-        displayText: 'Peer',
-        value: 'peer',
-      },
-    ],
+    defaultSelected: getDefaultFeedbackType(),
+    options: getFeedbackTypeOptions(),
     onChange: (selected: any) => {
       setFeedbackType(selected);
     },
@@ -65,7 +96,7 @@ export default function PerformanceTab() {
 
   return (
     <div className="py-6">
-      <SimpleElevatedCard className="p-6 rounded-[10px]">
+      <SimpleElevatedCard className="p-6 rounded-[10px] bg-white">
         <div className="flex gap-10 my-1">
           <div className="flex gap-3">
             <div className="text-[20px] font-semibold text-[#394042] leading-[1.4] font-montserrat">
@@ -74,7 +105,7 @@ export default function PerformanceTab() {
             <LargeDropdown {...feedbackTypeDropdownData} />
           </div>
 
-          {feedbackType === 'peer' && (
+          {(feedbackType === FeedbackTypes.PEER || feedbackType === FeedbackTypes.INDIVIDUAL) && (
             <div className="flex gap-3">
               <div className="text-[20px] font-semibold text-[#394042] leading-[1.4] font-montserrat">
                 Select Milestone
@@ -88,9 +119,11 @@ export default function PerformanceTab() {
         </div>
       </SimpleElevatedCard>
 
-      <div className="mt-10">
-        {feedbackType === 'peer' && <IndividualFeedback milestoneId={milsetoneSelected?.id} />}
-        {feedbackType === 'self' && <MilestoneFeedback />}
+      <div className="mt-7">
+        {(feedbackType === FeedbackTypes.PEER || feedbackType === FeedbackTypes.INDIVIDUAL) && (
+          <IndividualFeedback milestoneId={milsetoneSelected?.id} />
+        )}
+        {(feedbackType === FeedbackTypes.SELF || feedbackType === FeedbackTypes.TEAM) && <MilestoneFeedback />}
       </div>
     </div>
   );

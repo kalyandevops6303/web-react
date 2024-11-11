@@ -1,5 +1,5 @@
 import { ProjectDetailsState, TeamMemberDetails } from '../constraints/types/project-details-types';
-import { fetchTeamDetails } from '../services/project-details';
+import { fetchTeamDetails, getProjectInvitationDetailsService } from '../services/project-details';
 import { getProjectDetailsById } from '../services/project-management-v2';
 
 export const populateTeamDetails = async (set: any, projectId: string): Promise<void> => {
@@ -21,4 +21,10 @@ export const getProjectDetails = async (projectId: string, set: any) => {
   set({ isProjectsLoading: true });
   const res: any = await getProjectDetailsById(projectId);
   set({ projectDetails: res, isProjectsLoading: false });
+};
+
+export const getProjectInvitationDetails = async (projectId: string, set: any) => {
+  set({ isProjectInvitationDetailsLoading: true });
+  const res: any = await getProjectInvitationDetailsService(projectId);
+  set({ projectInvitationDetails: res, isProjectInvitationDetailsLoading: false });
 };

@@ -1,4 +1,5 @@
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import CollapsableCard from '@flexternships/app/components/core/cards/CollapsableCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
 
@@ -11,6 +12,9 @@ export default function InvitationCard() {
   const params = useParams();
 
   const projectDetails = useProjectsStore((state) => state.projectDetails);
+  const projectInvitationDetails = useProjectsStore((state) => state.projectInvitationDetails);
+
+  const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
   const invitationCardData = {
     isCollapsible: false,
@@ -40,16 +44,19 @@ export default function InvitationCard() {
     company: `${projectDetails?.clientDetails?.first_name} ${projectDetails?.clientDetails?.last_name}`,
     department: projectDetails?.clientDetails?.department,
     image_uri: projectDetails?.clientDetails?.image_uri,
-    start_date: 'Sep 13, 2024',
-    role: 'Backend Developer',
-    estimated_duration: '2 Weeks',
-    message:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim ut tellus elementum sagittis vitae et leo. Duis... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim ut tellus elementum sagittis vitae et leo. Duis...',
+    start_date: formatEpochToHumanReadable(projectInvitationDetails?.project_start_date || 1),
+    role: projectInvitationDetails?.talent_role,
+    estimated_duration: `${projectInvitationDetails?.project_estimated_duration?.duration} Weeks`,
+    message: projectInvitationDetails?.message,
   };
 
   useEffect(() => {
-    console.log(projectDetails);
-  }, [projectDetails]);
+    console.log(projectInvitationDetails);
+  }, [projectInvitationDetails]);
+
+  useEffect(() => {
+    getProjectInvitationDetails(params?.projectId as string);
+  }, []);
 
   return (
     <CollapsableCard {...invitationCardData}>
@@ -78,10 +85,12 @@ export default function InvitationCard() {
             <div className={Styles.invitationCardDetailsSubtitle}>Estimated Duration</div>
           </div>
         </div>
-        <div className="flex flex-col w-fit">
-          <div className={Styles.invitationCardDetailsTitle}>Message</div>
-          <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.message}</div>
-        </div>
+        {invitationCardDetailsData?.message && (
+          <div className="flex flex-col w-fit">
+            <div className={Styles.invitationCardDetailsTitle}>Message</div>
+            <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.message}</div>
+          </div>
+        )}
       </div>
     </CollapsableCard>
   );

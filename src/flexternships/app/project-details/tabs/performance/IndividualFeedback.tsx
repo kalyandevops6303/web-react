@@ -1,12 +1,13 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
+import { useEffect } from 'react';
 import { User } from 'react-feather';
 
 export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const { milestoneId } = props;
 
-  const peerFeedbackData = [
+  const individualFeedbackData = [
     {
       user_id: '23762736872',
       role: 'API Developer',
@@ -16,7 +17,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
       last_name: 'Doe',
       image_uri: '',
       feedback_id: '329879873',
-      feedback_type: 'Self',
+      feedback_type: 'self',
     },
     {
       user_id: '23712736872',
@@ -27,7 +28,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
       last_name: 'Doe',
       image_uri: '',
       feedback_id: '329879873',
-      feedback_type: 'Self',
+      feedback_type: 'self',
     },
     {
       user_id: '23762733872',
@@ -38,19 +39,23 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
       last_name: 'Doe',
       image_uri: '',
       feedback_id: '329879873',
-      feedback_type: 'Self',
+      feedback_type: 'self',
     },
   ];
+
+  useEffect(() => {
+    console.log('milestone: ', milestoneId);
+  }, []);
 
   const getScoreLabel = (score: number) => {
     return 'Good';
   };
 
-  const getHeaderContent = (peerFeedback: any) => {
-    const { image_uri, first_name, last_name, role, score } = peerFeedback;
+  const getHeaderContent = (individualFeedback: any) => {
+    const { image_uri, first_name, last_name, role, score } = individualFeedback;
 
     return (
-      <div className="flex items-center justify-between w-full mr-5">
+      <div className="flex items-center justify-between w-full mr-5 h-10">
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage src={image_uri} />
@@ -79,8 +84,12 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
 
   return (
     <div>
-      {peerFeedbackData?.map((peerFeedback) => (
-        <CollapsableCard white className="my-5 bg-white rounded-[10px]" headerContent={getHeaderContent(peerFeedback)}>
+      {individualFeedbackData?.map((individualFeedback) => (
+        <CollapsableCard
+          white
+          className="mb-5 bg-white rounded-[10px]"
+          headerContent={getHeaderContent(individualFeedback)}
+        >
           Form
         </CollapsableCard>
       ))}
