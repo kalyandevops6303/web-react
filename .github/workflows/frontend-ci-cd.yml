@@ -96,7 +96,7 @@ jobs:
       - name: Upload to blob storage
         run: |
           today=$(date +%d-%m-%Y-%H.%M)
-          az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d "&{{ env.backup_directory }}/frontend-$today" --source ./dist
+          az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d "${{ env.backup_directory }}/frontend-$today" --source ./dist
 
       - name: Delete blob storage
         run: az storage blob delete-batch --account-name ${{ env.storage }} --auth-mode login --source '$web' --pattern '*'
