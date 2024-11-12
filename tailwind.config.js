@@ -35,6 +35,7 @@ module.exports = {
           300: "#9C9FA1",
           500: "#6A7071",
           600: "#515759",
+          700: "#394042",
           loadingText: "#9E9E9E"
         },
         skyblue: {
