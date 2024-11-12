@@ -444,7 +444,6 @@ export const verifyProjectName: (projectName: string) => Promise<void> = async (
 export const putArtifactsByMilestoneId = async (
   targetArtifactStatus: MilestoneArtifactStatus,
   milestoneId: string,
-  projectId: string,
   submittedArtifacts: MilestoneDraftArtifact[],
   deletedArtifactIds: string[],
 ) => {

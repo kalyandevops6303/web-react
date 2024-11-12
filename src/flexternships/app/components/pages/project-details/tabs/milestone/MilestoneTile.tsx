@@ -2,7 +2,6 @@ import React from 'react';
 import { ChevronRight } from 'react-feather';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { MilestoneStatus } from '@flexternships/enums/core-enums';
-import { toTitleCase } from '@/flexternships/utils/text-utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MilestoneDetails } from '@/flexternships/constraints/types/project-milestones-types';
 import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';

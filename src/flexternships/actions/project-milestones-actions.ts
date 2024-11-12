@@ -5,7 +5,7 @@ import {
   putArtifactsByMilestoneId,
   updateMilestoneStatus,
 } from '../services/project-management-v2';
-import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '../stores/project-milestones-store';
+import { useMilestoneArtifactsStore } from '../stores/project-milestones-store';
 
 export const populateProjectMilestones = async (projectId: string, set: any) => {
   set({ isMilestonesLoading: true });
@@ -136,16 +136,10 @@ export const populateMilestoneDetails = async (milestoneId: string, set: any) =>
   );
 };
 
-export const putDraftArtifacts = async (
-  status: MilestoneArtifactStatus,
-  milestoneId: string,
-  projectId: string,
-  get: any,
-  set: any,
-) => {
+export const putDraftArtifacts = async (status: MilestoneArtifactStatus, milestoneId: string, get: any, _set: any) => {
   const draftArtifacts = get().draftArtifacts;
   const removedArtifactIds = get().removedArtifactIds;
-  await putArtifactsByMilestoneId(status, milestoneId, projectId, draftArtifacts, removedArtifactIds);
+  await putArtifactsByMilestoneId(status, milestoneId, draftArtifacts, removedArtifactIds);
 };
 
 export const appendToRemovedArtifactIds = (artifactId: string, get: any, set: any) => {

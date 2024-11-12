@@ -75,7 +75,7 @@ export default function DraftArtifacts() {
 
     if (milestoneId && projectId) {
       try {
-        await saveDraftArtifacts(milestoneId, projectId);
+        await saveDraftArtifacts(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
           showToastMessage(ToastType.ERROR, error.message);
@@ -94,7 +94,7 @@ export default function DraftArtifacts() {
 
     if (milestoneId && projectId) {
       try {
-        await submitDraftArtifacts(milestoneId, projectId);
+        await submitDraftArtifacts(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
           showToastMessage(ToastType.ERROR, error.message);

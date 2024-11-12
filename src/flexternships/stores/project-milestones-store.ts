@@ -40,10 +40,10 @@ const defaultMilestoneArtifactsInitState: MilestoneArtifactsState = {
 
 export const useMilestoneArtifactsStore = create<MilestoneArtifactsStore>((set, get) => ({
   ...defaultMilestoneArtifactsInitState,
-  saveDraftArtifacts: async (milestoneId: string, projectId: string) =>
-    putDraftArtifacts(MilestoneArtifactStatus.DRAFT, milestoneId, projectId, get, set),
-  submitDraftArtifacts: async (milestoneId: string, projectId: string) =>
-    putDraftArtifacts(MilestoneArtifactStatus.SUBMITTED, milestoneId, projectId, get, set),
+  saveDraftArtifacts: async (milestoneId: string) =>
+    putDraftArtifacts(MilestoneArtifactStatus.DRAFT, milestoneId, get, set),
+  submitDraftArtifacts: async (milestoneId: string) =>
+    putDraftArtifacts(MilestoneArtifactStatus.SUBMITTED, milestoneId, get, set),
   updateDraftArtifacts: (artifacts: MilestoneDraftArtifact[]) => set({ draftArtifacts: artifacts }),
   updateSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => set({ submittedArtifacts: artifacts }),
   appendToRemovedArtifactIds: (artifactId: string) => appendToRemovedArtifactIds(artifactId, get, set),

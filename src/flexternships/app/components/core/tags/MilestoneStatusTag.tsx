@@ -16,7 +16,13 @@ function MilestoneStatusTag(props: Props) {
   };
 
   return (
-    <div className={cn(css[status], 'text-xs font-semibold leading-4.5 not-italic px-2 py-[1px] rounded-[24px]', 'bg-opacity-10')}>
+    <div
+      className={cn(
+        css[status],
+        'text-xs font-semibold leading-4.5 not-italic px-2 py-[1px] rounded-[24px]',
+        'bg-opacity-10',
+      )}
+    >
       {getMilestoneStatusTextByUserType(status, userDetails?.userType)}
     </div>
   );

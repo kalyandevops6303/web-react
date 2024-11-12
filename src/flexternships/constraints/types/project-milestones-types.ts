@@ -97,8 +97,8 @@ export type MilestoneArtifactsState = {
   removedArtifactIds: string[];
 };
 export type MilestoneArtifactsActions = {
-  saveDraftArtifacts: (milestoneId: string, projectId: string) => Promise<void>;
-  submitDraftArtifacts: (milestoneId: string, projectId: string) => Promise<void>;
+  saveDraftArtifacts: (milestoneId: string) => Promise<void>;
+  submitDraftArtifacts: (milestoneId: string) => Promise<void>;
   updateDraftArtifacts: (artifacts: MilestoneDraftArtifact[]) => void;
   updateSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => void;
   appendToRemovedArtifactIds: (artifactId: string) => void;
