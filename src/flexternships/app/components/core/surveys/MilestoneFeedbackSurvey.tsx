@@ -99,5 +99,9 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     tagbox: SurveyTagboxStyles,
   };
 
-  return <Survey model={survey} />;
+  return(
+    <div>
+      <Survey model={survey} />
+    </div>
+  )
 }
