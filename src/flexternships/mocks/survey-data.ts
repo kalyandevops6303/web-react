@@ -82,6 +82,7 @@ export const mockSelfFeedbackSurveyJson = {
         {
           type: 'rating',
           name: 'q4_ownership',
+          rateType: 'numeric',
           title:
             'You took ownership of delivering high quality work output and results from yourself and your team members',
           rateValues: [
@@ -107,6 +108,7 @@ export const mockSelfFeedbackSurveyJson = {
     {
       name: 'Analytical Thinking',
       description: 'Analytical Thinking',
+      rateType: 'numeric',
       elements: [
         {
           type: 'rating',
@@ -162,11 +164,13 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Feedback',
       elements: [
         {
-          type: 'boolean',
+          type: 'radiogroup',
           name: 'satisfaction-smileys-colored',
           title: 'Give a Kudos to this talent',
-          labelTrue: 'NA',
-          labelFalse: 'Kudos',
+          choices: [
+            { value: 'kudos', text: 'KUDOS' },
+            { value: 'na', text: 'NA' },
+          ]
         },
         {
           type: 'comment',
