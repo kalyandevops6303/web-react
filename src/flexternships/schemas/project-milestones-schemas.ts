@@ -1,5 +1,18 @@
 import * as yup from 'yup';
 import { MilestoneArtifactType } from '../constraints/enums/core-enums';
+import { formatFileSize } from '../utils/file-utils';
+
+export const allowedFormats = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+];
+
+export const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 export const MilestoneArtifactSchema = yup.object().shape({
   draftArtifacts: yup
@@ -17,6 +30,21 @@ export const MilestoneArtifactSchema = yup.object().shape({
             then: yup.object().shape({
               fileName: yup.string().required('File name is required'),
               fileKey: yup.string().required(),
+              size: yup
+                .number()
+                .required()
+                .max(MAX_FILE_SIZE, `File size must be less than ${formatFileSize(MAX_FILE_SIZE)}`),
+              uploadInfo: yup.object().shape({
+                loading: yup.boolean().optional(),
+                uploadProgress: yup.number().optional(),
+                file: yup
+                  .mixed()
+                  .optional()
+                  .test('file', 'File type not supported', function (value: File) {
+                    if (!value) return true;
+                    return allowedFormats.includes(value.type);
+                  }),
+              }),
             }),
             otherwise: yup.object().shape({
               url: yup.string().url('Must be a valid URL').required('URL is required'),

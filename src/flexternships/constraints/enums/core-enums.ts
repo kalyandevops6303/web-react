@@ -21,6 +21,11 @@ export enum MilestoneArtifactType {
   LINKS = 'LINKS',
 }
 
+export enum MilestoneArtifactErrorType {
+  INVALID_FILE_FORMAT = 'INVALID_FILE_FORMAT',
+  UPLOAD_FAILED = 'UPLOAD_FAILED',
+}
+
 // Subject to changer as per BE
 export enum MilestoneFeedbackType {
   TEAM_FEEDBACK = 'TEAM_FEEDBACK',

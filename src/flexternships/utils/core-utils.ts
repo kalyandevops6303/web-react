@@ -1,5 +1,5 @@
 import { toast, ToastOptions } from 'react-hot-toast';
-import { ToastType } from '@flexternships/enums/core-enums';
+import { MilestoneStatus, ToastType, UserType } from '@flexternships/enums/core-enums';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
@@ -45,4 +45,19 @@ export const logout = () => {
  */
 export const resetProjectCreationStore = () => {
   useProjectCreationStore.getState().resetStore();
+};
+
+export const getMilestoneStatusTextByUserType = (status: MilestoneStatus, userType: UserType) => {
+  switch (status) {
+    case MilestoneStatus.CREATED:
+      return '';
+    case MilestoneStatus.IN_PROGRESS:
+      return 'In Progress';
+    case MilestoneStatus.IN_REVIEW:
+      return userType === UserType.CLIENT ? 'In Review' : 'Completed';
+    case MilestoneStatus.COMPLETED:
+      return 'Completed';
+    default:
+      return '';
+  }
 };

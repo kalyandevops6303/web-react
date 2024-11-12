@@ -10,14 +10,15 @@ import {
 } from '@/flexternships/app/components/ui/accordion';
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
+import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Check, Plus } from 'react-feather';
+import { ArrowLeft, Check } from 'react-feather';
 import { useNavigate, useParams } from 'react-router-dom';
-import DraftArtifacts from './artifacts/DraftArtifacts';
-import SubmittedArtifacts from './artifacts/SubmittedArtifacts';
+import DraftArtifacts from './artifacts/draft/DraftArtifacts';
+import SubmittedArtifacts from './artifacts/submitted/SubmittedArtifacts';
+import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -84,9 +85,9 @@ export default function MilestoneDetails() {
         </PrimaryButton>
       </div>
       <SimpleElevatedCard className="flex flex-col px-8 pt-6 pb-10 gap-y-10 bg-white-fa overflow-hidden">
-        <div className="flex flex-row">
+        <div className="flex flex-row gap-x-4 items-center">
           <h1>Milestone {milestoneDetails.seq}</h1>
-          <div>In Progress</div>
+          <MilestoneStatusTag status={milestoneDetails.status} />
         </div>
         <div className="flex flex-row gap-x-20">
           <div className="flex flex-col gap-y-1.5">

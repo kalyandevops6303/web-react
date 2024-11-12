@@ -441,14 +441,6 @@ export const verifyProjectName: (projectName: string) => Promise<void> = async (
   }
 };
 
-export const markMilestoneAsCompletedById = async (milestoneId: string) => {
-  // TODO: Implement mark as completed
-};
-
-export const acceptMilestoneById = async (milestoneId: string) => {
-  // TODO: Implement accept milestone
-};
-
 export const putArtifactsByMilestoneId = async (
   targetArtifactStatus: MilestoneArtifactStatus,
   milestoneId: string,
@@ -461,27 +453,33 @@ export const putArtifactsByMilestoneId = async (
     headers: headers,
     params: {
       milestone_id: milestoneId,
-      project_id: projectId,
       artifact_status: targetArtifactStatus,
     },
   };
 
   const formattedData: Record<string, any> = {
-    params: submittedArtifacts.map((artifact) => ({
-      artifact_id: artifact.artifactId || null,
-      type: artifact.type,
-      description: artifact.description,
-      uploaded_at: artifact.uploadedAt,
-      metadata:
-        artifact.type === MilestoneArtifactType.DOCUMENTS
-          ? {
-              file_name: artifact.metadata?.fileName ?? '',
-              file_key: artifact.metadata?.fileKey ?? '',
-            }
-          : {
-              url: artifact.metadata?.url ?? '',
-            },
-    })),
+    params: submittedArtifacts.map((artifact) => {
+      const formattedArtifact: Record<string, any> = {
+        type: artifact.type,
+        description: artifact.description,
+        uploaded_at: artifact.uploadedAt,
+        metadata:
+          artifact.type === MilestoneArtifactType.DOCUMENTS
+            ? {
+                file_name: artifact.metadata?.fileName ?? '',
+                file_key: artifact.metadata?.fileKey ?? '',
+              }
+            : {
+                url: artifact.metadata?.url ?? '',
+              },
+      };
+
+      if (artifact.artifactId) {
+        formattedArtifact.artifact_id = artifact.artifactId;
+      }
+
+      return formattedArtifact;
+    }),
     delete_artifacts: deletedArtifactIds,
   };
 

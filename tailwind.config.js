@@ -16,6 +16,12 @@ module.exports = {
           DEFAULT: "#fff",
           fa: "#fafafa",
         },
+        yellow: {
+          DEFAULT: "#FFD600"
+        },
+        orange: {
+          DEFAULT: "#FF9F43"
+        },
         grey: {
           DEFAULT: "#6E6B7B",
           light: "#F8F8F8",

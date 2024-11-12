@@ -24,7 +24,7 @@ export type MilestoneArtifact = {
 export type MilestoneDraftArtifact = {
   artifactId?: string;
   type: MilestoneArtifactType;
-  status: MilestoneArtifactStatus.DRAFT;
+  status: MilestoneArtifactStatus;
   description?: string;
   uploadedAt: number;
   metadata: {
@@ -34,6 +34,11 @@ export type MilestoneDraftArtifact = {
     size?: number;
     // link props
     url?: string;
+    uploadInfo?: {
+      uploadProgress?: number;
+      loading?: boolean;
+      file?: File;
+    };
   };
 };
 

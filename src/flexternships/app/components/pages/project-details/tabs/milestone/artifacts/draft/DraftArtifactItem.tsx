@@ -1,7 +1,7 @@
 import TextInput from '@flexternships/components/core/form/TextInput';
 import Spinner from '@flexternships/components/core/Spinner';
-import { ToastType } from '@flexternships/enums/core-enums';
-import { MilestoneArtifact, MilestoneDraftArtifact } from '@flexternships/types/project-milestones-types';
+import { MilestoneArtifactErrorType, ToastType } from '@flexternships/enums/core-enums';
+import { MilestoneDraftArtifact } from '@flexternships/types/project-milestones-types';
 import { getFileDownloadUrl } from '@flexternships/services/project-management-v2';
 import { showToastMessage } from '@flexternships/utils/core-utils';
 import { formatEpochToHumanReadable } from '@flexternships/utils/date-utils';
@@ -10,9 +10,11 @@ import { useState } from 'react';
 import { Download, ExternalLink, Link, Trash2 } from 'react-feather';
 import { Control, Controller, UseFieldArrayRemove } from 'react-hook-form';
 import { useMilestoneArtifactsStore } from '@flexternships/stores/project-milestones-store';
+import { Progress } from '@/flexternships/app/components/ui/progress';
+import { isEmpty } from 'lodash';
 
 export default function DraftArtifactItem(props: Props) {
-  const { last = false, data, index, control, errors, remove } = props;
+  const { last = false, data, index, control, errors, remove, handleFileUpload } = props;
   const appendToRemovedArtifactIds = useMilestoneArtifactsStore((state) => state.appendToRemovedArtifactIds);
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
@@ -55,6 +57,12 @@ export default function DraftArtifactItem(props: Props) {
     remove(index);
   };
 
+  const handleTryAgain = () => {
+    if (data.metadata?.uploadInfo?.file) {
+      handleFileUpload(index, data.metadata?.uploadInfo?.file);
+    }
+  };
+
   return (
     <div
       className={`flex flex-row min-h-[52px] items-center border-solid border-grey-c2 px-1.5 ${
@@ -88,24 +96,45 @@ export default function DraftArtifactItem(props: Props) {
         )}
       </div>
       <div className="py-4 px-2.5 w-[420px] break-all">
-        <Controller
-          control={control}
-          name={`draftArtifacts.${index}.description`}
-          render={({ field }) => (
-            <TextInput
-              label=""
-              value={field.value ?? ''}
-              onChange={field.onChange}
-              placeholder="Enter description"
-              className="w-[400px]"
-            />
-          )}
-        />
+        {data.metadata?.uploadInfo?.loading ? (
+          <div className="w-[400px] text-end">Uploading document, this will only take a few seconds</div>
+        ) : data.type === 'DOCUMENTS' && errors ? (
+          <div className="w-[400px] text-error text-end">{errors.message}</div>
+        ) : (
+          <Controller
+            control={control}
+            name={`draftArtifacts.${index}.description`}
+            render={({ field }) => (
+              <TextInput
+                label=""
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                placeholder="Enter description"
+                className="w-[400px]"
+              />
+            )}
+          />
+        )}
       </div>
-      <div className="py-4 px-2.5 w-[194px]">{formatEpochToHumanReadable(data.uploadedAt ?? 0, false, true)}</div>
+      <div className="py-4 px-2.5 w-[194px]">
+        {data.type === 'DOCUMENTS' && data.metadata?.uploadInfo?.loading ? (
+          <Progress value={data.metadata?.uploadInfo?.uploadProgress} className="h-3 bg-grey-50 mr-8 w-full" />
+        ) : data.type === 'DOCUMENTS' && errors?.type === MilestoneArtifactErrorType.UPLOAD_FAILED ? (
+          <div className="text-trublue-secondary-500 cursor-pointer" onClick={handleTryAgain}>
+            Try Again
+          </div>
+        ) : (
+          formatEpochToHumanReadable(data.uploadedAt ?? 0, false, true)
+        )}
+      </div>
       <div className="py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3">
         <span
-          className="flex items-center justify-center bg-trublue-light rounded-full p-2 text-trublue-secondary-500 cursor-pointer"
+          className={`flex items-center justify-center bg-trublue-light rounded-full p-2 text-trublue-secondary-500 ${
+            (data.type === 'DOCUMENTS' && (!isEmpty(errors) || data.metadata?.uploadInfo?.loading)) ||
+            (data.type === 'LINKS' && (!isEmpty(errors?.metadata?.url?.message) || isEmpty(data.metadata?.url)))
+              ? 'opacity-40'
+              : 'cursor-pointer'
+          }`}
           onClick={handleMainActionClick}
         >
           {mainActionLoading ? (
@@ -137,9 +166,14 @@ type Props = {
   last?: boolean;
   control: Control<{ draftArtifacts: MilestoneDraftArtifact[] }>;
   errors?: {
-    description?: {
-      message?: string;
+    type?: string;
+    message?: string;
+    metadata?: {
+      url?: {
+        message?: string;
+      };
     };
   };
   remove: UseFieldArrayRemove;
+  handleFileUpload: (index: number, file: File) => void;
 };
