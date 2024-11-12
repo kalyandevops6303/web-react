@@ -139,7 +139,7 @@ export default function MilestoneDetails() {
         {userDetails.userType === UserType.TALENT && <DraftArtifacts />}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="overflow-hidden">
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible defaultValue="submission-history" className="w-full">
           <AccordionItem value="submission-history" className="border-none bg-white-fa py-6 px-8">
             <AccordionTrigger className="hover:no-underline p-0">
               <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
