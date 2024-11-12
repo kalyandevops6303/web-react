@@ -6,6 +6,7 @@ import { handleError } from '@flexternships/utils/error-utils';
 import { ProjectDetails } from '../constraints/types/project-details-types';
 import { MilestoneDraftArtifact } from '../constraints/types/project-milestones-types';
 import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
+import { parseMilestoneDetails } from '../utils/parsing-utils';
 
 /**
  * Retrieves a file upload URL for a given filename?.
@@ -390,8 +391,10 @@ export const getMilestonesByProjectId = async (projectId: string) => {
       `${routes.projectManagementV2.milestone.getMilestonesByProjectId}?project_id=${projectId}`,
       config,
     );
-    return response.data.data;
+    const formattedMilestones = response?.data?.data?.map((milestone: any) => parseMilestoneDetails(milestone, false));
+    return formattedMilestones;
   } catch (error) {
+    console.log(error);
     handleError(error as Error, 'An unexpected error occurred while fetching project milestones');
   }
 };
@@ -413,7 +416,9 @@ export const getMilestoneDetailsById = async (milestoneId: string) => {
       `${routes.projectManagementV2.milestone.getMilestoneDetailsById}?milestone_id=${milestoneId}`,
       config,
     );
-    return response.data.data[0];
+    const responseData = response.data.data[0];
+    const { milestoneDetails, artifactDetails } = parseMilestoneDetails(responseData, true);
+    return { milestoneDetails, artifactDetails };
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching milestone details');
   }
