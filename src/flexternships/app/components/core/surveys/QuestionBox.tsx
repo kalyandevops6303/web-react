@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Star } from 'react-feather';
-import TimelineStepper from './TimeLineStepper';
 import TextBox from './TextBox';
 import CheckboxOptions from './MultipleCheckBox';
 import RadioGroup from './RadioButton';
