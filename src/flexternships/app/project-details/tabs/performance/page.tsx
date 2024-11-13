@@ -38,9 +38,8 @@ export default function PerformanceTab() {
   };
 
   const getFeedbackTypeOptions = () => {
-    let options = [];
     if (currentUserType === UserType.CLIENT) {
-      options = [
+      return [
         {
           displayText: 'Team',
           value: FeedbackTypes.TEAM,
@@ -51,7 +50,7 @@ export default function PerformanceTab() {
         },
       ];
     } else {
-      options = [
+      return [
         {
           displayText: 'Self',
           value: FeedbackTypes.SELF,
@@ -62,8 +61,6 @@ export default function PerformanceTab() {
         },
       ];
     }
-
-    return options;
   };
 
   const getFeedbackTypeForAPI = () => {
