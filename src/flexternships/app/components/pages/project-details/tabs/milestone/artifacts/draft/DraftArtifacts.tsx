@@ -104,8 +104,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
   const submitDraft = async (data: { draftArtifacts: MilestoneDraftArtifact[] }) => {
     setSubmitDraftLoading(true);
-    const filteredData = getValidArtifacts(data.draftArtifacts);
-    updateDraftArtifacts(filteredData);
+    updateDraftArtifacts(data.draftArtifacts);
 
     if (milestoneId && projectId) {
       try {
