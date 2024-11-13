@@ -394,7 +394,6 @@ export const getMilestonesByProjectId = async (projectId: string) => {
     const formattedMilestones = response?.data?.data?.map((milestone: any) => parseMilestoneDetails(milestone, false));
     return formattedMilestones;
   } catch (error) {
-    console.log(error);
     handleError(error as Error, 'An unexpected error occurred while fetching project milestones');
   }
 };

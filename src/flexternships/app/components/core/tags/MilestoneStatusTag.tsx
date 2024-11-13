@@ -1,4 +1,4 @@
-import { MilestoneStatus, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { MilestoneStatus } from '@/flexternships/constraints/enums/core-enums';
 import { cn } from '@/flexternships/lib/utils';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { getMilestoneStatusTextByUserType } from '@/flexternships/utils/core-utils';
