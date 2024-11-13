@@ -1,80 +1,76 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
+import Spinner from '@/flexternships/app/components/core/Spinner';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-export default function MilestoneFeedback() {
-  const milestoneFeedbackData = [
-    {
-      user_id: '23762736872',
-      role: 'API Developer',
-      is_feedback: true,
-      score: '33',
-      first_name: 'John',
-      last_name: 'Doe',
-      image_uri: '',
-      feedback_id: '329879873',
-      feedback_type: 'Self',
-      milestone_name: 'Milestone 1',
-    },
-    {
-      user_id: '23712736872',
-      role: 'API Developer',
-      is_feedback: true,
-      score: '50',
-      first_name: 'John',
-      last_name: 'Doe',
-      image_uri: '',
-      feedback_id: '329879873',
-      feedback_type: 'Self',
-      milestone_name: 'Milestone 2',
-    },
-    {
-      user_id: '23762733872',
-      role: 'API Developer',
-      is_feedback: true,
-      score: '77',
-      first_name: 'John',
-      last_name: 'Doe',
-      image_uri: '',
-      feedback_id: '329879873',
-      feedback_type: 'Self',
-      milestone_name: 'Milestone 3',
-    },
-  ];
+export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
+  const { feedbackType } = props;
+  const params = useParams();
+
+  const performanceDetails = useProjectsStore((state) => state.performanceDetails);
+  const getPerformanceDetails = useProjectsStore((state) => state.getSelfOrTeamPerformanceDetails);
+  const isPerformanceDetailsLoading = useProjectsStore((state) => state.isPerformanceDetailsLoading);
+
+  useEffect(() => {
+    getPerformanceDetails(params?.projectId as string, feedbackType);
+  }, []);
 
   const getScoreLabel = (score: number) => {
-    if (score) return 'Good';
+    if (score >= 0 && score < 1) return 'Poor';
+    else if (score >= 1 && score < 2) return 'Below Average';
+    else if (score >= 2 && score < 3) return 'Average';
+    else if (score >= 3 && score < 4) return 'Above Average';
+    else if (score >= 4 && score <= 5) return 'Excellent';
   };
 
   const getHeaderContent = (peerFeedback: any) => {
-    const { milestone_name, score } = peerFeedback;
+    const { name, score } = peerFeedback;
 
     return (
       <div className="flex items-center justify-between w-full mr-5 h-10">
         <div className="flex items-center gap-2">
           <div className="flex flex-col text-left">
-            <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">
-              {milestone_name}
-            </div>
+            <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">{name}</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-5">
-          <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
-            {getScoreLabel(score)}
+        {score && (
+          <div className="flex items-center gap-5">
+            <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
+              {getScoreLabel(score as number)}
+            </div>
+            <SteppedProgress value={score} />
           </div>
-          <SteppedProgress value={score} />
-        </div>
+        )}
       </div>
     );
   };
 
   return (
     <div>
-      {milestoneFeedbackData?.map((peerFeedback) => (
-        <CollapsableCard white className="my-5 bg-white rounded-[10px]" headerContent={getHeaderContent(peerFeedback)}>
-          Form
-        </CollapsableCard>
-      ))}
+      {isPerformanceDetailsLoading ? (
+        <div className="w-5">
+          <Spinner />
+        </div>
+      ) : (
+        <div>
+          {performanceDetails?.map((peerFeedback: any) => (
+            <CollapsableCard
+              white
+              className="my-5 bg-white rounded-[10px]"
+              headerContent={getHeaderContent(peerFeedback)}
+            >
+              Form
+            </CollapsableCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+
+type MilestoneFeedbackProps = {
+  feedbackType: string;
+};

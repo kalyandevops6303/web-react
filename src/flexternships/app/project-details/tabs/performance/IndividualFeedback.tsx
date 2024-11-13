@@ -1,54 +1,28 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
+import Spinner from '@/flexternships/app/components/core/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useEffect } from 'react';
 import { User } from 'react-feather';
 
 export default function IndividualFeedback(props: IndividualFeedbackProps) {
-  const { milestoneId } = props;
+  const { milestoneId, feedbackType } = props;
 
-  const individualFeedbackData = [
-    {
-      user_id: '23762736872',
-      role: 'API Developer',
-      is_feedback: true,
-      score: '33',
-      first_name: 'John',
-      last_name: 'Doe',
-      image_uri: '',
-      feedback_id: '329879873',
-      feedback_type: 'self',
-    },
-    {
-      user_id: '23712736872',
-      role: 'API Developer',
-      is_feedback: true,
-      score: '50',
-      first_name: 'John',
-      last_name: 'Doe',
-      image_uri: '',
-      feedback_id: '329879873',
-      feedback_type: 'self',
-    },
-    {
-      user_id: '23762733872',
-      role: 'API Developer',
-      is_feedback: true,
-      score: '77',
-      first_name: 'John',
-      last_name: 'Doe',
-      image_uri: '',
-      feedback_id: '329879873',
-      feedback_type: 'self',
-    },
-  ];
+  const performanceDetails = useProjectsStore((state) => state.performanceDetails);
+  const getPerformanceDetails = useProjectsStore((state) => state.getPeerOrIndividualPerformanceDetails);
+  const isPerformanceDetailsLoading = useProjectsStore((state) => state.isPerformanceDetailsLoading);
 
   useEffect(() => {
-    console.log('milestone: ', milestoneId);
-  }, []);
+    if (milestoneId) getPerformanceDetails(milestoneId, feedbackType);
+  }, [milestoneId]);
 
   const getScoreLabel = (score: number) => {
-    if (score) return 'Good';
+    if (score >= 0 && score < 1) return 'Poor';
+    else if (score >= 1 && score < 2) return 'Below Average';
+    else if (score >= 2 && score < 3) return 'Average';
+    else if (score >= 3 && score < 4) return 'Above Average';
+    else if (score >= 4 && score <= 5) return 'Excellent';
   };
 
   const getHeaderContent = (individualFeedback: any) => {
@@ -72,31 +46,40 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-5">
-          <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
-            {getScoreLabel(score)}
+        {score && (
+          <div className="flex items-center gap-5">
+            <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
+              {getScoreLabel(score)}
+            </div>
+            <SteppedProgress value={score} />
           </div>
-          <SteppedProgress value={score} />
-        </div>
+        )}
       </div>
     );
   };
 
   return (
     <div>
-      {individualFeedbackData?.map((individualFeedback) => (
-        <CollapsableCard
-          white
-          className="mb-5 bg-white rounded-[10px]"
-          headerContent={getHeaderContent(individualFeedback)}
-        >
-          Form
-        </CollapsableCard>
-      ))}
+      {isPerformanceDetailsLoading ? (
+        <div className="w-5">
+          <Spinner />
+        </div>
+      ) : (
+        performanceDetails?.map((individualFeedback: any) => (
+          <CollapsableCard
+            white
+            className="mb-5 bg-white rounded-[10px]"
+            headerContent={getHeaderContent(individualFeedback)}
+          >
+            Form
+          </CollapsableCard>
+        ))
+      )}
     </div>
   );
 }
 
 type IndividualFeedbackProps = {
   milestoneId: string;
+  feedbackType: string;
 };

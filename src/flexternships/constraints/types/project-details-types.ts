@@ -156,6 +156,8 @@ export type ProjectDetailsState = {
   teamDetails: Array<TeamMemberDetails>;
   projectInvitationDetails: any;
   isProjectInvitationDetailsLoading: boolean;
+  performanceDetails: any;
+  isPerformanceDetailsLoading: boolean;
 };
 
 export type ProjectDetailsActions = {
@@ -163,6 +165,8 @@ export type ProjectDetailsActions = {
   populateTeamDetails: (projectId?: string) => Promise<void>;
   resetStore: () => void;
   getProjectInvitationDetails: (projectId: string) => Promise<void>;
+  getSelfOrTeamPerformanceDetails: (projectId: string, feedbackType: string) => Promise<void>;
+  getPeerOrIndividualPerformanceDetails: (milestoneId: string, feedbackType: string) => Promise<void>;
 };
 
 export type ProjectStore = ProjectDetailsState & ProjectDetailsActions;

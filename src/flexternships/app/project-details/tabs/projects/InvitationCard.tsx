@@ -51,10 +51,6 @@ export default function InvitationCard() {
   };
 
   useEffect(() => {
-    console.log(projectInvitationDetails);
-  }, [projectInvitationDetails]);
-
-  useEffect(() => {
     getProjectInvitationDetails(params?.projectId as string);
   }, []);
 

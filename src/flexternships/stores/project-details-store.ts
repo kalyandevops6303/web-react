@@ -9,6 +9,8 @@ import {
   populateTeamDetails,
   getProjectDetails,
   getProjectInvitationDetails,
+  getSelfOrTeamPerformanceDetails,
+  getPeerOrIndividualPerformanceDetails,
 } from '../actions/project-details-actions';
 
 const defaultInitState: ProjectDetailsState = {
@@ -17,6 +19,8 @@ const defaultInitState: ProjectDetailsState = {
   teamDetails: [] as Array<TeamMemberDetails>,
   projectInvitationDetails: null,
   isProjectInvitationDetailsLoading: false,
+  performanceDetails: null,
+  isPerformanceDetailsLoading: false,
 };
 
 export const useProjectsStore = create<ProjectStore>((set) => ({
@@ -25,4 +29,8 @@ export const useProjectsStore = create<ProjectStore>((set) => ({
   populateTeamDetails: (projectId: string = '') => populateTeamDetails(set, projectId),
   resetStore: () => set({ ...defaultInitState }),
   getProjectInvitationDetails: async (projectId: string) => getProjectInvitationDetails(projectId, set),
+  getSelfOrTeamPerformanceDetails: async (projectId: string, feedbackType: string) =>
+    getSelfOrTeamPerformanceDetails(projectId, feedbackType, set),
+  getPeerOrIndividualPerformanceDetails: async (milestoneId: string, feedbackType: string) =>
+    getPeerOrIndividualPerformanceDetails(milestoneId, feedbackType, set),
 }));

@@ -2,7 +2,7 @@ export default function SteppedProgress(props: SteppedProgressProps) {
   const { value } = props;
 
   const steps = 5;
-  const stepsToFill = (value / 100) * 5;
+  const stepsToFill = Math.floor(value);
 
   return (
     <div className="h-2 flex">

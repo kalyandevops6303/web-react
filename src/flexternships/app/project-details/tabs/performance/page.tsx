@@ -18,19 +18,21 @@ export default function PerformanceTab() {
 
   const currentUserType = useFlexternUserStore((state) => state.userDetails?.userType);
 
-  const [feedbackType, setFeedbackType] = useState('self');
+  const [feedbackType, setFeedbackType] = useState(
+    currentUserType === UserType.CLIENT ? FeedbackTypes.TEAM : FeedbackTypes.SELF,
+  );
   const [milsetoneSelected, setMilestoneSelected] = useState(projectMilestones[0] || null);
 
   const getDefaultFeedbackType = () => {
     if (currentUserType === UserType.CLIENT) {
       return {
         displayText: 'Team',
-        value: 'team',
+        value: FeedbackTypes.TEAM,
       };
     } else {
       return {
         displayText: 'Self',
-        value: 'self',
+        value: FeedbackTypes.SELF,
       };
     }
   };
@@ -41,27 +43,38 @@ export default function PerformanceTab() {
       options = [
         {
           displayText: 'Team',
-          value: 'team',
+          value: FeedbackTypes.TEAM,
         },
         {
           displayText: 'Individual',
-          value: 'individual',
+          value: FeedbackTypes.INDIVIDUAL,
         },
       ];
     } else {
       options = [
         {
           displayText: 'Self',
-          value: 'self',
+          value: FeedbackTypes.SELF,
         },
         {
           displayText: 'Peer',
-          value: 'peer',
+          value: FeedbackTypes.PEER,
         },
       ];
     }
 
     return options;
+  };
+
+  const getFeedbackTypeForAPI = () => {
+    const mapping: Record<string, string> = {
+      team: 'MANAGER_TO_TEAM',
+      self: 'SELF',
+      individual: 'MANAGER_TO_PEER',
+      peer: 'PEER_TO_PEER',
+    };
+
+    return mapping[feedbackType];
   };
 
   useEffect(() => {
@@ -121,9 +134,11 @@ export default function PerformanceTab() {
 
       <div className="mt-7">
         {(feedbackType === FeedbackTypes.PEER || feedbackType === FeedbackTypes.INDIVIDUAL) && (
-          <IndividualFeedback milestoneId={milsetoneSelected?.id} />
+          <IndividualFeedback milestoneId={milsetoneSelected?.id} feedbackType={getFeedbackTypeForAPI()} />
         )}
-        {(feedbackType === FeedbackTypes.SELF || feedbackType === FeedbackTypes.TEAM) && <MilestoneFeedback />}
+        {(feedbackType === FeedbackTypes.SELF || feedbackType === FeedbackTypes.TEAM) && (
+          <MilestoneFeedback feedbackType={getFeedbackTypeForAPI()} />
+        )}
       </div>
     </div>
   );
