@@ -65,6 +65,8 @@ export const getFileIcon = (fileName: string) => {
       return pptFileIcon;
     case 'jpg':
       return jpgFileIcon;
+    case 'jpeg':
+      return jpgFileIcon;
     case 'png':
       return pngFileIcon;
     case 'gif':
