@@ -8,6 +8,7 @@ import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ProjectsTab from './tabs/projects/page';
 import TeamTab from '../components/pages/project-details/tabs/team';
+import PerformanceTab from './tabs/performance/page';
 
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
@@ -58,7 +59,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Star size={18} />,
       description: 'Give & get ratings',
       route: '/performance',
-      component: <div>Performance</div>,
+      component: <PerformanceTab />,
       talentVisible: true,
       clientVisible: true,
     },
@@ -92,7 +93,7 @@ export default function FlexternshipProjectDetails() {
       )}
       <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
         {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
-        <div className="flex flex-col flex-grow items-start max-w-5xl gap-5">
+        <div className="flex flex-col flex-grow items-start gap-5">
           <ProjectDetailsTabNavigation tabs={tabs} />
         </div>
       </div>

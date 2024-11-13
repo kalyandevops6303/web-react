@@ -1,80 +1,47 @@
-import { mockMilestonesList } from '../mocks/milestone-data';
-import { getMilestonesByProjectId, getMilestoneDetailsById } from '../services/project-management-v2';
+import { MilestoneArtifactStatus, MilestoneStatus } from '../constraints/enums/core-enums';
+import {
+  getMilestonesByProjectId,
+  getMilestoneDetailsById,
+  putArtifactsByMilestoneId,
+  updateMilestoneStatus,
+} from '../services/project-management-v2';
+import { useMilestoneArtifactsStore } from '../stores/project-milestones-store';
 
 export const populateProjectMilestones = async (projectId: string, set: any) => {
   set({ isMilestonesLoading: true });
   const milestones = await getMilestonesByProjectId(projectId);
-  const formattedMilestones = milestones.map((milestone: any) => ({
-    id: milestone._id,
-    projectId: milestone.project_id,
-    name: milestone.name,
-    startDate: milestone.start_date,
-    endDate: milestone.end_date,
-    description: milestone.description,
-    estimatedDuration: {
-      duration: milestone.estimated_duration.duration,
-      durationType: milestone.estimated_duration.duration_type,
-    },
-    deliverables: milestone.deliverables,
-    status: milestone.status,
-    milestoneBy: {
-      entity: milestone.milestone_by.entity,
-      entityId: milestone.milestone_by.entity_id,
-      orgSlugId: milestone.milestone_by.org_slug_id,
-    },
-    seq: milestone.seq,
-    milestoneFeedbackDetails: {
-      id: milestone.milestone_feedback_details?.id,
-      milestoneId: milestone.milestone_feedback_details?.milestone_id,
-      orgSlugId: milestone.milestone_feedback_details?.org_slug_id,
-      projectId: milestone.milestone_feedback_details?.project_id,
-      entityId: milestone.milestone_feedback_details?.entity_id,
-      entityType: milestone.milestone_feedback_details?.entity_type,
-      feedback: {
-        feedbackId: milestone.milestone_feedback_details?.feedback?.feedback_id,
-        feedbackType: milestone.milestone_feedback_details?.feedback?.feedback_type,
-        feedbackStatus: milestone.milestone_feedback_details?.feedback?.feedback_status,
-      },
-    },
-  }));
-  set({ projectMilestones: formattedMilestones, isMilestonesLoading: false });
+  set({ projectMilestones: milestones, isMilestonesLoading: false });
 };
 
 export const populateMilestoneDetails = async (milestoneId: string, set: any) => {
-  const milestoneDetails = await getMilestoneDetailsById(milestoneId);
-  const formattedMilestoneDetails = {
-    id: milestoneDetails._id,
-    projectId: milestoneDetails.project_id,
-    name: milestoneDetails.name,
-    startDate: milestoneDetails.start_date,
-    endDate: milestoneDetails.end_date,
-    description: milestoneDetails.description,
-    estimatedDuration: {
-      duration: milestoneDetails.estimated_duration.duration,
-      durationType: milestoneDetails.estimated_duration.duration_type,
-    },
-    deliverables: milestoneDetails.deliverables,
-    status: milestoneDetails.status,
-    submissions: milestoneDetails.submissions || mockMilestonesList,
-    milestoneBy: {
-      entity: milestoneDetails.milestone_by.entity,
-      entityId: milestoneDetails.milestone_by.entity_id,
-      orgSlugId: milestoneDetails.milestone_by.org_slug_id,
-    },
-    seq: milestoneDetails.seq,
-    milestoneFeedbackDetails: {
-      id: milestoneDetails.milestone_feedback_details?.id,
-      milestoneId: milestoneDetails.milestone_feedback_details?.milestone_id,
-      orgSlugId: milestoneDetails.milestone_feedback_details?.org_slug_id,
-      projectId: milestoneDetails.milestone_feedback_details?.project_id,
-      entityId: milestoneDetails.milestone_feedback_details?.entity_id,
-      entityType: milestoneDetails.milestone_feedback_details?.entity_type,
-      feedback: {
-        feedbackId: milestoneDetails.milestone_feedback_details?.feedback?.feedback_id,
-        feedbackType: milestoneDetails.milestone_feedback_details?.feedback?.feedback_type,
-        feedbackStatus: milestoneDetails.milestone_feedback_details?.feedback?.feedback_status,
-      },
-    },
-  };
-  set({ milestoneDetails: formattedMilestoneDetails });
+  set({ isMilestoneDetailsLoading: true });
+
+  const updateDraftArtifacts = useMilestoneArtifactsStore.getState().updateDraftArtifacts;
+  const updateSubmittedArtifacts = useMilestoneArtifactsStore.getState().updateSubmittedArtifacts;
+
+  const data = await getMilestoneDetailsById(milestoneId);
+
+  set({ milestoneDetails: data?.milestoneDetails });
+  updateDraftArtifacts(data?.artifactDetails?.milestoneArtifactDetailsDraft || []);
+  updateSubmittedArtifacts(data?.artifactDetails?.milestoneArtifactDetailsSubmitted || []);
+
+  set({ isMilestoneDetailsLoading: false });
+};
+
+export const putDraftArtifacts = async (status: MilestoneArtifactStatus, milestoneId: string, get: any, _set: any) => {
+  const draftArtifacts = get().draftArtifacts;
+  const removedArtifactIds = get().removedArtifactIds;
+  await putArtifactsByMilestoneId(status, milestoneId, draftArtifacts, removedArtifactIds);
+};
+
+export const appendToRemovedArtifactIds = (artifactId: string, get: any, set: any) => {
+  set({ removedArtifactIds: [...get().removedArtifactIds, artifactId] });
+};
+
+export const markMilestoneAsCompleted = async (milestoneId: string) => {
+  await updateMilestoneStatus(milestoneId, MilestoneStatus.IN_REVIEW);
+};
+
+export const acceptMilestone = async (milestoneId: string) => {
+  await updateMilestoneStatus(milestoneId, MilestoneStatus.COMPLETED);
 };

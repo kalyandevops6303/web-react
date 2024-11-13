@@ -41,7 +41,7 @@ export default function MilestoneTab() {
   }
 
   return (
-    <div className="flex flex-col gap-4 py-5">
+    <div className="flex flex-col gap-4 py-5 max-w-5xl">
       {/* TODO: MilestoneTile */}
       {projectMilestones.map((milestone) => (
         <MilestoneTile data={milestone} />

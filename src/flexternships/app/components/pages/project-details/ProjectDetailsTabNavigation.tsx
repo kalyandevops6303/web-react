@@ -10,7 +10,7 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
 
   return (
     <div className="w-full">
-      <div className=" bg-white w-fit flex flex-row items-start justify-start">
+      <div className=" bg-white w-fit flex flex-row items-start justify-start max-w-5xl">
         {tabs.map((tab, index) => isEmpty(milestoneId) && <NavigationTab key={index} tab={tab} index={index} />)}
       </div>
       <div>

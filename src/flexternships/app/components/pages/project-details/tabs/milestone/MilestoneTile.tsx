@@ -2,16 +2,16 @@ import React from 'react';
 import { ChevronRight } from 'react-feather';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { MilestoneStatus } from '@flexternships/enums/core-enums';
-import { toTitleCase } from '@/flexternships/utils/text-utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MilestoneDetails } from '@/flexternships/constraints/types/project-milestones-types';
+import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
 
 interface MilestoneTileProps {
   data: MilestoneDetails;
 }
 
 const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
-  const { id, name, status, startDate, endDate } = data;
+  const { id, name, status, startDate, acceptedAt } = data;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,7 +27,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
       >
         <div className="text-base font-medium text-grey-heading leading-6 grow">{name}</div>
         <div className="flex flex-row gap-x-8 items-center">
-          <div className="">{toTitleCase(status)}</div>
+          <MilestoneStatusTag status={status} />
           <div className="flex flex-col">
             <div className="text-sm text-grey not-italic font-normal leading-5.5">Start Date</div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">
@@ -36,10 +36,10 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
           </div>
           <div className="flex flex-col min-w-20">
             <div className="text-sm text-grey not-italic font-normal leading-5.5">
-              {status === MilestoneStatus.COMPLETED && endDate ? 'Completed' : '-'}
+              {status === MilestoneStatus.COMPLETED && acceptedAt ? 'Completed' : '-'}
             </div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">
-              {status === MilestoneStatus.COMPLETED && endDate ? formatEpochToHumanReadable(endDate, true) : '-'}
+              {status === MilestoneStatus.COMPLETED && acceptedAt ? formatEpochToHumanReadable(acceptedAt, true) : '-'}
             </div>
           </div>
         </div>

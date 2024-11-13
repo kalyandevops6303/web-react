@@ -43,7 +43,7 @@ export default function ProjectsTab() {
   ];
 
   return (
-    <div className="py-6">
+    <div className="py-6 max-w-5xl">
       <SimpleElevatedCard className={Styles.tabContent}>
         <div className={Styles.tabContentHeader}>Project Invitation</div>
         <div className={Styles.tabContentBody}>
