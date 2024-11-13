@@ -1,26 +1,32 @@
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { MilestoneSubmission } from '@/flexternships/constraints/types/project-milestones-types';
+import { MilestoneArtifact } from '@/flexternships/constraints/types/project-milestones-types';
 import { getFileDownloadUrl } from '@/flexternships/services/project-management-v2';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link } from 'react-feather';
+import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 
-export default function SubmissionItem(props: Props) {
+export default function SubmittedArtifactItem(props: Props) {
   const { last = false, data } = props;
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const toggleTooltip = () => {
+    setShowTooltip((prev) => !prev);
+  };
 
   const handleDownload = async () => {
-    if (data.type !== 'FILE' || !data.fileKey) {
+    if (data.type !== 'DOCUMENTS' || !data.metadata.fileKey) {
       return;
     }
 
     setMainActionLoading(true);
     try {
-      const downloadResponse = await getFileDownloadUrl(data.fileKey);
+      const downloadResponse = await getFileDownloadUrl(data.metadata.fileKey);
       window.open(downloadResponse.data, '_blank');
     } catch (error) {
       showToastMessage(ToastType.ERROR, 'Failed to download file');
@@ -30,14 +36,14 @@ export default function SubmissionItem(props: Props) {
   };
 
   const handleLink = () => {
-    if (data.type !== 'URL') {
+    if (data.type !== 'LINKS' || !data.metadata.url) {
       return;
     }
-    window.open(data.name, '_blank');
+    window.open(data.metadata.url, '_blank');
   };
 
   const handleMainActionClick = () => {
-    if (data.type === 'FILE') {
+    if (data.type === 'DOCUMENTS' && data.metadata.fileKey) {
       handleDownload();
     } else {
       handleLink();
@@ -52,19 +58,35 @@ export default function SubmissionItem(props: Props) {
     >
       <div className="py-4 px-2.5 w-[212px] flex flex-row items-center gap-x-3">
         <span>
-          {data.type === 'FILE' ? (
-            <img className="h-6" src={getFileIcon(data.name)} alt={data.name} />
+          {data.type === 'DOCUMENTS' ? (
+            <img className="h-6" src={getFileIcon(data.metadata?.fileName ?? '')} alt={data.metadata?.fileName ?? ''} />
           ) : (
             <Link className="text-grey" size={24} />
           )}
         </span>
-        <span className="truncate">{data.name}</span>
+        <span className="truncate w-[175px]">
+          {data.type === 'DOCUMENTS' ? data.metadata?.fileName : data.metadata?.url}
+        </span>
       </div>
-      <div className="py-4 px-2.5 w-[319px] break-all">{data.description}</div>
-      <div className="py-4 px-2.5 w-[126px] flex items-center justify-center">
-        <img className="w-8 h-8 rounded-full object-cover" src={data.submittedBy.avatar} alt={data.submittedBy.name} />
+      <div className="py-4 px-2.5 w-[319px] break-all">
+        <span>{data.description}</span>
       </div>
-      <div className="py-4 px-2.5 w-[194px]">{formatEpochToHumanReadable(data.submittedAt, false, true)}</div>
+      <div className="py-4 px-2.5 w-[126px] flex items-center justify-center relative">
+        <div className="relative" onMouseEnter={toggleTooltip} onMouseLeave={toggleTooltip}>
+          <img
+            className="w-8 h-8 rounded-full object-cover"
+            src={data.userDetails?.imageUri || defaultAvatar}
+            alt={data.userDetails?.name}
+          />
+          {showTooltip && (
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 text-xs bg-gray-800 text-white rounded shadow-lg whitespace-nowrap">
+              {data.userDetails?.name?.trim() || 'Unknown User'}
+              <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-full h-2 w-2 bg-gray-800 rotate-45"></div>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="py-4 px-2.5 w-[194px]">{formatEpochToHumanReadable(data.updatedAt ?? 0, false, true)}</div>
       <div className="py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3">
         <span
           className="flex items-center justify-center bg-trublue-light rounded-full p-2 text-trublue-secondary-500 cursor-pointer"
@@ -76,7 +98,7 @@ export default function SubmissionItem(props: Props) {
                 <Spinner />
               </div>
             </div>
-          ) : data.type === 'FILE' ? (
+          ) : data.type === 'DOCUMENTS' ? (
             <Download size={24} />
           ) : (
             <ExternalLink size={24} />
@@ -89,5 +111,5 @@ export default function SubmissionItem(props: Props) {
 
 type Props = {
   last?: boolean;
-  data: MilestoneSubmission;
+  data: MilestoneArtifact;
 };

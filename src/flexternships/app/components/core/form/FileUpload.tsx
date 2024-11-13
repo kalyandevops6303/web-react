@@ -7,10 +7,21 @@ import { dateToEpoch, formatEpochToHumanReadable } from '@flexternships/utils/da
 import { formatFileSize } from '@flexternships/utils/file-utils';
 import HorizontalFileCard from '../files/HorizontalFileCard';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
-import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 
 export default function FileUpload(props: InputProps) {
-  const { name, control, error, trigger, watch, label, required, placeholder, className, acceptedFormats } = props;
+  const {
+    name,
+    control,
+    error,
+    trigger,
+    watch,
+    label,
+    required,
+    placeholder,
+    className,
+    acceptedFormats,
+    maxFileCount,
+  } = props;
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -135,7 +146,7 @@ export default function FileUpload(props: InputProps) {
           ))}
         </div>
       )}
-      {fields.length < MAX_FILE_COUNT && (
+      {(maxFileCount === undefined || fields.length < maxFileCount) && (
         <label htmlFor={name} className={`${Styles.formFileInput} self-start`}>
           <span className={Styles.formFileInputIconContainer}>
             <Upload className={Styles.formFileInputIcon} size={18} />
@@ -166,4 +177,5 @@ type InputProps = {
   required?: boolean; // Optional field
   className?: string; // Optional field
   acceptedFormats?: string[]; // Optional field
+  maxFileCount?: number; // Optional field
 };
