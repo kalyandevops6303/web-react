@@ -70,10 +70,20 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     });
   };
 
+  const getValidArtifacts = (data: MilestoneDraftArtifact[]) => {
+    return data.filter((artifact) => {
+      if (artifact.type === MilestoneArtifactType.DOCUMENTS && isEmpty(artifact.metadata?.fileKey)) {
+        return false;
+      }
+      return true;
+    });
+  };
+
   const saveAsDraft = async () => {
     setSaveDraftLoading(true);
     const data = watch('draftArtifacts');
-    updateDraftArtifacts(data);
+    const filteredData = getValidArtifacts(data);
+    updateDraftArtifacts(filteredData);
 
     if (milestoneId && projectId) {
       try {
@@ -94,7 +104,8 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
   const submitDraft = async (data: { draftArtifacts: MilestoneDraftArtifact[] }) => {
     setSubmitDraftLoading(true);
-    updateDraftArtifacts(data.draftArtifacts);
+    const filteredData = getValidArtifacts(data.draftArtifacts);
+    updateDraftArtifacts(filteredData);
 
     if (milestoneId && projectId) {
       try {
