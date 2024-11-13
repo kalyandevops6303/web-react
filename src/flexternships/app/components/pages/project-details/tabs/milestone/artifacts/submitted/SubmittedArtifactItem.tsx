@@ -7,11 +7,17 @@ import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link } from 'react-feather';
+import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 
 export default function SubmittedArtifactItem(props: Props) {
   const { last = false, data } = props;
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const toggleTooltip = () => {
+    setShowTooltip((prev) => !prev);
+  };
 
   const handleDownload = async () => {
     if (data.type !== 'DOCUMENTS' || !data.metadata.fileKey) {
@@ -65,8 +71,20 @@ export default function SubmittedArtifactItem(props: Props) {
       <div className="py-4 px-2.5 w-[319px] break-all">
         <span>{data.description}</span>
       </div>
-      <div className="py-4 px-2.5 w-[126px] flex items-center justify-center">
-        <img className="w-8 h-8 rounded-full object-cover" src={data.submittedBy.avatar} alt={data.submittedBy.name} />
+      <div className="py-4 px-2.5 w-[126px] flex items-center justify-center relative">
+        <div className="relative" onMouseEnter={toggleTooltip} onMouseLeave={toggleTooltip}>
+          <img
+            className="w-8 h-8 rounded-full object-cover"
+            src={data.userDetails?.imageUri || defaultAvatar}
+            alt={data.userDetails?.name}
+          />
+          {showTooltip && (
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 text-xs bg-gray-800 text-white rounded shadow-lg whitespace-nowrap">
+              {data.userDetails?.name?.trim() || 'Unknown User'}
+              <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-full h-2 w-2 bg-gray-800 rotate-45"></div>
+            </div>
+          )}
+        </div>
       </div>
       <div className="py-4 px-2.5 w-[194px]">{formatEpochToHumanReadable(data.updatedAt ?? 0, false, true)}</div>
       <div className="py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3">

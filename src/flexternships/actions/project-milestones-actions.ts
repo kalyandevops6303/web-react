@@ -14,15 +14,18 @@ export const populateProjectMilestones = async (projectId: string, set: any) => 
 };
 
 export const populateMilestoneDetails = async (milestoneId: string, set: any) => {
+  set({ isMilestoneDetailsLoading: true });
+
   const updateDraftArtifacts = useMilestoneArtifactsStore.getState().updateDraftArtifacts;
   const updateSubmittedArtifacts = useMilestoneArtifactsStore.getState().updateSubmittedArtifacts;
 
   const data = await getMilestoneDetailsById(milestoneId);
 
   set({ milestoneDetails: data?.milestoneDetails });
-
   updateDraftArtifacts(data?.artifactDetails?.milestoneArtifactDetailsDraft || []);
   updateSubmittedArtifacts(data?.artifactDetails?.milestoneArtifactDetailsSubmitted || []);
+
+  set({ isMilestoneDetailsLoading: false });
 };
 
 export const putDraftArtifacts = async (status: MilestoneArtifactStatus, milestoneId: string, get: any, _set: any) => {

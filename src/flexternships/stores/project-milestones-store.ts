@@ -20,6 +20,7 @@ import { MilestoneArtifactStatus } from '../constraints/enums/core-enums';
 
 const defaultProjectMilestonesInitState: ProjectMilestonesState = {
   isMilestonesLoading: true,
+  isMilestoneDetailsLoading: true,
   projectMilestones: [],
   milestoneDetails: {} as MilestoneDetails,
 };

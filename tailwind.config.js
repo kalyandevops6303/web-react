@@ -46,6 +46,7 @@ module.exports = {
         error: "#EA5455",
         trublue: {
           DEFAULT: "#0065C1",
+          review: "#03D8F5",
           secondary: {
             500: "#0185E4",
           },

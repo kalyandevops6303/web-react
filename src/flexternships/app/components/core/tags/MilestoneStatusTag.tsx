@@ -10,8 +10,7 @@ function MilestoneStatusTag(props: Props) {
   const css = {
     [MilestoneStatus.CREATED]: '',
     [MilestoneStatus.IN_PROGRESS]: 'text-orange bg-yellow',
-    [MilestoneStatus.IN_REVIEW]:
-      userDetails?.userType === UserType.CLIENT ? 'text-orange bg-yellow' : 'text-success bg-success',
+    [MilestoneStatus.IN_REVIEW]: 'text-trublue-review bg-trublue-review',
     [MilestoneStatus.COMPLETED]: 'text-success bg-success',
   };
 
@@ -23,7 +22,7 @@ function MilestoneStatusTag(props: Props) {
         'bg-opacity-10',
       )}
     >
-      {getMilestoneStatusTextByUserType(status, userDetails?.userType)}
+      {getMilestoneStatusTextByUserType(status, userDetails.userType)}
     </div>
   );
 }

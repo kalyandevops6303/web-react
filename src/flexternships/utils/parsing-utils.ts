@@ -62,10 +62,10 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
       type: artifact.type,
       status: artifact.status,
       description: artifact.description,
-      uploadedAt: artifact.uploaded_at,
-      submittedBy: {
-        name: artifact.submitted_by?.name,
-        avatar: artifact.submitted_by?.avatar,
+      updatedAt: artifact.updated_at,
+      userDetails: {
+        name: artifact.user_details?.first_name + ' ' + artifact.user_details?.last_name,
+        imageUri: artifact.user_details?.image_uri,
       },
       metadata: {
         // file props

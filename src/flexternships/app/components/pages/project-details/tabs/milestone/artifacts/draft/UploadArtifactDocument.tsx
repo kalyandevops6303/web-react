@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { Plus } from 'react-feather';
 
 export default function UploadArtifactDocument(props: Props) {
-  const { handleFileInputChange } = props;
+  const { handleFileInputChange, disabled = false } = props;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const simulateClick = () => {
@@ -22,7 +22,7 @@ export default function UploadArtifactDocument(props: Props) {
   return (
     <div>
       <label htmlFor="draftArtifacts">
-        <PrimaryIconText icon={<Plus size={12} />} text="Add Document" onClick={simulateClick} />
+        <PrimaryIconText icon={<Plus size={12} />} text="Add Document" onClick={simulateClick} disabled={disabled} />
         <input
           id="draftArtifacts"
           type="file"
@@ -37,5 +37,6 @@ export default function UploadArtifactDocument(props: Props) {
 }
 
 type Props = {
+  disabled?: boolean;
   handleFileInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };

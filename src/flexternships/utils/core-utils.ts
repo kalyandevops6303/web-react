@@ -47,14 +47,14 @@ export const resetProjectCreationStore = () => {
   useProjectCreationStore.getState().resetStore();
 };
 
-export const getMilestoneStatusTextByUserType = (status: MilestoneStatus, userType: UserType) => {
+export const getMilestoneStatusTextByUserType = (status: MilestoneStatus, _userType: UserType) => {
   switch (status) {
     case MilestoneStatus.CREATED:
       return '';
     case MilestoneStatus.IN_PROGRESS:
       return 'In Progress';
     case MilestoneStatus.IN_REVIEW:
-      return userType === UserType.CLIENT ? 'In Review' : 'Completed';
+      return 'In Review';
     case MilestoneStatus.COMPLETED:
       return 'Completed';
     default:

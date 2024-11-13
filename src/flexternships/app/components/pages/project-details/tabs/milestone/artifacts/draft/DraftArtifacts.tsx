@@ -9,7 +9,7 @@ import PrimaryIconText from '@/flexternships/app/components/core/buttons/Primary
 import SecondaryButton from '@/flexternships/app/components/core/buttons/SecondaryButton';
 import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryButton';
 import { useEffect, useState } from 'react';
-import { useMilestoneArtifactsStore } from '@/flexternships/stores/project-milestones-store';
+import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import {
   MilestoneArtifactErrorType,
   MilestoneArtifactStatus,
@@ -24,11 +24,13 @@ import UploadArtifactDocument from './UploadArtifactDocument';
 import { getFileUploadUrl } from '@/flexternships/services/project-management-v2';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
 
-export default function DraftArtifacts() {
+export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
+  const removedArtifactIds = useMilestoneArtifactsStore((state) => state.removedArtifactIds);
   const updateDraftArtifacts = useMilestoneArtifactsStore((state) => state.updateDraftArtifacts);
   const saveDraftArtifacts = useMilestoneArtifactsStore((state) => state.saveDraftArtifacts);
   const submitDraftArtifacts = useMilestoneArtifactsStore((state) => state.submitDraftArtifacts);
+  const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
 
   const [saveDraftLoading, setSaveDraftLoading] = useState(false);
   const [submitDraftLoading, setSubmitDraftLoading] = useState(false);
@@ -71,11 +73,12 @@ export default function DraftArtifacts() {
     setSaveDraftLoading(true);
     const data = watch('draftArtifacts');
     updateDraftArtifacts(data);
-    console.log(data);
 
     if (milestoneId && projectId) {
       try {
         await saveDraftArtifacts(milestoneId);
+        showToastMessage(ToastType.SUCCESS, 'Draft saved successfully');
+        await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
           showToastMessage(ToastType.ERROR, error.message);
@@ -95,6 +98,8 @@ export default function DraftArtifacts() {
     if (milestoneId && projectId) {
       try {
         await submitDraftArtifacts(milestoneId);
+        showToastMessage(ToastType.SUCCESS, 'Artifacts submitted successfully');
+        await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
           showToastMessage(ToastType.ERROR, error.message);
@@ -145,13 +150,16 @@ export default function DraftArtifacts() {
       const uploadRequirements = await getFileUploadUrl(file.name);
       await uploadFileToUrl(uploadRequirements.data.upload_url, file, getUploadProgress, index);
       const fileKey = uploadRequirements.data.file_key;
-      update(index, {
-        ...currentField,
-        metadata: {
-          ...currentField.metadata,
-          fileKey: fileKey,
-        },
-      });
+      if (watch(`draftArtifacts`).length > index) {
+        update(index, {
+          ...currentField,
+          metadata: {
+            ...currentField.metadata,
+            fileKey: fileKey,
+          },
+        });
+      }
+
       clearErrors(`draftArtifacts.${index}`);
     } catch (error: unknown) {
       setError(`draftArtifacts.${index}`, {
@@ -236,17 +244,21 @@ export default function DraftArtifacts() {
         </div>
       )}
       <div className="flex flex-col gap-y-7 text-trublue-secondary-500">
-        <UploadArtifactDocument handleFileInputChange={handleFileInputChange} />
-        <PrimaryIconText icon={<Plus size={12} />} text="Add Link" onClick={addNewLink} />
+        <UploadArtifactDocument handleFileInputChange={handleFileInputChange} disabled={isDisabled} />
+        <PrimaryIconText icon={<Plus size={12} />} text="Add Link" onClick={addNewLink} disabled={isDisabled} />
       </div>
       <div className={`flex flex-row justify-end gap-x-4 mt-3`}>
-        <SecondaryButton onClick={saveAsDraft} loading={saveDraftLoading} disabled={isEmpty(fields)}>
+        <SecondaryButton
+          onClick={saveAsDraft}
+          loading={saveDraftLoading}
+          disabled={isDisabled || (isEmpty(fields) && isEmpty(removedArtifactIds))}
+        >
           Save as Draft
         </SecondaryButton>
         <PrimaryButton
           onClick={handleSubmit(submitDraft)}
           loading={submitDraftLoading}
-          disabled={!isValid || isEmpty(fields)}
+          disabled={isDisabled || !isValid || (isEmpty(fields) && isEmpty(removedArtifactIds))}
         >
           Submit
         </PrimaryButton>

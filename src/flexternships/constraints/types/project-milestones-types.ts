@@ -6,9 +6,9 @@ export type MilestoneArtifact = {
   status: MilestoneArtifactStatus;
   description: string;
   updatedAt: number;
-  submittedBy: {
+  userDetails: {
     name: string;
-    avatar: string;
+    imageUri: string;
   };
   metadata: {
     // file props
@@ -78,6 +78,7 @@ export type MilestoneDetails = {
 
 export type ProjectMilestonesState = {
   isMilestonesLoading: boolean;
+  isMilestoneDetailsLoading: boolean;
   projectMilestones: MilestoneDetails[];
   milestoneDetails: MilestoneDetails;
 };
