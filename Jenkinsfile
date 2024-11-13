@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    options {
+        disableConcurrentBuilds()
+    }
+    
+
     environment {
         CLIENT_ID = credentials('env_client_id')
         CLIENT_SECRET = credentials('env_client_secret')
