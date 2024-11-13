@@ -8,6 +8,7 @@ import { Params, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ProjectsTab from './tabs/projects/page';
 import TeamTab from '../components/pages/project-details/tabs/team';
+import PerformanceTab from './tabs/performance/page';
 
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
@@ -58,7 +59,7 @@ export default function FlexternshipProjectDetails() {
       icon: <Star size={18} />,
       description: 'Give & get ratings',
       route: '/performance',
-      component: <div>Performance</div>,
+      component: <PerformanceTab />,
       talentVisible: true,
       clientVisible: true,
     },
