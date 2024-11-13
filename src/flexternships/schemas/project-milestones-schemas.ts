@@ -33,7 +33,7 @@ export const MilestoneArtifactSchema = yup.object().shape({
               size: yup
                 .number()
                 .required()
-                .max(MAX_FILE_SIZE, `File size must be less than ${formatFileSize(MAX_FILE_SIZE)}`),
+                .max(MAX_FILE_SIZE, `File size is larger than ${formatFileSize(MAX_FILE_SIZE)}`),
               uploadInfo: yup.object().shape({
                 loading: yup.boolean().optional(),
                 uploadProgress: yup.number().optional(),

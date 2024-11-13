@@ -96,10 +96,17 @@ export default function DraftArtifactItem(props: Props) {
         )}
       </div>
       <div className="py-4 px-2.5 w-[420px] break-all">
-        {data.metadata?.uploadInfo?.loading ? (
-          <div className="w-[400px] text-end">Uploading document, this will only take a few seconds</div>
-        ) : data.type === 'DOCUMENTS' && errors ? (
-          <div className="w-[400px] text-error text-end">{errors.message}</div>
+        {data.type === 'DOCUMENTS' && data.metadata?.uploadInfo?.loading ? (
+          <div className="w-[400px] text-grey-loadingText text-sm font-normal italic leading-5.5 text-end">
+            Uploading document, this will only take a few seconds
+          </div>
+        ) : data.type === 'DOCUMENTS' &&
+          (errors?.metadata?.size ||
+            errors?.metadata?.uploadInfo?.file ||
+            errors?.type === MilestoneArtifactErrorType.UPLOAD_FAILED) ? (
+          <div className="w-[400px] text-error text-sm font-medium leading-5.5 not-italic text-end">
+            {errors?.metadata?.size?.message || errors?.metadata?.uploadInfo?.file?.message || errors?.message}
+          </div>
         ) : (
           <Controller
             control={control}
@@ -117,10 +124,14 @@ export default function DraftArtifactItem(props: Props) {
         )}
       </div>
       <div className="py-4 px-2.5 w-[194px]">
-        {data.type === 'DOCUMENTS' && data.metadata?.uploadInfo?.loading ? (
+        {data.type === 'DOCUMENTS' &&
+        (data.metadata?.uploadInfo?.loading || errors?.metadata?.size || errors?.metadata?.uploadInfo?.file) ? (
           <Progress value={data.metadata?.uploadInfo?.uploadProgress} className="h-3 bg-grey-50 mr-8 w-full" />
         ) : data.type === 'DOCUMENTS' && errors?.type === MilestoneArtifactErrorType.UPLOAD_FAILED ? (
-          <div className="text-trublue-secondary-500 cursor-pointer" onClick={handleTryAgain}>
+          <div
+            className="text-trublue-secondary-500 text-sm font-semibold tracking-wide cursor-pointer"
+            onClick={handleTryAgain}
+          >
             Try Again
           </div>
         ) : (
@@ -171,6 +182,14 @@ type Props = {
     metadata?: {
       url?: {
         message?: string;
+      };
+      size?: {
+        message?: string;
+      };
+      uploadInfo?: {
+        file?: {
+          message?: string;
+        };
       };
     };
   };

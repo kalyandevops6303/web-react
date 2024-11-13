@@ -1,5 +1,5 @@
 import { MilestoneDraftArtifact } from '@/flexternships/constraints/types/project-milestones-types';
-import { useForm } from 'react-hook-form';
+import { FieldError, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MilestoneArtifactSchema } from '@/flexternships/schemas/project-milestones-schemas';
 import { useFieldArray } from 'react-hook-form';
@@ -42,6 +42,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     reset,
     setError,
     clearErrors,
+    trigger,
     formState: { errors, isValid },
   } = useForm<{ draftArtifacts: MilestoneDraftArtifact[] }>({
     mode: 'onChange',
@@ -114,26 +115,39 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
   const getUploadProgress = (progress: number, index: number) => {
     const currentField = watch(`draftArtifacts.${index}`);
-    update(index, {
-      ...currentField,
-      metadata: {
-        ...currentField.metadata,
-        uploadInfo: {
-          ...currentField.metadata.uploadInfo,
-          loading: currentField.metadata.uploadInfo?.loading || false,
-          uploadProgress: progress,
+    if (index < watch('draftArtifacts').length) {
+      update(index, {
+        ...currentField,
+        metadata: {
+          ...currentField.metadata,
+          uploadInfo: {
+            ...currentField.metadata.uploadInfo,
+            loading: currentField.metadata.uploadInfo?.loading || false,
+            uploadProgress: progress,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   const handleFileUpload = async (index: number, file: File) => {
     if (
-      errors.draftArtifacts?.[index] &&
-      errors.draftArtifacts?.[index].type !== MilestoneArtifactErrorType.UPLOAD_FAILED
+      errors.draftArtifacts?.[index]?.type &&
+      errors.draftArtifacts?.[index]?.type !== MilestoneArtifactErrorType.UPLOAD_FAILED
     ) {
       return;
     }
+
+    if (
+      errors.draftArtifacts?.[index]?.metadata &&
+      !(
+        Object.keys(errors.draftArtifacts[index].metadata).length === 1 &&
+        errors.draftArtifacts[index].metadata.fileKey?.type === 'required'
+      )
+    ) {
+      return;
+    }
+
     const currentField = watch(`draftArtifacts.${index}`);
     update(index, {
       ...currentField,
@@ -167,21 +181,23 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
         message: 'Upload failed. Please check your connection.',
       });
     } finally {
-      const updatedField = watch(`draftArtifacts.${index}`);
-      update(index, {
-        ...updatedField,
-        metadata: {
-          ...updatedField.metadata,
-          uploadInfo: {
-            ...updatedField.metadata.uploadInfo,
-            loading: false,
+      if (watch(`draftArtifacts`).length > index) {
+        const updatedField = watch(`draftArtifacts.${index}`);
+        update(index, {
+          ...updatedField,
+          metadata: {
+            ...updatedField.metadata,
+            uploadInfo: {
+              ...updatedField.metadata.uploadInfo,
+              loading: false,
+            },
           },
-        },
-      });
+        });
+      }
     }
   };
 
-  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
 
@@ -203,6 +219,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     };
 
     append(artifactDocument);
+    await trigger('draftArtifacts');
     const appendedIndex = watch('draftArtifacts').length - 1;
     handleFileUpload(appendedIndex, file);
   };
@@ -236,7 +253,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
                 control={control}
                 last={index === fields.length - 1}
                 remove={remove}
-                errors={errors.draftArtifacts?.[index] as { type?: string; message?: string }}
+                errors={errors.draftArtifacts?.[index] as FieldError}
                 handleFileUpload={handleFileUpload}
               />
             ))}
