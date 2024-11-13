@@ -29,12 +29,12 @@ export default function PerformanceTab() {
         displayText: 'Team',
         value: FeedbackTypes.TEAM,
       };
-    } else {
-      return {
-        displayText: 'Self',
-        value: FeedbackTypes.SELF,
-      };
     }
+    
+    return {
+      displayText: 'Self',
+      value: FeedbackTypes.SELF,
+    };
   };
 
   const getFeedbackTypeOptions = () => {
