@@ -17,22 +17,6 @@ export default function CollapsableCard(props: CollapsableCardProps) {
     >
       <AccordionItem value="item-1">
         <AccordionTrigger className={`${Styles.collapsableCard} hover:no-underline ${white && 'bg-white'}`}>
-          {/* <div className="flex w-full items-center mr-3 justify-between">
-            <div className="flex flex-col text-left">
-              <div className="text-[#B9B9C3] font-sans text-[12px] font-semibold leading-[16px]">{subtitle}</div>
-              <div className="text-[#5E5873] font-sans text-[16px] font-medium leading-[24px] !no-underline hover:!no-underline">
-                {title}
-              </div>
-            </div>
-            <div>
-              <Link
-                to={link?.href || '#'}
-                className="text-center text-[14px] font-semibold tracking-[0.4px] text-[#0185E4]"
-              >
-                {link?.text}
-              </Link>
-            </div>
-          </div> */}
           {headerContent}
         </AccordionTrigger>
         <AccordionContent data-state={isOpen}>{children}</AccordionContent>

@@ -2,6 +2,7 @@ import CollapsableCard from '@/flexternships/app/components/core/cards/Collapsab
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { getScoreLabel } from '@/flexternships/utils/score-utils';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -16,14 +17,6 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   useEffect(() => {
     getPerformanceDetails(params?.projectId as string, feedbackType);
   }, []);
-
-  const getScoreLabel = (score: number) => {
-    if (score >= 0 && score < 1) return 'Poor';
-    else if (score >= 1 && score < 2) return 'Below Average';
-    else if (score >= 2 && score < 3) return 'Average';
-    else if (score >= 3 && score < 4) return 'Above Average';
-    else if (score >= 4 && score <= 5) return 'Excellent';
-  };
 
   const getHeaderContent = (peerFeedback: any) => {
     const { name, score } = peerFeedback;

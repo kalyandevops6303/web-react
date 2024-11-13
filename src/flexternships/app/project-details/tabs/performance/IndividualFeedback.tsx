@@ -3,6 +3,7 @@ import SteppedProgress from '@/flexternships/app/components/core/progress/Steppe
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { getScoreLabel } from '@/flexternships/utils/score-utils';
 import { useEffect } from 'react';
 import { User } from 'react-feather';
 
@@ -16,14 +17,6 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   useEffect(() => {
     if (milestoneId) getPerformanceDetails(milestoneId, feedbackType);
   }, [milestoneId]);
-
-  const getScoreLabel = (score: number) => {
-    if (score >= 0 && score < 1) return 'Poor';
-    else if (score >= 1 && score < 2) return 'Below Average';
-    else if (score >= 2 && score < 3) return 'Average';
-    else if (score >= 3 && score < 4) return 'Above Average';
-    else if (score >= 4 && score <= 5) return 'Excellent';
-  };
 
   const getHeaderContent = (individualFeedback: any) => {
     const { image_uri, first_name, last_name, role, score } = individualFeedback;
