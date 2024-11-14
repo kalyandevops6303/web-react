@@ -59,7 +59,7 @@ export default function InvitationCard() {
       <div className="p-3 flex flex-col gap-5 w-full">
         <div className="flex gap-2">
           <Avatar>
-            <AvatarImage src={projectDetails?.clientDetails?.image_uri} />
+            <AvatarImage src={projectDetails?.clientDetails?.imageUri} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
