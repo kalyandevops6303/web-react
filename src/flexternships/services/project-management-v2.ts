@@ -4,6 +4,9 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { ProjectDetails } from '../constraints/types/project-details-types';
+import { MilestoneDraftArtifact } from '../constraints/types/project-milestones-types';
+import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
+import { parseMilestoneDetails } from '../utils/parsing-utils';
 
 /**
  * Retrieves a file upload URL for a given filename?.
@@ -388,7 +391,8 @@ export const getMilestonesByProjectId = async (projectId: string) => {
       `${routes.projectManagementV2.milestone.getMilestonesByProjectId}?project_id=${projectId}`,
       config,
     );
-    return response.data.data;
+    const formattedMilestones = response?.data?.data?.map((milestone: any) => parseMilestoneDetails(milestone, false));
+    return formattedMilestones;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching project milestones');
   }
@@ -411,7 +415,9 @@ export const getMilestoneDetailsById = async (milestoneId: string) => {
       `${routes.projectManagementV2.milestone.getMilestoneDetailsById}?milestone_id=${milestoneId}`,
       config,
     );
-    return response.data.data[0];
+    const responseData = response.data.data[0];
+    const { milestoneDetails, artifactDetails } = parseMilestoneDetails(responseData, true);
+    return { milestoneDetails, artifactDetails };
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching milestone details');
   }
@@ -436,5 +442,70 @@ export const verifyProjectName: (projectName: string) => Promise<void> = async (
     await axios.get(routes.projectManagementV2.project.verifyProjectName, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while verifying the project name');
+  }
+};
+
+export const putArtifactsByMilestoneId = async (
+  targetArtifactStatus: MilestoneArtifactStatus,
+  milestoneId: string,
+  submittedArtifacts: MilestoneDraftArtifact[],
+  deletedArtifactIds: string[],
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      milestone_id: milestoneId,
+      artifact_status: targetArtifactStatus,
+    },
+  };
+
+  const formattedData: Record<string, any> = {
+    params: submittedArtifacts.map((artifact) => {
+      const formattedArtifact: Record<string, any> = {
+        type: artifact.type,
+        description: artifact.description,
+        uploaded_at: artifact.uploadedAt,
+        metadata:
+          artifact.type === MilestoneArtifactType.DOCUMENTS
+            ? {
+                file_name: artifact.metadata?.fileName ?? '',
+                file_key: artifact.metadata?.fileKey ?? '',
+              }
+            : {
+                url: artifact.metadata?.url ?? '',
+              },
+      };
+
+      if (artifact.artifactId) {
+        formattedArtifact.artifact_id = artifact.artifactId;
+      }
+
+      return formattedArtifact;
+    }),
+    delete_artifacts: deletedArtifactIds,
+  };
+
+  try {
+    await axios.put(routes.projectManagementV2.milestone.putArtifactsByMilestoneId, formattedData, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while posting artifacts');
+  }
+};
+
+export const updateMilestoneStatus = async (milestoneId: string, targetStatus: MilestoneStatus) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+  };
+  let formattedPayload = {
+    milestone_id: milestoneId,
+    milestone_status: targetStatus,
+  };
+
+  try {
+    await axios.post(routes.projectManagementV2.milestone.updateStatus, formattedPayload, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while updating milestone status');
   }
 };

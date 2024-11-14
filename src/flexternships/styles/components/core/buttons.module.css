@@ -24,7 +24,7 @@
 }
 
 .primaryIconText {
-  @apply flex flex-row items-center cursor-pointer;
+  @apply flex flex-row items-center;
 }
 
 .primaryIconText .iconContainer {

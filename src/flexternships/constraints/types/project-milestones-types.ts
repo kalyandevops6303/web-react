@@ -1,14 +1,44 @@
-import { MilestoneStatus } from '../enums/core-enums';
+import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../enums/core-enums';
 
-export type MilestoneSubmission = {
-  name: string;
-  type: 'FILE' | 'URL';
-  fileKey?: string;
+export type MilestoneArtifact = {
+  artifactId: string;
+  type: MilestoneArtifactType;
+  status: MilestoneArtifactStatus;
   description: string;
-  submittedAt: number;
-  submittedBy: {
+  updatedAt: number;
+  userDetails: {
     name: string;
-    avatar: string;
+    imageUri: string;
+  };
+  metadata: {
+    // file props
+    fileName?: string;
+    fileKey?: string;
+    size?: number;
+    // link props
+    url?: string;
+    createdAt?: number;
+  };
+};
+
+export type MilestoneDraftArtifact = {
+  artifactId?: string;
+  type: MilestoneArtifactType;
+  status: MilestoneArtifactStatus;
+  description?: string;
+  uploadedAt: number;
+  metadata: {
+    // file props
+    fileName?: string;
+    fileKey?: string;
+    size?: number;
+    // link props
+    url?: string;
+    uploadInfo?: {
+      uploadProgress?: number;
+      loading?: boolean;
+      file?: File;
+    };
   };
 };
 
@@ -18,6 +48,7 @@ export type MilestoneDetails = {
   name: string;
   startDate: number;
   endDate: number;
+  acceptedAt?: number;
   description: string;
   estimatedDuration: {
     duration: number;
@@ -25,7 +56,6 @@ export type MilestoneDetails = {
   };
   deliverables: string[];
   status: MilestoneStatus;
-  submissions: MilestoneSubmission[];
   milestoneBy: {
     entity: 'CLIENT'; // TODO: enum
     entityId: string;
@@ -49,6 +79,7 @@ export type MilestoneDetails = {
 
 export type ProjectMilestonesState = {
   isMilestonesLoading: boolean;
+  isMilestoneDetailsLoading: boolean;
   projectMilestones: MilestoneDetails[];
   milestoneDetails: MilestoneDetails;
 };
@@ -56,6 +87,24 @@ export type ProjectMilestonesState = {
 export type ProjectMilestonesActions = {
   populateProjectMilestones: (projectId: string) => Promise<void>;
   populateMilestoneDetails: (milestoneId: string) => Promise<void>;
+  markMilestoneAsCompleted: (milestoneId: string) => Promise<void>;
+  acceptMilestone: (milestoneId: string) => Promise<void>;
 };
 
 export type ProjectMilestonesStore = ProjectMilestonesState & ProjectMilestonesActions;
+
+export type MilestoneArtifactsState = {
+  draftArtifacts: MilestoneDraftArtifact[];
+  submittedArtifacts: MilestoneArtifact[];
+  removedArtifactIds: string[];
+};
+export type MilestoneArtifactsActions = {
+  saveDraftArtifacts: (milestoneId: string) => Promise<void>;
+  submitDraftArtifacts: (milestoneId: string) => Promise<void>;
+  updateDraftArtifacts: (artifacts: MilestoneDraftArtifact[]) => void;
+  updateSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => void;
+  appendToRemovedArtifactIds: (artifactId: string) => void;
+  resetDraftArtifacts: () => void;
+};
+
+export type MilestoneArtifactsStore = MilestoneArtifactsState & MilestoneArtifactsActions;

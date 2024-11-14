@@ -51,7 +51,7 @@ import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/Role
 import ProjectsTab from '@/flexternships/app/project-details/tabs/projects/page';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 import FlexternshipsContractView from '@/flexternships/app/project-details/sign-documents/page';
-import HandleFeedbacks from '@/flexternships/app/components/pages/create-project/tabs/milestone/feedback/HandleFeedbacks';
+import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
 
 // ** Default Route
 const DefaultRoute = '/auth';

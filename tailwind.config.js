@@ -16,6 +16,12 @@ module.exports = {
           DEFAULT: "#fff",
           fa: "#fafafa",
         },
+        yellow: {
+          DEFAULT: "#FFD600"
+        },
+        orange: {
+          DEFAULT: "#FF9F43"
+        },
         grey: {
           DEFAULT: "#6E6B7B",
           light: "#F8F8F8",
@@ -29,6 +35,7 @@ module.exports = {
           300: "#9C9FA1",
           500: "#6A7071",
           600: "#515759",
+          700: "#394042",
           loadingText: "#9E9E9E"
         },
         skyblue: {
@@ -39,6 +46,7 @@ module.exports = {
         error: "#EA5455",
         trublue: {
           DEFAULT: "#0065C1",
+          review: "#03D8F5",
           secondary: {
             500: "#0185E4",
           },

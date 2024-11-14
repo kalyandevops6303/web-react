@@ -19,6 +19,7 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
 import { useParams } from 'react-router-dom';
 import { verifyProjectName } from '@/flexternships/services/project-management-v2';
+import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -225,6 +226,7 @@ export default function Requirements() {
             label="Upload requirement documents (optional)"
             acceptedFormats={allowedFormats}
             placeholder="Upload Document"
+            maxFileCount={MAX_FILE_COUNT}
           />
         </div>
       </div>
