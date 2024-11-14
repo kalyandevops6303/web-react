@@ -110,6 +110,21 @@ const talentOnboardingSlice = createSlice({
       error: action.payload,
     }),
 
+    flexternProfileDetailsRequest: (state) => ({
+      ...state,
+      flexternProfileDetailsLoading: true,
+      error: null,
+    }),
+    flexternProfileDetailsSuccess: (state) => ({
+      ...state,
+      flexternProfileDetailsLoading: false,
+    }),
+    flexternProfileDetailsFailure: (state, action) => ({
+      ...state,
+      flexternProfileDetailsLoading: false,
+      error: action.payload,
+    }),
+
     checkpointCompleteRequest: (state) => ({
       ...state,
       checkpointCompleteLoading: true,
@@ -140,6 +155,9 @@ export const {
   profileDetailsRequest,
   profileDetailsSuccess,
   profileDetailsFailure,
+  flexternProfileDetailsRequest,
+  flexternProfileDetailsSuccess,
+  flexternProfileDetailsFailure,
   checkpointCompleteRequest,
   checkpointCompleteSuccess,
   checkpointCompleteFailure,

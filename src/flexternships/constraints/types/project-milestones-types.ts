@@ -75,6 +75,7 @@ export type MilestoneDetails = {
       feedbackStatus: 'PENDING'; // TODO: enum
     };
   };
+  isBlocked: boolean;
 };
 
 export type ProjectMilestonesState = {

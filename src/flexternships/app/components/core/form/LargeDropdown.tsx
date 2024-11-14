@@ -10,7 +10,7 @@ import {
 } from '@flexternships/components/ui/dropdown-menu';
 
 export default function LargeDropdown(props: LargeDropdownProps) {
-  const { defaultSelected, options, onChange } = props;
+  const { defaultSelected, options, onChange, formatSelected } = props;
 
   const [selected, setSelected] = useState(defaultSelected);
 
@@ -23,7 +23,7 @@ export default function LargeDropdown(props: LargeDropdownProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="text-[20px] leading-[28px] font-[600] font-[Montserrat] text-[#0185E4] flex gap-1 items-center cursor-pointer border-bottom border-[#0185E4]">
-            <div>{selected?.displayText}</div>
+            <div>{formatSelected ? formatSelected(selected) : selected?.displayText}</div>
             <div>
               <ChevronDown />
             </div>
@@ -53,4 +53,5 @@ type LargeDropdownProps = {
     value: any;
   }[];
   onChange: (selected: any) => void;
+  formatSelected?: (selected: any) => string;
 };
