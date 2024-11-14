@@ -30,7 +30,7 @@ export default function PerformanceTab() {
         value: FeedbackTypes.TEAM,
       };
     }
-    
+
     return {
       displayText: 'Self',
       value: FeedbackTypes.SELF,
