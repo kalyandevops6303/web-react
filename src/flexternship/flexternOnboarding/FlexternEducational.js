@@ -702,6 +702,9 @@ const FlexternEducational = () => {
             { shouldValidate: true },
           );
         }
+        if (userData?.talent_info?.educational_institute?.institute_email) {
+          setValue('institutionEmail', userData?.talent_info?.educational_institute?.institute_email);
+        }
         const primaryEducation = res.educational_institute[0];
         setValue(
           'institution',
