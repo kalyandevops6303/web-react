@@ -7,7 +7,6 @@ import {
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
     id: data._id,
-    projectId: data.project_id,
     name: data.name,
     startDate: data.start_date,
     endDate: data.end_date,
@@ -18,6 +17,10 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
       duration: data.estimated_duration?.duration,
       durationType: data.estimated_duration?.duration_type,
     },
+    projectDetails: {
+      projectId: data.project_id,
+      hoursPerWeek: data.expected_duration?.[0]?.details?.expected_duration?.hours_per_week,
+    },
     deliverables: data.deliverables,
     status: data.status,
     milestoneBy: {
@@ -26,19 +29,12 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
       orgSlugId: data.milestone_by?.org_slug_id,
     },
     seq: data.seq,
-    milestoneFeedbackDetails: {
-      id: data.milestone_feedback_details?.id,
-      milestoneId: data.milestone_feedback_details?.milestone_id,
-      orgSlugId: data.milestone_feedback_details?.org_slug_id,
-      projectId: data.milestone_feedback_details?.project_id,
-      entityId: data.milestone_feedback_details?.entity_id,
-      entityType: data.milestone_feedback_details?.entity_type,
-      feedback: {
-        feedbackId: data.milestone_feedback_details?.feedback?.feedback_id,
-        feedbackType: data.milestone_feedback_details?.feedback?.feedback_type,
-        feedbackStatus: data.milestone_feedback_details?.feedback?.feedback_status,
-      },
-    },
+    milestoneFeedbackDetails: (data?.milestone_feedback_details || []).map((feedback: any) => ({
+      feedbackId: feedback._id,
+      feedbackType: feedback.feedback_type,
+      feedbackStatus: feedback.feedback_status,
+    })),
+    maxFeedbackDueDays: 5,
     isBlocked: data.is_blocked,
   };
   const formattedArtifactDetails: {

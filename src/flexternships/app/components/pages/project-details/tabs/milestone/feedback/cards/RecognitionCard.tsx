@@ -32,7 +32,7 @@ export default function RecognitionCard(props: RecognitionCardProps) {
           <span>{recognitionCardContent.description[userDetails.userType]}</span>
         </div>
       </div>
-      <PrimaryButton className="m-0" onClick={giveRecognition}>
+      <PrimaryButton className="m-0 self-stretch" onClick={giveRecognition}>
         {recognitionCardContent.primaryCtaText[userDetails.userType]}
       </PrimaryButton>
     </div>

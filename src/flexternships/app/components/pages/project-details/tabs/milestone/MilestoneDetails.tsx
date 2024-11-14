@@ -12,7 +12,7 @@ import { MilestoneStatus, ToastType, UserType } from '@/flexternships/constraint
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { getMilestoneStatusTextByUserType, showToastMessage } from '@/flexternships/utils/core-utils';
-import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
+import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -99,6 +99,9 @@ export default function MilestoneDetails() {
     );
   }
 
+  const referenceDateForFeedback =
+    userDetails.userType === UserType.CLIENT ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
+
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
       <div className="flex flex-row justify-between">
@@ -141,7 +144,9 @@ export default function MilestoneDetails() {
           </div>
           <div className="flex flex-col gap-y-1.5">
             <div className="text-sm font-normal not-italic leading-5.5 text-grey">Hours/week</div>
-            <div className="text-lg font-semibold not-italic text-grey-heading">255 hr</div>
+            <div className="text-lg font-semibold not-italic text-grey-heading">
+              {milestoneDetails?.projectDetails?.hoursPerWeek} hr
+            </div>
           </div>
           <div className="flex flex-col gap-y-1.5">
             <div className="text-sm font-normal not-italic leading-5.5 text-grey">Status</div>
@@ -208,12 +213,16 @@ export default function MilestoneDetails() {
       {mockMilestoneTalentFeedbackData.map((feedback, index) => (
         <FeedbackStatusCard
           key={index}
+          feedbackId={feedback.feedbackId}
           feedbackType={feedback.feedbackType}
           feedbackStatus={feedback.feedbackStatus}
           numberOfQuestions={feedback.numberOfQuestions}
           timeToComplete={feedback.timeToComplete}
-          milestoneAcceptedAt={milestoneDetails.acceptedAt}
-          milestoneCompletedAt={milestoneDetails.submittedAt}
+          daysLeft={
+            referenceDateForFeedback
+              ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, milestoneDetails.maxFeedbackDueDays))
+              : undefined
+          }
         />
       ))}
     </div>

@@ -1,23 +1,36 @@
 import React from 'react';
 import { ChevronRight, Info } from 'react-feather';
-import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
-import { MilestoneStatus } from '@flexternships/enums/core-enums';
+import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
+import { MilestoneStatus, UserType } from '@flexternships/enums/core-enums';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MilestoneDetails } from '@/flexternships/constraints/types/project-milestones-types';
 import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
+import { mockMilestoneTalentFeedbackData } from '@/flexternships/mocks/milestone-data';
+import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 interface MilestoneTileProps {
   data: MilestoneDetails;
 }
 
 const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
-  const { id, name, status, startDate, acceptedAt, isBlocked } = data;
+  const { id, name, status, startDate, acceptedAt, submittedAt, maxFeedbackDueDays, isBlocked } = data;
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const clickHandler = () => {
     navigate(`${location.pathname}/${id}`);
   };
+
+  const referenceDateForFeedback = userDetails.userType === UserType.CLIENT ? acceptedAt : submittedAt;
+  const allowedMilestoneStatusesForFeedbackCards = [
+    MilestoneStatus.IN_PROGRESS,
+    MilestoneStatus.COMPLETED,
+    MilestoneStatus.IN_REVIEW,
+  ];
 
   return (
     <div className="flex flex-col">
@@ -46,6 +59,25 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
         <div className="text-grey-muted">
           <ChevronRight size={24} />
         </div>
+      </div>
+      <div className="flex flex-row">
+        {allowedMilestoneStatusesForFeedbackCards.includes(status) &&
+          mockMilestoneTalentFeedbackData.map((feedback, index) => (
+            <FeedbackStatusCard
+              key={index}
+              feedbackId={feedback.feedbackId}
+              feedbackType={feedback.feedbackType}
+              feedbackStatus={feedback.feedbackStatus}
+              numberOfQuestions={feedback.numberOfQuestions}
+              timeToComplete={feedback.timeToComplete}
+              daysLeft={
+                referenceDateForFeedback
+                  ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, maxFeedbackDueDays))
+                  : undefined
+              }
+              tiny
+            />
+          ))}
       </div>
       {isBlocked && (
         <div className="text-[#EA5455] text-sm font-normal leading-[22px] mt-3 flex items-center gap-2">

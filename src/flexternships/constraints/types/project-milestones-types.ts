@@ -1,4 +1,11 @@
-import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../enums/core-enums';
+import {
+  MilestoneArtifactStatus,
+  MilestoneArtifactType,
+  MilestoneFeedbackStatus,
+  MilestoneFeedbackType,
+  MilestoneStatus,
+  UserType,
+} from '../enums/core-enums';
 
 export type MilestoneArtifact = {
   artifactId: string;
@@ -42,9 +49,14 @@ export type MilestoneDraftArtifact = {
   };
 };
 
+export type MilestoneFeedback = {
+  feedbackId?: string;
+  feedbackType: MilestoneFeedbackType;
+  feedbackStatus: MilestoneFeedbackStatus;
+};
+
 export type MilestoneDetails = {
   id: string;
-  projectId: string;
   name: string;
   startDate: number;
   endDate: number;
@@ -55,27 +67,20 @@ export type MilestoneDetails = {
     duration: number;
     durationType: 'WEEK'; // TODO: enum
   };
+  projectDetails: {
+    projectId: string;
+    hoursPerWeek: number;
+  };
   deliverables: string[];
   status: MilestoneStatus;
   milestoneBy: {
-    entity: 'CLIENT'; // TODO: enum
+    entity: UserType;
     entityId: string;
     orgSlugId: string;
   };
   seq: number;
-  milestoneFeedbackDetails: {
-    id: string;
-    milestoneId: string;
-    orgSlugId: string;
-    projectId: string;
-    entityId: string;
-    entityType: string;
-    feedback: {
-      feedbackId: string;
-      feedbackType: 'PEER_PEER'; // TODO: enum
-      feedbackStatus: 'PENDING'; // TODO: enum
-    };
-  };
+  milestoneFeedbackDetails: MilestoneFeedback[];
+  maxFeedbackDueDays: number;
   isBlocked: boolean;
 };
 

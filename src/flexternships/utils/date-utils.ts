@@ -83,3 +83,57 @@ export function getTodayDate(): Date {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
+
+/**
+ * Calculates the number of days left between current timestamp and a reference timestamp
+ * Returns positive days if reference is in future, negative if in past
+ * Returns 1 for 0-24 hours, 2 for 24-48 hours, and so on
+ * @param currentEpoch - Current timestamp in milliseconds
+ * @param referenceEpoch - Reference timestamp in milliseconds to compare against
+ * @returns Number of days left (can be negative if reference is in past)
+ */
+export function getDaysLeft(currentEpoch: number, referenceEpoch: number): number {
+  if (typeof currentEpoch !== 'number' || typeof referenceEpoch !== 'number') {
+    throw new TypeError('Expected numbers for timestamps');
+  }
+
+  const millisecondsInDay = 1000 * 60 * 60 * 24;
+  const diffInMs = referenceEpoch - currentEpoch;
+  const diffInDays = diffInMs / millisecondsInDay;
+
+  // For positive differences (future dates)
+  if (diffInDays > 0) {
+    return Math.ceil(diffInDays);
+  }
+  // For negative differences (past dates)
+  return Math.floor(diffInDays);
+}
+/**
+ * Converts milliseconds to a human readable duration string
+ * @param epoch - Duration in milliseconds
+ * @returns A formatted duration string (e.g., "2 days 3 hours 30 minutes" or "45 minutes").
+ * Does not include months or years in the output.
+ * @throws {TypeError} If epoch is not a number
+ */
+export function formatEpochToDuration(epoch: number): string {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+
+  const days = Math.floor(epoch / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((epoch % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((epoch % (1000 * 60 * 60)) / (1000 * 60));
+
+  const parts = [];
+  if (days > 0) {
+    parts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
+  }
+  if (hours > 0) {
+    parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
+  }
+
+  return parts.join(' ');
+}
