@@ -1,0 +1,19 @@
+.root {
+  /* Base error container */
+}
+
+.icon {
+  /* Error icon styling */
+}
+
+.item {
+  /* Individual error item */
+}
+
+.locationTop {
+  /* Error location when positioned at top */
+}
+
+.locationBottom {
+  /* Error location when positioned at bottom */
+}

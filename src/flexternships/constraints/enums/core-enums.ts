@@ -5,10 +5,27 @@ export enum UserType {
 
 // Subject to changer as per BE
 export enum MilestoneStatus {
-  ACTIVE = 'ACTIVE',
+  CREATED = 'CREATED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  IN_REVIEW = 'IN_REVIEW',
   COMPLETED = 'COMPLETED',
-  INACTIVE = 'INACTIVE',
 }
+
+export enum MilestoneArtifactStatus {
+  DRAFT = 'DRAFT',
+  SUBMITTED = 'SUBMITTED',
+}
+
+export enum MilestoneArtifactType {
+  DOCUMENTS = 'DOCUMENTS',
+  LINKS = 'LINKS',
+}
+
+export enum MilestoneArtifactErrorType {
+  INVALID_FILE_FORMAT = 'INVALID_FILE_FORMAT',
+  UPLOAD_FAILED = 'UPLOAD_FAILED',
+}
+
 // Subject to changer as per BE
 export enum MilestoneFeedbackType {
   TEAM_FEEDBACK = 'TEAM_FEEDBACK',
