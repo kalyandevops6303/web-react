@@ -24,6 +24,7 @@ import noSubmissionsFoundGif from '@flexternships/assets/gifs/no-submissions-fou
 import RecognitionCard from './feedback/cards/RecognitionCard';
 import { mockMilestoneTalentFeedbackData } from '@/flexternships/mocks/milestone-data';
 import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
+import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -128,6 +129,7 @@ export default function MilestoneDetails() {
         <div className="flex flex-row gap-x-4 items-center">
           <h1>Milestone {milestoneDetails.seq}</h1>
           <MilestoneStatusTag status={milestoneDetails.status} />
+          <StartsInTimer epoch={milestoneDetails.startDate} hideSeconds />
         </div>
         <div className="flex flex-row gap-x-20">
           <div className="flex flex-col gap-y-1.5">
@@ -148,12 +150,14 @@ export default function MilestoneDetails() {
               {milestoneDetails?.projectDetails?.hoursPerWeek} hr
             </div>
           </div>
-          <div className="flex flex-col gap-y-1.5">
-            <div className="text-sm font-normal not-italic leading-5.5 text-grey">Status</div>
-            <div className="text-lg font-semibold not-italic text-grey-heading">
-              {getMilestoneStatusTextByUserType(milestoneDetails.status, userDetails.userType)}
+          {milestoneDetails.status !== MilestoneStatus.CREATED && (
+            <div className="flex flex-col gap-y-1.5">
+              <div className="text-sm font-normal not-italic leading-5.5 text-grey">Status</div>
+              <div className="text-lg font-semibold not-italic text-grey-heading">
+                {getMilestoneStatusTextByUserType(milestoneDetails.status, userDetails.userType)}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <SimpleElevatedCard className="flex flex-col p-6 gap-y-6 overflow-hidden bg-white">
           <div className="flex flex-col gap-y-4">

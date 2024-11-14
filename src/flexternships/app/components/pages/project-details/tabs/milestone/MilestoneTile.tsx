@@ -8,6 +8,7 @@ import MilestoneStatusTag from '@/flexternships/app/components/core/tags/Milesto
 import { mockMilestoneTalentFeedbackData } from '@/flexternships/mocks/milestone-data';
 import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
 
 interface MilestoneTileProps {
   data: MilestoneDetails;
@@ -41,6 +42,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
         <div className="text-base font-medium text-grey-heading leading-6 grow">{name}</div>
         <div className="flex flex-row gap-x-8 items-center">
           <MilestoneStatusTag status={status} />
+          <StartsInTimer epoch={startDate} hideSeconds />
           <div className="flex flex-col">
             <div className="text-sm text-grey not-italic font-normal leading-5.5">Start Date</div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">

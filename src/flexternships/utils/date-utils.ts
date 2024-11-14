@@ -108,6 +108,7 @@ export function getDaysLeft(currentEpoch: number, referenceEpoch: number): numbe
   // For negative differences (past dates)
   return Math.floor(diffInDays);
 }
+
 /**
  * Converts milliseconds to a human readable duration string
  * @param epoch - Duration in milliseconds
@@ -136,4 +137,32 @@ export function formatEpochToDuration(epoch: number): string {
   }
 
   return parts.join(' ');
+}
+
+/**
+ * Checks if a given epoch time is within the next 24 hours and returns remaining time
+ * @param epoch - The epoch time to check (in milliseconds)
+ * @returns Object with hours, minutes and seconds left if within 24 hours, undefined otherwise
+ */
+export function getTimeLeftIfWithin24Hours(
+  epoch: number,
+): { hours: number; minutes: number; seconds: number } | undefined {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+
+  const now = Date.now();
+  const diffMs = epoch - now;
+  const hours24 = 24 * 60 * 60 * 1000;
+
+  // Return undefined if time difference is negative or more than 24 hours
+  if (diffMs <= 0 || diffMs > hours24) {
+    return undefined;
+  }
+
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+  return { hours, minutes, seconds };
 }
