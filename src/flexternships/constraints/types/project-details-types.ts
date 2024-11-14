@@ -1,4 +1,4 @@
-import { PrimaryProjectStatus } from "../enums/project-enums";
+import { PrimaryProjectStatus } from '../enums/project-enums';
 
 export enum DurationType {
   WEEK = 'WEEK',
@@ -68,7 +68,7 @@ export type ProjectDetails = {
   };
   roles: ProjectRole[];
   listingDetails: ListingDetails;
-  status: PrimaryProjectStatus ;
+  status: PrimaryProjectStatus;
   clientUserId: string;
   orgSlugId: string;
   isDocumentsSent: boolean;

@@ -19,7 +19,7 @@ export enum StatusType {
   SECONDARY = 'SECONDARY',
 }
 
-export enum PrimaryProjectStatus  {
+export enum PrimaryProjectStatus {
   OPEN = 'Open',
   IN_REVIEW = 'In Review',
   ACTIVE = 'Active',

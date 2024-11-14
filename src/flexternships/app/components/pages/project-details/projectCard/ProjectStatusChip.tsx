@@ -1,4 +1,8 @@
-import { PrimaryProjectStatus, SecondaryProjectStatus, StatusType } from '@/flexternships/constraints/enums/project-enums';
+import {
+  PrimaryProjectStatus,
+  SecondaryProjectStatus,
+  StatusType,
+} from '@/flexternships/constraints/enums/project-enums';
 
 interface ProjectStatusChipProps {
   status: keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus;

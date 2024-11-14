@@ -12,7 +12,11 @@ import { BadgeType } from '@/flexternships/constraints/types/project-details-typ
 import { Paperclip } from 'react-feather';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
-import { PrimaryProjectStatus, SecondaryProjectStatus, StatusType } from '@/flexternships/constraints/enums/project-enums';
+import {
+  PrimaryProjectStatus,
+  SecondaryProjectStatus,
+  StatusType,
+} from '@/flexternships/constraints/enums/project-enums';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -42,7 +46,7 @@ const LeftSideBarProjectDetails = () => {
     <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 w-full md:w-[350px] h-fit rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
         <ProjectStatusChip
-          status={data?.status as string as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus }
+          status={data?.status as string as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
           statusType={StatusType?.PRIMARY}
         />
 
@@ -103,7 +107,7 @@ const LeftSideBarProjectDetails = () => {
         <div className="flex flex-row items-start gap-3">
           Status :{' '}
           <ProjectStatusChip
-            status={secondaryStatus as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus }
+            status={secondaryStatus as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
             statusType={StatusType?.SECONDARY}
             rounded={true}
           />
