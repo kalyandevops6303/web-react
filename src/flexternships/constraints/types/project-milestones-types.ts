@@ -48,6 +48,7 @@ export type MilestoneDetails = {
   name: string;
   startDate: number;
   endDate: number;
+  submittedAt?: number;
   acceptedAt?: number;
   description: string;
   estimatedDuration: {

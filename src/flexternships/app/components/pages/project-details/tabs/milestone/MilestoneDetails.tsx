@@ -21,6 +21,9 @@ import SubmittedArtifacts from './artifacts/submitted/SubmittedArtifacts';
 import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
 import { isEmpty } from 'lodash';
 import noSubmissionsFoundGif from '@flexternships/assets/gifs/no-submissions-found.gif';
+import RecognitionCard from './feedback/cards/RecognitionCard';
+import { mockMilestoneTalentFeedbackData } from '@/flexternships/mocks/milestone-data';
+import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -138,9 +141,7 @@ export default function MilestoneDetails() {
           </div>
           <div className="flex flex-col gap-y-1.5">
             <div className="text-sm font-normal not-italic leading-5.5 text-grey">Hours/week</div>
-            <div className="text-lg font-semibold not-italic text-grey-heading">
-              255 hr {/* Query: Hours per week of milestone */}
-            </div>
+            <div className="text-lg font-semibold not-italic text-grey-heading">255 hr</div>
           </div>
           <div className="flex flex-col gap-y-1.5">
             <div className="text-sm font-normal not-italic leading-5.5 text-grey">Status</div>
@@ -203,6 +204,18 @@ export default function MilestoneDetails() {
           </AccordionItem>
         </Accordion>
       </SimpleElevatedCard>
+      <RecognitionCard />
+      {mockMilestoneTalentFeedbackData.map((feedback, index) => (
+        <FeedbackStatusCard
+          key={index}
+          feedbackType={feedback.feedbackType}
+          feedbackStatus={feedback.feedbackStatus}
+          numberOfQuestions={feedback.numberOfQuestions}
+          timeToComplete={feedback.timeToComplete}
+          milestoneAcceptedAt={milestoneDetails.acceptedAt}
+          milestoneCompletedAt={milestoneDetails.submittedAt}
+        />
+      ))}
     </div>
   );
 }

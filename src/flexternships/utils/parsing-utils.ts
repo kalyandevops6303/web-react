@@ -11,6 +11,7 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
     name: data.name,
     startDate: data.start_date,
     endDate: data.end_date,
+    submittedAt: data.milestone_submitted_at,
     acceptedAt: data.milestone_accepted_at,
     description: data.description,
     estimatedDuration: {
