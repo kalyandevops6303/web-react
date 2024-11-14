@@ -38,7 +38,7 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
         feedbackStatus: data.milestone_feedback_details?.feedback?.feedback_status,
       },
     },
-    isBlocked: data._id === '6735757b4c7ee46914975eae' ? true : data.is_blocked,
+    isBlocked: data.is_blocked,
   };
   const formattedArtifactDetails: {
     milestoneArtifactDetailsDraft: MilestoneDraftArtifact[];
