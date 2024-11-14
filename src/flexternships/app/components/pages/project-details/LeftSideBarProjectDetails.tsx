@@ -17,6 +17,9 @@ import {
   SecondaryProjectStatus,
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
+import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
+import { useParams } from 'react-router-dom';
+import { isEmpty } from 'lodash';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -24,11 +27,19 @@ enum UserTypeChipClassnames {
 }
 
 const LeftSideBarProjectDetails = () => {
+  const params = useParams();
+  const { projectId, milestoneId } = params;
+
   const data = useProjectsStore((state) => state.projectDetails);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+  const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
+  const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
+
   const [secondaryStatus, setSecondaryStatus] = useState<string>('');
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(true);
+
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
@@ -40,7 +51,15 @@ const LeftSideBarProjectDetails = () => {
       setTagsData(tags);
       setSecondaryStatus(() => data?.secondaryStatus?.next || data?.status);
     }
+
+    if (projectId && isEmpty(milestoneId)) {
+      populateProjectMilestones(projectId);
+    }
   }, [data]);
+
+  useEffect(() => {
+    setIsBlocked(projectMilestones?.reduce((acc, milestone) => acc || milestone.isBlocked, false));
+  }, [projectMilestones]);
 
   return (
     <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 w-full md:w-[350px] h-fit rounded-xl">
@@ -136,6 +155,7 @@ const LeftSideBarProjectDetails = () => {
         <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
           {userDetails.userType === UserType.CLIENT && (
             <PrimaryButton
+              disabled={isBlocked}
               onClick={() => {}}
               className="w-fit px-10 py-3 mx-auto bg-red-600 hover:border hover:border-red-600 hover:bg-red-200 font-semibold hover:text-red-600 text-white"
             >

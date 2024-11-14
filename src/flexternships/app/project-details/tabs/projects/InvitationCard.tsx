@@ -1,3 +1,4 @@
+import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import CollapsableCard from '@flexternships/app/components/core/cards/CollapsableCard';
@@ -13,6 +14,7 @@ export default function InvitationCard() {
 
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectInvitationDetails = useProjectsStore((state) => state.projectInvitationDetails);
+  const isProjectInvitationDetailsLoading = useProjectsStore((state) => state.isProjectInvitationDetailsLoading);
 
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
@@ -41,9 +43,9 @@ export default function InvitationCard() {
   };
 
   const invitationCardDetailsData = {
-    company: `${projectDetails?.clientDetails?.firstName} ${projectDetails?.clientDetails?.lastName}`,
-    department: projectDetails?.clientDetails?.departmentName,
-    image_uri: projectDetails?.clientDetails?.imageUri,
+    company: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
+    department: projectDetails?.clientInfo?.departmentName,
+    image_uri: projectDetails?.clientInfo?.imageUri,
     start_date: formatEpochToHumanReadable(projectInvitationDetails?.project_start_date || 1),
     role: projectInvitationDetails?.talent_role,
     estimated_duration: `${projectInvitationDetails?.project_estimated_duration?.duration} Weeks`,
@@ -54,12 +56,22 @@ export default function InvitationCard() {
     getProjectInvitationDetails(params?.projectId as string);
   }, []);
 
+  if (isProjectInvitationDetailsLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="p-3 flex flex-col gap-5 w-full">
         <div className="flex gap-2">
           <Avatar>
-            <AvatarImage src={projectDetails?.clientDetails?.imageUri} />
+            <AvatarImage src={invitationCardDetailsData?.image_uri} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>

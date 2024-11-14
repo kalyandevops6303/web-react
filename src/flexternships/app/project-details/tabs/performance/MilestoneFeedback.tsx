@@ -44,8 +44,10 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   return (
     <div>
       {isPerformanceDetailsLoading ? (
-        <div className="w-5">
-          <Spinner />
+        <div className="flex flex-col items-center justify-center min-h-48">
+          <div className="h-8 w-8">
+            <Spinner />
+          </div>
         </div>
       ) : (
         <div>
