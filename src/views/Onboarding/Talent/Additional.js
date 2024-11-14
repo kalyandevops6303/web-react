@@ -70,6 +70,7 @@ import {
   getUserDetails,
   saveCheckpointComplete,
   saveProfileDetails,
+  saveFlexternProfileDetails,
 } from '../../../redux/actions/talentOnboardingActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../../redux/selectors/authSelectors';
@@ -98,45 +99,6 @@ const Additional = () => {
         value: yup.string().required('Country is required'),
       })
       .required('Country is required'),
-    startYear: yup
-      .object()
-      .shape({
-        label: yup.string().required('Start year is required'),
-        value: yup.string().required('Start year is required'),
-      })
-      .required('Start year is required'),
-    graduationYear: yup
-      .object()
-      .shape({
-        label: yup.string().required('Graduation year is required'),
-        value: yup.string().required('Graduation year is required'),
-      })
-      .when('startYear', (startYear, schema) => {
-        if (startYear) {
-          return schema.test(
-            'is-after-start',
-            'Graduation year must be after start year',
-            (value) => parseInt(value?.value, 10) > parseInt(startYear.value, 10),
-          );
-        }
-        return schema;
-      })
-      .required('Graduation year is required'),
-    institutionEmail: yup.string().email('Must be a valid email'),
-    institution: yup
-      .object()
-      .shape({
-        label: yup.string().required('Institution is required'),
-        value: yup.string().required('Institution is required'),
-      })
-      .required('Institution is required'),
-    degree: yup
-      .object()
-      .shape({
-        label: yup.string().required('Degree is required'),
-        value: yup.string().required('Degree is required'),
-      })
-      .required('Degree is required'),
   });
 
   const savedFormData = useSelector(formData);
@@ -163,11 +125,6 @@ const Additional = () => {
     defaultValues: {
       gender: savedFormData?.gender || '',
       country: savedFormData?.country || null,
-      startYear: savedFormData?.startYear || null,
-      graduationYear: savedFormData?.graduationYear || null,
-      institutionEmail: savedFormData?.institutionEmail || '',
-      institution: savedFormData?.institution || null,
-      education: savedFormData?.education || null,
     },
   });
   const localFormData = useWatch({ control });
@@ -311,47 +268,6 @@ const Additional = () => {
     }
   };
 
-  const loadEducationInstitutionOptions = async (search, prevOptions, { page }) => {
-    try {
-      const response = await paginatedInstitutesService(page, search);
-      let myInstitution = [];
-      if (location.pathname.includes('profile-edit')) {
-        if (talentOnboardingData?.talent_info?.educational_institute) {
-          myInstitution = talentOnboardingData?.talent_info?.educational_institute
-            .map((educationDetails) => educationDetails.institution)
-            .map((institute) => ({ label: institute.name, value: institute._id }));
-        } else if (userDetailsData?.talent_info?.educational_institute) {
-          myInstitution = userDetailsData?.talent_info?.educational_institute
-            .map((educationDetails) => educationDetails.institution)
-            .map((institute) => ({ label: institute.name, value: institute._id }));
-        }
-      } else if (location.pathname.includes('talent-onboarding')) {
-        myInstitution = talentOnboardingData?.talent_info?.educational_institute
-          .map((educationDetails) => educationDetails.institution)
-          .map((institute) => ({ label: institute.name, value: institute._id }));
-      }
-
-      const newOptions = response?.data?.data?.data
-        .map((data) => ({ label: data.name, value: data._id }))
-        .filter((option) => !myInstitution.some((myOption) => myOption.value === option.value));
-
-      const instituteGroupLabels = [
-        { label: 'My Institutions', options: [...myInstitution] },
-        { label: 'Other Institutions', options: [...newOptions] },
-      ];
-
-      return {
-        options: instituteGroupLabels,
-        hasMore: response?.data?.data?.metadata?.has_next_page,
-        additional: {
-          page: page + 1,
-        },
-      };
-    } catch (error) {
-      return { options: [], hasMore: false };
-    }
-  };
-
   const handleSelectChange = (option, field) => {
     // const selectedOptionValue = option?.value;
     // const myInstitution = userDetailsData?.talent_info?.educational_institute
@@ -370,27 +286,6 @@ const Additional = () => {
       <span>{data.label}</span>
     </GroupLabelWrapper>
   );
-
-  const loadEducationsOptions = async (search) => {
-    if (search) {
-      return {
-        options: returnFilteredDropdownOptions(search, educationsOptions),
-      };
-    }
-    try {
-      const response = await educationsService();
-
-      const options = response?.data?.data?.map((education) => ({ label: education.name, value: education._id }));
-
-      setEducationsOptions(options);
-
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -518,14 +413,6 @@ const Additional = () => {
       additional_info: {
         gender,
         country: country?.value,
-        educational_institute: {
-          institute_email: institutionEmail,
-          institute_email_verify: false,
-          institution: institution?.value,
-          degree: degree?.value || null,
-          start_year: parseInt(startYear?.value, 10) || 0,
-          grad_year: parseInt(graduationYear?.value, 10) || 0,
-        },
         identity_verification: {
           file_name: files[0]?.file?.name,
           file_key: files[0]?.uploadData?.file_key,
@@ -536,7 +423,7 @@ const Additional = () => {
       },
     };
 
-    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
     dispatch(saveCheckpointComplete(() => {}));
   };
 
@@ -564,62 +451,6 @@ const Additional = () => {
             shouldValidate: true,
           },
         );
-      }
-
-      if (res?.additional_info?.educational_institute) {
-        if (res?.additional_info?.educational_institute?.institution_info) {
-          setValue(
-            'institution',
-            {
-              label: res?.additional_info?.educational_institute?.institution_info?.name,
-              value: res?.additional_info?.educational_institute?.institution_info?._id,
-            },
-            {
-              shouldValidate: true,
-            },
-          );
-        }
-        if (res?.additional_info?.educational_institute?.degree_info) {
-          setValue(
-            'degree',
-            {
-              label: res?.additional_info?.educational_institute?.degree_info?.name,
-              value: res?.additional_info?.educational_institute?.degree_info?._id,
-            },
-            {
-              shouldValidate: true,
-            },
-          );
-        }
-        if (res?.additional_info?.educational_institute?.institute_email) {
-          setValue('institutionEmail', res?.additional_info?.educational_institute?.institute_email, {
-            shouldValidate: true,
-          });
-        }
-        if (res?.additional_info?.educational_institute?.start_year) {
-          setValue(
-            'startYear',
-            {
-              label: res?.additional_info?.educational_institute?.start_year.toString(),
-              value: res?.additional_info?.educational_institute?.start_year,
-            },
-            {
-              shouldValidate: true,
-            },
-          );
-        }
-        if (res?.additional_info?.educational_institute?.grad_year) {
-          setValue(
-            'graduationYear',
-            {
-              label: res?.additional_info?.educational_institute?.grad_year.toString(),
-              value: res?.additional_info?.educational_institute?.grad_year,
-            },
-            {
-              shouldValidate: true,
-            },
-          );
-        }
       }
 
       if (
@@ -769,177 +600,6 @@ const Additional = () => {
 
                 <Card>
                   <CardHeader>
-                    <h4 className="m-0 mt-1 text-lg font-medium">Current Education</h4>
-                    <CustomerSupportCTA
-                      type={CUSTOMER_SUPPORT_TYPES.education}
-                      handleCustomerSupport={handleCustomerSupport}
-                    />
-                  </CardHeader>
-                  <hr className="m-0 card-header-border" />
-                  <CardBody>
-                    <Row className="mb-1 mt-2">
-                      <Col sm="6" md="6" lg="3">
-                        <Label className="form-label" for="graduationYear">
-                          Start Year<span className="label-asterisk me-50">*</span>
-                        </Label>
-                        <Controller
-                          id="startYear"
-                          name="startYear"
-                          control={control}
-                          invalid={errors.graduationYear && true}
-                          render={({ field }) => (
-                            <Select
-                              {...field}
-                              options={studyYears}
-                              classNamePrefix="select"
-                              placeholder="Start of education"
-                              theme={selectThemeColors}
-                              className={classNames('react-select', {
-                                'is-invalid': errors && errors.graduationYear,
-                              })}
-                              onChange={(selOption) => {
-                                field.onChange(selOption);
-                                setValue('graduationYear', null);
-                                trigger('graduationYear');
-                              }}
-                            />
-                          )}
-                        />
-                        {errors.weekendStartTime && (
-                          <FormFeedback>{errors.weekendStartTime.label.message}</FormFeedback>
-                        )}
-                      </Col>
-                      <Col sm="6" md="6" lg="3">
-                        <Label className="form-label" for="graduationYear">
-                          Graduation Year<span className="label-asterisk me-50">*</span>
-                        </Label>
-                        <Controller
-                          id="graduationYear"
-                          name="graduationYear"
-                          control={control}
-                          invalid={errors.graduationYear && true}
-                          render={({ field }) => (
-                            <Select
-                              options={
-                                watch('startYear')
-                                  ? graduationYears?.filter(
-                                      (t) => parseInt(t?.value, 10) > parseInt(watch('startYear')?.value, 10),
-                                    )
-                                  : graduationYears
-                              }
-                              classNamePrefix="select"
-                              placeholder="End of education "
-                              theme={selectThemeColors}
-                              className={classNames('react-select', {
-                                'is-invalid': errors && errors.weekendEndTime,
-                              })}
-                              {...field}
-                            />
-                          )}
-                        />
-                        {errors.weekendEndTime && <FormFeedback>{errors.weekendEndTime.label.message}</FormFeedback>}
-                      </Col>
-                      <Col sm="12" md="12" lg="6">
-                        <Label className="form-label" for="institutionEmail">
-                          Institution Email
-                        </Label>
-                        <Row className="d-flex align-items-center justify-content-center">
-                          <Col>
-                            <Controller
-                              id="institutionEmail"
-                              name="institutionEmail"
-                              control={control}
-                              render={({ field }) => (
-                                <Input
-                                  {...field}
-                                  placeholder="Enter your institute email id
-                                "
-                                  invalid={errors.institutionEmail && true}
-                                />
-                              )}
-                            />
-                            {errors.institutionEmail && <FormFeedback>{errors.institutionEmail.message}</FormFeedback>}
-                          </Col>
-                          {/* <Col>
-                  <div
-                    className={`upload-button cursor-pointer ${
-                      !watch('institutionEmail') || errors.institutionEmail ? 'disabled' : ''
-                    }`}
-                    onClick={() => {
-                      if (!errors.institutionEmail && watch('institutionEmail')) {
-                        toggleEmailVerifyModal();
-                      }
-                    }}
-                  >
-                    <h5 className="fw-bold" color={theme.activeNavPillText}>
-                      Verify
-                    </h5>
-                  </div>
-                </Col> */}
-                        </Row>
-                      </Col>
-                    </Row>
-
-                    <Row className="mb-1 mt-2">
-                      <Col sm="12" md="12" lg="6">
-                        <Label className="form-label" for="institution">
-                          Institution<span className="label-asterisk me-50">*</span>
-                        </Label>
-                        <Controller
-                          id="institution"
-                          name="institution"
-                          control={control}
-                          invalid={errors.institution && true}
-                          render={({ field }) => (
-                            <AsyncPaginate
-                              {...field}
-                              debounceTimeout={1000}
-                              additional={{ page: 1 }}
-                              loadOptions={loadEducationInstitutionOptions}
-                              reduceOptions={reduceGroupedOptions}
-                              onChange={(selOption) => handleSelectChange(selOption, field)}
-                              classNamePrefix="select"
-                              placeholder="Enter your institution name"
-                              theme={selectThemeColors}
-                              formatGroupLabel={formatGroupLabel}
-                              className={classNames('react-select', {
-                                'is-invalid': errors && errors.institution,
-                              })}
-                            />
-                          )}
-                        />
-                        {errors.institution && <FormFeedback>{errors.institution.message}</FormFeedback>}
-                      </Col>
-
-                      <Col sm="12" md="12" lg="6">
-                        <Label className="form-label" for="degree">
-                          Degree<span className="label-asterisk me-50">*</span>
-                        </Label>
-                        <Controller
-                          id="degree"
-                          name="degree"
-                          control={control}
-                          render={({ field }) => (
-                            <AsyncPaginate
-                              loadOptions={loadEducationsOptions}
-                              classNamePrefix="select"
-                              placeholder="Select your degree"
-                              theme={selectThemeColors}
-                              className={classNames('react-select', {
-                                'is-invalid': errors && errors.degree,
-                              })}
-                              {...field}
-                            />
-                          )}
-                        />
-                        {errors.degree && <FormFeedback>{errors.degree.message}</FormFeedback>}
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-
-                <Card>
-                  <CardHeader>
                     <h4 className="m-0 mt-1 text-lg font-medium">Identity Verification (optional)</h4>
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
@@ -947,7 +607,8 @@ const Additional = () => {
                     <div className="d-flex" style={{ padding: 20 }}>
                       <Col className="w-100 ">
                         <h5>
-                          Please upload a valid government approved photo ID (like Aadhar Card, Institute ID, Passport)
+                          Please upload a valid government approved photo ID (like passport, PAN card, Institute ID,
+                          Driver's License)
                         </h5>
 
                         {files?.length === 0 && (

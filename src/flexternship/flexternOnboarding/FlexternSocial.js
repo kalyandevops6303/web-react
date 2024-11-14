@@ -27,6 +27,7 @@ import {
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
+  saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import {
   profileDetailsLoading,
@@ -261,7 +262,7 @@ const FlexternSocial = () => {
       social_links,
     };
     if (reqData) {
-      dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
     }
 
     if (IsresumeParsed) {

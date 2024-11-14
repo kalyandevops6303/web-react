@@ -35,6 +35,7 @@ import {
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
+  saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import {
   deleteResumeLoading,
@@ -45,7 +46,7 @@ import {
   userDetailsLoading,
   userDetails,
 } from '../../redux/selectors/talentOnboardingSelectors';
-import { languagesService, talentRolesService } from '../../services/staticServices';
+import { languagesService, talentRolesService, timezonesService } from '../../services/staticServices';
 import {
   downloadFile,
   downloadUploadedFile,
@@ -100,7 +101,20 @@ const FlexternPersonal = () => {
         value: yup.string().required('Role is required'),
       })
       .required('Role is required'),
-    resume: yup.mixed(),
+    workingTimeZone: yup
+      .object()
+      .shape({
+        label: yup.string().required('Prefered working time zone is required'),
+        value: yup.string().required('Prefered working time zone is required'),
+      })
+      .required('Prefered working time zone is required'),
+    resume: yup
+      .object()
+      .shape({
+        file_name: yup.string().required('Resume is required'),
+        file_key: yup.string().required('Resume is required'),
+      })
+      .required('Resume is required'),
     speakLanguages: yup
       .array()
       .of(
@@ -143,6 +157,7 @@ const FlexternPersonal = () => {
       role: savedFormData?.role || null,
       resume: savedFormData?.resume || null,
       parseResume: IsresumeParsed || false,
+      workingTimeZone: savedFormData?.workingTimeZone || null,
     },
   });
 
@@ -152,6 +167,7 @@ const FlexternPersonal = () => {
 
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
+  const [workingTimeZonesOptions, setWorkingTimeZonesOptions] = useState([]);
   const [resumeModalOpen, setResumeModalOpen] = useState(true);
   const [languagesOptions, setLanguagesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
@@ -235,6 +251,7 @@ const FlexternPersonal = () => {
         setFiles([...filtered]);
       }),
     );
+    setValue('resume', null, { shouldValidate: true });
   };
 
   const isFileValid = (file) => {
@@ -364,6 +381,15 @@ const FlexternPersonal = () => {
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
+    setValue(
+      'resume',
+      {
+        file_name: file?.name,
+        file_key: response?.data?.data?.file_key,
+      },
+      { shouldValidate: true },
+    );
+    trigger(['resume']);
     // if (response)
     //   dispatch(
     //     getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
@@ -523,7 +549,7 @@ const FlexternPersonal = () => {
   };
 
   const onSubmit = (data) => {
-    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages } = data;
+    const { tagline, professionalIntroduction, role, speakLanguages, writeLanguages, workingTimeZone } = data;
 
     const professional_intro = professionalIntroduction;
     const languages_speak = speakLanguages?.map((language) => language.value);
@@ -535,6 +561,9 @@ const FlexternPersonal = () => {
       role: role.value,
       languages_speak,
       languages_write,
+      availability: {
+        timezone: workingTimeZone.value,
+      },
       resume: !isEmpty(files)
         ? {
             file_name: files[0]?.file?.name || '',
@@ -543,7 +572,7 @@ const FlexternPersonal = () => {
         : {},
     };
 
-    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
     if (IsresumeParsed) {
       const languagesWritten = watch('writeLanguages')?.map((language) => ({
         name: language.label,
@@ -588,6 +617,29 @@ const FlexternPersonal = () => {
     }
   };
 
+  const loadPreferedWorkingTimezoneOptions = async (search) => {
+    if (search) {
+      return {
+        options: returnFilteredDropdownOptions(search, workingTimeZonesOptions),
+      };
+    }
+    try {
+      const response = await timezonesService();
+      const options = response?.data?.data?.map((timezone) => ({
+        label: `${timezone.name} (${timezone.abbreviation})`,
+        value: timezone._id,
+      }));
+
+      setWorkingTimeZonesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.talent_info?.tagline.length > 0) {
@@ -612,6 +664,22 @@ const FlexternPersonal = () => {
           { shouldValidate: true },
         );
       }
+      if (res?.availability?.timezone) {
+        if ('name' in res?.availability?.timezone) {
+          setValue(
+            'workingTimeZone',
+            {
+              label: savedFormData?.workingTimeZone?.label
+                ? `${savedFormData?.workingTimeZone?.label}`
+                : `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
+              value: savedFormData?.workingTimeZone?.value
+                ? savedFormData?.workingTimeZone?.value
+                : res?.availability?.timezone?._id,
+            },
+            { shouldValidate: true },
+          );
+        }
+      }
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
@@ -630,6 +698,10 @@ const FlexternPersonal = () => {
               : res?.talent_info?.resume?.file_key,
           ),
         );
+        setValue('resume', {
+          file_name: fileUrl?.file?.name,
+          file_key: fileUrl?.uploadData?.file_key,
+        });
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
@@ -831,6 +903,30 @@ const FlexternPersonal = () => {
                         <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
                       )}
                     </Col>
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="role">
+                        Prefered working time zone<span className="label-asterisk">*</span>
+                      </Label>
+                      <Controller
+                        id="role"
+                        name="workingTimeZone"
+                        control={control}
+                        invalid={errors.workingTimeZone && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            loadOptions={loadPreferedWorkingTimezoneOptions}
+                            classNamePrefix="select"
+                            placeholder="Select prefered working time zone"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.workingTimeZone,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.workingTimeZone && <FormFeedback>{errors.workingTimeZone.labe?.message}</FormFeedback>}
+                    </Col>
                   </Row>
                   <Row className="mb-1 mt-3">
                     <h5 className="m-0 text-lg font-medium">Languages</h5>
@@ -929,7 +1025,9 @@ const FlexternPersonal = () => {
             <Col className="w-25">
               <Card>
                 <CardHeader>
-                  <h4 className="m-0 mt-1">Resume</h4>
+                  <h4 className="m-0 mt-1 text-lg font-medium">
+                    Resume <span className="label-asterisk">*</span>
+                  </h4>
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody>

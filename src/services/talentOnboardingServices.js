@@ -7,6 +7,8 @@ const accountDetailsService = (data) => DataService.post(API.talentOnboarding.ac
 
 const profileDetailsService = (data) => DataService.put(API.talentOnboarding.profileDetails, data);
 
+const flexternProfileDetailsService = (data) => DataService.put(API.talentOnboarding.flexternProfileDetails, data);
+
 const resumeUploadService = (data) => DataService.get(`${API.talentOnboarding.profileResumeUpload}?filename=${data}`);
 
 const identityUploadService = (data) => DataService.get(`${API.talentOnboarding.identityUpload}?filename=${data}`);
@@ -43,4 +45,5 @@ export {
   identityUploadService,
   identityDeleteService,
   profileCompletionFlexternService,
+  flexternProfileDetailsService,
 };

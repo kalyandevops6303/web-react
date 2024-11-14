@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight } from 'react-feather';
+import { ChevronRight, Info } from 'react-feather';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { MilestoneStatus } from '@flexternships/enums/core-enums';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -11,7 +11,7 @@ interface MilestoneTileProps {
 }
 
 const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
-  const { id, name, status, startDate, acceptedAt } = data;
+  const { id, name, status, startDate, acceptedAt, isBlocked } = data;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -47,6 +47,13 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
           <ChevronRight size={24} />
         </div>
       </div>
+      {isBlocked && (
+        <div className="text-[#EA5455] text-sm font-normal leading-[22px] mt-3 flex items-center gap-2">
+          <Info size={'18'} />
+          <span className="font-semibold">Temporarily Blocked:</span>
+          Request you to completed the feedback forms in order to resume back to the project viewing
+        </div>
+      )}
       <div>{/* Info */}</div>
     </div>
   );
