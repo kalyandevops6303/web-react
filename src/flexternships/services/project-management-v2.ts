@@ -3,7 +3,8 @@ import { ProjectCreationFormData } from '@flexternships/types/project-creation-t
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
-import { DurationType, ProjectDetails, ProjectStatus } from '../constraints/types/project-details-types';
+import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
+import { PrimaryProjectStatus } from '../constraints/enums/project-enums';
 
 /**
  * Retrieves a file upload URL for a given filename?.
@@ -310,7 +311,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         startDateEpoch: data?.listing_details?.start_date_epoch,
         endDateEpoch: data?.listing_details?.end_date_epoch,
       },
-      status: data?.status as ProjectStatus,
+      status: data?.status as PrimaryProjectStatus,
       clientUserId: data?.client_user_id,
       orgSlugId: data?.org_slug_id,
       isDocumentsSent: data?.is_documents_sent,
