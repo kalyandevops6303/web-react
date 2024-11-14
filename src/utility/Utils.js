@@ -571,7 +571,7 @@ export const truncateSentence = ({ sentence, maxCharacters }) => {
   return sentence;
 };
 
-export const getPath = ({ isActiveProject, projectId }) => {
+export const getPath = ({ isActiveProject, projectId, isFlextern = false }) => {
   const location = useLocation();
   const isDashboard = location.pathname.split('/').includes('dashboard');
   if (location.pathname.split('/').includes('projects')) {
@@ -582,6 +582,9 @@ export const getPath = ({ isActiveProject, projectId }) => {
       return `/project-details/${projectId}/rating`;
     }
     return `/project-details/${projectId}/bid`;
+  }
+  if (isFlextern) {
+    return `/project-details/${projectId}/team`;
   }
   if (isDashboard) {
     if (isActiveProject) {

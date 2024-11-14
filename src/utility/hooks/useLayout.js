@@ -28,13 +28,13 @@ export const useLayout = () => {
     }
   };
 
-  useEffect(() => {
-    if (window !== undefined) {
-      window.addEventListener('resize', handleWindowWidth);
-    }
+  // useEffect(() => {
+  //   if (window !== undefined) {
+  //     window.addEventListener('resize', handleWindowWidth);
+  //   }
 
-    return () => window.removeEventListener('resize', handleWindowWidth);
-  }, []);
+  //   return () => window.removeEventListener('resize', handleWindowWidth);
+  // }, []);
 
   if (window) {
     useEffect(() => {

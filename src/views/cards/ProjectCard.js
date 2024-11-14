@@ -138,7 +138,7 @@ const ProjectCard = ({
 
   const handleSwitchProfileModalNavigation = () => {
     if (!location.pathname.split('/').includes('invited')) {
-      return getPath({ isActiveProject: false, projectId: data?._id });
+      return getPath({ isActiveProject: false, projectId: data?._id, isFlextern: true });
     }
 
     return switchData?.navigateTo;

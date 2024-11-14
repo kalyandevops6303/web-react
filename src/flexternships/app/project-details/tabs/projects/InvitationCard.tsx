@@ -41,9 +41,9 @@ export default function InvitationCard() {
   };
 
   const invitationCardDetailsData = {
-    company: `${projectDetails?.clientDetails?.first_name} ${projectDetails?.clientDetails?.last_name}`,
-    department: projectDetails?.clientDetails?.department,
-    image_uri: projectDetails?.clientDetails?.image_uri,
+    company: `${projectDetails?.clientDetails?.firstName} ${projectDetails?.clientDetails?.lastName}`,
+    department: projectDetails?.clientDetails?.departmentName,
+    image_uri: projectDetails?.clientDetails?.imageUri,
     start_date: formatEpochToHumanReadable(projectInvitationDetails?.project_start_date || 1),
     role: projectInvitationDetails?.talent_role,
     estimated_duration: `${projectInvitationDetails?.project_estimated_duration?.duration} Weeks`,
@@ -59,7 +59,7 @@ export default function InvitationCard() {
       <div className="p-3 flex flex-col gap-5 w-full">
         <div className="flex gap-2">
           <Avatar>
-            <AvatarImage src={projectDetails?.clientDetails?.image_uri} />
+            <AvatarImage src={projectDetails?.clientDetails?.imageUri} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
