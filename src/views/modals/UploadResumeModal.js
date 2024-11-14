@@ -22,18 +22,7 @@ const UploadResumeModal = ({ modal, uploadButton, toggleModal }) => (
           <p className="fw-normal modal-body-text mt-1">Upload your resume to auto fill your profile</p>
         </div>
       </div>
-      <div className="d-flex align-items-center justify-content-end pb-2 pe-2">
-        <Button
-          color="primary"
-          outline
-          className="d-flex align-items-center justify-content-between me-2"
-          onClick={toggleModal}
-        >
-          <span className="me-50">Skip</span>
-          <ChevronRight size={14} />
-        </Button>
-        {uploadButton}
-      </div>
+      <div className="d-flex align-items-center justify-content-end pb-2 pe-2">{uploadButton}</div>
     </ModalBody>
   </Modal>
 );
