@@ -83,3 +83,86 @@ export function getTodayDate(): Date {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
+
+/**
+ * Calculates the number of days left between current timestamp and a reference timestamp
+ * Returns positive days if reference is in future, negative if in past
+ * Returns 1 for 0-24 hours, 2 for 24-48 hours, and so on
+ * @param currentEpoch - Current timestamp in milliseconds
+ * @param referenceEpoch - Reference timestamp in milliseconds to compare against
+ * @returns Number of days left (can be negative if reference is in past)
+ */
+export function getDaysLeft(currentEpoch: number, referenceEpoch: number): number {
+  if (typeof currentEpoch !== 'number' || typeof referenceEpoch !== 'number') {
+    throw new TypeError('Expected numbers for timestamps');
+  }
+
+  const millisecondsInDay = 1000 * 60 * 60 * 24;
+  const diffInMs = referenceEpoch - currentEpoch;
+  const diffInDays = diffInMs / millisecondsInDay;
+
+  // For positive differences (future dates)
+  if (diffInDays > 0) {
+    return Math.ceil(diffInDays);
+  }
+  // For negative differences (past dates)
+  return Math.floor(diffInDays);
+}
+
+/**
+ * Converts milliseconds to a human readable duration string
+ * @param epoch - Duration in milliseconds
+ * @returns A formatted duration string (e.g., "2 days 3 hours 30 minutes" or "45 minutes").
+ * Does not include months or years in the output.
+ * @throws {TypeError} If epoch is not a number
+ */
+export function formatEpochToDuration(epoch: number): string {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+
+  const days = Math.floor(epoch / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((epoch % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((epoch % (1000 * 60 * 60)) / (1000 * 60));
+
+  const parts = [];
+  if (days > 0) {
+    parts.push(`${days} d`);
+  }
+  if (hours > 0) {
+    parts.push(`${hours} hr`);
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes} min`);
+  }
+
+  return parts.join(' ');
+}
+
+/**
+ * Checks if a given epoch time is within the next 24 hours and returns remaining time
+ * @param epoch - The epoch time to check (in milliseconds)
+ * @returns Object with hours, minutes and seconds left if within 24 hours, undefined otherwise
+ */
+export function getTimeLeftIfWithin24Hours(
+  epoch: number,
+): { hours: number; minutes: number; seconds: number } | undefined {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+
+  const now = Date.now();
+  const diffMs = epoch - now;
+  const hours24 = 24 * 60 * 60 * 1000;
+
+  // Return undefined if time difference is negative or more than 24 hours
+  if (diffMs <= 0 || diffMs > hours24) {
+    return undefined;
+  }
+
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+  return { hours, minutes, seconds };
+}

@@ -5,6 +5,7 @@ export enum DurationType {
 }
 
 export type TeamMemberDetails = {
+  id: string;
   name?: string;
   profileImage?: string;
   designation?: string;

@@ -56,6 +56,7 @@ export const getFileDownloadUrl = async (fileKey: string) => {
 /**
  * Creates a new Flextern project?.
  * @param projectData - The data for the project to be created?.
+ * @param draftProjectId - Optional ID of an existing draft project to update
  * @returns A Promise that resolves to the created project ID or undefined?.
  * @throws {Error} If the project creation fails or an unexpected error occurs?.
  */
@@ -125,6 +126,7 @@ export const createFlexternProject: (
 /**
  * Creates a draft of a Flextern project?.
  * @param projectData - The data for the project draft to be created?.
+ * @param draftProjectId - Optional ID of an existing draft project to update
  * @returns A Promise that resolves to the created draft project ID or undefined?.
  * @throws {Error} If the project draft creation fails or an unexpected error occurs?.
  */
@@ -279,7 +281,6 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
   try {
     const response = await axios?.get(`${routes?.projectManagementV2?.project?.getProjectById}`, config);
     const data = response?.data?.data;
-    console.log(data);
     const projectDetailsData: ProjectDetails = {
       id: data?._id,
       createdAt: data?.created_at,
@@ -389,7 +390,6 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
       },
     };
 
-    console.log(projectDetailsData);
     return projectDetailsData;
   } catch (error) {
     console?.log(error);
@@ -468,6 +468,15 @@ export const verifyProjectName: (projectName: string) => Promise<void> = async (
   }
 };
 
+/**
+ * Updates milestone artifacts with a given status.
+ * @param targetArtifactStatus - The target status for the artifacts.
+ * @param milestoneId - The ID of the milestone to update artifacts for.
+ * @param submittedArtifacts - Array of artifacts to submit.
+ * @param deletedArtifactIds - Array of artifact IDs to delete.
+ * @returns A Promise that resolves when the artifacts are updated.
+ * @throws {Error} If the artifact update fails or an unexpected error occurs.
+ */
 export const putArtifactsByMilestoneId = async (
   targetArtifactStatus: MilestoneArtifactStatus,
   milestoneId: string,
@@ -516,6 +525,13 @@ export const putArtifactsByMilestoneId = async (
   }
 };
 
+/**
+ * Updates the status of a milestone.
+ * @param milestoneId - The ID of the milestone to update.
+ * @param targetStatus - The target status to set for the milestone.
+ * @returns A Promise that resolves when the milestone status is updated.
+ * @throws {Error} If the status update fails or an unexpected error occurs.
+ */
 export const updateMilestoneStatus = async (milestoneId: string, targetStatus: MilestoneStatus) => {
   const headers = appendAuthToken({});
   const config = {
@@ -530,5 +546,39 @@ export const updateMilestoneStatus = async (milestoneId: string, targetStatus: M
     await axios.post(routes.projectManagementV2.milestone.updateStatus, formattedPayload, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while updating milestone status');
+  }
+};
+/**
+ * Marks milestone artifacts as read.
+ * @param milestoneId - The ID of the milestone whose artifacts should be marked as read.
+ * @returns A Promise that resolves when the artifacts are marked as read.
+ * @throws {Error} If the operation fails or an unexpected error occurs.
+ */
+export const markMilestoneArtifactAsRead = async (milestoneId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { milestone_id: milestoneId } };
+
+  try {
+    await axios.post(routes.projectManagementV2.notification.markMilestoneArtifactAsRead, {}, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while marking milestone artifact as read');
+  }
+};
+
+/**
+ * Submits kudos or wow recognition for team members on a milestone.
+ * @param milestoneId - The ID of the milestone to submit recognition for.
+ * @param teamMemberIds - Array of team member IDs to receive the recognition.
+ * @returns A Promise that resolves when the recognition is submitted.
+ * @throws {Error} If the submission fails or an unexpected error occurs.
+ */
+export const submitKudosOrWow = async (milestoneId: string, teamMemberIds: string[]) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { milestone_id: milestoneId } };
+
+  try {
+    await axios.post(routes.projectManagementV2.feedback.submitKudosWow, teamMemberIds, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting kudos or wow');
   }
 };
