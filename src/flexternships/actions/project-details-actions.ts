@@ -14,6 +14,7 @@ export const populateTeamDetails = async (set: any, projectId: string): Promise<
     ...state,
     teamDetails: teamDetails.map(
       (member: any): TeamMemberDetails => ({
+        id: member._id,
         name: member?.first_name + ' ' + member?.last_name || '',
         profileImage: member?.image_uri || '',
         designation: member?.role_name || '',

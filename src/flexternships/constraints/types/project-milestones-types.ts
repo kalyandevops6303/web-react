@@ -53,6 +53,8 @@ export type MilestoneFeedback = {
   feedbackId?: string;
   feedbackType: MilestoneFeedbackType;
   feedbackStatus: MilestoneFeedbackStatus;
+  numberOfQuestions: number;
+  timeToComplete: number;
 };
 
 export type MilestoneDetails = {
@@ -82,6 +84,7 @@ export type MilestoneDetails = {
   milestoneFeedbackDetails: MilestoneFeedback[];
   maxFeedbackDueDays: number;
   isBlocked: boolean;
+  isRead?: boolean;
 };
 
 export type ProjectMilestonesState = {

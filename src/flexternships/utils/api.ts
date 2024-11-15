@@ -35,6 +35,12 @@ export const routes = {
       putArtifactsByMilestoneId: `${serviceUrls.projectManagementV2}/milestones/submission`,
       updateStatus: `${serviceUrls.projectManagementV2}/update-status/milestones`,
     },
+    feedback: {
+      submitKudosWow: `${serviceUrls.projectManagementV2}/feedback/kudos_wow`,
+    },
+    notification: {
+      markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
+    },
   },
   userManagement: {
     static: {

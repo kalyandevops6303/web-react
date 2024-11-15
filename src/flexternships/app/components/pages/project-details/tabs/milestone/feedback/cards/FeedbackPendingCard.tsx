@@ -2,6 +2,7 @@ import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-en
 import { feedbackCardContent } from '@/flexternships/static/milestones-content';
 import { formatEpochToDuration } from '@/flexternships/utils/date-utils';
 import { AlertCircle } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 const css = {
   theme: {
@@ -13,15 +14,20 @@ const css = {
 };
 
 export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
-  const { feedbackType, daysLeft, numberOfQuestions, timeToComplete, tiny = false } = props;
+  const { feedbackType, daysLeft, numberOfQuestions, timeToComplete, projectId, milestoneId, tiny = false } = props;
+
+  const navigate = useNavigate();
 
   const handleSubmitNow = () => {
-    console.log('submit now');
+    navigate(`/project-details/${projectId}/milestone/${milestoneId}/feedback/${feedbackType.toLowerCase()}`);
+    /// /project-details/:projectId/milestone/:milestoneId/feedback/:feedbackType
   };
 
   return (
     <div
-      className={`p-4 flex flex-row items-center justify-between bg-opacity-[0.12] rounded-lg ${tiny && 'w-6/12'} ${
+      className={`${
+        tiny ? 'px-4 py-3 -mt-4 pt-7' : 'p-4'
+      } flex flex-row items-center justify-between bg-opacity-[0.12] rounded-lg ${tiny && 'w-6/12'} ${
         css.theme[feedbackType]
       }`}
     >
@@ -44,12 +50,14 @@ export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
         </div>
         {daysLeft && (
           <div className="text-xs font-semibold not-italic leading-4.5 flex flex-col items-start gap-y-2">
-            {daysLeft > 0 && <div className="py-[1px] px-[9px]">{daysLeft} Days left</div>}
+            {daysLeft > 0 && !tiny && <div className="py-[1px] px-[9px]">{daysLeft} Days Left</div>}
             <div
-              className="text-trublue-secondary-500 bg-white py-[1px] px-[9px] rounded-3xl cursor-pointer"
+              className={`${
+                daysLeft > 0 && tiny ? '' : 'text-trublue-secondary-500'
+              } bg-white py-[1px] px-[9px] rounded-3xl cursor-pointer`}
               onClick={handleSubmitNow}
             >
-              Submit Now
+              {daysLeft > 0 && tiny ? `${daysLeft} Days Left` : 'Submit Now'}
             </div>
           </div>
         )}
@@ -62,6 +70,8 @@ type FeedbackPendingCardProps = {
   feedbackType: MilestoneFeedbackType;
   numberOfQuestions: number;
   timeToComplete: number;
+  projectId: string;
+  milestoneId: string;
   daysLeft?: number;
   tiny?: boolean;
 };

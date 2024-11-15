@@ -33,9 +33,12 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
       feedbackId: feedback._id,
       feedbackType: feedback.feedback_type,
       feedbackStatus: feedback.feedback_status,
+      numberOfQuestions: feedback.number_of_questions ?? 8,
+      timeToComplete: feedback.time_to_complete ?? 3 * 60 * 1000,
     })),
-    maxFeedbackDueDays: 5,
+    maxFeedbackDueDays: data.max_days ?? 5,
     isBlocked: data.is_blocked,
+    isRead: data.is_read,
   };
   const formattedArtifactDetails: {
     milestoneArtifactDetailsDraft: MilestoneDraftArtifact[];

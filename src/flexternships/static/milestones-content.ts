@@ -1,4 +1,5 @@
-import { MilestoneFeedbackType, UserType } from '../constraints/enums/core-enums';
+import { MilestoneFeedbackType, MilestoneStatus, UserType } from '../constraints/enums/core-enums';
+import { RecognitionType } from '../constraints/enums/feedback-enum';
 
 export const recognitionCardContent = {
   title: 'Recognition',
@@ -11,6 +12,10 @@ export const recognitionCardContent = {
   primaryCtaText: {
     [UserType.TALENT]: 'Give Kudos',
     [UserType.CLIENT]: 'Give WoW',
+  },
+  recognitionType: {
+    [UserType.TALENT]: RecognitionType.KUDOS,
+    [UserType.CLIENT]: RecognitionType.WOW,
   },
 };
 
@@ -32,3 +37,11 @@ export const feedbackCardContent = {
       'Your feedback on the individual performance is very critical. this information will help us understand the quality or talent pool. It will take 3min with 10 question to complete the feedback',
   },
 };
+
+export const allowFeedbackCardsIfMilestoneStatus = [
+  MilestoneStatus.IN_PROGRESS,
+  MilestoneStatus.COMPLETED,
+  MilestoneStatus.IN_REVIEW,
+];
+
+export const disableArtifactsIfMilestoneStatus = [MilestoneStatus.CREATED, MilestoneStatus.COMPLETED];

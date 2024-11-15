@@ -28,10 +28,10 @@ export enum MilestoneArtifactErrorType {
 
 // Subject to changer as per BE
 export enum MilestoneFeedbackType {
-  TEAM_FEEDBACK = 'TEAM_FEEDBACK',
-  INDIVIDUAL_FEEDBACK = 'INDIVIDUAL_FEEDBACK',
-  SELF_FEEDBACK = 'SELF_FEEDBACK',
-  PEER_FEEDBACK = 'PEER_FEEDBACK',
+  TEAM_FEEDBACK = 'MANAGER_TO_TEAM',
+  INDIVIDUAL_FEEDBACK = 'MANAGER_TO_PEER',
+  SELF_FEEDBACK = 'SELF',
+  PEER_FEEDBACK = 'PEER_TO_PEER',
 }
 // Subject to changer as per BE
 export enum MilestoneFeedbackStatus {

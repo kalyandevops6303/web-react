@@ -22,9 +22,13 @@ import MilestoneStatusTag from '@/flexternships/app/components/core/tags/Milesto
 import { isEmpty } from 'lodash';
 import noSubmissionsFoundGif from '@flexternships/assets/gifs/no-submissions-found.gif';
 import RecognitionCard from './feedback/cards/RecognitionCard';
-import { mockMilestoneTalentFeedbackData } from '@/flexternships/mocks/milestone-data';
 import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
 import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
+import {
+  allowFeedbackCardsIfMilestoneStatus,
+  disableArtifactsIfMilestoneStatus,
+} from '@/flexternships/static/milestones-content';
+import { markMilestoneArtifactAsRead } from '@/flexternships/services/project-management-v2';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -52,8 +56,21 @@ export default function MilestoneDetails() {
     fetchMilestoneDetails();
   }, [milestoneId, populateMilestoneDetails]);
 
+  useEffect(() => {
+    if (!milestoneId || userDetails.userType === UserType.TALENT) return;
+    const markAsRead = async () => {
+      try {
+        await markMilestoneArtifactAsRead(milestoneId);
+      } catch (error) {
+        console.error('Failed to mark milestone artifact as read:', error);
+      }
+    };
+
+    markAsRead();
+  }, [milestoneId, markMilestoneArtifactAsRead, userDetails.userType]);
+
   const goBackToAllMilestones = () => {
-    navigate(-1);
+    navigate(`/project-details/${milestoneDetails.projectDetails.projectId}/milestone`);
   };
 
   const handleMilestonePrimaryAction = async () => {
@@ -183,52 +200,64 @@ export default function MilestoneDetails() {
           </div>
         </SimpleElevatedCard>
         {userDetails.userType === UserType.TALENT && (
-          <DraftArtifacts
-            isDisabled={[MilestoneStatus.CREATED, MilestoneStatus.COMPLETED].includes(milestoneDetails.status)}
-          />
+          <DraftArtifacts isDisabled={disableArtifactsIfMilestoneStatus.includes(milestoneDetails.status)} />
         )}
       </SimpleElevatedCard>
-      <SimpleElevatedCard className="overflow-hidden">
-        <Accordion type="single" collapsible defaultValue="submission-history" className="w-full">
-          <AccordionItem value="submission-history" className="border-none bg-white-fa py-6 px-8">
-            <AccordionTrigger className="hover:no-underline p-0">
-              <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
-            </AccordionTrigger>
-            <AccordionContent className="">
-              {isEmpty(submittedArtifacts) ? (
-                <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7">
-                  <img
-                    src={noSubmissionsFoundGif}
-                    alt="no-submissions-found"
-                    className="w-[169px] h-[172px] overflow-hidden"
-                  />
-                  <div className="text-lg not-italic font-medium leading-5.5 text-trublue -mt-2">
-                    No submissions found
+      {!(
+        userDetails.userType === UserType.TALENT && disableArtifactsIfMilestoneStatus.includes(milestoneDetails.status)
+      ) && (
+        <SimpleElevatedCard className="overflow-hidden">
+          <Accordion type="single" collapsible defaultValue="submission-history" className="w-full">
+            <AccordionItem value="submission-history" className="border-none bg-white-fa py-6 px-8">
+              <AccordionTrigger className="hover:no-underline p-0">
+                <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
+              </AccordionTrigger>
+              <AccordionContent className="">
+                {isEmpty(submittedArtifacts) ? (
+                  <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7">
+                    <img
+                      src={noSubmissionsFoundGif}
+                      alt="no-submissions-found"
+                      className="w-[169px] h-[172px] overflow-hidden"
+                    />
+                    <div className="text-lg not-italic font-medium leading-5.5 text-trublue -mt-2">
+                      No submissions found
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <SubmittedArtifacts />
-              )}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </SimpleElevatedCard>
-      <RecognitionCard />
-      {mockMilestoneTalentFeedbackData.map((feedback, index) => (
-        <FeedbackStatusCard
-          key={index}
-          feedbackId={feedback.feedbackId}
-          feedbackType={feedback.feedbackType}
-          feedbackStatus={feedback.feedbackStatus}
-          numberOfQuestions={feedback.numberOfQuestions}
-          timeToComplete={feedback.timeToComplete}
-          daysLeft={
-            referenceDateForFeedback
-              ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, milestoneDetails.maxFeedbackDueDays))
-              : undefined
-          }
+                ) : (
+                  <SubmittedArtifacts />
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </SimpleElevatedCard>
+      )}
+      {
+        <RecognitionCard
+          isDisabled={!allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
+          projectId={milestoneDetails.projectDetails.projectId}
+          milestoneId={milestoneDetails.id}
         />
-      ))}
+      }
+      {!isEmpty(milestoneDetails) &&
+        allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status) &&
+        milestoneDetails.milestoneFeedbackDetails.map((feedback, index) => (
+          <FeedbackStatusCard
+            key={index}
+            feedbackId={feedback.feedbackId}
+            feedbackType={feedback.feedbackType}
+            feedbackStatus={feedback.feedbackStatus}
+            numberOfQuestions={feedback.numberOfQuestions}
+            timeToComplete={feedback.timeToComplete}
+            projectId={milestoneDetails.projectDetails.projectId}
+            milestoneId={milestoneDetails.id}
+            daysLeft={
+              referenceDateForFeedback
+                ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, milestoneDetails.maxFeedbackDueDays))
+                : undefined
+            }
+          />
+        ))}
     </div>
   );
 }

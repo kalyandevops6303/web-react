@@ -24,6 +24,8 @@ type FeedbackStatusCardProps = {
   feedbackType: MilestoneFeedbackType;
   numberOfQuestions: number;
   timeToComplete: number; // in epoch i.e. milliseconds
+  projectId: string;
+  milestoneId: string;
   daysLeft?: number;
   tiny?: boolean;
 };

@@ -127,13 +127,13 @@ export function formatEpochToDuration(epoch: number): string {
 
   const parts = [];
   if (days > 0) {
-    parts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
+    parts.push(`${days} d`);
   }
   if (hours > 0) {
-    parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
+    parts.push(`${hours} hr`);
   }
   if (minutes > 0) {
-    parts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
+    parts.push(`${minutes} min`);
   }
 
   return parts.join(' ');

@@ -5,17 +5,30 @@ import { MilestoneStatus, UserType } from '@flexternships/enums/core-enums';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MilestoneDetails } from '@/flexternships/constraints/types/project-milestones-types';
 import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
-import { mockMilestoneTalentFeedbackData } from '@/flexternships/mocks/milestone-data';
 import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
+import { allowFeedbackCardsIfMilestoneStatus } from '@/flexternships/static/milestones-content';
+import { isEmpty } from 'lodash';
 
 interface MilestoneTileProps {
   data: MilestoneDetails;
 }
 
 const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
-  const { id, name, status, startDate, acceptedAt, submittedAt, maxFeedbackDueDays, isBlocked } = data;
+  const {
+    id,
+    name,
+    status,
+    startDate,
+    acceptedAt,
+    submittedAt,
+    maxFeedbackDueDays,
+    isBlocked,
+    projectDetails,
+    milestoneFeedbackDetails,
+    isRead,
+  } = data;
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
@@ -27,19 +40,17 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
   };
 
   const referenceDateForFeedback = userDetails.userType === UserType.CLIENT ? acceptedAt : submittedAt;
-  const allowedMilestoneStatusesForFeedbackCards = [
-    MilestoneStatus.IN_PROGRESS,
-    MilestoneStatus.COMPLETED,
-    MilestoneStatus.IN_REVIEW,
-  ];
 
   return (
     <div className="flex flex-col">
       <div
-        className="flex flex-row gap-x-6 bg-white rounded-md py-3 px-6 items-center cursor-pointer"
+        className="flex flex-row gap-x-6 bg-white rounded-md py-3 px-6 items-center cursor-pointer z-10"
         onClick={clickHandler}
       >
-        <div className="text-base font-medium text-grey-heading leading-6 grow">{name}</div>
+        <div className="flex flex-row items-start text-base font-medium text-grey-heading leading-6 grow">
+          {name}
+          {!isRead && <span className="w-[7px] h-[7px] bg-error rounded-full" />}
+        </div>
         <div className="flex flex-row gap-x-8 items-center">
           <MilestoneStatusTag status={status} />
           <StartsInTimer epoch={startDate} hideSeconds />
@@ -63,8 +74,9 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
         </div>
       </div>
       <div className="flex flex-row">
-        {allowedMilestoneStatusesForFeedbackCards.includes(status) &&
-          mockMilestoneTalentFeedbackData.map((feedback, index) => (
+        {allowFeedbackCardsIfMilestoneStatus.includes(status) &&
+          !isEmpty(milestoneFeedbackDetails) &&
+          milestoneFeedbackDetails.map((feedback, index) => (
             <FeedbackStatusCard
               key={index}
               feedbackId={feedback.feedbackId}
@@ -72,6 +84,8 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
               feedbackStatus={feedback.feedbackStatus}
               numberOfQuestions={feedback.numberOfQuestions}
               timeToComplete={feedback.timeToComplete}
+              projectId={projectDetails.projectId}
+              milestoneId={id}
               daysLeft={
                 referenceDateForFeedback
                   ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, maxFeedbackDueDays))

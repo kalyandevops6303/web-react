@@ -1,18 +1,24 @@
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { feedbackCardContent } from '@/flexternships/static/milestones-content';
 import { AlertCircle, Check } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 export default function FeedbackCompletedCard(props: FeedbackCompletedCardProps) {
-  const { feedbackId, feedbackType, tiny = false } = props;
+  const { feedbackId, feedbackType, projectId, milestoneId, tiny = false } = props;
 
-  // using the var to avoid tsc error temporarily
-  console.log(feedbackId);
+  const navigate = useNavigate();
+
+  const viewFeedback = () => {
+    navigate(
+      `/project-details/${projectId}/milestone/${milestoneId}/feedback/${feedbackType.toLowerCase()}/${feedbackId}`,
+    );
+  };
 
   return (
     <div
-      className={`flex flex-row justify-between items-center px-6 py-5 bg-success bg-opacity-[0.12] rounded-md ${
-        tiny && 'w-6/12'
-      }`}
+      className={`${
+        tiny ? 'px-4 py-3 -mt-4 pt-7' : 'px-6 py-5'
+      } flex flex-row justify-between items-center bg-success bg-opacity-[0.12] rounded-md ${tiny && 'w-6/12'}`}
     >
       <div className="flex flex-row items-center gap-x-3">
         {tiny ? (
@@ -36,6 +42,7 @@ export default function FeedbackCompletedCard(props: FeedbackCompletedCardProps)
           className={`${
             tiny ? 'text-sm text-success font-semibold' : 'text-base text-trublue-secondary-500 font-medium'
           } not-italic cursor-pointer`}
+          onClick={viewFeedback}
         >
           View
         </span>
@@ -52,5 +59,7 @@ export default function FeedbackCompletedCard(props: FeedbackCompletedCardProps)
 type FeedbackCompletedCardProps = {
   feedbackId: string;
   feedbackType: MilestoneFeedbackType;
+  projectId: string;
+  milestoneId: string;
   tiny?: boolean;
 };
