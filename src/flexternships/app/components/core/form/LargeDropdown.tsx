@@ -29,11 +29,19 @@ export default function LargeDropdown(props: LargeDropdownProps) {
             </div>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 bg-white">
+        <DropdownMenuContent className="w-56 bg-white p-0 rounded" side="bottom" align="start">
           <DropdownMenuRadioGroup>
             {options?.map((option) => (
-              <DropdownMenuItem onClick={() => setSelected(option)} className="hover:bg-primary">
-                {option?.displayText}
+              <DropdownMenuItem onClick={() => setSelected(option)} className="hover:bg-[#0185E433] p-0">
+                {option?.value === selected?.value ? (
+                  <span className="text-[12px] font-montserrat font-normal leading-[20px] text-white bg-[#0185E4] p-2 w-full m-0">
+                    {option?.displayText}
+                  </span>
+                ) : (
+                  <span className="text-[12px] font-montserrat font-normal leading-[20px] p-2 text-[#6A7071]">
+                    {option?.displayText}
+                  </span>
+                )}
               </DropdownMenuItem>
             ))}
           </DropdownMenuRadioGroup>
