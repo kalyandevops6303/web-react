@@ -20,7 +20,6 @@ export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
 
   const handleSubmitNow = () => {
     navigate(`/project-details/${projectId}/milestone/${milestoneId}/feedback/${feedbackType.toLowerCase()}`);
-    /// /project-details/:projectId/milestone/:milestoneId/feedback/:feedbackType
   };
 
   return (
