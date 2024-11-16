@@ -3,7 +3,8 @@ import { ProjectCreationFormData } from '@flexternships/types/project-creation-t
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
-import { ProjectDetails } from '../constraints/types/project-details-types';
+import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
+import { PrimaryProjectStatus } from '../constraints/enums/project-enums';
 import { MilestoneDraftArtifact } from '../constraints/types/project-milestones-types';
 import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
 import { parseMilestoneDetails } from '../utils/parsing-utils';
@@ -55,6 +56,7 @@ export const getFileDownloadUrl = async (fileKey: string) => {
 /**
  * Creates a new Flextern project?.
  * @param projectData - The data for the project to be created?.
+ * @param draftProjectId - Optional ID of an existing draft project to update
  * @returns A Promise that resolves to the created project ID or undefined?.
  * @throws {Error} If the project creation fails or an unexpected error occurs?.
  */
@@ -124,6 +126,7 @@ export const createFlexternProject: (
 /**
  * Creates a draft of a Flextern project?.
  * @param projectData - The data for the project draft to be created?.
+ * @param draftProjectId - Optional ID of an existing draft project to update
  * @returns A Promise that resolves to the created draft project ID or undefined?.
  * @throws {Error} If the project draft creation fails or an unexpected error occurs?.
  */
@@ -276,7 +279,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
   };
 
   try {
-    const response = await axios.get(`${routes.projectManagementV2.project.getProjectDetailsById}`, config);
+    const response = await axios?.get(`${routes?.projectManagementV2?.project?.getProjectById}`, config);
     const data = response?.data?.data;
     const projectDetailsData: ProjectDetails = {
       id: data?._id,
@@ -288,85 +291,105 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         description: data?.details?.description,
         expectedDuration: {
           duration: data?.details?.expected_duration?.duration,
-          durationType: data?.details?.expected_duration?.duration_type,
+          durationType: data?.details?.expected_duration?.duration_type as DurationType,
           hoursPerWeek: data?.details?.expected_duration?.hours_per_week,
         },
         expectedStartDate: data?.details?.expected_start_date,
-        documents: data?.details?.documents?.map((document: any) => ({
-          fileName: document?.file_name,
-          fileKey: document?.file_key,
-          downloadUrl: document?.download_url,
-          size: document?.size,
-          createdAt: document?.created_at,
-        })),
+        documents:
+          data?.details?.documents?.map((document: any) => ({
+            fileName: document?.file_name,
+            fileKey: document?.file_key,
+            downloadUrl: document?.download_url,
+            size: document?.size,
+            createdAt: document?.created_at,
+          })) || [],
       },
-      roles: {
-        roleId: data?.roles?.role_id,
-        proficiency: {
-          skills: data?.roles?.proficiency?.skills,
-          tools: data?.roles?.proficiency?.tools,
-        },
-        count: data?.roles?.count,
-      },
+      roles:
+        data?.roles?.map((role: any) => ({
+          id: role?.role_id,
+          name: role?.proficiency?.skills?.[0] || '',
+        })) || [],
       listingDetails: {
         startDate: data?.listing_details?.start_date,
         endDate: data?.listing_details?.end_date,
         startDateEpoch: data?.listing_details?.start_date_epoch,
         endDateEpoch: data?.listing_details?.end_date_epoch,
       },
-      status: data?.status,
+      status: data?.status as PrimaryProjectStatus,
       clientUserId: data?.client_user_id,
       orgSlugId: data?.org_slug_id,
       isDocumentsSent: data?.is_documents_sent,
       isDocumentsSigned: data?.is_documents_signed,
-      clientInfo: data?.client_info?.map((info: any) => ({
-        id: info?._id,
-        userId: info?.user_id,
-        companyIndustry: info?.company_industry,
-        companyLogo: info?.company_logo,
-        companyName: info?.company_name,
-        companyStrength: info?.company_strength,
-        companyTagline: info?.company_tagline,
-        createdAt: info?.created_at,
-        currencyPreference: info?.currency_preference,
-        educationalInstitute: info?.educational_institute?.map((edu: any) => ({
-          institution: edu?.institution,
-        })),
-        firstName: info?.first_name,
-        imageUri: info?.image_uri,
-        isDeleted: info?.is_deleted,
-        lastName: info?.last_name,
+      clientInfo: {
+        id: data?.client_details?._id,
+        userId: data?.client_details?.user_id,
+        companyIndustry: data?.client_details?.company_industry,
+        companyLogo: data?.client_details?.company_logo,
+        companyName: data?.client_details?.company_name,
+        companyStrength: data?.client_details?.company_strength,
+        companyTagline: data?.client_details?.company_tagline,
+        createdAt: data?.client_details?.created_at,
+        currencyPreference: data?.client_details?.currency_preference,
+        educationalInstitute:
+          data?.client_details?.educational_institute?.map((edu: any) => ({
+            institution: edu?.institution,
+          })) || [],
+        firstName: data?.client_details?.first_name,
+        imageUri: data?.client_details?.image_uri,
+        isDeleted: data?.client_details?.is_deleted,
+        lastName: data?.client_details?.last_name,
         officeAddress: {
-          country: info?.office_address?.country,
-          state: info?.office_address?.state,
-          city: info?.office_address?.city,
-          streetAddress: info?.office_address?.street_address,
-          houseNumber: info?.office_address?.house_number,
-          zipCode: info?.office_address?.zip_code,
+          country: data?.client_details?.office_address?.country,
+          state: data?.client_details?.office_address?.state,
+          city: data?.client_details?.office_address?.city,
+          streetAddress: data?.client_details?.office_address?.street_address,
+          houseNumber: data?.client_details?.office_address?.house_number,
+          zipCode: data?.client_details?.office_address?.zip_code,
         },
         projectAreaOfInterest: {
-          skills: info?.project_area_of_interest?.skills,
-          tools: info?.project_area_of_interest?.tools,
-          area: info?.project_area_of_interest?.area,
+          skills: data?.client_details?.project_area_of_interest?.skills || [],
+          tools: data?.client_details?.project_area_of_interest?.tools || [],
+          area: data?.client_details?.project_area_of_interest?.area,
         },
-        projectsListedCount: info?.projects_listed_count,
-        rating: info?.rating,
-        socialLinks: info?.social_links?.map((link: any) => ({
-          platform: link?.platform,
-          url: link?.url,
-        })),
-        title: info?.title,
-        updatedAt: info?.updated_at,
-        projectsWorkedOnCount: info?.projects_worked_on_count,
-        orgSlugId: info?.org_slug_id,
-        isOrgAdmin: info?.is_org_admin,
-        departmentName: info?.department_name,
-      })),
-      skillsData: data?.skills_data,
-      toolsData: data?.tools_data,
-      orgDetails: data?.org_details,
-      clientDetails: data?.client_details,
+        projectsListedCount: data?.client_details?.projects_listed_count,
+        rating: data?.client_details?.rating,
+        socialLinks:
+          data?.client_details?.social_links?.map((link: any) => ({
+            platform: link?.platform,
+            url: link?.url,
+          })) || [],
+        title: data?.client_details?.title,
+        updatedAt: data?.client_details?.updated_at,
+        projectsWorkedOnCount: data?.client_details?.projects_worked_on_count,
+        orgSlugId: data?.client_details?.org_slug_id,
+        isOrgAdmin: data?.client_details?.is_org_admin,
+        departmentName: data?.client_details?.department_name,
+      },
+      skillsData:
+        data?.skills?.map((skill: any) => ({
+          id: skill?._id,
+          name: skill?.name,
+        })) || [],
+      toolsData:
+        data?.tools?.map((tool: any) => ({
+          id: tool?._id,
+          name: tool?.name,
+        })) || [],
+      secondaryStatus: {
+        id: data?.secondary_status?.id || '',
+        createdAt: data?.secondary_status?.created_at || 0,
+        updatedAt: data?.secondary_status?.updated_at || 0,
+        isDeleted: data?.secondary_status?.is_deleted || false,
+        statusLog: data?.secondary_status?.status_log || {},
+        next: data?.secondary_status?.next || '',
+        entity: {
+          entityType: data?.secondary_status?.entity?.entity_type || '',
+          entityId: data?.secondary_status?.entity?.entity_id || '',
+        },
+        projectId: data?.secondary_status?.project_id || '',
+      },
     };
+
     return projectDetailsData;
   } catch (error) {
     console?.log(error);
@@ -445,6 +468,15 @@ export const verifyProjectName: (projectName: string) => Promise<void> = async (
   }
 };
 
+/**
+ * Updates milestone artifacts with a given status.
+ * @param targetArtifactStatus - The target status for the artifacts.
+ * @param milestoneId - The ID of the milestone to update artifacts for.
+ * @param submittedArtifacts - Array of artifacts to submit.
+ * @param deletedArtifactIds - Array of artifact IDs to delete.
+ * @returns A Promise that resolves when the artifacts are updated.
+ * @throws {Error} If the artifact update fails or an unexpected error occurs.
+ */
 export const putArtifactsByMilestoneId = async (
   targetArtifactStatus: MilestoneArtifactStatus,
   milestoneId: string,
@@ -493,6 +525,13 @@ export const putArtifactsByMilestoneId = async (
   }
 };
 
+/**
+ * Updates the status of a milestone.
+ * @param milestoneId - The ID of the milestone to update.
+ * @param targetStatus - The target status to set for the milestone.
+ * @returns A Promise that resolves when the milestone status is updated.
+ * @throws {Error} If the status update fails or an unexpected error occurs.
+ */
 export const updateMilestoneStatus = async (milestoneId: string, targetStatus: MilestoneStatus) => {
   const headers = appendAuthToken({});
   const config = {
@@ -507,5 +546,39 @@ export const updateMilestoneStatus = async (milestoneId: string, targetStatus: M
     await axios.post(routes.projectManagementV2.milestone.updateStatus, formattedPayload, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while updating milestone status');
+  }
+};
+/**
+ * Marks milestone artifacts as read.
+ * @param milestoneId - The ID of the milestone whose artifacts should be marked as read.
+ * @returns A Promise that resolves when the artifacts are marked as read.
+ * @throws {Error} If the operation fails or an unexpected error occurs.
+ */
+export const markMilestoneArtifactAsRead = async (milestoneId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { milestone_id: milestoneId } };
+
+  try {
+    await axios.post(routes.projectManagementV2.notification.markMilestoneArtifactAsRead, {}, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while marking milestone artifact as read');
+  }
+};
+
+/**
+ * Submits kudos or wow recognition for team members on a milestone.
+ * @param milestoneId - The ID of the milestone to submit recognition for.
+ * @param teamMemberIds - Array of team member IDs to receive the recognition.
+ * @returns A Promise that resolves when the recognition is submitted.
+ * @throws {Error} If the submission fails or an unexpected error occurs.
+ */
+export const submitKudosOrWow = async (milestoneId: string, teamMemberIds: string[]) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { milestone_id: milestoneId } };
+
+  try {
+    await axios.post(routes.projectManagementV2.feedback.submitKudosWow, teamMemberIds, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting kudos or wow');
   }
 };

@@ -30,7 +30,7 @@ export default function PerformanceTab() {
         value: FeedbackTypes.TEAM,
       };
     }
-    
+
     return {
       displayText: 'Self',
       value: FeedbackTypes.SELF,
@@ -90,17 +90,20 @@ export default function PerformanceTab() {
 
   const milestoneDropdownData = {
     defaultSelected: {
-      displayText: 'M #1',
+      displayText: '1',
       value: projectMilestones[0],
     },
     options: projectMilestones?.map((milestone, index) => {
       return {
-        displayText: `M #${index + 1}`,
+        displayText: `${index + 1}`,
         value: milestone,
       };
     }),
     onChange: (selected: any) => {
       setMilestoneSelected(selected);
+    },
+    formatSelected: (selected: any) => {
+      return `M #${selected?.displayText}`;
     },
   };
 

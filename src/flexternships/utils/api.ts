@@ -2,8 +2,7 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const serviceUrls = {
   dashboardV2: `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}/api/v2`,
-  // projectManagementV2: `${baseUrl}/projectv2/api/v1`,
-  projectManagementV2: `http://localhost:8000/projectv2/api/v1`,
+  projectManagementV2: `${baseUrl}/projectv2/api/v1`,
   userManagement: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v1`,
   userManagementV2: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v2`,
 };
@@ -21,6 +20,7 @@ export const routes = {
       getProjectDetailsById: `${serviceUrls.projectManagementV2}/project/detail`,
       getProjectTeamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
       verifyProjectName: `${serviceUrls.projectManagementV2}/project/verify-name`,
+      getProjectById: `${serviceUrls.projectManagementV2}/project/detail`,
       getProjectInvitationDetails: `${serviceUrls.projectManagementV2}/project/invitation-details`,
       getSelfOrTeamPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/overview`,
       getPeerOrIndividualPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/individual/overview`,
@@ -34,6 +34,12 @@ export const routes = {
       getMilestoneDetailsById: `${serviceUrls.projectManagementV2}/single/milestone`,
       putArtifactsByMilestoneId: `${serviceUrls.projectManagementV2}/milestones/submission`,
       updateStatus: `${serviceUrls.projectManagementV2}/update-status/milestones`,
+    },
+    feedback: {
+      submitKudosWow: `${serviceUrls.projectManagementV2}/feedback/kudos_wow`,
+    },
+    notification: {
+      markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
     },
   },
   userManagement: {

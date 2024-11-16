@@ -8,6 +8,7 @@ import {
   profileCompletionFlexternService,
   profileDetailsService,
   userDetailsService,
+  flexternProfileDetailsService,
 } from '../../services/talentOnboardingServices';
 import {
   userDetailsRequest,
@@ -31,6 +32,9 @@ import {
   identityFileRequest,
   identityFileSuccess,
   identityFileFailure,
+  flexternProfileDetailsRequest,
+  flexternProfileDetailsSuccess,
+  flexternProfileDetailsFailure,
 } from '../reducers/talentOnboarding';
 import {
   cometChatLogin,
@@ -38,7 +42,7 @@ import {
   profileCompletionFlexternRequest,
   profileCompletionFlexternSuccess,
 } from '../reducers/auth';
-import { scanAndProcessFiles } from '../../utility/Utils';
+import { isEmpty, scanAndProcessFiles } from '../../utility/Utils';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { setFormDocuments } from '../reducers/formData';
@@ -132,7 +136,7 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
       dispatch(profileDetailsSuccess(res.data.data));
       onSuccess();
     };
-    if (data?.resume || data?.image_uri) {
+    if (!isEmpty(data?.resume) || !isEmpty(data?.image_uri)) {
       scanAndProcessFiles({
         fileData: data?.image_uri ? [{ file_name: 'Profile Image', file_key: data?.image_uri }] : [data?.resume],
         handleMainAPI: handleSaveProfileDetails,
@@ -144,6 +148,29 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
     }
   } catch (error) {
     errorHandler(error, profileDetailsFailure);
+  }
+};
+
+const saveFlexternProfileDetails = (data, onSuccess) => async (dispatch) => {
+  dispatch(flexternProfileDetailsRequest());
+  try {
+    const handleSaveFlexternProfileDetails = async () => {
+      const res = await flexternProfileDetailsService(data);
+      dispatch(flexternProfileDetailsSuccess(res.data.data));
+      onSuccess();
+    };
+    if (!isEmpty(data?.resume) || !isEmpty(data?.image_uri)) {
+      scanAndProcessFiles({
+        fileData: data?.image_uri ? [{ file_name: 'Profile Image', file_key: data?.image_uri }] : [data?.resume],
+        handleMainAPI: handleSaveFlexternProfileDetails,
+        onError: () => dispatch(flexternProfileDetailsFailure()),
+        isPrivate: !!data?.resume,
+      });
+    } else {
+      handleSaveFlexternProfileDetails();
+    }
+  } catch (error) {
+    errorHandler(error, flexternProfileDetailsFailure);
   }
 };
 
@@ -189,4 +216,5 @@ export {
   deleteResume,
   deleteIdentityFile,
   getProfileCompletionFlextern,
+  saveFlexternProfileDetails,
 };

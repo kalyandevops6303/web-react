@@ -45,9 +45,9 @@ export default function LegalDocCard(props: LegalDocCardProps) {
   const [termsRead, setTermsRead] = useState(false);
 
   const clientSigneeData = {
-    company: projectDetails?.orgDetails?.company_name,
-    name: `${projectDetails?.clientDetails?.first_name} ${projectDetails?.clientDetails?.last_name}`,
-    image_uri: projectDetails?.clientInfo?.[0]?.imageUri ?? '', // Fallback if imageUri is undefined
+    company: projectDetails?.clientInfo?.companyName || '',
+    name: `${projectDetails?.clientInfo?.firstName || ''} ${projectDetails?.clientInfo?.firstName || ''}`,
+    image_uri: projectDetails?.clientInfo?.imageUri ?? '', // Fallback if imageUri is undefined
     signed: true,
     signedDate: new Date(legalDocDetails?.updated_at),
     userType: UserType.CLIENT,

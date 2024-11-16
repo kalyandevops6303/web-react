@@ -14,7 +14,12 @@ export enum ProjectStatusChipClassnames {
   COMPLETED = 'bg-orange-200 text-orange-600 border border-orange-400',
 }
 
-export enum ProjectStatus {
+export enum StatusType {
+  PRIMARY = 'PRIMARY',
+  SECONDARY = 'SECONDARY',
+}
+
+export enum PrimaryProjectStatus {
   OPEN = 'Open',
   IN_REVIEW = 'In Review',
   ACTIVE = 'Active',
@@ -24,6 +29,30 @@ export enum ProjectStatus {
   TERMINATED = 'Terminated',
   COMPLETED = 'Completed',
 }
+
+export const SecondaryProjectStatus = {
+  OPEN: 'Open',
+  TO_BE_LISTED: 'To Be Listed',
+  IN_REVIEW: 'In Review',
+  TERMINATED: 'Terminated',
+  CLOSED: 'Closed',
+  LISTING_EXPIRED: 'Expired',
+  ON_GOING: 'On Going',
+  COMPLETED: 'Completed',
+  ACTIVE: 'Active',
+  BID_SUBMITTED: 'Bid Submitted',
+  BID_IN_REVIEW: 'Bid In Review',
+  BID_ACCEPTED: 'Bid Accepted',
+  BID_CHANGE_REQUEST: 'Change Request',
+  SIGN_CONTRACT: 'Sign Contract',
+  SIGN_NDA: 'Sign NDA',
+  PAYMENT_PENDING: 'Payment Pending',
+  WITHDRAWN: 'Withdrawn',
+  DISPUTED: 'Disputed',
+  SIGN_REQUESTED: 'Sign Requested',
+  NOT_FUNDED: 'Not Funded',
+  INITIATE_FUNDS: 'Initiate Funds',
+};
 
 export const enum DocTypes {
   NDA = 'NDA',

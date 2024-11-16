@@ -10,7 +10,7 @@ import {
 } from '@flexternships/components/ui/dropdown-menu';
 
 export default function LargeDropdown(props: LargeDropdownProps) {
-  const { defaultSelected, options, onChange } = props;
+  const { defaultSelected, options, onChange, formatSelected } = props;
 
   const [selected, setSelected] = useState(defaultSelected);
 
@@ -23,17 +23,25 @@ export default function LargeDropdown(props: LargeDropdownProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="text-[20px] leading-[28px] font-[600] font-[Montserrat] text-[#0185E4] flex gap-1 items-center cursor-pointer border-bottom border-[#0185E4]">
-            <div>{selected?.displayText}</div>
+            <div>{formatSelected ? formatSelected(selected) : selected?.displayText}</div>
             <div>
               <ChevronDown />
             </div>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 bg-white">
+        <DropdownMenuContent className="w-56 bg-white p-0 rounded" side="bottom" align="start">
           <DropdownMenuRadioGroup>
             {options?.map((option) => (
-              <DropdownMenuItem onClick={() => setSelected(option)} className="hover:bg-primary">
-                {option?.displayText}
+              <DropdownMenuItem onClick={() => setSelected(option)} className="hover:bg-[#0185E433] p-0">
+                {option?.value === selected?.value ? (
+                  <span className="text-[12px] font-montserrat font-normal leading-[20px] text-white bg-[#0185E4] p-2 w-full m-0">
+                    {option?.displayText}
+                  </span>
+                ) : (
+                  <span className="text-[12px] font-montserrat font-normal leading-[20px] p-2 text-[#6A7071]">
+                    {option?.displayText}
+                  </span>
+                )}
               </DropdownMenuItem>
             ))}
           </DropdownMenuRadioGroup>
@@ -53,4 +61,5 @@ type LargeDropdownProps = {
     value: any;
   }[];
   onChange: (selected: any) => void;
+  formatSelected?: (selected: any) => string;
 };

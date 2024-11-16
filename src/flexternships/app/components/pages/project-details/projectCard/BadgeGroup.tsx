@@ -1,16 +1,13 @@
-type BadgeType = {
-  id: string;
-  name: string;
-  createdAt: number;
-  updatedAt: number;
-  isDeleted: boolean;
-};
+import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 
 const BadgeGroup = ({ className, tags }: { className?: string; tags: BadgeType[] }) => {
   return (
     <div className="flex flex-row items-center gap-2 flex-wrap">
       {(tags?.length > 4 ? tags?.slice(0, 3) : tags).map((tag) => (
-        <h1 key={tag.id} className={`text-sm px-2 py-1 ${className} font-semibold border rounded-md`}>
+        <h1
+          key={tag.id}
+          className={`${className} flex p-[1px_9px] items-center gap-[3px] rounded-[12px] bg-[#E3F2FD] text-[#2196F3] text-center font-semibold text-[12px] leading-[18px] font-montserrat`}
+        >
           {tag.name}
         </h1>
       ))}
