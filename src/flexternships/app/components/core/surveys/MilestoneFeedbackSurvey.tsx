@@ -7,7 +7,7 @@
  * - SurveyJS React Documentation: https://surveyjs.io/form-library/documentation/get-started-react
  */
 
-// import 'survey-core/defaultV2.min.css';
+import 'survey-core/defaultV2.min.css';
 import { Model, Survey, SurveyModel } from 'survey-react-ui';
 import { SurveyJson } from '@/flexternships/constraints/types/survey-types';
 import SurveyStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey.module.css';
@@ -99,9 +99,9 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     tagbox: SurveyTagboxStyles,
   };
 
-  return(
+  return (
     <div>
       <Survey model={survey} />
     </div>
-  )
+  );
 }
