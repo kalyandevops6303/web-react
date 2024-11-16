@@ -1,8 +1,10 @@
 import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
-import TimelineStepper from '@/flexternships/app/components/core/surveys/TimeLineStepper';
-import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
+
+export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
+
+/**
 /**
  * TODO:
  * - Complete the function of handleSurveyComplete
@@ -64,10 +66,10 @@ export default function SelfFeedback() {
   };
   return (
     <div>
-      <div className="flex flex-row items-start">
+      {/* <div className="flex flex-row items-start">
         <Sidebar data={persons} />
         <TimelineStepper data={mockSelfFeedbackSurveyJson} />
-      </div>
+      </div> */}
 
       <MilestoneFeedbackSurvey surveyJson={mockSelfFeedbackSurveyJson} onComplete={handleSurveyComplete} />
     </div>
