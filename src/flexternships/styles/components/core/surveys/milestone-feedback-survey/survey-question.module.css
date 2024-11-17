@@ -14,6 +14,7 @@
 }
 
 .mainRoot {
+    @apply bg-white shadow-none m-0 p-2;
 }
 
 .flowRoot {
@@ -35,18 +36,21 @@
 }
 
 .headerTop {
+    @apply font-thin ;
 }
 
 .headerBottom {
 }
 
 .content {
+    @apply flex flex-col w-full justify-between items-start text-white ;
 }
 
 .contentSupportContainerQueries {
 }
 
 .contentLeft {
+    @apply flex flex-col items-center;
 }
 
 .titleNumInline {
@@ -56,7 +60,6 @@
 }
 
 .titleTopRoot {
-
 }
 
 .descriptionUnderInputRoot {
@@ -75,6 +78,7 @@
 }
 
 .title {
+    @apply font-sans font-semibold mb-2 -mt-4;
 }
 
 .titleExpandable {
@@ -102,6 +106,7 @@
 }
 
 .number {
+    @apply font-semibold font-sans;
 }
 
 .description {

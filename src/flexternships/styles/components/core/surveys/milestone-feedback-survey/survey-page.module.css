@@ -1,13 +1,15 @@
 .root {
+    
 }
 
-.emptyHeaderRoot {
+.emptyHeaderRoot {   
 }
 
 .title {
 }
 
 .description {
+    @apply p-1 border border-2 rounded-lg text-[14px] mt-2 border-skyblue border-opacity-20 text-skyblue bg-skyblue bg-opacity-5;
 }
 
 .number {
