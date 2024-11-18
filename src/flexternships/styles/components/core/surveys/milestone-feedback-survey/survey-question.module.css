@@ -14,7 +14,7 @@
 }
 
 .mainRoot {
-    @apply bg-white shadow-none m-0 p-2;
+    @apply bg-white shadow-none mb-4 p-2;
 }
 
 .flowRoot {
