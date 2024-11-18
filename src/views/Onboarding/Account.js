@@ -29,6 +29,7 @@ import {
   getUserDetails,
   saveProfileDetails as saveTalentProfileDetails,
   saveTalentAccountDetails,
+  saveFlexternProfileDetails, 
 } from '../../redux/actions/talentOnboardingActions';
 import {
   talentAccountDetailsLoading,
@@ -322,7 +323,11 @@ const Account = () => {
     } else {
       // eslint-disable-next-line no-lonely-if
       if (userDetailsData.user_type === userTypes.talent) {
-        dispatch(saveTalentProfileDetails(reqData, onSuccess));
+        if (isFlexternInvited) {
+          dispatch(saveFlexternProfileDetails(reqData, onSuccess));
+        } else {
+          dispatch(saveTalentProfileDetails(reqData, onSuccess));
+        }
       } else {
         dispatch(saveClientProfileDetails(reqData, onSuccess));
       }
