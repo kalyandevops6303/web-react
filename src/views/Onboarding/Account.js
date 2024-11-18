@@ -29,7 +29,7 @@ import {
   getUserDetails,
   saveProfileDetails as saveTalentProfileDetails,
   saveTalentAccountDetails,
-  saveFlexternProfileDetails, 
+  saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import {
   talentAccountDetailsLoading,
