@@ -6,9 +6,21 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Collaboration & Teamwork',
       elements: [
         {
-          type: 'myquestion',
-          name: 'Temp',
-          text: 'My Text Value',
+          type: 'numberRating',
+          name: 'q4_ownership',
+          rateType: 'numberRating',
+          title:
+            'You took ownership of delivering high quality work output and results from yourself and your team members',
+          rateValues: [
+            { value: 1, text: '01' },
+            { value: 2, text: '02' },
+            { value: 3, text: '03' },
+            { value: 4, text: '04' },
+            { value: 5, text: '05' },
+          ],
+          minRateDescription: 'Strongly Disagree',
+          maxRateDescription: 'Strongly Agree',
+          isRequired: false,
         },
         {
           type: 'rating',
@@ -35,7 +47,7 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Communication',
       elements: [
         {
-          type: 'rating',
+          type: 'smileyRating',
           name: 'q2_communicaion',
           title: 'You communicated with your manager and team members in a clear, concise and structured manner',
           isRequired: false,
@@ -85,9 +97,9 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Ownership',
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
           name: 'q4_ownership',
-          rateType: 'numeric',
+          rateType: 'numberRating',
           title:
             'You took ownership of delivering high quality work output and results from yourself and your team members',
           rateValues: [
@@ -116,7 +128,7 @@ export const mockSelfFeedbackSurveyJson = {
       rateType: 'numeric',
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
           name: 'q5_analytical_thinking',
           title:
             'You understood task objectives and context before execution, and applied acquired knowledge and skills for better project execution',
@@ -169,7 +181,7 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Feedback',
       elements: [
         {
-          type: 'radiogroup',
+          type: 'kudosgroup',
           name: 'satisfaction-smileys-colored',
           title: 'Give a Kudos to this talent',
           choices: [

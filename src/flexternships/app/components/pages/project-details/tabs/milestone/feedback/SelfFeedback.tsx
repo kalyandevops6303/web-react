@@ -5,7 +5,9 @@ import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
 import TimelineStepper from '@/flexternships/app/components/core/surveys/TimeLineStepper';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-
+export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
+export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
+export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
 /**
 /**
  * TODO:
