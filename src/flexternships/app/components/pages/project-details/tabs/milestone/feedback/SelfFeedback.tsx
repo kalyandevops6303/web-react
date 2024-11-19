@@ -68,8 +68,8 @@ export default function SelfFeedback() {
   return (
     <div>
       {/* <div className="flex flex-row items-start"> */}
-        {/* <Sidebar data={persons} /> */}
-        {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
+      {/* <Sidebar data={persons} /> */}
+      {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
       {/* </div> */}
       <MilestoneFeedbackSurvey surveyJson={mockSelfFeedbackSurveyJson} onComplete={handleSurveyComplete} />
     </div>
