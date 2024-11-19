@@ -5,8 +5,8 @@ import TextInput from '@/flexternships/app/components/core/form/TextInput';
 import ClientOnboardingSuccessModal from '@/flexternships/app/components/core/modals/ClientOnboardingSuccessModal';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { FlexternClientCompanySocialDetails } from '@/flexternships/constraints/types/user-profile-types';
-import { FlexternClientCompanySocialDetailsSchema } from '@/flexternships/schemas/user-profile-schemas';
+import { FlexternClientSocialDetails } from '@/flexternships/constraints/types/user-profile-types';
+import { FlexternClientSocialDetailsSchema } from '@/flexternships/schemas/user-profile-schemas';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
@@ -19,10 +19,9 @@ import { useNavigate } from 'react-router-dom';
 
 export default function SocialDetails() {
   // user profile stores
-  const previousTab = useFlexternUserProfileStore((state) => state.previousTab);
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
-  const updateClientCompanyInfo = useFlexternUserProfileStore((state) => state.updateClientCompanyInfo);
+  const updateClientSocialInfo = useFlexternUserProfileStore((state) => state.updateClientSocialInfo);
 
   // user details stores
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -41,9 +40,9 @@ export default function SocialDetails() {
     handleSubmit,
     reset,
     formState: { errors, isValid, isDirty },
-  } = useForm<FlexternClientCompanySocialDetails>({
+  } = useForm<FlexternClientSocialDetails>({
     mode: 'onChange',
-    resolver: yupResolver(FlexternClientCompanySocialDetailsSchema),
+    resolver: yupResolver(FlexternClientSocialDetailsSchema),
     defaultValues: {
       socialLinks: defaultPlatforms.map((platform) => ({
         platform,
@@ -68,10 +67,14 @@ export default function SocialDetails() {
       navigate('/dashboard');
     }
   };
-  const onContinue = async (data: FlexternClientCompanySocialDetails) => {
+  const goToPreviousTab = () => {
+    navigate('/client-profile-edit/personal-details');
+  };
+
+  const onContinue = async (data: FlexternClientSocialDetails) => {
     setIsSaveLoading(true);
     try {
-      await updateClientCompanyInfo(data);
+      await updateClientSocialInfo(data);
       handleNext();
     } catch (error) {
       showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
@@ -89,7 +92,7 @@ export default function SocialDetails() {
         socialLinks: profileDetails.socialLinks,
       });
     }
-  }, [profileDetails, reset]);
+  }, [profileDetails.socialLinks, reset]);
 
   if (isProfileDetailsLoading) {
     return (
@@ -175,7 +178,7 @@ export default function SocialDetails() {
         <PrimaryIconText
           text="Back"
           icon={<ChevronLeft size={16} />}
-          onClick={isDirty || isSaveLoading ? () => {} : previousTab}
+          onClick={isDirty || isSaveLoading ? () => {} : goToPreviousTab}
           className={`${isDirty || isSaveLoading ? 'opacity-30 cursor-default' : ''}`}
         />
         <div className="flex gap-5">

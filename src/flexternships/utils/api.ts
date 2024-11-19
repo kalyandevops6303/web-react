@@ -44,6 +44,9 @@ export const routes = {
   },
   userManagement: {
     static: {
+      timezone: {
+        fetchPaginated: `${serviceUrls.userManagement}/static/timezone/paginated`,
+      },
       skills: {
         fetchAll: `${serviceUrls.userManagement}/static/skills/all`,
         fetchPaginated: `${serviceUrls.userManagement}/static/skills/paginated`,

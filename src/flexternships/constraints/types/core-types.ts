@@ -37,6 +37,14 @@ export type City = {
   name: string;
 };
 
+export type Timezone = {
+  _id?: string;
+  name: string;
+  offset?: number;
+  offsetName?: string;
+  abbreviation?: string;
+};
+
 export type FlexternClientDetails = {
   id: string;
   userType: UserType;

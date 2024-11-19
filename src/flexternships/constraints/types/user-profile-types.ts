@@ -1,8 +1,9 @@
-import { City, CompanyIndustry, Country, State } from './core-types';
+import { City, CompanyIndustry, Country, State, Timezone } from './core-types';
 
 export type FlexternClientAccountDetails = {
   firstname: string;
   lastname: string;
+  timezone: Timezone;
   imageUri?: string; // submits file key gets public uri
 };
 
@@ -30,7 +31,7 @@ export type FlexternClientCompanyDetails = {
   };
 };
 
-export type FlexternClientCompanySocialDetails = {
+export type FlexternClientSocialDetails = {
   socialLinks: Array<{
     platform: string;
     url: string;
@@ -39,7 +40,7 @@ export type FlexternClientCompanySocialDetails = {
 
 export type FlexternClientProfileDetails = FlexternClientAccountDetails &
   FlexternClientCompanyDetails &
-  FlexternClientCompanySocialDetails;
+  FlexternClientSocialDetails;
 
 export type FlexternUserProfileForm = {
   currentTabIndex: number;
@@ -51,9 +52,8 @@ export type FlexternUserProfileFormActions = {
   populateClientInfoDetails: () => Promise<void>; // includes account details
   populateClientOrgDetails: () => Promise<void>;
   upsertClientAccountInfo: (data: FlexternClientAccountDetails) => Promise<void>;
-  updateClientCompanyInfo: (data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails) => Promise<void>;
-  nextTab: () => void;
-  previousTab: () => void;
+  updateClientSocialInfo: (data: FlexternClientSocialDetails) => Promise<void>;
+  updateClientCompanyInfo: (data: FlexternClientCompanyDetails) => Promise<void>;
   resetStore: () => void;
   setCurrentTabIndex: (index: number) => void;
 };

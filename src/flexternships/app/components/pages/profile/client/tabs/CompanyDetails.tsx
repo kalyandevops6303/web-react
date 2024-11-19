@@ -16,32 +16,25 @@ import selectedRadio from '@/flexternships/assets/icons/radios/selectedRadio.svg
 import defaultRadio from '@/flexternships/assets/icons/radios/defaultRadio.svg';
 import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSelectInput';
 import { isEmpty } from 'lodash';
-import {
-  fetchCitiesPaginatedByState,
-  fetchCompanyIndustriesPaginated,
-  fetchCountriesPaginated,
-  fetchStatesPaginatedByCountry,
-} from '@/flexternships/services/user-management';
-import { City, State } from '@/flexternships/constraints/types/core-types';
+import { fetchCompanyIndustriesPaginated } from '@/flexternships/services/user-management';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { useNavigate } from 'react-router-dom';
 
 export default function CompanyDetails() {
   const populateClientOrgDetails = useFlexternUserProfileStore((state) => state.populateClientOrgDetails);
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
-  const nextTab = useFlexternUserProfileStore((state) => state.nextTab);
-  const previousTab = useFlexternUserProfileStore((state) => state.previousTab);
   const updateClientCompanyInfo = useFlexternUserProfileStore((state) => state.updateClientCompanyInfo);
 
   const [isSaveLoading, setIsSaveLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
-    watch,
     reset,
-    setValue,
     formState: { errors, isValid, isDirty },
   } = useForm<FlexternClientCompanyDetails>({
     mode: 'onChange',
@@ -82,31 +75,19 @@ export default function CompanyDetails() {
     }
   }, [profileDetails, reset]);
 
-  useEffect(() => {
-    const resetGeoState = () => {
-      setValue('officeAddress.state', {} as State);
-    };
-    // checking if the useEffect is not triggered by preloaded profileDetails
-    if (watch('officeAddress.country')?._id !== profileDetails?.officeAddress?.country?._id) resetGeoState();
-    // checking if the geostate is something else than preloaded profileDetails
-    else if (watch('officeAddress.state')?._id !== profileDetails?.officeAddress?.state?._id) resetGeoState();
-  }, [watch('officeAddress.country'), profileDetails]);
+  const goToNextTab = () => {
+    navigate('/client-profile-edit/social-details');
+  };
 
-  useEffect(() => {
-    const resetGeoCity = () => {
-      setValue('officeAddress.city', {} as City);
-    };
-    // checking if the useEffect is not triggered by preloaded profileDetails
-    if (watch('officeAddress.state')?._id !== profileDetails?.officeAddress?.state?._id) resetGeoCity();
-    // checking if the geostate is something else than preloaded profileDetails
-    else if (watch('officeAddress.city')?._id !== profileDetails?.officeAddress?.city?._id) resetGeoCity();
-  }, [watch('officeAddress.state'), profileDetails]);
+  const goToPreviousTab = () => {
+    navigate('/client-profile-edit/account-details');
+  };
 
   const onContinue = async (data: FlexternClientCompanyDetails) => {
     setIsSaveLoading(true);
     try {
       await updateClientCompanyInfo(data);
-      nextTab();
+      goToNextTab();
     } catch (error) {
       showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
@@ -245,6 +226,7 @@ export default function CompanyDetails() {
                   label="Street Address"
                   placeholder="Enter street address"
                   error={errors?.officeAddress?.streetAddress?.message}
+                  readOnly
                 />
               )}
             ></Controller>
@@ -260,6 +242,7 @@ export default function CompanyDetails() {
                   label="House Number"
                   placeholder="Enter house number"
                   error={errors?.officeAddress?.buildingNumber?.message}
+                  readOnly
                 />
               )}
             ></Controller>
@@ -275,56 +258,58 @@ export default function CompanyDetails() {
                   label="Zip Code"
                   placeholder="Enter zip code"
                   error={errors?.officeAddress?.zipCode?.message}
+                  readOnly
                 />
               )}
             ></Controller>
 
-            <SingleSelectInput
-              name={`officeAddress.country`}
+            <Controller
+              name="officeAddress.city"
               control={control}
-              pageSize={10}
-              loadOptions={fetchCountriesPaginated}
-              className="w-[393px]"
-              label="Country"
-              placeholder="Select your country"
-              error={errors?.officeAddress?.country?.message}
-              maxMenuHeight={220}
-              required
-            />
+              render={({ field: { value, onChange } }) => (
+                <TextInput
+                  value={value?.name}
+                  onChange={onChange}
+                  className="w-[393px]"
+                  label="City"
+                  placeholder="Enter city"
+                  error={errors?.officeAddress?.city?.message}
+                  readOnly
+                />
+              )}
+            ></Controller>
 
-            <SingleSelectInput
-              name={`officeAddress.state`}
+            <Controller
+              name="officeAddress.state"
               control={control}
-              pageSize={10}
-              loadOptions={async (page, pageSize, search) =>
-                fetchStatesPaginatedByCountry(watch('officeAddress.country')._id, page, pageSize, search)
-              }
-              className="w-[393px]"
-              label="State"
-              placeholder="Select your state"
-              error={errors?.officeAddress?.state?.message}
-              maxMenuHeight={220}
-              disabled={isEmpty(watch('officeAddress.country'))}
-              key={watch('officeAddress.country')?._id}
-              required
-            />
+              render={({ field: { value, onChange } }) => (
+                <TextInput
+                  value={value?.name}
+                  onChange={onChange}
+                  className="w-[393px]"
+                  label="State"
+                  placeholder="Enter state"
+                  error={errors?.officeAddress?.state?.message}
+                  readOnly
+                />
+              )}
+            ></Controller>
 
-            <SingleSelectInput
-              name={`officeAddress.city`}
+            <Controller
+              name="officeAddress.country"
               control={control}
-              pageSize={10}
-              loadOptions={async (page, pageSize, search) =>
-                fetchCitiesPaginatedByState(watch('officeAddress.state')._id, page, pageSize, search)
-              }
-              className="w-[393px]"
-              label="City"
-              placeholder="Select your city"
-              error={errors?.officeAddress?.city?.message}
-              maxMenuHeight={220}
-              disabled={isEmpty(watch('officeAddress.state'))}
-              key={watch('officeAddress.state')?._id}
-              required
-            />
+              render={({ field: { value, onChange } }) => (
+                <TextInput
+                  value={value?.name}
+                  onChange={onChange}
+                  className="w-[393px]"
+                  label="Country"
+                  placeholder="Enter country"
+                  error={errors?.officeAddress?.country?.message}
+                  readOnly
+                />
+              )}
+            ></Controller>
           </div>
         </div>
       </div>
@@ -332,11 +317,11 @@ export default function CompanyDetails() {
         <PrimaryIconText
           text="Back"
           icon={<ChevronLeft size={16} />}
-          onClick={isDirty || isSaveLoading ? () => {} : previousTab}
+          onClick={isDirty || isSaveLoading ? () => {} : goToPreviousTab}
           className={`${isDirty || isSaveLoading ? 'opacity-30 cursor-default' : ''}`}
         />
         <div className="flex gap-5">
-          <SecondaryButton onClick={nextTab} disabled={isDirty || isSaveLoading}>
+          <SecondaryButton onClick={goToNextTab} disabled={isDirty || isSaveLoading}>
             Skip
             <ChevronRight size={18} />
           </SecondaryButton>

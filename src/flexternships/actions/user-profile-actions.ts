@@ -1,7 +1,7 @@
 import {
   FlexternClientAccountDetails,
   FlexternClientCompanyDetails,
-  FlexternClientCompanySocialDetails,
+  FlexternClientSocialDetails,
   FlexternUserProfileForm,
 } from '../constraints/types/user-profile-types';
 import {
@@ -20,9 +20,17 @@ export const populateClientInfoDetails = async (set: any) => {
       ...state.profileDetails,
       firstname: data.client_info?.first_name,
       lastname: data.client_info?.last_name,
+      timezone: {
+        _id: data.timezone._id,
+        name: data.timezone.name,
+      },
       imageUri: data.client_info?.image_uri,
       title: data.client_info?.title,
       department: data.client_info?.department,
+      socialLinks: data.client_info?.social_links?.map((link: any) => ({
+        platform: link.platform,
+        url: link.url,
+      })),
     },
   }));
   set({ isProfileDetailsLoading: false });
@@ -47,10 +55,6 @@ export const populateClientOrgDetails = async (set: any) => {
         buildingNumber: data.office_address?.building_number,
         zipCode: data.office_address?.zip_code,
       },
-      socialLinks: data.social_links?.map((link: any) => ({
-        platform: link.platform,
-        url: link.url,
-      })),
     },
   }));
   set({ isProfileDetailsLoading: false });
@@ -63,20 +67,30 @@ export const upsertClientAccountInfo = async (data: FlexternClientAccountDetails
       ...state.profileDetails,
       firstname: data.firstname,
       lastname: data.lastname,
+      timezone: data.timezone,
       imageUri: data.imageUri,
     },
   }));
   await upsertFlexternClientAccountInfo({
     firstname: data.firstname,
     lastname: data.lastname,
+    timezone: data.timezone,
     ...(data.imageUri?.startsWith('https') ? {} : { imageUri: data.imageUri }),
   });
 };
 
-export const updateClientCompanyInfo = async (
-  data: FlexternClientCompanyDetails | FlexternClientCompanySocialDetails,
-  set: any,
-) => {
+export const updateClientSocialInfo = async (data: FlexternClientSocialDetails, set: any) => {
+  set((state: FlexternUserProfileForm) => ({
+    ...state,
+    profileDetails: {
+      ...state.profileDetails,
+      ...data,
+    },
+  }));
+  await updateFlexternClientInfo(data);
+};
+
+export const updateClientCompanyInfo = async (data: FlexternClientCompanyDetails, set: any) => {
   set((state: FlexternUserProfileForm) => ({
     ...state,
     profileDetails: {
@@ -95,18 +109,6 @@ export const updateClientCompanyInfo = async (
     fileKeyAdjustedData = data;
   }
   await updateFlexternClientInfo(fileKeyAdjustedData);
-};
-
-export const nextTab = (set: any) => {
-  // This is called after validation
-  // do not overshoot on the max tabs
-  set((state: FlexternUserProfileForm) => ({ currentTabIndex: state.currentTabIndex + 1 }));
-};
-
-export const previousTab = (set: any) => {
-  set((state: FlexternUserProfileForm) => ({
-    currentTabIndex: state.currentTabIndex > 0 ? state.currentTabIndex - 1 : 0,
-  }));
 };
 
 export const setCurrentTabIndex = (index: number, set: any) => {
