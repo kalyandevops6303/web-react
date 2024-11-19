@@ -6,11 +6,6 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Collaboration & Teamwork',
       elements: [
         {
-          type: 'myquestion',
-          name: 'Temp',
-          text: 'My Text Value',
-        },
-        {
           type: 'rating',
           name: 'q1_collaboration',
           title: 'You worked as a true team player seeking inputs and collaboration from your manager and team members',
