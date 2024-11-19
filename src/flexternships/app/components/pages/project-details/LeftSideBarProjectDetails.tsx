@@ -228,6 +228,7 @@ const LeftSideBarProjectDetails = () => {
                 {data?.clientInfo?.firstName ?? ''} {data?.clientInfo?.lastName ?? ''}
               </div>
             </h1>
+            {/* {data?.clientInfo?.rating && <RatingInfo rating={data?.clientInfo?.rating || 0} />} */}
           </div>
         </div>
       )}
@@ -237,6 +238,11 @@ const LeftSideBarProjectDetails = () => {
 
       <div className="w-full flex flex-row  items-center justify-start gap-5">
         <div className="flex flex-row items-center gap-1">
+          {/* <img
+            src={StartDateSVG}
+            className="w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[rgba(13,110,253,0.12)]"
+            alt=""
+          /> */}
           {ProjectPanelDate1Icon[data?.status]}
           <div className="flex flex-col items-start">
             <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-medium text-[14px] leading-[23px] font-montserrat">
@@ -248,6 +254,11 @@ const LeftSideBarProjectDetails = () => {
           </div>
         </div>
         <div className="flex flex-row items-center gap-1">
+          {/* <img
+            src={EndDateSVG}
+            className="w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[rgba(13,110,253,0.12)]"
+            alt=""
+          /> */}
           {ProjectPanelDate2Icon[data?.status]}
           <div className="flex flex-col items-start">
             <h1
