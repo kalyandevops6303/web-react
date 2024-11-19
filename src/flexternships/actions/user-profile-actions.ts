@@ -54,7 +54,7 @@ export const populateClientOrgDetails = async (set: any) => {
         streetAddress: data.office_address?.street_address,
         buildingNumber: data.office_address?.building_number,
         zipCode: data.office_address?.zip_code,
-      }
+      },
     },
   }));
   set({ isProfileDetailsLoading: false });
@@ -91,10 +91,7 @@ export const updateClientSocialInfo = async (data: FlexternClientSocialDetails, 
   await updateFlexternClientInfo(data);
 };
 
-export const updateClientCompanyInfo = async (
-  data: FlexternClientCompanyDetails,
-  set: any,
-) => {
+export const updateClientCompanyInfo = async (data: FlexternClientCompanyDetails, set: any) => {
   set((state: FlexternUserProfileForm) => ({
     ...state,
     profileDetails: {
@@ -113,18 +110,6 @@ export const updateClientCompanyInfo = async (
     fileKeyAdjustedData = data;
   }
   await updateFlexternClientInfo(fileKeyAdjustedData);
-};
-
-export const nextTab = (set: any) => {
-  // This is called after validation
-  // do not overshoot on the max tabs
-  set((state: FlexternUserProfileForm) => ({ currentTabIndex: state.currentTabIndex + 1 }));
-};
-
-export const previousTab = (set: any) => {
-  set((state: FlexternUserProfileForm) => ({
-    currentTabIndex: state.currentTabIndex > 0 ? state.currentTabIndex - 1 : 0,
-  }));
 };
 
 export const setCurrentTabIndex = (index: number, set: any) => {

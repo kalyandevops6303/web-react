@@ -8,10 +8,8 @@ import {
   FlexternUserProfileStore,
 } from '../constraints/types/user-profile-types';
 import {
-  nextTab,
   populateClientInfoDetails,
   populateClientOrgDetails,
-  previousTab,
   updateClientCompanyInfo,
   upsertClientAccountInfo,
   setCurrentTabIndex,
@@ -28,8 +26,6 @@ export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set
   ...defaultInitState,
   populateClientInfoDetails: () => populateClientInfoDetails(set),
   populateClientOrgDetails: () => populateClientOrgDetails(set),
-  nextTab: () => nextTab(set),
-  previousTab: () => previousTab(set),
   upsertClientAccountInfo: async (data: FlexternClientAccountDetails) => upsertClientAccountInfo(data, set),
   updateClientSocialInfo: async (data: FlexternClientSocialDetails) => updateClientSocialInfo(data, set),
   updateClientCompanyInfo: async (data: FlexternClientCompanyDetails) => updateClientCompanyInfo(data, set),

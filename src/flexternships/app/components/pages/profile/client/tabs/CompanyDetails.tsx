@@ -16,9 +16,7 @@ import selectedRadio from '@/flexternships/assets/icons/radios/selectedRadio.svg
 import defaultRadio from '@/flexternships/assets/icons/radios/defaultRadio.svg';
 import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSelectInput';
 import { isEmpty } from 'lodash';
-import {
-  fetchCompanyIndustriesPaginated,
-} from '@/flexternships/services/user-management';
+import { fetchCompanyIndustriesPaginated } from '@/flexternships/services/user-management';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate } from 'react-router-dom';

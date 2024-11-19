@@ -3,7 +3,7 @@
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import axios from 'axios';
-import { FlexternClientAccountDetails, FlexternClientProfileDetails, FlexternClientSocialDetails } from '../constraints/types/user-profile-types';
+import { FlexternClientAccountDetails, FlexternClientProfileDetails } from '../constraints/types/user-profile-types';
 import { isEmpty } from 'lodash';
 import { handleError } from '../utils/error-utils';
 

@@ -96,7 +96,7 @@ export default function AccountDetails() {
     <div>
       <div className="py-6 flex flex-col gap-6 bg-white rounded-md">
         <div className="px-6 pb-3 border-b-1 border-grey-border">Account Details</div>
-        <div className="px-6 pt-6 pb-1">
+        <div className="px-6 pb-1">
           <Controller
             name="imageUri"
             control={control}
