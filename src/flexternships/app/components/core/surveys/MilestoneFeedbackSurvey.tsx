@@ -7,7 +7,7 @@
  * - SurveyJS React Documentation: https://surveyjs.io/form-library/documentation/get-started-react
  */
 
-// import 'survey-core/defaultV2.min.css';
+import 'survey-core/defaultV2.min.css';
 import { Model, Survey, SurveyModel } from 'survey-react-ui';
 import { SurveyJson } from '@/flexternships/constraints/types/survey-types';
 import SurveyStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey.module.css';
@@ -51,12 +51,171 @@ interface SurveyFormProps {
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   const { surveyJson, onComplete } = props;
-
-  // create a survey
   const survey = new Model(surveyJson);
-
-  // Add completion handler
   survey.onComplete.add(onComplete);
+
+  survey.applyTheme({
+    themeName: 'default',
+    colorPalette: 'light',
+    isPanelless: true,
+    backgroundImage: '',
+    backgroundOpacity: 1,
+    backgroundImageAttachment: 'scroll',
+    backgroundImageFit: 'cover',
+    cssVariables: {
+      '--sjs-corner-radius': '4px',
+      '--sjs-base-unit': '8px',
+      '--sjs-shadow-small': '0px 1px 2px 0px rgba(0, 0, 0, 0.15)',
+      '--sjs-shadow-inner': 'inset 0px 1px 2px 0px rgba(0, 0, 0, 0.15)',
+      '--sjs-border-default': '#FF9F43',
+      '--sjs-border-light': 'rgba(0, 0, 0, 0.09)',
+      '--sjs-general-backcolor': 'rgba(255, 255, 255, 1)',
+      '--sjs-general-backcolor-dark': 'rgba(248, 248, 248, 1)',
+      '--sjs-general-backcolor-dim-light': 'rgba(249, 249, 249, 1)',
+      '--sjs-general-backcolor-dim-dark': 'rgba(243, 243, 243, 1)',
+      '--sjs-general-forecolor': 'rgba(0, 0, 0, 0.91)',
+      '--sjs-general-forecolor-light': 'rgba(0, 0, 0, 0.45)',
+      '--sjs-general-dim-forecolor': 'rgba(0, 0, 0, 0.91)',
+      '--sjs-general-dim-forecolor-light': 'rgba(0, 0, 0, 0.45)',
+      '--sjs-secondary-backcolor': 'rgba(255, 152, 20, 1)',
+      '--sjs-secondary-backcolor-light': 'rgba(255, 152, 20, 0.1)',
+      '--sjs-secondary-backcolor-semi-light': 'rgba(255, 152, 20, 0.25)',
+      '--sjs-secondary-forecolor': 'rgba(255, 255, 255, 1)',
+      '--sjs-secondary-forecolor-light': 'rgba(255, 255, 255, 0.25)',
+      '--sjs-shadow-small-reset': '0px 0px 0px 0px rgba(0, 0, 0, 0.15)',
+      '--sjs-shadow-medium': '0px 2px 6px 0px rgba(0, 0, 0, 0.1)',
+      '--sjs-shadow-large': '0px 8px 16px 0px rgba(0, 0, 0, 0.1)',
+      '--sjs-shadow-inner-reset': 'inset 0px 0px 0px 0px rgba(0, 0, 0, 0.15)',
+      '--sjs-border-inside': 'rgba(0, 0, 0, 0.16)',
+      '--sjs-special-red-forecolor': 'rgba(255, 255, 255, 1)',
+      '--sjs-special-green': 'rgba(25, 179, 148, 1)',
+      '--sjs-special-green-light': 'rgba(25, 179, 148, 0.1)',
+      '--sjs-special-green-forecolor': 'rgba(255, 255, 255, 1)',
+      '--sjs-special-blue': 'rgba(67, 127, 217, 1)',
+      '--sjs-special-blue-light': 'rgba(67, 127, 217, 0.1)',
+      '--sjs-special-blue-forecolor': 'rgba(255, 255, 255, 1)',
+      '--sjs-special-yellow': 'rgba(255, 152, 20, 1)',
+      '--sjs-special-yellow-light': 'rgba(255, 152, 20, 0.1)',
+      '--sjs-special-yellow-forecolor': 'rgba(255, 255, 255, 1)',
+      '--sjs-article-font-xx-large-textDecoration': 'none',
+      '--sjs-article-font-xx-large-fontWeight': '700',
+      '--sjs-article-font-xx-large-fontStyle': 'normal',
+      '--sjs-article-font-xx-large-fontStretch': 'normal',
+      '--sjs-article-font-xx-large-letterSpacing': '0',
+      '--sjs-article-font-xx-large-lineHeight': '64px',
+      '--sjs-article-font-xx-large-paragraphIndent': '0px',
+      '--sjs-article-font-xx-large-textCase': 'none',
+      '--sjs-article-font-x-large-textDecoration': 'none',
+      '--sjs-article-font-x-large-fontWeight': '700',
+      '--sjs-article-font-x-large-fontStyle': 'normal',
+      '--sjs-article-font-x-large-fontStretch': 'normal',
+      '--sjs-article-font-x-large-letterSpacing': '0',
+      '--sjs-article-font-x-large-lineHeight': '56px',
+      '--sjs-article-font-x-large-paragraphIndent': '0px',
+      '--sjs-article-font-x-large-textCase': 'none',
+      '--sjs-article-font-large-textDecoration': 'none',
+      '--sjs-article-font-large-fontWeight': '700',
+      '--sjs-article-font-large-fontStyle': 'normal',
+      '--sjs-article-font-large-fontStretch': 'normal',
+      '--sjs-article-font-large-letterSpacing': '0',
+      '--sjs-article-font-large-lineHeight': '40px',
+      '--sjs-article-font-large-paragraphIndent': '0px',
+      '--sjs-article-font-large-textCase': 'none',
+      '--sjs-article-font-medium-textDecoration': 'none',
+      '--sjs-article-font-medium-fontWeight': '700',
+      '--sjs-article-font-medium-fontStyle': 'normal',
+      '--sjs-article-font-medium-fontStretch': 'normal',
+      '--sjs-article-font-medium-letterSpacing': '0',
+      '--sjs-article-font-medium-lineHeight': '32px',
+      '--sjs-article-font-medium-paragraphIndent': '0px',
+      '--sjs-article-font-medium-textCase': 'none',
+      '--sjs-article-font-default-textDecoration': 'none',
+      '--sjs-article-font-default-fontWeight': '400',
+      '--sjs-article-font-default-fontStyle': 'normal',
+      '--sjs-article-font-default-fontStretch': 'normal',
+      '--sjs-article-font-default-letterSpacing': '0',
+      '--sjs-article-font-default-lineHeight': '28px',
+      '--sjs-article-font-default-paragraphIndent': '0px',
+      '--sjs-article-font-default-textCase': 'none',
+      '--sjs-general-backcolor-dim': 'rgba(243, 243, 243, 1)',
+      '--sjs-primary-backcolor': '#FF9F43',
+      '--sjs-primary-backcolor-dark': 'rgba(240, 150, 63, 1)',
+      '--sjs-primary-backcolor-light': 'rgba(255, 159, 67, 0.1)',
+      '--sjs-primary-forecolor': 'rgba(255, 255, 255, 1)',
+      '--sjs-primary-forecolor-light': 'rgba(255, 255, 255, 0.25)',
+      '--sjs-special-red': 'rgba(229, 10, 62, 1)',
+      '--sjs-special-red-light': 'rgba(229, 10, 62, 0.1)',
+    },
+    headerView: 'basic',
+  });
+  const cssClasses = {
+    rating: {
+      label:
+        'sv_q_radiogroup_label justify-left inline-block text-center border border-[#ccc] rounded-md w-full cursor-pointer p-2.5 checked:bg-primary checked:text-white',
+      itemControl: 'sv_q_radiogroup_control_item hidden',
+      item: 'sv_q_radiogroup w-full pr-2.5 max-w-[6.875rem] mb-4 mt-2 inline-block',
+      root: ' w-full text-center mt-2.5',
+      itemChecked: 'sd-item--checked sd-radio--checked checked',
+    },
+  };
+  survey.onAfterRenderQuestion.add(function (_survey: any, options: any) {
+    const fieldset = options.htmlElement.querySelector('fieldset');
+    if (fieldset) {
+      fieldset.classList.add('custom-fieldset-styling');
+    }
+  });
+
+  // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later
+  const customStyles = `
+    .custom-fieldset-styling {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        position: relative;
+    }
+
+    .custom-fieldset-styling label {
+        margin: 0 8px;
+    }
+
+    .custom-fieldset-styling .sv-svg-icon {
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #555;
+    }
+
+    .custom-fieldset-styling .sv-svg-icon:hover {
+        color: #ffbf00;
+    }
+
+    .custom-fieldset-styling input[type="radio"]:checked + .sv-svg-icon {
+        color: #ffc107;
+    }
+
+    .custom-fieldset-styling .sd-rating__min-text,
+    .custom-fieldset-styling .sd-rating__max-text {
+        position: absolute;
+        bottom: -40px;
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .custom-fieldset-styling .sd-rating__min-text {
+        left: 0;
+    }
+
+    .custom-fieldset-styling .sd-rating__max-text {
+        right: 0;
+        text-align: right;
+    }
+`;
+
+  const styleSheet = document.createElement('style');
+  styleSheet.type = 'text/css';
+  styleSheet.innerText = customStyles;
+
+  document.head.appendChild(styleSheet);
 
   // Add custom styles
   survey.css = {
@@ -82,7 +241,9 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     matrix: SurveyMatrixStyles,
     matrixdropdown: SurveyMatrixDropdownStyles,
     matrixdynamic: SurveyMatrixDynamicStyles,
-    rating: SurveyRatingStyles,
+    rating: {
+      SurveyRatingStyles,
+    },
     comment: SurveyCommentStyles,
     file: SurveyFileStyles,
     signaturepad: SurveySignaturePadStyles,
@@ -98,6 +259,10 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     variables: SurveyVariablesStyles,
     tagbox: SurveyTagboxStyles,
   };
-
-  return <Survey model={survey} />;
+  survey.css = cssClasses;
+  return (
+    <div>
+      <Survey model={survey} />
+    </div>
+  );
 }
