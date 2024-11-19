@@ -25,6 +25,7 @@ import { useProjectMilestonesStore } from '@/flexternships/stores/project-milest
 import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { userTypes } from '@/utility/constants/Constant';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -184,7 +185,7 @@ const LeftSideBarProjectDetails = () => {
     if (data) {
       const tags = [...(data?.skillsData || []), ...(data?.toolsData || [])];
       setTagsData(tags);
-      setSecondaryStatus(() => data?.secondaryStatus?.next || data?.status);
+      setSecondaryStatus(() => data?.secondaryStatus?.next);
     }
 
     if (projectId && isEmpty(milestoneId)) {
@@ -208,38 +209,34 @@ const LeftSideBarProjectDetails = () => {
       </div>
       <h1 className="text-[#5E5873] font-medium text-[18px] leading-[21px] font-montserrat">{data?.details?.name}</h1>
 
-      <div className="flex flex-row items-center justify-center gap-3">
-        <div className="flex flex-col items-center justify-center gap-1">
-          <Avatar>
-            <AvatarImage src={data?.clientInfo?.imageUri?.length! > 0 ? data?.clientInfo?.imageUri : defaultAvatar} />
-            <AvatarFallback>
-              <User color="#6E6B7B" />
-            </AvatarFallback>
-          </Avatar>
-          <h1 className={`${UserTypeChipClassnames[UserType?.CLIENT]} font-semibold px-2 py-1 rounded-xl`}>Client</h1>
-        </div>
+      {userDetails?.userType === userTypes.talent && (
+        <div className="flex flex-row items-center justify-center gap-3">
+          <div className="flex flex-col items-center justify-center gap-1">
+            <Avatar>
+              <AvatarImage src={data?.clientInfo?.imageUri?.length! > 0 ? data?.clientInfo?.imageUri : defaultAvatar} />
+              <AvatarFallback>
+                <User color="#6E6B7B" />
+              </AvatarFallback>
+            </Avatar>
+            <h1 className={`${UserTypeChipClassnames[UserType?.CLIENT]} font-semibold px-2 py-1 rounded-xl`}>Client</h1>
+          </div>
 
-        <div className="flex flex-col items-start gap-1">
-          <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-normal text-[16px] font-montserrat">
-            <div>{data?.clientInfo?.departmentName ?? ''}</div>
-            <div>
-              {data?.clientInfo?.firstName ?? ''} {data?.clientInfo?.lastName ?? ''}
-            </div>
-          </h1>
-          {/* {data?.clientInfo?.rating && <RatingInfo rating={data?.clientInfo?.rating || 0} />} */}
+          <div className="flex flex-col items-start gap-1">
+            <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-normal text-[16px] font-montserrat">
+              <div>{data?.clientInfo?.departmentName ?? ''}</div>
+              <div>
+                {data?.clientInfo?.firstName ?? ''} {data?.clientInfo?.lastName ?? ''}
+              </div>
+            </h1>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="text-[#5E5873] font-medium text-[18px] leading-[21px] font-montserrat mt-2">Project Details</div>
       <div className="h-[1px] w-[313px] bg-[#EBE9F1]"></div>
 
       <div className="w-full flex flex-row  items-center justify-start gap-5">
         <div className="flex flex-row items-center gap-1">
-          {/* <img
-            src={StartDateSVG}
-            className="w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[rgba(13,110,253,0.12)]"
-            alt=""
-          /> */}
           {ProjectPanelDate1Icon[data?.status]}
           <div className="flex flex-col items-start">
             <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-medium text-[14px] leading-[23px] font-montserrat">
@@ -251,11 +248,6 @@ const LeftSideBarProjectDetails = () => {
           </div>
         </div>
         <div className="flex flex-row items-center gap-1">
-          {/* <img
-            src={EndDateSVG}
-            className="w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[rgba(13,110,253,0.12)]"
-            alt=""
-          /> */}
           {ProjectPanelDate2Icon[data?.status]}
           <div className="flex flex-col items-start">
             <h1
@@ -291,20 +283,22 @@ const LeftSideBarProjectDetails = () => {
             </h1>
           </div>
         </div>
-        <div className="flex flex-row items-start gap-3">
-          <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
-            Status :
-          </div>{' '}
-          <ProjectStatusChip
-            status={secondaryStatus as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
-            statusType={StatusType?.SECONDARY}
-            rounded={true}
-          />
-        </div>
+        {!isEmpty(secondaryStatus) && (
+          <div className="flex flex-row items-start gap-3">
+            <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
+              Status :
+            </div>{' '}
+            <ProjectStatusChip
+              status={secondaryStatus as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
+              statusType={StatusType?.SECONDARY}
+              rounded={true}
+            />
+          </div>
+        )}
 
         {(data?.skillsData?.length! > 0 || data?.toolsData?.length! > 0) && (
           <div className="flex flex-row items-start w-full justify-start gap-2">
-            <h1 className="mt-1 text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
+            <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat m-0">
               Tags:
             </h1>
             <BadgeGroup tags={tagsData || []} className="bg-skyblue-light text-skyblue" />
@@ -315,7 +309,7 @@ const LeftSideBarProjectDetails = () => {
           <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-medium text-[14px] leading-[21px] font-montserrat">
             Description:{' '}
           </h1>
-          <p className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
+          <p className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat break-words">
             {showMore
               ? data?.details?.description
               : `${data?.details?.description?.slice(0, 100)}` +
