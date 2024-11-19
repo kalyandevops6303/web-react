@@ -56,6 +56,7 @@ type StatusLog = {
 };
 
 export type ProjectDetails = {
+  [x: string]: any;
   id: string;
   createdAt: number;
   updatedAt: number;
