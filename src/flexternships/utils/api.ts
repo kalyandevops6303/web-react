@@ -37,6 +37,7 @@ export const routes = {
     },
     feedback: {
       submitKudosWow: `${serviceUrls.projectManagementV2}/feedback/kudos_wow`,
+      milestoneFeedbackInfo: `${serviceUrls.projectManagementV2}/feedback`,
     },
     notification: {
       markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
