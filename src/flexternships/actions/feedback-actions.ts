@@ -2,11 +2,11 @@ import { getMilestoneFeedbackInfoService } from '../services/feedback-service';
 
 
 export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: string, set: any) => {
-    set({ isFeedbackLoading: true });
+    set({ isFeedbackFormLoading: true });
     const data: any = await getMilestoneFeedbackInfoService(projectId, feedbackType);
     set((state: any) => ({
       ...state,
-      feedback: data
+      feedbackForm: data
     }));
-    set({ isFeedbackLoading: false });
+    set({ isFeedbackFormLoading: false });
   };

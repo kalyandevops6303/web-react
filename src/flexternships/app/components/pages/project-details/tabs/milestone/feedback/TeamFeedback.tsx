@@ -1,11 +1,9 @@
 import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
-import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 import { useEffect } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
-import TimelineStepper from '@/flexternships/app/components/core/surveys/TimeLineStepper';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
@@ -19,19 +17,19 @@ export { SmileyRating } from '@/flexternships/app/components/pages/project-detai
  * - Remove the hardcoded amd commented code from the component
  */
 
-export default function SelfFeedback() {
+export default function TeamFeedback() {
 
   const params = useParams();
 
-  const getSelfFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
-  const selfFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
+  const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
+  const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
 
   useEffect(() => {
-    getSelfFeedbackForm(params?.projectId, FeedbackTypesAPI.SELF);
+    getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
   }, [])
 
   const handleSurveyComplete = (survey: SurveyModel) => {
-    console.log(survey.data);
+    console.log(survey);
   };
 
   return (
@@ -40,7 +38,7 @@ export default function SelfFeedback() {
       {/* <Sidebar data={persons} /> */}
       {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
       {/* </div> */}
-      {selfFeedbackForm && <MilestoneFeedbackSurvey surveyJson={selfFeedbackForm?.feedback} onComplete={handleSurveyComplete} />}
+      {teamFeedbackForm && <MilestoneFeedbackSurvey surveyJson={teamFeedbackForm?.feedback} onComplete={handleSurveyComplete} />}
     </div>
   );
 }

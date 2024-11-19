@@ -43,6 +43,8 @@ import SurveyListStyles from '@/flexternships/styles/components/core/surveys/mil
 import SurveyActionBarStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-action-bar.module.css';
 import SurveyVariablesStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-variables.module.css';
 import SurveyTagboxStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-tag-box.module.css';
+import Spinner from '@/flexternships/app/components/core/Spinner';
+import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 
 interface SurveyFormProps {
   surveyJson: SurveyJson;
@@ -50,6 +52,9 @@ interface SurveyFormProps {
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
+
+  const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
+
   const { surveyJson, onComplete } = props;
   const survey = new Model(surveyJson);
   survey.onComplete.add(onComplete);
@@ -260,6 +265,17 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     tagbox: SurveyTagboxStyles,
   };
   survey.css = cssClasses;
+
+  if (isFeedbackFormLoading) {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-48 w-full">
+            <div className="h-8 w-8">
+                <Spinner />
+            </div>
+        </div>
+    )
+}
+
   return (
     <div>
       <Survey model={survey} />

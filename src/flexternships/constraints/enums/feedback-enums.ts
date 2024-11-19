@@ -9,5 +9,5 @@ export const enum FeedbackTypesAPI {
   SELF = 'SELF',
   PEER = 'PEER_TO_PEER',
   TEAM = 'MANAGER_TO_TEAM',
-  INDIVIDUAL = 'MANAGER_TO_INDIVIDUAL'
+  INDIVIDUAL = 'MANAGER_TO_PEER'
 }
