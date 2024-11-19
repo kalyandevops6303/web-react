@@ -72,7 +72,7 @@
 }
 
 .header {
-    @apply inline-block border border-2 rounded-lg text-[14px] p-1 mt-2 border-skyblue border-opacity-20 text-skyblue bg-skyblue bg-opacity-5;
+    @apply inline-block border border-2 rounded-lg p-1 mt-2 border-skyblue border-opacity-20 text-skyblue bg-skyblue bg-opacity-5;
 }
 
 .collapsed {

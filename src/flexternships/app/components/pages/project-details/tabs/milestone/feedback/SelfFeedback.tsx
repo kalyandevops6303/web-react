@@ -3,7 +3,9 @@ import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys
 import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-
+export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
+export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
+export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
 /**
 /**
  * TODO:
