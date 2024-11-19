@@ -3,7 +3,7 @@
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import axios from 'axios';
-import { FlexternClientAccountDetails, FlexternClientProfileDetails } from '../constraints/types/user-profile-types';
+import { FlexternClientAccountDetails, FlexternClientProfileDetails, FlexternClientSocialDetails } from '../constraints/types/user-profile-types';
 import { isEmpty } from 'lodash';
 import { handleError } from '../utils/error-utils';
 
@@ -84,11 +84,20 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
   const config = {
     headers: headers,
   };
-  const formattedData = {
-    first_name: data.firstname,
-    last_name: data.lastname,
-    ...(data.imageUri ? { image_uri: data.imageUri } : {}),
-  };
+  const formattedData: Record<string, any> = {};
+  if (!isEmpty(data.firstname)) {
+    formattedData.first_name = data.firstname;
+  }
+  if (!isEmpty(data.lastname)) {
+    formattedData.last_name = data.lastname;
+  }
+  if (!isEmpty(data.timezone)) {
+    formattedData.timezone = data.timezone.name;
+  }
+  if (!isEmpty(data.imageUri)) {
+    formattedData.image_uri = data.imageUri;
+  }
+
   try {
     await axios.post(routes.userManagement.user.v2.postAccountDetails, formattedData, config);
   } catch (error) {
@@ -258,6 +267,31 @@ export const fetchRolesPaginated = async (
     return response?.data?.data || emptyData;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching paginated roles');
+  }
+  return emptyData; // Add this line to ensure a return value in all cases
+};
+
+export const fetchTimezonesPaginated = async (
+  page: number = 1,
+  page_size: number = 10,
+  search_query?: string,
+): Promise<PaginatedData> => {
+  const emptyData = {
+    metadata: {
+      current_page: 1,
+      page_size: 0,
+      total_records: 0,
+      has_next_page: false,
+    },
+    data: [],
+  };
+  try {
+    const response = await axios.get(
+      `${routes.userManagement.static.timezone.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+    );
+    return response?.data?.data || emptyData;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching paginated timezones');
   }
   return emptyData; // Add this line to ensure a return value in all cases
 };

@@ -14,6 +14,13 @@ export const FlexternClientAccountDetailsSchema = yup.object().shape({
     .min(3, 'Last name must be at least 3 characters')
     .max(25, 'Last name must not exceed 25 characters')
     .required('Last name is required'),
+  timezone: yup
+    .object()
+    .shape({
+      _id: yup.string().optional(),
+      name: yup.string().required('Timezone name is required'),
+    })
+    .required('Timezone is required'),
   imageUri: yup.string().optional(), // submits file key gets public uri
 });
 
@@ -61,7 +68,7 @@ export const FlexternClientCompanyDetailsSchema = yup.object().shape({
   }),
 });
 
-export const FlexternClientCompanySocialDetailsSchema = yup.object().shape({
+export const FlexternClientSocialDetailsSchema = yup.object().shape({
   socialLinks: yup
     .array()
     .of(
