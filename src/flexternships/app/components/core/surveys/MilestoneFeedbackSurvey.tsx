@@ -159,13 +159,14 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       itemChecked: "sd-item--checked sd-radio--checked checked",
     }
   };
-  survey.onAfterRenderQuestion.add(function (survey, options) {
+  survey.onAfterRenderQuestion.add(function (_survey:any, options:any) {
     const fieldset = options.htmlElement.querySelector("fieldset");
     if (fieldset) {
       fieldset.classList.add("custom-fieldset-styling");
     }
   });
 
+  // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later
   const customStyles = `
     .custom-fieldset-styling {
         display: flex;

@@ -1,8 +1,6 @@
 import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
-import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
-import TimelineStepper from '@/flexternships/app/components/core/surveys/TimeLineStepper';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 
@@ -11,56 +9,57 @@ export { MyQuestion } from '@/flexternships/app/components/pages/project-details
  * TODO:
  * - Complete the function of handleSurveyComplete
  * - Get surveyJson from the backend
+ * - Remove the hardcoded amd commented code from the component
  */
 
-const persons = [
-  {
-    image:
-      'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
-    name: 'Bob',
-    role: 'Frontend Developer',
-    completed: true,
-    lastMessageTime: '3 min',
-    isActive: false,
-  },
-  {
-    image:
-      'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
-    name: 'Bob',
-    role: 'Frontend Developer',
-    completed: true,
-    lastMessageTime: '3 min',
-    isActive: false,
-  },
-  {
-    image:
-      'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
-    name: 'Bob',
+// const persons = [
+//   {
+//     image:
+//       'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
+//     name: 'Bob',
+//     role: 'Frontend Developer',
+//     completed: true,
+//     lastMessageTime: '3 min',
+//     isActive: false,
+//   },
+//   {
+//     image:
+//       'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
+//     name: 'Bob',
+//     role: 'Frontend Developer',
+//     completed: true,
+//     lastMessageTime: '3 min',
+//     isActive: false,
+//   },
+//   {
+//     image:
+//       'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
+//     name: 'Bob',
 
-    role: 'Frontend Developer',
-    completed: true,
-    lastMessageTime: '3 min',
-    isActive: false,
-  },
-  {
-    image:
-      'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
-    name: 'Bob',
-    role: 'Frontend Developer',
-    completed: false,
-    lastMessageTime: '3 min',
-    isActive: false,
-  },
-  {
-    image:
-      'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
-    name: 'Bob',
-    role: 'Frontend Developer',
-    completed: false,
-    lastMessageTime: '3 min',
-    isActive: true,
-  },
-];
+//     role: 'Frontend Developer',
+//     completed: true,
+//     lastMessageTime: '3 min',
+//     isActive: false,
+//   },
+//   {
+//     image:
+//       'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
+//     name: 'Bob',
+//     role: 'Frontend Developer',
+//     completed: false,
+//     lastMessageTime: '3 min',
+//     isActive: false,
+//   },
+//   {
+//     image:
+//       'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/8387eb29-18c4-4ebc-b137-a0ebbf3cb9a4.jpeg',
+//     name: 'Bob',
+//     role: 'Frontend Developer',
+//     completed: false,
+//     lastMessageTime: '3 min',
+//     isActive: true,
+//   },
+// ];
 
 export default function SelfFeedback() {
   const handleSurveyComplete = (survey: SurveyModel) => {
