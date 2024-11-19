@@ -65,7 +65,6 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
     setIsSubmitLoading(true);
     const selectedTeamMembers = teamMembers.filter((member) => member.selected);
     const selectedTeamMemberIds = selectedTeamMembers.map((member) => member.id);
-    console.log(selectedTeamMemberIds); //change this with the submit function from props
     try {
       await submitKudosOrWow(milestoneId, selectedTeamMemberIds);
       closeModal();

@@ -80,7 +80,6 @@ export const upsertClientAccountInfo = async (data: FlexternClientAccountDetails
 };
 
 export const updateClientSocialInfo = async (data: FlexternClientSocialDetails, set: any) => {
-  console.log('data', data);
   set((state: FlexternUserProfileForm) => ({
     ...state,
     profileDetails: {
