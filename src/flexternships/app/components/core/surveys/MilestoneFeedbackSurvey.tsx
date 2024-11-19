@@ -52,7 +52,6 @@ interface SurveyFormProps {
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
-
   const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
 
   const { surveyJson, onComplete } = props;
@@ -268,13 +267,13 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
   if (isFeedbackFormLoading) {
     return (
-        <div className="flex flex-col items-center justify-center min-h-48 w-full">
-            <div className="h-8 w-8">
-                <Spinner />
-            </div>
+      <div className="flex flex-col items-center justify-center min-h-48 w-full">
+        <div className="h-8 w-8">
+          <Spinner />
         </div>
-    )
-}
+      </div>
+    );
+  }
 
   return (
     <div>

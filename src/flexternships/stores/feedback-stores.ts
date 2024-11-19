@@ -1,13 +1,17 @@
 import { create } from 'zustand';
-import { getMilestoneFeedbackInfo } from '../actions/feedback-actions';
+import { getMilestoneFeedbackInfo, submitFeedbackInfo } from '../actions/feedback-actions';
 
 const defaultInitState: any = {
-    feedbackForm: null, 
-    isFeedbackFormLoading: false
+  feedbackForm: null,
+  isFeedbackFormLoading: false,
+  isSumitFeedbackLoading: false,
+  feedbackFormSubmission: null,
 };
 
 export const useFeedbackStore = create<any>((set, get) => ({
-    ...defaultInitState,
-    getMilestoneFeedbackForm: (projectId: string, feedbackType: string) => getMilestoneFeedbackInfo(projectId, feedbackType, set),
-    resetStore: () => set({ ...defaultInitState }),
-  }));
+  ...defaultInitState,
+  getMilestoneFeedbackForm: (projectId: string, feedbackType: string) =>
+    getMilestoneFeedbackInfo(projectId, feedbackType, set),
+  submitFeedbackForm: (formData: any) => submitFeedbackInfo(formData, set),
+  resetStore: () => set({ ...defaultInitState }),
+}));

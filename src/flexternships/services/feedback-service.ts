@@ -3,7 +3,10 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 
-export const getMilestoneFeedbackInfoService: (projectId: string, feedbackType: string) => Promise<any> = async (projectId, feedbackType) => {
+export const getMilestoneFeedbackInfoService: (projectId: string, feedbackType: string) => Promise<any> = async (
+  projectId,
+  feedbackType,
+) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
@@ -18,5 +21,16 @@ export const getMilestoneFeedbackInfoService: (projectId: string, feedbackType: 
     return response.data?.data || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching feedback details');
+  }
+};
+
+export const submitFeedbackService = async (formData: any): Promise<any> => {
+  try {
+    const headers = appendAuthToken({}) || {};
+    const response = await axios.post(`${routes.projectManagementV2.feedback.submitFeedback}`, formData, { headers });
+    return response.data?.data || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting feedback');
+    throw error;
   }
 };

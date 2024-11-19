@@ -5,14 +5,12 @@ import TeamFeedback from './TeamFeedback';
 import PeerFeedback from './PeerFeedback';
 import IndividualFeedback from './IndividualFeedback';
 
-
-
 export default function HandleFeedbacks() {
   const componentsByFeedbackType = {
     self: <SelfFeedback />,
     manager_to_team: <TeamFeedback />,
     peer_to_peer: <PeerFeedback />,
-    manager_to_peer: <IndividualFeedback />
+    manager_to_peer: <IndividualFeedback />,
   };
 
   const { feedbackType } = useParams();
@@ -22,9 +20,5 @@ export default function HandleFeedbacks() {
     return <Navigate to="/404" />;
   }
 
-  return (
-    <div>
-      {componentsByFeedbackType[feedbackType as keyof typeof componentsByFeedbackType]}
-    </div>
-  );
+  return <div>{componentsByFeedbackType[feedbackType as keyof typeof componentsByFeedbackType]}</div>;
 }

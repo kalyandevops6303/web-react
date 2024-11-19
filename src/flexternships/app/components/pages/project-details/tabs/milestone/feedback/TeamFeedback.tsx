@@ -4,32 +4,41 @@ import { useEffect } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
 export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
 export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
-/**
-/**
- * TODO:
- * - Complete the function of handleSurveyComplete
- * - Get surveyJson from the backend
- * - Remove the hardcoded amd commented code from the component
- */
 
 export default function TeamFeedback() {
-
   const params = useParams();
+
+  const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
 
+  const submitFeedback = useFeedbackStore((state) => state.submitFeedbackForm);
+
   useEffect(() => {
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
-  }, [])
+  }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
-    console.log(survey);
+    const submitFeedbackData: any = {
+      feedback_id: teamFeedbackForm?._id,
+      milestone_id: params?.milestoneId,
+      receiver: {
+        user_id: currentUserDetails?.id,
+        user_type: UserType.TALENT,
+      },
+      feedback_result: survey.data,
+    };
+
+    submitFeedback(submitFeedbackData);
   };
 
   return (
@@ -38,7 +47,9 @@ export default function TeamFeedback() {
       {/* <Sidebar data={persons} /> */}
       {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
       {/* </div> */}
-      {teamFeedbackForm && <MilestoneFeedbackSurvey surveyJson={teamFeedbackForm?.feedback} onComplete={handleSurveyComplete} />}
+      {teamFeedbackForm && (
+        <MilestoneFeedbackSurvey surveyJson={teamFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+      )}
     </div>
   );
 }
