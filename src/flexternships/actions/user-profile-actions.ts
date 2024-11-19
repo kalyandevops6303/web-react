@@ -20,10 +20,7 @@ export const populateClientInfoDetails = async (set: any) => {
       ...state.profileDetails,
       firstname: data.client_info?.first_name,
       lastname: data.client_info?.last_name,
-      timezone: {
-        _id: data.timezone._id,
-        name: data.timezone.name,
-      },
+      timezone: data.timezone || undefined,
       imageUri: data.client_info?.image_uri,
       title: data.client_info?.title,
       department: data.client_info?.department,
