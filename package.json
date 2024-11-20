@@ -105,6 +105,7 @@
     "stream-browserify": "3.0.0",
     "styled-components": "5.3.5",
     "survey-core": "^1.12.8",
+    "survey-creator-react": "^1.12.10",
     "survey-react-ui": "^1.12.8",
     "swiper": "8.1.5",
     "tailwind-merge": "^2.5.3",

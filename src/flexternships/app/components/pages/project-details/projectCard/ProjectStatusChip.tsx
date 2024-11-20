@@ -20,6 +20,7 @@ const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatu
     CLOSED: 'bg-gray-300 text-gray-600 border border-gray-500',
     TERMINATED: 'bg-red-100 text-red-600 border border-red-400',
     COMPLETED: 'bg-orange-200 text-orange-600 border border-orange-400',
+    WITHDRAWN: 'bg-orange-50 text-orange-500 border-2 border-orange-500',
   };
 
   const SecondaryStatusChipClassNames = {
