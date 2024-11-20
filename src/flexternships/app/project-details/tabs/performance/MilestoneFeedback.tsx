@@ -26,14 +26,14 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
 
   const teamDetails = useProjectsStore((state) => state.teamDetails);
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
-  
+
   const [currentOpened, setCurrentOpened] = useState<any>(null);
   const [formattedFeedbackResponse, setFormattedFeedbackResponse] = useState<any>(null);
 
   const handleAccordionToggle = (peerFeedback: any) => {
     if (peerFeedback._id === currentOpened?._id) setCurrentOpened(null);
     else setCurrentOpened(peerFeedback);
-  }
+  };
 
   useEffect(() => {
     getPerformanceDetails(params?.projectId as string, feedbackType);
@@ -43,35 +43,31 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   useEffect(() => {
     setFormattedFeedbackResponse(
       feedbackResponse?.feedback?.pages?.map((page: any) => {
-        return (
-          {
-            name: page?.name,
-            values: page?.elements?.map((element: any) => {
-              return (
-                {
-                  type: element?.type,
-                  name: element?.name,
-                  value: feedbackResponse?.feedback_result[element?.name] ?? ""
-                }
-              )
-            })
-          }
-        )
-      })
-    )
-  }, [feedbackResponse])
+        return {
+          name: page?.name,
+          values: page?.elements?.map((element: any) => {
+            return {
+              type: element?.type,
+              name: element?.name,
+              value: feedbackResponse?.feedback_result[element?.name] ?? '',
+            };
+          }),
+        };
+      }),
+    );
+  }, [feedbackResponse]);
 
   useEffect(() => {
     if (currentOpened && teamDetails && currentOpened?.feedback_id) {
-      const receiverId = currentUserType === UserType.CLIENT ? teamDetails[0].id : currentUserId
+      const receiverId = currentUserType === UserType.CLIENT ? teamDetails[0].id : currentUserId;
       const feedbackType = currentUserType === UserType.CLIENT ? FeedbackTypesAPI.TEAM : FeedbackTypesAPI.SELF;
-      const milestoneId = currentOpened?.milestone_id
+      const milestoneId = currentOpened?.milestone_id;
 
-      console.log(currentOpened)
-      getFeedbackResponse(receiverId, milestoneId, feedbackType)
+      console.log(currentOpened);
+      getFeedbackResponse(receiverId, milestoneId, feedbackType);
     }
-    console.log(currentOpened)
-  }, [currentOpened])
+    console.log(currentOpened);
+  }, [currentOpened]);
 
   const getHeaderContent = (peerFeedback: any) => {
     const { name, score } = peerFeedback;
@@ -114,7 +110,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
               isOpen={peerFeedback?._id === currentOpened?._id}
               onToggle={() => handleAccordionToggle(peerFeedback)}
             >
-              <IndividualFeedbackResponse response={formattedFeedbackResponse}/>
+              <IndividualFeedbackResponse response={formattedFeedbackResponse} />
             </CollapsableCard>
           ))}
         </div>

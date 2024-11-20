@@ -30,7 +30,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const handleAccordionToggle = (individualFeedback: any) => {
     if (individualFeedback.user_id === currentOpened?.user_id) setCurrentOpened(null);
     else setCurrentOpened(individualFeedback);
-  }
+  };
 
   useEffect(() => {
     if (milestoneId) getPerformanceDetails(milestoneId, feedbackType);
@@ -41,30 +41,26 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
       const receiverId = currentOpened?.user_id;
       const feedbackType = currentUserType === UserType.CLIENT ? FeedbackTypesAPI.INDIVIDUAL : FeedbackTypesAPI.PEER;
 
-      getFeedbackResponse(receiverId, milestoneId, feedbackType)
+      getFeedbackResponse(receiverId, milestoneId, feedbackType);
     }
-  }, [currentOpened])
+  }, [currentOpened]);
 
   useEffect(() => {
     setFormattedFeedbackResponse(
       feedbackResponse?.feedback?.pages?.map((page: any) => {
-        return (
-          {
-            name: page?.name,
-            values: page?.elements?.map((element: any) => {
-              return (
-                {
-                  type: element?.type,
-                  name: element?.name,
-                  value: feedbackResponse?.feedback_result[element?.name] ?? ""
-                }
-              )
-            })
-          }
-        )
-      })
-    )
-  }, [feedbackResponse])
+        return {
+          name: page?.name,
+          values: page?.elements?.map((element: any) => {
+            return {
+              type: element?.type,
+              name: element?.name,
+              value: feedbackResponse?.feedback_result[element?.name] ?? '',
+            };
+          }),
+        };
+      }),
+    );
+  }, [feedbackResponse]);
 
   const getHeaderContent = (individualFeedback: any) => {
     const { image_uri, first_name, last_name, role, score } = individualFeedback;
@@ -116,7 +112,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
             isOpen={individualFeedback?.user_id === currentOpened?.user_id}
             onToggle={() => handleAccordionToggle(individualFeedback)}
           >
-            <IndividualFeedbackResponse response={formattedFeedbackResponse}/>
+            <IndividualFeedbackResponse response={formattedFeedbackResponse} />
           </CollapsableCard>
         ))
       )}

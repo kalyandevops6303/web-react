@@ -6,12 +6,12 @@ import React, { useEffect, useState } from 'react';
 export default function CollapsableCard(props: CollapsableCardProps) {
   const { children, isCollapsible, bordered, isOpen, headerContent, className, white, onToggle } = props;
 
-  const [open, setOpen] = useState(isOpen)
+  const [open, setOpen] = useState(isOpen);
 
   const handleToggle = () => {
     setOpen(!open);
     onToggle && onToggle();
-  }
+  };
 
   return (
     <Accordion
@@ -23,7 +23,10 @@ export default function CollapsableCard(props: CollapsableCardProps) {
       } ${className}`}
     >
       <AccordionItem value="item-1">
-        <AccordionTrigger className={`${Styles.collapsableCard} hover:no-underline ${white && 'bg-white'}`} onClick={handleToggle}>
+        <AccordionTrigger
+          className={`${Styles.collapsableCard} hover:no-underline ${white && 'bg-white'}`}
+          onClick={handleToggle}
+        >
           {headerContent}
         </AccordionTrigger>
         <AccordionContent data-state={isOpen}>{children}</AccordionContent>

@@ -35,18 +35,18 @@ export const submitFeedbackService = async (formData: any): Promise<any> => {
   }
 };
 
-export const getFeedbackResponseService: (receiverId: string, milestoneId: string, feedbackType: string) => Promise<any> = async (
-  receiverId,
-  milestoneId,
-  feedbackType
-) => {
+export const getFeedbackResponseService: (
+  receiverId: string,
+  milestoneId: string,
+  feedbackType: string,
+) => Promise<any> = async (receiverId, milestoneId, feedbackType) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
     params: {
       receiver_id: receiverId,
       milestone_id: milestoneId,
-      feedback_type: feedbackType
+      feedback_type: feedbackType,
     },
   };
 
