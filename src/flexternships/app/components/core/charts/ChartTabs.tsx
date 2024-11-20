@@ -1,19 +1,16 @@
 import { IChartTabsProps } from '@/flexternships/constraints/types/chart-types';
-import { InfoCircledIcon } from '@radix-ui/react-icons';
 import React, { useState } from 'react';
 
 const ChartTabs: React.FC<IChartTabsProps> = ({ isDonut = false, showPercentage = false, tabs, onTabChange }) => {
   const [selectedTab, setSelectedTab] = useState(tabs[0]?.label);
 
   const handleTabChange = (value: string) => {
-    console.log('handleTabChange', value);
-
     setSelectedTab(value);
     onTabChange(value);
   };
 
   return (
-    <div className="flex items-center justify-around w-full mb-4">
+    <div className="flex items-center justify-around w-full">
       {tabs.map((tab) => (
         <button
           key={tab.percentage}
@@ -23,10 +20,7 @@ const ChartTabs: React.FC<IChartTabsProps> = ({ isDonut = false, showPercentage 
           }`}
         >
           <div className={`flex flex-col ${isDonut ? 'items-center' : 'items-start'}`}>
-            <span className="text-xs text-gray-500 font-medium flex gap-1">
-              {tab.label}
-              {tab.label === 'Attractiveness' && <InfoCircledIcon />}
-            </span>
+            <span className="text-xs text-gray-500 font-medium">{tab.label}</span>
             <span
               className={`text-lg font-semibold ${
                 selectedTab === tab.label ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'
