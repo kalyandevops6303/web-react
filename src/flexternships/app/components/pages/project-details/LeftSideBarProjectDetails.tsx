@@ -20,6 +20,7 @@ import {
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import DocumentsModal from '@/views/modals/DocumentsModal';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -64,6 +65,7 @@ const LeftSideBarProjectDetails = () => {
   return (
     <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 w-full md:w-[350px] h-fit rounded-xl">
       <div className="flex flex-row items-center w-full justify-between">
+        <DocumentsModal />
         <ProjectStatusChip
           status={data?.status as string as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
           statusType={StatusType?.PRIMARY}
