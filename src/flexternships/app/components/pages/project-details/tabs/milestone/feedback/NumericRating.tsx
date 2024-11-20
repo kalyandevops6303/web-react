@@ -1,9 +1,14 @@
 import React from 'react';
-import { ItemValue, Question, QuestionRatingModel, Serializer } from 'survey-core';
+import { ItemValue, QuestionRatingModel, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
 
+type Choice = {
+  value: string;
+  text: string;
+};
+
 export class NumericRatingModel extends QuestionRatingModel {
-  constructor(name) {
+  constructor(name: string) {
     super(name);
     this.onSurveyLoad();
   }
@@ -38,20 +43,20 @@ export class NumericRatingModel extends QuestionRatingModel {
 
   onSurveyLoad() {
     if (this.jsonObj && this.jsonObj.rateValues) {
-      this.rateValues = this.jsonObj.rateValues.map((value) => new ItemValue(value.value, value.text));
+      this.rateValues = this.jsonObj.rateValues.map((value: Choice) => new ItemValue(value.value, value.text));
     }
   }
 
-  onPropertyChanged(property, newValue) {
+  protected onPropertyValueChanged(property: string, oldValue: any, newValue: any) {
     if (property === 'jsonObj' && newValue && newValue.rateValues) {
-      this.rateValues = newValue.rateValues.map((value) => new ItemValue(value.value, value.text));
+      this.rateValues = newValue.rateValues.map((value: Choice) => new ItemValue(value.value, value.text));
     }
-    super.onPropertyChanged(property, newValue);
+    super.onPropertyValueChanged(property, oldValue, newValue);
   }
 }
 
 export class numberRating extends SurveyQuestionElementBase {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       selectedValue: null,
@@ -62,7 +67,7 @@ export class numberRating extends SurveyQuestionElementBase {
     return this.props.question;
   }
 
-  handleChoiceSelect = (value) => {
+  handleChoiceSelect = (value: string) => {
     this.setState({ selectedValue: value });
     this.question.value = value;
   };
@@ -77,7 +82,7 @@ export class numberRating extends SurveyQuestionElementBase {
       <div className="text-grey-600 w-full">
         <div className="rating-choices text-black flex gap-4 w-full flex justify-between mt-2">
           {rateValues.length > 0 ? (
-            rateValues.map((choice, index) => (
+            rateValues.map((choice: Choice, index: number) => (
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
