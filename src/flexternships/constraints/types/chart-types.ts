@@ -13,6 +13,7 @@ export interface IChartLayoutProps {
 export interface IChartTabsType {
   label: string;
   percentage: string;
+  showInfoIcon: boolean;
 }
 
 export interface IChartTabsProps {
