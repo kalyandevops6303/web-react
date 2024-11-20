@@ -2,21 +2,69 @@ import CollapsableCard from '@/flexternships/app/components/core/cards/Collapsab
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { getScoreLabel } from '@/flexternships/utils/score-utils';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { User } from 'react-feather';
+import IndividualFeedbackResponse from './IndividualFeedbackResponse';
 
 export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const { milestoneId, feedbackType } = props;
+
+  const currentUserType = useFlexternUserStore((state) => state.userDetails?.userType);
 
   const performanceDetails = useProjectsStore((state) => state.performanceDetails);
   const getPerformanceDetails = useProjectsStore((state) => state.getPeerOrIndividualPerformanceDetails);
   const isPerformanceDetailsLoading = useProjectsStore((state) => state.isPerformanceDetailsLoading);
 
+  const getFeedbackResponse = useFeedbackStore((state) => state.getFeedbackResponse);
+  const feedbackResponse = useFeedbackStore((state) => state.feedbackResponse);
+
+  const [currentOpened, setCurrentOpened] = useState<any>(null);
+  const [formattedFeedbackResponse, setFormattedFeedbackResponse] = useState<any>(null);
+
+  const handleAccordionToggle = (individualFeedback: any) => {
+    if (individualFeedback.user_id === currentOpened?.user_id) setCurrentOpened(null);
+    else setCurrentOpened(individualFeedback);
+  }
+
   useEffect(() => {
     if (milestoneId) getPerformanceDetails(milestoneId, feedbackType);
   }, [milestoneId]);
+
+  useEffect(() => {
+    if (currentOpened && currentOpened?.feedback_id) {
+      const receiverId = currentOpened?.user_id;
+      const feedbackType = currentUserType === UserType.CLIENT ? FeedbackTypesAPI.INDIVIDUAL : FeedbackTypesAPI.PEER;
+
+      getFeedbackResponse(receiverId, milestoneId, feedbackType)
+    }
+  }, [currentOpened])
+
+  useEffect(() => {
+    setFormattedFeedbackResponse(
+      feedbackResponse?.feedback?.pages?.map((page: any) => {
+        return (
+          {
+            name: page?.name,
+            values: page?.elements?.map((element: any) => {
+              return (
+                {
+                  type: element?.type,
+                  name: element?.name,
+                  value: feedbackResponse?.feedback_result[element?.name] ?? ""
+                }
+              )
+            })
+          }
+        )
+      })
+    )
+  }, [feedbackResponse])
 
   const getHeaderContent = (individualFeedback: any) => {
     const { image_uri, first_name, last_name, role, score } = individualFeedback;
@@ -65,8 +113,10 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
             white
             className="mb-5 bg-white rounded-[10px]"
             headerContent={getHeaderContent(individualFeedback)}
+            isOpen={individualFeedback?.user_id === currentOpened?.user_id}
+            onToggle={() => handleAccordionToggle(individualFeedback)}
           >
-            Form
+            <IndividualFeedbackResponse response={formattedFeedbackResponse}/>
           </CollapsableCard>
         ))
       )}

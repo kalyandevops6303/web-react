@@ -1,10 +1,17 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@flexternships/components/ui/accordion';
 
 import Styles from '@flexternships/styles/components/core/cards.module.css';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function CollapsableCard(props: CollapsableCardProps) {
-  const { children, isCollapsible, bordered, isOpen, headerContent, className, white } = props;
+  const { children, isCollapsible, bordered, isOpen, headerContent, className, white, onToggle } = props;
+
+  const [open, setOpen] = useState(isOpen)
+
+  const handleToggle = () => {
+    setOpen(!open);
+    onToggle && onToggle();
+  }
 
   return (
     <Accordion
@@ -16,7 +23,7 @@ export default function CollapsableCard(props: CollapsableCardProps) {
       } ${className}`}
     >
       <AccordionItem value="item-1">
-        <AccordionTrigger className={`${Styles.collapsableCard} hover:no-underline ${white && 'bg-white'}`}>
+        <AccordionTrigger className={`${Styles.collapsableCard} hover:no-underline ${white && 'bg-white'}`} onClick={handleToggle}>
           {headerContent}
         </AccordionTrigger>
         <AccordionContent data-state={isOpen}>{children}</AccordionContent>
@@ -33,4 +40,5 @@ type CollapsableCardProps = {
   headerContent: React.ReactNode;
   className?: string;
   white?: boolean;
+  onToggle?: () => void;
 };

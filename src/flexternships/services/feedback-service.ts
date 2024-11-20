@@ -34,3 +34,26 @@ export const submitFeedbackService = async (formData: any): Promise<any> => {
     throw error;
   }
 };
+
+export const getFeedbackResponseService: (receiverId: string, milestoneId: string, feedbackType: string) => Promise<any> = async (
+  receiverId,
+  milestoneId,
+  feedbackType
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      receiver_id: receiverId,
+      milestone_id: milestoneId,
+      feedback_type: feedbackType
+    },
+  };
+
+  try {
+    const response = await axios.get(`${routes.projectManagementV2.feedback.feedbackResponse}`, config);
+    return response.data?.data || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching feedback details');
+  }
+};

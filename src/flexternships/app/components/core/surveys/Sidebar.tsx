@@ -13,7 +13,8 @@ const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => voi
               ${!item?.completed ? 'cursor-pointer' : ''}
               flex flex-row items-center w-[400px] bg-white border border-white justify-between gap-20 rounded-[6px] bg-white shadow-[0px_8px_12px_0px_rgba(0,0,0,0.04)] p-4 items-center gap-6 self-stretch`}
             onClick={() => {
-              !item?.completed && onChange(item?.userId);
+              !item?.completed && 
+              onChange(item?.userId);
             }}
           >
             <div className="flex flex-row items-center gap-2">

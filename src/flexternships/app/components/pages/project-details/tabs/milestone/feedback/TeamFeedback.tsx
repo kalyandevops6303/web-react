@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
@@ -15,8 +16,8 @@ export { SmileyRating } from '@/flexternships/app/components/pages/project-detai
 export default function TeamFeedback() {
   const params = useParams();
 
-  const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
-  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
+  const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
+  const teamDetails = useProjectsStore((state) => state.teamDetails);
 
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
@@ -25,6 +26,7 @@ export default function TeamFeedback() {
 
   useEffect(() => {
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
+    populateTeamDetails(params?.projectId);
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
@@ -32,8 +34,8 @@ export default function TeamFeedback() {
       feedback_id: teamFeedbackForm?._id,
       milestone_id: params?.milestoneId,
       receiver: {
-        user_id: currentUserDetails?.id,
         user_type: UserType.TALENT,
+        team_id: teamDetails && teamDetails[0].id
       },
       feedback_result: survey.data,
     };
