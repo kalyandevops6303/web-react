@@ -22,6 +22,8 @@ export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
     navigate(`/project-details/${projectId}/milestone/${milestoneId}/feedback/${feedbackType.toLowerCase()}`);
   };
 
+  console.log('feedbackType', daysLeft);
+
   return (
     <div
       className={`${

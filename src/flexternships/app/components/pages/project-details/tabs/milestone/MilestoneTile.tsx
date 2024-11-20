@@ -87,7 +87,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
               projectId={projectDetails.projectId}
               milestoneId={id}
               daysLeft={
-                referenceDateForFeedback
+                referenceDateForFeedback !== undefined
                   ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, maxFeedbackDueDays))
                   : undefined
               }
