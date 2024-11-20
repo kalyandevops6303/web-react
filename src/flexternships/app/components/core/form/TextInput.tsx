@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
 import Tooltip from '../Tooltip';
 import { Eye, EyeOff } from 'react-feather';
@@ -22,6 +22,14 @@ export default function TextInput(props: InputProps) {
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textarea && textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [value, textarea]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -55,6 +63,7 @@ export default function TextInput(props: InputProps) {
       </div>
       {textarea ? (
         <textarea
+          ref={textareaRef}
           placeholder={placeholder}
           className={`${Styles.formInput} ${
             readOnly ? Styles.formInputReadOnly : error ? Styles.formInputError : Styles.formInputDefault
