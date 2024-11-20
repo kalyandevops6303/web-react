@@ -1,9 +1,14 @@
 import React from "react";
-import { ItemValue, Question, QuestionRatingModel, Serializer } from "survey-core";
+import { ItemValue, QuestionRatingModel, Serializer } from "survey-core";
 import { ReactQuestionFactory, SurveyQuestionElementBase } from "survey-react-ui";
 
+type Choice = {
+    value: number;
+    text: string;
+};
+
 export class NumericRatingModel extends QuestionRatingModel {
-    constructor(name) {
+    constructor(name: string) {
         super(name);
         this.onSurveyLoad();
     }
@@ -36,27 +41,30 @@ export class NumericRatingModel extends QuestionRatingModel {
         this.setPropertyValue("maxRateDescription", value);
     }
 
-    onSurveyLoad() {
+    onSurveyLoad(): void {
         if (this.jsonObj && this.jsonObj.rateValues) {
             this.rateValues = this.jsonObj.rateValues.map(
-                (value) => new ItemValue(value.value, value.text)
+                (choice : Choice) => new ItemValue(choice.value, choice.text)
             );
         }
     }
 
-    onPropertyChanged(property, newValue) {
-        if (property === "jsonObj" && newValue && newValue.rateValues) {
-            this.rateValues = newValue.rateValues.map((value) => new ItemValue(value.value, value.text));
+    protected onPropertyValueChanged(name: string, oldValue: any, newValue: any): void {
+        if (name === 'jsonObj' && newValue && newValue.choices) {
+            this.choices = newValue.choices.map(
+                (choice: Choice | string) =>
+                    typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text)
+            );
         }
-        super.onPropertyChanged(property, newValue);
+        super.onPropertyValueChanged(name, oldValue, newValue);
     }
 }
 
 export class numberRating extends SurveyQuestionElementBase {
-    constructor(props) {
+    constructor(props: any) {
         super(props);
         this.state = {
-            selectedValue: null,
+            selectedValue: props.question.value || null,
         };
     }
 
@@ -64,7 +72,19 @@ export class numberRating extends SurveyQuestionElementBase {
         return this.props.question;
     }
 
-    handleChoiceSelect = (value) => {
+    componentDidMount() {
+        this.question.valueChangedCallback = () => {
+            this.setState({ selectedValue: this.question.value });
+        };
+    }
+
+    componentWillUnmount() {
+        if (this.question) {
+            this.question.valueChangedCallback = null;
+        }
+    }
+
+    handleChoiceSelect = (value: any) => {
         this.setState({ selectedValue: value });
         this.question.value = value;
     };
@@ -79,7 +99,7 @@ export class numberRating extends SurveyQuestionElementBase {
             <div className="text-grey-600 w-full">
                 <div className="rating-choices text-black flex gap-4 w-full flex justify-between mt-2">
                     {rateValues.length > 0 ? (
-                        rateValues.map((choice, index) => (
+                        rateValues.map((choice: Choice, index: number) => (
                             <button
                                 key={index}
                                 onClick={() => this.handleChoiceSelect(choice.value)}

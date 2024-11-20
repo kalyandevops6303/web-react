@@ -559,7 +559,7 @@ export const mockTeamFeedbackSurveyJson = {
           type: 'checkbox',
           name: 'top_leaders',
           title: 'Identify one or more team members who displayed leadership qualities within the current milestone',
-          api: 'http://localhost:3000/api/leaders',
+          api: 'https://tru-dev-api.trumio.ai/api/leaders/api/leaders',
           isRequired: false,
         },
       ],
@@ -712,7 +712,7 @@ export const mockIndividualFeedbackSurveyJson = {
       name: 'Improvement',
       elements: [
         {
-          type: 'checkbox',
+          type: 'areacheckbox',
           name: 'areas_of_development',
           title: 'Areas of Development',
           choices: [
@@ -741,7 +741,7 @@ export const mockIndividualFeedbackSurveyJson = {
       name: 'Recognition',
       elements: [
         {
-          type: 'radiogroup',
+          type: 'wowgroup',
           name: 'recognition',
           title: 'Give a WOW to the user for their demonstration of excellence',
           choices: [

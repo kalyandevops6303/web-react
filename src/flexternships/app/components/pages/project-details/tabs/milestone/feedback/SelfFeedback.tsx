@@ -3,9 +3,17 @@ import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys
 import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
+export { Kudos } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
 export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
 export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
+export { AreaCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/AreaCheckBox';
+export { Wow } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/WowRecognition';
+
+/*
+To be verified with the api or the JSON first
+export { LeaderCheckbox } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/LeaderCheckBox';
+*/
+
 /**
 /**
  * TODO:
