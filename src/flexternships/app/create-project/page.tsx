@@ -41,13 +41,6 @@ export default function CreateFlexternProject() {
       content: <Milestones />,
     },
     {
-      id: 'listing',
-      title: 'Listing',
-      subtitle: 'Add start and end date',
-      icon: <Clock size={20} />,
-      content: <Listing />,
-    },
-    {
       id: 'preview',
       title: 'Preview',
       subtitle: 'Review before posting',

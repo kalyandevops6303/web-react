@@ -3,11 +3,11 @@
 }
 
 .tabsContainer {
-  @apply flex flex-row pt-3.5 pb-2.5;
+  @apply flex flex-row pt-3.5 pb-2.5 gap-x-6;
 }
 
 .tab {
-  @apply flex flex-row items-center min-w-[212px] mr-6;
+  @apply flex flex-row items-center min-w-[212px];
 }
 
 .tabActive {
