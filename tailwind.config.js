@@ -22,6 +22,12 @@ module.exports = {
         orange: {
           DEFAULT: "#FF9F43"
         },
+        violet: {
+          DEFAULT: "#584CDB"
+        },
+        teal: {
+          DEFAULT: "#00BBB7"
+        },
         grey: {
           DEFAULT: "#6E6B7B",
           light: "#F8F8F8",

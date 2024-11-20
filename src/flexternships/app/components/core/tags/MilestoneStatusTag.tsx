@@ -2,6 +2,7 @@ import { MilestoneStatus } from '@/flexternships/constraints/enums/core-enums';
 import { cn } from '@/flexternships/lib/utils';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { getMilestoneStatusTextByUserType } from '@/flexternships/utils/core-utils';
+import { isEmpty } from 'lodash';
 
 function MilestoneStatusTag(props: Props) {
   const { status } = props;
@@ -14,6 +15,10 @@ function MilestoneStatusTag(props: Props) {
     [MilestoneStatus.COMPLETED]: 'text-success bg-success',
   };
 
+  const content = getMilestoneStatusTextByUserType(status, userDetails.userType);
+
+  if (isEmpty(content)) return null;
+
   return (
     <div
       className={cn(
@@ -22,7 +27,7 @@ function MilestoneStatusTag(props: Props) {
         'bg-opacity-10',
       )}
     >
-      {getMilestoneStatusTextByUserType(status, userDetails.userType)}
+      {content}
     </div>
   );
 }

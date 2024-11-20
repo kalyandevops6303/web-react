@@ -20,7 +20,7 @@ export default function FlexternshipProjectDetails() {
     if (params?.projectId) {
       getProjectDetails(params?.projectId);
     }
-  }, [params]);
+  }, [params?.projectId]);
 
   const tabs = [
     {

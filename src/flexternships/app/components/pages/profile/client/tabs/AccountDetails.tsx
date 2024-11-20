@@ -14,19 +14,24 @@ import ReactCountryFlag from 'react-country-flag';
 import { isEmpty } from 'lodash';
 import ChangePasswordModal from '@/flexternships/app/components/core/modals/ChangePasswordModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums';
+import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSelectInput';
+import { fetchTimezonesPaginated } from '@/flexternships/services/user-management';
+import { useNavigate } from 'react-router-dom';
 
 export default function AccountDetails() {
-  const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
-  const nextTab = useFlexternUserProfileStore((state) => state.nextTab);
   const upsertClientAccountInfo = useFlexternUserProfileStore((state) => state.upsertClientAccountInfo);
+  const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
+  const nextTab = useFlexternUserProfileStore((state) => state.nextTab);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const [isSaveLoading, setIsSaveLoading] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     control,
@@ -40,6 +45,7 @@ export default function AccountDetails() {
       firstname: '',
       lastname: '',
       imageUri: '',
+      timezone: undefined,
     },
   });
 
@@ -52,6 +58,7 @@ export default function AccountDetails() {
       reset({
         firstname: profileDetails.firstname,
         lastname: profileDetails.lastname,
+        timezone: profileDetails.timezone,
         imageUri: profileDetails.imageUri,
       });
     }
@@ -67,11 +74,19 @@ export default function AccountDetails() {
     );
   }
 
+  const goToNextTab = () => {
+    if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
+      navigate('/client-profile-edit/personal-details');
+    } else {
+      nextTab();
+    }
+  };
+
   const onContinue = async (data: FlexternClientAccountDetails) => {
     setIsSaveLoading(true);
     try {
       await upsertClientAccountInfo(data);
-      nextTab();
+      goToNextTab();
     } catch (error: unknown) {
       if (error instanceof Error) {
         showToastMessage(ToastType.ERROR, error.message);
@@ -86,14 +101,14 @@ export default function AccountDetails() {
     <div>
       <div className="py-6 flex flex-col gap-6 bg-white rounded-md">
         <div className="px-6 pb-3 border-b-1 border-grey-border">Account Details</div>
-        <div className="px-6 pt-6 pb-1">
+        <div className="px-6 pb-1">
           <Controller
             name="imageUri"
             control={control}
             render={({ field: { value, onChange } }) => <UploadProfileAvatar value={value} onChange={onChange} />}
           ></Controller>
         </div>
-        <div className="pl-6 flex flex-wrap gap-x-6 gap-y-5">
+        <div className="pl-6 flex flex-wrap gap-x-6 gap-y-8">
           <Controller
             name="firstname"
             control={control}
@@ -125,6 +140,22 @@ export default function AccountDetails() {
               />
             )}
           ></Controller>
+
+          <div className="w-full">
+            <SingleSelectInput
+              name={`timezone`}
+              control={control}
+              pageSize={10}
+              loadOptions={fetchTimezonesPaginated}
+              className="w-[393px]"
+              label="Timezone"
+              placeholder="Select your timezone"
+              error={errors?.timezone?.message}
+              maxMenuHeight={220}
+              required
+            />
+          </div>
+
           <div className="flex flex-col">
             <div className="text-xs text-grey-500 leading-5 not-italic font-normal flex flex-row gap-0.5">
               Mobile Number

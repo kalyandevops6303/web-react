@@ -38,6 +38,7 @@
 }
 
 .bodyContainer {
+    @apply bg-white;
 }
 
 .body {
@@ -80,6 +81,7 @@
 }
 
 .title {
+    @apply text-skyblue text-[20px];
 }
 
 .description {
@@ -101,6 +103,7 @@
 }
 
 .bodyNavigationButton {
+    @apply bg-trublue p-2 rounded-lg text-white
 }
 
 .completedPage {
@@ -115,19 +118,19 @@
 .progress {
 }
 
-.progressTop {
+.progressTop { 
 }
 
 .progressBottom {
 }
 
-.progressBar {
+.progressBar { 
 }
 
 .progressText {
 }
 
-.progressButtonsRoot {
+.progressButtonsRoot { 
 }
 
 .progressButtonsNumbered {
@@ -139,16 +142,16 @@
 .progressButtonsContainerCenter {
 }
 
-.progressButtonsContainer {
+.progressButtonsContainer {  
 }
 
 .progressButtonsConnector {
 }
 
-.progressButtonsButton {
+.progressButtonsButton {  
 }
 
-.progressButtonsButtonBackground {
+.progressButtonsButtonBackground {  
 }
 
 .progressButtonsButtonContent {
@@ -185,12 +188,13 @@
 }
 
 .progressButtonsPageTitle {
+    @apply hidden;
 }
 
 .progressButtonsPageDescription {
 }
 
-.progressTextInBar {
+.progressTextInBar {  
 }
 
 .pageTitle {
@@ -199,7 +203,7 @@
 .pageDescription {
 }
 
-.row {
+.row {  
 }
 
 .rowMultiple {
