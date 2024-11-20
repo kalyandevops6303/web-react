@@ -14,16 +14,17 @@ import ReactCountryFlag from 'react-country-flag';
 import { isEmpty } from 'lodash';
 import ChangePasswordModal from '@/flexternships/app/components/core/modals/ChangePasswordModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSelectInput';
 import { fetchTimezonesPaginated } from '@/flexternships/services/user-management';
 import { useNavigate } from 'react-router-dom';
 
 export default function AccountDetails() {
-  const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
   const upsertClientAccountInfo = useFlexternUserProfileStore((state) => state.upsertClientAccountInfo);
+  const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
+  const nextTab = useFlexternUserProfileStore((state) => state.nextTab);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
@@ -74,7 +75,11 @@ export default function AccountDetails() {
   }
 
   const goToNextTab = () => {
-    navigate('/client-profile-edit/personal-details');
+    if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
+      navigate('/client-profile-edit/personal-details');
+    } else {
+      nextTab();
+    }
   };
 
   const onContinue = async (data: FlexternClientAccountDetails) => {
