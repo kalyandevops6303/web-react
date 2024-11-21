@@ -1,6 +1,6 @@
 import Styles from '@flexternships/styles/components/core/progress-bar.module.css';
 
-export default function FlatProgressBar({ currentProgress, maxProgress }: ProgressProps) {
+export default function FlatProgressBar({ currentProgress, maxProgress, hidePercentage = false }: ProgressProps) {
   const percentage: number = Math.floor((currentProgress * 100) / maxProgress);
 
   return (
@@ -10,7 +10,7 @@ export default function FlatProgressBar({ currentProgress, maxProgress }: Progre
         className={Styles.progress}
         style={{ width: `${percentage}%` }} // Inline style for dynamic width
       >
-        {percentage}% {/* Show percentage with 2 decimal points */}
+        {!hidePercentage && `${percentage}%`} {/* Show percentage with 2 decimal points */}
       </div>
     </div>
   );
@@ -19,4 +19,5 @@ export default function FlatProgressBar({ currentProgress, maxProgress }: Progre
 type ProgressProps = {
   currentProgress: number;
   maxProgress: number;
+  hidePercentage?: boolean;
 };
