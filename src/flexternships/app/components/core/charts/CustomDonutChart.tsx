@@ -8,15 +8,15 @@ import ChartTabs from './ChartTabs';
 
 const CustomDonutChart: React.FC<IDonutChartProps> = ({
   tabs = [],
-  totalData = 0,
   chartData = [],
   statsData = [],
   chartConfig = {},
   selectOptions = [],
+  radialDataText = '',
+  totalRadialData = 0,
   isTabVisible = false,
   isDonutChart = false,
   handleSelect = () => {},
-  totalDataDescription = '',
   handleTabChange = () => {},
   chartTitle = 'Donut Chart',
   showPercentageInTab = false,
@@ -47,7 +47,7 @@ const CustomDonutChart: React.FC<IDonutChartProps> = ({
           />
         )}
         <ChartContainer config={chartConfig} className="mx-auto aspect-square w-full">
-          <RadialBarChart data={chartData} endAngle={360} innerRadius={80} outerRadius={130}>
+          <RadialBarChart data={chartData} endAngle={360} innerRadius={90} outerRadius={130}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
               <Label
@@ -56,10 +56,10 @@ const CustomDonutChart: React.FC<IDonutChartProps> = ({
                     return (
                       <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
                         <tspan x={viewBox.cx} y={(viewBox.cy || 0) - 16} className="fill-foreground text-2xl font-bold">
-                          {totalData.toLocaleString()}
+                          {totalRadialData.toLocaleString()}
                         </tspan>
                         <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 4} className="fill-muted-foreground text-xs">
-                          {totalDataDescription}
+                          {radialDataText}
                         </tspan>
                       </text>
                     );

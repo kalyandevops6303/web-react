@@ -53,9 +53,7 @@ const CustomLineChart: React.FC<ILineChartProps> = ({
               tickFormatter={(value) => value}
               className="text-gray-500 text-xs"
             />
-
             <YAxis tickLine={false} axisLine={false} tickMargin={10} className="text-gray-500 text-sm" />
-
             <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
             <defs>
               {gradients.map(({ id, color }) => (
@@ -65,7 +63,6 @@ const CustomLineChart: React.FC<ILineChartProps> = ({
                 </linearGradient>
               ))}
             </defs>
-
             {Object.keys(chartConfig).map((chart) => (
               <Area
                 key={chart}

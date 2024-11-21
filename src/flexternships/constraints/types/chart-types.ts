@@ -33,10 +33,10 @@ export interface IStatsProps {
 export interface IDonutChartProps extends IBaseChartProps {
   tabs?: IChartTabsType[];
   statsData: IStatsProps[];
-  totalData: number;
+  totalRadialData: number;
   isDonutChart: boolean;
   isDownloadIconVisible: boolean;
-  totalDataDescription: string;
+  radialDataText: string;
 }
 
 export interface ILineChartProps extends IBaseChartProps {
