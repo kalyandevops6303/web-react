@@ -244,7 +244,6 @@ export default function MilestoneDetails() {
         milestoneDetails.milestoneFeedbackDetails.map((feedback, index) => (
           <FeedbackStatusCard
             key={index}
-            feedbackId={feedback.feedbackId}
             feedbackType={feedback.feedbackType}
             feedbackStatus={feedback.feedbackStatus}
             numberOfQuestions={feedback.numberOfQuestions}
