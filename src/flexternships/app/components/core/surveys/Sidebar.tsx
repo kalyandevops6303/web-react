@@ -1,6 +1,5 @@
 import { Check, User } from 'react-feather';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
-import { useEffect } from 'react';
 
 const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => void }) => {
   return (
@@ -11,7 +10,7 @@ const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => voi
             key={index}
             className={`${item?.isActive ? '!bg-sky-100 !border !border-[#0185E4]' : ''} 
               ${!item?.completed ? 'cursor-pointer' : ''}
-              flex flex-row items-center w-[400px] bg-white border border-white justify-between gap-20 rounded-[6px] bg-white shadow-[0px_8px_12px_0px_rgba(0,0,0,0.04)] p-4 items-center gap-6 self-stretch`}
+              flex flex-row w-[400px]  border border-white justify-between rounded-[6px] bg-white shadow-[0px_8px_12px_0px_rgba(0,0,0,0.04)] p-4 items-center gap-6 self-stretch`}
             onClick={() => {
               !item?.completed && onChange(item?.userId);
             }}

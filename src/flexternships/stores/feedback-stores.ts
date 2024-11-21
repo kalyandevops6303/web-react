@@ -8,7 +8,7 @@ const defaultInitState: any = {
   feedbackFormSubmission: null,
 };
 
-export const useFeedbackStore = create<any>((set, get) => ({
+export const useFeedbackStore = create<any>((set) => ({
   ...defaultInitState,
   getMilestoneFeedbackForm: (projectId: string, feedbackType: string) =>
     getMilestoneFeedbackInfo(projectId, feedbackType, set),

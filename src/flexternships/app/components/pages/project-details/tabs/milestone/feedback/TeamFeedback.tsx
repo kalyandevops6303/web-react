@@ -16,7 +16,6 @@ export default function TeamFeedback() {
   const params = useParams();
 
   const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
-  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);

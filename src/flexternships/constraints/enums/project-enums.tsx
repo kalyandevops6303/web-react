@@ -21,6 +21,7 @@ export enum StatusType {
 }
 
 export enum PrimaryProjectStatus {
+  DRAFT = 'Draft',
   OPEN = 'Open',
   IN_REVIEW = 'In Review',
   ACTIVE = 'Active',
