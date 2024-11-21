@@ -1,6 +1,7 @@
 .root {
+    @apply bg-white w-full rounded-lg pt-[10px] pr-[12px] pb-[10px] pl-[12px] border border-gray-200 border-2 text-gray-600 font-sans placeholder:text-gray-300 focus:outline-none ;
 }
-
+/* 
 .small {
 }
 
@@ -20,4 +21,4 @@
 }
 
 .onError {
-}
+} */

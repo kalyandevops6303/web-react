@@ -1,17 +1,23 @@
 .complete {
+    @apply flex px-[10px] py-[10px] items-center justify-center gap-[8px] min-w-[64px] bg-[#0065C1];
 }
 
 .prev {
+    @apply flex px-[10px] py-[10px] items-center justify-center gap-[8px] min-w-[64px] bg-[#0065C1];
 }
 
 .next {
+    @apply flex px-[10px] py-[10px] items-center justify-center gap-[8px] min-w-[64px] bg-[#0065C1];
 }
 
 .start {
+    @apply flex px-[10px] py-[10px] items-center justify-center gap-[8px] min-w-[64px] bg-[#0065C1];
 }
 
 .preview {
+    @apply flex px-[10px] py-[10px] items-center justify-center gap-[8px] min-w-[64px] bg-[#0065C1];
 }
 
 .edit {
+    @apply flex px-[10px] py-[10px] items-center justify-center gap-[8px] min-w-[64px] bg-[#0065C1];
 }

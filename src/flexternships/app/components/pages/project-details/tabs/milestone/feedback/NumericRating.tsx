@@ -1,5 +1,5 @@
 import React from 'react';
-import { ItemValue, QuestionRatingModel, Serializer } from 'survey-core';
+import { ItemValue, Question, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
 
 type Choice = {
@@ -7,7 +7,7 @@ type Choice = {
   text: string;
 };
 
-export class NumericRatingModel extends QuestionRatingModel {
+export class NumericRatingModel extends Question {
   constructor(name: string) {
     super(name);
     this.onSurveyLoad();
@@ -100,11 +100,12 @@ export class numberRating extends SurveyQuestionElementBase {
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
-                className={`border rounded-lg px-4 justify-center flex items-center text-lg gap-2 font-sans ${
-                  selectedValue === choice.value
-                    ? 'border-skyblue bg-skyblue  text-white'
-                    : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
-                }`}
+                className={`border rounded-lg pt-[5px] pr-[8px] pb-[5px] pl-[8px] justify-center flex items-center text-sm font-semibold       gap-2 font-sans
+ ${
+   selectedValue === choice.value
+     ? 'border-trublue-secondary-500 bg-trublue-secondary-500  text-white'
+     : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
+ }`}
               >
                 {choice.text}
               </button>
@@ -113,7 +114,7 @@ export class numberRating extends SurveyQuestionElementBase {
             <span>No choices available</span>
           )}
         </div>
-        <div className="flex justify-between text-[14px] mt-2 text-gray-400">
+        <div className="flex justify-between text-[14px] mt-2" style={{ color: '#00000073' }}>
           <span>{this.question.minRateDescription}</span>
           <span>{this.question.maxRateDescription}</span>
         </div>

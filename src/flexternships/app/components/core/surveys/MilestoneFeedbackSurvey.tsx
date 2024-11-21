@@ -67,7 +67,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     backgroundImageAttachment: 'scroll',
     backgroundImageFit: 'cover',
     cssVariables: {
-      '--sjs-corner-radius': '4px',
+      '--sjs-corner-radius': '2px',
       '--sjs-base-unit': '8px',
       '--sjs-shadow-small': '0px 1px 2px 0px rgba(0, 0, 0, 0.15)',
       '--sjs-shadow-inner': 'inset 0px 1px 2px 0px rgba(0, 0, 0, 0.15)',
@@ -155,10 +155,10 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   const cssClasses = {
     rating: {
       label:
-        'sv_q_radiogroup_label justify-left inline-block text-center border border-[#ccc] rounded-md w-full cursor-pointer p-2.5 checked:bg-primary checked:text-white',
+        ' justify-center inline-block text-center border border-[#ccc] rounded-md w-full cursor-pointer p-2.5 checked:bg-primary checked:text-white',
       itemControl: 'sv_q_radiogroup_control_item hidden',
-      item: 'sv_q_radiogroup w-full pr-2.5 max-w-[6.875rem] mb-4 mt-2 inline-block',
-      root: ' w-full text-center mt-2.5',
+      item: 'w-full pr-2.5 max-w-[6.875rem] mb-4 mt-2 inline-block text-[14px]',
+      root: ' w-full text-center mt-2.5 text-[14px] mb-7',
       itemChecked: 'sd-item--checked sd-radio--checked checked',
     },
   };
@@ -187,6 +187,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
         cursor: pointer;
         font-size: 1.5rem;
         color: #555;
+        height: 32px;
     }
 
     .custom-fieldset-styling .sv-svg-icon:hover {

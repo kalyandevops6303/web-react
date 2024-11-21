@@ -17,7 +17,10 @@ module.exports = {
           fa: "#fafafa",
         },
         yellow: {
-          DEFAULT: "#FFD600"
+          DEFAULT: "#FFD600",
+          secondary: {
+            500: "#FBC02D",
+          },
         },
         orange: {
           DEFAULT: "#FF9F43"

@@ -104,18 +104,23 @@ export class Wow extends SurveyQuestionElementBase {
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
-                className={`p-2 border rounded-lg w-24 justify-center flex items-center text-xs gap-2 font-semibold ${
+                className={`py-[10px] px-[20px] gap-[8px] min-w-[64px] ${
+                  choice.text === 'NA' ? 'w-[125px]' : ''
+                } border rounded-lg justify-center flex items-center text-xs font-semibold ${
                   selectedValue === choice.value
-                    ? 'border-skyblue bg-skyblue bg-opacity-5 border-2 text-grey-600'
+                    ? 'border-skyblue bg-skyblue bg-opacity-5 text-grey-600'
                     : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
                 }`}
+                type="button"
               >
                 {choice.text === 'NA' && choice.text !== 'wow' ? (
                   <div></div>
                 ) : (
                   <Award className={`${selectedValue === choice.value ? 'text-skyblue' : 'text-gray-400'} text-xs`} />
                 )}
-                {choice.text}
+                <span className={`font-semibold text-sm ${selectedValue === choice.value ? 'text-skyblue' : ''}`}>
+                  {choice.text}
+                </span>
               </button>
             ))
           ) : (
