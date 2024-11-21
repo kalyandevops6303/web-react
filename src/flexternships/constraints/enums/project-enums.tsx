@@ -31,6 +31,7 @@ export enum PrimaryProjectStatus {
   TERMINATED = 'Terminated',
   COMPLETED = 'Completed',
   BLOCKED = 'Blocked',
+  TO_BE_LISTED = 'To Be Listed',
 }
 
 export const SecondaryProjectStatus = {
