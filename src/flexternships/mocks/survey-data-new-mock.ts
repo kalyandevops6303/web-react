@@ -489,23 +489,18 @@ export const mockTeamFeedbackSurveyJson = {
           rateValues: [
             {
               value: 1,
-              text: "<img src='/emojis/smiley_1.svg' alt='Smiley 1' class='emoji_image'/>",
             },
             {
               value: 2,
-              text: "<img src='/emojis/smiley_2.svg' alt='Smiley 2' class='emoji_image'/>",
             },
             {
               value: 3,
-              text: "<img src='/emojis/smiley_3.svg' alt='Smiley 3' class='emoji_image'/>",
             },
             {
               value: 4,
-              text: "<img src='/emojis/smiley_4.svg' alt='Smiley 4' class='emoji_image'/>",
             },
             {
               value: 5,
-              text: "<img src='/public/emojis/smiley_5.svg' alt='Smiley 5' class='emoji_image' style='height: 42px; width: 42px;' />",
             },
           ],
           minRateDescription: 'Unhappy',
