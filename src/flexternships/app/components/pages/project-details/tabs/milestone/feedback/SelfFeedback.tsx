@@ -8,11 +8,6 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
 
-export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
-export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
-export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
-
 export default function SelfFeedback() {
   const params = useParams();
   const navigate = useNavigate();
