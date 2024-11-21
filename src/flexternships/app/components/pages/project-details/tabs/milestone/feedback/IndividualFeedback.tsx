@@ -2,12 +2,13 @@ import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { ArrowLeft } from 'react-feather';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
@@ -16,6 +17,7 @@ export { SmileyRating } from '@/flexternships/app/components/pages/project-detai
 
 export default function IndividualFeedback() {
   const params = useParams();
+  const navigate = useNavigate();
 
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
@@ -37,7 +39,12 @@ export default function IndividualFeedback() {
   }, []);
 
   useEffect(() => {
-    if (team) setActiveTeamMember(team[0]);
+    if (team) {
+      const firstMemberWithoutFeedback = team.find(
+        (member: { feedback_id: undefined }) => member.feedback_id === undefined,
+      );
+      setActiveTeamMember(firstMemberWithoutFeedback || team[0]); // Fallback to the first element if none matches
+    }
   }, [team]);
 
   useEffect(() => {
@@ -48,7 +55,7 @@ export default function IndividualFeedback() {
             image: person?.image_uri,
             name: `${person?.first_name} ${person?.last_name}`,
             role: person?.role,
-            completed: person?.is_feedback ?? false,
+            completed: person?.feedback_id ?? false,
             lastMessageTime: '3 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
@@ -71,7 +78,9 @@ export default function IndividualFeedback() {
       feedback_result: survey.data,
     };
 
-    submitFeedback(submitFeedbackData);
+    submitFeedback(submitFeedbackData, () => {
+      getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
+    });
   };
 
   const handleActiveMemberChange = (userId: any) => {
@@ -80,11 +89,24 @@ export default function IndividualFeedback() {
   };
 
   return (
-    <div className="flex items-start justify-between gap-2">
-      {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
-      {individualFeedbackForm && (
-        <MilestoneFeedbackSurvey surveyJson={individualFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
-      )}
-    </div>
+    <>
+      <div
+        className="flex items-center gap-1 cursor-pointer mb-5"
+        onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
+      >
+        <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
+          <ArrowLeft size="20px" />
+        </div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
+          {individualFeedbackForm?.feedback?.title}
+        </div>
+      </div>
+      <div className="flex items-start justify-between gap-2">
+        {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
+        {individualFeedbackForm && (
+          <MilestoneFeedbackSurvey surveyJson={individualFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+        )}
+      </div>
+    </>
   );
 }
