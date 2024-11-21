@@ -18,14 +18,19 @@ import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSe
 import { isEmpty } from 'lodash';
 import { fetchCompanyIndustriesPaginated } from '@/flexternships/services/user-management';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate } from 'react-router-dom';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function CompanyDetails() {
-  const populateClientOrgDetails = useFlexternUserProfileStore((state) => state.populateClientOrgDetails);
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
+  const populateClientOrgDetails = useFlexternUserProfileStore((state) => state.populateClientOrgDetails);
   const updateClientCompanyInfo = useFlexternUserProfileStore((state) => state.updateClientCompanyInfo);
+  const nextTab = useFlexternUserProfileStore((state) => state.nextTab);
+  const previousTab = useFlexternUserProfileStore((state) => state.previousTab);
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const [isSaveLoading, setIsSaveLoading] = useState(false);
 
@@ -76,11 +81,19 @@ export default function CompanyDetails() {
   }, [profileDetails, reset]);
 
   const goToNextTab = () => {
-    navigate('/client-profile-edit/social-details');
+    if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
+      navigate('/client-profile-edit/social-details');
+    } else {
+      nextTab();
+    }
   };
 
   const goToPreviousTab = () => {
-    navigate('/client-profile-edit/account-details');
+    if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
+      navigate('/client-profile-edit/account-details');
+    } else {
+      previousTab();
+    }
   };
 
   const onContinue = async (data: FlexternClientCompanyDetails) => {

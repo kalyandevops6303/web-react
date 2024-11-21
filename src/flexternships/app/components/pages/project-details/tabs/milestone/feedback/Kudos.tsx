@@ -3,6 +3,11 @@ import { ThumbsUp } from 'react-feather';
 import { ItemValue, Question, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
 
+type Choice = {
+  value: string;
+  text: string;
+};
+
 export class KudosModel extends Question {
   constructor(name: string) {
     super(name);
@@ -26,18 +31,18 @@ export class KudosModel extends Question {
 
   onSurveyLoad() {
     if (this.jsonObj && this.jsonObj.choices) {
-      const parsedChoices = this.jsonObj.choices.map((choice) => new ItemValue(choice.value, choice.text));
+      const parsedChoices = this.jsonObj.choices.map((choice: Choice) => new ItemValue(choice.value, choice.text));
       this.choices = parsedChoices;
     } else {
       this.choices = [new ItemValue('kudos', 'KUDOS'), new ItemValue('na', 'NA')];
     }
   }
 
-  onPropertyChanged(property: string, newValue: any): void {
-    if (property === 'jsonObj' && newValue && newValue.choices) {
-      this.choices = newValue.choices.map((choice: any) => new ItemValue(choice.value, choice.text));
+  protected onPropertyValueChanged(name: string, oldValue: any, newValue: any): void {
+    if (name === 'jsonObj' && newValue && newValue.choices) {
+      this.choices = newValue.choices.map((choice: Choice) => new ItemValue(choice.value, choice.text));
     }
-    super.onPropertyChanged(property, newValue);
+    super.onPropertyValueChanged(name, oldValue, newValue);
   }
 }
 
@@ -53,22 +58,22 @@ export class Kudos extends SurveyQuestionElementBase {
     return this.props.question;
   }
 
-  handleChoiceSelect = (value: any) => {
+  handleChoiceSelect = (value: string) => {
     this.setState({ selectedValue: value });
   };
 
   render() {
-    if (!this.question) return null;
+    if (!this.props.question) return null;
 
-    const cssClasses = this.question.cssClasses;
-    const choices = this.question.choices || [];
+    const cssClasses = this.props.question.cssClasses;
+    const choices = this.props.question.choices || [];
     const { selectedValue } = this.state;
 
     return (
       <div className={cssClasses.root}>
         <div className="kudos-choices text-black flex gap-4">
           {choices.length > 0 ? (
-            choices.map((choice: any, index: number) => (
+            choices.map((choice: ItemValue, index: number) => (
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
@@ -78,7 +83,7 @@ export class Kudos extends SurveyQuestionElementBase {
                     : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
                 }`}
               >
-                {choice.text === 'NA' && choice.text !== 'kudos' ? (
+                {choice.text === 'NA' ? (
                   <div></div>
                 ) : (
                   <ThumbsUp

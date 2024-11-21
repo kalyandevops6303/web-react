@@ -21,7 +21,9 @@ export default function SocialDetails() {
   // user profile stores
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
+  const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
   const updateClientSocialInfo = useFlexternUserProfileStore((state) => state.updateClientSocialInfo);
+  const previousTab = useFlexternUserProfileStore((state) => state.previousTab);
 
   // user details stores
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -61,14 +63,19 @@ export default function SocialDetails() {
   };
 
   const handleNext = () => {
-    if (userDetails.checkpoint === FlexternUserCheckpoint.ACCOUNT_DETAILS) {
+    if (userDetails.checkpoint !== FlexternUserCheckpoint.COMPLETE) {
       showSuccessModal();
     } else {
       navigate('/dashboard');
     }
   };
+
   const goToPreviousTab = () => {
-    navigate('/client-profile-edit/personal-details');
+    if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
+      navigate('/client-profile-edit/personal-details');
+    } else {
+      previousTab();
+    }
   };
 
   const onContinue = async (data: FlexternClientSocialDetails) => {
@@ -93,6 +100,10 @@ export default function SocialDetails() {
       });
     }
   }, [profileDetails.socialLinks, reset]);
+
+  useEffect(() => {
+    populateClientInfoDetails();
+  }, [populateClientInfoDetails]);
 
   if (isProfileDetailsLoading) {
     return (

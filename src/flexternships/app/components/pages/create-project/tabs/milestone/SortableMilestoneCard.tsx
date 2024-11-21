@@ -21,7 +21,7 @@ export default function SortableMilestoneCard(props: Props) {
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
-    maxHeight: isDragging ? '150px' : '600px',
+    maxHeight: isDragging ? '150px' : '',
   };
 
   const {
@@ -45,7 +45,7 @@ export default function SortableMilestoneCard(props: Props) {
 
   return (
     <div ref={setNodeRef} className="w-full" style={style}>
-      <SimpleElevatedCard className={`${Styles.roleCard} ${isExpanded ? 'max-h-[600px]' : 'max-h-[150px]'}`}>
+      <SimpleElevatedCard className={`${Styles.roleCard} ${isExpanded ? '' : 'max-h-[150px]'}`}>
         <div className={Styles.chevronContainer} onClick={toggleExpand}>
           {isExpanded ? (
             <ChevronUp className="text-grey-muted cursor-pointer" size={24} />
