@@ -7,6 +7,7 @@ import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enu
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
+import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 
 export default function SelfFeedback() {
   const params = useParams();
@@ -57,7 +58,7 @@ export default function SelfFeedback() {
         </div>
       </div>
       {selfFeedbackForm && (
-        <MilestoneFeedbackSurvey surveyJson={selfFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+        <MilestoneFeedbackSurvey surveyJson={mockSelfFeedbackSurveyJson} onComplete={handleSurveyComplete} />
       )}
     </div>
   );
