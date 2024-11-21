@@ -209,6 +209,8 @@ export class SmileyRating extends SurveyQuestionElementBase {
     const rateValues = this.question.rateValues || [];
     const { selectedValue } = this.state;
 
+    // TODO: move svg icons to separate components
+
     return (
       <div className="text-grey-600 w-full">
         <div className="rating-choices text-black flex gap-4 w-full flex justify-between mt-2">
