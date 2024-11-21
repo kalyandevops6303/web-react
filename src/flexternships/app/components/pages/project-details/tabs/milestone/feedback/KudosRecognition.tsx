@@ -13,34 +13,45 @@ export class KudosModel extends Question {
     super(name);
     this.onSurveyLoad();
   }
-  getType() {
+
+  getType(): string {
     return 'kudosgroup';
   }
-  get text() {
+
+  get text(): string {
     return this.getPropertyValue('text', '');
   }
-  set text(newValue) {
+
+  set text(newValue: string) {
     this.setPropertyValue('text', newValue);
   }
-  get choices() {
+
+  get choices(): Array<ItemValue> {
     return this.getPropertyValue('choices', []);
   }
-  set choices(newChoices) {
-    this.setPropertyValue('choices', newChoices);
+
+  set choices(newChoices: Array<Choice | string>) {
+    this.setPropertyValue(
+      'choices',
+      newChoices.map((choice) =>
+        typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
+      ),
+    );
   }
 
-  onSurveyLoad() {
+  onSurveyLoad(): void {
     if (this.jsonObj && this.jsonObj.choices) {
-      const parsedChoices = this.jsonObj.choices.map((choice: Choice) => new ItemValue(choice.value, choice.text));
-      this.choices = parsedChoices;
-    } else {
-      this.choices = [new ItemValue('kudos', 'KUDOS'), new ItemValue('na', 'NA')];
+      this.choices = this.jsonObj.choices.map((choice: Choice | string) =>
+        typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
+      );
     }
   }
 
   protected onPropertyValueChanged(name: string, oldValue: any, newValue: any): void {
     if (name === 'jsonObj' && newValue && newValue.choices) {
-      this.choices = newValue.choices.map((choice: Choice) => new ItemValue(choice.value, choice.text));
+      this.choices = newValue.choices.map((choice: Choice | string) =>
+        typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
+      );
     }
     super.onPropertyValueChanged(name, oldValue, newValue);
   }
@@ -54,19 +65,34 @@ export class Kudos extends SurveyQuestionElementBase {
     };
   }
 
-  get question() {
-    return this.props.question;
+  get question(): KudosModel {
+    return this.props.question as KudosModel;
   }
 
-  handleChoiceSelect = (value: string) => {
+  componentDidMount(): void {
+    const currentValue = this.question.value as string | null;
+    if (currentValue !== undefined && currentValue !== null) {
+      this.setState({ selectedValue: currentValue });
+    }
+
+    this.question.valueChangedCallback = () => {
+      const newValue = this.question.value as string | null;
+      if (this.state.selectedValue !== newValue) {
+        this.setState({ selectedValue: newValue });
+      }
+    };
+  }
+
+  handleChoiceSelect = (value: string): void => {
+    this.question.value = value;
     this.setState({ selectedValue: value });
   };
 
-  render() {
-    if (!this.props.question) return null;
+  render(): JSX.Element | null {
+    if (!this.question) return null;
 
-    const cssClasses = this.props.question.cssClasses;
-    const choices = this.props.question.choices || [];
+    const cssClasses = this.question.cssClasses;
+    const choices = this.question.choices || [];
     const { selectedValue } = this.state;
 
     return (
@@ -77,11 +103,12 @@ export class Kudos extends SurveyQuestionElementBase {
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
-                className={`p-2 border rounded-lg w-24 justify-center flex items-center text-xs gap-2 font-sans ${
+                className={`p-2 border rounded-lg w-24 justify-center flex items-center text-xs gap-2 font-semibold ${
                   selectedValue === choice.value
-                    ? 'border-skyblue bg-skyblue bg-opacity-5 text-grey-600'
+                    ? 'border-skyblue border-2 bg-skyblue bg-opacity-5 text-grey-600'
                     : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
                 }`}
+                type="button"
               >
                 {choice.text === 'NA' ? (
                   <div></div>
@@ -106,6 +133,7 @@ Serializer.addClass(
   'kudosgroup',
   [
     { name: 'text', type: 'string' },
+    { name: 'isRequired', type: 'boolean', default: false },
     {
       name: 'choices',
       type: 'itemvalues',
@@ -115,7 +143,7 @@ Serializer.addClass(
   function () {
     return new KudosModel('');
   },
-  'checkboxbase',
+  'question',
 );
 
 ReactQuestionFactory.Instance.registerQuestion('kudosgroup', (props) => {

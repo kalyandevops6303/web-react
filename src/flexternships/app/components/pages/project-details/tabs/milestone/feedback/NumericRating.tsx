@@ -3,7 +3,7 @@ import { ItemValue, QuestionRatingModel, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
 
 type Choice = {
-  value: string;
+  value: number;
   text: string;
 };
 
@@ -41,17 +41,19 @@ export class NumericRatingModel extends QuestionRatingModel {
     this.setPropertyValue('maxRateDescription', value);
   }
 
-  onSurveyLoad() {
+  onSurveyLoad(): void {
     if (this.jsonObj && this.jsonObj.rateValues) {
-      this.rateValues = this.jsonObj.rateValues.map((value: Choice) => new ItemValue(value.value, value.text));
+      this.rateValues = this.jsonObj.rateValues.map((choice: Choice) => new ItemValue(choice.value, choice.text));
     }
   }
 
-  protected onPropertyValueChanged(property: string, oldValue: any, newValue: any) {
-    if (property === 'jsonObj' && newValue && newValue.rateValues) {
-      this.rateValues = newValue.rateValues.map((value: Choice) => new ItemValue(value.value, value.text));
+  protected onPropertyValueChanged(name: string, oldValue: any, newValue: any): void {
+    if (name === 'jsonObj' && newValue && newValue.choices) {
+      this.choices = newValue.choices.map((choice: Choice | string) =>
+        typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
+      );
     }
-    super.onPropertyValueChanged(property, oldValue, newValue);
+    super.onPropertyValueChanged(name, oldValue, newValue);
   }
 }
 
@@ -59,7 +61,7 @@ export class numberRating extends SurveyQuestionElementBase {
   constructor(props: any) {
     super(props);
     this.state = {
-      selectedValue: null,
+      selectedValue: props.question.value || null,
     };
   }
 
@@ -67,7 +69,19 @@ export class numberRating extends SurveyQuestionElementBase {
     return this.props.question;
   }
 
-  handleChoiceSelect = (value: string) => {
+  componentDidMount() {
+    this.question.valueChangedCallback = () => {
+      this.setState({ selectedValue: this.question.value });
+    };
+  }
+
+  componentWillUnmount() {
+    if (this.question) {
+      this.question.valueChangedCallback = null;
+    }
+  }
+
+  handleChoiceSelect = (value: any) => {
     this.setState({ selectedValue: value });
     this.question.value = value;
   };

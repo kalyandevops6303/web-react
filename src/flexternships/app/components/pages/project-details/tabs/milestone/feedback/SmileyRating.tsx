@@ -2,6 +2,11 @@ import React from 'react';
 import { ItemValue, QuestionRatingModel, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
 
+type Choice = {
+  value: number;
+  text: string;
+};
+
 export class SmileyRatingModel extends QuestionRatingModel {
   constructor(name: string) {
     super(name);
@@ -54,7 +59,7 @@ export class SmileyRating extends SurveyQuestionElementBase {
   constructor(props: any) {
     super(props);
     this.state = {
-      selectedValue: null,
+      selectedValue: props.question.value || null,
     };
   }
 
@@ -62,8 +67,8 @@ export class SmileyRating extends SurveyQuestionElementBase {
     return this.props.question;
   }
 
-  getEmoji = (value: number) => {
-    switch (value) {
+  getEmoji = (condition: number) => {
+    switch (condition) {
       case 1:
         return '😢';
       case 2:
@@ -79,10 +84,22 @@ export class SmileyRating extends SurveyQuestionElementBase {
     }
   };
 
-  handleChoiceSelect = (value: number) => {
+  handleChoiceSelect = (value: any) => {
     this.setState({ selectedValue: value });
     this.question.value = value;
   };
+
+  componentDidMount() {
+    this.question.valueChangedCallback = () => {
+      this.setState({ selectedValue: this.question.value });
+    };
+  }
+
+  componentWillUnmount() {
+    if (this.question) {
+      this.question.valueChangedCallback = null;
+    }
+  }
 
   renderElement() {
     if (!this.question) return null;
@@ -91,16 +108,16 @@ export class SmileyRating extends SurveyQuestionElementBase {
     const { selectedValue } = this.state;
 
     return (
-      <div className="text-grey-600 w-[calc(100vw-15%)]">
+      <div className="text-grey-600 w-full">
         <div className="rating-choices text-black flex gap-4 w-full flex justify-between mt-2">
           {rateValues.length > 0 ? (
-            rateValues.map((choice: any) => (
+            rateValues.map((choice: Choice) => (
               <button
                 key={choice.value}
                 onClick={() => this.handleChoiceSelect(choice.value)}
                 className={`border rounded-lg p-2 justify-center flex flex-col items-center gap-2 font-sans  ${
                   selectedValue === choice.value
-                    ? 'border-yellow bg-yellow bg-opacity-5 text-grey-600'
+                    ? 'border-yellow bg-yellow bg-opacity-20 text-grey-600'
                     : 'border-yellow-300 hover:border-yellow-400 bg-gray-100 bg-opacity-5 text-yellow-500'
                 }`}
               >

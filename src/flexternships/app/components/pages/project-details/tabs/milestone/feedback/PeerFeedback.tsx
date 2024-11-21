@@ -10,9 +10,11 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
+export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
 export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
 export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
+export { AreaCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/AreaCheckBox';
+export { Wow } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/WowRecognition';
 
 export default function PeerFeedback() {
   const params = useParams();
@@ -80,10 +82,12 @@ export default function PeerFeedback() {
   };
 
   return (
-    <div className="flex items-start gap-3">
+    <div className="flex items-start gap-2">
       {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
       {peerFeedbackForm && (
-        <MilestoneFeedbackSurvey surveyJson={peerFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+        <div className="w-full">
+          <MilestoneFeedbackSurvey surveyJson={peerFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+        </div>
       )}
     </div>
   );
