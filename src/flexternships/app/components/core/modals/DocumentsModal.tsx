@@ -1,11 +1,9 @@
 'use client';
 import CloseModalButton from '../buttons/CloseModalButton';
-import { useNavigate } from 'react-router-dom';
 import { downloadFile, getFileIcon, getFileSize } from '@/flexternships/utils/file-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 
 export default function DocumentsModal(props: DocumentsModalProps) {
-  const navigate = useNavigate();
   const { isOpen, onClose, data } = props;
   console.log(data);
   if (!isOpen) {

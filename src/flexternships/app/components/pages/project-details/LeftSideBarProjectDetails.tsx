@@ -202,7 +202,11 @@ const LeftSideBarProjectDetails = () => {
   return (
     <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 md:w-[350px] h-fit rounded-xl w-[400px]">
       <div className="flex flex-row items-center w-full justify-between">
-        <DocumentsModal isOpen={documentsModal} onClose={()=>setDocumentsModal(false)} data={data?.details?.documents} />
+        <DocumentsModal
+          isOpen={documentsModal}
+          onClose={() => setDocumentsModal(false)}
+          data={data?.details?.documents}
+        />
         <ProjectStatusChip
           status={data?.status as string as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
           statusType={StatusType?.PRIMARY}
@@ -279,7 +283,7 @@ const LeftSideBarProjectDetails = () => {
               {data?.details?.expectedDuration?.duration} Weeks
             </span>
           </div>
-          <div onClick={()=>setDocumentsModal(true)} className="flex flex-row items-center gap-1">
+          <div onClick={() => setDocumentsModal(true)} className="flex flex-row items-center gap-1">
             <Paperclip size={14} />
             <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
               {data?.details?.documents?.length}
