@@ -483,7 +483,7 @@ export const mockTeamFeedbackSurveyJson = {
           html: "<span id='completeness_heading'>Completeness</span>",
         },
         {
-          type: 'rating',
+          type: 'smileyRating',
           name: 'q1_completeness',
           title: 'Team delivered completely and holistically for the committed tasks in the current milestone',
           rateValues: [
@@ -522,7 +522,7 @@ export const mockTeamFeedbackSurveyJson = {
           html: "<span id='quality_heading'>Quality of Deliverables</span>",
         },
         {
-          type: 'rating',
+          type: 'smileyRating',
           name: 'q2_quality_of_deliverables',
           title: 'Team delivered high-quality output for the committed tasks in the current milestone',
           rateValues: [1, 2, 3, 4, 5],
