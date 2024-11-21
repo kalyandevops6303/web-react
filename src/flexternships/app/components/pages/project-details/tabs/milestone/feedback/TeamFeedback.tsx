@@ -2,20 +2,25 @@ import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { useEffect } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { ArrowLeft } from 'react-feather';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
+export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
 export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
 export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
+export { AreaCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/AreaCheckBox';
+export { Wow } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/WowRecognition';
 
 export default function TeamFeedback() {
   const params = useParams();
+  const navigate = useNavigate();
 
-  const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
+  const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
+  const teamDetails = useProjectsStore((state) => state.teamDetails);
 
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
@@ -24,6 +29,7 @@ export default function TeamFeedback() {
 
   useEffect(() => {
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
+    populateTeamDetails(params?.projectId);
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
@@ -31,8 +37,8 @@ export default function TeamFeedback() {
       feedback_id: teamFeedbackForm?._id,
       milestone_id: params?.milestoneId,
       receiver: {
-        user_id: currentUserDetails?.id,
         user_type: UserType.TALENT,
+        team_id: teamDetails && teamDetails[0].id,
       },
       feedback_result: survey.data,
     };
@@ -46,6 +52,17 @@ export default function TeamFeedback() {
       {/* <Sidebar data={persons} /> */}
       {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
       {/* </div> */}
+      <div
+        className="flex items-center gap-1 cursor-pointer mb-5"
+        onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
+      >
+        <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
+          <ArrowLeft size="20px" />
+        </div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
+          {teamFeedbackForm?.feedback?.title}
+        </div>
+      </div>
       {teamFeedbackForm && (
         <MilestoneFeedbackSurvey surveyJson={teamFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
       )}

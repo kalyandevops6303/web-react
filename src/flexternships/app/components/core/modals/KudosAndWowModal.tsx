@@ -11,6 +11,7 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import Spinner from '../Spinner';
 import { submitKudosOrWow } from '@/flexternships/services/project-management-v2';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 function KudosAndWowModal(props: KudosAndWowModalProps) {
   const { recognitionType, isOpen = false, closeModal, projectId, milestoneId } = props;
@@ -20,18 +21,22 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
   const [teamMembers, setTeamMembers] = useState<Array<TeamMemberDetails & { selected?: boolean }>>([]);
   const [selectedCount, setSelectedCount] = useState(0); // to keep track of the selected team members
 
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
   useEffect(() => {
     const fetchTeamMembers = async () => {
       setIsTeamMembersLoading(true);
       try {
         const response = await fetchTeamDetails(projectId);
-        const formattedData = response.map((member: any) => ({
-          ...member,
-          id: member._id,
-          name: `${member.first_name} ${member.last_name}`,
-          profileImage: member.image_uri,
-          selected: false,
-        }));
+        const formattedData = response
+          .map((member: any) => ({
+            ...member,
+            id: member._id,
+            name: `${member.first_name} ${member.last_name}`,
+            profileImage: member.image_uri,
+            selected: false,
+          }))
+          .filter((member: any) => member.id !== userDetails.id);
         setTeamMembers(formattedData);
       } catch (error) {
         showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching team details');
