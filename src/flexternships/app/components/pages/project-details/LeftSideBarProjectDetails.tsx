@@ -45,6 +45,7 @@ const LeftSideBarProjectDetails = () => {
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
   const [isBlocked, setIsBlocked] = useState(true);
+  const primaryProjectStatus = PrimaryProjectStatus[data?.status as unknown as keyof typeof PrimaryProjectStatus];
 
   const ProjectPanelDate1Icon: any = {
     OPEN: (
@@ -332,21 +333,59 @@ const LeftSideBarProjectDetails = () => {
         </div>
 
         <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
-          {userDetails.userType === UserType.CLIENT && (
+          {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.OPEN && (
             <PrimaryButton
               disabled={isBlocked}
               onClick={() => {}}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
             >
-              Terminate
+              Withdraw
             </PrimaryButton>
           )}
-          <PrimaryButton
-            onClick={() => {}}
-            className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
-          >
-            <span>Message</span>
-          </PrimaryButton>
+          {userDetails.userType === UserType.CLIENT &&
+            (primaryProjectStatus === PrimaryProjectStatus.ACTIVE ||
+              primaryProjectStatus === PrimaryProjectStatus.ONGOING ||
+              primaryProjectStatus === PrimaryProjectStatus.BLOCKED) && (
+              <PrimaryButton
+                disabled={isBlocked}
+                onClick={() => {}}
+                className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
+              >
+                Terminate
+              </PrimaryButton>
+            )}
+          {((userDetails.userType === UserType.CLIENT &&
+            (primaryProjectStatus === PrimaryProjectStatus.ACTIVE ||
+              primaryProjectStatus === PrimaryProjectStatus.ONGOING ||
+              primaryProjectStatus === PrimaryProjectStatus.BLOCKED)) ||
+            (userDetails.userType === UserType.TALENT &&
+              primaryProjectStatus !== PrimaryProjectStatus.TERMINATED &&
+              primaryProjectStatus !== PrimaryProjectStatus.COMPLETED)) && (
+            <PrimaryButton
+              onClick={() => {}}
+              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
+            >
+              <span>Message</span>
+            </PrimaryButton>
+          )}
+          {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.OPEN && (
+            <PrimaryButton
+              disabled={isBlocked}
+              onClick={() => {}}
+              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
+            >
+              Invite
+            </PrimaryButton>
+          )}
+            {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.WITHDRAWN && (
+            <PrimaryButton
+              disabled={isBlocked}
+              onClick={() => {}}
+              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
+            >
+              Re-List
+            </PrimaryButton>
+          )}
         </div>
       </div>
     </div>
