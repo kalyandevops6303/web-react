@@ -107,14 +107,16 @@ export default function SelfFeedback() {
   };
 
   return (
-    <div>
+    <div className="flex items-start gap-2">
       {/* <div className="flex flex-row items-start"> */}
       {/* <Sidebar data={persons} /> */}
       {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
       {/* </div> */}
-      {selfFeedbackForm && (
-        <MilestoneFeedbackSurvey surveyJson={selfFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
-      )}
+      <div className="w-full">
+        {selfFeedbackForm && (
+          <MilestoneFeedbackSurvey surveyJson={selfFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+        )}
+      </div>
     </div>
   );
 }
