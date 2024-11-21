@@ -9,6 +9,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
+import { mockPeerFeedbackSurveyJson } from '@/flexternships/mocks/survey-data-new-mock';
 
 export default function PeerFeedback() {
   const params = useParams();
@@ -99,7 +100,7 @@ export default function PeerFeedback() {
       <div className="flex items-start gap-3">
         {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
         {peerFeedbackForm && (
-          <MilestoneFeedbackSurvey surveyJson={peerFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+          <MilestoneFeedbackSurvey surveyJson={mockPeerFeedbackSurveyJson} onComplete={handleSurveyComplete} />
         )}
       </div>
     </>
