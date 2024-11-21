@@ -7,7 +7,7 @@ export const mockSelfFeedbackSurveyJson = {
       elements: [
         {
           type: 'numberRating',
-          name: 'q4_ownership',
+          name: 'q5_ownership',
           rateType: 'numberRating',
           title:
             'You took ownership of delivering high quality work output and results from yourself and your team members',
