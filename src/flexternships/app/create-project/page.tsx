@@ -1,10 +1,9 @@
 'use client'; // Mark this component as Client Component
-import { ArrowLeft, Box, Check, Clock, FileText, Users } from 'react-feather';
+import { ArrowLeft, Box, Check, FileText, Users } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
 import TabNavigationForm from '@flexternships/app/components/pages/create-project/TabNavigationForm';
-import Listing from '@flexternships/app/components/pages/create-project/tabs/Listing';
 import Milestones from '@flexternships/app/components/pages/create-project/tabs/milestone/Milestones';
 import Preview from '@flexternships/app/components/pages/create-project/tabs/preview/Preview';
 import Requirements from '@flexternships/app/components/pages/create-project/tabs/Requirements';
