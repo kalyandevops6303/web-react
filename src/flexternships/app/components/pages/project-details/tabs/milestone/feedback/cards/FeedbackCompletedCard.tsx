@@ -1,17 +1,20 @@
+import ViewMilestoneFeedbackModal from '@/flexternships/app/components/core/modals/ViewMilestoneFeedbackModal';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { feedbackCardContent } from '@/flexternships/static/milestones-content';
+import { useState } from 'react';
 import { AlertCircle, Check } from 'react-feather';
-import { useNavigate } from 'react-router-dom';
 
 export default function FeedbackCompletedCard(props: FeedbackCompletedCardProps) {
-  const { feedbackId, feedbackType, projectId, milestoneId, tiny = false } = props;
+  const { milestoneId, feedbackType, tiny = false } = props;
 
-  const navigate = useNavigate();
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
-  const viewFeedback = () => {
-    navigate(
-      `/project-details/${projectId}/milestone/${milestoneId}/feedback/${feedbackType.toLowerCase()}/${feedbackId}`,
-    );
+  const openFeedbackModal = () => {
+    setIsFeedbackModalOpen(true);
+  };
+
+  const closeFeedbackModal = () => {
+    setIsFeedbackModalOpen(false);
   };
 
   return (
@@ -42,7 +45,7 @@ export default function FeedbackCompletedCard(props: FeedbackCompletedCardProps)
           className={`${
             tiny ? 'text-sm text-success font-semibold' : 'text-base text-trublue-secondary-500 font-medium'
           } not-italic cursor-pointer`}
-          onClick={viewFeedback}
+          onClick={openFeedbackModal}
         >
           View
         </span>
@@ -52,14 +55,18 @@ export default function FeedbackCompletedCard(props: FeedbackCompletedCardProps)
           </span>
         )}
       </div>
+      <ViewMilestoneFeedbackModal
+        feedbackType={feedbackType}
+        milestoneId={milestoneId}
+        isOpen={isFeedbackModalOpen}
+        closeModal={closeFeedbackModal}
+      />
     </div>
   );
 }
 
 type FeedbackCompletedCardProps = {
-  feedbackId: string;
-  feedbackType: MilestoneFeedbackType;
-  projectId: string;
   milestoneId: string;
+  feedbackType: MilestoneFeedbackType;
   tiny?: boolean;
 };

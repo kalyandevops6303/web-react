@@ -38,6 +38,13 @@ export const feedbackCardContent = {
   },
 };
 
+export const viewMilestoneFeedbackModalTitle = {
+  [MilestoneFeedbackType.TEAM_FEEDBACK]: 'Team Feedback',
+  [MilestoneFeedbackType.INDIVIDUAL_FEEDBACK]: 'Individual Feedback',
+  [MilestoneFeedbackType.SELF_FEEDBACK]: 'Self Feedback',
+  [MilestoneFeedbackType.PEER_FEEDBACK]: 'Peer Feedback',
+};
+
 export const allowFeedbackCardsIfMilestoneStatus = [
   MilestoneStatus.IN_PROGRESS,
   MilestoneStatus.COMPLETED,

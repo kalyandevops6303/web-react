@@ -96,10 +96,10 @@ export const createFlexternProject: (
       },
       count: item?.count,
     })),
-    listing_details: {
-      start_date_epoch: projectData?.listingDetails?.listingStartDate,
-      end_date_epoch: projectData?.listingDetails?.listingEndDate,
-    },
+    // listing_details: {
+    //   start_date_epoch: projectData?.listingDetails?.listingStartDate,
+    //   end_date_epoch: projectData?.listingDetails?.listingEndDate,
+    // },
     milestones: projectData.milestones.map((item) => ({
       milestone_id: item._id,
       name: item.title,
@@ -163,10 +163,10 @@ export const createFlexternProjectDraft: (
       },
       count: item?.count,
     })),
-    listing_details: {
-      start_date_epoch: projectData?.listingDetails?.listingStartDate,
-      end_date_epoch: projectData?.listingDetails?.listingEndDate,
-    },
+    // listing_details: {
+    //   start_date_epoch: projectData?.listingDetails?.listingStartDate,
+    //   end_date_epoch: projectData?.listingDetails?.listingEndDate,
+    // },
     milestones: projectData.milestones.map((item) => ({
       milestone_id: item._id,
       name: item.title,

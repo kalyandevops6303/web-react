@@ -20,6 +20,7 @@ export const ProjectDetailsSchema = yup.object().shape({
     .min(dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0))), 'Estimated start date cannot be in the past'), // Allow today
   estimatedDuration: yup
     .number()
+    .max(53, 'Estimated duration cannot exceed 53 weeks')
     .required('Estimated duration is required')
     .positive('Estimated duration should be positive')
     .integer('Estimated duration must be an integer'),
@@ -66,7 +67,7 @@ export const ProjectRolesFormSchema = yup.object().shape({
           _id: yup.string().required('Role ID is required'),
           name: yup.string().required('Role name is required'),
         }),
-        count: yup.number().min(1, 'Role count should be atleast 1').required(),
+        count: yup.number().min(1, 'Headcount should be atleast 1').max(100, 'Headcount cannot exceed 100').required(),
         skills: yup
           .array()
           .of(
@@ -89,7 +90,8 @@ export const ProjectRolesFormSchema = yup.object().shape({
       }),
     )
     .required()
-    .min(1), //.min(1, "At least one project role is required")
+    .min(1, 'At least one project role is required')
+    .max(100, 'Project roles cannot exceed 100'),
 });
 
 export const MilestonesFormSchema = yup.object().shape({

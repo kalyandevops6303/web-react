@@ -13,33 +13,33 @@ export class NumericRatingModel extends QuestionRatingModel {
         this.onSurveyLoad();
     }
 
-    getType() {
-        return "numberRating";
-    }
+  getType() {
+    return 'numberRating';
+  }
 
-    get rateValues() {
-        return this.getPropertyValue("rateValues", []);
-    }
+  get rateValues() {
+    return this.getPropertyValue('rateValues', []);
+  }
 
-    set rateValues(newValues) {
-        this.setPropertyValue("rateValues", newValues);
-    }
+  set rateValues(newValues) {
+    this.setPropertyValue('rateValues', newValues);
+  }
 
-    get minRateDescription() {
-        return this.getPropertyValue("minRateDescription", "");
-    }
+  get minRateDescription() {
+    return this.getPropertyValue('minRateDescription', '');
+  }
 
-    set minRateDescription(value) {
-        this.setPropertyValue("minRateDescription", value);
-    }
+  set minRateDescription(value) {
+    this.setPropertyValue('minRateDescription', value);
+  }
 
-    get maxRateDescription() {
-        return this.getPropertyValue("maxRateDescription", "");
-    }
+  get maxRateDescription() {
+    return this.getPropertyValue('maxRateDescription', '');
+  }
 
-    set maxRateDescription(value) {
-        this.setPropertyValue("maxRateDescription", value);
-    }
+  set maxRateDescription(value) {
+    this.setPropertyValue('maxRateDescription', value);
+  }
 
     onSurveyLoad(): void {
         if (this.jsonObj && this.jsonObj.rateValues) {
@@ -68,9 +68,9 @@ export class numberRating extends SurveyQuestionElementBase {
         };
     }
 
-    get question() {
-        return this.props.question;
-    }
+  get question() {
+    return this.props.question;
+  }
 
     componentDidMount() {
         this.question.valueChangedCallback = () => {
@@ -89,11 +89,11 @@ export class numberRating extends SurveyQuestionElementBase {
         this.question.value = value;
     };
 
-    renderElement() {
-        if (!this.question) return null;
+  renderElement() {
+    if (!this.question) return null;
 
-        const rateValues = this.question.rateValues || [];
-        const { selectedValue } = this.state;
+    const rateValues = this.question.rateValues || [];
+    const { selectedValue } = this.state;
 
         return (
             <div className="text-grey-600 w-full">
@@ -125,19 +125,19 @@ export class numberRating extends SurveyQuestionElementBase {
 }
 
 Serializer.addClass(
-    "numberRating",
-    [
-        { name: "title", default: "", type: "string" },
-        { name: "rateValues", type: "itemvalues", default: [] },
-        { name: "minRateDescription", type: "string", default: "" },
-        { name: "maxRateDescription", type: "string", default: "" },
-    ],
-    function () {
-        return new NumericRatingModel("");
-    },
-    "rating"
+  'numberRating',
+  [
+    { name: 'title', default: '', type: 'string' },
+    { name: 'rateValues', type: 'itemvalues', default: [] },
+    { name: 'minRateDescription', type: 'string', default: '' },
+    { name: 'maxRateDescription', type: 'string', default: '' },
+  ],
+  function () {
+    return new NumericRatingModel('');
+  },
+  'rating',
 );
 
-ReactQuestionFactory.Instance.registerQuestion("numberRating", (props) => {
-    return React.createElement(numberRating, props);
+ReactQuestionFactory.Instance.registerQuestion('numberRating', (props) => {
+  return React.createElement(numberRating, props);
 });

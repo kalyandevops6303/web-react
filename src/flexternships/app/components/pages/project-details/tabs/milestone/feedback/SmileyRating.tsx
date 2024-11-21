@@ -13,33 +13,33 @@ export class SmileyRatingModel extends QuestionRatingModel {
         this.onSurveyLoad();
     }
 
-    getType() {
-        return "smileyRating";
-    }
+  getType() {
+    return 'smileyRating';
+  }
 
-    get rateValues() {
-        return this.getPropertyValue("rateValues", []);
-    }
+  get rateValues() {
+    return this.getPropertyValue('rateValues', []);
+  }
 
-    set rateValues(newValues) {
-        this.setPropertyValue("rateValues", newValues);
-    }
+  set rateValues(newValues) {
+    this.setPropertyValue('rateValues', newValues);
+  }
 
-    get minDecriptionValue() {
-        return this.getPropertyValue("minDecriptionValue", "");
-    }
+  get minDecriptionValue() {
+    return this.getPropertyValue('minDecriptionValue', '');
+  }
 
-    set minDecriptionValue(value) {
-        this.setPropertyValue("minDecriptionValue", value);
-    }
+  set minDecriptionValue(value) {
+    this.setPropertyValue('minDecriptionValue', value);
+  }
 
-    get maxDecriptionValue() {
-        return this.getPropertyValue("maxDecriptionValue", "");
-    }
+  get maxDecriptionValue() {
+    return this.getPropertyValue('maxDecriptionValue', '');
+  }
 
-    set maxDecriptionValue(value) {
-        this.setPropertyValue("maxDecriptionValue", value);
-    }
+  set maxDecriptionValue(value) {
+    this.setPropertyValue('maxDecriptionValue', value);
+  }
 
     onSurveyLoad() {
         if (this.jsonObj && this.jsonObj.rateValues) {
@@ -63,9 +63,9 @@ export class SmileyRating extends SurveyQuestionElementBase {
         };
     }
 
-    get question() {
-        return this.props.question;
-    }
+  get question() {
+    return this.props.question;
+  }
 
     getEmoji = (condition: number) => {
         switch (condition) {
@@ -101,11 +101,11 @@ export class SmileyRating extends SurveyQuestionElementBase {
         }
     }
 
-    renderElement() {
-        if (!this.question) return null;
+  renderElement() {
+    if (!this.question) return null;
 
-        const rateValues = this.question.rateValues || [];
-        const { selectedValue } = this.state;
+    const rateValues = this.question.rateValues || [];
+    const { selectedValue } = this.state;
 
         return (
             <div className="text-grey-600 w-[calc(100vw-15%)]">
@@ -139,20 +139,20 @@ export class SmileyRating extends SurveyQuestionElementBase {
 }
 
 Serializer.addClass(
-    "smileyRating",
-    [
-        { name: "title", type: "string" },
-        { name: "rateValues", type: "itemvalues", default: [1, 2, 3, 4, 5] },
-        { name: "minDecriptionValue", type: "string", default: "Unhappy" },
-        { name: "maxDecriptionValue", type: "string", default: "Delighted" },
-        { name: "rateMax", type: "number", default: 5 },
-    ],
-    function () {
-        return new SmileyRatingModel("");
-    },
-    "rating"
+  'smileyRating',
+  [
+    { name: 'title', type: 'string' },
+    { name: 'rateValues', type: 'itemvalues', default: [1, 2, 3, 4, 5] },
+    { name: 'minDecriptionValue', type: 'string', default: 'Unhappy' },
+    { name: 'maxDecriptionValue', type: 'string', default: 'Delighted' },
+    { name: 'rateMax', type: 'number', default: 5 },
+  ],
+  function () {
+    return new SmileyRatingModel('');
+  },
+  'rating',
 );
 
-ReactQuestionFactory.Instance.registerQuestion("smileyRating", (props) => {
-    return React.createElement(SmileyRating, props);
+ReactQuestionFactory.Instance.registerQuestion('smileyRating', (props) => {
+  return React.createElement(SmileyRating, props);
 });
