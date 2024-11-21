@@ -61,10 +61,6 @@ export default function PeerFeedback() {
     }
   }, [activeTeamMember]);
 
-  useEffect(() => {
-    console.log(formattedTeamInfo);
-  }, [formattedTeamInfo]);
-
   const handleSurveyComplete = (survey: SurveyModel) => {
     const submitFeedbackData: any = {
       feedback_id: peerFeedbackForm?._id,

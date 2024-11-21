@@ -61,10 +61,6 @@ export default function IndividualFeedback() {
     }
   }, [activeTeamMember]);
 
-  useEffect(() => {
-    console.log(formattedTeamInfo);
-  }, [formattedTeamInfo]);
-
   const handleSurveyComplete = (survey: SurveyModel) => {
     const submitFeedbackData: any = {
       feedback_id: individualFeedbackForm?._id,

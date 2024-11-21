@@ -63,10 +63,8 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
       const feedbackType = currentUserType === UserType.CLIENT ? FeedbackTypesAPI.TEAM : FeedbackTypesAPI.SELF;
       const milestoneId = currentOpened?.milestone_id;
 
-      console.log(currentOpened);
       getFeedbackResponse(receiverId, milestoneId, feedbackType);
     }
-    console.log(currentOpened);
   }, [currentOpened]);
 
   const getHeaderContent = (peerFeedback: any) => {
