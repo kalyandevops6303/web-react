@@ -25,7 +25,7 @@ export default function StartsInTimer(props: Props) {
 
   // Format time parts based on hide flags
   const timeParts = [
-    `${timeLeft.hours}`,
+    `${timeLeft.hours}`.padStart(2, '0'),
     !hideMinutes && `${timeLeft.minutes}`.padStart(2, '0'),
     !hideSeconds && !hideMinutes && `${timeLeft.seconds}`.padStart(2, '0'),
   ].filter(Boolean);

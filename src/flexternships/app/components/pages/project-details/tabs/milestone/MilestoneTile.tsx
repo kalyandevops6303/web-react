@@ -79,7 +79,6 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
           milestoneFeedbackDetails.map((feedback, index) => (
             <FeedbackStatusCard
               key={index}
-              feedbackId={feedback.feedbackId}
               feedbackType={feedback.feedbackType}
               feedbackStatus={feedback.feedbackStatus}
               numberOfQuestions={feedback.numberOfQuestions}
@@ -87,7 +86,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
               projectId={projectDetails.projectId}
               milestoneId={id}
               daysLeft={
-                referenceDateForFeedback !== undefined
+                referenceDateForFeedback
                   ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, maxFeedbackDueDays))
                   : undefined
               }
