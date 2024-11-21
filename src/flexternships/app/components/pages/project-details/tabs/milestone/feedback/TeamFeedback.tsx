@@ -9,9 +9,11 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { ArrowLeft } from 'react-feather';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/Kudos';
+export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
 export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
 export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
+export { AreaCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/AreaCheckBox';
+export { Wow } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/WowRecognition';
 
 export default function TeamFeedback() {
   const params = useParams();
