@@ -1,0 +1,31 @@
+const FunFacts = () => {
+  const facts = [
+    {
+      title: 'Boost Team Collaboration',
+      content: (
+        <>
+          <span className="text-[#C99A24] font-semibold">
+            75% of the project teams demonstrated improved performance when
+          </span>{' '}
+          they ensured that all essential components, detailed information, and comprehensive documentation were
+          included to enhance the completeness of their project deliverables.
+        </>
+      ),
+    },
+  ];
+  return (
+    <div className="flex w-[328px] h-[479px] mt-11 p-6 flex-col items-start gap-5 flex-shrink-0 rounded-md bg-gray-50 shadow-md">
+      <h1 className="text-[18px] font-medium leading-[26px]">Fun Facts</h1>
+      <div className="rounded-md bg-white shadow-md flex p-4 flex-col items-start gap-3 self-stretch">
+        {facts.map((fact, index) => (
+          <div key={index} className="flex flex-col items-start gap-3">
+            <h2 className="text-lg font-medium leading-6">{fact.title}</h2>
+            <p className="text-[14px] leading-[22px]">{fact.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default FunFacts;
