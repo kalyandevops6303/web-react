@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 

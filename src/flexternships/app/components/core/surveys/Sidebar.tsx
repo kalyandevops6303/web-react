@@ -1,6 +1,5 @@
 import { Check, User } from 'react-feather';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
-import { useEffect } from 'react';
 
 const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => void }) => {
   return (

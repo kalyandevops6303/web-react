@@ -1,7 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@flexternships/components/ui/accordion';
 
 import Styles from '@flexternships/styles/components/core/cards.module.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export default function CollapsableCard(props: CollapsableCardProps) {
   const { children, isCollapsible, bordered, isOpen, headerContent, className, white, onToggle } = props;

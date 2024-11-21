@@ -3,7 +3,7 @@ import { ItemValue, QuestionRatingModel, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
 
 export class SmileyRatingModel extends QuestionRatingModel {
-  constructor(name) {
+  constructor(name: string) {
     super(name);
     this.onSurveyLoad();
   }
@@ -38,20 +38,20 @@ export class SmileyRatingModel extends QuestionRatingModel {
 
   onSurveyLoad() {
     if (this.jsonObj && this.jsonObj.rateValues) {
-      this.rateValues = this.jsonObj.rateValues.map((value) => new ItemValue(value));
+      this.rateValues = this.jsonObj.rateValues.map((value: any) => new ItemValue(value));
     }
   }
 
-  onPropertyChanged(property, newValue) {
+  protected onPropertyValueChanged(property: string, oldValue: any, newValue: any) {
     if (property === 'jsonObj' && newValue && newValue.rateValues) {
-      this.rateValues = newValue.rateValues.map((value) => new ItemValue(value));
+      this.rateValues = newValue.rateValues.map((value: any) => new ItemValue(value));
     }
-    super.onPropertyChanged(property, newValue);
+    super.onPropertyValueChanged(property, oldValue, newValue);
   }
 }
 
 export class SmileyRating extends SurveyQuestionElementBase {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       selectedValue: null,
@@ -62,7 +62,7 @@ export class SmileyRating extends SurveyQuestionElementBase {
     return this.props.question;
   }
 
-  getEmoji = (value) => {
+  getEmoji = (value: number) => {
     switch (value) {
       case 1:
         return '😢';
@@ -79,7 +79,7 @@ export class SmileyRating extends SurveyQuestionElementBase {
     }
   };
 
-  handleChoiceSelect = (value) => {
+  handleChoiceSelect = (value: number) => {
     this.setState({ selectedValue: value });
     this.question.value = value;
   };
@@ -94,7 +94,7 @@ export class SmileyRating extends SurveyQuestionElementBase {
       <div className="text-grey-600 w-[calc(100vw-15%)]">
         <div className="rating-choices text-black flex gap-4 w-full flex justify-between mt-2">
           {rateValues.length > 0 ? (
-            rateValues.map((choice) => (
+            rateValues.map((choice: any) => (
               <button
                 key={choice.value}
                 onClick={() => this.handleChoiceSelect(choice.value)}

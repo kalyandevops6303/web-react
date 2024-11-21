@@ -17,7 +17,6 @@ export { SmileyRating } from '@/flexternships/app/components/pages/project-detai
 export default function IndividualFeedback() {
   const params = useParams();
 
-  const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const getIndividualFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
