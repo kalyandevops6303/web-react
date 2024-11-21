@@ -30,39 +30,30 @@ export interface IStatsProps {
   percentage: string;
 }
 
-export interface IDonutChartProps {
-  chartConfig: ChartConfig;
+export interface IDonutChartProps extends IBaseChartProps {
   tabs?: IChartTabsType[];
-  chartData: any[];
   statsData: IStatsProps[];
-  selectOptions: { label: string; value: string }[];
   totalData: number;
-  chartTitle: string;
-  isTabVisible?: boolean;
   isDonutChart: boolean;
   isDownloadIconVisible: boolean;
-  showPercentageInTab?: boolean;
   totalDataDescription: string;
-  handleSelect: (value: string | number) => void;
-  handleTabChange?: (value: string) => void;
 }
-export interface ILineChartProps {
-  chartConfig: ChartConfig;
+
+export interface ILineChartProps extends IBaseChartProps {
   tabs?: IChartTabsType[];
+  isDonutChart?: boolean;
+}
+
+export interface IBarChartProps extends IBaseChartProps {
+  layout: 'vertical' | 'horizontal';
+}
+export interface IBaseChartProps {
+  chartConfig: ChartConfig;
   chartData: any[];
   selectOptions: { label: string; value: string }[];
   chartTitle: string;
   isTabVisible?: boolean;
-  isDonutChart?: boolean;
   showPercentageInTab?: boolean;
   handleSelect: (value: string | number) => void;
   handleTabChange?: (value: string) => void;
-}
-export interface IBarChartProps {
-  chartConfig: ChartConfig;
-  chartData: any[];
-  selectOptions: { label: string; value: string }[];
-  chartTitle: string;
-  layout: 'vertical' | 'horizontal';
-  handleSelect: (value: string | number) => void;
 }
