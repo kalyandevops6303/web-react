@@ -22,6 +22,7 @@ const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatu
     COMPLETED: 'bg-orange-200 text-orange-600 border border-orange-400',
     WITHDRAWN: 'bg-orange-50 text-orange-500 border-2 border-orange-500',
     BLOCKED: 'bg-[#EA5455] border border-[#EA5455] bg-[rgba(234,84,85,0.12)]',
+    TO_BE_LISTED: 'bg-skyblue-light text-skyblue border border-skyblue',
   };
 
   const SecondaryStatusChipClassNames = {
