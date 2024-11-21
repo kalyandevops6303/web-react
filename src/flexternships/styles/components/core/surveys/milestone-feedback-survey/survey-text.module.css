@@ -28,6 +28,7 @@
 
 .content {
   /* Content area styles */
+  @apply bg-white;
 }
 
 .remainingCharacterCounter {

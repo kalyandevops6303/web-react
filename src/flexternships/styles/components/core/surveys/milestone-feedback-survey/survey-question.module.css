@@ -1,4 +1,4 @@
-.contentEnter {
+/* .contentEnter {
 }
 
 .contentLeave {
@@ -11,12 +11,12 @@
 }
 
 .mobile {
-}
+} */
 
 .mainRoot {
     @apply bg-white shadow-none mb-4 p-2;
 }
-
+/* 
 .flowRoot {
 }
 
@@ -33,25 +33,25 @@
 }
 
 .headerLeft {
-}
+} */
 
 .headerTop {
     @apply font-thin ;
 }
-
+/* 
 .headerBottom {
-}
+} */
 
 .content {
     @apply flex flex-col w-full justify-between items-start text-white ;
 }
 
-.contentSupportContainerQueries {
+/* .contentSupportContainerQueries {
 }
 
 .contentLeft {
-    @apply flex flex-col items-center;
-}
+    /* @apply flex flex-col items-center; */
+/* }
 
 .titleNumInline {
 }
@@ -75,12 +75,12 @@
 }
 
 .titleOnError {
-}
+} */ */
 
 .title {
-    @apply font-sans font-semibold mb-2 -mt-4;
+    @apply font-sans font-semibold mb-2 -mt-6;
 }
-
+/* 
 .titleExpandable {
 }
 
@@ -103,12 +103,12 @@
 }
 
 .requiredText {
-}
+} */
 
 .number {
     @apply font-semibold font-sans;
 }
-
+/* 
 .description {
 }
 
@@ -185,4 +185,4 @@
 }
 
 .errorsContainerBottom {
-}
+} */

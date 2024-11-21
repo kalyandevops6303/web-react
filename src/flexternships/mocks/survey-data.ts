@@ -593,8 +593,9 @@ export const mockIndividualFeedbackSurveyJson = {
       name: 'Collaboration & Teamwork',
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
           name: 'q1_teamwork',
+          rateType: 'numberRating',
           title:
             'Worked as a team player, seeking inputs and collaborating with you and team members in project and tasks execution',
           rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
@@ -608,7 +609,7 @@ export const mockIndividualFeedbackSurveyJson = {
       name: 'Communication',
       elements: [
         {
-          type: 'rating',
+          type: 'smileyRating',
           name: 'q2_communication',
           title: 'Communicated in a clear, concise and structured manner',
           rateType: 'smileys',
