@@ -108,6 +108,18 @@ export const updateClientCompanyInfo = async (data: FlexternClientCompanyDetails
   await updateFlexternClientInfo(fileKeyAdjustedData);
 };
 
+export const nextTab = (set: any) => {
+  // This is called after validation
+  // do not overshoot on the max tabs
+  set((state: FlexternUserProfileForm) => ({ currentTabIndex: state.currentTabIndex + 1 }));
+};
+
+export const previousTab = (set: any) => {
+  set((state: FlexternUserProfileForm) => ({
+    currentTabIndex: state.currentTabIndex > 0 ? state.currentTabIndex - 1 : 0,
+  }));
+};
+
 export const setCurrentTabIndex = (index: number, set: any) => {
   set({ currentTabIndex: index });
 };
