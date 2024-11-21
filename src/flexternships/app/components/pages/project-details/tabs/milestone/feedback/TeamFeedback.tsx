@@ -2,10 +2,11 @@ import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { useEffect } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { ArrowLeft } from 'react-feather';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -16,6 +17,7 @@ export { Wow } from '@flexternships/app/components/pages/project-details/tabs/mi
 
 export default function TeamFeedback() {
   const params = useParams();
+  const navigate = useNavigate();
 
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
   const teamDetails = useProjectsStore((state) => state.teamDetails);
@@ -50,6 +52,17 @@ export default function TeamFeedback() {
       {/* <Sidebar data={persons} /> */}
       {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
       {/* </div> */}
+      <div
+        className="flex items-center gap-1 cursor-pointer mb-5"
+        onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
+      >
+        <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
+          <ArrowLeft size="20px" />
+        </div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
+          {teamFeedbackForm?.feedback?.title}
+        </div>
+      </div>
       {teamFeedbackForm && (
         <MilestoneFeedbackSurvey surveyJson={teamFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
       )}

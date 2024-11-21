@@ -14,7 +14,7 @@ export const useFeedbackStore = create<any>((set) => ({
   ...defaultInitState,
   getMilestoneFeedbackForm: (projectId: string, feedbackType: string) =>
     getMilestoneFeedbackInfo(projectId, feedbackType, set),
-  submitFeedbackForm: (formData: any) => submitFeedbackInfo(formData, set),
+  submitFeedbackForm: (formData: any, onSuccess: () => void) => submitFeedbackInfo(formData, onSuccess, set),
   getFeedbackResponse: (receiverId: string, milestoneId: string, feedbackType: string) =>
     getFeedbackResponseInfo(receiverId, milestoneId, feedbackType, set),
   resetStore: () => set({ ...defaultInitState }),

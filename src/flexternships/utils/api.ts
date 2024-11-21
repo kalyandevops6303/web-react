@@ -28,6 +28,7 @@ export const routes = {
     legal: {
       details: `${serviceUrls.projectManagementV2}/legal/document`,
       signDocument: `${serviceUrls.projectManagementV2}/legal/document/sign`,
+      checkDocumentSigned: `${serviceUrls.projectManagementV2}/legal/document/check`,
     },
     milestone: {
       getMilestonesByProjectId: `${serviceUrls.projectManagementV2}/milestones`,

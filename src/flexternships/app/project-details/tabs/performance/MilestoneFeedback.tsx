@@ -78,7 +78,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
           </div>
         </div>
 
-        {score && (
+        {score != undefined && (
           <div className="flex items-center gap-5">
             <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
               {getScoreLabel(score as number)}

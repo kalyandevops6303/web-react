@@ -2,22 +2,17 @@ import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
-
-export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
-export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
-export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
-export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
-export { AreaCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/AreaCheckBox';
-export { Wow } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/WowRecognition';
+import { ArrowLeft } from 'react-feather';
 
 export default function PeerFeedback() {
   const params = useParams();
+  const navigate = useNavigate();
 
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
@@ -39,7 +34,12 @@ export default function PeerFeedback() {
   }, []);
 
   useEffect(() => {
-    if (team) setActiveTeamMember(team[0]);
+    if (team) {
+      const firstMemberWithoutFeedback = team.find(
+        (member: { feedback_id: undefined }) => member.feedback_id === undefined,
+      );
+      setActiveTeamMember(firstMemberWithoutFeedback || team[0]); // Fallback to the first element if none matches
+    }
   }, [team]);
 
   useEffect(() => {
@@ -73,7 +73,9 @@ export default function PeerFeedback() {
       feedback_result: survey.data,
     };
 
-    submitFeedback(submitFeedbackData);
+    submitFeedback(submitFeedbackData, () => {
+      getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
+    });
   };
 
   const handleActiveMemberChange = (userId: any) => {
@@ -82,13 +84,24 @@ export default function PeerFeedback() {
   };
 
   return (
-    <div className="flex items-start gap-2">
-      {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
-      {peerFeedbackForm && (
-        <div className="w-full">
-          <MilestoneFeedbackSurvey surveyJson={peerFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+    <>
+      <div
+        className="flex items-center gap-1 cursor-pointer mb-5"
+        onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
+      >
+        <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
+          <ArrowLeft size="20px" />
         </div>
-      )}
-    </div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
+          {peerFeedbackForm?.feedback?.title}
+        </div>
+      </div>
+      <div className="flex items-start gap-3">
+        {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
+        {peerFeedbackForm && (
+          <MilestoneFeedbackSurvey surveyJson={peerFeedbackForm?.feedback} onComplete={handleSurveyComplete} />
+        )}
+      </div>
+    </>
   );
 }
