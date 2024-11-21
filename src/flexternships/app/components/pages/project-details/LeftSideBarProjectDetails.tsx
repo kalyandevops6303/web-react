@@ -377,7 +377,7 @@ const LeftSideBarProjectDetails = () => {
               Invite
             </PrimaryButton>
           )}
-            {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.WITHDRAWN && (
+          {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.WITHDRAWN && (
             <PrimaryButton
               disabled={isBlocked}
               onClick={() => {}}
