@@ -105,15 +105,19 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
         </div>
       ) : (
         performanceDetails?.map((individualFeedback: any) => (
-          <CollapsableCard
-            white
-            className="mb-5 bg-white rounded-[10px]"
-            headerContent={getHeaderContent(individualFeedback)}
-            isOpen={individualFeedback?.user_id === currentOpened?.user_id}
-            onToggle={() => handleAccordionToggle(individualFeedback)}
-          >
-            <IndividualFeedbackResponse response={formattedFeedbackResponse} />
-          </CollapsableCard>
+          <>
+            {individualFeedback?.feedback_id && (
+              <CollapsableCard
+                white
+                className="mb-5 bg-white rounded-[10px]"
+                headerContent={getHeaderContent(individualFeedback)}
+                isOpen={individualFeedback?.user_id === currentOpened?.user_id}
+                onToggle={() => handleAccordionToggle(individualFeedback)}
+              >
+                <IndividualFeedbackResponse response={formattedFeedbackResponse} />
+              </CollapsableCard>
+            )}
+          </>
         ))
       )}
     </div>

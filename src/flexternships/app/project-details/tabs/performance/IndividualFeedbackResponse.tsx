@@ -1,9 +1,13 @@
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
+import Spinner from '@/flexternships/app/components/core/Spinner';
 import VerticalTimeline from '@/flexternships/app/components/core/timelines/VerticalTimeline';
+import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { isEmpty } from 'lodash';
 
 export default function IndividualFeedbackResponse(props: any) {
   const { response } = props;
+
+  const isFeedbackResponseLoading = useFeedbackStore((state) => state.isFeedbackResponseLoading);
 
   const getResponseComponent = (data: any, index: number) => {
     return (
@@ -32,6 +36,16 @@ export default function IndividualFeedbackResponse(props: any) {
       component: getResponseComponent(item, index),
     };
   });
+
+  if (isFeedbackResponseLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48 w-full">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-8">

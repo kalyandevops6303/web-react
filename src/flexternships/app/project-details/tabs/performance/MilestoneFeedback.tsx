@@ -101,15 +101,19 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
       ) : (
         <div>
           {performanceDetails?.map((peerFeedback: any) => (
-            <CollapsableCard
-              white
-              className="my-5 bg-white rounded-[10px]"
-              headerContent={getHeaderContent(peerFeedback)}
-              isOpen={peerFeedback?._id === currentOpened?._id}
-              onToggle={() => handleAccordionToggle(peerFeedback)}
-            >
-              <IndividualFeedbackResponse response={formattedFeedbackResponse} />
-            </CollapsableCard>
+            <>
+              {peerFeedback?.feedback_id && (
+                <CollapsableCard
+                  white
+                  className="my-5 bg-white rounded-[10px]"
+                  headerContent={getHeaderContent(peerFeedback)}
+                  isOpen={peerFeedback?._id === currentOpened?._id}
+                  onToggle={() => handleAccordionToggle(peerFeedback)}
+                >
+                  <IndividualFeedbackResponse response={formattedFeedbackResponse} />
+                </CollapsableCard>
+              )}
+            </>
           ))}
         </div>
       )}
