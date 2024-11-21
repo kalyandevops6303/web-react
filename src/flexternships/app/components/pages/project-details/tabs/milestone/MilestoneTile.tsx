@@ -79,7 +79,6 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
           milestoneFeedbackDetails.map((feedback, index) => (
             <FeedbackStatusCard
               key={index}
-              feedbackId={feedback.feedbackId}
               feedbackType={feedback.feedbackType}
               feedbackStatus={feedback.feedbackStatus}
               numberOfQuestions={feedback.numberOfQuestions}

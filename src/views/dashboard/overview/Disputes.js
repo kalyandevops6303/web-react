@@ -9,6 +9,7 @@ import { getDisputesCount } from '../../../redux/actions/disputeActions';
 import { disputesCount } from '../../../redux/selectors/disputeSelectors';
 import { DisputesChartContainer, DisputesLegend } from './style';
 import theme from '../../../configs/themeVariables';
+import { isFlexternshipApp } from '../../../configs/api/env';
 
 const Disputes = ({ handleRaiseDispute }) => {
   const dispatch = useDispatch();
@@ -18,8 +19,10 @@ const Disputes = ({ handleRaiseDispute }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    dispatch(getDisputesCount());
-  }, []);
+    if (!isFlexternshipApp) {
+      dispatch(getDisputesCount());
+    }
+  }, [isFlexternshipApp]);
 
   useEffect(() => {
     const data = [

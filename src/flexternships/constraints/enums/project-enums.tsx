@@ -12,6 +12,7 @@ export enum ProjectStatusChipClassnames {
   CLOSED = 'bg-gray-300 text-gray-600 border border-gray-500',
   TERMINATED = 'bg-red-100 text-red-600 border border-red-400',
   COMPLETED = 'bg-orange-200 text-orange-600 border border-orange-400',
+  WITHDRAWN = 'border border-[#FF6D00] bg-[rgba(255,109,0,0.12)] text-[#FF6D00]',
 }
 
 export enum StatusType {
@@ -26,8 +27,10 @@ export enum PrimaryProjectStatus {
   ONGOING = 'On Going',
   UPCOMING = 'Upcoming',
   CLOSED = 'Closed',
+  WITHDRAWN = 'Withdrawn',
   TERMINATED = 'Terminated',
   COMPLETED = 'Completed',
+  BLOCKED = 'Blocked',
 }
 
 export const SecondaryProjectStatus = {
