@@ -17,6 +17,8 @@ import RoleItem from './RoleItem';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);
@@ -27,6 +29,8 @@ export default function Preview() {
   const closeModal = useProjectCreationStore((state) => state.closeModal);
   const resetProjectCreationStore = useProjectCreationStore((state) => state.resetStore);
   const [recallTimeLeft, setRecallTimeLeft] = useState<number>(-1);
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -88,37 +92,42 @@ export default function Preview() {
             value={formData.requirements.projectName || 'NaN'}
           />
           <ProjectDetailsItem
-            className="w-[280px] mb-5"
+            className="w-[333px] mb-5"
+            title="Department Name (BU)"
+            value={(userDetails as FlexternClientDetails).departmentName || 'NaN'}
+          />
+          <ProjectDetailsItem
+            className="w-[237px] mb-5"
             title="Estimated Duration"
             value={`${formData.requirements.estimatedDuration} weeks`}
             tooltip="Estimated duration of the project in weeks"
           />
-          <ProjectDetailsItem
+          {/* <ProjectDetailsItem
             className="w-[280px] mb-5"
             title="Listing Duration"
             value={`${formatEpochToHumanReadable(
               formData.listingDetails.listingStartDate,
             )} to ${formatEpochToHumanReadable(formData.listingDetails.listingEndDate)}`}
-          />
+          /> */}
           <ProjectDetailsItem
-            className="w-[208px]"
+            className="w-[204px]"
             title="Estimated Start Date"
             value={formatEpochToHumanReadable(formData.requirements.estimatedStartDate)}
           />
           <ProjectDetailsItem
-            className="w-[228px]"
+            className="w-[230px]"
             title="Total Milestones"
-            value={`${formData.milestones.length}` || 'NaN'}
-            greymatter={`in ${formData.requirements.estimatedDuration} Weeks`}
+            value={`${formData.milestones.length}`.padStart(2, '0') || 'NaN'}
+            // greymatter={`in ${formData.requirements.estimatedDuration} Weeks`}
           />
           <ProjectDetailsItem
-            className="w-[280px]"
+            className="w-[333px]"
             title="Estimated Hours/Week per Flextern"
             value={`${formData.requirements.estimatedWeeklyHours}hrs weekly`}
             tooltip="Estimated weekly work-hours for each flextern"
           />
           <ProjectDetailsItem
-            className="w-[280px]"
+            className="w-[237px]"
             title="Total Project Hours per Flextern"
             value={`${formData.requirements.totalProjectHoursEach}hrs`}
             tooltip="Total project hours for each flextern"

@@ -1,24 +1,10 @@
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
-import { useEffect, useState } from 'react';
 import { X } from 'react-feather';
-import Spinner from '../Spinner';
+import IndividualFeedback from '@/flexternships/app/project-details/tabs/performance/IndividualFeedback';
 
 export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackModalProps) {
   const { feedbackType, milestoneId, isOpen, closeModal } = props;
-
-  const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchFeedback = async () => {
-      setIsFeedbackLoading(true);
-      // const feedback = await getMilestoneFeedback(feedbackId);
-      setTimeout(() => {
-        setIsFeedbackLoading(false);
-      }, 2000);
-    };
-    fetchFeedback();
-  }, [isOpen, milestoneId]);
 
   if (!isOpen) return null;
 
@@ -31,16 +17,17 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
         >
           <X size={16} />
         </div>
-        <div className="flex flex-col items-center grow gap-y-5">
-          <h1 className="text-[28px] font-normal text-grey-heading">{viewMilestoneFeedbackModalTitle[feedbackType]}</h1>
-          {isFeedbackLoading ? (
-            <div className="flex justify-center items-center p-10">
-              <div className="w-10 h-10">
-                <Spinner />
-              </div>
-            </div>
+        <div className="flex flex-col grow gap-y-5">
+          <h1 className="text-[28px] text-center font-normal text-grey-heading">
+            {viewMilestoneFeedbackModalTitle[feedbackType]}
+          </h1>
+          {[MilestoneFeedbackType.INDIVIDUAL_FEEDBACK, MilestoneFeedbackType.PEER_FEEDBACK].includes(feedbackType) ? (
+            <IndividualFeedback milestoneId={milestoneId} feedbackType={feedbackType} />
           ) : (
-            <div>Show feedback here</div>
+            <div>
+              WIP
+              {/* TODO: Self and Team Feedback */}
+            </div>
           )}
         </div>
       </div>

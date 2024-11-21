@@ -126,5 +126,5 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
 
 type IndividualFeedbackProps = {
   milestoneId: string;
-  feedbackType: string;
+  feedbackType: string; // individual or peer
 };
