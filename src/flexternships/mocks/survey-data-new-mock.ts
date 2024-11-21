@@ -249,6 +249,7 @@ export const mockPeerFeedbackSurveyJson = {
   pages: [
     {
       name: 'Collaboration & Teamwork',
+      description: 'Collaboration & Teamwork',
       elements: [
         {
           type: 'rating',
@@ -273,6 +274,7 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Communication',
+      description: 'Communication',
       elements: [
         {
           type: 'smileyRating',
@@ -296,6 +298,7 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Leadership',
+      description: 'Leadership',
       elements: [
         {
           type: 'rating',
@@ -320,6 +323,7 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Ownership',
+      description: 'Ownership',
       elements: [
         {
           type: 'numberRating',
@@ -363,6 +367,7 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Analytical Thinking',
+      description: 'Analytical Thinking',
       elements: [
         {
           type: 'numberRating',
@@ -407,6 +412,7 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Innovative Thinking',
+      description: 'Innovative Thinking',
       elements: [
         {
           type: 'rating',
@@ -430,6 +436,7 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Recognition',
+      description: 'Recognition',
       elements: [
         {
           type: 'kudosgroup',
@@ -468,6 +475,7 @@ export const mockTeamFeedbackSurveyJson = {
   pages: [
     {
       name: 'Completeness',
+      description: 'Completeness',
       elements: [
         {
           type: 'html',
@@ -511,6 +519,7 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Quality of Deliverables',
+      description: 'Quality of Deliverables',
       elements: [
         {
           type: 'html',
@@ -533,6 +542,7 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Timelines',
+      description: 'Timelines',
       elements: [
         {
           type: 'html',
@@ -576,6 +586,7 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Innovation',
+      description: 'Innovation',
       elements: [
         {
           type: 'html',
@@ -598,6 +609,7 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Top Leaders',
+      description: 'Top Leaders',
       elements: [
         {
           type: 'html',
@@ -637,6 +649,7 @@ export const mockTeamFeedbackSurveyJson = {
 
 export const mockIndividualFeedbackSurveyJson = {
   title: 'Individual Feedback',
+  description: 'Individual Feedback',
   pages: [
     {
       name: 'Collaboration & Teamwork',
@@ -672,6 +685,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Communication',
+      description: 'Communication',
+
       elements: [
         {
           type: 'smileyRating',
@@ -709,6 +724,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Leadership',
+      description: 'Leadership',
+
       elements: [
         {
           type: 'numberRating',
@@ -737,6 +754,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Ownership',
+      description: 'Ownership',
+
       elements: [
         {
           type: 'numberRating',
@@ -763,6 +782,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Analytical Thinking',
+      description: 'Analytical Thinking',
+
       elements: [
         {
           type: 'numberRating',
@@ -789,6 +810,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Innovative Thinking',
+      description: 'Innovative Thinking',
+
       elements: [
         {
           type: 'rating',
@@ -826,6 +849,7 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Improvement',
+
       elements: [
         {
           type: 'areacheckbox',
@@ -844,6 +868,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Feedback',
+      description: 'Feedback',
+
       elements: [
         {
           type: 'comment',
@@ -855,6 +881,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Recognition',
+      description: 'Recognition',
+
       elements: [
         {
           type: 'wowgroup',
