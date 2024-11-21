@@ -91,39 +91,35 @@ export const downloadFile = async ({
   data: { download_url: string; file_name: string };
   file_name?: string;
 }) => {
-  // Replace 'your_file_url' with the actual URL of the file you want to download
-  const fileUrl = data?.download_url;
+  const downloadUrl = data?.download_url;
 
   try {
     toast.loading('Downloading file...');
-    // Fetch the file using the URL
-    const response = await fetch(fileUrl);
-    const blob = await response.blob();
+    // Fetch the file using the download URL
+    const response = await fetch(downloadUrl);
+    const fileBlob = await response.blob();
 
     // Create a blob URL for the file
-    const blobUrl = URL.createObjectURL(blob);
+    const blobUrl = URL.createObjectURL(fileBlob);
 
     // Create a hidden anchor element
-    // eslint-disable-next-line no-undef
-    const a = document.createElement('a');
-    a.style.display = 'none';
+    const anchorElement = document.createElement('a');
+    anchorElement.style.display = 'none';
 
     // Set the href attribute to the blob URL
-    a.href = blobUrl;
+    anchorElement.href = blobUrl;
 
-    // Set the download attribute with the extracted file name
-    a.download = file_name || data?.file_name;
+    // Set the download attribute with the appropriate file name
+    anchorElement.download = file_name || data?.file_name;
 
     // Append the anchor element to the document
-    // eslint-disable-next-line no-undef
-    document.body.appendChild(a);
+    document.body.appendChild(anchorElement);
 
     // Trigger a click on the anchor element to start the download
-    a.click();
+    anchorElement.click();
 
-    // Remove the anchor element and revoke the blob URL from the document
-    // eslint-disable-next-line no-undef
-    document.body.removeChild(a);
+    // Clean up the anchor element and blob URL
+    document.body.removeChild(anchorElement);
     URL.revokeObjectURL(blobUrl);
     toast.dismiss();
   } catch (error) {
@@ -131,3 +127,4 @@ export const downloadFile = async ({
     toast.dismiss();
   }
 };
+
