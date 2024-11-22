@@ -25,7 +25,7 @@ type SurveyElement = {
 
 type SurveyPage = {
   name: string;
-  description: string;
+  description?: string;
   elements: SurveyElement[];
 };
 

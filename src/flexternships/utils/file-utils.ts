@@ -14,6 +14,7 @@ import docFileIcon from '@flexternships/assets/icons/file-types/docFile.png';
 import gifFileIcon from '@flexternships/assets/icons/file-types/gifFile.png';
 import jpgFileIcon from '@flexternships/assets/icons/file-types/jpgFile.png';
 import pngFileIcon from '@flexternships/assets/icons/file-types/pngFile.png';
+import toast from 'react-hot-toast';
 /**
  * Converts a file size in bytes to a human-readable string (KB, MB, GB, TB, etc.).
  * @param sizeInBytes - The file size in bytes.
@@ -73,5 +74,56 @@ export const getFileIcon = (fileName: string) => {
       return gifFileIcon;
     default:
       return docFileIcon;
+  }
+};
+
+export const getFileSize = (size: number) => {
+  if (Math.round(size / 100) / 10 > 1000) {
+    return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
+  }
+  return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+};
+
+export const downloadFile = async ({
+  data,
+  file_name,
+}: {
+  data: { download_url: string; file_name: string };
+  file_name?: string;
+}) => {
+  const downloadUrl = data?.download_url;
+
+  try {
+    toast.loading('Downloading file...');
+    // Fetch the file using the download URL
+    const response = await fetch(downloadUrl);
+    const fileBlob = await response.blob();
+
+    // Create a blob URL for the file
+    const blobUrl = URL.createObjectURL(fileBlob);
+
+    // Create a hidden anchor element
+    const anchorElement = document.createElement('a');
+    anchorElement.style.display = 'none';
+
+    // Set the href attribute to the blob URL
+    anchorElement.href = blobUrl;
+
+    // Set the download attribute with the appropriate file name
+    anchorElement.download = file_name || data?.file_name;
+
+    // Append the anchor element to the document
+    document.body.appendChild(anchorElement);
+
+    // Trigger a click on the anchor element to start the download
+    anchorElement.click();
+
+    // Clean up the anchor element and blob URL
+    document.body.removeChild(anchorElement);
+    URL.revokeObjectURL(blobUrl);
+    toast.dismiss();
+  } catch (error) {
+    console.error('Error downloading the file:', error);
+    toast.dismiss();
   }
 };

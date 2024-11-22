@@ -16,7 +16,7 @@ export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: 
   set({ isFeedbackFormLoading: false });
 };
 
-export const submitFeedbackInfo = async (formData: any, set: any) => {
+export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, set: any) => {
   set({ isSubmitFeedbackLoading: true });
   const data: any = await submitFeedbackService(formData);
   set((state: any) => ({
@@ -25,6 +25,7 @@ export const submitFeedbackInfo = async (formData: any, set: any) => {
   }));
   set({ isSubmitFeedbackLoading: false });
   showToastMessage(ToastType.SUCCESS, `Feedback has been submitted successfully`);
+  onSuccess();
 };
 
 export const getFeedbackResponseInfo = async (

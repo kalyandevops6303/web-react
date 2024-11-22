@@ -6,29 +6,28 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Collaboration & Teamwork',
       elements: [
         {
-          type: 'numberRating',
-          name: 'q5_ownership',
-          rateType: 'numberRating',
-          title:
-            'You took ownership of delivering high quality work output and results from yourself and your team members',
-          rateValues: [
-            { value: 1, text: '01' },
-            { value: 2, text: '02' },
-            { value: 3, text: '03' },
-            { value: 4, text: '04' },
-            { value: 5, text: '05' },
-          ],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          isRequired: false,
-        },
-        {
           type: 'rating',
           name: 'q1_collaboration',
           title: 'You worked as a true team player seeking inputs and collaboration from your manager and team members',
           rateType: 'stars',
           displayMode: 'buttons',
-          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
+          rateValues: [
+            {
+              value: 1,
+            },
+            {
+              value: 2,
+            },
+            {
+              value: 3,
+            },
+            {
+              value: 4,
+            },
+            {
+              value: 5,
+            },
+          ],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           isRequired: false,
@@ -72,13 +71,29 @@ export const mockSelfFeedbackSurveyJson = {
       description: 'Leadership',
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
           name: 'q3_leadership',
-          rateType: 'stars',
+          rateType: 'numberRating',
           displayMode: 'buttons',
           title:
-            'Took initiative in leading team for tasks to be accomplished and recognized team members for their contributions',
-          rateValues: [1, 2, 3, 4, 5],
+            'You took initiative in leading team for tasks to be accomplished and recognized team members for their contributions',
+          rateValues: [
+            {
+              value: 1,
+            },
+            {
+              value: 2,
+            },
+            {
+              value: 3,
+            },
+            {
+              value: 4,
+            },
+            {
+              value: 5,
+            },
+          ],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           isRequired: false,
@@ -103,11 +118,26 @@ export const mockSelfFeedbackSurveyJson = {
           title:
             'You took ownership of delivering high quality work output and results from yourself and your team members',
           rateValues: [
-            { value: 1, text: '01' },
-            { value: 2, text: '02' },
-            { value: 3, text: '03' },
-            { value: 4, text: '04' },
-            { value: 5, text: '05' },
+            {
+              value: 1,
+              text: '01',
+            },
+            {
+              value: 2,
+              text: '02',
+            },
+            {
+              value: 3,
+              text: '03',
+            },
+            {
+              value: 4,
+              text: '04',
+            },
+            {
+              value: 5,
+              text: '05',
+            },
           ],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
@@ -129,15 +159,31 @@ export const mockSelfFeedbackSurveyJson = {
       elements: [
         {
           type: 'numberRating',
+          rateType: 'numberRating',
           name: 'q5_analytical_thinking',
           title:
             'You understood task objectives and context before execution, and applied acquired knowledge and skills for better project execution',
           rateValues: [
-            { value: 1, text: '01' },
-            { value: 2, text: '02' },
-            { value: 3, text: '03' },
-            { value: 4, text: '04' },
-            { value: 5, text: '05' },
+            {
+              value: 1,
+              text: '01',
+            },
+            {
+              value: 2,
+              text: '02',
+            },
+            {
+              value: 3,
+              text: '03',
+            },
+            {
+              value: 4,
+              text: '04',
+            },
+            {
+              value: 5,
+              text: '05',
+            },
           ],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
@@ -162,7 +208,23 @@ export const mockSelfFeedbackSurveyJson = {
           rateType: 'stars',
           displayMode: 'buttons',
           title: 'Came up with new, innovative ideas and solutions to challenges presented within project or tasks',
-          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
+          rateValues: [
+            {
+              value: 1,
+            },
+            {
+              value: 2,
+            },
+            {
+              value: 3,
+            },
+            {
+              value: 4,
+            },
+            {
+              value: 5,
+            },
+          ],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           isRequired: false,
@@ -173,28 +235,6 @@ export const mockSelfFeedbackSurveyJson = {
           title: 'Please provide additional feedback (Optional)',
           placeholder: 'Please type here',
           isRequired: false,
-        },
-      ],
-    },
-    {
-      name: 'Feedback',
-      description: 'Feedback',
-      elements: [
-        {
-          type: 'kudosgroup',
-          name: 'satisfaction-smileys-colored',
-          title: 'Give a Kudos to this talent',
-          choices: [
-            { value: 'kudos', text: 'KUDOS' },
-            { value: 'na', text: 'NA' },
-          ],
-        },
-        {
-          type: 'comment',
-          name: 'q7_comments',
-          title: 'Your Comments (Required)',
-          isRequired: false,
-          placeholder: 'Please type here',
         },
       ],
     },
@@ -209,6 +249,7 @@ export const mockPeerFeedbackSurveyJson = {
   pages: [
     {
       name: 'Collaboration & Teamwork',
+      description: 'Collaboration & Teamwork',
       elements: [
         {
           type: 'rating',
@@ -217,7 +258,7 @@ export const mockPeerFeedbackSurveyJson = {
             'Collaboration & Teamwork: Worked as a true team player seeking inputs and collaboration from team members',
           rateType: 'stars',
           displayMode: 'buttons',
-          rateValues: [1, 2, 3, 4, 5],
+          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           isRequired: false,
@@ -233,9 +274,10 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Communication',
+      description: 'Communication',
       elements: [
         {
-          type: 'rating',
+          type: 'smileyRating',
           name: 'q2_communication',
           title: 'Communicated with team members in a clear, concise and structured manner',
           rateValues: [1, 2, 3, 4, 5],
@@ -256,13 +298,14 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Leadership',
+      description: 'Leadership',
       elements: [
         {
           type: 'rating',
           name: 'q3_leadership',
           title:
             'Took initiative in leading team for tasks to be accomplished and recognized team members for their contributions',
-          rateValues: [1, 2, 3, 4, 5],
+          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           rateType: 'stars',
@@ -280,9 +323,11 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Ownership',
+      description: 'Ownership',
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
+          rateType: 'numberRating',
           name: 'q4_ownership',
           title: 'Took ownership of delivering high-quality work output and results for project and tasks',
           rateValues: [
@@ -322,9 +367,11 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Analytical Thinking',
+      description: 'Analytical Thinking',
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
+          rateType: 'numberRating',
           name: 'q5_analytical_thinking',
           title:
             'Understood task objectives and context before execution, and applied acquired knowledge and skills for better project execution',
@@ -365,12 +412,13 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Innovative Thinking',
+      description: 'Innovative Thinking',
       elements: [
         {
           type: 'rating',
           name: 'q6_innovative_thinking',
           title: 'Came up with new, innovative ideas and solutions to challenges presented within project or tasks',
-          rateValues: [1, 2, 3, 4, 5],
+          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           rateType: 'stars',
@@ -388,14 +436,21 @@ export const mockPeerFeedbackSurveyJson = {
     },
     {
       name: 'Recognition',
+      description: 'Recognition',
       elements: [
         {
-          type: 'rating',
+          type: 'kudosgroup',
           name: 'recognition',
           title: 'Give a Kudos to this talent',
-          rateValues: [
-            { value: 1, text: 'Kudos' },
-            { value: 2, text: 'NA' },
+          choices: [
+            {
+              value: '1',
+              text: 'Kudos',
+            },
+            {
+              value: '2',
+              text: 'NA',
+            },
           ],
           displayMode: 'buttons',
           isRequired: false,
@@ -420,36 +475,32 @@ export const mockTeamFeedbackSurveyJson = {
   pages: [
     {
       name: 'Completeness',
+      description: 'Completeness',
       elements: [
         {
           type: 'html',
           name: 'completeness_heading',
-          html: '<span id="completeness_heading">Completeness</span>',
+          html: "<span id='completeness_heading'>Completeness</span>",
         },
         {
-          type: 'rating',
+          type: 'smileyRating',
           name: 'q1_completeness',
           title: 'Team delivered completely and holistically for the committed tasks in the current milestone',
           rateValues: [
             {
               value: 1,
-              text: "<img src='/emojis/smiley_1.svg' alt='Smiley 1' class='emoji_image'/>",
             },
             {
               value: 2,
-              text: "<img src='/emojis/smiley_2.svg' alt='Smiley 2' class='emoji_image'/>",
             },
             {
               value: 3,
-              text: "<img src='/emojis/smiley_3.svg' alt='Smiley 3' class='emoji_image'/>",
             },
             {
               value: 4,
-              text: "<img src='/emojis/smiley_4.svg' alt='Smiley 4' class='emoji_image'/>",
             },
             {
               value: 5,
-              text: "<img src='/public/emojis/smiley_5.svg' alt='Smiley 5' class='emoji_image' style='height: 42px; width: 42px;' />",
             },
           ],
           minRateDescription: 'Unhappy',
@@ -463,14 +514,15 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Quality of Deliverables',
+      description: 'Quality of Deliverables',
       elements: [
         {
           type: 'html',
           name: 'quality_heading',
-          html: '<span id="quality_heading">Quality of Deliverables</span>',
+          html: "<span id='quality_heading'>Quality of Deliverables</span>",
         },
         {
-          type: 'rating',
+          type: 'smileyRating',
           name: 'q2_quality_of_deliverables',
           title: 'Team delivered high-quality output for the committed tasks in the current milestone',
           rateValues: [1, 2, 3, 4, 5],
@@ -485,14 +537,16 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Timelines',
+      description: 'Timelines',
       elements: [
         {
           type: 'html',
           name: 'timelines_heading',
-          html: '<span id="timelines_heading">Timelines</span>',
+          html: "<span id='timelines_heading'>Timelines</span>",
         },
         {
-          type: 'rating',
+          type: 'numberRating',
+          rateType: 'numberRating',
           name: 'q3_timeliness',
           title:
             'Team consistently delivered tasks and outputs on the agreed upon timelines without intentional delays',
@@ -527,11 +581,12 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Innovation',
+      description: 'Innovation',
       elements: [
         {
           type: 'html',
-          name: 'completeness_heading',
-          html: '<span id="innovation_heading">Innovation</span>',
+          name: 'innovation_heading',
+          html: "<span id='innovation_heading'>Innovation</span>",
         },
         {
           type: 'rating',
@@ -549,17 +604,18 @@ export const mockTeamFeedbackSurveyJson = {
     },
     {
       name: 'Top Leaders',
+      description: 'Top Leaders',
       elements: [
         {
           type: 'html',
-          name: 'completeness_heading',
-          html: '<span id="top_leaders_heading">Top Leaders</span>',
+          name: 'top_leaders_heading',
+          html: "<span id='top_leaders_heading'>Top Leaders</span>",
         },
         {
           type: 'checkbox',
           name: 'top_leaders',
           title: 'Identify one or more team members who displayed leadership qualities within the current milestone',
-          api: 'https://tru-dev-api.trumio.ai/api/leaders/api/leaders',
+          api: 'http://localhost:3000/api/leaders',
           isRequired: false,
         },
       ],
@@ -570,7 +626,7 @@ export const mockTeamFeedbackSurveyJson = {
         {
           type: 'html',
           name: 'feedback_heading',
-          html: '<span id="feedback_heading">Feedback</span>',
+          html: "<span id='feedback_heading'>Feedback</span>",
         },
         {
           type: 'comment',
@@ -588,17 +644,34 @@ export const mockTeamFeedbackSurveyJson = {
 
 export const mockIndividualFeedbackSurveyJson = {
   title: 'Individual Feedback',
+  description: 'Individual Feedback',
   pages: [
     {
       name: 'Collaboration & Teamwork',
       elements: [
         {
-          type: 'numberRating',
+          type: 'rating',
+          rateType: 'stars',
           name: 'q1_teamwork',
-          rateType: 'numberRating',
           title:
             'Worked as a team player, seeking inputs and collaborating with you and team members in project and tasks execution',
-          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
+          rateValues: [
+            {
+              value: 1,
+            },
+            {
+              value: 2,
+            },
+            {
+              value: 3,
+            },
+            {
+              value: 4,
+            },
+            {
+              value: 5,
+            },
+          ],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           isRequired: false,
@@ -607,13 +680,31 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Communication',
+      description: 'Communication',
+
       elements: [
         {
           type: 'smileyRating',
           name: 'q2_communication',
           title: 'Communicated in a clear, concise and structured manner',
           rateType: 'smileys',
-          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
+          rateValues: [
+            {
+              value: 1,
+            },
+            {
+              value: 2,
+            },
+            {
+              value: 3,
+            },
+            {
+              value: 4,
+            },
+            {
+              value: 5,
+            },
+          ],
           minRateDescription: 'Unhappy',
           maxRateDescription: 'Delighted',
           isRequired: false,
@@ -628,13 +719,22 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Leadership',
+      description: 'Leadership',
+
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
+          rateType: 'numberRating',
           name: 'q3_leadership',
           title:
             'Took initiative in leading team for tasks to be accomplished and recognized team members for their efforts',
-          rateValues: [1, 2, 3, 4, 5],
+          rateValues: [
+            { value: 1, text: '01' },
+            { value: 2, text: '02' },
+            { value: 3, text: '03' },
+            { value: 4, text: '04' },
+            { value: 5, text: '05' },
+          ],
           minRateDescription: 'Strongly Disagree',
           maxRateDescription: 'Strongly Agree',
           isRequired: false,
@@ -649,13 +749,22 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Ownership',
+      description: 'Ownership',
+
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
+          rateType: 'numberRating',
           name: 'q4_ownership',
           title:
             'Took ownership of delivering quality output while pushing to deliver exceptional results from self and other team members',
-          rateValues: [1, 2, 3, 4, 5],
+          rateValues: [
+            { value: 1, text: '01' },
+            { value: 2, text: '02' },
+            { value: 3, text: '03' },
+            { value: 4, text: '04' },
+            { value: 5, text: '05' },
+          ],
           isRequired: false,
         },
         {
@@ -668,13 +777,22 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Analytical Thinking',
+      description: 'Analytical Thinking',
+
       elements: [
         {
-          type: 'rating',
+          type: 'numberRating',
+          rateType: 'numberRating',
           name: 'q5_analytical_thinking',
           title:
             'Analyzed task objectives and context before execution and applied acquired knowledge and skills for better project execution',
-          rateValues: [1, 2, 3, 4, 5],
+          rateValues: [
+            { value: 1, text: '01' },
+            { value: 2, text: '02' },
+            { value: 3, text: '03' },
+            { value: 4, text: '04' },
+            { value: 5, text: '05' },
+          ],
           isRequired: false,
         },
         {
@@ -687,17 +805,32 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Innovative Thinking',
+      description: 'Innovative Thinking',
+
       elements: [
         {
           type: 'rating',
+          rateType: 'stars',
           name: 'q6_innovative_thinking',
           title: 'Generated novel, innovative ideas and solutions to challenges presented within project or tasks',
           rateValues: [
-            { value: 1, text: 'Strongly Disagree' },
-            { value: 2 },
-            { value: 3 },
-            { value: 4 },
-            { value: 5, text: 'Strongly Agree' },
+            {
+              value: 1,
+              text: 'Strongly Disagree',
+            },
+            {
+              value: 2,
+            },
+            {
+              value: 3,
+            },
+            {
+              value: 4,
+            },
+            {
+              value: 5,
+              text: 'Strongly Agree',
+            },
           ],
           isRequired: false,
         },
@@ -711,6 +844,7 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Improvement',
+
       elements: [
         {
           type: 'areacheckbox',
@@ -729,6 +863,8 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Feedback',
+      description: 'Feedback',
+
       elements: [
         {
           type: 'comment',
@@ -740,14 +876,22 @@ export const mockIndividualFeedbackSurveyJson = {
     },
     {
       name: 'Recognition',
+      description: 'Recognition',
+
       elements: [
         {
           type: 'wowgroup',
           name: 'recognition',
           title: 'Give a WOW to the user for their demonstration of excellence',
           choices: [
-            { value: 'wow', text: 'WOW' },
-            { value: 'na', text: 'NA' },
+            {
+              value: 'wow',
+              text: 'WOW',
+            },
+            {
+              value: 'na',
+              text: 'NA',
+            },
           ],
           isRequired: false,
         },

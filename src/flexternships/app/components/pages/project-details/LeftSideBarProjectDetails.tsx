@@ -26,6 +26,7 @@ import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
+import DocumentsModal from '../../core/modals/DocumentsModal';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -182,6 +183,7 @@ const LeftSideBarProjectDetails = () => {
   };
   const daysLeft = calculateDays(data?.listingDetails?.startDateEpoch, data?.listingDetails?.endDateEpoch)?.daysLeft;
 
+  const [documentsModal, setDocumentsModal] = useState(false);
   useEffect(() => {
     if (data) {
       const tags = [...(data?.skillsData || []), ...(data?.toolsData || [])];
@@ -199,8 +201,13 @@ const LeftSideBarProjectDetails = () => {
   }, [projectMilestones]);
 
   return (
-    <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 w-full md:w-[350px] h-fit rounded-xl w-[400px]">
+    <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 md:w-[350px] h-fit rounded-xl w-[400px]">
       <div className="flex flex-row items-center w-full justify-between">
+        <DocumentsModal
+          isOpen={documentsModal}
+          onClose={() => setDocumentsModal(false)}
+          data={data?.details?.documents}
+        />
         <ProjectStatusChip
           status={data?.status as string as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
           statusType={StatusType?.PRIMARY}
@@ -288,7 +295,7 @@ const LeftSideBarProjectDetails = () => {
               {data?.details?.expectedDuration?.duration} Weeks
             </span>
           </div>
-          <div className="flex flex-row items-center gap-1">
+          <div onClick={() => setDocumentsModal(true)} className="flex flex-row items-center gap-1">
             <Paperclip size={14} />
             <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
               {data?.details?.documents?.length}

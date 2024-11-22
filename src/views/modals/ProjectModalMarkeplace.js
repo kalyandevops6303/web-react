@@ -425,10 +425,10 @@ const ProjectModal = ({
                 {checkBidLoadingIsLoading ? (
                   <Spinner size="sm" />
                 ) : (
-                  <>
+                  <div className="d-flex align-items-center">
                     <span className="me-50">View Project</span>
                     <ChevronRight size={14} />
-                  </>
+                  </div>
                 )}
               </Button>
             </div>
@@ -466,8 +466,10 @@ const ProjectModal = ({
                         navigate(`/project-details/${data?._id}/team`);
                       }}
                     >
-                      <span className="me-50">View Project</span>
-                      <ChevronRight size={14} />
+                      <div className="d-flex align-items-center">
+                        <span className="me-50">View Project</span>
+                        <ChevronRight size={14} />
+                      </div>
                     </Button>
                   </PermissionWrapper>
                 </div>

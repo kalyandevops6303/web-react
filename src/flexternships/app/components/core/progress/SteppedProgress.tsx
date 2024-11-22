@@ -30,6 +30,16 @@ export default function SteppedProgress(props: SteppedProgressProps) {
     else return 'empty';
   };
 
+  if (stepsToFill === 0) {
+    return (
+      <div className="h-2 flex">
+        {Array.from({ length: steps }).map((_, index) => (
+          <div key={index} className={cn(progressStepVariants({ variant: 'empty' }))}></div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="h-2 flex">
       {Array.from({ length: steps }).map((_, index) => (

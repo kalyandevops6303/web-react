@@ -1,8 +1,20 @@
+import { useLegalStore } from '@/flexternships/stores/legal-store';
 import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleElevatedCard';
-import { Link } from 'react-router-dom';
+import { toUpper } from 'lodash';
+import { useEffect } from 'react';
+import { ChevronRight } from 'react-feather';
+import { Link, useParams } from 'react-router-dom';
 
 export default function DocumentCard(props: DocumentCardProps) {
   const { title, subtitle, link } = props;
+  const params = useParams();
+
+  const getLegalDocSignedStatus = useLegalStore((state) => state.getLegalDocStatus);
+  const legalDocSignedStatus = useLegalStore((state) => state.legal?.signedStatus);
+
+  useEffect(() => {
+    getLegalDocSignedStatus(params?.projectId, toUpper(title));
+  }, [params]);
 
   return (
     <a href={link?.href}>
@@ -15,7 +27,7 @@ export default function DocumentCard(props: DocumentCardProps) {
         </div>
 
         <Link to={link?.href || '#'} className="text-center text-[14px] font-semibold tracking-[0.4px] text-[#0185E4]">
-          {link?.text}
+          {legalDocSignedStatus?.is_signed ? <ChevronRight size="20" color="#B4B7B8" /> : `Sign ${title}`}
         </Link>
       </SimpleElevatedCard>
     </a>

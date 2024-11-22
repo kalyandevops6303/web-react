@@ -25,6 +25,17 @@ export default function IndividualFeedbackResponse(props: any) {
                 </div>
               </div>
             )}
+            {item?.type === 'checkbox' && !isEmpty(item?.value) && (
+              <div className="rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
+                <div className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
+                  <ul>
+                    {item?.value?.map((listItem: any) => (
+                      <li>{listItem}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

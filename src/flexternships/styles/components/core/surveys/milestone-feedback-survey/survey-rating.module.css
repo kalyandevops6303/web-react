@@ -1,4 +1,4 @@
-.rootDropdown {
+/* .rootDropdown {
 }
 
 .root {
@@ -92,11 +92,12 @@
 }
 
 .minText {
-}
+} */
 
 .itemText {
+    @apply text-[14px]
 }
-
+/* 
 .maxText {
 }
 
@@ -153,4 +154,4 @@
 }
 
 .onError {
-}
+} */
