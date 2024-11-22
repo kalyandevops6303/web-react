@@ -216,8 +216,6 @@ const ProjectModal = ({
       }))
     : [];
 
-  console.log(data);
-
   return (
     <Modal
       contentClassName="custom-modal-project-details"
