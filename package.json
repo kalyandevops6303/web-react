@@ -118,6 +118,7 @@
   },
   "scripts": {
     "start": "vite",
+    "start:trudev": "vite --mode trudev",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
