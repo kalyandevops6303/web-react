@@ -1,12 +1,13 @@
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
 import { X } from 'react-feather';
-import IndividualFeedback from '@/flexternships/app/project-details/tabs/performance/IndividualFeedback';
 
 export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackModalProps) {
   const { feedbackType, milestoneId, isOpen, closeModal } = props;
 
   if (!isOpen) return null;
+
+  if (!milestoneId) throw new Error('Milestone ID is required to view feedback');
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -22,7 +23,7 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
             {viewMilestoneFeedbackModalTitle[feedbackType]}
           </h1>
           {[MilestoneFeedbackType.INDIVIDUAL_FEEDBACK, MilestoneFeedbackType.PEER_FEEDBACK].includes(feedbackType) ? (
-            <IndividualFeedback milestoneId={milestoneId} feedbackType={feedbackType} />
+            <div>Peer or Individual Feedback</div>
           ) : (
             <div>
               WIP
