@@ -170,6 +170,10 @@ const ProjectModal = ({
     location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
 
   const handleViewProject = () => {
+    if (isFlexternshipApp) {
+      return navigate(`/project-details/${data?._id}/team`);
+    }
+
     if (location.pathname.split('/').includes('projects')) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         toggleModal();

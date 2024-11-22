@@ -180,8 +180,12 @@ const ProjectModal = ({
 
   const isMyProjectMyTeam =
     location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
-  // http://localhost:3000/project-details/66e33094b6ee531398719031/project/project-invitation/66e3323ced5d53114e4c783c
+
   const handleViewProject = () => {
+    if (isFlexternshipApp) {
+      return navigate(`/project-details/${data?._id}/team`);
+    }
+
     if (location.pathname.split('/').includes('projects')) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         // const url = new URL(`${window.location.protocol}//${window.location.host}${location.pathname}`);

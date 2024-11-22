@@ -222,6 +222,7 @@ export default function Requirements() {
             name={'documents'}
             control={control}
             error={errors.documents}
+            tooltip={['Allowed file types: pdf, doc, docx, txt, jpeg', 'Max files: 5', 'Max size: 5MB']}
             trigger={trigger}
             watch={watch}
             label="Upload requirement documents (optional)"

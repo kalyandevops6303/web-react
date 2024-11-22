@@ -28,6 +28,7 @@ import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
 import { epochDifferenceInDays, formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
+import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -183,12 +184,17 @@ const LeftSideBarProjectDetails = () => {
     setShowMore((prev) => !prev);
   };
 
+  const handleMessageClick = () => {
+    window.open(CHAT_ENTRY_POINT, '_blank');
+  };
+
   const daysLeft =
     Date.now() < data?.details?.expectedStartDate
       ? epochDifferenceInDays(Date.now(), data?.details?.expectedStartDate)
       : 0;
 
   const [documentsModal, setDocumentsModal] = useState(false);
+
   useEffect(() => {
     if (data) {
       const tags = [...(data?.skillsData || []), ...(data?.toolsData || [])];
@@ -376,7 +382,7 @@ const LeftSideBarProjectDetails = () => {
               primaryProjectStatus !== PrimaryProjectStatus.TERMINATED &&
               primaryProjectStatus !== PrimaryProjectStatus.COMPLETED)) && (
             <PrimaryButton
-              onClick={() => {}}
+              onClick={handleMessageClick}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
             >
               <span>Message</span>
