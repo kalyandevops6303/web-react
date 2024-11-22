@@ -17,7 +17,7 @@ import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import MilestoneInfo from './MilestoneInfo';
 import SortableMilestoneCard from './SortableMilestoneCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
 import { useParams } from 'react-router-dom';
 
@@ -157,7 +157,8 @@ export default function Milestones() {
             className="w-[272px] mt-5"
             label="Estimated Start Date"
             placeholder="Enter start date"
-            fromDate={getTodayDate()}
+            fromDate={getTodayDate(getUserTimezone())}
+            timeZone={getUserTimezone()}
             required
           />
           <div className={Styles.durationContainer}>

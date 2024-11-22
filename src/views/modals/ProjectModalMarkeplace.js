@@ -35,6 +35,8 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
+import { isFlexternshipApp } from '@/configs/api/env';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -210,6 +212,8 @@ const ProjectModal = ({
       }))
     : [];
 
+  console.log(data);
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -257,15 +261,29 @@ const ProjectModal = ({
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {convertUnixTimestampToDate(
-                          data?.listing_details?.start_date_epoch,
-                          selectSavedUserDetailsData?.availability?.timezone?.name,
-                        )}
+                        {isFlexternshipApp
+                          ? formatEpochToHumanReadable(
+                              data?.listing_details?.start_date_epoch,
+                              false,
+                              false,
+                              getUserTimezone(),
+                            )
+                          : convertUnixTimestampToDate(
+                              data?.listing_details?.start_date_epoch,
+                              selectSavedUserDetailsData?.availability?.timezone?.name,
+                            )}
                         to{' '}
-                        {convertUnixTimestampToDate(
-                          data?.listing_details?.end_date_epoch,
-                          selectSavedUserDetailsData?.availability?.timezone?.name,
-                        )}
+                        {isFlexternshipApp
+                          ? formatEpochToHumanReadable(
+                              data?.listing_details?.end_date_epoch,
+                              false,
+                              false,
+                              getUserTimezone(),
+                            )
+                          : convertUnixTimestampToDate(
+                              data?.listing_details?.end_date_epoch,
+                              selectSavedUserDetailsData?.availability?.timezone?.name,
+                            )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>

@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+
 /**
  * Utility to convert a Date object to epoch time (milliseconds since 1970-01-01)
  * @param date - The Date object to be converted.
@@ -7,7 +9,7 @@ export function dateToEpoch(date: Date): number {
   if (!(date instanceof Date)) {
     throw new TypeError('Expected a Date object');
   }
-  return date.getTime();
+  return DateTime.fromJSDate(date).toMillis();
 }
 
 /**
@@ -19,7 +21,7 @@ export function epochToDate(epoch: number): Date {
   if (typeof epoch !== 'number') {
     throw new TypeError('Expected a number');
   }
-  return new Date(epoch);
+  return DateTime.fromMillis(epoch).toJSDate();
 }
 
 /**
@@ -32,9 +34,9 @@ export function epochDifferenceInDays(epoch1: number, epoch2: number): number {
   if (typeof epoch1 !== 'number' || typeof epoch2 !== 'number') {
     throw new TypeError('Expected numbers');
   }
-  const millisecondsInDay = 1000 * 60 * 60 * 24;
-  const diffInMs = Math.abs(epoch1 - epoch2);
-  return Math.floor(diffInMs / millisecondsInDay);
+  const dt1 = DateTime.fromMillis(epoch1);
+  const dt2 = DateTime.fromMillis(epoch2);
+  return Math.floor(Math.abs(dt2.diff(dt1, 'days').days));
 }
 
 /**
@@ -44,44 +46,42 @@ export function epochDifferenceInDays(epoch1: number, epoch2: number): number {
  * @returns The new epoch time (in milliseconds) after adding the specified days.
  */
 export function addDaysToEpoch(epoch: number, days: number): number {
-  const millisecondsInDay = 1000 * 60 * 60 * 24;
-  return epoch + days * millisecondsInDay;
+  return DateTime.fromMillis(epoch).plus({ days }).toMillis();
 }
-
 /**
  * Converts epoch time to a human-readable date format.
  * @param epoch - The epoch time in milliseconds since 1970-01-01.
  * @param truncateYear - Optional. If true, displays year in 2-digit format. Default is false.
+ * @param includeTime - Optional. If true, includes time in the output. Default is false.
+ * @param timezone - Optional. IANA timezone string. If not provided, uses local timezone.
  * @returns A formatted date string (e.g., "Sep 30, 2024" or "Sep 30, 24" if truncateYear is true).
  * @throws {TypeError} If epoch is not a number.
  */
-export function formatEpochToHumanReadable(epoch: number, truncateYear = false, includeTime = false): string {
+export function formatEpochToHumanReadable(
+  epoch: number,
+  truncateYear = false,
+  includeTime = false,
+  timezone?: string,
+): string {
   if (typeof epoch !== 'number') {
     throw new TypeError('Expected a number for epoch');
   }
 
-  const date = new Date(epoch);
-  const options: Intl.DateTimeFormatOptions = {
-    year: truncateYear ? '2-digit' : 'numeric',
-    month: 'short',
-    day: 'numeric',
-  };
+  const dt = timezone ? DateTime.fromMillis(epoch).setZone(timezone) : DateTime.fromMillis(epoch);
 
-  if (includeTime) {
-    options.hour = '2-digit';
-    options.minute = '2-digit';
-  }
+  const format = includeTime
+    ? `MMM d, ${truncateYear ? 'yy' : 'yyyy'}, hh:mm a`
+    : `MMM d, ${truncateYear ? 'yy' : 'yyyy'}`;
 
-  return date.toLocaleDateString('en-US', options);
+  return dt.toFormat(format);
 }
 
 /**
  * Utility to get today's date as a Date object.
  * @returns A Date object representing today's date at 00:00:00 hours.
  */
-export function getTodayDate(): Date {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+export function getTodayDate(timezone: string = 'Asia/Kolkata'): Date {
+  return DateTime.now().setZone(timezone).startOf('day').toJSDate();
 }
 
 /**
@@ -97,16 +97,11 @@ export function getDaysLeft(currentEpoch: number, referenceEpoch: number): numbe
     throw new TypeError('Expected numbers for timestamps');
   }
 
-  const millisecondsInDay = 1000 * 60 * 60 * 24;
-  const diffInMs = referenceEpoch - currentEpoch;
-  const diffInDays = diffInMs / millisecondsInDay;
+  const current = DateTime.fromMillis(currentEpoch);
+  const reference = DateTime.fromMillis(referenceEpoch);
+  const diffInDays = reference.diff(current, 'days').days;
 
-  // For positive differences (future dates)
-  if (diffInDays > 0) {
-    return Math.ceil(diffInDays);
-  }
-  // For negative differences (past dates)
-  return Math.floor(diffInDays);
+  return diffInDays > 0 ? Math.ceil(diffInDays) : Math.floor(diffInDays);
 }
 
 /**
@@ -121,19 +116,18 @@ export function formatEpochToDuration(epoch: number): string {
     throw new TypeError('Expected a number for epoch');
   }
 
-  const days = Math.floor(epoch / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((epoch % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((epoch % (1000 * 60 * 60)) / (1000 * 60));
+  const duration = DateTime.fromMillis(epoch).diff(DateTime.fromMillis(0), ['days', 'hours', 'minutes']);
+  const { days, hours, minutes } = duration.toObject();
 
   const parts = [];
-  if (days > 0) {
-    parts.push(`${days} d`);
+  if (days && days > 0) {
+    parts.push(`${Math.floor(days)} d`);
   }
-  if (hours > 0) {
-    parts.push(`${hours} hr`);
+  if (hours && hours > 0) {
+    parts.push(`${Math.floor(hours)} hr`);
   }
-  if (minutes > 0) {
-    parts.push(`${minutes} min`);
+  if (minutes && minutes > 0) {
+    parts.push(`${Math.floor(minutes)} min`);
   }
 
   return parts.join(' ');
@@ -151,18 +145,31 @@ export function getTimeLeftIfWithin24Hours(
     throw new TypeError('Expected a number for epoch');
   }
 
-  const now = Date.now();
-  const diffMs = epoch - now;
-  const hours24 = 24 * 60 * 60 * 1000;
+  const now = DateTime.now();
+  const target = DateTime.fromMillis(epoch);
+  const diff = target.diff(now, ['hours', 'minutes', 'seconds']);
 
-  // Return undefined if time difference is negative or more than 24 hours
-  if (diffMs <= 0 || diffMs > hours24) {
+  if (diff.hours < 0 || diff.hours >= 24) {
     return undefined;
   }
 
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+  return {
+    hours: Math.floor(diff.hours),
+    minutes: Math.floor(diff.minutes),
+    seconds: Math.floor(diff.seconds),
+  };
+}
 
-  return { hours, minutes, seconds };
+/**
+ * Converts a Date object to a different timezone
+ * @param date - The Date object to convert
+ * @param timezone - The IANA timezone string to convert to (e.g. 'America/New_York')
+ * @returns A new Date object in the specified timezone
+ * @throws {TypeError} If date is not a Date object or timezone is invalid
+ */
+export function convertDateToTimezone(date: Date, timezone: string): Date {
+  if (!(date instanceof Date)) {
+    throw new TypeError('Expected a Date object');
+  }
+  return DateTime.fromJSDate(date).setZone(timezone).toJSDate();
 }

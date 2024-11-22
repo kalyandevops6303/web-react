@@ -14,7 +14,7 @@ import { formatFileSize } from '@flexternships/utils/file-utils';
 import MilestoneItem from './MilestoneItem';
 import ProjectDetailsItem from './ProjectDetailsItem';
 import RoleItem from './RoleItem';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
@@ -112,7 +112,12 @@ export default function Preview() {
           <ProjectDetailsItem
             className="w-[204px]"
             title="Estimated Start Date"
-            value={formatEpochToHumanReadable(formData.requirements.estimatedStartDate)}
+            value={formatEpochToHumanReadable(
+              formData.requirements.estimatedStartDate,
+              false,
+              false,
+              getUserTimezone(),
+            )}
           />
           <ProjectDetailsItem
             className="w-[230px]"

@@ -71,6 +71,9 @@ export type FlexternClientDetails = {
 export type FlexternTalentDetails = {
   id: string;
   userType: UserType;
+  firstName: string;
+  lastName: string;
+  timezone: Timezone;
   email: string;
   phone: string;
   countryCode: string;
