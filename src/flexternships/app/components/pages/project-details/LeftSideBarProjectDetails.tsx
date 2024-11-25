@@ -172,15 +172,16 @@ const LeftSideBarProjectDetails = () => {
               {data?.details?.expectedDuration?.duration} Weeks
             </span>
           </div>
-          <div onClick={() =>{ 
-            if(data?.details?.documents?.length > 0){
-              setDocumentsModal(true);
-            }else{
-              toast.error('No documents available for this project');
-            }
-           
-
-          }} className="flex flex-row items-center gap-1">
+          <div
+            onClick={() => {
+              if (data?.details?.documents?.length > 0) {
+                setDocumentsModal(true);
+              } else {
+                toast.error('No documents available for this project');
+              }
+            }}
+            className="flex flex-row items-center gap-1"
+          >
             <Paperclip size={14} />
             <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
               {data?.details?.documents?.length}
