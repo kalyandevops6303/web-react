@@ -45,6 +45,9 @@ import { checkIfReported } from '../../redux/actions/reportActions';
 import { checkReportSuccess } from '../../redux/reducers/report';
 import PermissionWrapper from '@/PermissionWrapper';
 import { isEmpty } from 'lodash';
+import { isFlexternshipApp } from '@/configs/api/env';
+import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -177,8 +180,12 @@ const ProjectModal = ({
 
   const isMyProjectMyTeam =
     location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
-  // http://localhost:3000/project-details/66e33094b6ee531398719031/project/project-invitation/66e3323ced5d53114e4c783c
+
   const handleViewProject = () => {
+    if (isFlexternshipApp) {
+      return navigate(`/project-details/${data?._id}/team`);
+    }
+
     if (location.pathname.split('/').includes('projects')) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         // const url = new URL(`${window.location.protocol}//${window.location.host}${location.pathname}`);
@@ -311,15 +318,29 @@ const ProjectModal = ({
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {convertUnixTimestampToDate(
-                          data?.listing_details?.start_date_epoch,
-                          selectSavedUserDetailsData?.availability?.timezone?.name,
-                        )}{' '}
+                        {isFlexternshipApp
+                          ? formatEpochToHumanReadable(
+                              data?.listing_details?.start_date_epoch,
+                              false,
+                              false,
+                              getUserTimezone(),
+                            )
+                          : convertUnixTimestampToDate(
+                              data?.listing_details?.start_date_epoch,
+                              selectSavedUserDetailsData?.availability?.timezone?.name,
+                            )}{' '}
                         to{' '}
-                        {convertUnixTimestampToDate(
-                          data?.listing_details?.end_date_epoch,
-                          selectSavedUserDetailsData?.availability?.timezone?.name,
-                        )}
+                        {isFlexternshipApp
+                          ? formatEpochToHumanReadable(
+                              data?.listing_details?.end_date_epoch,
+                              false,
+                              false,
+                              getUserTimezone(),
+                            )
+                          : convertUnixTimestampToDate(
+                              data?.listing_details?.end_date_epoch,
+                              selectSavedUserDetailsData?.availability?.timezone?.name,
+                            )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>

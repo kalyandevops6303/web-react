@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import StartDateSVG from '../../../../assets/svgs/project-details/start-date.svg';
 import EndDateSVG from '../../../../assets/svgs/project-details/end-date.svg';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { calculateDays, convertUnixTimestampToDate } from '@/utility/Utils';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
@@ -27,6 +26,9 @@ import { isEmpty } from 'lodash';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
+import { epochDifferenceInDays, formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
+import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -153,7 +155,7 @@ const LeftSideBarProjectDetails = () => {
   };
 
   const ProjectPanelDate1Values: any = {
-    OPEN: data?.createdAt,
+    OPEN: data?.listingDetails?.startDateEpoch,
     IN_REVIEW: data?.createdAt,
     ACTIVE: data?.createdAt,
     ONGOING: data?.listingDetails?.startDateEpoch,
@@ -166,7 +168,7 @@ const LeftSideBarProjectDetails = () => {
   };
 
   const ProjectPanelDate2Values: any = {
-    OPEN: data?.listingDetails?.startDateEpoch,
+    OPEN: data?.details?.expectedStartDate,
     IN_REVIEW: data?.listingDetails?.startDateEpoch,
     ACTIVE: data?.listingDetails?.startDateEpoch,
     ONGOING: data?.listingDetails?.endDateEpoch,
@@ -181,9 +183,18 @@ const LeftSideBarProjectDetails = () => {
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
-  const daysLeft = calculateDays(data?.listingDetails?.startDateEpoch, data?.listingDetails?.endDateEpoch)?.daysLeft;
+
+  const handleMessageClick = () => {
+    window.open(CHAT_ENTRY_POINT, '_blank');
+  };
+
+  const daysLeft =
+    Date.now() < data?.details?.expectedStartDate
+      ? epochDifferenceInDays(Date.now(), data?.details?.expectedStartDate)
+      : 0;
 
   const [documentsModal, setDocumentsModal] = useState(false);
+
   useEffect(() => {
     if (data) {
       const tags = [...(data?.skillsData || []), ...(data?.toolsData || [])];
@@ -254,7 +265,8 @@ const LeftSideBarProjectDetails = () => {
           {ProjectPanelDate1Icon[data?.status]}
           <div className="flex flex-col items-start">
             <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-medium text-[14px] leading-[23px] font-montserrat">
-              {convertUnixTimestampToDate(ProjectPanelDate1Values[data?.status])}
+              {ProjectPanelDate1Values[data?.status] &&
+                formatEpochToHumanReadable(ProjectPanelDate1Values[data?.status], false, false, getUserTimezone())}
             </h1>
             <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[12px] leading-[18px] font-montserrat no-ligatures">
               {ProjectPanelCaptionDate1[data?.status]}
@@ -274,7 +286,8 @@ const LeftSideBarProjectDetails = () => {
                 ProjectPanelDate2Classnames[data?.status]
               } font-medium text-[14px] leading-[23px] font-montserrat`}
             >
-              {convertUnixTimestampToDate(ProjectPanelDate2Values[data?.status])}
+              {ProjectPanelDate2Values[data?.status] &&
+                formatEpochToHumanReadable(ProjectPanelDate2Values[data?.status], false, false, getUserTimezone())}
             </h1>
             <h1
               className={`${
@@ -369,7 +382,7 @@ const LeftSideBarProjectDetails = () => {
               primaryProjectStatus !== PrimaryProjectStatus.TERMINATED &&
               primaryProjectStatus !== PrimaryProjectStatus.COMPLETED)) && (
             <PrimaryButton
-              onClick={() => {}}
+              onClick={handleMessageClick}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
             >
               <span>Message</span>

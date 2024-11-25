@@ -10,6 +10,7 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
 import { allowFeedbackCardsIfMilestoneStatus } from '@/flexternships/static/milestones-content';
 import { isEmpty } from 'lodash';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 interface MilestoneTileProps {
   data: MilestoneDetails;
@@ -57,7 +58,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
           <div className="flex flex-col">
             <div className="text-sm text-grey not-italic font-normal leading-5.5">Start Date</div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">
-              {formatEpochToHumanReadable(startDate, true)}
+              {formatEpochToHumanReadable(startDate, true, false, getUserTimezone())}
             </div>
           </div>
           <div className="flex flex-col min-w-20">
@@ -65,7 +66,9 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
               {status === MilestoneStatus.COMPLETED && acceptedAt ? 'Completed' : '-'}
             </div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">
-              {status === MilestoneStatus.COMPLETED && acceptedAt ? formatEpochToHumanReadable(acceptedAt, true) : '-'}
+              {status === MilestoneStatus.COMPLETED && acceptedAt
+                ? formatEpochToHumanReadable(acceptedAt, true, false, getUserTimezone())
+                : '-'}
             </div>
           </div>
         </div>

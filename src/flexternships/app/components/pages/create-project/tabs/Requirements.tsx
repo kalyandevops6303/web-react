@@ -14,7 +14,7 @@ import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { allowedFormats, ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
 import { getTodayDate } from '@flexternships/utils/date-utils';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
 import { useParams } from 'react-router-dom';
@@ -143,7 +143,8 @@ export default function Requirements() {
                 label="Estimated Start Date"
                 placeholder="Enter start date"
                 error={errors.estimatedStartDate?.message}
-                fromDate={getTodayDate()}
+                fromDate={getTodayDate(getUserTimezone())}
+                timeZone={getUserTimezone()}
                 required
               />
             )}
@@ -221,6 +222,7 @@ export default function Requirements() {
             name={'documents'}
             control={control}
             error={errors.documents}
+            tooltip={['Allowed file types: pdf, doc, docx, txt, jpeg', 'Max files: 5', 'Max size: 5MB']}
             trigger={trigger}
             watch={watch}
             label="Upload requirement documents (optional)"

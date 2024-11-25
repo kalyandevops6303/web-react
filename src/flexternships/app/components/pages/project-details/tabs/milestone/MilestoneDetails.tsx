@@ -11,7 +11,7 @@ import {
 import { MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
-import { getMilestoneStatusTextByUserType, showToastMessage } from '@/flexternships/utils/core-utils';
+import { getMilestoneStatusTextByUserType, getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
@@ -152,7 +152,7 @@ export default function MilestoneDetails() {
           <div className="flex flex-col gap-y-1.5">
             <div className="text-sm font-normal not-italic leading-5.5 text-grey">Start</div>
             <div className="text-lg font-semibold not-italic text-grey-heading">
-              {formatEpochToHumanReadable(milestoneDetails?.startDate ?? 0, true)}
+              {formatEpochToHumanReadable(milestoneDetails?.startDate ?? 0, true, false, getUserTimezone())}
             </div>
           </div>
           <div className="flex flex-col gap-y-1.5">

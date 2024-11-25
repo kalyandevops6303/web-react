@@ -3,7 +3,6 @@ import { MilestoneStatus, ToastType, UserType } from '@flexternships/enums/core-
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
-// Import other Zustand stores as needed
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
@@ -28,6 +27,10 @@ export const showToastMessage = (type: ToastType, message: string) => {
       toast(message, { ...options, icon: 'ℹ️' });
       break;
   }
+};
+
+export const getUserTimezone = () => {
+  return useFlexternUserStore.getState().userDetails?.timezone?.name || 'Asia/Kolkata';
 };
 
 /**

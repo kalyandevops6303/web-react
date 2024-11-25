@@ -1,6 +1,7 @@
 import * as yup from 'yup';
-import { dateToEpoch } from '@flexternships/utils/date-utils';
+import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import { MAX_FILE_SIZE_ERROR, MAX_FILE_SIZE_LIMIT } from '../lib/constants';
+import { getUserTimezone } from '../utils/core-utils';
 
 export const allowedFormats = [
   'application/pdf',
@@ -17,7 +18,7 @@ export const ProjectDetailsSchema = yup.object().shape({
   estimatedStartDate: yup
     .number()
     .required('Estimated start date is required')
-    .min(dateToEpoch(new Date(new Date().setHours(0, 0, 0, 0))), 'Estimated start date cannot be in the past'), // Allow today
+    .min(dateToEpoch(getTodayDate(getUserTimezone())), 'Estimated start date cannot be in the past'), // Allow today
   estimatedDuration: yup
     .number()
     .max(53, 'Estimated duration cannot exceed 53 weeks')

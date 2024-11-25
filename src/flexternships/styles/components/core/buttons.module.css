@@ -1,5 +1,5 @@
 .baseButton {
-  @apply px-5 py-2.5 my-2.5 flex items-center justify-center min-w-16 rounded-lg text-sm not-italic font-semibold leading-4.5;
+  @apply px-5 py-2.5 my-2.5 flex items-center justify-center min-w-16 rounded-md text-sm not-italic font-semibold leading-4.5;
 }
 
 .primaryEnabledButton {
@@ -13,6 +13,7 @@
 .secondaryEnabledButtonBlue {
   @apply border-1 border-solid border-trublue-secondary-500 text-trublue-secondary-500 cursor-pointer;
   @apply transition-transform duration-100 ease-in-out transform active:scale-95;
+  @apply transition-colors duration-200 hover:bg-trublue-secondary-500 hover:bg-opacity-10;
 }
 .secondaryEnabledButtonRed {
   @apply border-1 border-solid border-error text-error cursor-pointer;
@@ -24,7 +25,7 @@
 }
 
 .primaryIconText {
-  @apply flex flex-row items-center;
+  @apply flex flex-row items-center transition-colors duration-200 pl-1 pr-2 py-0.5 rounded-md;
 }
 
 .primaryIconText .iconContainer {

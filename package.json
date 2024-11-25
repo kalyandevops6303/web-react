@@ -52,7 +52,7 @@
     "i18next-http-backend": "2.0.1",
     "libphonenumber-js": "1.10.30",
     "lucide-react": "^0.447.0",
-    "luxon": "3.3.0",
+    "luxon": "3.5.0",
     "nouislider": "15.5.0",
     "nouislider-react": "3.4.1",
     "postcss": "^8.4.47",
