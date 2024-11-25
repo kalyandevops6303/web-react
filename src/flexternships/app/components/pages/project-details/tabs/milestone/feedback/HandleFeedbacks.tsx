@@ -4,7 +4,6 @@ import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-en
 import TeamFeedback from './TeamFeedback';
 import PeerFeedback from './PeerFeedback';
 import IndividualFeedback from './IndividualFeedback';
-// import FunFacts from './FunFacts';
 
 export default function HandleFeedbacks() {
   const componentsByFeedbackType = {
