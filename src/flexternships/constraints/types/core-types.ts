@@ -48,6 +48,10 @@ export type Timezone = {
 export type FlexternClientDetails = {
   id: string;
   userType: UserType;
+  firstName: string;
+  lastName: string;
+  timezone: Timezone;
+  departmentName: string;
   email: string;
   phoneVerified: boolean;
   appRoles: Array<FlexternUserAppRole>;
@@ -67,6 +71,9 @@ export type FlexternClientDetails = {
 export type FlexternTalentDetails = {
   id: string;
   userType: UserType;
+  firstName: string;
+  lastName: string;
+  timezone: Timezone;
   email: string;
   phone: string;
   countryCode: string;

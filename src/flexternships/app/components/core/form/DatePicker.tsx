@@ -6,18 +6,35 @@ import { ChevronDown } from 'react-feather';
 import { Calendar } from '@flexternships/app/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@flexternships/app/components/ui/popover';
 import Styles from '@flexternships/styles/components/core/form-fields.module.css';
-import { dateToEpoch, epochToDate } from '@flexternships/utils/date-utils';
+import { dateToEpoch, epochToDate, getTodayDate } from '@flexternships/utils/date-utils';
+import { DateTime } from 'luxon';
+
+// reference for value and on change implementation: https://github.com/gpbl/react-day-picker/discussions/1149
 
 export function DatePicker(props: InputProps) {
-  const { label, value, onChange, required, placeholder, className, error, fromDate } = props;
+  const {
+    label,
+    value,
+    onChange,
+    required,
+    placeholder,
+    className,
+    error,
+    fromDate,
+    timeZone = 'Asia/Kolkata',
+  } = props;
 
   const calendarRef = React.useRef<HTMLButtonElement>(null);
 
   const handleDateSelection = (date: Date | undefined) => {
-    if (date === undefined) {
-      date = new Date();
+    let timezoneAdjustedDate = getTodayDate(timeZone);
+    if (date) {
+      timezoneAdjustedDate = DateTime.fromJSDate(date)
+        .setZone(timeZone, { keepLocalTime: true })
+        .startOf('day')
+        .toJSDate();
     }
-    onChange(dateToEpoch(date));
+    onChange(dateToEpoch(timezoneAdjustedDate));
     calendarRef.current?.click();
   };
 
@@ -31,7 +48,17 @@ export function DatePicker(props: InputProps) {
           </div>
           <div className={`${Styles.formDateInput} ${error ? Styles.formInputError : Styles.formInputDefault}`}>
             {value ? (
-              <span className={Styles.formDateFilled}>{value ? format(epochToDate(value), 'PPP') : placeholder}</span>
+              <span className={Styles.formDateFilled}>
+                {value
+                  ? format(
+                      DateTime.fromJSDate(epochToDate(value))
+                        .setZone(timeZone)
+                        .setZone('local', { keepLocalTime: true })
+                        .toJSDate(),
+                      'PPP',
+                    )
+                  : placeholder}
+              </span>
             ) : (
               <span className={Styles.formDatePlaceholder}>{placeholder}</span>
             )}
@@ -43,9 +70,20 @@ export function DatePicker(props: InputProps) {
       <PopoverContent className="w-auto p-0 bg-white">
         <Calendar
           mode="single"
-          selected={value ? epochToDate(value) : undefined}
+          selected={
+            value
+              ? DateTime.fromJSDate(epochToDate(value))
+                  .setZone(timeZone)
+                  .setZone('local', { keepLocalTime: true })
+                  .toJSDate()
+              : undefined
+          }
           onSelect={handleDateSelection}
-          fromDate={fromDate}
+          fromDate={
+            fromDate
+              ? DateTime.fromJSDate(fromDate).setZone(timeZone).setZone('local', { keepLocalTime: true }).toJSDate()
+              : undefined
+          }
         />
       </PopoverContent>
     </Popover>
@@ -61,4 +99,5 @@ type InputProps = {
   className?: string;
   error?: string;
   fromDate?: Date;
+  timeZone?: string;
 };

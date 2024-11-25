@@ -11,7 +11,7 @@ import {
 import { MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
-import { getMilestoneStatusTextByUserType, showToastMessage } from '@/flexternships/utils/core-utils';
+import { getMilestoneStatusTextByUserType, getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
@@ -120,6 +120,17 @@ export default function MilestoneDetails() {
   const referenceDateForFeedback =
     userDetails.userType === UserType.CLIENT ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
 
+  const isNextUpcomingMilestone =
+    typeof milestoneDetails.lastWorkingMilestoneSeq === 'number'
+      ? milestoneDetails.seq - milestoneDetails.lastWorkingMilestoneSeq === 1
+      : undefined;
+
+  // Artifacts are enabled if the milestone is next upcoming irrespective of the milestone status
+  // Artifacts are disabled based on the milestone status and if the milestone is not next upcoming or if no info on next upcoming milestone
+  const areArtifactsDisabledForTalent =
+    disableArtifactsIfMilestoneStatus.includes(milestoneDetails.status) &&
+    (isNextUpcomingMilestone === undefined || !isNextUpcomingMilestone);
+
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
       <div className="flex flex-row justify-between">
@@ -152,7 +163,7 @@ export default function MilestoneDetails() {
           <div className="flex flex-col gap-y-1.5">
             <div className="text-sm font-normal not-italic leading-5.5 text-grey">Start</div>
             <div className="text-lg font-semibold not-italic text-grey-heading">
-              {formatEpochToHumanReadable(milestoneDetails?.startDate ?? 0, true)}
+              {formatEpochToHumanReadable(milestoneDetails?.startDate ?? 0, true, false, getUserTimezone())}
             </div>
           </div>
           <div className="flex flex-col gap-y-1.5">
@@ -199,13 +210,9 @@ export default function MilestoneDetails() {
             </ul>
           </div>
         </SimpleElevatedCard>
-        {userDetails.userType === UserType.TALENT && (
-          <DraftArtifacts isDisabled={disableArtifactsIfMilestoneStatus.includes(milestoneDetails.status)} />
-        )}
+        {userDetails.userType === UserType.TALENT && <DraftArtifacts isDisabled={areArtifactsDisabledForTalent} />}
       </SimpleElevatedCard>
-      {!(
-        userDetails.userType === UserType.TALENT && disableArtifactsIfMilestoneStatus.includes(milestoneDetails.status)
-      ) && (
+      {!(userDetails.userType === UserType.TALENT && areArtifactsDisabledForTalent) && (
         <SimpleElevatedCard className="overflow-hidden">
           <Accordion type="single" collapsible defaultValue="submission-history" className="w-full">
             <AccordionItem value="submission-history" className="border-none bg-white-fa py-6 px-8">

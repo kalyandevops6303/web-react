@@ -5,7 +5,7 @@ import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 
 export default function DocumentsModal(props: DocumentsModalProps) {
   const { isOpen, onClose, data } = props;
-  console.log(data);
+
   if (!isOpen) {
     return null;
   }

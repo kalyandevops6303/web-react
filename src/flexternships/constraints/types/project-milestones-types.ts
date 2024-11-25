@@ -85,6 +85,7 @@ export type MilestoneDetails = {
   maxFeedbackDueDays: number;
   isBlocked: boolean;
   isRead?: boolean;
+  lastWorkingMilestoneSeq?: number;
 };
 
 export type ProjectMilestonesState = {

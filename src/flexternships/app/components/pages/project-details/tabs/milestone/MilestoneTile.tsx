@@ -10,6 +10,7 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
 import { allowFeedbackCardsIfMilestoneStatus } from '@/flexternships/static/milestones-content';
 import { isEmpty } from 'lodash';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 interface MilestoneTileProps {
   data: MilestoneDetails;
@@ -18,7 +19,7 @@ interface MilestoneTileProps {
 const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
   const {
     id,
-    name,
+    seq,
     status,
     startDate,
     acceptedAt,
@@ -48,7 +49,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
         onClick={clickHandler}
       >
         <div className="flex flex-row items-start text-base font-medium text-grey-heading leading-6 grow">
-          {name}
+          Milestone #{seq}
           {!isRead && <span className="w-[7px] h-[7px] bg-error rounded-full" />}
         </div>
         <div className="flex flex-row gap-x-8 items-center">
@@ -57,7 +58,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
           <div className="flex flex-col">
             <div className="text-sm text-grey not-italic font-normal leading-5.5">Start Date</div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">
-              {formatEpochToHumanReadable(startDate, true)}
+              {formatEpochToHumanReadable(startDate, true, false, getUserTimezone())}
             </div>
           </div>
           <div className="flex flex-col min-w-20">
@@ -65,7 +66,9 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
               {status === MilestoneStatus.COMPLETED && acceptedAt ? 'Completed' : '-'}
             </div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">
-              {status === MilestoneStatus.COMPLETED && acceptedAt ? formatEpochToHumanReadable(acceptedAt, true) : '-'}
+              {status === MilestoneStatus.COMPLETED && acceptedAt
+                ? formatEpochToHumanReadable(acceptedAt, true, false, getUserTimezone())
+                : '-'}
             </div>
           </div>
         </div>
