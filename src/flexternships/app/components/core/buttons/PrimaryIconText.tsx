@@ -5,8 +5,8 @@ export default function PrimaryIconText(props: Props) {
   const { text, onClick, icon, bgDark = false, className, disabled = false } = props;
   return (
     <button
-      className={`${Styles.primaryIconText} ${className ?? ''} ${disabled ? 'opacity-50' : 'cursor-pointer'} ${
-        bgDark ? '' : 'hover:bg-trublue-light'
+      className={`${Styles.primaryIconText} ${className ?? ''} ${
+        disabled ? 'opacity-50' : `cursor-pointer ${bgDark ? '' : 'hover:bg-trublue-light'}`
       }`}
       onClick={onClick}
       disabled={disabled}

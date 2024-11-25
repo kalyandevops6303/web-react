@@ -39,6 +39,7 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
     maxFeedbackDueDays: data.max_days ?? 5,
     isBlocked: data.is_blocked,
     isRead: data.is_read,
+    lastWorkingMilestoneSeq: data.last_in_progress,
   };
   const formattedArtifactDetails: {
     milestoneArtifactDetailsDraft: MilestoneDraftArtifact[];
