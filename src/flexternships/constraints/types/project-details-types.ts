@@ -61,6 +61,7 @@ export type ProjectDetails = {
   createdAt: number;
   updatedAt: number;
   isDeleted: boolean;
+  postedAt: number;
   details: {
     name: string;
     description: string;

@@ -286,6 +286,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
       createdAt: data?.created_at,
       updatedAt: data?.updated_at,
       isDeleted: data?.is_deleted,
+      postedAt: data?.posted_at,
       details: {
         name: data?.details?.name,
         description: data?.details?.description,
