@@ -236,7 +236,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
   return (
     <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
-      <h2 className="text-lg font-normal not-italic text-grey-heading">Submissions</h2>
+      <h2 className="text-lg font-normal not-italic text-grey-heading">Saved Drafts</h2>
 
       {!isEmpty(fields) && (
         <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
