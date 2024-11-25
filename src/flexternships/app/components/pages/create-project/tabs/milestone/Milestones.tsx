@@ -39,6 +39,7 @@ export default function Milestones() {
   } = useProjectCreationStore();
 
   const [milestoneDurationState, setMilestoneDurationState] = useState<MilestoneInfoType>(MilestoneInfoType.BALANCED);
+  const [newMilestoneIndex, setNewMilestoneIndex] = useState<number | null>(null);
   const sensors = useSensors(useSensor(PointerSensor));
 
   const {
@@ -146,6 +147,11 @@ export default function Milestones() {
     }
   };
 
+  const addNewMilestone = () => {
+    append({ title: '', duration: 1, description: '', deliverables: [' '] });
+    setNewMilestoneIndex(watch('milestones').length - 1);
+  };
+
   return (
     <>
       <div className={Styles.tabContent}>
@@ -205,6 +211,7 @@ export default function Milestones() {
                   removable={fields.length > 2}
                   remove={() => handleRemoveMilestone(index)}
                   errors={errors.milestones?.[index]}
+                  newMilestoneIndex={newMilestoneIndex}
                 />
               ))}
             </SortableContext>
@@ -213,7 +220,7 @@ export default function Milestones() {
             className="mt-2"
             text="Add Milestone"
             icon={<Plus className="text-trublue" size={18} />}
-            onClick={() => append({ title: '', duration: 1, description: '', deliverables: [' '] })}
+            onClick={addNewMilestone}
           />
         </div>
       </div>
