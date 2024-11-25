@@ -19,7 +19,7 @@ interface MilestoneTileProps {
 const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
   const {
     id,
-    name,
+    seq,
     status,
     startDate,
     acceptedAt,
@@ -49,7 +49,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
         onClick={clickHandler}
       >
         <div className="flex flex-row items-start text-base font-medium text-grey-heading leading-6 grow">
-          {name}
+          Milestone #{seq}
           {!isRead && <span className="w-[7px] h-[7px] bg-error rounded-full" />}
         </div>
         <div className="flex flex-row gap-x-8 items-center">
