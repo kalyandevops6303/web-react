@@ -12,8 +12,7 @@ export type TeamMemberDetails = {
   rating?: number;
   ratingText?: string;
   ratingColor?: string;
-  kudos?: number;
-  wow?: number;
+  appreciationScore?: number;
 };
 
 export type BadgeType = {
@@ -162,6 +161,7 @@ type SecondaryStatus = {
 export type ProjectDetailsState = {
   isProjectsLoading: boolean;
   projectDetails: ProjectDetails;
+  isTeamDetailsLoading: boolean;
   teamDetails: Array<TeamMemberDetails>;
   projectInvitationDetails: any;
   isProjectInvitationDetailsLoading: boolean;

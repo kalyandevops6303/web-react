@@ -1,21 +1,18 @@
 import Rating from '../../../../core/feedback/Rating';
 import KudosAndWow from '../../../../core/feedback/KudosAndWow';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 
 export default function TeamCard(props: InputProps) {
   const { rating, ratingText, ratingColor, name, profileImage, designation, kudos, wow } = props;
+
+  console.log(kudos, wow);
   return (
-    <div className="flex h-[4.5rem] py-[0.625rem] px-[1.25rem] items-center gap-7 self-stretch rounded-[0.375rem] bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.06)]">
-      <div className=" flex items-center">
-        <div
-          style={{
-            backgroundImage: `${profileImage ? `url(${profileImage})` : defaultAvatar}`,
-          }}
-          className="w-8 h-8 rounded-[1rem] bg-lightgray bg-center bg-cover bg-no-repeat mr-4"
-        ></div>
-        <span className=" text-grey text-sm font-semibold">{name}</span>
+    <div className="flex py-5 px-5 items-center gap-x-7 rounded-md bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
+      <div className="flex items-center gap-x-4">
+        <img src={profileImage || defaultAvatar} alt="profile-image" className="w-8 h-8 rounded-full object-cover" />
+        <span className="text-grey text-sm font-semibold w-[200px]">{name}</span>
       </div>
-      <span className=" text-grey text-sm font-medium"> {designation}</span>
+      <span className="text-grey text-sm font-medium w-[200px]"> {designation}</span>
       {rating && <Rating rating={rating} ratingText={ratingText || ''} ratingColor={ratingColor} />}
       {kudos && <KudosAndWow kudos={kudos} />}
       {wow && <KudosAndWow wow={wow} />}
