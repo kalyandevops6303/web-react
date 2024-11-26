@@ -27,17 +27,29 @@ import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTi
 import {
   allowFeedbackCardsIfMilestoneStatus,
   disableArtifactsIfMilestoneStatus,
+  getMilestoneDetailsModalConfirmCtaText,
+  getMilestoneDetailsModalDescription,
+  getMilestoneDetailsModalTitle,
 } from '@/flexternships/static/milestones-content';
 import { markMilestoneArtifactAsRead } from '@/flexternships/services/project-management-v2';
+import ConfirmActionModal from '@/flexternships/app/components/core/modals/milestone/ConfirmActionModal';
+import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import CelebrationModal from '@/flexternships/app/components/core/modals/milestone/CelebrationModal';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const submittedArtifacts = useMilestoneArtifactsStore((state) => state.submittedArtifacts);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
   const isMilestoneDetailsLoading = useProjectMilestonesStore((state) => state.isMilestoneDetailsLoading);
+  const activeModal = useProjectMilestonesStore((state) => state.activeModal);
   const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
   const markMilestoneAsCompleted = useProjectMilestonesStore((state) => state.markMilestoneAsCompleted);
   const acceptMilestone = useProjectMilestonesStore((state) => state.acceptMilestone);
+  const closeModal = useProjectMilestonesStore((state) => state.closeModal);
+  const openModal = useProjectMilestonesStore((state) => state.openModal);
+
+  const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
 
   const [primaryActionLoading, setPrimaryActionLoading] = useState(false);
 
@@ -73,6 +85,22 @@ export default function MilestoneDetails() {
     navigate(`/project-details/${milestoneDetails.projectDetails.projectId}/milestone`);
   };
 
+  const openConfirmActionModal = () => {
+    if (userDetails.userType === UserType.CLIENT) {
+      openModal(MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE);
+    } else {
+      openModal(MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE);
+    }
+  };
+
+  const openCelebrationModal = () => {
+    if (userDetails.userType === UserType.CLIENT) {
+      openModal(MilestoneDetailsModalType.MILESTONE_ACCEPTED);
+    } else {
+      openModal(MilestoneDetailsModalType.MILESTONE_SUBMITTED);
+    }
+  };
+
   const handleMilestonePrimaryAction = async () => {
     if (!milestoneId) return;
 
@@ -84,12 +112,7 @@ export default function MilestoneDetails() {
       } else {
         await markMilestoneAsCompleted(milestoneId);
       }
-      showToastMessage(
-        ToastType.SUCCESS,
-        `${
-          userDetails.userType === UserType.CLIENT ? 'Milestone accepted' : 'Milestone marked as completed'
-        } successfully`,
-      );
+      openCelebrationModal();
       await populateMilestoneDetails(milestoneId);
     } catch (error: unknown) {
       showToastMessage(
@@ -107,7 +130,7 @@ export default function MilestoneDetails() {
     }
   };
 
-  if (isMilestoneDetailsLoading) {
+  if (isMilestoneDetailsLoading && activeModal === undefined) {
     return (
       <div className="flex flex-col items-center justify-center min-h-48">
         <div className="h-8 w-8">
@@ -141,14 +164,13 @@ export default function MilestoneDetails() {
           bgDark
         />
         <PrimaryButton
-          onClick={handleMilestonePrimaryAction}
+          onClick={openConfirmActionModal}
           disabled={
             milestoneDetails.status === MilestoneStatus.COMPLETED ||
             milestoneDetails.status === MilestoneStatus.CREATED ||
             (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) ||
             (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT)
           }
-          loading={primaryActionLoading}
         >
           {userDetails.userType === UserType.CLIENT ? 'Accept' : 'Mark as Completed'}
         </PrimaryButton>
@@ -264,6 +286,34 @@ export default function MilestoneDetails() {
             }
           />
         ))}
+      {activeModal && (
+        <ConfirmActionModal
+          isOpen={[
+            MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE,
+            MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE,
+          ].includes(activeModal)}
+          onClose={closeModal}
+          onConfirm={handleMilestonePrimaryAction}
+          isConfirmLoading={primaryActionLoading}
+          title={getMilestoneDetailsModalTitle(activeModal)}
+          confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
+          milestoneName={milestoneDetails.name}
+          milestoneSeq={milestoneDetails.seq}
+        />
+      )}
+      {activeModal && (
+        <CelebrationModal
+          isOpen={[
+            MilestoneDetailsModalType.MILESTONE_ACCEPTED,
+            MilestoneDetailsModalType.MILESTONE_SUBMITTED,
+          ].includes(activeModal)}
+          onClose={closeModal}
+          title={getMilestoneDetailsModalTitle(activeModal)}
+          milestoneSeq={milestoneDetails.seq}
+          description={getMilestoneDetailsModalDescription(activeModal)}
+          projectName={projectName}
+        />
+      )}
     </div>
   );
 }

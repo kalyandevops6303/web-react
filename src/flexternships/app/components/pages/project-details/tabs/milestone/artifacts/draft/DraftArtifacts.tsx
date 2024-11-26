@@ -23,6 +23,16 @@ import { isEmpty } from 'lodash';
 import UploadArtifactDocument from './UploadArtifactDocument';
 import { getFileUploadUrl } from '@/flexternships/services/project-management-v2';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
+import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import ConfirmArtifactsSubmissionModal from '@/flexternships/app/components/core/modals/milestone/ConfirmArtifactsSubmissionModal';
+import SuccessfulArtifactsSubmissionModal from '@/flexternships/app/components/core/modals/milestone/SuccessfulArtifactsSubmissionModal';
+import {
+  draftSavedModalHighlightText,
+  draftSavedModalNote,
+  getMilestoneDetailsModalTitle,
+} from '@/flexternships/static/milestones-content';
+import { getMilestoneDetailsModalDescription } from '@/flexternships/static/milestones-content';
+import DraftSavedModal from '@/flexternships/app/components/core/modals/milestone/DraftSavedModal';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
@@ -31,6 +41,9 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   const saveDraftArtifacts = useMilestoneArtifactsStore((state) => state.saveDraftArtifacts);
   const submitDraftArtifacts = useMilestoneArtifactsStore((state) => state.submitDraftArtifacts);
   const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
+  const activeModal = useProjectMilestonesStore((state) => state.activeModal);
+  const closeModal = useProjectMilestonesStore((state) => state.closeModal);
+  const openModal = useProjectMilestonesStore((state) => state.openModal);
 
   const [saveDraftLoading, setSaveDraftLoading] = useState(false);
   const [submitDraftLoading, setSubmitDraftLoading] = useState(false);
@@ -60,6 +73,18 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     reset({ draftArtifacts: draftArtifacts });
   }, [draftArtifacts]);
 
+  const openRemoveArtifactModal = () => {
+    openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT);
+  };
+
+  const openArtifactRemovedModal = () => {
+    openModal(MilestoneDetailsModalType.ARTIFCAT_REMOVED);
+  };
+
+  const openConfirmArtifactsSubmissionModal = () => {
+    openModal(MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION);
+  };
+
   const addNewLink = () => {
     append({
       description: '',
@@ -79,6 +104,12 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     });
   };
 
+  const closeModalWithMilestoneDetailsRefresh = () => {
+    if (!milestoneId) return;
+    closeModal();
+    populateMilestoneDetails(milestoneId);
+  };
+
   const saveAsDraft = async () => {
     setSaveDraftLoading(true);
     const data = watch('draftArtifacts');
@@ -88,7 +119,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     if (milestoneId && projectId) {
       try {
         await saveDraftArtifacts(milestoneId);
-        showToastMessage(ToastType.SUCCESS, 'Draft saved successfully');
+        openModal(MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED);
         await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -109,8 +140,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     if (milestoneId && projectId) {
       try {
         await submitDraftArtifacts(milestoneId);
-        showToastMessage(ToastType.SUCCESS, 'Artifacts submitted successfully');
-        await populateMilestoneDetails(milestoneId);
+        openModal(MilestoneDetailsModalType.ARTIFCATS_SUBMITTED);
       } catch (error: unknown) {
         if (error instanceof Error) {
           showToastMessage(ToastType.ERROR, error.message);
@@ -265,6 +295,10 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
                 remove={remove}
                 errors={errors.draftArtifacts?.[index] as FieldError}
                 handleFileUpload={handleFileUpload}
+                activeModal={activeModal}
+                openRemoveArtifactModal={openRemoveArtifactModal}
+                openArtifactRemovedModal={openArtifactRemovedModal}
+                closeModal={closeModal}
               />
             ))}
           </div>
@@ -272,7 +306,13 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
       )}
       <div className="flex flex-col gap-y-7 text-trublue-secondary-500">
         <UploadArtifactDocument handleFileInputChange={handleFileInputChange} disabled={isDisabled} />
-        <PrimaryIconText icon={<Plus size={12} />} text="Add Link" onClick={addNewLink} disabled={isDisabled} />
+        <PrimaryIconText
+          className="self-start"
+          icon={<Plus size={12} />}
+          text="Add Link"
+          onClick={addNewLink}
+          disabled={isDisabled}
+        />
       </div>
       <div className={`flex flex-row justify-end gap-x-4 mt-3`}>
         <SecondaryButton
@@ -283,13 +323,45 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           Save as Draft
         </SecondaryButton>
         <PrimaryButton
-          onClick={handleSubmit(submitDraft)}
+          onClick={openConfirmArtifactsSubmissionModal}
           loading={submitDraftLoading}
           disabled={isDisabled || !isValid || (isEmpty(fields) && isEmpty(removedArtifactIds))}
         >
           Submit
         </PrimaryButton>
       </div>
+      {activeModal && (
+        <SuccessfulArtifactsSubmissionModal
+          isOpen={activeModal === MilestoneDetailsModalType.ARTIFCATS_SUBMITTED}
+          onClose={closeModalWithMilestoneDetailsRefresh}
+          title={getMilestoneDetailsModalTitle(MilestoneDetailsModalType.ARTIFCATS_SUBMITTED)}
+          description={getMilestoneDetailsModalDescription(MilestoneDetailsModalType.ARTIFCATS_SUBMITTED)}
+          artifacts={watch('draftArtifacts')}
+        />
+      )}
+
+      {activeModal && (
+        <ConfirmArtifactsSubmissionModal
+          isOpen={activeModal === MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION}
+          onClose={closeModal}
+          title={getMilestoneDetailsModalTitle(MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION)}
+          description={getMilestoneDetailsModalDescription(MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION)}
+          artifacts={watch('draftArtifacts')}
+          onConfirm={handleSubmit(submitDraft)}
+          isConfirmLoading={submitDraftLoading}
+        />
+      )}
+
+      {activeModal && (
+        <DraftSavedModal
+          isOpen={activeModal === MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED}
+          onClose={closeModal}
+          title={getMilestoneDetailsModalTitle(MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED)}
+          description={getMilestoneDetailsModalDescription(MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED)}
+          note={draftSavedModalNote}
+          highlightText={draftSavedModalHighlightText}
+        />
+      )}
     </div>
   );
 }
