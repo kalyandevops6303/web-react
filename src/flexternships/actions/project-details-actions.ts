@@ -8,6 +8,7 @@ import {
 import { getProjectDetailsById } from '../services/project-management-v2';
 
 export const populateTeamDetails = async (set: any, projectId: string): Promise<void> => {
+  set({ isTeamDetailsLoading: true });
   const teamDetails = await fetchTeamDetails(projectId);
 
   set((state: ProjectDetailsState) => ({
@@ -18,8 +19,10 @@ export const populateTeamDetails = async (set: any, projectId: string): Promise<
         name: member?.first_name + ' ' + member?.last_name || '',
         profileImage: member?.image_uri || '',
         designation: member?.role_name || '',
+        appreciationScore: member?.appreciation_score,
       }),
     ),
+    isTeamDetailsLoading: false,
   }));
 };
 

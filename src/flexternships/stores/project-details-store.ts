@@ -16,6 +16,7 @@ import {
 const defaultInitState: ProjectDetailsState = {
   isProjectsLoading: false,
   projectDetails: {} as ProjectDetails,
+  isTeamDetailsLoading: false,
   teamDetails: [] as Array<TeamMemberDetails>,
   projectInvitationDetails: null,
   isProjectInvitationDetailsLoading: false,

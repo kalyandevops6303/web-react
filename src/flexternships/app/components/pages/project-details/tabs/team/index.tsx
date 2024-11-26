@@ -2,18 +2,36 @@ import { useEffect } from 'react';
 import TeamCard from '@/flexternships/app/components/pages/project-details/tabs/team/TeamCard';
 import { useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import Spinner from '@/flexternships/app/components/core/Spinner';
 
 export default function TeamTab(props: InputProps) {
   const { className } = props;
   const { projectId } = useParams<{ projectId: string }>();
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
+  const isTeamDetailsLoading = useProjectsStore((state) => state.isTeamDetailsLoading);
   const teamDetails = useProjectsStore((state) => state.teamDetails);
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
   useEffect(() => {
     populateTeamDetails(projectId);
   }, [populateTeamDetails]);
+
+  if (isTeamDetailsLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-5xl my-2 rounded-md bg-grey-light shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
-      <div className=" w-full pt-6">
+    <div className="my-5 max-w-5xl rounded-md bg-grey-light shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
+      <div className="w-full pt-6">
         <p className="text-lg px-6 pb-3 font-medium text-grey-heading">Project Team</p>
         <svg xmlns="http://www.w3.org/2000/svg" width="1039" height="2" viewBox="0 0 1039 2" fill="none">
           <path d="M1 1L1038 0.999792" stroke="#EBE9F1" stroke-linecap="square" />
@@ -29,7 +47,8 @@ export default function TeamTab(props: InputProps) {
                 rating={teamMember?.rating}
                 ratingText={teamMember?.ratingText}
                 ratingColor={'#0185E4'}
-                kudos={teamMember?.kudos}
+                kudos={userDetails.userType === UserType.TALENT ? teamMember?.appreciationScore : undefined}
+                wow={userDetails.userType === UserType.CLIENT ? teamMember?.appreciationScore : undefined}
                 profileImage={teamMember?.profileImage}
               />
             </div>
