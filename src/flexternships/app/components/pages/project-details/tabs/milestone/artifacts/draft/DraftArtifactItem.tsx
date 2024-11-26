@@ -1,6 +1,6 @@
 import TextInput from '@flexternships/components/core/form/TextInput';
 import Spinner from '@flexternships/components/core/Spinner';
-import { MilestoneArtifactErrorType, ToastType } from '@flexternships/enums/core-enums';
+import { MilestoneArtifactErrorType, MilestoneArtifactType, ToastType } from '@flexternships/enums/core-enums';
 import { MilestoneDraftArtifact } from '@flexternships/types/project-milestones-types';
 import { getFileDownloadUrl } from '@flexternships/services/project-management-v2';
 import { showToastMessage } from '@flexternships/utils/core-utils';
@@ -9,18 +9,29 @@ import { getFileIcon } from '@flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link, Trash2 } from 'react-feather';
 import { Control, Controller, UseFieldArrayRemove } from 'react-hook-form';
-import { useMilestoneArtifactsStore } from '@flexternships/stores/project-milestones-store';
+import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@flexternships/stores/project-milestones-store';
 import { Progress } from '@/flexternships/app/components/ui/progress';
 import { isEmpty } from 'lodash';
+import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import {
+  getMilestoneDetailsModalCancelCtaText,
+  getMilestoneDetailsModalConfirmCtaText,
+  getMilestoneDetailsModalDescription,
+  getMilestoneDetailsModalTitle,
+} from '@/flexternships/static/milestones-content';
+import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 
 export default function DraftArtifactItem(props: Props) {
   const { last = false, data, index, control, errors, remove, handleFileUpload } = props;
   const appendToRemovedArtifactIds = useMilestoneArtifactsStore((state) => state.appendToRemovedArtifactIds);
+  const activeModal = useProjectMilestonesStore((state) => state.activeModal);
+  const openModal = useProjectMilestonesStore((state) => state.openModal);
+  const closeModal = useProjectMilestonesStore((state) => state.closeModal);
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
 
   const handleDownload = async () => {
-    if (data.type !== 'DOCUMENTS' || !data.metadata?.fileKey) {
+    if (data.type !== MilestoneArtifactType.DOCUMENTS || !data.metadata?.fileKey) {
       return;
     }
 
@@ -36,14 +47,14 @@ export default function DraftArtifactItem(props: Props) {
   };
 
   const handleLink = () => {
-    if (data.type !== 'LINKS' || !data.metadata?.url) {
+    if (data.type !== MilestoneArtifactType.LINKS || !data.metadata?.url) {
       return;
     }
     window.open(data.metadata?.url, '_blank');
   };
 
   const handleMainActionClick = () => {
-    if (data.type === 'DOCUMENTS' && data.metadata?.fileKey) {
+    if (data.type === MilestoneArtifactType.DOCUMENTS && data.metadata?.fileKey) {
       handleDownload();
     } else {
       handleLink();
@@ -54,6 +65,16 @@ export default function DraftArtifactItem(props: Props) {
     if (data.artifactId) {
       appendToRemovedArtifactIds(data.artifactId);
     }
+    // call api to remove artifacts
+    openModal(MilestoneDetailsModalType.ARTIFCAT_REMOVED);
+  };
+
+  const openRemoveArtifactModal = () => {
+    openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT);
+  };
+
+  const closeWithRemove = () => {
+    closeModal();
     remove(index);
   };
 
@@ -71,13 +92,13 @@ export default function DraftArtifactItem(props: Props) {
     >
       <div className="py-4 px-2.5 w-[231px] flex flex-row items-center gap-x-3">
         <span>
-          {data.type === 'DOCUMENTS' ? (
+          {data.type === MilestoneArtifactType.DOCUMENTS ? (
             <img className="h-6" src={getFileIcon(data.metadata?.fileName ?? '')} alt={data.metadata?.fileName ?? ''} />
           ) : (
             <Link className="text-grey" size={24} />
           )}
         </span>
-        {data.type === 'DOCUMENTS' ? (
+        {data.type === MilestoneArtifactType.DOCUMENTS ? (
           <span className="truncate w-[175px]">{data.metadata?.fileName ?? 'Unknown File'}</span>
         ) : (
           <Controller
@@ -96,11 +117,11 @@ export default function DraftArtifactItem(props: Props) {
         )}
       </div>
       <div className="py-4 px-2.5 w-[420px] break-all">
-        {data.type === 'DOCUMENTS' && data.metadata?.uploadInfo?.loading ? (
+        {data.type === MilestoneArtifactType.DOCUMENTS && data.metadata?.uploadInfo?.loading ? (
           <div className="w-[400px] text-grey-loadingText text-sm font-normal italic leading-5.5 text-end">
             Uploading document, this will only take a few seconds
           </div>
-        ) : data.type === 'DOCUMENTS' &&
+        ) : data.type === MilestoneArtifactType.DOCUMENTS &&
           (errors?.metadata?.size ||
             errors?.metadata?.uploadInfo?.file ||
             errors?.type === MilestoneArtifactErrorType.UPLOAD_FAILED) ? (
@@ -124,10 +145,11 @@ export default function DraftArtifactItem(props: Props) {
         )}
       </div>
       <div className="py-4 px-2.5 w-[194px]">
-        {data.type === 'DOCUMENTS' &&
+        {data.type === MilestoneArtifactType.DOCUMENTS &&
         (data.metadata?.uploadInfo?.loading || errors?.metadata?.size || errors?.metadata?.uploadInfo?.file) ? (
           <Progress value={data.metadata?.uploadInfo?.uploadProgress} className="h-3 bg-grey-50 mr-8 w-full" />
-        ) : data.type === 'DOCUMENTS' && errors?.type === MilestoneArtifactErrorType.UPLOAD_FAILED ? (
+        ) : data.type === MilestoneArtifactType.DOCUMENTS &&
+          errors?.type === MilestoneArtifactErrorType.UPLOAD_FAILED ? (
           <div
             className="text-trublue-secondary-500 text-sm font-semibold tracking-wide cursor-pointer"
             onClick={handleTryAgain}
@@ -141,8 +163,10 @@ export default function DraftArtifactItem(props: Props) {
       <div className="py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3">
         <span
           className={`flex items-center justify-center bg-trublue-light rounded-full p-2 text-trublue-secondary-500 ${
-            (data.type === 'DOCUMENTS' && (!isEmpty(errors) || data.metadata?.uploadInfo?.loading)) ||
-            (data.type === 'LINKS' && (!isEmpty(errors?.metadata?.url?.message) || isEmpty(data.metadata?.url)))
+            (data.type === MilestoneArtifactType.DOCUMENTS &&
+              (!isEmpty(errors) || data.metadata?.uploadInfo?.loading)) ||
+            (data.type === MilestoneArtifactType.LINKS &&
+              (!isEmpty(errors?.metadata?.url?.message) || isEmpty(data.metadata?.url)))
               ? 'opacity-40'
               : 'cursor-pointer'
           }`}
@@ -154,7 +178,7 @@ export default function DraftArtifactItem(props: Props) {
                 <Spinner />
               </div>
             </div>
-          ) : data.type === 'DOCUMENTS' ? (
+          ) : data.type === MilestoneArtifactType.DOCUMENTS ? (
             <Download size={24} />
           ) : (
             <ExternalLink size={24} />
@@ -162,11 +186,23 @@ export default function DraftArtifactItem(props: Props) {
         </span>
         <span
           className="flex items-center justify-center bg-opacity-[0.12] bg-error rounded-full p-2 text-error cursor-pointer"
-          onClick={handleDeleteClick}
+          onClick={openRemoveArtifactModal}
         >
           <Trash2 size={24} />
         </span>
       </div>
+      {activeModal && (
+        <RemoveArtifactModal
+          isOpen={true}
+          onClose={activeModal === MilestoneDetailsModalType.ARTIFCAT_REMOVED ? closeWithRemove : closeModal}
+          onConfirm={handleDeleteClick}
+          artifact={data}
+          title={getMilestoneDetailsModalTitle(activeModal)}
+          description={getMilestoneDetailsModalDescription(activeModal)}
+          cancelCtaText={getMilestoneDetailsModalCancelCtaText(activeModal)}
+          confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
+        />
+      )}
     </div>
   );
 }
@@ -195,4 +231,8 @@ type Props = {
   };
   remove: UseFieldArrayRemove;
   handleFileUpload: (index: number, file: File) => void;
+  activeModal: MilestoneDetailsModalType | undefined;
+  openRemoveArtifactModal: () => void;
+  openArtifactRemovedModal: () => void;
+  closeModal: () => void;
 };

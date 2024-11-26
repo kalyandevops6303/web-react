@@ -15,12 +15,16 @@ import {
   putDraftArtifacts,
   markMilestoneAsCompleted,
   acceptMilestone,
+  closeModal,
+  openModal,
 } from '../actions/project-milestones-actions';
 import { MilestoneArtifactStatus } from '../constraints/enums/core-enums';
+import { MilestoneDetailsModalType } from '../constraints/enums/miscellaneous-enums';
 
 const defaultProjectMilestonesInitState: ProjectMilestonesState = {
   isMilestonesLoading: true,
   isMilestoneDetailsLoading: true,
+  activeModal: undefined,
   projectMilestones: [],
   milestoneDetails: {} as MilestoneDetails,
 };
@@ -31,6 +35,8 @@ export const useProjectMilestonesStore = create<ProjectMilestonesStore>((set) =>
   populateMilestoneDetails: async (milestoneId: string) => populateMilestoneDetails(milestoneId, set),
   markMilestoneAsCompleted: async (milestoneId: string) => markMilestoneAsCompleted(milestoneId),
   acceptMilestone: async (milestoneId: string) => acceptMilestone(milestoneId),
+  closeModal: () => closeModal(set),
+  openModal: (modal: MilestoneDetailsModalType) => openModal(modal, set),
 }));
 
 const defaultMilestoneArtifactsInitState: MilestoneArtifactsState = {
