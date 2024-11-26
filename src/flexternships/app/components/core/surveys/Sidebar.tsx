@@ -11,7 +11,6 @@ const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => voi
             className={`${item?.isActive ? 'bg-sky-100 border border-sky-300' : 'border border-white'} 
             ${!item?.completed ? 'cursor-pointer' : ''}
             flex flex-row w-[400px] justify-between rounded-[6px] bg-white shadow-[0px_8px_12px_0px_rgba(0,0,0,0.04)] p-4 items-center gap-6 self-stretch`}
-          
             onClick={() => {
               !item?.completed && onChange(item?.userId);
             }}
