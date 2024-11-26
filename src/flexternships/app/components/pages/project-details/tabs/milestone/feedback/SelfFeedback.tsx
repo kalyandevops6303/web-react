@@ -8,6 +8,8 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
 import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
+import Spinner from '@/flexternships/app/components/core/Spinner';
+import FunFacts from './FunFacts';
 
 export default function SelfFeedback() {
   const params = useParams();
@@ -18,6 +20,7 @@ export default function SelfFeedback() {
 
   const getSelfFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const selfFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
+  const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
 
   const submitFeedback = useFeedbackStore((state) => state.submitFeedbackForm);
 
@@ -40,6 +43,16 @@ export default function SelfFeedback() {
     submitFeedback(submitFeedbackData);
   };
 
+  if (isFeedbackFormLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48 w-full">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* <div className="flex flex-row items-start"> */}
@@ -57,13 +70,19 @@ export default function SelfFeedback() {
           {selfFeedbackForm?.feedback?.title}
         </div>
       </div>
-      {selfFeedbackForm && (
-        <MilestoneFeedbackSurvey
-          surveyJson={mockSelfFeedbackSurveyJson}
-          userDetails={currentUserDetails}
-          onComplete={handleSurveyComplete}
-        />
-      )}
+
+      <div className="flex gap-3">
+        <div>
+          {selfFeedbackForm && (
+            <MilestoneFeedbackSurvey
+              surveyJson={mockSelfFeedbackSurveyJson}
+              userDetails={currentUserDetails}
+              onComplete={handleSurveyComplete}
+            />
+          )}
+        </div>
+        <FunFacts />
+      </div>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enu
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { ArrowLeft } from 'react-feather';
-import { mockTeamFeedbackSurveyJson } from '@/flexternships/mocks/survey-data-new-mock';
+import { mockTeamFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';

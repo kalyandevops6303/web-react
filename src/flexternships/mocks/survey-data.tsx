@@ -301,7 +301,7 @@ export const mockSelfFeedbackSurveyJson = {
       name: 'analyticalThinking',
       rateType: 'numberRating',
       title:
-        'You understood task objectives and context before execution, and applied acquired knowledge and skills for better project execution',
+        'You analysed task objectives and considered various solutions before executing on a specific course of action',
       tag: {
         text: 'Analytical Thinking',
       },
@@ -323,7 +323,7 @@ export const mockSelfFeedbackSurveyJson = {
       type: 'numberRating',
       name: 'innovativeThinking',
       rateType: 'numberRating',
-      title: 'You came up with new, innovative ideas and solutions to challenges presented within projects or tasks',
+      title: 'You came up with new, innovative ideas and solutions to challenges presented within project or tasks',
       tag: {
         text: 'Innovative Thinking',
       },
@@ -356,563 +356,1031 @@ export const mockSelfFeedbackSurveyJson = {
   completeText: 'Submit Feedback',
 };
 
+// export const mockPeerFeedbackSurveyJson = {
+//   title: 'Peer Feedback',
+//   pages: [
+//     {
+//       name: 'Collaboration & Teamwork',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q1_collaboration',
+//           title:
+//             'Collaboration & Teamwork: Worked as a true team player seeking inputs and collaboration from team members',
+//           rateType: 'stars',
+//           displayMode: 'buttons',
+//           rateValues: [1, 2, 3, 4, 5],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q1_comments',
+//           title: 'Please provide additional feedback (Optional)',
+//           placeholder: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Communication',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q2_communication',
+//           title: 'Communicated with team members in a clear, concise and structured manner',
+//           rateValues: [1, 2, 3, 4, 5],
+//           minRateDescription: 'Unhappy',
+//           maxRateDescription: 'Delighted',
+//           rateType: 'smileys',
+//           displayMode: 'buttons',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q2_comments',
+//           title: 'Please provide additional feedback (Optional)',
+//           placeholder: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Leadership',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q3_leadership',
+//           title:
+//             'Took initiative in leading team for tasks to be accomplished and recognized team members for their contributions',
+//           rateValues: [1, 2, 3, 4, 5],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           rateType: 'stars',
+//           displayMode: 'buttons',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q3_comments',
+//           title: 'Please provide additional feedback (Optional)',
+//           placeholder: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Ownership',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q4_ownership',
+//           title: 'Took ownership of delivering high-quality work output and results for project and tasks',
+//           rateValues: [
+//             {
+//               value: 1,
+//               text: '01',
+//             },
+//             {
+//               value: 2,
+//               text: '02',
+//             },
+//             {
+//               value: 3,
+//               text: '03',
+//             },
+//             {
+//               value: 4,
+//               text: '04',
+//             },
+//             {
+//               value: 5,
+//               text: '05',
+//             },
+//           ],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q4_comments',
+//           title: 'Please provide additional feedback (Optional)',
+//           placeholder: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Analytical Thinking',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q5_analytical_thinking',
+//           title:
+//             'Understood task objectives and context before execution, and applied acquired knowledge and skills for better project execution',
+//           rateValues: [
+//             {
+//               value: 1,
+//               text: '01',
+//             },
+//             {
+//               value: 2,
+//               text: '02',
+//             },
+//             {
+//               value: 3,
+//               text: '03',
+//             },
+//             {
+//               value: 4,
+//               text: '04',
+//             },
+//             {
+//               value: 5,
+//               text: '05',
+//             },
+//           ],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q5_comments',
+//           title: 'Please provide additional feedback (Optional)',
+//           placeholder: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Innovative Thinking',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q6_innovative_thinking',
+//           title: 'Came up with new, innovative ideas and solutions to challenges presented within project or tasks',
+//           rateValues: [1, 2, 3, 4, 5],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           rateType: 'stars',
+//           displayMode: 'buttons',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q6_comments',
+//           title: 'Please provide additional feedback (Optional)',
+//           placeholder: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Recognition',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'recognition',
+//           title: 'Give a Kudos to this talent',
+//           rateValues: [
+//             { value: 1, text: 'Kudos' },
+//             { value: 2, text: 'NA' },
+//           ],
+//           displayMode: 'buttons',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'recognition_comment',
+//           title: 'Your comment (Required)',
+//           placeholder: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//   ],
+//   showProgressBar: 'top',
+//   progressBarType: 'buttons',
+//   completeText: 'Submit Feedback',
+// };
+
 export const mockPeerFeedbackSurveyJson = {
-  title: 'Peer Feedback',
-  pages: [
+  elements: [
     {
-      name: 'Collaboration & Teamwork',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q1_collaboration',
-          title:
-            'Collaboration & Teamwork: Worked as a true team player seeking inputs and collaboration from team members',
-          rateType: 'stars',
-          displayMode: 'buttons',
-          rateValues: [1, 2, 3, 4, 5],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q1_comments',
-          title: 'Please provide additional feedback (Optional)',
-          placeholder: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q1_collaboration',
+      title: 'Worked as a true team player seeking inputs and collaboration from team members',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Collaboration & Teamwork',
+      },
     },
     {
-      name: 'Communication',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q2_communication',
-          title: 'Communicated with team members in a clear, concise and structured manner',
-          rateValues: [1, 2, 3, 4, 5],
-          minRateDescription: 'Unhappy',
-          maxRateDescription: 'Delighted',
-          rateType: 'smileys',
-          displayMode: 'buttons',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q2_comments',
-          title: 'Please provide additional feedback (Optional)',
-          placeholder: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q2_communication',
+      title: 'Communicated with team members in a clear, concise and structured manner',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Unhappy',
+      maxRateDescription: 'Delighted',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Communication',
+      },
     },
     {
-      name: 'Leadership',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q3_leadership',
-          title:
-            'Took initiative in leading team for tasks to be accomplished and recognized team members for their contributions',
-          rateValues: [1, 2, 3, 4, 5],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          rateType: 'stars',
-          displayMode: 'buttons',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q3_comments',
-          title: 'Please provide additional feedback (Optional)',
-          placeholder: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q3_leadership',
+      title:
+        'Took initiative in leading team for tasks to be accomplished and recognized team members for their contributions',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Leadership',
+      },
     },
     {
-      name: 'Ownership',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q4_ownership',
-          title: 'Took ownership of delivering high-quality work output and results for project and tasks',
-          rateValues: [
-            {
-              value: 1,
-              text: '01',
-            },
-            {
-              value: 2,
-              text: '02',
-            },
-            {
-              value: 3,
-              text: '03',
-            },
-            {
-              value: 4,
-              text: '04',
-            },
-            {
-              value: 5,
-              text: '05',
-            },
-          ],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q4_comments',
-          title: 'Please provide additional feedback (Optional)',
-          placeholder: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q4_ownership',
+      title: 'Took ownership of delivering high quality work output and results for project and tasks',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Ownership',
+      },
     },
     {
-      name: 'Analytical Thinking',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q5_analytical_thinking',
-          title:
-            'Understood task objectives and context before execution, and applied acquired knowledge and skills for better project execution',
-          rateValues: [
-            {
-              value: 1,
-              text: '01',
-            },
-            {
-              value: 2,
-              text: '02',
-            },
-            {
-              value: 3,
-              text: '03',
-            },
-            {
-              value: 4,
-              text: '04',
-            },
-            {
-              value: 5,
-              text: '05',
-            },
-          ],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q5_comments',
-          title: 'Please provide additional feedback (Optional)',
-          placeholder: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q5_analytical_thinking',
+      title:
+        'Analysed project and task objectives, and considered various solutions before executing a specific course of action',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Analytical Thinking',
+      },
     },
     {
-      name: 'Innovative Thinking',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q6_innovative_thinking',
-          title: 'Came up with new, innovative ideas and solutions to challenges presented within project or tasks',
-          rateValues: [1, 2, 3, 4, 5],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          rateType: 'stars',
-          displayMode: 'buttons',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q6_comments',
-          title: 'Please provide additional feedback (Optional)',
-          placeholder: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q6_innovative_thinking',
+      title: 'Came up with new, innovative ideas and solutions to challenges presented within project or tasks',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Innovative Thinking',
+      },
     },
     {
-      name: 'Recognition',
-      elements: [
+      type: 'kudosgroup',
+      name: 'q7_recognition',
+      title: 'Give a Kudos to this talent',
+      choices: [
         {
-          type: 'rating',
-          name: 'recognition',
-          title: 'Give a Kudos to this talent',
-          rateValues: [
-            { value: 1, text: 'Kudos' },
-            { value: 2, text: 'NA' },
-          ],
-          displayMode: 'buttons',
-          isRequired: false,
+          value: '1',
+          text: 'Kudos',
         },
         {
-          type: 'comment',
-          name: 'recognition_comment',
-          title: 'Your comment (Required)',
-          placeholder: 'Please type here',
-          isRequired: false,
+          value: '2',
+          text: 'NA',
         },
       ],
+      displayMode: 'buttons',
+      isRequired: false,
+      hasComment: true,
+      commentText: 'Your Comment (required)',
+      tag: {
+        text: 'Recognition',
+      },
     },
   ],
-  showProgressBar: 'top',
-  progressBarType: 'buttons',
   completeText: 'Submit Feedback',
 };
 
+// export const mockTeamFeedbackSurveyJson = {
+//   title: 'Team Feedback',
+//   pages: [
+//     {
+//       name: 'Completeness',
+//       elements: [
+//         {
+//           type: 'html',
+//           name: 'completeness_heading',
+//           html: '<span id="completeness_heading">Completeness</span>',
+//         },
+//         {
+//           type: 'rating',
+//           name: 'q1_completeness',
+//           title: 'Team delivered completely and holistically for the committed tasks in the current milestone',
+//           rateValues: [
+//             {
+//               value: 1,
+//               text: "<img src='/emojis/smiley_1.svg' alt='Smiley 1' class='emoji_image'/>",
+//             },
+//             {
+//               value: 2,
+//               text: "<img src='/emojis/smiley_2.svg' alt='Smiley 2' class='emoji_image'/>",
+//             },
+//             {
+//               value: 3,
+//               text: "<img src='/emojis/smiley_3.svg' alt='Smiley 3' class='emoji_image'/>",
+//             },
+//             {
+//               value: 4,
+//               text: "<img src='/emojis/smiley_4.svg' alt='Smiley 4' class='emoji_image'/>",
+//             },
+//             {
+//               value: 5,
+//               text: "<img src='/public/emojis/smiley_5.svg' alt='Smiley 5' class='emoji_image' style='height: 42px; width: 42px;' />",
+//             },
+//           ],
+//           minRateDescription: 'Unhappy',
+//           maxRateDescription: 'Delighted',
+//           rateType: 'smileys',
+//           displayMode: 'buttons',
+//           showCommentArea: true,
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Quality of Deliverables',
+//       elements: [
+//         {
+//           type: 'html',
+//           name: 'quality_heading',
+//           html: '<span id="quality_heading">Quality of Deliverables</span>',
+//         },
+//         {
+//           type: 'rating',
+//           name: 'q2_quality_of_deliverables',
+//           title: 'Team delivered high-quality output for the committed tasks in the current milestone',
+//           rateValues: [1, 2, 3, 4, 5],
+//           minRateDescription: 'Unhappy',
+//           maxRateDescription: 'Delighted',
+//           rateType: 'smileys',
+//           displayMode: 'buttons',
+//           showCommentArea: true,
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Timelines',
+//       elements: [
+//         {
+//           type: 'html',
+//           name: 'timelines_heading',
+//           html: '<span id="timelines_heading">Timelines</span>',
+//         },
+//         {
+//           type: 'rating',
+//           name: 'q3_timeliness',
+//           title:
+//             'Team consistently delivered tasks and outputs on the agreed upon timelines without intentional delays',
+//           rateValues: [
+//             {
+//               value: 1,
+//               text: '01',
+//             },
+//             {
+//               value: 2,
+//               text: '02',
+//             },
+//             {
+//               value: 3,
+//               text: '03',
+//             },
+//             {
+//               value: 4,
+//               text: '04',
+//             },
+//             {
+//               value: 5,
+//               text: '05',
+//             },
+//           ],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           showCommentArea: true,
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Innovation',
+//       elements: [
+//         {
+//           type: 'html',
+//           name: 'completeness_heading',
+//           html: '<span id="innovation_heading">Innovation</span>',
+//         },
+//         {
+//           type: 'rating',
+//           name: 'q4_innovation',
+//           title:
+//             'Team showed innovative and out-of-the-box thinking while working on the committed tasks in the current milestone',
+//           rateValues: [1, 2, 3, 4, 5],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           rateType: 'stars',
+//           showCommentArea: true,
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Top Leaders',
+//       elements: [
+//         {
+//           type: 'html',
+//           name: 'completeness_heading',
+//           html: '<span id="top_leaders_heading">Top Leaders</span>',
+//         },
+//         {
+//           type: 'checkbox',
+//           name: 'top_leaders',
+//           title: 'Identify one or more team members who displayed leadership qualities within the current milestone',
+//           api: 'https://tru-dev-api.trumio.ai/api/leaders/api/leaders',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Feedback',
+//       elements: [
+//         {
+//           type: 'html',
+//           name: 'feedback_heading',
+//           html: '<span id="feedback_heading">Feedback</span>',
+//         },
+//         {
+//           type: 'comment',
+//           name: 'qualitative_feedback',
+//           title: 'Qualitative feedback on Team Performance',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//   ],
+//   showProgressBar: 'top',
+//   progressBarType: 'buttons',
+//   completeText: 'Submit Feedback',
+// };
+
+// export const mockIndividualFeedbackSurveyJson = {
+//   title: 'Individual Feedback',
+//   pages: [
+//     {
+//       name: 'Collaboration & Teamwork',
+//       elements: [
+//         {
+//           type: 'numberRating',
+//           name: 'q1_teamwork',
+//           rateType: 'numberRating',
+//           title:
+//             'Worked as a team player, seeking inputs and collaborating with you and team members in project and tasks execution',
+//           rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Communication',
+//       elements: [
+//         {
+//           type: 'smileyRating',
+//           name: 'q2_communication',
+//           title: 'Communicated in a clear, concise and structured manner',
+//           rateType: 'smileys',
+//           rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
+//           minRateDescription: 'Unhappy',
+//           maxRateDescription: 'Delighted',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q2_comments',
+//           title: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Leadership',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q3_leadership',
+//           title:
+//             'Took initiative in leading team for tasks to be accomplished and recognized team members for their efforts',
+//           rateValues: [1, 2, 3, 4, 5],
+//           minRateDescription: 'Strongly Disagree',
+//           maxRateDescription: 'Strongly Agree',
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q3_comments',
+//           title: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Ownership',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q4_ownership',
+//           title:
+//             'Took ownership of delivering quality output while pushing to deliver exceptional results from self and other team members',
+//           rateValues: [1, 2, 3, 4, 5],
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q4_comments',
+//           title: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Analytical Thinking',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q5_analytical_thinking',
+//           title:
+//             'Analyzed task objectives and context before execution and applied acquired knowledge and skills for better project execution',
+//           rateValues: [1, 2, 3, 4, 5],
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q5_comments',
+//           title: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Innovative Thinking',
+//       elements: [
+//         {
+//           type: 'rating',
+//           name: 'q6_innovative_thinking',
+//           title: 'Generated novel, innovative ideas and solutions to challenges presented within project or tasks',
+//           rateValues: [
+//             { value: 1, text: 'Strongly Disagree' },
+//             { value: 2 },
+//             { value: 3 },
+//             { value: 4 },
+//             { value: 5, text: 'Strongly Agree' },
+//           ],
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'q6_comments',
+//           title: 'Please type here',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Improvement',
+//       elements: [
+//         {
+//           type: 'areacheckbox',
+//           name: 'areas_of_development',
+//           title: 'Areas of Development',
+//           choices: [
+//             'Area of development 1',
+//             'Area of development 2',
+//             'Area of development 3',
+//             'Area of development 4',
+//             'Other',
+//           ],
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Feedback',
+//       elements: [
+//         {
+//           type: 'comment',
+//           name: 'qualitative_feedback',
+//           title: 'Qualitative Feedback',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//     {
+//       name: 'Recognition',
+//       elements: [
+//         {
+//           type: 'wowgroup',
+//           name: 'recognition',
+//           title: 'Give a WOW to the user for their demonstration of excellence',
+//           choices: [
+//             { value: 'wow', text: 'WOW' },
+//             { value: 'na', text: 'NA' },
+//           ],
+//           isRequired: false,
+//         },
+//         {
+//           type: 'comment',
+//           name: 'recognition_comment',
+//           title: 'Your comment (Required)',
+//           isRequired: false,
+//         },
+//       ],
+//     },
+//   ],
+//   showProgressBar: 'top',
+//   progressBarType: 'buttons',
+//   completeText: 'Submit',
+// };
+
 export const mockTeamFeedbackSurveyJson = {
-  title: 'Team Feedback',
-  pages: [
+  elements: [
     {
-      name: 'Completeness',
-      elements: [
-        {
-          type: 'html',
-          name: 'completeness_heading',
-          html: '<span id="completeness_heading">Completeness</span>',
-        },
-        {
-          type: 'rating',
-          name: 'q1_completeness',
-          title: 'Team delivered completely and holistically for the committed tasks in the current milestone',
-          rateValues: [
-            {
-              value: 1,
-              text: "<img src='/emojis/smiley_1.svg' alt='Smiley 1' class='emoji_image'/>",
-            },
-            {
-              value: 2,
-              text: "<img src='/emojis/smiley_2.svg' alt='Smiley 2' class='emoji_image'/>",
-            },
-            {
-              value: 3,
-              text: "<img src='/emojis/smiley_3.svg' alt='Smiley 3' class='emoji_image'/>",
-            },
-            {
-              value: 4,
-              text: "<img src='/emojis/smiley_4.svg' alt='Smiley 4' class='emoji_image'/>",
-            },
-            {
-              value: 5,
-              text: "<img src='/public/emojis/smiley_5.svg' alt='Smiley 5' class='emoji_image' style='height: 42px; width: 42px;' />",
-            },
-          ],
-          minRateDescription: 'Unhappy',
-          maxRateDescription: 'Delighted',
-          rateType: 'smileys',
-          displayMode: 'buttons',
-          showCommentArea: true,
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'collaboration',
+      rateType: 'numberRating',
+      title: 'Team delivered completely and holistically for the committed tasks in the current milestone',
+      tag: {
+        text: 'Completeness',
+      },
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      hasComment: true,
+      commentText: '',
+      commentPlaceHolder: 'Please type here',
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
     },
     {
-      name: 'Quality of Deliverables',
-      elements: [
-        {
-          type: 'html',
-          name: 'quality_heading',
-          html: '<span id="quality_heading">Quality of Deliverables</span>',
-        },
-        {
-          type: 'rating',
-          name: 'q2_quality_of_deliverables',
-          title: 'Team delivered high-quality output for the committed tasks in the current milestone',
-          rateValues: [1, 2, 3, 4, 5],
-          minRateDescription: 'Unhappy',
-          maxRateDescription: 'Delighted',
-          rateType: 'smileys',
-          displayMode: 'buttons',
-          showCommentArea: true,
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'communication',
+      rateType: 'numberRating',
+      title: 'Team delivered high quality output for the committed tasks in the current milestone',
+      tag: {
+        text: 'Quality of Deliverables',
+      },
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      hasComment: true,
+      commentText: '',
+      commentPlaceHolder: 'Please type here',
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
     },
     {
-      name: 'Timelines',
-      elements: [
-        {
-          type: 'html',
-          name: 'timelines_heading',
-          html: '<span id="timelines_heading">Timelines</span>',
-        },
-        {
-          type: 'rating',
-          name: 'q3_timeliness',
-          title:
-            'Team consistently delivered tasks and outputs on the agreed upon timelines without intentional delays',
-          rateValues: [
-            {
-              value: 1,
-              text: '01',
-            },
-            {
-              value: 2,
-              text: '02',
-            },
-            {
-              value: 3,
-              text: '03',
-            },
-            {
-              value: 4,
-              text: '04',
-            },
-            {
-              value: 5,
-              text: '05',
-            },
-          ],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          showCommentArea: true,
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'leadership',
+      rateType: 'numberRating',
+      title: 'Team consistently delivered tasks and outputs on the agreed upon timelines without intentional delays',
+      tag: {
+        text: 'Timeliness',
+      },
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      hasComment: true,
+      commentText: '',
+      commentPlaceHolder: 'Please type here',
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
     },
     {
-      name: 'Innovation',
-      elements: [
-        {
-          type: 'html',
-          name: 'completeness_heading',
-          html: '<span id="innovation_heading">Innovation</span>',
-        },
-        {
-          type: 'rating',
-          name: 'q4_innovation',
-          title:
-            'Team showed innovative and out-of-the-box thinking while working on the committed tasks in the current milestone',
-          rateValues: [1, 2, 3, 4, 5],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          rateType: 'stars',
-          showCommentArea: true,
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'ownership',
+      rateType: 'numberRating',
+      title:
+        'Team showed innovative and out of box thinking while working on the committed tasks in the current milestone',
+      tag: {
+        text: 'Innovation',
+      },
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      hasComment: true,
+      commentText: '',
+      commentPlaceHolder: 'Please type here',
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
     },
     {
-      name: 'Top Leaders',
-      elements: [
-        {
-          type: 'html',
-          name: 'completeness_heading',
-          html: '<span id="top_leaders_heading">Top Leaders</span>',
-        },
-        {
-          type: 'checkbox',
-          name: 'top_leaders',
-          title: 'Identify one or more team members who displayed leadership qualities within the current milestone',
-          api: 'https://tru-dev-api.trumio.ai/api/leaders/api/leaders',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'analyticalThinking',
+      rateType: 'numberRating',
+      title:
+        'You analysed task objectives and considered various solutions before executing on a specific course of action',
+      tag: {
+        text: 'Analytical Thinking',
+      },
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      hasComment: true,
+      commentText: '',
+      commentPlaceHolder: 'Please type here',
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
     },
     {
-      name: 'Feedback',
-      elements: [
-        {
-          type: 'html',
-          name: 'feedback_heading',
-          html: '<span id="feedback_heading">Feedback</span>',
-        },
-        {
-          type: 'comment',
-          name: 'qualitative_feedback',
-          title: 'Qualitative feedback on Team Performance',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'innovativeThinking',
+      rateType: 'numberRating',
+      title: 'You came up with new, innovative ideas and solutions to challenges presented within project or tasks',
+      tag: {
+        text: 'Innovative Thinking',
+      },
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      hasComment: true,
+      commentText: '',
+      commentPlaceHolder: 'Please type here',
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+    },
+    {
+      type: 'comment',
+      name: 'recognition_comment',
+      title: 'Qualitative Feedback',
+      tag: {
+        text: 'Feedback',
+      },
+      placeholder: 'Please type here',
+      isRequired: false,
     },
   ],
-  showProgressBar: 'top',
   progressBarType: 'buttons',
   completeText: 'Submit Feedback',
 };
 
 export const mockIndividualFeedbackSurveyJson = {
-  title: 'Individual Feedback',
-  pages: [
+  elements: [
     {
-      name: 'Collaboration & Teamwork',
-      elements: [
-        {
-          type: 'numberRating',
-          name: 'q1_teamwork',
-          rateType: 'numberRating',
-          title:
-            'Worked as a team player, seeking inputs and collaborating with you and team members in project and tasks execution',
-          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q1_collaboration',
+      title:
+        'Worked as a team player, seeking inputs and collaborating with you and team members in project and tasks execution',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Collaboration & Teamwork',
+      },
     },
     {
-      name: 'Communication',
-      elements: [
-        {
-          type: 'smileyRating',
-          name: 'q2_communication',
-          title: 'Communicated in a clear, concise and structured manner',
-          rateType: 'smileys',
-          rateValues: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
-          minRateDescription: 'Unhappy',
-          maxRateDescription: 'Delighted',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q2_comments',
-          title: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q2_communication',
+      title: 'Communicated in a clear, concise and structured manner',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Unhappy',
+      maxRateDescription: 'Delighted',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Communication',
+      },
     },
     {
-      name: 'Leadership',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q3_leadership',
-          title:
-            'Took initiative in leading team for tasks to be accomplished and recognized team members for their efforts',
-          rateValues: [1, 2, 3, 4, 5],
-          minRateDescription: 'Strongly Disagree',
-          maxRateDescription: 'Strongly Agree',
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q3_comments',
-          title: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q3_leadership',
+      title:
+        'Took initiative in leading team for tasks to be accomplished and recognized team members for their contributions and work',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Leadership',
+      },
     },
     {
-      name: 'Ownership',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q4_ownership',
-          title:
-            'Took ownership of delivering quality output while pushing to deliver exceptional results from self and other team members',
-          rateValues: [1, 2, 3, 4, 5],
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q4_comments',
-          title: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q4_ownership',
+      title:
+        'Took ownership of delivering quality output while pushing to deliver exceptional results from self and other team members ',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Ownership',
+      },
     },
     {
-      name: 'Analytical Thinking',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q5_analytical_thinking',
-          title:
-            'Analyzed task objectives and context before execution and applied acquired knowledge and skills for better project execution',
-          rateValues: [1, 2, 3, 4, 5],
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q5_comments',
-          title: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q5_analytical_thinking',
+      title:
+        'Analysed project and task objectives, and considered various solutions before executing a specific course of action',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Analytical Thinking',
+      },
     },
     {
-      name: 'Innovative Thinking',
-      elements: [
-        {
-          type: 'rating',
-          name: 'q6_innovative_thinking',
-          title: 'Generated novel, innovative ideas and solutions to challenges presented within project or tasks',
-          rateValues: [
-            { value: 1, text: 'Strongly Disagree' },
-            { value: 2 },
-            { value: 3 },
-            { value: 4 },
-            { value: 5, text: 'Strongly Agree' },
-          ],
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'q6_comments',
-          title: 'Please type here',
-          isRequired: false,
-        },
+      type: 'numberRating',
+      name: 'q6_innovative_thinking',
+      title: 'Generated novel, innovative ideas and solutions to challenges presented within project or tasks',
+      rateType: 'numberRating',
+      displayMode: 'buttons',
+      rateValues: [
+        { value: 1, text: '01' },
+        { value: 2, text: '02' },
+        { value: 3, text: '03' },
+        { value: 4, text: '04' },
+        { value: 5, text: '05' },
       ],
+      minRateDescription: 'Strongly Disagree',
+      maxRateDescription: 'Strongly Agree',
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Innovative Thinking',
+      },
     },
     {
-      name: 'Improvement',
-      elements: [
-        {
-          type: 'areacheckbox',
-          name: 'areas_of_development',
-          title: 'Areas of Development',
-          choices: [
-            'Area of development 1',
-            'Area of development 2',
-            'Area of development 3',
-            'Area of development 4',
-            'Other',
-          ],
-          isRequired: false,
-        },
+      type: 'wowgroup',
+      name: 'recognition',
+      title: 'Give a WOW to the user for their demonstration of excellence',
+      choices: [
+        { value: 'wow', text: 'WOW' },
+        { value: 'na', text: 'NA' },
       ],
-    },
-    {
-      name: 'Feedback',
-      elements: [
-        {
-          type: 'comment',
-          name: 'qualitative_feedback',
-          title: 'Qualitative Feedback',
-          isRequired: false,
-        },
-      ],
-    },
-    {
-      name: 'Recognition',
-      elements: [
-        {
-          type: 'wowgroup',
-          name: 'recognition',
-          title: 'Give a WOW to the user for their demonstration of excellence',
-          choices: [
-            { value: 'wow', text: 'WOW' },
-            { value: 'na', text: 'NA' },
-          ],
-          isRequired: false,
-        },
-        {
-          type: 'comment',
-          name: 'recognition_comment',
-          title: 'Your comment (Required)',
-          isRequired: false,
-        },
-      ],
+      isRequired: false,
+      tag: {
+        text: 'Recognition',
+      },
     },
   ],
-  showProgressBar: 'top',
-  progressBarType: 'buttons',
-  completeText: 'Submit',
+  completeText: 'Submit Feedback',
 };

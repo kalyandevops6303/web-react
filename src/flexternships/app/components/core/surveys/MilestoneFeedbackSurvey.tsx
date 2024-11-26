@@ -57,8 +57,6 @@ interface SurveyFormProps {
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
-  const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
-
   const { surveyJson, userDetails, onComplete } = props;
   const survey = new Model(surveyJson);
   survey.onComplete.add(onComplete);
@@ -177,7 +175,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     const tag = document.createElement('div');
     tag.classList.add('tag-container');
 
-    tag.innerHTML = `<span class="py-[1px] px-[9px] rounded-md border text-[#23DFEB] border-[#23DFEB] bg-[#23DFEB1F]">${question.jsonObj.tag?.text}</span>`;
+    tag.innerHTML = `<span class="py-[1px] px-[9px] rounded-md border text-[#23DFEB] border-[#23DFEB] bg-[#23DFEB1F] font-montserrat text-sm font-medium leading-[22px] text-stroke-[1px]">${question.jsonObj.tag?.text}</span>`;
     options.htmlElement.insertBefore(tag, options.htmlElement.firstChild);
 
     document.querySelectorAll('.sd-comment').forEach((element) => {
@@ -310,18 +308,8 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   };
   survey.css = cssClasses;
 
-  if (isFeedbackFormLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-48 w-full">
-        <div className="h-8 w-8">
-          <Spinner />
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="overflow-y-scroll max-h-[500px] rounded-md">
+    <div className="w-[650px] overflow-y-scroll !max-h-[500px] rounded-md">
       <div className="bg-white flex items-center justify-between px-5 pt-3">
         <div className="flex items-center gap-2">
           <Avatar>
@@ -335,7 +323,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
               {userDetails?.firstName} {userDetails?.lastName}
             </div>
             <div className="text-[var(--1-theme-color-body-text, #6E6B7B)] font-montserrat text-sm font-normal leading-[22px]">
-              {userDetails?.role?.name}
+              {userDetails?.role?.name ?? userDetails?.role}
             </div>
           </div>
         </div>

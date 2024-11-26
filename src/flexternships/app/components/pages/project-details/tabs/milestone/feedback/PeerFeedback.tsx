@@ -9,7 +9,10 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
-import { mockPeerFeedbackSurveyJson } from '@/flexternships/mocks/survey-data-new-mock';
+import { mockPeerFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
+import FunFacts from './FunFacts';
+import Spinner from '@/flexternships/app/components/core/Spinner';
+import { keysToCamelCase } from '@/flexternships/utils/core-utils';
 
 export default function PeerFeedback() {
   const params = useParams();
@@ -19,6 +22,7 @@ export default function PeerFeedback() {
 
   const getPeerFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const peerFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
+  const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
 
   const submitFeedback = useFeedbackStore((state) => state.submitFeedbackForm);
 
@@ -59,7 +63,7 @@ export default function PeerFeedback() {
         }),
       );
 
-      if (!activeTeamMember?.is_feedback) getPeerFeedbackForm(params?.projectId, FeedbackTypesAPI.PEER);
+      if (!activeTeamMember?.feedback_id) getPeerFeedbackForm(params?.projectId, FeedbackTypesAPI.PEER);
     }
   }, [activeTeamMember]);
 
@@ -84,24 +88,41 @@ export default function PeerFeedback() {
     setActiveTeamMember(activeMember);
   };
 
+  if (isFeedbackFormLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48 w-full">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div
-        className="flex items-center gap-1 cursor-pointer mb-5"
+        className="flex items-center gap-1 cursor-pointer mb-5 pr-0 max-w-[7/12] p-0 flex-nowrap"
         onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
       >
-        <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
+        <div className="bg-[#0185E4] w-min text-white rounded-full p-1">
           <ArrowLeft size="20px" />
         </div>
         <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
           {peerFeedbackForm?.feedback?.title}
         </div>
       </div>
-      <div className="flex items-start gap-3">
-        {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
-        {peerFeedbackForm && (
-          <MilestoneFeedbackSurvey surveyJson={mockPeerFeedbackSurveyJson} onComplete={handleSurveyComplete} />
-        )}
+      <div className="flex gap-2 items-start">
+        <div className="flex items-start justify-center gap-2">
+          {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
+          {peerFeedbackForm && (
+            <MilestoneFeedbackSurvey
+              surveyJson={mockPeerFeedbackSurveyJson}
+              userDetails={keysToCamelCase(activeTeamMember)}
+              onComplete={handleSurveyComplete}
+            />
+          )}
+        </div>
+        <FunFacts />
       </div>
     </>
   );

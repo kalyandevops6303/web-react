@@ -39,11 +39,30 @@ export class KudosModel extends Question {
     );
   }
 
+  get hasComment(): boolean {
+    return this.getPropertyValue('hasComment', false);
+  }
+
+  set hasComment(newValue: boolean) {
+    this.setPropertyValue('hasComment', newValue);
+  }
+
+  get commentText(): string {
+    return this.getPropertyValue('commentText', '');
+  }
+
+  set commentText(newValue: string) {
+    this.setPropertyValue('commentText', newValue);
+  }
+
   onSurveyLoad(): void {
     if (this.jsonObj && this.jsonObj.choices) {
       this.choices = this.jsonObj.choices.map((choice: Choice | string) =>
         typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
       );
+    }
+    if (this.jsonObj && this.jsonObj.hasComment !== undefined) {
+      this.hasComment = this.jsonObj.hasComment;
     }
   }
 
@@ -52,6 +71,9 @@ export class KudosModel extends Question {
       this.choices = newValue.choices.map((choice: Choice | string) =>
         typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
       );
+    }
+    if (name === 'jsonObj' && newValue && newValue.hasComment !== undefined) {
+      this.hasComment = newValue.hasComment;
     }
     super.onPropertyValueChanged(name, oldValue, newValue);
   }
@@ -86,6 +108,11 @@ export class Kudos extends SurveyQuestionElementBase {
   handleChoiceSelect = (value: string): void => {
     this.question.value = value;
     this.setState({ selectedValue: value });
+  };
+
+  handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newComment = event.target.value;
+    this.question.commentText = newComment; // Update the model's commentText property directly
   };
 
   render(): JSX.Element | null {
@@ -128,6 +155,18 @@ export class Kudos extends SurveyQuestionElementBase {
             <span>No choices available</span>
           )}
         </div>
+
+        {/* Render the comment box if hasComment is true */}
+        {/* {this.question.hasComment && (
+          <div className="mt-4">
+            <textarea
+              value={this.question.commentText} // Bind the model's commentText directly to the textarea
+              onChange={this.handleCommentChange}
+              placeholder="Add a comment"
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+        )} */}
       </div>
     );
   }
@@ -143,6 +182,8 @@ Serializer.addClass(
       type: 'itemvalues',
       default: [new ItemValue('kudos', 'KUDOS'), new ItemValue('na', 'NA')],
     },
+    { name: 'hasComment', type: 'boolean', default: false }, // Add hasComment to schema
+    { name: 'commentText', type: 'string', default: '' }, // Add commentText to schema
   ],
   function () {
     return new KudosModel('');

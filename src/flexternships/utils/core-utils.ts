@@ -64,3 +64,22 @@ export const getMilestoneStatusTextByUserType = (status: MilestoneStatus, _userT
       return '';
   }
 };
+
+export const keysToCamelCase = (data: any): any => {
+  if (Array.isArray(data)) {
+    return data.map((item) => keysToCamelCase(item)); // Handle arrays
+  }
+
+  if (data !== null && typeof data === 'object') {
+    const newObject: any = {};
+
+    Object.keys(data).forEach((key) => {
+      const camelCaseKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      newObject[camelCaseKey] = keysToCamelCase(data[key]); // Recursively process nested objects
+    });
+
+    return newObject;
+  }
+
+  return data; // Return the value as is if it's not an object or array
+};

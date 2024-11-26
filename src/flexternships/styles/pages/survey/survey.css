@@ -33,3 +33,11 @@
   font-weight: 600;
   margin-left: 7px !important;
 }
+
+.sv-string-viewer, .sv-string-viewer span {
+  font-family: "Montserrat", sans-serif !important;
+  color: var(--Grey-600, #515759);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+}
