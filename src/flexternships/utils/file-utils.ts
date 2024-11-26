@@ -37,7 +37,8 @@ export function formatFileSize(sizeInBytes: number, decimalPlaces: number = 2): 
  * @param fileName - The name of the file (e.g., "document.pdf").
  * @returns path to the icon for the file type.
  */
-export const getFileIcon = (fileName: string) => {
+export const getFileIcon = (fileName?: string) => {
+  if (!fileName) return docFileIcon;
   let splitName = fileName.split('.');
   const ext = splitName[splitName.length - 1].toLowerCase();
 

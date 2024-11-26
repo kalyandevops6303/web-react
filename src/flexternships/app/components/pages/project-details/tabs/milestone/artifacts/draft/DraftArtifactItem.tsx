@@ -12,9 +12,29 @@ import { Control, Controller, UseFieldArrayRemove } from 'react-hook-form';
 import { useMilestoneArtifactsStore } from '@flexternships/stores/project-milestones-store';
 import { Progress } from '@/flexternships/app/components/ui/progress';
 import { isEmpty } from 'lodash';
+import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import {
+  milestoneDetailsModalCancelCtaText,
+  milestoneDetailsModalConfirmCtaText,
+  milestoneDetailsModalDescription,
+  milestoneDetailsModalTitle,
+} from '@/flexternships/static/milestones-content';
+import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 
 export default function DraftArtifactItem(props: Props) {
-  const { last = false, data, index, control, errors, remove, handleFileUpload } = props;
+  const {
+    last = false,
+    data,
+    index,
+    control,
+    errors,
+    remove,
+    handleFileUpload,
+    activeModal,
+    openRemoveArtifactModal,
+    openArtifactRemovedModal,
+    closeModal,
+  } = props;
   const appendToRemovedArtifactIds = useMilestoneArtifactsStore((state) => state.appendToRemovedArtifactIds);
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
@@ -54,6 +74,12 @@ export default function DraftArtifactItem(props: Props) {
     if (data.artifactId) {
       appendToRemovedArtifactIds(data.artifactId);
     }
+    // call api to remove artifacts
+    openArtifactRemovedModal();
+  };
+
+  const closeWithRemove = () => {
+    closeModal();
     remove(index);
   };
 
@@ -162,11 +188,23 @@ export default function DraftArtifactItem(props: Props) {
         </span>
         <span
           className="flex items-center justify-center bg-opacity-[0.12] bg-error rounded-full p-2 text-error cursor-pointer"
-          onClick={handleDeleteClick}
+          onClick={openRemoveArtifactModal}
         >
           <Trash2 size={24} />
         </span>
       </div>
+      {activeModal && (
+        <RemoveArtifactModal
+          isOpen={true}
+          onClose={activeModal === MilestoneDetailsModalType.ARTIFCAT_REMOVED ? closeWithRemove : closeModal}
+          onConfirm={handleDeleteClick}
+          artifact={data}
+          title={milestoneDetailsModalTitle[activeModal]}
+          description={milestoneDetailsModalDescription[activeModal]}
+          cancelCtaText={milestoneDetailsModalCancelCtaText[activeModal]}
+          confirmCtaText={milestoneDetailsModalConfirmCtaText[activeModal]}
+        />
+      )}
     </div>
   );
 }
@@ -195,4 +233,11 @@ type Props = {
   };
   remove: UseFieldArrayRemove;
   handleFileUpload: (index: number, file: File) => void;
+  activeModal:
+    | MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT
+    | MilestoneDetailsModalType.ARTIFCAT_REMOVED
+    | undefined;
+  openRemoveArtifactModal: () => void;
+  openArtifactRemovedModal: () => void;
+  closeModal: () => void;
 };

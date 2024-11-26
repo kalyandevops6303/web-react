@@ -1,5 +1,6 @@
 import { MilestoneFeedbackType, MilestoneStatus, UserType } from '../constraints/enums/core-enums';
 import { RecognitionType } from '../constraints/enums/feedback-enum';
+import { MilestoneDetailsModalType } from '../constraints/enums/miscellaneous-enums';
 
 export const recognitionCardContent = {
   title: 'Recognition',
@@ -52,3 +53,37 @@ export const allowFeedbackCardsIfMilestoneStatus = [
 ];
 
 export const disableArtifactsIfMilestoneStatus = [MilestoneStatus.CREATED, MilestoneStatus.COMPLETED];
+
+export const milestoneDetailsModalTitle = {
+  [MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE]: 'Are you sure you want to accept the milestone?',
+  [MilestoneDetailsModalType.MILESTONE_ACCEPTED]: 'Great Job!',
+  [MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE]: 'Are you sure you want to mark the milestone as complete?',
+  [MilestoneDetailsModalType.MILESTONE_SUBMITTED]: 'Great Job!',
+  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]: 'Are you sure you want to remove this artifact?',
+  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]: 'Removed Artifact',
+};
+
+export const milestoneDetailsModalDescription = {
+  [MilestoneDetailsModalType.MILESTONE_ACCEPTED]: 'You have successfully accepted the milestone.',
+  [MilestoneDetailsModalType.MILESTONE_SUBMITTED]: 'You have successfully completed the milestone.',
+  [MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE]: undefined,
+  [MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE]: undefined,
+  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+};
+
+export const milestoneDetailsModalConfirmCtaText = {
+  [MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE]: 'Accept',
+  [MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE]: 'Mark as complete',
+  [MilestoneDetailsModalType.MILESTONE_ACCEPTED]: undefined,
+  [MilestoneDetailsModalType.MILESTONE_SUBMITTED]: undefined,
+  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]: 'Remove',
+  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]: undefined,
+};
+
+export const milestoneDetailsModalCancelCtaText = {
+  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]: 'Cancel',
+  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]: 'Close',
+};

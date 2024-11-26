@@ -23,6 +23,7 @@ import { isEmpty } from 'lodash';
 import UploadArtifactDocument from './UploadArtifactDocument';
 import { getFileUploadUrl } from '@/flexternships/services/project-management-v2';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
+import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
@@ -34,6 +35,9 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
   const [saveDraftLoading, setSaveDraftLoading] = useState(false);
   const [submitDraftLoading, setSubmitDraftLoading] = useState(false);
+  const [activeModal, setActiveModal] = useState<
+    MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT | MilestoneDetailsModalType.ARTIFCAT_REMOVED | undefined
+  >(undefined);
 
   const {
     control,
@@ -59,6 +63,18 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   useEffect(() => {
     reset({ draftArtifacts: draftArtifacts });
   }, [draftArtifacts]);
+
+  const openRemoveArtifactModal = () => {
+    setActiveModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT);
+  };
+
+  const openArtifactRemovedModal = () => {
+    setActiveModal(MilestoneDetailsModalType.ARTIFCAT_REMOVED);
+  };
+
+  const closeModal = () => {
+    setActiveModal(undefined);
+  };
 
   const addNewLink = () => {
     append({
@@ -265,6 +281,10 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
                 remove={remove}
                 errors={errors.draftArtifacts?.[index] as FieldError}
                 handleFileUpload={handleFileUpload}
+                activeModal={activeModal}
+                openRemoveArtifactModal={openRemoveArtifactModal}
+                openArtifactRemovedModal={openArtifactRemovedModal}
+                closeModal={closeModal}
               />
             ))}
           </div>
@@ -272,7 +292,13 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
       )}
       <div className="flex flex-col gap-y-7 text-trublue-secondary-500">
         <UploadArtifactDocument handleFileInputChange={handleFileInputChange} disabled={isDisabled} />
-        <PrimaryIconText icon={<Plus size={12} />} text="Add Link" onClick={addNewLink} disabled={isDisabled} />
+        <PrimaryIconText
+          className="self-start"
+          icon={<Plus size={12} />}
+          text="Add Link"
+          onClick={addNewLink}
+          disabled={isDisabled}
+        />
       </div>
       <div className={`flex flex-row justify-end gap-x-4 mt-3`}>
         <SecondaryButton
