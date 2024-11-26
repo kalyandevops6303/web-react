@@ -85,10 +85,6 @@ export function getMilestoneDetailsModalDescription(type: MilestoneDetailsModalT
       return 'You have successfully accepted the milestone.';
     case MilestoneDetailsModalType.MILESTONE_SUBMITTED:
       return 'You have successfully completed the milestone.';
-    case MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE:
-      return undefined;
-    case MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE:
-      return undefined;
     case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
       return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
     case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
@@ -110,14 +106,8 @@ export function getMilestoneDetailsModalConfirmCtaText(type: MilestoneDetailsMod
       return 'Accept';
     case MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE:
       return 'Mark as complete';
-    case MilestoneDetailsModalType.MILESTONE_ACCEPTED:
-      return undefined;
-    case MilestoneDetailsModalType.MILESTONE_SUBMITTED:
-      return undefined;
     case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
       return 'Remove';
-    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
-      return undefined;
     default:
       return undefined;
   }
