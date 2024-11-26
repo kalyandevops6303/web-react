@@ -14,6 +14,8 @@ import {
   ProjectPanelCaptionDate1,
   ProjectPanelCaptionDate2,
   ProjectPanelDate2Classnames,
+  ProjectPanelIcon1Classnames,
+  ProjectPanelIcon2Classnames,
   SecondaryProjectStatus,
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
@@ -129,7 +131,8 @@ const LeftSideBarProjectDetails = () => {
 
       <div className="w-full flex flex-row  items-center justify-start gap-5">
         <div className="flex flex-row items-center gap-1">
-          {getProjectPanelDate1Icon(data)}
+          <div className={ProjectPanelIcon1Classnames[data?.status]}>{getProjectPanelDate1Icon(data)}</div>
+
           <div className="flex flex-col items-start">
             <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-medium text-[14px] leading-[23px] font-montserrat">
               {formatEpochToHumanReadable(
@@ -142,7 +145,8 @@ const LeftSideBarProjectDetails = () => {
           </div>
         </div>
         <div className="flex flex-row items-center gap-1">
-          {getProjectPanelDate2Icon(data)}
+          <div className={ProjectPanelIcon2Classnames[data?.status]}>{getProjectPanelDate2Icon(data)}</div>
+
           <div className="flex flex-col items-start">
             <h1
               className={`${
