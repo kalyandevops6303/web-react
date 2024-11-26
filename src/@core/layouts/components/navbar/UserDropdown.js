@@ -35,6 +35,7 @@ import {
   selectIsTeamLoggedIn,
   selectUserData,
   appPermissionsSelector,
+  selectIsLoggedIn,
 } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
@@ -65,6 +66,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const teams = useSelector(selectTeamData);
   const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
   const appPermissions = useSelector(appPermissionsSelector);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const navigate = useNavigate();
@@ -182,7 +184,9 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
   // get app permissions
   useEffect(() => {
-    dispatch(getAppPermissions());
+    if (isLoggedIn) {
+      dispatch(getAppPermissions());
+    }
   }, []);
 
   const userName = isTeamLoggedIn
@@ -409,9 +413,11 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           )}
-          <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
-            <span className="align-middle ">Contact support</span>
-          </TextWrapper>
+          {savedUserDetails?.user_type === userTypes.client ? null : (
+            <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
+              <span className="align-middle ">Contact support</span>
+            </TextWrapper>
+          )}
           <TextWrapper onClick={handleLogout} className="w-100 logout">
             <span className="align-middle ">Logout</span>
           </TextWrapper>
