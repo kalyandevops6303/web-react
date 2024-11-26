@@ -1,7 +1,5 @@
 import {
   PrimaryProjectStatus,
-  ProjectPanelIcon1Classnames,
-  ProjectPanelIcon2Classnames,
 } from '@/flexternships/constraints/enums/project-enums';
 import StartDateSVG from '../../../../../assets/svgs/project-details/start-date.svg';
 import EndDateSVG from '../../../../../assets/svgs/project-details/end-date.svg';
@@ -17,16 +15,14 @@ const getProjectPanelDate1Icon = (data: { status: string }) => {
     case 'CLOSED':
     case 'WITHDRAWN': {
       return (
-        <div className={ProjectPanelIcon1Classnames[status]}>
           <Calendar />
-        </div>
       );
     }
     case 'ONGOING':
     case 'TERMINATED':
     case 'COMPLETED':
     case 'BLOCKED': {
-      return <img src={StartDateSVG} className={ProjectPanelIcon1Classnames[status]} alt="Start Date Icon" />;
+      return <img src={StartDateSVG} alt="Start Date Icon" />;
     }
     default:
       return null;
@@ -41,15 +37,14 @@ const getProjectPanelDate2Icon = (data: { status: string }) => {
     case 'IN_REVIEW':
     case 'ACTIVE':
     case 'UPCOMING': {
-      return <img src={StartDateSVG} className={ProjectPanelIcon2Classnames[status]} alt="Start Date Icon" />;
+      return <img src={StartDateSVG} alt="Start Date Icon" />;
     }
     case 'ONGOING':
     case 'COMPLETED': {
-      return <img src={EndDateSVG} className={ProjectPanelIcon2Classnames[status]} alt="End Date Icon" />;
+      return <img src={EndDateSVG} alt="End Date Icon" />;
     }
     case 'CLOSED': {
       return (
-        <div className={ProjectPanelIcon2Classnames[status]}>
           <svg width="47" height="46" viewBox="0 0 47 46" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="0.5" width="46" height="46" rx="23" fill="#607D8B" fillOpacity="0.12" />
             <path
@@ -59,12 +54,10 @@ const getProjectPanelDate2Icon = (data: { status: string }) => {
               fill="#607D8B"
             />
           </svg>
-        </div>
       );
     }
     case 'TERMINATED': {
       return (
-        <div className={ProjectPanelIcon2Classnames[status]}>
           <svg width="47" height="46" viewBox="0 0 47 46" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="0.5" width="46" height="46" rx="23" fill="#EA5455" fillOpacity="0.12" />
             <path
@@ -74,12 +67,10 @@ const getProjectPanelDate2Icon = (data: { status: string }) => {
               fill="#EA5455"
             />
           </svg>
-        </div>
       );
     }
     case 'WITHDRAWN': {
       return (
-        <div className={ProjectPanelIcon2Classnames[status]}>
           <svg width="47" height="46" viewBox="0 0 47 46" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="0.5" width="46" height="46" rx="23" fill="#EA5455" fillOpacity="0.12" />
             <path
@@ -89,7 +80,6 @@ const getProjectPanelDate2Icon = (data: { status: string }) => {
               fill="#EA5455"
             />
           </svg>
-        </div>
       );
     }
     default:
