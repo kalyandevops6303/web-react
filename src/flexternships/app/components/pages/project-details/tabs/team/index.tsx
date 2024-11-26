@@ -44,8 +44,7 @@ export default function TeamTab(props: InputProps) {
               <TeamCard
                 name={teamMember.name}
                 designation={teamMember?.designation}
-                rating={teamMember?.rating}
-                ratingText={teamMember?.ratingText}
+                averageRating={teamMember?.averageRating}
                 ratingColor={'#0185E4'}
                 kudos={userDetails.userType === UserType.TALENT ? teamMember?.appreciationScore : undefined}
                 wow={userDetails.userType === UserType.CLIENT ? teamMember?.appreciationScore : undefined}

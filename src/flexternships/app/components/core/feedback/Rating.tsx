@@ -11,10 +11,13 @@ export default function Rating(props: InputProps) {
     if (partialRating != 0) arr[fullRating] = Math.round(partialRating * 100);
     setRatingArr(arr);
   }, []);
+
+  if (!rating) return null;
+
   return (
-    <div className={`${'flex items-center'} ${className ?? ''}`}>
-      <span className="mr-4 w-[7.5rem] font-semibold text-sm text-right text-grey-600 ">{ratingText}</span>
-      <span className="w-[2.375rem] mr-4 text-right text-grey-600">{rating}</span>
+    <div className={`flex items-center gap-x-4 ${className ?? ''}`}>
+      {ratingText && <span className="font-semibold text-sm text-right text-grey-600 ">{ratingText}</span>}
+      <span className="text-right text-grey-600">{rating}</span>
       <div className="flex space-x-2">
         {ratingArr.map((val, index) => (
           <div
@@ -40,7 +43,7 @@ export default function Rating(props: InputProps) {
 
 type InputProps = {
   rating: number;
-  ratingText: string;
+  ratingText?: string;
   ratingColor: string;
   className?: string;
 };

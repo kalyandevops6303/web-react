@@ -9,7 +9,7 @@ export type TeamMemberDetails = {
   name?: string;
   profileImage?: string;
   designation?: string;
-  rating?: number;
+  averageRating?: number;
   ratingText?: string;
   ratingColor?: string;
   appreciationScore?: number;

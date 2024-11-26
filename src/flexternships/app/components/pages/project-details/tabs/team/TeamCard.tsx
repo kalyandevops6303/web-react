@@ -3,7 +3,7 @@ import KudosAndWow from '../../../../core/feedback/KudosAndWow';
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 
 export default function TeamCard(props: InputProps) {
-  const { rating, ratingText, ratingColor, name, profileImage, designation, kudos, wow } = props;
+  const { averageRating, ratingText, ratingColor, name, profileImage, designation, kudos, wow } = props;
 
   console.log(kudos, wow);
   return (
@@ -13,7 +13,7 @@ export default function TeamCard(props: InputProps) {
         <span className="text-grey text-sm font-semibold w-[200px]">{name}</span>
       </div>
       <span className="text-grey text-sm font-medium w-[200px]"> {designation}</span>
-      {rating && <Rating rating={rating} ratingText={ratingText || ''} ratingColor={ratingColor} />}
+      {averageRating && <Rating rating={averageRating} ratingText={ratingText} ratingColor={ratingColor} />}
       {kudos && <KudosAndWow kudos={kudos} />}
       {wow && <KudosAndWow wow={wow} />}
     </div>
@@ -21,7 +21,7 @@ export default function TeamCard(props: InputProps) {
 }
 
 type InputProps = {
-  rating?: number;
+  averageRating?: number;
   ratingText?: string;
   ratingColor: string;
   name?: string;
