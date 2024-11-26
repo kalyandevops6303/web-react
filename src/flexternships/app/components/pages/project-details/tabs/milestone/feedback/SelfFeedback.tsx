@@ -58,7 +58,11 @@ export default function SelfFeedback() {
         </div>
       </div>
       {selfFeedbackForm && (
-        <MilestoneFeedbackSurvey surveyJson={mockSelfFeedbackSurveyJson} onComplete={handleSurveyComplete} />
+        <MilestoneFeedbackSurvey
+          surveyJson={mockSelfFeedbackSurveyJson}
+          userDetails={currentUserDetails}
+          onComplete={handleSurveyComplete}
+        />
       )}
     </div>
   );

@@ -15,8 +15,8 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
       userDetails: {
         id: data._id,
         email: data.email,
-        firstName: data.client_info?.first_name,
-        lastName: data.client_info?.last_name,
+        firstName: data.client_info?.first_name ?? data?.talent_info?.first_name,
+        lastName: data.client_info?.last_name ?? data?.talent_info?.last_name,
         timezone: {
           _id: data.timezone?._id,
           name: data.timezone?.name,
@@ -39,6 +39,8 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
           dialCode: data.phone_country?.dial_code,
           name: data.phone_country?.name,
         },
+        role: data.talent_info?.role,
+        imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
       },
     });
   } catch (error) {

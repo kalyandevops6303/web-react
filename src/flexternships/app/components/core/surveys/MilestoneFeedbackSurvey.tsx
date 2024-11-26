@@ -46,15 +46,20 @@ import SurveyTagboxStyles from '@/flexternships/styles/components/core/surveys/m
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { User } from 'react-feather';
+
+import '@flexternships/styles/pages/survey/survey.css';
 interface SurveyFormProps {
   surveyJson: SurveyJson;
   onComplete: (survey: SurveyModel) => void;
+  userDetails?: any;
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
 
-  const { surveyJson, onComplete } = props;
+  const { surveyJson, userDetails, onComplete } = props;
   const survey = new Model(surveyJson);
   survey.onComplete.add(onComplete);
 
@@ -167,6 +172,18 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     if (fieldset) {
       fieldset.classList.add('custom-fieldset-styling');
     }
+
+    const question = options.question;
+    const tag = document.createElement('div');
+    tag.classList.add('tag-container');
+
+    tag.innerHTML = `<span class="py-[1px] px-[9px] rounded-md border text-[#23DFEB] border-[#23DFEB] bg-[#23DFEB1F]">${question.jsonObj.tag?.text}</span>`;
+    options.htmlElement.insertBefore(tag, options.htmlElement.firstChild);
+
+    document.querySelectorAll('.sd-comment').forEach((element) => {
+      element.setAttribute('placeholder', 'Please type here');
+      element.classList.add('sd-comment__content');
+    });
   });
 
   // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later
@@ -213,6 +230,33 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     .custom-fieldset-styling .sd-rating__max-text {
         right: 0;
         text-align: right;
+    }
+
+    .tag-container {
+      margin-bottom: 40px; /* Add space between tag and question */
+      text-align: left;
+    }
+
+    .sv_q_title {
+      margin-top: 10px; /* Ensure there's space between the tag and the question title */
+    }
+
+    .sd-root-modern, .sd-root-modern__wrapper, .sd-root-modern--full-container, .sd-container-modern, .sv-components-column {
+      border-radius: 6px !important;
+      padding: 0px !important;
+      margin: 0px !important;
+      width: 100% !important;
+    }
+
+    .sd-page, .sd-body, .sd-action-bar {
+      padding: 7px !important;
+      margin: 0px !important;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .sd-action-bar {
+      margin-bottom: 10px;
     }
 `;
 
@@ -277,7 +321,33 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   }
 
   return (
-    <div>
+    <div className="overflow-y-scroll max-h-[500px] rounded-md">
+      <div className="bg-white flex items-center justify-between px-5 pt-3">
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={userDetails?.imageUri} />
+            <AvatarFallback>
+              <User color="#6E6B7B" />
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px]">
+              {userDetails?.firstName} {userDetails?.lastName}
+            </div>
+            <div className="text-[var(--1-theme-color-body-text, #6E6B7B)] font-montserrat text-sm font-normal leading-[22px]">
+              {userDetails?.role?.name}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="text-[#5E5873] text-right font-montserrat text-sm font-medium leading-[22px]">
+            Estimated time to complete
+          </div>
+          <div className="text-[#5E5873] font-montserrat text-sm font-semibold leading-[22px]">
+            3 mins | 7 Questions
+          </div>
+        </div>
+      </div>
       <Survey model={survey} />
     </div>
   );

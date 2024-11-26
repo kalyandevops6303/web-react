@@ -30,9 +30,10 @@ type SurveyPage = {
 };
 
 export type SurveyJson = {
-  title: string;
-  pages: SurveyPage[];
-  showProgressBar: string;
+  title?: string;
+  pages?: SurveyPage[];
+  elements?: Array<object>;
+  showProgressBar?: string;
   progressBarType: string;
   completeText: string;
 };
