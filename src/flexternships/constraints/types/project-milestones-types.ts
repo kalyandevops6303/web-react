@@ -6,6 +6,7 @@ import {
   MilestoneStatus,
   UserType,
 } from '../enums/core-enums';
+import { MilestoneDetailsModalType } from '../enums/miscellaneous-enums';
 
 export type MilestoneArtifact = {
   artifactId: string;
@@ -91,6 +92,7 @@ export type MilestoneDetails = {
 export type ProjectMilestonesState = {
   isMilestonesLoading: boolean;
   isMilestoneDetailsLoading: boolean;
+  activeModal: MilestoneDetailsModalType | undefined;
   projectMilestones: MilestoneDetails[];
   milestoneDetails: MilestoneDetails;
 };
@@ -100,6 +102,8 @@ export type ProjectMilestonesActions = {
   populateMilestoneDetails: (milestoneId: string) => Promise<void>;
   markMilestoneAsCompleted: (milestoneId: string) => Promise<void>;
   acceptMilestone: (milestoneId: string) => Promise<void>;
+  closeModal: () => void;
+  openModal: (modal: MilestoneDetailsModalType) => void;
 };
 
 export type ProjectMilestonesStore = ProjectMilestonesState & ProjectMilestonesActions;

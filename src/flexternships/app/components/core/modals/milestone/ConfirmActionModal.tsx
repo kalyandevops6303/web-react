@@ -29,8 +29,10 @@ export default function ConfirmActionModal(props: ConfirmActionModalProps) {
             </div>
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
-            <PrimaryButton onClick={onConfirm} loading={isConfirmLoading}>
+            <SecondaryButton className="m-0" onClick={onClose}>
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton className="m-0" onClick={onConfirm} loading={isConfirmLoading}>
               {confirmCtaText}
             </PrimaryButton>
           </div>

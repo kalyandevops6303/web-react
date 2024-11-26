@@ -1,4 +1,5 @@
 import { MilestoneArtifactStatus, MilestoneStatus } from '../constraints/enums/core-enums';
+import { MilestoneDetailsModalType } from '../constraints/enums/miscellaneous-enums';
 import {
   getMilestonesByProjectId,
   getMilestoneDetailsById,
@@ -44,4 +45,12 @@ export const markMilestoneAsCompleted = async (milestoneId: string) => {
 
 export const acceptMilestone = async (milestoneId: string) => {
   await updateMilestoneStatus(milestoneId, MilestoneStatus.COMPLETED);
+};
+
+export const closeModal = (set: any) => {
+  set({ activeModal: undefined });
+};
+
+export const openModal = (modal: MilestoneDetailsModalType, set: any) => {
+  set({ activeModal: modal });
 };

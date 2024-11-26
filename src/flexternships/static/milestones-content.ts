@@ -54,36 +54,85 @@ export const allowFeedbackCardsIfMilestoneStatus = [
 
 export const disableArtifactsIfMilestoneStatus = [MilestoneStatus.CREATED, MilestoneStatus.COMPLETED];
 
-export const milestoneDetailsModalTitle = {
-  [MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE]: 'Are you sure you want to accept the milestone?',
-  [MilestoneDetailsModalType.MILESTONE_ACCEPTED]: 'Great Job!',
-  [MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE]: 'Are you sure you want to mark the milestone as complete?',
-  [MilestoneDetailsModalType.MILESTONE_SUBMITTED]: 'Great Job!',
-  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]: 'Are you sure you want to remove this artifact?',
-  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]: 'Removed Artifact',
-};
+export function getMilestoneDetailsModalTitle(type: MilestoneDetailsModalType): string {
+  switch (type) {
+    case MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE:
+      return 'Are you sure you want to accept the milestone?';
+    case MilestoneDetailsModalType.MILESTONE_ACCEPTED:
+      return 'Great Job!';
+    case MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE:
+      return 'Are you sure you want to mark the milestone as complete?';
+    case MilestoneDetailsModalType.MILESTONE_SUBMITTED:
+      return 'Great Job!';
+    case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
+      return 'Are you sure you want to remove this artifact?';
+    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
+      return 'Removed Artifact';
+    case MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION:
+      return 'Are you sure you want to make this submission?';
+    case MilestoneDetailsModalType.ARTIFCATS_SUBMITTED:
+      return 'Great Job!';
+    case MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED:
+      return 'Draft Saved';
+    default:
+      return '';
+  }
+}
 
-export const milestoneDetailsModalDescription = {
-  [MilestoneDetailsModalType.MILESTONE_ACCEPTED]: 'You have successfully accepted the milestone.',
-  [MilestoneDetailsModalType.MILESTONE_SUBMITTED]: 'You have successfully completed the milestone.',
-  [MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE]: undefined,
-  [MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE]: undefined,
-  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-};
+export function getMilestoneDetailsModalDescription(type: MilestoneDetailsModalType): string | undefined {
+  switch (type) {
+    case MilestoneDetailsModalType.MILESTONE_ACCEPTED:
+      return 'You have successfully accepted the milestone.';
+    case MilestoneDetailsModalType.MILESTONE_SUBMITTED:
+      return 'You have successfully completed the milestone.';
+    case MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE:
+      return undefined;
+    case MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE:
+      return undefined;
+    case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
+      return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
+      return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+    case MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION:
+      return 'Only after submission client will receive these files.';
+    case MilestoneDetailsModalType.ARTIFCATS_SUBMITTED:
+      return 'You have successfully completed a milestone submission';
+    case MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED:
+      return 'We’ve saved your work as a draft. Feel free to return when you’re ready to complete it.';
+    default:
+      return undefined;
+  }
+}
 
-export const milestoneDetailsModalConfirmCtaText = {
-  [MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE]: 'Accept',
-  [MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE]: 'Mark as complete',
-  [MilestoneDetailsModalType.MILESTONE_ACCEPTED]: undefined,
-  [MilestoneDetailsModalType.MILESTONE_SUBMITTED]: undefined,
-  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]: 'Remove',
-  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]: undefined,
-};
+export function getMilestoneDetailsModalConfirmCtaText(type: MilestoneDetailsModalType): string | undefined {
+  switch (type) {
+    case MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE:
+      return 'Accept';
+    case MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE:
+      return 'Mark as complete';
+    case MilestoneDetailsModalType.MILESTONE_ACCEPTED:
+      return undefined;
+    case MilestoneDetailsModalType.MILESTONE_SUBMITTED:
+      return undefined;
+    case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
+      return 'Remove';
+    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
+      return undefined;
+    default:
+      return undefined;
+  }
+}
 
-export const milestoneDetailsModalCancelCtaText = {
-  [MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT]: 'Cancel',
-  [MilestoneDetailsModalType.ARTIFCAT_REMOVED]: 'Close',
-};
+export function getMilestoneDetailsModalCancelCtaText(type: MilestoneDetailsModalType): string | undefined {
+  switch (type) {
+    case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
+      return 'Cancel';
+    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
+      return 'Close';
+    default:
+      return undefined;
+  }
+}
+
+export const draftSavedModalNote = 'To find your drafts please go to,';
+export const draftSavedModalHighlightText = 'Project Details > Milestone > Saved Drafts';

@@ -27,9 +27,9 @@ import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTi
 import {
   allowFeedbackCardsIfMilestoneStatus,
   disableArtifactsIfMilestoneStatus,
-  milestoneDetailsModalConfirmCtaText,
-  milestoneDetailsModalDescription,
-  milestoneDetailsModalTitle,
+  getMilestoneDetailsModalConfirmCtaText,
+  getMilestoneDetailsModalDescription,
+  getMilestoneDetailsModalTitle,
 } from '@/flexternships/static/milestones-content';
 import { markMilestoneArtifactAsRead } from '@/flexternships/services/project-management-v2';
 import ConfirmActionModal from '@/flexternships/app/components/core/modals/milestone/ConfirmActionModal';
@@ -42,14 +42,16 @@ export default function MilestoneDetails() {
   const submittedArtifacts = useMilestoneArtifactsStore((state) => state.submittedArtifacts);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
   const isMilestoneDetailsLoading = useProjectMilestonesStore((state) => state.isMilestoneDetailsLoading);
+  const activeModal = useProjectMilestonesStore((state) => state.activeModal);
   const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
   const markMilestoneAsCompleted = useProjectMilestonesStore((state) => state.markMilestoneAsCompleted);
   const acceptMilestone = useProjectMilestonesStore((state) => state.acceptMilestone);
+  const closeModal = useProjectMilestonesStore((state) => state.closeModal);
+  const openModal = useProjectMilestonesStore((state) => state.openModal);
 
   const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
 
   const [primaryActionLoading, setPrimaryActionLoading] = useState(false);
-  const [activeModal, setActiveModal] = useState<MilestoneDetailsModalType | undefined>(undefined);
 
   const navigate = useNavigate();
   const { milestoneId } = useParams();
@@ -83,23 +85,19 @@ export default function MilestoneDetails() {
     navigate(`/project-details/${milestoneDetails.projectDetails.projectId}/milestone`);
   };
 
-  const closeModal = () => {
-    setActiveModal(undefined);
-  };
-
   const openConfirmActionModal = () => {
     if (userDetails.userType === UserType.CLIENT) {
-      setActiveModal(MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE);
+      openModal(MilestoneDetailsModalType.CONFIRM_ACCEPT_MILESTONE);
     } else {
-      setActiveModal(MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE);
+      openModal(MilestoneDetailsModalType.CONFIRM_SUBMIT_MILESTONE);
     }
   };
 
   const openCelebrationModal = () => {
     if (userDetails.userType === UserType.CLIENT) {
-      setActiveModal(MilestoneDetailsModalType.MILESTONE_ACCEPTED);
+      openModal(MilestoneDetailsModalType.MILESTONE_ACCEPTED);
     } else {
-      setActiveModal(MilestoneDetailsModalType.MILESTONE_SUBMITTED);
+      openModal(MilestoneDetailsModalType.MILESTONE_SUBMITTED);
     }
   };
 
@@ -132,7 +130,7 @@ export default function MilestoneDetails() {
     }
   };
 
-  if (isMilestoneDetailsLoading && !primaryActionLoading) {
+  if (isMilestoneDetailsLoading && activeModal === undefined) {
     return (
       <div className="flex flex-col items-center justify-center min-h-48">
         <div className="h-8 w-8">
@@ -297,8 +295,8 @@ export default function MilestoneDetails() {
           onClose={closeModal}
           onConfirm={handleMilestonePrimaryAction}
           isConfirmLoading={primaryActionLoading}
-          title={milestoneDetailsModalTitle[activeModal]}
-          confirmCtaText={milestoneDetailsModalConfirmCtaText[activeModal]}
+          title={getMilestoneDetailsModalTitle(activeModal)}
+          confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
           milestoneName={milestoneDetails.name}
           milestoneSeq={milestoneDetails.seq}
         />
@@ -310,9 +308,9 @@ export default function MilestoneDetails() {
             MilestoneDetailsModalType.MILESTONE_SUBMITTED,
           ].includes(activeModal)}
           onClose={closeModal}
-          title={milestoneDetailsModalTitle[activeModal]}
+          title={getMilestoneDetailsModalTitle(activeModal)}
           milestoneSeq={milestoneDetails.seq}
-          description={milestoneDetailsModalDescription[activeModal]}
+          description={getMilestoneDetailsModalDescription(activeModal)}
           projectName={projectName}
         />
       )}

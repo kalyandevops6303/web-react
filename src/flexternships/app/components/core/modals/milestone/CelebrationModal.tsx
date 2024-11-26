@@ -30,7 +30,9 @@ export default function CelebrationModal(props: CelebrationModalProps) {
             </div>
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <SecondaryButton onClick={onClose}>Close</SecondaryButton>
+            <SecondaryButton className="m-0" onClick={onClose}>
+              Close
+            </SecondaryButton>
           </div>
         </div>
       </div>

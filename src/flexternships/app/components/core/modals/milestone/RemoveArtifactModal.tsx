@@ -31,12 +31,16 @@ export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
                   : artifact.metadata?.url || 'Empty Url'}
               </span>
             </div>
-            <div className="text-sm font-medium leading-[23px] text-grey-heading">{description}</div>
+            {description && <div className="text-sm font-medium leading-[23px] text-grey-heading">{description}</div>}
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            {cancelCtaText && <SecondaryButton onClick={onClose}>{cancelCtaText}</SecondaryButton>}
+            {cancelCtaText && (
+              <SecondaryButton className="m-0" onClick={onClose}>
+                {cancelCtaText}
+              </SecondaryButton>
+            )}
             {confirmCtaText && (
-              <PrimaryButton onClick={onConfirm} loading={isConfirmLoading}>
+              <PrimaryButton className="m-0" onClick={onConfirm} loading={isConfirmLoading}>
                 {confirmCtaText}
               </PrimaryButton>
             )}
@@ -55,6 +59,6 @@ type RemoveArtifactModalProps = {
   cancelCtaText?: string;
   isOpen?: boolean;
   title: string;
-  description: string;
+  description?: string;
   artifact: Partial<MilestoneDraftArtifact>;
 };
