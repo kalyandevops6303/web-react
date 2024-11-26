@@ -27,7 +27,7 @@ export default function DocumentCard(props: DocumentCardProps) {
         </div>
 
         <Link to={link?.href || '#'} className="text-center text-[14px] font-semibold tracking-[0.4px] text-[#0185E4]">
-          {legalDocSignedStatus?.is_signed ? <ChevronRight size="20" color="#B4B7B8" /> : `Sign ${title}`}
+          {legalDocSignedStatus && legalDocSignedStatus[toUpper(title as string)]?.is_signed ? <ChevronRight size="20" color="#B4B7B8" /> : `Sign ${title}`}
         </Link>
       </SimpleElevatedCard>
     </a>
