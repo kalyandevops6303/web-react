@@ -1,4 +1,4 @@
-.root {
+/* .root {
 }
 
 .rootMobile {
@@ -32,11 +32,12 @@
 }
 
 .itemTitle {
-}
+} */
 
 .content {
+    @apply flex bg-white;
 }
-
+/* 
 .row {
 }
 
@@ -50,4 +51,4 @@
 }
 
 .cellErrorBottom {
-}
+} */

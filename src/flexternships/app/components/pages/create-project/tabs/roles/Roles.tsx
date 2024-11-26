@@ -14,7 +14,7 @@ import RoleCard from './RoleCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { isEmpty } from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function Roles() {
@@ -24,6 +24,8 @@ export default function Roles() {
   const nextTab = useProjectCreationStore((state) => state.nextTab);
   const updateRolesData = useProjectCreationStore((state) => state.updateRolesData);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
+
+  const [expandedRoleIndex, setExpandedRoleIndex] = useState<number | null>(0);
 
   const {
     control,
@@ -42,6 +44,19 @@ export default function Roles() {
     control,
     name: 'projectRoles',
   });
+
+  const closeExpandedRole = () => {
+    setExpandedRoleIndex(null);
+  };
+
+  const expandRoleByIndex = (index: number) => {
+    setExpandedRoleIndex(index);
+  };
+
+  const addNewRole = () => {
+    append({ role: { _id: '', name: '' }, count: 1, skills: [], tools: [] });
+    expandRoleByIndex(watch('projectRoles').length - 1);
+  };
 
   const onContinue = (data: ProjectRolesForm) => {
     updateRolesData(data.projectRoles);
@@ -75,6 +90,9 @@ export default function Roles() {
               <RoleCard
                 key={field.id}
                 index={index}
+                isExpanded={expandedRoleIndex === index}
+                expandRole={expandRoleByIndex}
+                closeExpandedRole={closeExpandedRole}
                 control={control}
                 removable={fields.length > 1}
                 remove={() => remove(index)}
@@ -86,7 +104,7 @@ export default function Roles() {
                 className="mt-2"
                 text="Add Role"
                 icon={<Plus className="text-trublue" size={18} />}
-                onClick={() => append({ role: { _id: '', name: '' }, count: 1, skills: [], tools: [] })}
+                onClick={addNewRole}
               />
             </div>
           </div>

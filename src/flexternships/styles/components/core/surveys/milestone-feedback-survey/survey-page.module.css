@@ -1,17 +1,19 @@
-.root {
+/* .root {
+    
 }
 
-.emptyHeaderRoot {
+.emptyHeaderRoot {   
 }
 
 .title {
-}
+} */
 
 .description {
+    @apply pt-[1px] pr-[9px] pb-[1px] pl-[9px] border-2 rounded-lg text-[14px] -mt-6 border-skyblue border-opacity-20 text-skyblue bg-skyblue bg-opacity-5;
 }
 
-.number {
+/* .number {
 }
 
 .errorsContainer {
-}
+} */

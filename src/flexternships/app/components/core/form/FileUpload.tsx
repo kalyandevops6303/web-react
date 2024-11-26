@@ -7,12 +7,14 @@ import { dateToEpoch, formatEpochToHumanReadable } from '@flexternships/utils/da
 import { formatFileSize } from '@flexternships/utils/file-utils';
 import HorizontalFileCard from '../files/HorizontalFileCard';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
+import Tooltip from '../Tooltip';
 
 export default function FileUpload(props: InputProps) {
   const {
     name,
     control,
     error,
+    tooltip,
     trigger,
     watch,
     label,
@@ -121,9 +123,10 @@ export default function FileUpload(props: InputProps) {
 
   return (
     <div className={`${Styles.formFieldContainer} ${className ?? ''} grow`}>
-      <div className={Styles.formInputLabelContainer}>
+      <div className={`${Styles.formInputLabelContainer} items-center`}>
         <span className={Styles.formInputLabel}>{label}</span>
         {required && <span className={Styles.requiredAsterisk}>*</span>}
+        {tooltip && <Tooltip content={tooltip} />}
       </div>
       {fields.length > 0 && (
         <div className={`flex flex-col w-full ${fields.length !== 0 ? 'mt-1' : ''}`}>
@@ -175,6 +178,7 @@ type InputProps = {
   label: string; // Required field
   placeholder: string; // Required field
   required?: boolean; // Optional field
+  tooltip?: string | string[];
   className?: string; // Optional field
   acceptedFormats?: string[]; // Optional field
   maxFileCount?: number; // Optional field

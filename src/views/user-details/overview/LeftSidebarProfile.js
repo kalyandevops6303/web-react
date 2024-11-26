@@ -287,12 +287,32 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           )}
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
-            {data?.educational_institute?.map((item, index) => (
-              <div key={(item, index)} className="mb-50">
-                <CardTitle className="m-0 uni-name">{item?.institution?.name}</CardTitle>
-                <CardText className="font-small-3">{item?.education?.name}</CardText>
-              </div>
-            ))}
+            {(isClient || isTalentView || isTeamView) &&
+              !(data?.flextern && userType === userTypes.talent) &&
+              Array.isArray(data?.educational_institute) &&
+              data?.educational_institute?.map((item, index) => (
+                <div key={`edu-${index}`} className="mb-50">
+                  <CardTitle className="m-0 uni-name">{item?.institution?.name}</CardTitle>
+                  <CardText className="font-small-3">{item?.education?.name}</CardText>
+                </div>
+              ))}
+
+            {data?.flextern && userType === userTypes.talent && (
+              <>
+                <div className="mb-50">
+                  <CardTitle className="m-0 uni-name">{data?.educational_institute?.institution?.name}</CardTitle>
+                  <CardText className="font-small-3">{data?.educational_institute?.education?.name}</CardText>
+                </div>
+
+                {data?.other_educational_institutes?.map((item, index) => (
+                  <div key={`other-edu-${index}`} className="mb-50">
+                    <CardTitle className="m-0 uni-name">{item?.institution?.name}</CardTitle>
+                    <CardText className="font-small-3">{item?.education?.name}</CardText>
+                  </div>
+                ))}
+              </>
+            )}
+
             {isClient && (
               <>
                 <div className="d-flex mb-75">

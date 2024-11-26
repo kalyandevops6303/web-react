@@ -5,6 +5,7 @@ export enum DurationType {
 }
 
 export type TeamMemberDetails = {
+  id: string;
   name?: string;
   profileImage?: string;
   designation?: string;
@@ -55,6 +56,7 @@ type StatusLog = {
 };
 
 export type ProjectDetails = {
+  [x: string]: any;
   id: string;
   createdAt: number;
   updatedAt: number;

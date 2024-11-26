@@ -2,7 +2,7 @@
 type SurveyElement = {
   type: string;
   name: string;
-  title: string;
+  title?: string;
   placeholder?: string;
   rateType?: string;
   displayMode?: string;
@@ -20,11 +20,12 @@ type SurveyElement = {
   minDecriptionValue?: string;
   maxDecriptionValue?: string;
   rateMax?: number;
+  text?: string;
 };
 
 type SurveyPage = {
   name: string;
-  description: string;
+  description?: string;
   elements: SurveyElement[];
 };
 

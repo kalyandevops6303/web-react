@@ -17,10 +17,19 @@ module.exports = {
           fa: "#fafafa",
         },
         yellow: {
-          DEFAULT: "#FFD600"
+          DEFAULT: "#FFD600",
+          secondary: {
+            500: "#FBC02D",
+          },
         },
         orange: {
           DEFAULT: "#FF9F43"
+        },
+        violet: {
+          DEFAULT: "#584CDB"
+        },
+        teal: {
+          DEFAULT: "#00BBB7"
         },
         grey: {
           DEFAULT: "#6E6B7B",

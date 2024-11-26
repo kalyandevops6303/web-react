@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'react-feather';
 import { Controller, FieldErrors, useWatch } from 'react-hook-form';
 import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleElevatedCard';
@@ -15,18 +14,25 @@ import {
 } from '@/flexternships/services/user-management';
 
 export default function RoleCard(props: Props) {
-  const { index, removable, remove, control, errors } = props;
-  const [isExpanded, setIsExpanded] = useState(true);
+  const { index, removable, remove, control, errors, isExpanded, expandRole, closeExpandedRole } = props;
 
   const role = useWatch({
     control,
     name: `projectRoles.${index}`,
   });
 
+  const toggleExpanded = () => {
+    if (isExpanded) {
+      closeExpandedRole();
+    } else {
+      expandRole(index);
+    }
+  };
+
   return (
     <div>
       <SimpleElevatedCard className={`${Styles.roleCard} ${isExpanded ? 'max-h-[600px]' : 'max-h-[150px]'}`}>
-        <div className={Styles.chevronContainer} onClick={() => setIsExpanded(!isExpanded)}>
+        <div className={Styles.chevronContainer} onClick={toggleExpanded}>
           {isExpanded ? (
             <ChevronUp className="text-grey-muted cursor-pointer" size={24} />
           ) : (
@@ -134,6 +140,9 @@ export default function RoleCard(props: Props) {
 
 type Props = {
   index: number;
+  isExpanded: boolean;
+  expandRole: (index: number) => void;
+  closeExpandedRole: () => void;
   removable: boolean;
   control: any;
   remove: () => void;

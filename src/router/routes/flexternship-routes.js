@@ -208,11 +208,6 @@ export const FlexternshipRoutes = [
     element: <FlexternshipsContractView />,
   },
   {
-    path: '/project-details/:projectId/bid/:bidId',
-    element: <BidDetails />,
-  },
-
-  {
     path: '/project-details/:projectId/:projectStep/doc/:docType/*',
     element: <ContractView />,
   },
@@ -224,16 +219,6 @@ export const FlexternshipRoutes = [
     path: '/projects/*',
     element: <Projects />,
   },
-  {
-    path: '/my-teams/*',
-    element: <MyTeams />,
-  },
-
-  {
-    path: '/clubs/*',
-    element: <Clubs />,
-  },
-
   {
     path: '/auth/*',
     element: <AuthRoute />,
@@ -352,61 +337,12 @@ export const FlexternshipRoutes = [
     element: <Notifications />,
   },
   {
-    path: '/create-bid/:projectId/:bidType/:bidId/*',
-    element: <CreateBid />,
-  },
-  {
-    path: '/team-invitation/:inviteId',
-    element: <TeamInvitation />,
-  },
-  {
-    path: '/join-request/:inviteId',
-    element: <TeamInvitation />,
-  },
-  {
-    path: '/club-invitation/:inviteId',
-    element: <ClubInvitation />,
-  },
-
-  {
-    path: '/create-team/:section-details',
-    element: <CreateTeam />,
-  },
-  {
-    path: '/create-team/:section-details/:id',
-    element: <CreateTeam />,
-  },
-  {
-    path: `/${userProfileEdit.team}/:section-details`,
-    element: <CreateTeam />,
-  },
-  {
-    path: '/create-club/:section-details',
-    element: <CreateClub />,
-  },
-  {
-    path: `/${userProfileEdit.club}/:section-details`,
-    element: <CreateClub />,
-  },
-  {
-    path: '/create-club/:section-details/:id',
-    element: <CreateClub />,
-  },
-  {
-    path: '/disputes/*',
-    element: <Disputes />,
-  },
-  {
     path: '/referral-reward/*',
     element: <ReferralAndReward />,
   },
   {
     path: '/chat',
     element: <Chat />,
-  },
-  {
-    path: '/payments',
-    element: <PaymentFullView />,
   },
   {
     path: '/assessments',
@@ -446,9 +382,5 @@ export const FlexternshipRoutes = [
   {
     path: '*',
     element: <NotFound />,
-  },
-  {
-    path: '/projects-tab-view',
-    element: <ProjectsTab />,
   },
 ];

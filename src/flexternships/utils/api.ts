@@ -28,6 +28,7 @@ export const routes = {
     legal: {
       details: `${serviceUrls.projectManagementV2}/legal/document`,
       signDocument: `${serviceUrls.projectManagementV2}/legal/document/sign`,
+      checkDocumentSigned: `${serviceUrls.projectManagementV2}/legal/document/check`,
     },
     milestone: {
       getMilestonesByProjectId: `${serviceUrls.projectManagementV2}/milestones`,
@@ -35,9 +36,21 @@ export const routes = {
       putArtifactsByMilestoneId: `${serviceUrls.projectManagementV2}/milestones/submission`,
       updateStatus: `${serviceUrls.projectManagementV2}/update-status/milestones`,
     },
+    feedback: {
+      submitKudosWow: `${serviceUrls.projectManagementV2}/feedback/kudos_wow`,
+      milestoneFeedbackInfo: `${serviceUrls.projectManagementV2}/feedback`,
+      submitFeedback: `${serviceUrls.projectManagementV2}/feedback/response`,
+      feedbackResponse: `${serviceUrls.projectManagementV2}/feedback/response`,
+    },
+    notification: {
+      markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
+    },
   },
   userManagement: {
     static: {
+      timezone: {
+        fetchPaginated: `${serviceUrls.userManagement}/static/timezone/paginated`,
+      },
       skills: {
         fetchAll: `${serviceUrls.userManagement}/static/skills/all`,
         fetchPaginated: `${serviceUrls.userManagement}/static/skills/paginated`,

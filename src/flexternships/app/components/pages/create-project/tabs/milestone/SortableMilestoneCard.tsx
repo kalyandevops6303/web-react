@@ -12,7 +12,7 @@ import reorderIcon from '@flexternships/assets/icons/core/reorderIcon.svg';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 
 export default function SortableMilestoneCard(props: Props) {
-  const { id, milestoneIndex, removable, control, remove, errors } = props;
+  const { id, milestoneIndex, removable, control, remove, errors, newMilestoneIndex } = props;
 
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -21,7 +21,7 @@ export default function SortableMilestoneCard(props: Props) {
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
-    maxHeight: isDragging ? '150px' : '600px',
+    maxHeight: isDragging ? '150px' : '',
   };
 
   const {
@@ -37,6 +37,13 @@ export default function SortableMilestoneCard(props: Props) {
     setIsExpanded((cur) => (isDragging ? false : cur));
   }, [isDragging]);
 
+  useEffect(() => {
+    // Close the other milestones when a new milestone is added
+    if (newMilestoneIndex && newMilestoneIndex !== milestoneIndex) {
+      setIsExpanded(false);
+    }
+  }, [newMilestoneIndex]);
+
   const handleRemoveDeliverable = (index: number) => {
     if (deliverables.length > 1) {
       removeDeliverable(index);
@@ -45,7 +52,7 @@ export default function SortableMilestoneCard(props: Props) {
 
   return (
     <div ref={setNodeRef} className="w-full" style={style}>
-      <SimpleElevatedCard className={`${Styles.roleCard} ${isExpanded ? 'max-h-[600px]' : 'max-h-[150px]'}`}>
+      <SimpleElevatedCard className={`${Styles.roleCard} ${isExpanded ? '' : 'max-h-[150px]'}`}>
         <div className={Styles.chevronContainer} onClick={toggleExpand}>
           {isExpanded ? (
             <ChevronUp className="text-grey-muted cursor-pointer" size={24} />
@@ -117,8 +124,8 @@ export default function SortableMilestoneCard(props: Props) {
                 <div className="text-xs font-normal leading-5 text-grey-500">Deliverables</div>
                 <div className="flex flex-col gap-y-5">
                   <div className="flex flex-col gap-y-5">
-                    {deliverables.map((field, index) => (
-                      <div key={field.id} className="flex flex-row gap-x-6 items-center">
+                    {deliverables.map((deliverable, index) => (
+                      <div key={deliverable.id} className="flex flex-row gap-x-6 items-center">
                         <Controller
                           name={`milestones.${milestoneIndex}.deliverables.${index}`}
                           control={control}
@@ -126,7 +133,7 @@ export default function SortableMilestoneCard(props: Props) {
                             <TextInput
                               value={value}
                               onChange={onChange}
-                              key={field.id}
+                              key={deliverable.id}
                               className="w-[428px]"
                               label=""
                               placeholder="Enter deliverables"
@@ -177,4 +184,5 @@ type Props = {
   control: any;
   remove: () => void;
   errors: FieldErrors<Milestone> | undefined;
+  newMilestoneIndex: number | null;
 };

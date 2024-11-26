@@ -35,6 +35,8 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
+import { isFlexternshipApp } from '@/configs/api/env';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -168,6 +170,10 @@ const ProjectModal = ({
     location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
 
   const handleViewProject = () => {
+    if (isFlexternshipApp) {
+      return navigate(`/project-details/${data?._id}/team`);
+    }
+
     if (location.pathname.split('/').includes('projects')) {
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
         toggleModal();
@@ -257,15 +263,29 @@ const ProjectModal = ({
                   ) : (
                     <div>
                       <CardTitle className="mb-25 fw-bolder">
-                        {convertUnixTimestampToDate(
-                          data?.listing_details?.start_date_epoch,
-                          selectSavedUserDetailsData?.availability?.timezone?.name,
-                        )}
+                        {isFlexternshipApp
+                          ? formatEpochToHumanReadable(
+                              data?.listing_details?.start_date_epoch,
+                              false,
+                              false,
+                              getUserTimezone(),
+                            )
+                          : convertUnixTimestampToDate(
+                              data?.listing_details?.start_date_epoch,
+                              selectSavedUserDetailsData?.availability?.timezone?.name,
+                            )}
                         to{' '}
-                        {convertUnixTimestampToDate(
-                          data?.listing_details?.end_date_epoch,
-                          selectSavedUserDetailsData?.availability?.timezone?.name,
-                        )}
+                        {isFlexternshipApp
+                          ? formatEpochToHumanReadable(
+                              data?.listing_details?.end_date_epoch,
+                              false,
+                              false,
+                              getUserTimezone(),
+                            )
+                          : convertUnixTimestampToDate(
+                              data?.listing_details?.end_date_epoch,
+                              selectSavedUserDetailsData?.availability?.timezone?.name,
+                            )}
                       </CardTitle>
                       <CardText className="project-name">Listing Duration</CardText>
                     </div>
@@ -425,10 +445,10 @@ const ProjectModal = ({
                 {checkBidLoadingIsLoading ? (
                   <Spinner size="sm" />
                 ) : (
-                  <>
+                  <div className="d-flex align-items-center">
                     <span className="me-50">View Project</span>
                     <ChevronRight size={14} />
-                  </>
+                  </div>
                 )}
               </Button>
             </div>
@@ -466,8 +486,10 @@ const ProjectModal = ({
                         navigate(`/project-details/${data?._id}/team`);
                       }}
                     >
-                      <span className="me-50">View Project</span>
-                      <ChevronRight size={14} />
+                      <div className="d-flex align-items-center">
+                        <span className="me-50">View Project</span>
+                        <ChevronRight size={14} />
+                      </div>
                     </Button>
                   </PermissionWrapper>
                 </div>

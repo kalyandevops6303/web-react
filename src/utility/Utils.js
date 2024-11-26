@@ -658,6 +658,7 @@ export const getModifiedProjectResponse = ({ data }) => {
     created_at: project?.posted_date,
     status: project?.status,
     has_bid: project?.has_bid,
+    is_invited: project?.is_invited,
     nda: {
       is_nda: project?.has_nda,
       nda_link: '',

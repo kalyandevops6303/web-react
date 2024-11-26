@@ -12,7 +12,7 @@ export const allowedFormats = [
   'image/png',
 ];
 
-export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024; // 1GB
 
 export const MilestoneArtifactSchema = yup.object().shape({
   draftArtifacts: yup

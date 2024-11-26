@@ -37,7 +37,7 @@
 }
 
 .roleCard .errorTextButton {
-  @apply text-error text-sm not-italic font-semibold tracking-wide cursor-pointer;
+  @apply px-2 py-2.5 rounded-md text-error text-sm not-italic font-semibold tracking-wide cursor-pointer hover:bg-error hover:bg-opacity-10 transition-colors duration-200;
 }
 
 /* Milestones */
