@@ -31,9 +31,9 @@ export const legalDocSignedStatus = async (projectId: string, docType: string, s
     legal: {
       ...state.legal,
       signedStatus: {
-        ...state.legal?.signedStatus, 
-        [docType]: data
-      }
+        ...state.legal?.signedStatus,
+        [docType]: data,
+      },
     },
   }));
   set({ isLegalDetailsLoading: false });
