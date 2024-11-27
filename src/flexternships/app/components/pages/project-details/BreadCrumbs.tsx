@@ -18,6 +18,8 @@ const BreadCrumbs = ({ steps }: { steps: BreadCrumbType[] }) => {
         </BreadcrumbLink>
         <BreadcrumbSeparator />
         {steps?.map((step: BreadCrumbType, index: number) => {
+          const isLastStep = index === steps.length - 1;
+          const isSecondLastStep = index === steps.length - 2 && !steps[steps.length - 1]?.title;
           return (
             <BreadcrumbItem>
               {index === steps.length - 1 ? (
@@ -26,7 +28,7 @@ const BreadCrumbs = ({ steps }: { steps: BreadCrumbType[] }) => {
                 <BreadcrumbLink href={step?.link}>{step?.title}</BreadcrumbLink>
               )}
 
-              {index !== steps.length - 1 && <BreadcrumbSeparator />}
+              {!isLastStep && !isSecondLastStep && <BreadcrumbSeparator />}
             </BreadcrumbItem>
           );
         })}
