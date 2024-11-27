@@ -36,6 +36,7 @@ import ConfirmActionModal from '@/flexternships/app/components/core/modals/miles
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
 import CelebrationModal from '@/flexternships/app/components/core/modals/milestone/CelebrationModal';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -216,7 +217,9 @@ export default function MilestoneDetails() {
           </div>
           <div className="flex flex-col gap-y-4">
             <h2 className="text-lg font-normal not-italic text-grey-heading">Description</h2>
-            <p className="text-sm font-normal not-italic leading-5.5 text-grey">{milestoneDetails?.description}</p>
+            <p className="text-sm font-normal not-italic leading-5.5 text-grey">
+              <ExpandableText charLimit={300}>{milestoneDetails?.description}</ExpandableText>
+            </p>
           </div>
           <div className="flex flex-col gap-y-4">
             <h2 className="text-lg font-normal not-italic text-grey-heading">Deliverables</h2>

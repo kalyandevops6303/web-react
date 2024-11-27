@@ -1,3 +1,5 @@
+import { ProjectPrimaryStatus } from './core-enums';
+
 export enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-[#333333]',
   CLIENT = 'text-blue-700 bg-blue-100',
@@ -18,21 +20,6 @@ export enum ProjectStatusChipClassnames {
 export enum StatusType {
   PRIMARY = 'PRIMARY',
   SECONDARY = 'SECONDARY',
-}
-
-export enum PrimaryProjectStatus {
-  DRAFT = 'Draft',
-  OPEN = 'Open',
-  IN_REVIEW = 'In Review',
-  ACTIVE = 'Active',
-  ONGOING = 'On Going',
-  UPCOMING = 'Upcoming',
-  CLOSED = 'Closed',
-  WITHDRAWN = 'Withdrawn',
-  TERMINATED = 'Terminated',
-  COMPLETED = 'Completed',
-  BLOCKED = 'Blocked',
-  TO_BE_LISTED = 'To Be Listed',
 }
 
 export const SecondaryProjectStatus = {
@@ -64,83 +51,71 @@ export const enum DocTypes {
   CONTRACT = 'CONTRACT',
 }
 
-export const ProjectPanelCaptionDate1: any = {
-  OPEN: 'Posted On',
-  IN_REVIEW: 'Posted On',
-  ACTIVE: 'Posted On',
-  ONGOING: 'Start Date',
-  UPCOMING: 'Posted On',
-  CLOSED: 'Posted On',
-  TERMINATED: 'Start Date',
-  COMPLETED: 'Start Date',
-  WITHDRAWN: 'Posted On',
-  BLOCKED: 'Start Date',
+export const ProjectPanelCaptionDate1 = {
+  [ProjectPrimaryStatus.OPEN]: 'Posted On',
+  [ProjectPrimaryStatus.DRAFT]: '',
+  [ProjectPrimaryStatus.ACTIVE]: 'Posted On',
+  [ProjectPrimaryStatus.ON_GOING]: 'Start Date',
+  [ProjectPrimaryStatus.TERMINATED]: 'Start Date',
+  [ProjectPrimaryStatus.COMPLETED]: 'Start Date',
+  [ProjectPrimaryStatus.WITHDRAWN]: 'Posted On',
+  [ProjectPrimaryStatus.BLOCKED]: 'Start Date',
 };
 
-export const ProjectPanelCaptionDate2: any = {
-  OPEN: 'Start Date',
-  IN_REVIEW: 'Start Date',
-  ACTIVE: 'Start Date',
-  ONGOING: 'End Date',
-  UPCOMING: 'Start Date',
-  CLOSED: 'Closed Date',
-  TERMINATED: 'Terminate Date',
-  COMPLETED: 'End Date',
-  WITHDRAWN: 'Withdraw Date',
-  BLOCKED: 'End Date',
+export const ProjectPanelCaptionDate2 = {
+  [ProjectPrimaryStatus.OPEN]: 'Start Date',
+  [ProjectPrimaryStatus.DRAFT]: '',
+  [ProjectPrimaryStatus.ACTIVE]: 'Start Date',
+  [ProjectPrimaryStatus.ON_GOING]: 'End Date',
+  [ProjectPrimaryStatus.TERMINATED]: 'Terminate Date',
+  [ProjectPrimaryStatus.COMPLETED]: 'End Date',
+  [ProjectPrimaryStatus.WITHDRAWN]: 'Withdraw Date',
+  [ProjectPrimaryStatus.BLOCKED]: 'End Date',
 };
 
-export const ProjectPanelIcon1Classnames: any = {
-  OPEN: 'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  IN_REVIEW:
+export const ProjectPanelIcon1Classnames = {
+  [ProjectPrimaryStatus.OPEN]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  ACTIVE:
+  [ProjectPrimaryStatus.DRAFT]: '',
+  [ProjectPrimaryStatus.ACTIVE]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  ONGOING:
+  [ProjectPrimaryStatus.ON_GOING]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  UPCOMING:
+  [ProjectPrimaryStatus.TERMINATED]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  CLOSED:
+  [ProjectPrimaryStatus.COMPLETED]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  TERMINATED:
+  [ProjectPrimaryStatus.WITHDRAWN]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  COMPLETED:
-    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  WITHDRAWN:
-    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  BLOCKED:
+  [ProjectPrimaryStatus.BLOCKED]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
 };
 
-export const ProjectPanelIcon2Classnames: any = {
-  OPEN: 'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  IN_REVIEW:
+export const ProjectPanelIcon2Classnames = {
+  [ProjectPrimaryStatus.OPEN]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  ACTIVE:
+  [ProjectPrimaryStatus.DRAFT]: '',
+  [ProjectPrimaryStatus.ACTIVE]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  ONGOING:
+  [ProjectPrimaryStatus.ON_GOING]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  UPCOMING:
+  [ProjectPrimaryStatus.TERMINATED]:
+    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] text-[#0185E4] flex items-center justify-center',
+  [ProjectPrimaryStatus.COMPLETED]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  CLOSED:
-    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[rgba(255, 255, 255, 0.90)] text-[#607D8B] flex items-center justify-center',
-  TERMINATED: 'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] text-[#0185E4] flex items-center justify-center',
-  COMPLETED:
-    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
-  WITHDRAWN: 'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] text-[#EA5455] flex items-center justify-center',
-  BLOCKED:
+  [ProjectPrimaryStatus.WITHDRAWN]:
+    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] text-[#EA5455] flex items-center justify-center',
+  [ProjectPrimaryStatus.BLOCKED]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
 };
 
-export const ProjectPanelDate2Classnames: any = {
-  OPEN: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  IN_REVIEW: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  ACTIVE: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  ONGOING: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  UPCOMING: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  CLOSED: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  TERMINATED: 'text-[#EA5455]',
-  COMPLETED: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  WITHDRAWN: 'text-[#EA5455]',
-  BLOCKED: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
+export const ProjectPanelDate2Classnames = {
+  [ProjectPrimaryStatus.OPEN]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
+  [ProjectPrimaryStatus.DRAFT]: '',
+  [ProjectPrimaryStatus.ACTIVE]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
+  [ProjectPrimaryStatus.ON_GOING]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
+  [ProjectPrimaryStatus.TERMINATED]: 'text-[#EA5455]',
+  [ProjectPrimaryStatus.COMPLETED]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
+  [ProjectPrimaryStatus.WITHDRAWN]: 'text-[#EA5455]',
+  [ProjectPrimaryStatus.BLOCKED]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
 };

@@ -43,9 +43,9 @@ export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
         </div>
       </div>
       <div className="flex flex-row items-center gap-x-[14px]">
-        <div className={`text-sm font-semibold not-italic leading-5.5 ${tiny && 'flex flex-row gap-x-2'}`}>
-          <div>{formatEpochToDuration(timeToComplete)}</div>
-          <div>{numberOfQuestions} Questions</div>
+        <div className={`text-sm font-semibold not-italic leading-5.5 ${tiny && 'flex flex-row gap-x-2 flex-wrap'}`}>
+          <div className="whitespace-nowrap">{formatEpochToDuration(timeToComplete)}</div>
+          <div className="whitespace-nowrap">{numberOfQuestions} Questions</div>
         </div>
         {daysLeft && (
           <div className="text-xs font-semibold not-italic leading-4.5 flex flex-col items-start gap-y-2">
@@ -53,7 +53,7 @@ export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
             <div
               className={`${
                 daysLeft > 0 && tiny ? '' : 'text-trublue-secondary-500'
-              } bg-white py-[1px] px-[9px] rounded-3xl cursor-pointer`}
+              } bg-white py-[1px] px-[9px] rounded-3xl cursor-pointer whitespace-nowrap`}
               onClick={handleSubmitNow}
             >
               {daysLeft > 0 && tiny ? `${daysLeft} Days Left` : 'Submit Now'}

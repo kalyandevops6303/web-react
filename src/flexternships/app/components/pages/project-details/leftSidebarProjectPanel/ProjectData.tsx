@@ -1,7 +1,7 @@
-import { PrimaryProjectStatus } from '@/flexternships/constraints/enums/project-enums';
 import StartDateSVG from '../../../../../assets/svgs/project-details/start-date.svg';
 import EndDateSVG from '../../../../../assets/svgs/project-details/end-date.svg';
 import { Calendar } from 'react-feather';
+import { ProjectPrimaryStatus } from '@/flexternships/constraints/enums/core-enums';
 
 const getProjectPanelDate1Icon = (data: { status: string }) => {
   const { status } = data;
@@ -89,14 +89,11 @@ const getProjectPanelDate1Values = (data: {
   postedAt?: number;
   details?: { expectedStartDate?: number };
   listingDetails?: { startDateEpoch?: number };
-}): { [key in keyof typeof PrimaryProjectStatus]?: number } => {
+}): { [key in keyof typeof ProjectPrimaryStatus]?: number } => {
   return {
     OPEN: data?.postedAt,
-    IN_REVIEW: data?.postedAt,
     ACTIVE: data?.postedAt,
-    ONGOING: data?.details?.expectedStartDate,
-    UPCOMING: data?.createdAt,
-    CLOSED: data?.createdAt,
+    ON_GOING: data?.details?.expectedStartDate,
     TERMINATED: data?.details?.expectedStartDate,
     COMPLETED: data?.details?.expectedStartDate,
     WITHDRAWN: data?.postedAt,
@@ -108,14 +105,11 @@ const getProjectPanelDate2Values = (data: {
   details?: { expectedStartDate?: number };
   listingDetails?: { startDateEpoch?: number; endDateEpoch?: number };
   updatedAt?: number;
-}): { [key in keyof typeof PrimaryProjectStatus]?: number } => {
+}): { [key in keyof typeof ProjectPrimaryStatus]?: number } => {
   return {
     OPEN: data?.details?.expectedStartDate,
-    IN_REVIEW: data?.listingDetails?.startDateEpoch,
     ACTIVE: data?.details?.expectedStartDate,
-    ONGOING: data?.listingDetails?.endDateEpoch,
-    UPCOMING: data?.listingDetails?.startDateEpoch,
-    CLOSED: data?.updatedAt,
+    ON_GOING: data?.listingDetails?.endDateEpoch,
     TERMINATED: data?.updatedAt,
     COMPLETED: data?.listingDetails?.endDateEpoch,
     WITHDRAWN: data?.updatedAt,

@@ -1,4 +1,4 @@
-import { PrimaryProjectStatus } from '../enums/project-enums';
+import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '../enums/core-enums';
 
 export enum DurationType {
   WEEK = 'WEEK',
@@ -70,7 +70,7 @@ export type ProjectDetails = {
   };
   roles: ProjectRole[];
   listingDetails: ListingDetails;
-  status: PrimaryProjectStatus;
+  status: ProjectPrimaryStatus;
   clientUserId: string;
   orgSlugId: string;
   isDocumentsSent: boolean;
@@ -80,6 +80,13 @@ export type ProjectDetails = {
   toolsData?: Tool[];
   clientDetails?: ClientInfo;
   secondaryStatus: SecondaryStatus;
+  invitationDetails: {
+    member: {
+      role: {
+        name: string;
+      };
+    };
+  };
 };
 
 type ProjectRole = {
@@ -145,13 +152,13 @@ type Skill = {
 
 type Tool = Skill;
 
-type SecondaryStatus = {
+export type SecondaryStatus = {
   id: string;
   createdAt: number;
   updatedAt: number;
   isDeleted: boolean;
   statusLog: StatusLog;
-  next: string;
+  next: ProjectSecondaryStatus;
   entity: {
     entityType: string;
     entityId: string;
