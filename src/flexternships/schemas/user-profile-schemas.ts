@@ -4,13 +4,13 @@ import { CompanyStrength } from '../constraints/types/user-profile-types';
 export const FlexternClientAccountDetailsSchema = yup.object().shape({
   firstname: yup
     .string()
-    .matches(/^[a-zA-Z]+$/, 'First name must not contain special characters')
+    .matches(/^[a-zA-Z\s]+$/, 'First name can only contain alphabets and spaces')
     .min(3, 'First name must be at least 3 characters')
     .max(25, 'First name must not exceed 25 characters')
     .required('First name is required'),
   lastname: yup
     .string()
-    .matches(/^[a-zA-Z]+$/, 'Last name must not contain special characters')
+    .matches(/^[a-zA-Z\s]+$/, 'Last name can only contain alphabets and spaces')
     .min(3, 'Last name must be at least 3 characters')
     .max(25, 'Last name must not exceed 25 characters')
     .required('Last name is required'),
