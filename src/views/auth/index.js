@@ -126,7 +126,7 @@ const AuthRoute = () => {
       <OnBoardWrap>
         <Suspense fallback={<Spinner />}>
           <Routes>
-            <Route path="/" element={<UserType />} />
+            <Route path="/" element={<Login />} />
             {routes.map((route) => (
               <Route key={route.path} path={route.path} element={route.element} />
             ))}
