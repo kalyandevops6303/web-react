@@ -58,6 +58,7 @@ import DelegateModeModal from '../../../../views/modals/DelegateModeModal';
 import { truncateSentence } from '../../../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
 import { FlexternUserAppRole } from '@/flexternships/constraints/enums/core-enums';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -414,7 +415,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           )}
-          {savedUserDetails?.user_type === userTypes.client && savedUserDetails?.is_flextern ? null : (
+          {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? null : (
             <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
               <span className="align-middle ">Contact support</span>
             </TextWrapper>
