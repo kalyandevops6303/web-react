@@ -35,6 +35,7 @@ import {
   selectIsTeamLoggedIn,
   selectUserData,
   appPermissionsSelector,
+  selectIsLoggedIn,
 } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
@@ -56,6 +57,8 @@ import AddDelegateModal from '../../../../views/modals/AddDelegateModal';
 import DelegateModeModal from '../../../../views/modals/DelegateModeModal';
 import { truncateSentence } from '../../../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
+import { FlexternUserAppRole } from '@/flexternships/constraints/enums/core-enums';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -65,6 +68,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const teams = useSelector(selectTeamData);
   const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
   const appPermissions = useSelector(appPermissionsSelector);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const navigate = useNavigate();
@@ -182,7 +186,9 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
   // get app permissions
   useEffect(() => {
-    dispatch(getAppPermissions());
+    if (isLoggedIn) {
+      dispatch(getAppPermissions());
+    }
   }, []);
 
   const userName = isTeamLoggedIn
@@ -409,9 +415,11 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           )}
-          <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
-            <span className="align-middle ">Contact support</span>
-          </TextWrapper>
+          {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? null : (
+            <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
+              <span className="align-middle ">Contact support</span>
+            </TextWrapper>
+          )}
           <TextWrapper onClick={handleLogout} className="w-100 logout">
             <span className="align-middle ">Logout</span>
           </TextWrapper>
