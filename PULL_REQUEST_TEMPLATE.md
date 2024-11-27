@@ -7,7 +7,7 @@ Include relevant motivation and context, along with a set of screenshots, when a
 Consider adding a checklist if that may help.
 
 ## Links
-- [Jira](paste Jira ticket link here)
+- [Jira](https://trumio-team.atlassian.net/browse/TRU-<JIRA_CODE_NUMBER>)
 - [Figma](paste Figma link here)
 
 ## Checklist
