@@ -184,6 +184,30 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       element.setAttribute('placeholder', 'Please type here');
       element.classList.add('sd-comment__content');
     });
+
+    //Set Progress state
+    const answeredQuestions: {
+      index: number; // Question's index
+      name: string; // Question's name
+      answer: any; // User's answer(s)
+    }[] = [];
+
+    // Loop through all questions in the survey
+    _survey.getAllQuestions().forEach((question: { isAnswered: any; name: any; value: any }, index: any) => {
+      // Check if the question is answered and valid
+      if (question.isAnswered) {
+        answeredQuestions.push({
+          index: index, // Question's index
+          name: question.name, // Question's name
+          answer: question.value, // User's answer(s)
+        });
+      }
+    });
+    // console.log("Answered Questions:", answeredQuestions);
+    setSurveyProgress({
+      answeredQuestions,
+      allQuestions: _survey?.jsonObj?.elements,
+    });
   });
 
   survey.onValueChanged.add(function (_survey) {
@@ -205,9 +229,11 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
         });
       }
     });
-
     // console.log("Answered Questions:", answeredQuestions);
-    setSurveyProgress(answeredQuestions);
+    setSurveyProgress({
+      answeredQuestions,
+      allQuestions: (_survey as any)?.jsonObj?.elements,
+    });
   });
 
   // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later
