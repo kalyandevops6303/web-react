@@ -36,7 +36,7 @@ export default function SurveyProgress() {
   return (
     <div className="w-full flex flex-col max-w-4xl mx-auto p-6 bg-white">
       <div className="flex items-center justify-between relative">
-        <div className="absolute top-5 left-10 right-10 flex -translate-y-1/2">
+        <div className="absolute top-[10px] left-0 right-0 flex -translate-y-1/2">
           {steps.slice(0, -1).map((step: { id: number; completed: boolean }, index: number) => (
             <div
               key={`connector-${index}`}
@@ -50,11 +50,11 @@ export default function SurveyProgress() {
         {steps.map((step: { id: number; completed: boolean }) => (
           <div key={step.id} className="relative z-10" onClick={() => {}} role="button" tabIndex={0}>
             <div
-              className={`w-10 h-10 rounded-full border-2 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow ${getStepStyle(
+              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow ${getStepStyle(
                 step,
               )}`}
             >
-              {step.completed && <Check size="20" className="text-white" />}
+              {step.completed && <Check size="15" className="text-white" />}
             </div>
           </div>
         ))}
