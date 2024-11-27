@@ -8,6 +8,7 @@ import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { ArrowLeft } from 'react-feather';
 import { mockTeamFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
+import FunFacts from './FunFacts';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -64,9 +65,15 @@ export default function TeamFeedback() {
           {teamFeedbackForm?.feedback?.title}
         </div>
       </div>
-      {teamFeedbackForm && (
-        <MilestoneFeedbackSurvey surveyJson={mockTeamFeedbackSurveyJson} onComplete={handleSurveyComplete} />
-      )}
+
+      <div className="flex gap-3">
+        <div>
+          {teamFeedbackForm && (
+            <MilestoneFeedbackSurvey surveyJson={mockTeamFeedbackSurveyJson} onComplete={handleSurveyComplete} />
+          )}
+        </div>
+        <FunFacts />
+      </div>
     </div>
   );
 }

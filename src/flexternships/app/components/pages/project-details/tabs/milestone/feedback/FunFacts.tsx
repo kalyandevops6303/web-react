@@ -4,11 +4,8 @@ const FunFacts = () => {
       title: 'Boost Team Collaboration',
       content: (
         <>
-          <span className="text-[#C99A24] font-semibold">
-            75% of the project teams demonstrated improved performance when
-          </span>{' '}
-          they ensured that all essential components, detailed information, and comprehensive documentation were
-          included to enhance the completeness of their project deliverables.
+          <span className="text-[#C99A24] font-semibold">63% of Gen Z</span> said that they want to hear more timely,
+          constructive performance feedback throughout
         </>
       ),
     },

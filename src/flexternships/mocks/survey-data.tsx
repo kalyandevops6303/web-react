@@ -1216,6 +1216,16 @@ export const mockTeamFeedbackSurveyJson = {
       isRequired: false,
     },
     {
+      type: 'checkbox',
+      name: 'top_leaders',
+      title: 'Identify one or more team members who displayed leadership qualities within the current milestone',
+      api: 'https://tru-dev-api.trumio.ai/api/leaders/api/leaders',
+      isRequired: false,
+      tag: {
+        text: 'Top Leaders',
+      },
+    },
+    {
       type: 'comment',
       name: 'recognition_comment',
       title: 'Qualitative Feedback',
@@ -1366,6 +1376,24 @@ export const mockIndividualFeedbackSurveyJson = {
       commentText: '',
       tag: {
         text: 'Innovative Thinking',
+      },
+    },
+    {
+      type: 'areacheckbox',
+      name: 'areas_of_development',
+      title: 'Areas of Development',
+      choices: [
+        'Area of development 1',
+        'Area of development 2',
+        'Area of development 3',
+        'Area of development 4',
+        'Other',
+      ],
+      isRequired: false,
+      hasComment: true,
+      commentText: '',
+      tag: {
+        text: 'Improvement',
       },
     },
     {
