@@ -41,6 +41,10 @@ const AuthRoute = () => {
       element: <Login />,
     },
     {
+      path: '/signup',
+      element: <UserType />,
+    },
+    {
       path: '/auth/*',
       element: <AuthRoute />,
     },
