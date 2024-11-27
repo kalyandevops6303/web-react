@@ -4,7 +4,6 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
-import { PrimaryProjectStatus } from '../constraints/enums/project-enums';
 import { MilestoneDraftArtifact } from '../constraints/types/project-milestones-types';
 import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
 import { parseMilestoneDetails } from '../utils/parsing-utils';
@@ -316,7 +315,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         startDateEpoch: data?.listing_details?.start_date_epoch,
         endDateEpoch: data?.listing_details?.end_date_epoch,
       },
-      status: data?.status as PrimaryProjectStatus,
+      status: data?.status,
       clientUserId: data?.client_user_id,
       orgSlugId: data?.org_slug_id,
       isDocumentsSent: data?.is_documents_sent,
@@ -388,6 +387,13 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
           entityId: data?.secondary_status?.entity?.entity_id || '',
         },
         projectId: data?.secondary_status?.project_id || '',
+      },
+      invitationDetails: {
+        member: {
+          role: {
+            name: data?.invitation_details?.member?.role?.name || 'Unknown Role',
+          },
+        },
       },
     };
 
