@@ -78,6 +78,7 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
         // link props
         url: artifact.metadata?.url,
       },
+      isRead: artifact.is_read,
     })),
   };
   return separateArtifacts
