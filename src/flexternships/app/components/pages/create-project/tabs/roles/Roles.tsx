@@ -15,7 +15,7 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 
@@ -27,7 +27,6 @@ export default function Roles() {
   const updateRolesData = useProjectCreationStore((state) => state.updateRolesData);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
 
-  const modalContent = useAppStore((state) => state.modalContent);
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
@@ -46,7 +45,6 @@ export default function Roles() {
     defaultValues: {},
   });
   const { projectId } = useParams();
-  const navigate = useNavigate();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -89,23 +87,15 @@ export default function Roles() {
   }, [rolesData, reset]);
 
   useEffect(() => {
-    return () => {
-      const onDiscard = () => {
-        if (modalContent?.metadata?.nextPath) {
-          navigate(modalContent.metadata.nextPath);
-        }
-        unsetWip();
-      };
-      setWip(saveForLaterModalContent, {
-        onConfirm: async () => {
-          await onSaveDraft();
-          closeGlobalModal();
-        },
-        onCancel: onDiscard,
-        onClose: closeGlobalModal,
-      });
-    };
-  }, [modalContent?.metadata?.nextPath]);
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await onSaveDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, []);
 
   return (
     <div className="flex flex-col">
