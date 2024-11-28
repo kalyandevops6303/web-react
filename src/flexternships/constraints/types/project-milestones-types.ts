@@ -27,6 +27,7 @@ export type MilestoneArtifact = {
     url?: string;
     createdAt?: number;
   };
+  isRead: boolean;
 };
 
 export type MilestoneDraftArtifact = {
