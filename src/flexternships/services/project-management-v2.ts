@@ -316,6 +316,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         endDateEpoch: data?.listing_details?.end_date_epoch,
       },
       status: data?.status,
+      lastInProgressMilestone: data.last_in_progress_milestone,
       clientUserId: data?.client_user_id,
       orgSlugId: data?.org_slug_id,
       isDocumentsSent: data?.is_documents_sent,

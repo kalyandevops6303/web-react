@@ -94,7 +94,7 @@ export const getProjectPrimaryStatusText = (status: ProjectPrimaryStatus) => {
       return 'Unknown';
   }
 };
-export const getProjectSecondaryStatusText = (status: ProjectSecondaryStatus) => {
+export const getProjectSecondaryStatusText = (status: ProjectSecondaryStatus, lastInProgressMilestone: number = 1) => {
   switch (status) {
     case ProjectSecondaryStatus.SIGN_CONTRACT:
       return 'Sign Contract';
@@ -107,7 +107,7 @@ export const getProjectSecondaryStatusText = (status: ProjectSecondaryStatus) =>
     case ProjectSecondaryStatus.SIGN_DOCUMENTS:
       return 'Sign Documents';
     case ProjectSecondaryStatus.MILESTONE:
-      return 'Milestone';
+      return `Milestone ${lastInProgressMilestone}`;
     default:
       return 'Unknown';
   }
