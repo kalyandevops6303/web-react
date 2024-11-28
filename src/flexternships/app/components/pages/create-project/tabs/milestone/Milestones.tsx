@@ -19,7 +19,9 @@ import SortableMilestoneCard from './SortableMilestoneCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 
 export default function Milestones() {
   const {
@@ -37,6 +39,11 @@ export default function Milestones() {
     openModal,
     appendRemovedMilestoneId,
   } = useProjectCreationStore();
+
+  const modalContent = useAppStore((state) => state.modalContent);
+  const setWip = useAppStore((state) => state.setWip);
+  const unsetWip = useAppStore((state) => state.unsetWip);
+  const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const [milestoneDurationState, setMilestoneDurationState] = useState<MilestoneInfoType>(MilestoneInfoType.BALANCED);
   const [newMilestoneIndex, setNewMilestoneIndex] = useState<number | null>(null);
@@ -77,6 +84,7 @@ export default function Milestones() {
   });
 
   const { projectId } = useParams();
+  const navigate = useNavigate();
 
   const { fields, append, remove, move } = useFieldArray({ control, name: 'milestones' });
   const milestones = useWatch({ control, name: 'milestones' });
@@ -151,6 +159,25 @@ export default function Milestones() {
     append({ title: '', duration: 1, description: '', deliverables: [' '] });
     setNewMilestoneIndex(watch('milestones').length - 1);
   };
+
+  useEffect(() => {
+    return () => {
+      const onDiscard = () => {
+        if (modalContent?.metadata?.nextPath) {
+          navigate(modalContent.metadata.nextPath);
+        }
+        unsetWip();
+      };
+      setWip(saveForLaterModalContent, {
+        onConfirm: async () => {
+          await onSaveDraft();
+          closeGlobalModal();
+        },
+        onCancel: onDiscard,
+        onClose: closeGlobalModal,
+      });
+    };
+  }, [modalContent?.metadata?.nextPath]);
 
   return (
     <>

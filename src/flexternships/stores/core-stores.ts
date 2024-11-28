@@ -1,11 +1,16 @@
 import { create } from 'zustand';
 import {
+  AppState,
+  AppStore,
   FlexternClientDetails,
   FlexternTalentDetails,
   FlexternUser,
   FlexternUserStore,
+  GlobalModalActions,
+  GlobalModalContent,
 } from '@flexternships/types/core-types';
-import { populateUserDetails } from '@flexternships/actions/core-actions';
+import { closeModal, openModal, populateUserDetails, setWip, unsetWip } from '@flexternships/actions/core-actions';
+import { GlobalModalType } from '../constraints/enums/core-enums';
 
 const defaultInitState: FlexternUser = {
   isUserDetailsLoading: false,
@@ -16,4 +21,21 @@ export const useFlexternUserStore = create<FlexternUserStore>((set, get) => ({
   ...defaultInitState,
   populateUserDetails: (force: boolean = false) => populateUserDetails(force, get, set),
   resetStore: () => set({ ...defaultInitState }),
+}));
+
+const defaultAppState: AppState = {
+  isWip: false,
+  modal: undefined,
+  modalContent: undefined,
+  modalActions: undefined,
+};
+
+export const useAppStore = create<AppStore>((set, _get) => ({
+  ...defaultAppState,
+  openModal: (modalType: GlobalModalType, metadata?: Record<string, string>) => openModal(modalType, set, metadata),
+  closeModal: () => closeModal(set),
+  setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) =>
+    setWip(modalContent, modalActions, set),
+  unsetWip: () => unsetWip(set),
+  resetStore: () => set({ ...defaultAppState }),
 }));

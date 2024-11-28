@@ -7,7 +7,7 @@ import {
   UserType,
 } from '@flexternships/enums/core-enums';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
-import { useFlexternUserStore } from '@flexternships/stores/core-stores';
+import { useAppStore, useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
 
 /**
@@ -47,6 +47,7 @@ export const logout = () => {
   useFlexternUserStore.getState().resetStore();
   useFlexternUserProfileStore.getState().resetStore();
   useProjectCreationStore.getState().resetStore();
+  useAppStore.getState().resetStore();
 };
 
 /**

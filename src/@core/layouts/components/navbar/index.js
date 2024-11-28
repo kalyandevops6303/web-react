@@ -27,6 +27,8 @@ import SwitchConfirmModal from '../../../../views/modals/SwitchConfirm';
 import { setConfirmSaveForLater, setNavigatingRoute } from '../../../../redux/reducers/formData';
 import { confirmSaveForLater } from '../../../../redux/selectors/formDataSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
+import { useAppStore } from '@flexternships/stores/core-stores';
+import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 
 const HeadWrapper = styled.div`
   display: flex;
@@ -90,6 +92,10 @@ const ThemeNavbar = (props) => {
     location?.pathname.includes('/create-club/profile-details');
   const isTabDisabled = userData?.club_status === clubStatus.IN_REVIEW;
 
+  // ** Flexternships Stores
+  const isWorkInProgress = useAppStore((state) => state.isWip);
+  const openModal = useAppStore((state) => state.openModal);
+
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
@@ -149,7 +155,12 @@ const ThemeNavbar = (props) => {
   }, [location.pathname]);
 
   const isOpenSaveForLater = useSelector(confirmSaveForLater);
-  console.log(isOpenSaveForLater);
+
+  const handleWorkInProgress = (nextPath) => {
+    if (isWorkInProgress) {
+      openModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+    }
+  };
   return (
     <HeadWrapper className={className}>
       <div className="d-flex align-items-center">
@@ -166,6 +177,8 @@ const ThemeNavbar = (props) => {
         <div
           className="navbar-brand cursor-pointer"
           onClick={() => {
+            handleWorkInProgress('/dashboard');
+            if (isWorkInProgress) return;
             if (draftTeamPath) {
               dispatch(setConfirmSaveForLater(true));
               dispatch(setNavigatingRoute('/dashboard'));
@@ -194,7 +207,8 @@ const ThemeNavbar = (props) => {
                 ' menu-item nav-menu-main menu-toggle hidden-xs'
               }
               onClick={() => {
-                console.log('dashboard clicked' + draftTeamPath);
+                handleWorkInProgress('/dashboard');
+                if (isWorkInProgress) return;
                 if (draftTeamPath) {
                   dispatch(setConfirmSaveForLater(true));
                   dispatch(setNavigatingRoute('/dashboard'));
@@ -211,6 +225,8 @@ const ThemeNavbar = (props) => {
             ) : (
               <div
                 onClick={() => {
+                  handleWorkInProgress('/marketplace/all_listings');
+                  if (isWorkInProgress) return;
                   if (draftTeamPath) {
                     dispatch(setConfirmSaveForLater(true));
                     dispatch(
@@ -253,6 +269,8 @@ const ThemeNavbar = (props) => {
                     : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
                 }
                 onClick={() => {
+                  handleWorkInProgress('/projects');
+                  if (isWorkInProgress) return;
                   if (draftTeamPath) {
                     dispatch(setConfirmSaveForLater(true));
                     dispatch(setNavigatingRoute('/projects/ongoing'));
