@@ -30,7 +30,6 @@ export default function Preview() {
   const closeModal = useProjectCreationStore((state) => state.closeModal);
   const resetProjectCreationStore = useProjectCreationStore((state) => state.resetStore);
 
-  const modalContent = useAppStore((state) => state.modalContent);
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
@@ -89,23 +88,15 @@ export default function Preview() {
   };
 
   useEffect(() => {
-    return () => {
-      const onDiscard = () => {
-        if (modalContent?.metadata?.nextPath) {
-          navigate(modalContent.metadata.nextPath);
-        }
-        unsetWip();
-      };
-      setWip(saveForLaterModalContent, {
-        onConfirm: async () => {
-          await onSaveDraft();
-          closeGlobalModal();
-        },
-        onCancel: onDiscard,
-        onClose: closeGlobalModal,
-      });
-    };
-  }, [modalContent?.metadata?.nextPath]);
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await onSaveDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, []);
 
   return (
     <div className={Styles.previewTab}>

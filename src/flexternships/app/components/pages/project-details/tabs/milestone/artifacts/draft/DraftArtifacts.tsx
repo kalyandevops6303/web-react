@@ -17,7 +17,7 @@ import {
   ToastType,
 } from '@/flexternships/constraints/enums/core-enums';
 import { dateToEpoch } from '@/flexternships/utils/date-utils';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { isEmpty } from 'lodash';
 import UploadArtifactDocument from './UploadArtifactDocument';
@@ -47,15 +47,12 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
 
-  const modalContent = useAppStore((state) => state.modalContent);
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const [saveDraftLoading, setSaveDraftLoading] = useState(false);
   const [submitDraftLoading, setSubmitDraftLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   const {
     control,
@@ -83,27 +80,19 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   }, [draftArtifacts]);
 
   useEffect(() => {
-    // Set Work in progress alert when unmount - accordingly navigation is stopped on the clicked component
-    return () => {
-      const fieldsLength = watch('draftArtifacts').length;
-      if (fieldsLength === 0) return unsetWip();
+    // Set Work in progress flag when this component mounts - accordingly navigation is stopped on the clicked component
+    const fieldsLength = watch('draftArtifacts').length;
+    if (fieldsLength === 0) return unsetWip();
 
-      const onDiscard = () => {
-        if (modalContent?.metadata?.nextPath) {
-          navigate(modalContent.metadata.nextPath);
-        }
-        unsetWip();
-      };
-      setWip(saveForLaterModalContent, {
-        onConfirm: async () => {
-          await saveAsDraft();
-          closeGlobalModal();
-        },
-        onCancel: onDiscard,
-        onClose: closeGlobalModal,
-      });
-    };
-  }, [milestoneId, watch('draftArtifacts'), modalContent?.metadata?.nextPath]);
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await saveAsDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, [watch('draftArtifacts')]);
 
   const openRemoveArtifactModal = () => {
     openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT);

@@ -6,6 +6,7 @@ import SaveForLaterGif from '@flexternships/assets/gifs/save-for-later.gif';
 import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function UnsavedWorkModal() {
   const modal = useAppStore((state) => state.modal);
@@ -13,6 +14,8 @@ export default function UnsavedWorkModal() {
   const modalActions = useAppStore((state) => state.modalActions);
 
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   if (isEmpty(modalContent) || isEmpty(modalActions)) return null;
 
@@ -23,6 +26,13 @@ export default function UnsavedWorkModal() {
     } finally {
       setIsConfirmLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    if (modalContent?.metadata?.nextPath !== undefined) {
+      navigate(modalContent.metadata.nextPath);
+    }
+    modalActions.onCancel();
   };
 
   return (
@@ -39,7 +49,7 @@ export default function UnsavedWorkModal() {
             )}
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <SecondaryButton className="m-0" onClick={modalActions.onCancel} cancel>
+            <SecondaryButton className="m-0" onClick={handleCancel} cancel>
               {modalContent.cancelButtonText}
             </SecondaryButton>
             <PrimaryButton className="m-0" onClick={handleConfirm} loading={isConfirmLoading}>

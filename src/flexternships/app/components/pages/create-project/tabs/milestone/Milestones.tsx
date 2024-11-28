@@ -19,7 +19,7 @@ import SortableMilestoneCard from './SortableMilestoneCard';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 
@@ -40,7 +40,6 @@ export default function Milestones() {
     appendRemovedMilestoneId,
   } = useProjectCreationStore();
 
-  const modalContent = useAppStore((state) => state.modalContent);
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
@@ -84,7 +83,6 @@ export default function Milestones() {
   });
 
   const { projectId } = useParams();
-  const navigate = useNavigate();
 
   const { fields, append, remove, move } = useFieldArray({ control, name: 'milestones' });
   const milestones = useWatch({ control, name: 'milestones' });
@@ -161,23 +159,15 @@ export default function Milestones() {
   };
 
   useEffect(() => {
-    return () => {
-      const onDiscard = () => {
-        if (modalContent?.metadata?.nextPath) {
-          navigate(modalContent.metadata.nextPath);
-        }
-        unsetWip();
-      };
-      setWip(saveForLaterModalContent, {
-        onConfirm: async () => {
-          await onSaveDraft();
-          closeGlobalModal();
-        },
-        onCancel: onDiscard,
-        onClose: closeGlobalModal,
-      });
-    };
-  }, [modalContent?.metadata?.nextPath]);
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await onSaveDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, []);
 
   return (
     <>
