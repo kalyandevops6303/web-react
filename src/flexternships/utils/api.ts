@@ -35,6 +35,7 @@ export const routes = {
       getMilestoneDetailsById: `${serviceUrls.projectManagementV2}/single/milestone`,
       putArtifactsByMilestoneId: `${serviceUrls.projectManagementV2}/milestones/submission`,
       updateStatus: `${serviceUrls.projectManagementV2}/update-status/milestones`,
+      deleteMilestoneArtifactById: `${serviceUrls.projectManagementV2}/milestones/artifacts`,
     },
     feedback: {
       submitKudosWow: `${serviceUrls.projectManagementV2}/feedback/kudos_wow`,

@@ -47,7 +47,10 @@ export const MilestoneArtifactSchema = yup.object().shape({
               }),
             }),
             otherwise: yup.object().shape({
-              url: yup.string().url('Must be a valid URL').required('URL is required'),
+              url: yup
+                .string()
+                .matches(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, 'Must be a valid URL')
+                .required('URL is required'),
             }),
           })
           .required('Metadata is required'),

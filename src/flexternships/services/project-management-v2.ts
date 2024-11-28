@@ -533,6 +533,23 @@ export const putArtifactsByMilestoneId = async (
 };
 
 /**
+ * Deletes a specific milestone artifact by its ID.
+ * @param milestoneArtifactId - The ID of the milestone artifact to delete.
+ * @returns A Promise that resolves when the artifact is deleted.
+ * @throws {Error} If the deletion fails or an unexpected error occurs.
+ */
+export const deleteMilestoneArtifactById = async (milestoneArtifactId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { milestone_artifact_id: milestoneArtifactId } };
+
+  try {
+    await axios.delete(routes.projectManagementV2.milestone.deleteMilestoneArtifactById, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while deleting milestone artifact');
+  }
+};
+
+/**
  * Updates the status of a milestone.
  * @param milestoneId - The ID of the milestone to update.
  * @param targetStatus - The target status to set for the milestone.
