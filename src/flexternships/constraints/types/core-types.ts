@@ -125,6 +125,7 @@ export type AppActions = {
   closeModal: () => void;
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
   unsetWip: () => void;
+  resetStore: () => void;
 };
 
 export type AppStore = AppState & AppActions;

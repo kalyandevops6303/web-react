@@ -37,4 +37,5 @@ export const useAppStore = create<AppStore>((set, _get) => ({
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) =>
     setWip(modalContent, modalActions, set),
   unsetWip: () => unsetWip(set),
+  resetStore: () => set({ ...defaultAppState }),
 }));
