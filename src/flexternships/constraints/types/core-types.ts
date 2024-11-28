@@ -110,18 +110,21 @@ export type GlobalModalContent = {
   description: string;
   confirmButtonText: string;
   cancelButtonText: string;
-  metadata: Record<string, string>;
+  metadata?: Record<string, string>;
 };
 
 export type AppState = {
-  wipModal: GlobalModalType.UNSAVED_WORK | undefined;
-  modalContent: GlobalModalContent;
-  modalActions: GlobalModalActions;
+  isWip: boolean;
+  modal: GlobalModalType | undefined;
+  modalContent: GlobalModalContent | undefined;
+  modalActions: GlobalModalActions | undefined;
 };
 
 export type AppActions = {
-  setWipModal: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
-  unsetWipModal: () => void;
+  openModal: (modalType: GlobalModalType, metadata?: Record<string, string>) => void;
+  closeModal: () => void;
+  setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
+  unsetWip: () => void;
 };
 
 export type AppStore = AppState & AppActions;

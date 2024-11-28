@@ -8,13 +8,13 @@ import Milestones from '@flexternships/app/components/pages/create-project/tabs/
 import Preview from '@flexternships/app/components/pages/create-project/tabs/preview/Preview';
 import Requirements from '@flexternships/app/components/pages/create-project/tabs/Requirements';
 import Roles from '@flexternships/app/components/pages/create-project/tabs/roles/Roles';
-import SaveForLater from '../components/core/modals/SaveForLater';
-import { useProjectCreationStore } from '@/flexternships/stores/project-creation-store';
-import { ModalType } from '@/flexternships/constraints/types/project-creation-types';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function CreateFlexternProject() {
-  const openModal = useProjectCreationStore((state) => state.openModal);
-  const closeModal = useProjectCreationStore((state) => state.closeModal);
+  const isWorkInProgress = useAppStore((state) => state.isWip);
+  const openGlobalModal = useAppStore((state) => state.openModal);
+
   const navigate = useNavigate();
 
   const tabs = [
@@ -49,25 +49,23 @@ export default function CreateFlexternProject() {
   ];
 
   const onBack = () => {
-    closeModal();
+    if (isWorkInProgress) {
+      openGlobalModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/dashboard' });
+      return;
+    }
     navigate('/dashboard');
-  };
-
-  const openSaveForLaterModal = () => {
-    openModal(ModalType.SAVE_FOR_LATER);
   };
 
   return (
     <div className="flexternships-page p-6">
       <PrimaryIconText
-        onClick={openSaveForLaterModal}
+        onClick={onBack}
         className={'mb-2.5'}
         text="Create Project"
         icon={<ArrowLeft className={'text-white'} size={18} />}
         bgDark
       />
       <TabNavigationForm tabs={tabs} />
-      <SaveForLater onCancel={onBack} />
     </div>
   );
 }

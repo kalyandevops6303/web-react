@@ -18,6 +18,8 @@ import { getNotificationsPolling } from '../../../../redux/actions/notifications
 import { notificationsPolling } from '../../../../redux/selectors/notificationsSelectors';
 import styled from 'styled-components';
 import { clearAllFormData } from '../../../../redux/reducers/formData';
+import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
@@ -37,11 +39,22 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const isChatView = location.pathname.includes('/chat');
   const isNotificationView = location.pathname.includes('/notifications');
 
+  const isWorkInProgress = useAppStore((state) => state.isWip);
+  const openModal = useAppStore((state) => state.openModal);
+
   const handleNotificaionClick = () => {
+    if (isWorkInProgress) {
+      openModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/notifications' });
+      return;
+    }
     isNotificationCount && dispatch(notificationCount(false));
   };
 
   const handleChatNavigate = () => {
+    if (isWorkInProgress) {
+      openModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/chat' });
+      return;
+    }
     if (cometAuthToken) {
       // dispatch(clearUnreadMsgCountData());
       navigate(`/chat`, {

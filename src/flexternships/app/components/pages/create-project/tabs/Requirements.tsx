@@ -17,9 +17,11 @@ import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { verifyProjectName } from '@/flexternships/services/project-management-v2';
 import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
+import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -27,6 +29,11 @@ export default function Requirements() {
   const updateRequirementsData = useProjectCreationStore((state) => state.updateRequirementsData);
   const nextTab = useProjectCreationStore((state) => state.nextTab);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
+
+  const modalContent = useAppStore((state) => state.modalContent);
+  const setWip = useAppStore((state) => state.setWip);
+  const unsetWip = useAppStore((state) => state.unsetWip);
+  const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const [isContinueLoading, setIsContinueLoading] = useState<boolean>(false);
   const [projectNameError, setProjectNameError] = useState<string>('');
@@ -46,6 +53,7 @@ export default function Requirements() {
   });
 
   const { projectId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setProjectNameError('');
@@ -110,6 +118,25 @@ export default function Requirements() {
       });
     }
   }, [requirementsData, reset]);
+
+  useEffect(() => {
+    return () => {
+      const onDiscard = () => {
+        if (modalContent?.metadata?.nextPath) {
+          navigate(modalContent.metadata.nextPath);
+        }
+        unsetWip();
+      };
+      setWip(saveForLaterModalContent, {
+        onConfirm: async () => {
+          await onSaveDraft();
+          closeGlobalModal();
+        },
+        onCancel: onDiscard,
+        onClose: closeGlobalModal,
+      });
+    };
+  }, [modalContent?.metadata?.nextPath]);
 
   return (
     <div className="flex flex-col">

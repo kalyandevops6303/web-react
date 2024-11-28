@@ -9,9 +9,8 @@ import {
   GlobalModalActions,
   GlobalModalContent,
 } from '@flexternships/types/core-types';
-import { populateUserDetails, setWipModal, unsetWipModal } from '@flexternships/actions/core-actions';
+import { closeModal, openModal, populateUserDetails, setWip, unsetWip } from '@flexternships/actions/core-actions';
 import { GlobalModalType } from '../constraints/enums/core-enums';
-
 
 const defaultInitState: FlexternUser = {
   isUserDetailsLoading: false,
@@ -25,13 +24,17 @@ export const useFlexternUserStore = create<FlexternUserStore>((set, get) => ({
 }));
 
 const defaultAppState: AppState = {
-  wipModal: undefined,
-  modalContent: {} as GlobalModalContent,
-  modalActions: {} as GlobalModalActions,
+  isWip: false,
+  modal: undefined,
+  modalContent: undefined,
+  modalActions: undefined,
 };
 
 export const useAppStore = create<AppStore>((set, _get) => ({
   ...defaultAppState,
-  setWipModal: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => setWipModal(modalContent, modalActions, set),
-  unsetWipModal: () => unsetWipModal(set),
+  openModal: (modalType: GlobalModalType, metadata?: Record<string, string>) => openModal(modalType, set, metadata),
+  closeModal: () => closeModal(set),
+  setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) =>
+    setWip(modalContent, modalActions, set),
+  unsetWip: () => unsetWip(set),
 }));

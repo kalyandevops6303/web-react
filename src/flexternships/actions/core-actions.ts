@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { getUserDetails } from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
 import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
-import { GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
+import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
 
 // Flextern User Actions
 export const populateUserDetails = async (force: boolean, get: any, set: any) => {
@@ -49,13 +49,23 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
   set({ isUserDetailsLoading: false });
 };
 
-
-
 // App Actions
-export const setWipModal = (modalContent: GlobalModalContent, modalActions: GlobalModalActions, set: any) => {
-  set({ wipModal: GlobalModalType.UNSAVED_WORK, modalContent, modalActions });
+export const openModal = (modalType: GlobalModalType, set: any, metadata?: Record<string, string>) => {
+  set((state: AppState) => ({
+    ...state,
+    modal: modalType,
+    modalContent: { ...state.modalContent, metadata },
+  }));
 };
 
-export const unsetWipModal = (set: any) => {
-  set({ wipModal: undefined, modalContent: {} as GlobalModalContent, modalActions: {} as GlobalModalActions });
+export const closeModal = (set: any) => {
+  set({ modal: undefined });
+};
+
+export const setWip = (modalContent: GlobalModalContent, modalActions: GlobalModalActions, set: any) => {
+  set({ isWip: true, modalContent, modalActions });
+};
+
+export const unsetWip = (set: any) => {
+  set({ isWip: false, modal: undefined, modalContent: undefined, modalActions: undefined });
 };

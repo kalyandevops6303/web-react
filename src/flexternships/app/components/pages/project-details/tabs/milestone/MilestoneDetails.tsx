@@ -8,8 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/flexternships/app/components/ui/accordion';
-import { MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { GlobalModalType, MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { getMilestoneStatusTextByUserType, getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
@@ -52,6 +52,9 @@ export default function MilestoneDetails() {
 
   const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
 
+  const isWorkInProgress = useAppStore((state) => state.isWip);
+  const openGlobalModal = useAppStore((state) => state.openModal);
+
   const [primaryActionLoading, setPrimaryActionLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -83,7 +86,12 @@ export default function MilestoneDetails() {
   }, [milestoneId, markMilestoneArtifactAsRead, userDetails.userType]);
 
   const goBackToAllMilestones = () => {
-    navigate(`/project-details/${milestoneDetails.projectDetails.projectId}/milestone`);
+    const nextPath = `/project-details/${milestoneDetails.projectDetails.projectId}/milestone`;
+    if (isWorkInProgress) {
+      openGlobalModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      return;
+    }
+    navigate(nextPath);
   };
 
   const openConfirmActionModal = () => {

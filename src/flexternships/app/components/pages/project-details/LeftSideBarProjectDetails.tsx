@@ -80,6 +80,7 @@ const LeftSideBarProjectDetails = () => {
   }, [data]);
 
   useEffect(() => {
+    // TODO: Incorrect usage of projectMilestones here. Use blocked status of project instead.
     setIsBlocked(projectMilestones?.reduce((acc, milestone) => acc || milestone.isBlocked, false));
   }, [projectMilestones]);
   return (
