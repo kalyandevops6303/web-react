@@ -7,7 +7,8 @@ import { useEffect } from 'react';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import DefaultMilestonesView from './DefaultMilestonesView';
 import RestrictedMilestonesView from './RestrictedMilestonesView';
-import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { ProjectPrimaryStatus, ProjectSecondaryStatus, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function MilestoneTab() {
   const isMilestonesLoading = useProjectMilestonesStore((state) => state.isMilestonesLoading);
@@ -15,6 +16,9 @@ export default function MilestoneTab() {
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
   const { projectId, milestoneId } = useParams();
 
   useEffect(() => {
@@ -66,7 +70,7 @@ export default function MilestoneTab() {
 
   return (
     <div className="flex flex-col gap-4 py-5 max-w-5xl">
-      {allDocumentsSigned ? (
+      {allDocumentsSigned || userDetails.userType === UserType.CLIENT ? (
         <DefaultMilestonesView milestones={projectMilestones} />
       ) : (
         <RestrictedMilestonesView projectDetails={projectDetailsForRestrictedView} milestones={projectMilestones} />
