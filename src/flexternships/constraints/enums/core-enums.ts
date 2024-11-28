@@ -79,3 +79,7 @@ export enum ServerResponseStatus {
   SUCCESS = 'SUCCESS',
   FAIL = 'FAIL',
 }
+
+export enum GlobalModalType {
+  UNSAVED_WORK = 'UNSAVED_WORK',
+}

@@ -1,8 +1,10 @@
 import { isEmpty } from 'lodash';
 import { getUserDetails } from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
-import { ToastType } from '../constraints/enums/core-enums';
+import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
+import { GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
 
+// Flextern User Actions
 export const populateUserDetails = async (force: boolean, get: any, set: any) => {
   const userDetails = get().userDetails;
   if (!isEmpty(userDetails) && !force) return;
@@ -45,4 +47,15 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
     showToastMessage(ToastType.ERROR, 'An unexpected error occurred while fetching user details');
   }
   set({ isUserDetailsLoading: false });
+};
+
+
+
+// App Actions
+export const setWipModal = (modalContent: GlobalModalContent, modalActions: GlobalModalActions, set: any) => {
+  set({ wipModal: GlobalModalType.UNSAVED_WORK, modalContent, modalActions });
+};
+
+export const unsetWipModal = (set: any) => {
+  set({ wipModal: undefined, modalContent: {} as GlobalModalContent, modalActions: {} as GlobalModalActions });
 };

@@ -1,4 +1,4 @@
-import { FlexternUserAppRole, FlexternUserCheckpoint, UserType } from '../enums/core-enums';
+import { FlexternUserAppRole, FlexternUserCheckpoint, GlobalModalType, UserType } from '../enums/core-enums';
 
 // Static Data Types
 
@@ -97,3 +97,31 @@ export type FlexternUserActions = {
 };
 
 export type FlexternUserStore = FlexternUser & FlexternUserActions;
+
+// App Types
+export type GlobalModalActions = {
+  onConfirm: () => Promise<void>;
+  onClose: () => void;
+  onCancel: () => void;
+};
+
+export type GlobalModalContent = {
+  title: string;
+  description: string;
+  confirmButtonText: string;
+  cancelButtonText: string;
+  metadata: Record<string, string>;
+};
+
+export type AppState = {
+  wipModal: GlobalModalType.UNSAVED_WORK | undefined;
+  modalContent: GlobalModalContent;
+  modalActions: GlobalModalActions;
+};
+
+export type AppActions = {
+  setWipModal: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
+  unsetWipModal: () => void;
+};
+
+export type AppStore = AppState & AppActions;
