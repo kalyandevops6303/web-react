@@ -54,7 +54,7 @@ export default function IndividualFeedback() {
             name: `${person?.first_name} ${person?.last_name}`,
             role: person?.role,
             completed: person?.feedback_id ?? false,
-            lastMessageTime: '3 min',
+            lastMessageTime: '1 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
           };
@@ -107,6 +107,7 @@ export default function IndividualFeedback() {
               surveyJson={mockIndividualFeedbackSurveyJson}
               userDetails={keysToCamelCase(activeTeamMember)}
               onComplete={handleSurveyComplete}
+              estimatedTime={1}
             />
           )}
         </div>

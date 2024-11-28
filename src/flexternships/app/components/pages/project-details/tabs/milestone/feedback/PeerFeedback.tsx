@@ -68,6 +68,7 @@ export default function PeerFeedback() {
   }, [activeTeamMember]);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
+    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: peerFeedbackForm?._id,
       milestone_id: params?.milestoneId,
@@ -119,6 +120,7 @@ export default function PeerFeedback() {
               surveyJson={mockPeerFeedbackSurveyJson}
               userDetails={keysToCamelCase(activeTeamMember)}
               onComplete={handleSurveyComplete}
+              estimatedTime={2}
             />
           )}
         </div>

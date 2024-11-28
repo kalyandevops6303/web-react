@@ -30,6 +30,7 @@ export default function SelfFeedback() {
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
+    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: selfFeedbackForm?._id,
       milestone_id: params?.milestoneId,
@@ -78,6 +79,7 @@ export default function SelfFeedback() {
               surveyJson={mockSelfFeedbackSurveyJson}
               userDetails={currentUserDetails}
               onComplete={handleSurveyComplete}
+              estimatedTime={2}
             />
           )}
         </div>

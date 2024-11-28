@@ -15,6 +15,7 @@ export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/
 export { numberRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/NumericRating';
 export { SmileyRating } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/SmileyRating';
 export { AreaCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/AreaCheckBox';
+export { GridCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/GridCheckBox';
 export { Wow } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/WowRecognition';
 
 export default function TeamFeedback() {
@@ -24,6 +25,9 @@ export default function TeamFeedback() {
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
   const teamDetails = useProjectsStore((state) => state.teamDetails);
 
+  const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+  const projectDetails = useProjectsStore((state) => state.projectDetails);
+
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
 
@@ -32,6 +36,7 @@ export default function TeamFeedback() {
   useEffect(() => {
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
     populateTeamDetails(params?.projectId);
+    getProjectDetails(params?.projectId as string);
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
@@ -69,7 +74,12 @@ export default function TeamFeedback() {
       <div className="flex gap-3">
         <div>
           {teamFeedbackForm && (
-            <MilestoneFeedbackSurvey surveyJson={mockTeamFeedbackSurveyJson} onComplete={handleSurveyComplete} />
+            <MilestoneFeedbackSurvey
+              surveyJson={mockTeamFeedbackSurveyJson}
+              onComplete={handleSurveyComplete}
+              estimatedTime={1}
+              projectName={projectDetails?.details?.name}
+            />
           )}
         </div>
         <FunFacts />

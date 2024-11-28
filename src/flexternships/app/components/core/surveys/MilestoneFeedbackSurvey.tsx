@@ -50,14 +50,17 @@ import { User } from 'react-feather';
 
 import '@flexternships/styles/pages/survey/survey.css';
 import SurveyProgress from './SurveyProgress';
+import { isEmpty } from 'lodash';
 interface SurveyFormProps {
   surveyJson: SurveyJson;
   onComplete: (survey: SurveyModel) => void;
   userDetails?: any;
+  estimatedTime?: number;
+  projectName?: string;
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
-  const { surveyJson, userDetails, onComplete } = props;
+  const { surveyJson, userDetails, onComplete, estimatedTime, projectName } = props;
   const survey = new Model(surveyJson);
   survey.onComplete.add(onComplete);
 
@@ -174,10 +177,17 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     }
 
     const question = options.question;
+
+    // Add id to the element equal to question.jsonObj.name
+    if (question.jsonObj?.name) {
+      options.htmlElement.setAttribute('id', question.jsonObj.name);
+    }
+
     const tag = document.createElement('div');
     tag.classList.add('tag-container');
 
-    tag.innerHTML = `<span class="py-[1px] px-[9px] rounded-md border text-[#23DFEB] border-[#23DFEB] bg-[#23DFEB1F] font-montserrat text-sm font-medium leading-[22px] text-stroke-[1px]">${question.jsonObj.tag?.text}</span>`;
+    tag.innerHTML = `<span class="py-[1px] px-[9px] rounded-md font-montserrat text-sm font-[550] leading-[22px] text-stroke-[1px]" 
+      style="color: ${question.jsonObj.tag?.color}; background-color: ${question.jsonObj.tag?.backgroundColor}; border: 1px solid ${question.jsonObj.tag?.color}">${question.jsonObj.tag?.text}</span>`;
     options.htmlElement.insertBefore(tag, options.htmlElement.firstChild);
 
     document.querySelectorAll('.sd-comment').forEach((element) => {
@@ -185,7 +195,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       element.classList.add('sd-comment__content');
     });
 
-    //Set Progress state
+    // Set Progress state
     const answeredQuestions: {
       index: number; // Question's index
       name: string; // Question's name
@@ -203,7 +213,8 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
         });
       }
     });
-    // console.log("Answered Questions:", answeredQuestions);
+
+    // Update the survey progress
     setSurveyProgress({
       answeredQuestions,
       allQuestions: _survey?.jsonObj?.elements,
@@ -221,15 +232,19 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     // Loop through all questions in the survey
     _survey.getAllQuestions().forEach((question, index) => {
       // Check if the question is answered and valid
+      // console.log(question.comment)
       if (question.isAnswered) {
-        answeredQuestions.push({
-          index: index, // Question's index
-          name: question.name, // Question's name
-          answer: question.value, // User's answer(s)
-        });
+        if (
+          ((question as any).jsonObj.commentRequired && question.comment?.length > 0) ||
+          !(question as any).jsonObj.commentRequired
+        )
+          answeredQuestions.push({
+            index: index, // Question's index
+            name: question.name, // Question's name
+            answer: question.value, // User's answer(s)
+          });
       }
     });
-    // console.log("Answered Questions:", answeredQuestions);
     setSurveyProgress({
       answeredQuestions,
       allQuestions: (_survey as any)?.jsonObj?.elements,
@@ -363,28 +378,34 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   return (
     <div className="w-[650px] overflow-y-scroll !max-h-[500px] rounded-md">
       <div className="bg-white flex items-center justify-between px-5 pt-3">
-        <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage src={userDetails?.imageUri} />
-            <AvatarFallback>
-              <User color="#6E6B7B" />
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px]">
-              {userDetails?.firstName} {userDetails?.lastName}
-            </div>
-            <div className="text-[var(--1-theme-color-body-text, #6E6B7B)] font-montserrat text-sm font-normal leading-[22px]">
-              {userDetails?.role?.name ?? userDetails?.role}
+        {userDetails ? (
+          <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage src={userDetails?.imageUri} />
+              <AvatarFallback>
+                <User color="#6E6B7B" />
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px]">
+                {userDetails?.firstName} {userDetails?.lastName}
+              </div>
+              <div className="text-[var(--1-theme-color-body-text, #6E6B7B)] font-montserrat text-sm font-normal leading-[22px]">
+                {userDetails?.role?.name ?? userDetails?.role}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px]">
+            {projectName}
+          </div>
+        )}
         <div className="flex flex-col items-end">
           <div className="text-[#5E5873] text-right font-montserrat text-sm font-medium leading-[22px]">
             Estimated time to complete
           </div>
           <div className="text-[#5E5873] font-montserrat text-sm font-semibold leading-[22px]">
-            3 mins | 7 Questions
+            {estimatedTime} min | {(survey as any).jsonObj?.elements.length} Questions
           </div>
         </div>
       </div>
