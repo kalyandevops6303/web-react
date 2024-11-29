@@ -189,7 +189,12 @@ const LeftSideBarProjectDetails = () => {
               Status :
             </div>{' '}
             {secondaryStatus && (
-              <ProjectStatusChip status={secondaryStatus} statusType={StatusType?.SECONDARY} rounded={true} />
+              <ProjectStatusChip
+                status={secondaryStatus}
+                statusType={StatusType?.SECONDARY}
+                rounded={true}
+                lastInProgressMilestone={data.lastInProgressMilestone}
+              />
             )}
           </div>
         )}

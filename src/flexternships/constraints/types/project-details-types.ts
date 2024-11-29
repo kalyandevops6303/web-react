@@ -71,6 +71,7 @@ export type ProjectDetails = {
   roles: ProjectRole[];
   listingDetails: ListingDetails;
   status: ProjectPrimaryStatus;
+  lastInProgressMilestone: number;
   clientUserId: string;
   orgSlugId: string;
   isDocumentsSent: boolean;

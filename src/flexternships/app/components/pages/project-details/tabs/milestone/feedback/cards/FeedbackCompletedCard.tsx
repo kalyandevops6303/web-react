@@ -1,5 +1,7 @@
 import ViewMilestoneFeedbackModal from '@/flexternships/app/components/core/modals/ViewMilestoneFeedbackModal';
+import Tooltip from '@/flexternships/app/components/core/Tooltip';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
+import { tooltipContent } from '@/flexternships/static/milestone-feedback-content';
 import { feedbackCardContent } from '@/flexternships/static/milestones-content';
 import { useState } from 'react';
 import { AlertCircle, Check } from 'react-feather';
@@ -25,9 +27,10 @@ export default function FeedbackCompletedCard(props: FeedbackCompletedCardProps)
     >
       <div className="flex flex-row items-center gap-x-3">
         {tiny ? (
-          <span className="text-success">
-            <AlertCircle size={18} />
-          </span>
+          <Tooltip
+            icon={<AlertCircle className="text-success" size={18} />}
+            content={tooltipContent.feedbackCompleted}
+          />
         ) : (
           <span className="text-center align-middle bg-success rounded-full p-[5px]">
             <Check size={15} className="text-white" />

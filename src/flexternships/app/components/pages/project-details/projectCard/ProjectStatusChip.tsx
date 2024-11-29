@@ -6,9 +6,15 @@ interface ProjectStatusChipProps {
   status: ProjectSecondaryStatus | ProjectPrimaryStatus;
   statusType: keyof typeof StatusType;
   rounded?: boolean;
+  lastInProgressMilestone?: number;
 }
 
-const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatusChipProps) => {
+const ProjectStatusChip = ({
+  status,
+  statusType,
+  rounded = false,
+  lastInProgressMilestone,
+}: ProjectStatusChipProps) => {
   const ProjectStatusChipClassnames = {
     [ProjectPrimaryStatus.OPEN]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.DRAFT]: '',
@@ -42,7 +48,7 @@ const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatu
     >
       {(statusType === StatusType?.PRIMARY
         ? getProjectPrimaryStatusText(status as ProjectPrimaryStatus)
-        : getProjectSecondaryStatusText(status as ProjectSecondaryStatus)
+        : getProjectSecondaryStatusText(status as ProjectSecondaryStatus, lastInProgressMilestone)
       )?.toString() || status}
     </h1>
   );
