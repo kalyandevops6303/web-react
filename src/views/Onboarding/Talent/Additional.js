@@ -325,10 +325,7 @@ const Additional = () => {
       {files?.map((file, index) => (
         <Row
           key={file.id}
-          className={classNames(
-            'd-flex flex-column align-items-start',
-            { 'mb-1': index !== files.length - 1 }
-          )}
+          className={classNames('d-flex flex-column align-items-start', { 'mb-1': index !== files.length - 1 })}
         >
           <div className="d-flex flex-wrap align-items-center w-100 gap-1 gap-xl-0 justify-content-between">
             <Col
