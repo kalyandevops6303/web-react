@@ -5,6 +5,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import Spinner from '@/flexternships/app/components/core/Spinner';
+import teamPuzzleGif from '@/flexternships/assets/gifs/team-puzzle.gif';
 
 export default function TeamTab(props: InputProps) {
   const { className } = props;
@@ -38,7 +39,12 @@ export default function TeamTab(props: InputProps) {
         </svg>
       </div>
       <div className={`flex w-full flex-col items-center gap-6  p-6 ${className ?? ''}`}>
-        {teamDetails &&
+        {teamDetails.length === 0 ? (
+          <div className="w-full py-5 gap-y-5 flex flex-col items-center rounded-md bg-white shadow-card">
+            <img src={teamPuzzleGif} alt="team-puzzle" className="w-[176px] h-[141px] object-cover" />
+            <p className="text-grey-300 text-sm font-medium tracking-wide">No talents found</p>
+          </div>
+        ) : (
           teamDetails.map((teamMember, index) => (
             <div className="w-full" key={index}>
               <TeamCard
@@ -51,7 +57,8 @@ export default function TeamTab(props: InputProps) {
                 profileImage={teamMember?.profileImage}
               />
             </div>
-          ))}
+          ))
+        )}
       </div>
     </div>
   );

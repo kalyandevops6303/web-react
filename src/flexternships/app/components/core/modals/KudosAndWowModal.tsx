@@ -125,30 +125,35 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
                     teamMember.selected ? 'border-trublue-secondary-500' : 'border-grey-50'
                   } rounded-md px-3.5 py-2.5`}
                 >
-                  <div className='flex items-center gap-x-3.5'>
+                  <div className="flex items-center gap-x-3.5">
                     {recognitionType === RecognitionType.WOW ? (
+                      <img
+                        src={Wow}
+                        style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
+                        className="w-8 h-8 object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={ThumbsUp}
+                        style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
+                        className="w-8 h-8"
+                      />
+                    )}
                     <img
-                      src={Wow}
-                      style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
-                      className="w-8 h-8 object-cover"
+                      src={teamMember.profileImage || defaultAvatar}
+                      className="w-9 h-9 rounded-full border-2 border-white shadow-card object-cover"
                     />
-                  ) : (
-                    <img
-                      src={ThumbsUp}
-                      style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
-                      className="w-8 h-8"
-                    />
-                  )}
-                  <img
-                    src={teamMember.profileImage || defaultAvatar}
-                    className="w-9 h-9 rounded-full border-2 border-white shadow-card object-cover"
-                  />
                   </div>
                   <span className="w-32 text-sm font-normal text-grey-heading leading-normal">{teamMember.name}</span>
                 </div>
               ))}
             </div>
-            <PrimaryButton onClick={handleSubmit} disabled={selectedCount === 0} className="mt-[1.63rem]" loading={isSubmitLoading}>
+            <PrimaryButton
+              onClick={handleSubmit}
+              disabled={selectedCount === 0}
+              className="mt-[1.63rem]"
+              loading={isSubmitLoading}
+            >
               Submit
             </PrimaryButton>
           </div>
