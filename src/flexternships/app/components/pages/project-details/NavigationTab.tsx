@@ -40,7 +40,7 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
         <h1
           className={`${
             isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'
-          } group-hover:text-trublue-secondary-500 text-xs lg:text-sm`}
+          } group-hover:text-trublue-secondary-500 text-xs`}
         >
           {tab.description}
         </h1>

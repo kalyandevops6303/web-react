@@ -186,7 +186,7 @@ export default function MilestoneDetails() {
       </div>
       <SimpleElevatedCard className="flex flex-col px-8 pt-6 pb-10 gap-y-10 bg-white-fa overflow-hidden">
         <div className="flex flex-row gap-x-4 items-center">
-          <h1>Milestone {milestoneDetails.seq}</h1>
+          <h1 className="text-lg font-medium not-italic text-grey-heading">Milestone {milestoneDetails.seq}</h1>
           <MilestoneStatusTag status={milestoneDetails.status} />
           <StartsInTimer epoch={milestoneDetails.startDate} hideSeconds />
         </div>
@@ -220,17 +220,17 @@ export default function MilestoneDetails() {
         </div>
         <SimpleElevatedCard className="flex flex-col p-6 gap-y-6 overflow-hidden bg-white">
           <div className="flex flex-col gap-y-4">
-            <h2 className="text-lg font-normal not-italic text-grey-heading">Milestone Name</h2>
+            <h2 className="text-lg font-medium not-italic text-grey-heading">Milestone Name</h2>
             <p className="text-sm font-normal not-italic leading-5.5 text-grey">{milestoneDetails?.name}</p>
           </div>
           <div className="flex flex-col gap-y-4">
-            <h2 className="text-lg font-normal not-italic text-grey-heading">Description</h2>
+            <h2 className="text-lg font-medium not-italic text-grey-heading">Description</h2>
             <p className="text-sm font-normal not-italic leading-5.5 text-grey">
               <ExpandableText charLimit={300}>{milestoneDetails?.description}</ExpandableText>
             </p>
           </div>
           <div className="flex flex-col gap-y-4">
-            <h2 className="text-lg font-normal not-italic text-grey-heading">Deliverables</h2>
+            <h2 className="text-lg font-medium not-italic text-grey-heading">Deliverables</h2>
             <ul className="list-none">
               {milestoneDetails?.deliverables?.map((deliverable, index) => (
                 <li
