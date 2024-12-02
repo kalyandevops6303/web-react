@@ -119,7 +119,9 @@ export default function CompanyDetails() {
   return (
     <div>
       <div className="py-6 flex flex-col gap-6 bg-white rounded-md">
-        <div className="px-6 pb-3 border-b-1 border-grey-border">About</div>
+        <div className="px-6 pb-3 text-grey-heading text-lg font-medium leading-[26px] border-b-1 border-grey-border">
+          About
+        </div>
         <div className="px-6 pb-1">
           <Controller
             name="companyLogo"
@@ -330,7 +332,8 @@ export default function CompanyDetails() {
         <PrimaryIconText
           text="Back"
           icon={<ChevronLeft size={16} />}
-          onClick={isDirty || isSaveLoading ? () => {} : goToPreviousTab}
+          onClick={goToPreviousTab}
+          disabled={isDirty || isSaveLoading}
           className={`${isDirty || isSaveLoading ? 'opacity-30 cursor-default' : ''}`}
         />
         <div className="flex gap-5">
