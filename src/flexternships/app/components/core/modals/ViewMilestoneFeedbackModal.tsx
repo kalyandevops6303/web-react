@@ -1,7 +1,6 @@
 import IndividualFeedback from '@/flexternships/app/project-details/tabs/performance/IndividualFeedback';
 import MilestoneFeedback from '@/flexternships/app/project-details/tabs/performance/MilestoneFeedback';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
-import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
 import { X } from 'react-feather';
 
