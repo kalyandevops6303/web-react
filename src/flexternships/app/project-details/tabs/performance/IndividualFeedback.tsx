@@ -2,20 +2,14 @@ import CollapsableCard from '@/flexternships/app/components/core/cards/Collapsab
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
-import { UserType } from '@/flexternships/constraints/enums/core-enums';
-import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
-import { getScoreLabel } from '@/flexternships/utils/score-utils';
 import { useEffect, useState } from 'react';
 import { User } from 'react-feather';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
 
 export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const { milestoneId, feedbackType } = props;
-
-  const currentUserType = useFlexternUserStore((state) => state.userDetails?.userType);
 
   const performanceDetails = useProjectsStore((state) => state.performanceDetails);
   const getPerformanceDetails = useProjectsStore((state) => state.getPeerOrIndividualPerformanceDetails);
@@ -25,7 +19,6 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const feedbackResponse = useFeedbackStore((state) => state.feedbackResponse);
 
   const [currentOpened, setCurrentOpened] = useState<any>(null);
-  const [formattedFeedbackResponse, setFormattedFeedbackResponse] = useState<any>(null);
 
   const handleAccordionToggle = (individualFeedback: any) => {
     if (individualFeedback.user_id === currentOpened?.user_id) setCurrentOpened(null);
@@ -39,28 +32,9 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   useEffect(() => {
     if (currentOpened && currentOpened?.feedback_id) {
       const receiverId = currentOpened?.user_id;
-      const feedbackType = currentUserType === UserType.CLIENT ? FeedbackTypesAPI.INDIVIDUAL : FeedbackTypesAPI.PEER;
-
       getFeedbackResponse(receiverId, milestoneId, feedbackType);
     }
   }, [currentOpened]);
-
-  useEffect(() => {
-    setFormattedFeedbackResponse(
-      feedbackResponse?.feedback?.pages?.map((page: any) => {
-        return {
-          name: page?.name,
-          values: page?.elements?.map((element: any) => {
-            return {
-              type: element?.type,
-              name: element?.name,
-              value: feedbackResponse?.feedback_result[element?.name] ?? '',
-            };
-          }),
-        };
-      }),
-    );
-  }, [feedbackResponse]);
 
   const getHeaderContent = (individualFeedback: any) => {
     const { image_uri, first_name, last_name, role, score } = individualFeedback;
@@ -86,7 +60,11 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
         {score != undefined && (
           <div className="flex items-center gap-5">
             <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
-              {getScoreLabel(score)}
+              {/* {getScoreLabel(score)} */}
+              {score}
+              <span className="text-[var(--Grey-300,#9C9FA1)] text-right font-montserrat text-[14px] font-medium leading-[22px]">
+                /5
+              </span>
             </div>
             <SteppedProgress value={score} />
           </div>
@@ -114,7 +92,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
                 isOpen={individualFeedback?.user_id === currentOpened?.user_id}
                 onToggle={() => handleAccordionToggle(individualFeedback)}
               >
-                <IndividualFeedbackResponse response={formattedFeedbackResponse} />
+                <IndividualFeedbackResponse response={feedbackResponse} />
               </CollapsableCard>
             )}
           </>

@@ -56,6 +56,7 @@ interface SurveyFormProps {
   userDetails?: any;
   estimatedTime?: number;
   projectName?: string;
+  enableSubmit?: boolean;
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
