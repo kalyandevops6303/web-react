@@ -1,0 +1,43 @@
+/* Change the background color, border, and padding of the comment textarea */
+.sd-comment {
+  border-radius: 6px !important;
+  border: 1px solid var(--Grey-50, #E6E7E7) !important;
+  background: var(--Grey-0, #FFF) !important;
+  width: 100% !important;
+}
+
+.sd-comment:focus:active {
+  border: 1px solid var(--Grey-50, #E6E7E7) !important;
+}
+
+.sd-question__comment-area {
+  width: 100% !important;
+}
+
+.sv_main {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+/* Optionally, apply the font to specific elements like titles and answers */
+.sv_question {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.sv_element {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.sv-action {
+  font-family: "Montserrat", sans-serif !important;
+  font-style: normal;
+  font-weight: 600;
+  margin-left: 7px !important;
+}
+
+.sv-string-viewer, .sv-string-viewer span {
+  font-family: "Montserrat", sans-serif !important;
+  color: var(--Grey-600, #515759);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+}
