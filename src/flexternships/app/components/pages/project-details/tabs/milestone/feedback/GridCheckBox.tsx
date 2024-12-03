@@ -1,11 +1,18 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
 import React from 'react';
 import { User } from 'react-feather';
 import { ItemValue, QuestionCheckboxModel, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
 
 type Choice = {
-  value: Record<string, any>;
+  first_name: string;
+  last_name: string;
+  image_uri?: string;
+  role_name?: string;
+  appreciation_score?: number | null;
+  averageRating?: number | null;
+  team_id: string;
+  _id: string;
 };
 
 export class GridCheckboxModel extends QuestionCheckboxModel {
@@ -28,15 +35,20 @@ export class GridCheckboxModel extends QuestionCheckboxModel {
 
   onSurveyLoad() {
     if (this.jsonObj && this.jsonObj.choices) {
-      this.choices = this.jsonObj.choices.map((choice: Choice) =>
-        typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value),
-      );
+      this.choices = this.jsonObj.choices.map((choice: Choice) => {
+        const text = `${choice.first_name} ${choice.last_name}` || '';
+
+        return new ItemValue(choice, text); // Store the entire object as the value
+      });
     }
   }
 
   protected onPropertyValueChanged(name: string, oldValue: any, newValue: any): void {
     if (name === 'jsonObj' && newValue && newValue.choices) {
-      this.choices = newValue.choices.map((choice: Choice) => new ItemValue(choice.value));
+      this.choices = newValue.choices.map((choice: Choice) => {
+        const text = choice.first_name || '';
+        return new ItemValue(choice, text); // Store the entire object as the value
+      });
     }
     super.onPropertyValueChanged(name, oldValue, newValue);
   }
@@ -84,85 +96,88 @@ export class GridCheckbox extends SurveyQuestionElementBase {
     }
   }
 
-  handleChoiceSelect = (value: any) => {
+  handleChoiceSelect = (choiceValue: any) => {
     const newSelectedValues = new Set(this.state.selectedValues);
 
-    if (newSelectedValues.has(value)) {
-      newSelectedValues.delete(value);
+    if (newSelectedValues.has(choiceValue)) {
+      newSelectedValues.delete(choiceValue);
     } else {
-      newSelectedValues.add(value);
+      newSelectedValues.add(choiceValue);
     }
+
     this.setState({ selectedValues: newSelectedValues }, () => {
       if (this.question) {
-        const valueArray = Array.from(newSelectedValues);
-        this.question.value = valueArray;
+        this.question.value = Array.from(newSelectedValues); // Save the array of objects
       }
     });
   };
 
   renderElement() {
     if (!this.question) return null;
-    const choices = this.question.jsonObj.choices || [];
+
+    const choices = this.question.choices || [];
 
     return (
       <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 flex-wrap gap-1 mt-2">
           {choices.length > 0 ? (
             choices.map((choice: any) => {
-              const value = typeof choice === 'string' ? choice : choice;
+              const value = typeof choice === 'string' ? choice : choice.value;
               const text = typeof choice === 'string' ? choice : choice.text || choice.value;
+              const imageUri = choice.id.image_uri || '';
+              const role = choice.id.role_name || '';
               const isSelected = this.state.selectedValues.has(value);
 
               return (
                 <button
-                  key={choice._id}
+                  key={value._id}
                   type="button"
                   onClick={() => this.handleChoiceSelect(value)}
                   className={`
-                            relative flex items-center gap-3 p-2 rounded-lg transition ease-in-out bg-white shadow-[0px_8px_12px_0px_rgba(0,0,0,0.08)]
-                            ${
-                              isSelected
-                                ? 'border border-[#2196F3] bg-white shadow-[2px_2px_12px_0px_rgba(33,150,243,0.5)]'
-                                : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                            }
-                        `}
+                    relative flex items-start p-2 rounded-lg transition-none shadow-[0px_8px_12px_0px_rgba(0,0,0,0.08)]
+                    ${
+                      isSelected
+                        ? 'shadow-[2px_2px_12px_0px_rgba(33,150,243,0.5)] border border-[#2196F3]'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }
+                  `}
                   aria-checked={isSelected}
                   role="checkbox"
                 >
+                  <div
+                    className={`
+                      absolute top-2 right-2 w-5 h-5 flex-shrink-0 rounded-full border-2 
+                      ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-none'}
+                      flex items-center justify-center
+                    `}
+                  >
+                    {isSelected && (
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
                   <span className="text-left text-[14px] font-semibold leading-[22px] font-montserrat text-[#6E6B7B]">
                     <div>
                       <div className="flex gap-1 items-center mt-1">
                         <Avatar className="w-7 h-7">
-                          <AvatarImage src={choice.image_uri} className="w-full h-full" />
+                          <AvatarImage src={imageUri} className="w-full h-full rounded-full" />
                           <AvatarFallback className="w-full h-full">
                             <User color="#6E6B7B" />
                           </AvatarFallback>
                         </Avatar>
 
                         <div className="flex flex-col">
-                          <div>
-                            {choice.first_name} {choice.last_name}
+                          <div className="flex flex-nowrap w-[120px] whitespace-nowrap overflow-hidden text-ellipsis font-montserrat">
+                            {text}
                           </div>
-                          <div className="text-[12px] font-normal leading-[20px] font-montserrat text-[#6E6B7B]">
-                            {choice.role_name}
+                          <div className="text-[12px] font-normal leading-[20px] font-montserrat text-[#6E6B7B] font-montserrat">
+                            {role}
                           </div>
                         </div>
                       </div>
                     </div>
                   </span>
-                  <div
-                    className={`
-                                absolute top-1 right-0.5 w-3.5 h-3.5 rounded-full
-                                ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300'}
-                                flex items-center justify-center
-                            `}
-                  >
-                    {isSelected && (
-                      <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
                 </button>
               );
             })
@@ -181,6 +196,7 @@ Serializer.addClass(
     { name: 'title', type: 'string' },
     { name: 'choices', type: 'itemvalues' },
     { name: 'isRequired', type: 'boolean', default: false },
+    { name: 'tag', type: 'object' },
   ],
   function () {
     return new GridCheckboxModel('');

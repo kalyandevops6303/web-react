@@ -9,7 +9,6 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
-import { mockPeerFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { keysToCamelCase } from '@/flexternships/utils/core-utils';
@@ -36,7 +35,7 @@ export default function PeerFeedback() {
     getPeerFeedbackForm(params?.projectId, FeedbackTypesAPI.PEER);
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
     populateUserDetails();
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     if (team) {
@@ -108,16 +107,14 @@ export default function PeerFeedback() {
         <div className="bg-[#0185E4] w-min text-white rounded-full p-1">
           <ArrowLeft size="20px" />
         </div>
-        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
-          {peerFeedbackForm?.feedback?.title}
-        </div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">Peer Feedback</div>
       </div>
-      <div className="flex gap-2 items-start">
+      <div className="relative overflow-y-auto flex gap-2 items-start">
         <div className="flex items-start justify-center gap-2">
           {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
           {peerFeedbackForm && (
             <MilestoneFeedbackSurvey
-              surveyJson={mockPeerFeedbackSurveyJson}
+              surveyJson={peerFeedbackForm?.feedback}
               userDetails={keysToCamelCase(activeTeamMember)}
               onComplete={handleSurveyComplete}
               estimatedTime={2}

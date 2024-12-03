@@ -2,16 +2,13 @@ import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Check } from 'react-feather';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export default function SurveyProgress() {
   const surveyProgressData = useFeedbackStore((state) => state.surveyProgress);
   const [steps, setSteps] = useState<any>([]);
 
-  const navigate = useNavigate();
   const location = useLocation();
-
-  const currentPath = location.pathname;
 
   const isAnswered = (index: number): boolean => {
     return surveyProgressData?.answeredQuestions?.some((item: { index: number }) => item.index === index);
@@ -23,28 +20,33 @@ export default function SurveyProgress() {
 
   useEffect(() => {
     setSteps(
-      surveyProgressData?.allQuestions?.map((item: any, index: number) => {
-        return {
-          completed: isAnswered(index),
-          id: item.name,
-        };
-      }),
+      surveyProgressData?.allQuestions?.map((item: any, index: number) => ({
+        completed: isAnswered(index),
+        id: item.name,
+      })),
     );
   }, [surveyProgressData]);
 
   useEffect(() => {
-    // Scroll to the element with the id matching the hash
     if (location.hash) {
-      const element = document.getElementById(location.hash.substring(1)); // Remove '#' from the hash
+      const elementId = location.hash.substring(1); // Remove the '#' from the hash
+      const element = document.getElementById(elementId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [location]); // Run this whenever the location changes
+  }, [location.hash]);
 
-  useEffect(() => {
-    console.log(steps);
-  }, [steps]);
+  const handleStepClick = (stepId: string) => {
+    // Update the hash in the URL without triggering a reload
+    window.history.pushState(null, '', `#${stepId}`);
+
+    // Scroll to the element
+    const element = document.getElementById(stepId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="w-full flex flex-col max-w-4xl mx-auto p-6 bg-white">
@@ -63,8 +65,9 @@ export default function SurveyProgress() {
 
           {steps?.map((step: { completed: boolean; id: string }) => (
             <div
+              key={step.id}
               className="relative z-10"
-              onClick={() => navigate(`${currentPath}#${step.id}`)}
+              onClick={() => handleStepClick(step.id)}
               role="button"
               tabIndex={0}
             >

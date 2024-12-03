@@ -7,8 +7,8 @@ import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enu
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { ArrowLeft } from 'react-feather';
-import { mockTeamFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 import FunFacts from './FunFacts';
+import Spinner from '@/flexternships/app/components/core/Spinner';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -27,6 +27,7 @@ export default function TeamFeedback() {
 
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
+  const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
 
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
@@ -40,6 +41,7 @@ export default function TeamFeedback() {
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
+    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: teamFeedbackForm?._id,
       milestone_id: params?.milestoneId,
@@ -53,12 +55,18 @@ export default function TeamFeedback() {
     submitFeedback(submitFeedbackData);
   };
 
+  if (isFeedbackFormLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48 w-full">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {/* <div className="flex flex-row items-start"> */}
-      {/* <Sidebar data={persons} /> */}
-      {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
-      {/* </div> */}
       <div
         className="flex items-center gap-1 cursor-pointer mb-5"
         onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
@@ -66,16 +74,14 @@ export default function TeamFeedback() {
         <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
           <ArrowLeft size="20px" />
         </div>
-        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
-          {teamFeedbackForm?.feedback?.title}
-        </div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">Team Feedback</div>
       </div>
 
       <div className="flex gap-3">
         <div>
           {teamFeedbackForm && (
             <MilestoneFeedbackSurvey
-              surveyJson={mockTeamFeedbackSurveyJson}
+              surveyJson={teamFeedbackForm?.feedback}
               onComplete={handleSurveyComplete}
               estimatedTime={1}
               projectName={projectDetails?.details?.name}

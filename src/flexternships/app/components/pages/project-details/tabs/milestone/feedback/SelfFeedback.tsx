@@ -7,7 +7,6 @@ import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enu
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
-import { mockSelfFeedbackSurveyJson } from '@/flexternships/mocks/survey-data';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import FunFacts from './FunFacts';
 
@@ -56,10 +55,6 @@ export default function SelfFeedback() {
 
   return (
     <div>
-      {/* <div className="flex flex-row items-start"> */}
-      {/* <Sidebar data={persons} /> */}
-      {/* <TimelineStepper data={mockSelfFeedbackSurveyJson} /> */}
-      {/* </div> */}
       <div
         className="flex items-center gap-1 cursor-pointer mb-5"
         onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
@@ -67,16 +62,14 @@ export default function SelfFeedback() {
         <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
           <ArrowLeft size="20px" />
         </div>
-        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">
-          {selfFeedbackForm?.feedback?.title}
-        </div>
+        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">Self Feedback</div>
       </div>
 
       <div className="flex gap-3">
         <div>
           {selfFeedbackForm && (
             <MilestoneFeedbackSurvey
-              surveyJson={mockSelfFeedbackSurveyJson}
+              surveyJson={selfFeedbackForm?.feedback}
               userDetails={currentUserDetails}
               onComplete={handleSurveyComplete}
               estimatedTime={2}

@@ -1,26 +1,26 @@
 // Data Model Types
 type SurveyElement = {
-  type: string;
-  name: string;
-  title?: string;
-  placeholder?: string;
-  rateType?: string;
-  displayMode?: string;
-  rateValues?: Array<{ value: number; text?: string }> | number[];
-  minRateDescription?: string;
-  maxRateDescription?: string;
-  isRequired?: boolean;
-  html?: string;
-  choices?: string[] | Array<{ value: string; text: string }>;
-  labelTrue?: string;
-  labelFalse?: string;
-  showCommentArea?: boolean;
-  api?: string;
-  autoGenerate?: boolean;
-  minDecriptionValue?: string;
-  maxDecriptionValue?: string;
-  rateMax?: number;
-  text?: string;
+  type: string; // Type of the element (e.g., numberRating, areacheckbox, etc.)
+  name: string; // Name of the element (e.g., 'q1_collaboration')
+  title?: string; // Optional title for the question
+  placeholder?: string; // Placeholder text for inputs
+  rateType?: string; // Type of rating (e.g., numberRating)
+  displayMode?: string; // Display mode for ratings (e.g., buttons, list)
+  rateValues?: Array<{ value: number; text?: string }> | number[]; // Rating values or custom values
+  minRateDescription?: string; // Description for the minimum rating
+  maxRateDescription?: string; // Description for the maximum rating
+  isRequired?: boolean; // Whether the field is required
+  html?: string; // Optional HTML content, if any
+  choices?: string[] | Array<{ value: string; text: string }>; // Choices for select or checkboxes
+  labelTrue?: string; // Optional label for 'true' choice in boolean questions
+  labelFalse?: string; // Optional label for 'false' choice in boolean questions
+  showCommentArea?: boolean; // Whether to show a comment area
+  api?: string; // Optional API endpoint associated with the element
+  autoGenerate?: boolean; // Whether the field is auto-generated
+  minDecriptionValue?: string; // Optional description for the minimum value
+  maxDecriptionValue?: string; // Optional description for the maximum value
+  rateMax?: number; // Optional maximum rating value
+  text?: string; // Optional additional text or info for the element
 };
 
 type SurveyPage = {
@@ -32,9 +32,9 @@ type SurveyPage = {
 export type SurveyJson = {
   title?: string;
   pages?: SurveyPage[];
-  elements?: Array<object>;
+  elements?: Array<SurveyElement>;
   showProgressBar?: string;
-  progressBarType: string;
+  progressBarType?: string;
   completeText: string;
 };
 
