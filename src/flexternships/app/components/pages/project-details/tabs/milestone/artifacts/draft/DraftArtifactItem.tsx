@@ -3,9 +3,9 @@ import Spinner from '@flexternships/components/core/Spinner';
 import { MilestoneArtifactErrorType, MilestoneArtifactType, ToastType } from '@flexternships/enums/core-enums';
 import { MilestoneDraftArtifact } from '@flexternships/types/project-milestones-types';
 import { deleteMilestoneArtifactById, getFileDownloadUrl } from '@flexternships/services/project-management-v2';
-import { showToastMessage } from '@flexternships/utils/core-utils';
-import { formatEpochToHumanReadable } from '@flexternships/utils/date-utils';
-import { getFileIcon } from '@flexternships/utils/file-utils';
+import { getUserTimezone, showToastMessage } from '@flexternships/utils/core-utils';
+import { formatEpochToHumanReadable, formatEpochToTimeInTimezone } from '@flexternships/utils/date-utils';
+import { getFileIcon, getFileSize } from '@flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link, Trash2 } from 'react-feather';
 import { Control, Controller, UseFieldArrayRemove } from 'react-hook-form';
@@ -156,7 +156,24 @@ export default function DraftArtifactItem(props: Props) {
             Try Again
           </div>
         ) : (
-          formatEpochToHumanReadable(data.uploadedAt ?? 0, false, true)
+          <div className="flex flex-col">
+            <div className="flex flex-row justify-between">
+              <span className="text-sm text-grey font-normal leading-[21px]">
+                {formatEpochToHumanReadable(data.uploadedAt ?? 0, false, false, getUserTimezone())}
+              </span>
+              <span className="text-sm text-grey font-normal leading-[21px]">
+                {formatEpochToTimeInTimezone(data.uploadedAt ?? 0, getUserTimezone())}
+              </span>
+            </div>
+            <div className="flex flex-row justify-between">
+              <span className="text-sm text-grey font-normal leading-[21px]">
+                {getFileSize(data.metadata?.size ?? 0)}
+              </span>
+              {data.artifactId && (
+                <span className="text-grey-heading font-semibold text-sm leading-[21px]">Draft Saved</span>
+              )}
+            </div>
+          </div>
         )}
       </div>
       <div className="py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3">
