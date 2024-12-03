@@ -654,16 +654,23 @@ export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
 
 export const getModifiedProjectResponse = ({ data }) => {
   const project = data?.project;
+
   if (isFlexternshipApp) {
     return {
+      _id: project?._id,
+      is_invited: project?.is_invited,
+      client: {
+        user_id: data.client._id,
+        departmentName: data.client.department_name,
+      },
       requirements: {
         projectName: project.name,
-        estimatedStartDate: project.estimated_start_date,
-        estimatedDuration: project.estimated_duration,
-        estimatedWeeklyHours: project.estimated_weekly_hours,
-        totalProjectHoursEach: project.total_project_hours_each,
-        projectDescription: project.description,
-        documents: project.documents.map((doc) => ({
+        estimatedStartDate: project.expected_start_date,
+        estimatedDuration: project.duration,
+        estimatedWeeklyHours: project.duration_hours_per_week,
+        totalProjectHoursEach: (project.duration || 0) * (project.duration_hours_per_week || 0),
+        projectDescription: project?.description,
+        documents: project?.documents?.map((doc) => ({
           fileName: doc.file_name,
           fileKey: doc.file_key,
           downloadUrl: doc.download_url,
@@ -671,8 +678,19 @@ export const getModifiedProjectResponse = ({ data }) => {
           createdAt: doc.created_at,
         })),
       },
-      roles: project.roles,
-      milestones: project.milestones,
+      roles: project?.roles?.map((projectRole) => ({
+        role: projectRole?.role,
+        count: projectRole?.count,
+        skills: projectRole?.proficiency?.skills,
+        tools: projectRole?.proficiency?.tools,
+      })),
+      milestones: project?.milestones?.map((milestone) => ({
+        _id: milestone?._id,
+        title: milestone?.name,
+        duration: milestone?.estimated_duration?.duration,
+        description: milestone?.description,
+        deliverables: milestone?.deliverables,
+      })),
     };
   }
   return {

@@ -11,15 +11,14 @@ import { getFileDownloadUrl } from '@/flexternships/services/project-management-
 import RoleItem from '../../../pages/create-project/tabs/preview/RoleItem';
 import MilestoneItem from '../../../pages/create-project/tabs/preview/MilestoneItem';
 import PrimaryButton from '../../buttons/PrimaryButton';
-import { ChevronRight } from 'react-feather';
+import ExpandableText from '../../ExpandableText';
+import SecondaryButton from '../../buttons/SecondaryButton';
 
 export default function FlexternProjectDetailsModal(props: FlexternProjectDetailsModalProps) {
-  const { data, isOpen, onClose, onConfirm } = props;
-
-  console.log(data);
+  const { data, isOpen, onClose, ctas } = props;
 
   return (
-    <GenericModal className="max-w-[1240px]" isOpen={isOpen} onClose={onClose}>
+    <GenericModal onClose={onClose} className="max-w-[1240px]" isOpen={isOpen}>
       {/* TODO: Add Accordions */}
       <div
         className={`flex flex-col gap-y-6 py-8 px-6 bg-white-fa rounded-md max-h-[80vh] overflow-y-scroll overflow-x-hidden ${TabStyles.previewTab}`}
@@ -30,39 +29,58 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
             <ProjectDetailsItem
               className="w-[460px] m-0"
               title="Project name"
-              value={'Usage Data Collection and Payment' || 'NaN'}
+              value={data?.requirements?.projectName}
             />
             <ProjectDetailsItem
               className="w-[333px] m-0"
               title="Department Name (BU)"
-              value={'Research & Development' || 'NaN'}
+              value={data?.client?.departmentName}
             />
             <ProjectDetailsItem
               className="w-[237px] m-0"
               title="Estimated Duration"
-              value={`5 weeks`}
+              value={
+                data?.requirements?.estimatedDuration ? `${data?.requirements?.estimatedDuration} weeks` : undefined
+              }
               tooltip="Estimated duration of the project in weeks"
             />
             <ProjectDetailsItem
               className="w-[204px] m-0"
               title="Estimated Start Date"
-              value={formatEpochToHumanReadable(0, false, false, getUserTimezone())}
+              value={
+                data?.requirements?.estimatedStartDate
+                  ? formatEpochToHumanReadable(
+                      data?.requirements?.estimatedStartDate || 0,
+                      false,
+                      false,
+                      getUserTimezone(),
+                    )
+                  : undefined
+              }
             />
             <ProjectDetailsItem
               className="w-[230px] m-0"
               title="Total Milestones"
-              value={`3`.padStart(2, '0') || 'NaN'}
+              value={data?.milestones?.length ? `${data?.milestones?.length}`.padStart(2, '0') : undefined}
             />
             <ProjectDetailsItem
               className="w-[333px] m-0"
               title="Estimated Hours/Week per Flextern"
-              value={`20hrs weekly`}
+              value={
+                data?.requirements?.estimatedWeeklyHours
+                  ? `${data?.requirements?.estimatedWeeklyHours}hrs weekly`
+                  : undefined
+              }
               tooltip="Estimated weekly work-hours for each flextern"
             />
             <ProjectDetailsItem
               className="w-[237px] m-0"
               title="Total Hours per Flextern"
-              value={`70hrs`}
+              value={
+                data?.requirements?.totalProjectHoursEach
+                  ? `${data?.requirements?.totalProjectHoursEach}hrs`
+                  : undefined
+              }
               tooltip="Total project hours for each flextern"
             />
           </div>
@@ -71,21 +89,21 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
         <div className={Styles.projectDetailsCard}>
           <div className={Styles.projectDetailsCardHeader}>Project Description</div>
           <div className={Styles.projectDetailsCardBody}>
-            <div className="text-base text-grey-heading font-normal leading-6">
-              The data collection and payment system is designed to allow automotive companies to compensate users for
-              sharing their data. By collecting data such as driving habits, vehicle usage, road conditions and other
-              environmental data, valuable insights that can be created to support autonomous driving.
-            </div>
+            <ExpandableText className="text-base text-grey-heading font-normal leading-6" charLimit={350}>
+              {data?.requirements?.projectDescription || '(Add description)'}
+            </ExpandableText>
           </div>
         </div>
-        {/* TODO: Project Files */}
-        <HorizontalFileCard
-          className="m-0"
-          fileName={'Project_Description.pdf'}
-          fileSize={formatFileSize(1000000)}
-          createdAt={formatEpochToHumanReadable(1717334400)}
-          generateDownloadLink={async () => await getFileDownloadUrl('123')}
-        />
+        {(data?.requirements?.documents?.length ?? 0) > 0 &&
+          data.requirements?.documents.map((document) => (
+            <HorizontalFileCard
+              className="m-0"
+              fileName={document.fileName}
+              fileSize={formatFileSize(document.size)}
+              createdAt={formatEpochToHumanReadable(document.createdAt)}
+              generateDownloadLink={async () => await getFileDownloadUrl(document.fileKey)}
+            />
+          ))}
 
         <div className={Styles.projectDetailsCard}>
           <div className={Styles.projectDetailsCardHeader}>Roles</div>
@@ -98,23 +116,9 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
                 <div className={`${TabStyles.rolesPreviewHeaderItem} grow`}>Tools</div>
               </div>
               <div>
-                {/* TODO: Add roles */}
-                <RoleItem
-                  data={{
-                    role: { _id: '123', name: 'Data Analyst' },
-                    count: 1,
-                    skills: [
-                      { _id: '123', name: 'Data Analysis' },
-                      { _id: '123', name: 'Python' },
-                      { _id: '123', name: 'SQL' },
-                    ],
-                    tools: [
-                      { _id: '123', name: 'Python' },
-                      { _id: '123', name: 'SQL' },
-                    ],
-                  }}
-                  last={true}
-                />
+                {data?.roles?.map((role, index) => (
+                  <RoleItem key={index} data={role} last={index === (data?.roles?.length || 0) - 1} />
+                ))}
               </div>
             </div>
           </div>
@@ -129,28 +133,29 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
                 <div className={`${TabStyles.milestonesPreviewHeaderItem} grow`}>Milestone Name</div>
               </div>
               <div className={TabStyles.milestonesPreviewBody}>
-                {/* TODO: Add milestones */}
-                <MilestoneItem
-                  data={{
-                    _id: '123',
-                    title: 'Data Collection',
-                    duration: 5,
-                    description: 'Data Collection',
-                    deliverables: ['Data Collection'],
-                  }}
-                  milestoneIndex={0}
-                  last={true}
-                />
+                {data?.milestones?.map((milestone, index) => (
+                  <MilestoneItem
+                    key={index}
+                    data={milestone}
+                    milestoneIndex={index}
+                    last={index === (data?.milestones?.length || 0) - 1}
+                  />
+                ))}
               </div>
             </div>
           </div>
         </div>
-        <div className="flex flex-row justify-end">
-          {/* TODO: Conditionally show these CTAs */}
-          {onConfirm && (
-            <PrimaryButton onClick={onConfirm}>
-              View Project <ChevronRight size={16} />
-            </PrimaryButton>
+        <div className="flex flex-row gap-x-6 justify-end">
+          {ctas.map((cta) =>
+            cta.type === 'primary' ? (
+              <PrimaryButton className="gap-x-1" onClick={cta.onClick}>
+                {cta.label}
+              </PrimaryButton>
+            ) : (
+              <SecondaryButton cancel={cta.error} className="gap-x-1" onClick={cta.onClick}>
+                {cta.label}
+              </SecondaryButton>
+            ),
           )}
         </div>
       </div>
@@ -159,8 +164,13 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
 }
 
 type FlexternProjectDetailsModalProps = {
-  data: Partial<ProjectCreationFormData>;
+  data: Partial<ProjectCreationFormData> & { client: { departmentName: string } };
   isOpen: boolean;
   onClose: () => void;
-  onConfirm?: () => void;
+  ctas: {
+    type: 'primary' | 'secondary';
+    error?: boolean;
+    label: string | React.ReactNode;
+    onClick: () => void;
+  }[];
 };
