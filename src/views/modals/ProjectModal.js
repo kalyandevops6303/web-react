@@ -48,6 +48,7 @@ import { isEmpty } from 'lodash';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
+import FlexternProjectDetailsModal from '@/flexternships/app/components/core/modals/global/FlexternProjectDetailsModal';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -270,6 +271,12 @@ const ProjectModal = ({
     : [];
 
   const appPermissions = useSelector(appPermissionsSelector);
+
+  if (isFlexternshipApp) {
+    return (
+      <FlexternProjectDetailsModal data={data} isOpen={modal} onClose={toggleModal} onConfirm={handleViewProject} />
+    );
+  }
 
   return (
     <Modal

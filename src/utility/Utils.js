@@ -26,6 +26,7 @@ import TextIcon from '../assets/images/TXT.svg';
 import JPGIcon from '../assets/images/JPG.svg';
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -653,6 +654,27 @@ export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
 
 export const getModifiedProjectResponse = ({ data }) => {
   const project = data?.project;
+  if (isFlexternshipApp) {
+    return {
+      requirements: {
+        projectName: project.name,
+        estimatedStartDate: project.estimated_start_date,
+        estimatedDuration: project.estimated_duration,
+        estimatedWeeklyHours: project.estimated_weekly_hours,
+        totalProjectHoursEach: project.total_project_hours_each,
+        projectDescription: project.description,
+        documents: project.documents.map((doc) => ({
+          fileName: doc.file_name,
+          fileKey: doc.file_key,
+          downloadUrl: doc.download_url,
+          size: doc.size,
+          createdAt: doc.created_at,
+        })),
+      },
+      roles: project.roles,
+      milestones: project.milestones,
+    };
+  }
   return {
     _id: project?._id,
     created_at: project?.posted_date,
