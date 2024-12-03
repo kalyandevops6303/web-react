@@ -122,7 +122,7 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
         <div className={Styles.projectDetailsCard}>
           <div className={Styles.projectDetailsCardHeader}>Milestones</div>
           <div className={Styles.projectDetailsCardBody}>
-            <div className={TabStyles.milestonesPreview}>
+            <div className={`${TabStyles.milestonesPreview} m-0`}>
               <div className={TabStyles.milestonesPreviewHeader}>
                 <div className={`${TabStyles.milestonesPreviewHeaderItem} w-[200px]`}>Milestone Count</div>
                 <div className={`${TabStyles.milestonesPreviewHeaderItem} w-[120px]`}>Duration</div>
