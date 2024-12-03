@@ -43,6 +43,7 @@ import SurveyListStyles from '@/flexternships/styles/components/core/surveys/mil
 import SurveyActionBarStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-action-bar.module.css';
 import SurveyVariablesStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-variables.module.css';
 import SurveyTagboxStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-tag-box.module.css';
+
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
@@ -204,7 +205,6 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
       if (grouped[questionKey]) {
         const { value, comment } = grouped[questionKey];
-
         // Check conditions for including the question
         if (
           value !== null && // Ensure the value is answered
@@ -229,6 +229,16 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       allQuestions: (_survey as any)?.jsonObj?.elements,
     });
 
+    const submitButtonWrapper = document.querySelector('#sv-nav-complete');
+    const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
+
+    if (submitButton) {
+      submitButton.style.borderRadius = '6px';
+      submitButton.disabled = true;
+      if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
+      else submitButton.style.backgroundColor = '#0065C1';
+    }
+
     if (options.question.hasComment) {
       const textarea = options.htmlElement.querySelector('textarea');
       if (textarea) {
@@ -250,6 +260,16 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
             answeredQuestions,
             allQuestions: (_survey as any)?.jsonObj?.elements,
           });
+
+          const submitButtonWrapper = document.querySelector('#sv-nav-complete');
+          const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
+
+          if (submitButton) {
+            submitButton.style.borderRadius = '6px';
+            submitButton.disabled = answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length; // Disable if incomplete
+            if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
+            else submitButton.style.backgroundColor = '#0065C1';
+          }
         });
       }
     }
@@ -275,6 +295,16 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
             answeredQuestions,
             allQuestions: (_survey as any)?.jsonObj?.elements,
           });
+
+          const submitButtonWrapper = document.querySelector('#sv-nav-complete');
+          const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
+
+          if (submitButton) {
+            submitButton.style.borderRadius = '6px';
+            submitButton.disabled = answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length; // Disable if incomplete
+            if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
+            else submitButton.style.backgroundColor = '#0065C1';
+          }
         });
       }
     }
@@ -317,6 +347,16 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       answeredQuestions,
       allQuestions: (_survey as any)?.jsonObj?.elements,
     });
+
+    const submitButtonWrapper = document.querySelector('#sv-nav-complete');
+    const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
+
+    if (submitButton) {
+      submitButton.style.borderRadius = '6px';
+      submitButton.disabled = answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length; // Disable if incomplete
+      if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
+      else submitButton.style.backgroundColor = '#0065C1';
+    }
   });
 
   // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later

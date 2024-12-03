@@ -40,7 +40,9 @@ export default function SelfFeedback() {
       feedback_result: survey.data,
     };
 
-    submitFeedback(submitFeedbackData);
+    submitFeedback(submitFeedbackData, () => {
+      navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+    });
   };
 
   if (isFeedbackFormLoading) {

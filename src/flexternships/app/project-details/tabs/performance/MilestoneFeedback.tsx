@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
 
 export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
-  const { feedbackType } = props;
+  const { feedbackType, milestoneId } = props;
   const params = useParams();
 
   const performanceDetails = useProjectsStore((state) => state.performanceDetails);
@@ -27,6 +27,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
 
   const [currentOpened, setCurrentOpened] = useState<any>(null);
+  const [filteredPerformanceDetails, setFilteredPerformanceDetails] = useState<any>([]);
 
   const handleAccordionToggle = (peerFeedback: any) => {
     if (peerFeedback._id === currentOpened?._id) setCurrentOpened(null);
@@ -47,6 +48,16 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
       getFeedbackResponse(receiverId, milestoneId, feedbackType);
     }
   }, [currentOpened]);
+
+  useEffect(() => {
+    if (milestoneId && performanceDetails) {
+      setFilteredPerformanceDetails(
+        performanceDetails?.filter((feedback: any) => feedback?.milestone_id === milestoneId),
+      );
+    } else if (performanceDetails) {
+      setFilteredPerformanceDetails(performanceDetails);
+    }
+  }, [performanceDetails, milestoneId]);
 
   const getHeaderContent = (peerFeedback: any) => {
     const { name, score } = peerFeedback;
@@ -84,7 +95,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
         </div>
       ) : (
         <div>
-          {performanceDetails?.map((peerFeedback: any) => (
+          {filteredPerformanceDetails?.map((peerFeedback: any) => (
             <>
               {peerFeedback?.feedback_id && (
                 <CollapsableCard
@@ -107,4 +118,5 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
 
 type MilestoneFeedbackProps = {
   feedbackType: string;
+  milestoneId?: string;
 };

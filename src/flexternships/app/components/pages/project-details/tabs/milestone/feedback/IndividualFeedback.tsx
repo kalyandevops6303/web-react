@@ -42,7 +42,13 @@ export default function IndividualFeedback() {
       const firstMemberWithoutFeedback = team.find(
         (member: { feedback_id: undefined }) => member.feedback_id === undefined,
       );
-      setActiveTeamMember(firstMemberWithoutFeedback || team[0]); // Fallback to the first element if none matches
+      if (!firstMemberWithoutFeedback) {
+        // Navigate if all members have feedback
+        navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+      } else {
+        // Set the active team member to the first one without feedback
+        setActiveTeamMember(firstMemberWithoutFeedback);
+      }
     }
   }, [team]);
 
