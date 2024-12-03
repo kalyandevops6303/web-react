@@ -1,6 +1,7 @@
 import IndividualFeedback from '@/flexternships/app/project-details/tabs/performance/IndividualFeedback';
 import MilestoneFeedback from '@/flexternships/app/project-details/tabs/performance/MilestoneFeedback';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
+import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
 import { X } from 'react-feather';
 
@@ -24,7 +25,8 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
           <h1 className="text-[28px] text-center font-normal text-grey-heading">
             {viewMilestoneFeedbackModalTitle[feedbackType]}
           </h1>
-          {feedbackType === 'MANAGER_TO_TEAM' || feedbackType === 'SELF' ? (
+          {feedbackType === MilestoneFeedbackType.TEAM_FEEDBACK ||
+          feedbackType === MilestoneFeedbackType.SELF_FEEDBACK ? (
             <MilestoneFeedback feedbackType={feedbackType} milestoneId={milestoneId} />
           ) : (
             <IndividualFeedback feedbackType={feedbackType} milestoneId={milestoneId} />
