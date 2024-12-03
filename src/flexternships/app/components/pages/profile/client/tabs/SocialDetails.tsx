@@ -13,7 +13,7 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'react-feather';
+import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -118,7 +118,9 @@ export default function SocialDetails() {
   return (
     <div>
       <div className="py-6 flex flex-col bg-white rounded-md">
-        <div className="px-6 pb-3 border-b-1 border-grey-border">Social Links</div>
+        <div className="px-6 pb-3 text-grey-heading text-lg font-medium leading-[26px] border-b-1 border-grey-border">
+          Social Links
+        </div>
         <div className="pl-6 flex flex-wrap py-5 gap-x-6 gap-y-5">
           {fields.map((field, index) => {
             if (defaultPlatforms.includes(field.platform)) {
@@ -141,40 +143,44 @@ export default function SocialDetails() {
               );
             } else {
               return (
-                <div className="flex flex-row flex-wrap gap-x-6">
-                  <Controller
-                    key={field.id}
-                    name={`socialLinks.${index}.platform`}
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <TextInput
-                        value={value}
-                        onChange={onChange}
-                        className="w-[350px]"
-                        label={`Site-${index - defaultPlatforms.length + 1} Description`}
-                        placeholder={`Enter site description`}
-                        error={errors?.socialLinks?.[index]?.platform?.message}
-                        required
-                      />
-                    )}
-                  />
-                  <Controller
-                    key={field.id}
-                    name={`socialLinks.${index}.url`}
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <TextInput
-                        value={value}
-                        onChange={onChange}
-                        className="w-[350px]"
-                        label={`Site-${index - defaultPlatforms.length + 1} Url`}
-                        placeholder={`Enter site url`}
-                        error={errors?.socialLinks?.[index]?.url?.message}
-                      />
-                    )}
-                  />
-                  <div className="flex items-center text-error cursor-pointer mt-4" onClick={() => remove(index)}>
-                    <Trash2 size={18} />
+                <div key={field.id} className="flex flex-row gap-x-2">
+                  <div className="flex flex-row flex-wrap gap-x-6">
+                    <Controller
+                      key={field.id}
+                      name={`socialLinks.${index}.platform`}
+                      control={control}
+                      render={({ field: { value, onChange } }) => (
+                        <TextInput
+                          value={value}
+                          onChange={onChange}
+                          className="w-[350px]"
+                          label={`Description`}
+                          placeholder={`Enter site description`}
+                          error={errors?.socialLinks?.[index]?.platform?.message}
+                          required
+                        />
+                      )}
+                    />
+                    <Controller
+                      key={field.id}
+                      name={`socialLinks.${index}.url`}
+                      control={control}
+                      render={({ field: { value, onChange } }) => (
+                        <TextInput
+                          value={value}
+                          onChange={onChange}
+                          className="w-[350px]"
+                          label={`Url`}
+                          placeholder={`Enter site url`}
+                          error={errors?.socialLinks?.[index]?.url?.message}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex items-center self-end mb-0.5" onClick={() => remove(index)}>
+                    <span className="px-2 py-2.5 rounded-md text-error text-sm font-medium tracking-wide cursor-pointer hover:bg-error hover:bg-opacity-10 transition-colors duration-200">
+                      Remove
+                    </span>
                   </div>
                 </div>
               );
@@ -189,7 +195,8 @@ export default function SocialDetails() {
         <PrimaryIconText
           text="Back"
           icon={<ChevronLeft size={16} />}
-          onClick={isDirty || isSaveLoading ? () => {} : goToPreviousTab}
+          onClick={goToPreviousTab}
+          disabled={isDirty || isSaveLoading}
           className={`${isDirty || isSaveLoading ? 'opacity-30 cursor-default' : ''}`}
         />
         <div className="flex gap-5">

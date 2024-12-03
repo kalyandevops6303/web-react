@@ -43,20 +43,27 @@ import SurveyListStyles from '@/flexternships/styles/components/core/surveys/mil
 import SurveyActionBarStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-action-bar.module.css';
 import SurveyVariablesStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-variables.module.css';
 import SurveyTagboxStyles from '@/flexternships/styles/components/core/surveys/milestone-feedback-survey/survey-tag-box.module.css';
-import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { User } from 'react-feather';
+
+import '@flexternships/styles/pages/survey/survey.css';
+import SurveyProgress from './SurveyProgress';
 interface SurveyFormProps {
   surveyJson: SurveyJson;
   onComplete: (survey: SurveyModel) => void;
+  userDetails?: any;
+  estimatedTime?: number;
+  projectName?: string;
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
-  const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
-
-  const { surveyJson, onComplete } = props;
+  const { surveyJson, userDetails, onComplete, estimatedTime, projectName } = props;
   const survey = new Model(surveyJson);
   survey.onComplete.add(onComplete);
+
+  const setSurveyProgress = useFeedbackStore((state) => state.setSurveyProgress);
 
   survey.applyTheme({
     themeName: 'default',
@@ -71,7 +78,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       '--sjs-base-unit': '8px',
       '--sjs-shadow-small': '0px 1px 2px 0px rgba(0, 0, 0, 0.15)',
       '--sjs-shadow-inner': 'inset 0px 1px 2px 0px rgba(0, 0, 0, 0.15)',
-      '--sjs-border-default': '#FF9F43',
+      // '--sjs-border-default': '#FF9F43',
       '--sjs-border-light': 'rgba(0, 0, 0, 0.09)',
       '--sjs-general-backcolor': 'rgba(255, 255, 255, 1)',
       '--sjs-general-backcolor-dark': 'rgba(248, 248, 248, 1)',
@@ -142,7 +149,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       '--sjs-article-font-default-paragraphIndent': '0px',
       '--sjs-article-font-default-textCase': 'none',
       '--sjs-general-backcolor-dim': 'rgba(243, 243, 243, 1)',
-      '--sjs-primary-backcolor': '#FF9F43',
+      '--sjs-primary-backcolor': 'rgba(255, 159, 67, 0.1)',
       '--sjs-primary-backcolor-dark': 'rgba(240, 150, 63, 1)',
       '--sjs-primary-backcolor-light': 'rgba(255, 159, 67, 0.1)',
       '--sjs-primary-forecolor': 'rgba(255, 255, 255, 1)',
@@ -162,11 +169,153 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       itemChecked: 'sd-item--checked sd-radio--checked checked',
     },
   };
+
+  function convertToAnsweredQuestions(input: Record<string, any>) {
+    const answeredQuestions: {
+      index: number; // Question's index
+      name: string; // Question's name
+      answer: {
+        value: any; // Main value
+        comment: any; // Optional comment
+      };
+    }[] = [];
+
+    // Group questions and their comments
+    const grouped = Object.keys(input).reduce((acc, key) => {
+      const [mainKey, subKey] = key.split('-');
+
+      if (!acc[mainKey]) {
+        acc[mainKey] = { value: null, comment: null };
+      }
+
+      if (subKey === 'Comment') {
+        acc[mainKey].comment = input[key];
+      } else {
+        acc[mainKey].value = input[key];
+      }
+
+      return acc;
+    }, {} as Record<string, { value: any; comment: any }>);
+
+    // Filter and process questions based on survey conditions
+    survey.getAllQuestions().forEach((question: any, index: number) => {
+      const questionKey = question.name;
+
+      if (grouped[questionKey]) {
+        const { value, comment } = grouped[questionKey];
+
+        // Check conditions for including the question
+        if (
+          value !== null && // Ensure the value is answered
+          (((question as any).jsonObj.commentRequired && comment?.length > 0) ||
+            !(question as any).jsonObj.commentRequired)
+        ) {
+          answeredQuestions.push({
+            index,
+            name: questionKey,
+            answer: { value, comment },
+          });
+        }
+      }
+    });
+
+    return answeredQuestions;
+  }
+
   survey.onAfterRenderQuestion.add(function (_survey: any, options: any) {
+    setSurveyProgress({
+      answeredQuestions: [],
+      allQuestions: (_survey as any)?.jsonObj?.elements,
+    });
+
+    if (options.question.hasComment) {
+      const textarea = options.htmlElement.querySelector('textarea');
+      if (textarea) {
+        // Add an `input` event listener to update value immediately
+        textarea.addEventListener('input', (event: any) => {
+          const value = event.target.value;
+          // Update survey value and trigger onValueChanged properly
+          _survey.setValue(`${options.question.name}-Comment`, value);
+
+          let answeredQuestions: {
+            index: number; // Question's index
+            name: string; // Question's name
+            answer: any; // User's answer(s)
+          }[] = [];
+
+          answeredQuestions = convertToAnsweredQuestions(survey.data);
+
+          setSurveyProgress({
+            answeredQuestions,
+            allQuestions: (_survey as any)?.jsonObj?.elements,
+          });
+        });
+      }
+    }
+
+    if (options.question.getType() === 'comment') {
+      const textarea = options.htmlElement.querySelector('textarea');
+      if (textarea) {
+        // Add an `input` event listener to update value immediately
+        textarea.addEventListener('input', (event: any) => {
+          const value = event.target.value;
+          // Update survey value and trigger onValueChanged properly
+          _survey.setValue(options.question.name, value);
+
+          let answeredQuestions: {
+            index: number; // Question's index
+            name: string; // Question's name
+            answer: any; // User's answer(s)
+          }[] = [];
+
+          answeredQuestions = convertToAnsweredQuestions(survey.data);
+
+          setSurveyProgress({
+            answeredQuestions,
+            allQuestions: (_survey as any)?.jsonObj?.elements,
+          });
+        });
+      }
+    }
+
     const fieldset = options.htmlElement.querySelector('fieldset');
     if (fieldset) {
       fieldset.classList.add('custom-fieldset-styling');
     }
+
+    const question = options.question;
+
+    // Add id to the element equal to question.jsonObj.name
+    if (question.jsonObj?.name) {
+      options.htmlElement.setAttribute('id', question.jsonObj.name);
+    }
+
+    const tag = document.createElement('div');
+    tag.classList.add('tag-container');
+
+    tag.innerHTML = `<span class="py-[1px] px-[9px] rounded-md font-montserrat text-sm font-[550] leading-[22px] text-stroke-[1px]" 
+      style="color: ${question.jsonObj.tag?.color}; background-color: ${question.jsonObj.tag?.backgroundColor}; border: 1px solid ${question.jsonObj.tag?.color}">${question.jsonObj.tag?.text}</span>`;
+    options.htmlElement.insertBefore(tag, options.htmlElement.firstChild);
+
+    document.querySelectorAll('.sd-comment').forEach((element) => {
+      element.setAttribute('placeholder', 'Please type here');
+      element.classList.add('sd-comment__content');
+    });
+  });
+
+  survey.onValueChanged.add(function (_survey) {
+    let answeredQuestions: {
+      index: number; // Question's index
+      name: string; // Question's name
+      answer: any; // User's answer(s)
+    }[] = [];
+
+    answeredQuestions = convertToAnsweredQuestions(survey.data);
+
+    setSurveyProgress({
+      answeredQuestions,
+      allQuestions: (_survey as any)?.jsonObj?.elements,
+    });
   });
 
   // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later
@@ -213,6 +362,41 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     .custom-fieldset-styling .sd-rating__max-text {
         right: 0;
         text-align: right;
+    }
+
+    .tag-container {
+      margin-bottom: 40px; /* Add space between tag and question */
+      text-align: left;
+    }
+
+    .sv_q_title {
+      margin-top: 10px; /* Ensure there's space between the tag and the question title */
+    }
+
+    .sd-root-modern, .sd-root-modern__wrapper, .sd-root-modern--full-container, .sd-container-modern, .sv-components-column {
+      border-radius: 6px !important;
+      padding: 0px !important;
+      margin: 0px !important;
+      width: 100% !important;
+    }
+
+    .sd-page, .sd-body, .sd-action-bar {
+      padding: 7px !important;
+      margin: 0px !important;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .sd-action-bar {
+      margin-bottom: 10px;
+    }
+    
+    .scrollbar-hide {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* Internet Explorer 10+ */
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Edge */
     }
 `;
 
@@ -266,19 +450,44 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   };
   survey.css = cssClasses;
 
-  if (isFeedbackFormLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-48 w-full">
-        <div className="h-8 w-8">
-          <Spinner />
+  return (
+    <div className="w-[650px] overflow-y-scroll rounded-md">
+      <div className="bg-white flex items-center justify-between px-5 pt-3">
+        {userDetails ? (
+          <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage src={userDetails?.imageUri} />
+              <AvatarFallback>
+                <User color="#6E6B7B" />
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px]">
+                {userDetails?.firstName} {userDetails?.lastName}
+              </div>
+              <div className="text-[var(--1-theme-color-body-text, #6E6B7B)] font-montserrat text-sm font-normal leading-[22px]">
+                {userDetails?.role?.name ?? (typeof userDetails?.role === 'string' ? userDetails?.role : '')}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px]">
+            {projectName ?? ''}
+          </div>
+        )}
+        <div className="flex flex-col items-end">
+          <div className="text-[#5E5873] text-right font-montserrat text-sm font-medium leading-[22px]">
+            Estimated time to complete
+          </div>
+          <div className="text-[#5E5873] font-montserrat text-sm font-semibold leading-[22px]">
+            {estimatedTime} min | {(survey as any).jsonObj?.elements?.length} Questions
+          </div>
         </div>
       </div>
-    );
-  }
-
-  return (
-    <div>
-      <Survey model={survey} />
+      <SurveyProgress />
+      <div className="overflow-y-scroll h-[400px] scrollbar-hide">
+        <Survey model={survey} />
+      </div>
     </div>
   );
 }

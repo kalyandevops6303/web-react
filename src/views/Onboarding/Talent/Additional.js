@@ -317,58 +317,56 @@ const Additional = () => {
       }),
     );
   };
-
+  const boxShadowStyle = {
+    boxShadow: '0px 4px 24px 0px rgba(0, 0, 0, 0.06) !important',
+  };
   const fileList = () => (
-    <div className="custom-card mb-1">
-      <Card className="py-1">
-        {files?.map((file, index) => (
-          <Row
-            key={file.id}
-            className={
-              index !== files.length - 1
-                ? 'd-flex flex-column align-items-start mb-1'
-                : 'd-flex flex-column align-items-start'
-            }
-          >
-            <div className="d-flex flex-wrap align-items-center w-100 gap-1 gap-xl-0 justify-content-between">
-              <Col
-                className="d-flex cursor-pointer justify-content-between align-items-center  px-1 w-75"
-                style={{ color: theme.activeColor }}
-                onClick={() => downloadID(file)}
+    <div className="py-3 px-5 shadow-card rounded-[6px] mt-5">
+      {files?.map((file, index) => (
+        <Row
+          key={file.id}
+          className={classNames('d-flex flex-column align-items-start', { 'mb-1': index !== files.length - 1 })}
+        >
+          <div className="d-flex flex-wrap align-items-center w-100 gap-1 gap-xl-0 justify-content-between">
+            <Col
+              className="d-flex cursor-pointer justify-content-between align-items-center  px-1 w-75"
+              style={{ color: theme.activeColor }}
+              onClick={() => downloadID(file)}
+            >
+              {downloadUrlIsLoading ? (
+                <div className="d-flex align-items-center justify-content-center w-100">
+                  <Spinner color="primary" />
+                </div>
+              ) : (
+                <div className="d-flex align-items-center w-100 ">
+                  <span>{renderFilePreview(file.file)}</span>
+                  <span className="w-100 text-sm text-grey-heading font-medium">{file.file.name}</span>
+                </div>
+              )}
+            </Col>
+            <Col className="d-flex align-items-center">
+              <Col>
+                <h5 className="text-sm text-grey font-normal text-center">{getFileSize(file.file.size)}</h5>
+              </Col>
+              <Col>
+                <h5 className="text-sm text-grey font-normal text-center">
+                  {renderFormattedListingDate(new Date(file.file.lastModified))}
+                </h5>
+              </Col>
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file)}
+                onClick={() => {
+                  handleRemoveFile(file);
+                }}
               >
-                {downloadUrlIsLoading ? (
-                  <div className="d-flex align-items-center justify-content-center w-100">
-                    <Spinner color="primary" />
-                  </div>
-                ) : (
-                  <div className="d-flex align-items-center w-100 ">
-                    <span>{renderFilePreview(file.file)}</span>
-                    <span className="w-100">{file.file.name}</span>
-                  </div>
-                )}
-              </Col>
-              <Col className="d-flex align-items-center justify-content-around">
-                <Col>
-                  <h5>{getFileSize(file.file.size)}</h5>
-                </Col>
-                <Col>
-                  <h5>{renderFormattedListingDate(new Date(file.file.lastModified))}</h5>
-                </Col>
-                <Button
-                  color="flat-danger"
-                  className="btn-left-margin"
-                  disabled={uploadingFiles.includes(file)}
-                  onClick={() => {
-                    handleRemoveFile(file);
-                  }}
-                >
-                  {isIdentityFileLoading || uploadingFiles.includes(file) ? <Spinner size="sm" /> : 'Remove'}
-                </Button>
-              </Col>
-            </div>
-          </Row>
-        ))}
-      </Card>
+                {isIdentityFileLoading || uploadingFiles.includes(file) ? <Spinner size="sm" /> : 'Remove'}
+              </Button>
+            </Col>
+          </div>
+        </Row>
+      ))}
     </div>
   );
 
@@ -604,27 +602,24 @@ const Additional = () => {
                   </CardHeader>
                   <hr className="m-0 card-header-border" />
                   <CardBody className="d-flex flex-column">
-                    <div className="d-flex" style={{ padding: 20 }}>
+                    <div className="d-flex">
                       <Col className="w-100 ">
-                        <h5>
+                        <h5 className="text-sm font-normal text-grey-500">
                           Please upload a valid government approved photo ID (like passport, PAN card, Institute ID,
                           Driver's License)
                         </h5>
 
                         {files?.length === 0 && (
                           <>
-                            <Label
-                              for="photoId"
-                              className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
-                            >
+                            <Label for="photoId" className="mt-4  d-flex align-items-center  cursor-pointer">
                               <h5
-                                className="fw-bold"
+                                className="font-bold  py-3"
                                 style={{
                                   background: '#0065c1',
                                   color: 'white',
-                                  paddingBlock: '12px',
                                   borderRadius: '5px',
-                                  paddingInline: '16px',
+                                  paddingLeft: '48px',
+                                  paddingRight: '48px',
                                 }}
                               >
                                 Upload ID
@@ -653,7 +648,7 @@ const Additional = () => {
                         )}
                       </Col>
                     </div>
-                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
+                    {files && files.length > 0 && fileList()}
                   </CardBody>
                 </Card>
 
