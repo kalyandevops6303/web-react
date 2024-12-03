@@ -17,8 +17,9 @@ import RoleItem from './RoleItem';
 import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
+import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);
@@ -28,6 +29,11 @@ export default function Preview() {
   const openModal = useProjectCreationStore((state) => state.openModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
   const resetProjectCreationStore = useProjectCreationStore((state) => state.resetStore);
+
+  const setWip = useAppStore((state) => state.setWip);
+  const unsetWip = useAppStore((state) => state.unsetWip);
+  const closeGlobalModal = useAppStore((state) => state.closeModal);
+
   const [recallTimeLeft, setRecallTimeLeft] = useState<number>(-1);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -80,6 +86,17 @@ export default function Preview() {
     closeModal();
     navigate('/marketplace/my_listings');
   };
+
+  useEffect(() => {
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await onSaveDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, []);
 
   return (
     <div className={Styles.previewTab}>

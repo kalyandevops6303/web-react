@@ -29,6 +29,7 @@ import { getItemFromSession, removeItemFromSession, setItemFromSession } from '.
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import UserRetryCountAuth from './UserRetryCountAuth';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -219,28 +220,32 @@ const Login = () => {
         {/* <div className="divider my-2 custom-divider">
           <div className="divider-text">Or</div>
         </div> */}
-        <div className="my-2 custom-divider">
-          <span className="custom-line" />
-          <p className="custom-divider-text m-0 px-1">Or</p>
-          <span className="custom-line" />
-        </div>
-        <SigninWithGoogle title="Sign In" />
-        <div className="d-flex justify-content-center sign-info">
-          <Label>
-            <small>New to Trumio?</small>
-          </Label>
-          <Label
-            tag={Link}
-            to="/auth"
-            className="primary"
-            onClick={() => {
-              removeItem('isUserVisited');
-              dispatch(clearAllFormData());
-            }}
-          >
-            <small>Create an account</small>
-          </Label>
-        </div>
+        {isFlexternshipApp ? null : (
+          <>
+            <div className="my-2 custom-divider">
+              <span className="custom-line" />
+              <p className="custom-divider-text m-0 px-1">Or</p>
+              <span className="custom-line" />
+            </div>
+            <SigninWithGoogle title="Sign In" />
+            <div className="d-flex justify-content-center sign-info">
+              <Label>
+                <small>New to Trumio?</small>
+              </Label>
+              <Label
+                tag={Link}
+                to="/auth"
+                className="primary"
+                onClick={() => {
+                  removeItem('isUserVisited');
+                  dispatch(clearAllFormData());
+                }}
+              >
+                <small>Create an account</small>
+              </Label>
+            </div>
+          </>
+        )}
       </div>
     </OnBoardWrap>
   );

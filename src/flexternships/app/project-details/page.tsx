@@ -9,9 +9,11 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ProjectsTab from './tabs/projects/page';
 import TeamTab from '../components/pages/project-details/tabs/team';
 import PerformanceTab from './tabs/performance/page';
+import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+  const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectLoading = useProjectsStore((state) => state.isProjectsLoading);
   const params: Readonly<Params<string>> = useParams();
@@ -64,7 +66,6 @@ export default function FlexternshipProjectDetails() {
       clientVisible: true,
     },
   ];
-
   return (
     <div className="flexternships-page">
       {projectLoading ? (
@@ -79,13 +80,17 @@ export default function FlexternshipProjectDetails() {
               },
               {
                 title: projectDetails?.details?.name ?? 'Unknown Project',
-                link: `/project-details/${params?.projectId}/team`,
+                link: `/project-details/${params?.projectId}/milestone`,
               },
               {
                 title: params['projectStep']
                   ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
-                  : 'Unknown Tab',
-                link: `/project-details/${params?.projectId}/${params['projectStep']}`,
+                  : location.pathname.split('/')[3].charAt(0).toUpperCase() + location.pathname.split('/')[3].slice(1),
+                link: `/project-details/${params?.projectId}/${location.pathname.split('/')[3]}`,
+              },
+              {
+                title: milestoneDetails?.name ?? null,
+                link: `/project-details/${params?.projectId}/${params['projectStep']}/${params['milestoneId']}`,
               },
             ]}
           />

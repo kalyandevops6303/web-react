@@ -3,6 +3,26 @@ export enum UserType {
   TALENT = 'TALENT',
 }
 
+export enum ProjectPrimaryStatus {
+  DRAFT = 'DRAFT',
+  ACTIVE = 'ACTIVE',
+  ON_GOING = 'ON_GOING',
+  OPEN = 'OPEN',
+  COMPLETED = 'COMPLETED',
+  WITHDRAWN = 'WITHDRAWN',
+  TERMINATED = 'TERMINATED',
+  BLOCKED = 'BLOCKED',
+}
+
+export enum ProjectSecondaryStatus {
+  SIGN_CONTRACT = 'SIGN_CONTRACT',
+  SIGN_NDA = 'SIGN_NDA',
+  COMPLETED = 'COMPLETED',
+  SIGN_REQUESTED = 'SIGN_REQUESTED',
+  SIGN_DOCUMENTS = 'SIGN_DOCUMENTS',
+  MILESTONE = 'MILESTONE',
+}
+
 // Subject to changer as per BE
 export enum MilestoneStatus {
   CREATED = 'CREATED',
@@ -58,4 +78,8 @@ export enum ToastType {
 export enum ServerResponseStatus {
   SUCCESS = 'SUCCESS',
   FAIL = 'FAIL',
+}
+
+export enum GlobalModalType {
+  UNSAVED_WORK = 'UNSAVED_WORK',
 }

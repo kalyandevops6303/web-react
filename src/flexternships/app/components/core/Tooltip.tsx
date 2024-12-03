@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Info } from 'react-feather';
 
 interface TooltipProps {
+  icon?: React.ReactNode;
   content: string | string[];
   className?: string;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({ content, className }) => {
+const Tooltip: React.FC<TooltipProps> = ({ icon, content, className }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleMouseEnter = () => {
@@ -17,6 +18,14 @@ const Tooltip: React.FC<TooltipProps> = ({ content, className }) => {
     setShowTooltip(false);
   };
 
+  if (!icon) {
+    icon = (
+      <div className="flex items-center justify-center text-grey-200">
+        <Info size={16} />
+      </div>
+    );
+  }
+
   return (
     <div
       className={`relative inline-block ${className ?? ''}`}
@@ -24,9 +33,7 @@ const Tooltip: React.FC<TooltipProps> = ({ content, className }) => {
       onMouseLeave={handleMouseLeave}
     >
       {/* Info icon */}
-      <div className="flex items-center justify-center text-grey-200">
-        <Info size={16} />
-      </div>
+      {icon}
 
       {/* Tooltip content */}
       {showTooltip && (

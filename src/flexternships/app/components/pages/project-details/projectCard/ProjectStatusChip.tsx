@@ -1,63 +1,44 @@
-import {
-  PrimaryProjectStatus,
-  SecondaryProjectStatus,
-  StatusType,
-} from '@/flexternships/constraints/enums/project-enums';
+import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { StatusType } from '@/flexternships/constraints/enums/project-enums';
+import { getProjectPrimaryStatusText, getProjectSecondaryStatusText } from '@/flexternships/utils/core-utils';
 
 interface ProjectStatusChipProps {
-  status: keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus;
+  status: ProjectSecondaryStatus | ProjectPrimaryStatus;
   statusType: keyof typeof StatusType;
   rounded?: boolean;
+  lastInProgressMilestone?: number;
 }
 
-const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatusChipProps) => {
+const ProjectStatusChip = ({
+  status,
+  statusType,
+  rounded = false,
+  lastInProgressMilestone,
+}: ProjectStatusChipProps) => {
   const ProjectStatusChipClassnames = {
-    OPEN: 'bg-skyblue-light text-skyblue border border-skyblue',
-    IN_REVIEW: 'bg-yellow-100 text-yellow-600 border border-yellow-400',
-    ACTIVE: 'bg-green-200 text-green-600 border border-green-400',
-    ONGOING: 'bg-green-200 text-green-600 border border-green-400',
-    UPCOMING: 'bg-orange-200 text-orange-600 border border-orange-400',
-    CLOSED: 'bg-gray-300 text-gray-600 border border-gray-500',
-    TERMINATED: 'bg-red-100 text-red-600 border border-red-400',
-    COMPLETED: 'bg-orange-200 text-orange-600 border border-orange-400',
-    WITHDRAWN: 'bg-orange-50 text-orange-500 border-2 border-orange-500',
-    BLOCKED: 'bg-[#EA5455] border border-[#EA5455] bg-[rgba(234,84,85,0.12)]',
-    TO_BE_LISTED: 'bg-skyblue-light text-skyblue border border-skyblue',
+    [ProjectPrimaryStatus.OPEN]: 'bg-skyblue-light text-skyblue border border-skyblue',
+    [ProjectPrimaryStatus.DRAFT]: '',
+    [ProjectPrimaryStatus.ACTIVE]: 'bg-green-200 text-green-600 border border-green-400',
+    [ProjectPrimaryStatus.ON_GOING]: 'bg-green-200 text-green-600 border border-green-400',
+    [ProjectPrimaryStatus.TERMINATED]: 'bg-red-100 text-red-600 border border-red-400',
+    [ProjectPrimaryStatus.COMPLETED]: 'bg-orange-200 text-orange-600 border border-orange-400',
+    [ProjectPrimaryStatus.WITHDRAWN]: 'bg-orange-50 text-orange-500 border-2 border-orange-500',
+    [ProjectPrimaryStatus.BLOCKED]: 'bg-[#EA5455] border border-[#EA5455] bg-[rgba(234,84,85,0.12)]',
   };
 
   const SecondaryStatusChipClassNames = {
-    NEW: 'bg-blue-50 text-blue-500',
-    ACTIVE: 'bg-green-50 text-green-600 border-2 border-green-500',
-    OPEN: 'bg-sky-50 text-blue-600 border border-blue-600',
-    DISPUTED: 'bg-red-50 text-red-600 border-2 border-red-500',
-    COMPLETED: 'bg-orange-50 text-amber-500 border-2 border-amber-500',
-    ACCEPTED: 'bg-orange-50 text-amber-500 border-2 border-amber-500',
-    CREATED: 'bg-orange-50 text-amber-500 border-2 border-amber-500',
-    YET_TO_START: 'bg-orange-50 text-amber-500 border-2 border-amber-500',
-    TO_BE_LISTED: 'bg-orange-50 text-amber-500 border-2 border-amber-500',
-    ON_GOING: 'bg-green-50 text-green-600 border-2 border-green-500',
-    WITHDRAWN: 'bg-orange-50 text-orange-500 border-2 border-orange-500',
-    REVIEWED: 'bg-gray-200 text-gray-700',
-    IN_PROGRESS: 'bg-gray-200 text-gray-700',
-    DRAFT: 'bg-gray-200 text-gray-700',
-    ONGOING: 'bg-orange-50 text-orange-600',
-    UPCOMING: 'bg-sky-50 text-blue-600',
-    IN_REVIEW: 'bg-orange-100 text-orange-500',
-    TERMINATED: 'bg-red-100 text-red-900',
-    REJECTED: 'bg-red-100 text-red-900',
-    LISTING_EXPIRED: 'bg-red-100 text-red-900',
-    SIGN_CONTRACT: 'bg-orange-50 text-orange-600',
-    CLOSED: 'bg-gray-100 text-gray-600',
-    OPEN_PROJECT: 'bg-green-50 text-green-500',
-    INVITED: 'bg-purple-50 text-purple-600',
-    UPDATED: 'bg-purple-50 text-purple-600',
-    PENDING: 'bg-orange-50 text-orange-600',
+    [ProjectSecondaryStatus.SIGN_DOCUMENTS]: 'bg-orange-50 text-orange-600',
+    [ProjectSecondaryStatus.SIGN_CONTRACT]: 'bg-orange-50 text-orange-600',
+    [ProjectSecondaryStatus.MILESTONE]: 'bg-orange-50 text-orange-600',
+    [ProjectSecondaryStatus.SIGN_NDA]: 'bg-orange-50 text-orange-600',
+    [ProjectSecondaryStatus.SIGN_REQUESTED]: 'bg-orange-50 text-orange-600',
+    [ProjectSecondaryStatus.COMPLETED]: 'bg-green-200 text-green-600',
   };
 
   const statusClass =
     statusType === StatusType?.PRIMARY
-      ? ProjectStatusChipClassnames[status as keyof typeof ProjectStatusChipClassnames]
-      : SecondaryStatusChipClassNames[status as keyof typeof SecondaryStatusChipClassNames];
+      ? ProjectStatusChipClassnames[status as ProjectPrimaryStatus]
+      : SecondaryStatusChipClassNames[status as ProjectSecondaryStatus];
 
   return (
     <h1
@@ -66,8 +47,8 @@ const ProjectStatusChip = ({ status, statusType, rounded = false }: ProjectStatu
       } ${statusClass}`}
     >
       {(statusType === StatusType?.PRIMARY
-        ? PrimaryProjectStatus[status as keyof typeof PrimaryProjectStatus]
-        : SecondaryProjectStatus[status as keyof typeof SecondaryProjectStatus]
+        ? getProjectPrimaryStatusText(status as ProjectPrimaryStatus)
+        : getProjectSecondaryStatusText(status as ProjectSecondaryStatus, lastInProgressMilestone)
       )?.toString() || status}
     </h1>
   );

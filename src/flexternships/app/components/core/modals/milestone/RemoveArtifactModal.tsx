@@ -4,12 +4,28 @@ import GenericModal from '../GenericModal';
 import DangerGif from '@flexternships/assets/gifs/danger.gif';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { MilestoneDraftArtifact } from '@/flexternships/constraints/types/project-milestones-types';
-import { MilestoneArtifactType } from '@/flexternships/constraints/enums/core-enums';
+import { MilestoneArtifactType, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { Link } from 'react-feather';
+import { useState } from 'react';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
-  const { onClose, isOpen, onConfirm, title, description, isConfirmLoading, confirmCtaText, artifact, cancelCtaText } =
-    props;
+  const { onClose, isOpen, onConfirm, title, description, confirmCtaText, artifact, cancelCtaText } = props;
+  const [isConfirmLoading, setIsConfirmLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsConfirmLoading(true);
+    try {
+      await onConfirm();
+    } catch (error) {
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'An unexpected error occurred while deleting milestone artifact',
+      );
+    } finally {
+      setIsConfirmLoading(false);
+    }
+  };
   return (
     <GenericModal isOpen={isOpen} onClose={onClose}>
       <div className="flex gap-x-11 pl-6 pr-8 py-10">
@@ -40,7 +56,7 @@ export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
               </SecondaryButton>
             )}
             {confirmCtaText && (
-              <PrimaryButton className="m-0" onClick={onConfirm} loading={isConfirmLoading}>
+              <PrimaryButton className="m-0" onClick={handleConfirm} loading={isConfirmLoading}>
                 {confirmCtaText}
               </PrimaryButton>
             )}
@@ -53,8 +69,7 @@ export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
 
 type RemoveArtifactModalProps = {
   onClose: () => void;
-  onConfirm: () => void;
-  isConfirmLoading?: boolean;
+  onConfirm: () => Promise<void>;
   confirmCtaText?: string;
   cancelCtaText?: string;
   isOpen?: boolean;

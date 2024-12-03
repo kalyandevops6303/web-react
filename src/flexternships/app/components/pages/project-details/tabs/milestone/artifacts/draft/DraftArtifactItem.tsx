@@ -2,14 +2,14 @@ import TextInput from '@flexternships/components/core/form/TextInput';
 import Spinner from '@flexternships/components/core/Spinner';
 import { MilestoneArtifactErrorType, MilestoneArtifactType, ToastType } from '@flexternships/enums/core-enums';
 import { MilestoneDraftArtifact } from '@flexternships/types/project-milestones-types';
-import { getFileDownloadUrl } from '@flexternships/services/project-management-v2';
+import { deleteMilestoneArtifactById, getFileDownloadUrl } from '@flexternships/services/project-management-v2';
 import { showToastMessage } from '@flexternships/utils/core-utils';
 import { formatEpochToHumanReadable } from '@flexternships/utils/date-utils';
 import { getFileIcon } from '@flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link, Trash2 } from 'react-feather';
 import { Control, Controller, UseFieldArrayRemove } from 'react-hook-form';
-import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@flexternships/stores/project-milestones-store';
+import { useProjectMilestonesStore } from '@flexternships/stores/project-milestones-store';
 import { Progress } from '@/flexternships/app/components/ui/progress';
 import { isEmpty } from 'lodash';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
@@ -20,10 +20,10 @@ import {
   getMilestoneDetailsModalTitle,
 } from '@/flexternships/static/milestones-content';
 import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
+import { convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
 
 export default function DraftArtifactItem(props: Props) {
   const { last = false, data, index, control, errors, remove, handleFileUpload } = props;
-  const appendToRemovedArtifactIds = useMilestoneArtifactsStore((state) => state.appendToRemovedArtifactIds);
   const activeModal = useProjectMilestonesStore((state) => state.activeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
@@ -50,7 +50,7 @@ export default function DraftArtifactItem(props: Props) {
     if (data.type !== MilestoneArtifactType.LINKS || !data.metadata?.url) {
       return;
     }
-    window.open(data.metadata?.url, '_blank');
+    window.open(convertToClickableUrl(data.metadata?.url), '_blank');
   };
 
   const handleMainActionClick = () => {
@@ -61,11 +61,10 @@ export default function DraftArtifactItem(props: Props) {
     }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async () => {
     if (data.artifactId) {
-      appendToRemovedArtifactIds(data.artifactId);
+      await deleteMilestoneArtifactById(data.artifactId);
     }
-    // call api to remove artifacts
     openModal(MilestoneDetailsModalType.ARTIFCAT_REMOVED);
   };
 

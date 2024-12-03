@@ -1,7 +1,13 @@
 import { toast, ToastOptions } from 'react-hot-toast';
-import { MilestoneStatus, ToastType, UserType } from '@flexternships/enums/core-enums';
+import {
+  MilestoneStatus,
+  ProjectPrimaryStatus,
+  ProjectSecondaryStatus,
+  ToastType,
+  UserType,
+} from '@flexternships/enums/core-enums';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
-import { useFlexternUserStore } from '@flexternships/stores/core-stores';
+import { useAppStore, useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
 
 /**
@@ -41,6 +47,7 @@ export const logout = () => {
   useFlexternUserStore.getState().resetStore();
   useFlexternUserProfileStore.getState().resetStore();
   useProjectCreationStore.getState().resetStore();
+  useAppStore.getState().resetStore();
 };
 
 /**
@@ -62,6 +69,47 @@ export const getMilestoneStatusTextByUserType = (status: MilestoneStatus, _userT
       return 'Completed';
     default:
       return '';
+  }
+};
+
+export const getProjectPrimaryStatusText = (status: ProjectPrimaryStatus) => {
+  switch (status) {
+    case ProjectPrimaryStatus.DRAFT:
+      return 'Draft';
+    case ProjectPrimaryStatus.OPEN:
+      return 'Open';
+    case ProjectPrimaryStatus.ACTIVE:
+      return 'Active';
+    case ProjectPrimaryStatus.ON_GOING:
+      return 'On Going';
+    case ProjectPrimaryStatus.WITHDRAWN:
+      return 'Withdrawn';
+    case ProjectPrimaryStatus.TERMINATED:
+      return 'Terminated';
+    case ProjectPrimaryStatus.COMPLETED:
+      return 'Completed';
+    case ProjectPrimaryStatus.BLOCKED:
+      return 'Blocked';
+    default:
+      return 'Unknown';
+  }
+};
+export const getProjectSecondaryStatusText = (status: ProjectSecondaryStatus, lastInProgressMilestone: number = 1) => {
+  switch (status) {
+    case ProjectSecondaryStatus.SIGN_CONTRACT:
+      return 'Sign Contract';
+    case ProjectSecondaryStatus.SIGN_NDA:
+      return 'Sign NDA';
+    case ProjectSecondaryStatus.COMPLETED:
+      return 'Completed';
+    case ProjectSecondaryStatus.SIGN_REQUESTED:
+      return 'Sign Requested';
+    case ProjectSecondaryStatus.SIGN_DOCUMENTS:
+      return 'Sign Documents';
+    case ProjectSecondaryStatus.MILESTONE:
+      return `Milestone ${lastInProgressMilestone}`;
+    default:
+      return 'Unknown';
   }
 };
 

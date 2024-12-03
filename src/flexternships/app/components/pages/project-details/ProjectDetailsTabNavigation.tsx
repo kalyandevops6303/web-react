@@ -13,13 +13,7 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
       <div className=" bg-white w-fit flex flex-row items-start justify-start max-w-5xl">
         {tabs.map((tab, index) => isEmpty(milestoneId) && <NavigationTab key={index} tab={tab} index={index} />)}
       </div>
-      <div>
-        {tabs.map((tab) => {
-          if (tab.id === projectStep) {
-            return tab.component;
-          }
-        })}
-      </div>
+      <div>{tabs.map((tab) => tab.id === projectStep && tab.component)}</div>
     </div>
   );
 }

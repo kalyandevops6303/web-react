@@ -4,7 +4,6 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
-import { PrimaryProjectStatus } from '../constraints/enums/project-enums';
 import { MilestoneDraftArtifact } from '../constraints/types/project-milestones-types';
 import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
 import { parseMilestoneDetails } from '../utils/parsing-utils';
@@ -316,7 +315,8 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         startDateEpoch: data?.listing_details?.start_date_epoch,
         endDateEpoch: data?.listing_details?.end_date_epoch,
       },
-      status: data?.status as PrimaryProjectStatus,
+      status: data?.status,
+      lastInProgressMilestone: data.last_in_progress_milestone,
       clientUserId: data?.client_user_id,
       orgSlugId: data?.org_slug_id,
       isDocumentsSent: data?.is_documents_sent,
@@ -388,6 +388,13 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
           entityId: data?.secondary_status?.entity?.entity_id || '',
         },
         projectId: data?.secondary_status?.project_id || '',
+      },
+      invitationDetails: {
+        member: {
+          role: {
+            name: data?.invitation_details?.member?.role?.name || 'Unknown Role',
+          },
+        },
       },
     };
 
@@ -523,6 +530,23 @@ export const putArtifactsByMilestoneId = async (
     await axios.put(routes.projectManagementV2.milestone.putArtifactsByMilestoneId, formattedData, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while posting artifacts');
+  }
+};
+
+/**
+ * Deletes a specific milestone artifact by its ID.
+ * @param milestoneArtifactId - The ID of the milestone artifact to delete.
+ * @returns A Promise that resolves when the artifact is deleted.
+ * @throws {Error} If the deletion fails or an unexpected error occurs.
+ */
+export const deleteMilestoneArtifactById = async (milestoneArtifactId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { milestone_artifact_id: milestoneArtifactId } };
+
+  try {
+    await axios.delete(routes.projectManagementV2.milestone.deleteMilestoneArtifactById, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while deleting milestone artifact');
   }
 };
 

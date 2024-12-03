@@ -8,8 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/flexternships/app/components/ui/accordion';
-import { MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { GlobalModalType, MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { getMilestoneStatusTextByUserType, getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
@@ -36,6 +36,7 @@ import ConfirmActionModal from '@/flexternships/app/components/core/modals/miles
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
 import CelebrationModal from '@/flexternships/app/components/core/modals/milestone/CelebrationModal';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -50,6 +51,9 @@ export default function MilestoneDetails() {
   const openModal = useProjectMilestonesStore((state) => state.openModal);
 
   const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
+
+  const isWorkInProgress = useAppStore((state) => state.isWip);
+  const openGlobalModal = useAppStore((state) => state.openModal);
 
   const [primaryActionLoading, setPrimaryActionLoading] = useState(false);
 
@@ -82,7 +86,12 @@ export default function MilestoneDetails() {
   }, [milestoneId, markMilestoneArtifactAsRead, userDetails.userType]);
 
   const goBackToAllMilestones = () => {
-    navigate(`/project-details/${milestoneDetails.projectDetails.projectId}/milestone`);
+    const nextPath = `/project-details/${milestoneDetails.projectDetails.projectId}/milestone`;
+    if (isWorkInProgress) {
+      openGlobalModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      return;
+    }
+    navigate(nextPath);
   };
 
   const openConfirmActionModal = () => {
@@ -177,7 +186,7 @@ export default function MilestoneDetails() {
       </div>
       <SimpleElevatedCard className="flex flex-col px-8 pt-6 pb-10 gap-y-10 bg-white-fa overflow-hidden">
         <div className="flex flex-row gap-x-4 items-center">
-          <h1>Milestone {milestoneDetails.seq}</h1>
+          <h1 className="text-lg font-medium not-italic text-grey-heading">Milestone {milestoneDetails.seq}</h1>
           <MilestoneStatusTag status={milestoneDetails.status} />
           <StartsInTimer epoch={milestoneDetails.startDate} hideSeconds />
         </div>
@@ -211,15 +220,17 @@ export default function MilestoneDetails() {
         </div>
         <SimpleElevatedCard className="flex flex-col p-6 gap-y-6 overflow-hidden bg-white">
           <div className="flex flex-col gap-y-4">
-            <h2 className="text-lg font-normal not-italic text-grey-heading">Milestone Name</h2>
+            <h2 className="text-lg font-medium not-italic text-grey-heading">Milestone Name</h2>
             <p className="text-sm font-normal not-italic leading-5.5 text-grey">{milestoneDetails?.name}</p>
           </div>
           <div className="flex flex-col gap-y-4">
-            <h2 className="text-lg font-normal not-italic text-grey-heading">Description</h2>
-            <p className="text-sm font-normal not-italic leading-5.5 text-grey">{milestoneDetails?.description}</p>
+            <h2 className="text-lg font-medium not-italic text-grey-heading">Description</h2>
+            <p className="text-sm font-normal not-italic leading-5.5 text-grey">
+              <ExpandableText charLimit={300}>{milestoneDetails?.description}</ExpandableText>
+            </p>
           </div>
           <div className="flex flex-col gap-y-4">
-            <h2 className="text-lg font-normal not-italic text-grey-heading">Deliverables</h2>
+            <h2 className="text-lg font-medium not-italic text-grey-heading">Deliverables</h2>
             <ul className="list-none">
               {milestoneDetails?.deliverables?.map((deliverable, index) => (
                 <li

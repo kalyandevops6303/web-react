@@ -33,6 +33,8 @@ import {
 } from '@/flexternships/static/milestones-content';
 import { getMilestoneDetailsModalDescription } from '@/flexternships/static/milestones-content';
 import DraftSavedModal from '@/flexternships/app/components/core/modals/milestone/DraftSavedModal';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
@@ -44,6 +46,10 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   const activeModal = useProjectMilestonesStore((state) => state.activeModal);
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
+
+  const setWip = useAppStore((state) => state.setWip);
+  const unsetWip = useAppStore((state) => state.unsetWip);
+  const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const [saveDraftLoading, setSaveDraftLoading] = useState(false);
   const [submitDraftLoading, setSubmitDraftLoading] = useState(false);
@@ -72,6 +78,21 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   useEffect(() => {
     reset({ draftArtifacts: draftArtifacts });
   }, [draftArtifacts]);
+
+  useEffect(() => {
+    // Set Work in progress flag when this component mounts - accordingly navigation is stopped on the clicked component
+    const fieldsLength = watch('draftArtifacts').length;
+    if (fieldsLength === 0) return unsetWip();
+
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await saveAsDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, [watch('draftArtifacts')]);
 
   const openRemoveArtifactModal = () => {
     openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT);

@@ -7,16 +7,14 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 import { Paperclip, User } from 'react-feather';
-import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { ProjectPrimaryStatus, ProjectSecondaryStatus, UserType } from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
 import {
-  PrimaryProjectStatus,
   ProjectPanelCaptionDate1,
   ProjectPanelCaptionDate2,
   ProjectPanelDate2Classnames,
   ProjectPanelIcon1Classnames,
   ProjectPanelIcon2Classnames,
-  SecondaryProjectStatus,
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
@@ -49,11 +47,10 @@ const LeftSideBarProjectDetails = () => {
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
 
-  const [secondaryStatus, setSecondaryStatus] = useState<string>('');
+  const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
   const [isBlocked, setIsBlocked] = useState(true);
-  const primaryProjectStatus = PrimaryProjectStatus[data?.status as unknown as keyof typeof PrimaryProjectStatus];
 
   const handleToggle = () => {
     setShowMore((prev) => !prev);
@@ -83,6 +80,7 @@ const LeftSideBarProjectDetails = () => {
   }, [data]);
 
   useEffect(() => {
+    // TODO: Incorrect usage of projectMilestones here. Use blocked status of project instead.
     setIsBlocked(projectMilestones?.reduce((acc, milestone) => acc || milestone.isBlocked, false));
   }, [projectMilestones]);
   return (
@@ -93,12 +91,9 @@ const LeftSideBarProjectDetails = () => {
           onClose={() => setDocumentsModal(false)}
           data={data?.details?.documents}
         />
-        <ProjectStatusChip
-          status={data?.status as string as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
-          statusType={StatusType?.PRIMARY}
-        />
+        <ProjectStatusChip status={data?.status} statusType={StatusType?.PRIMARY} />
 
-        {daysLeft > 0 && <h1 className="text-[#EA5455] font-semibold">{daysLeft} Days Left</h1>}
+        {daysLeft > 0 && <h1 className="text-error font-semibold">{daysLeft} Days Left</h1>}
       </div>
       <h1 className="text-[#5E5873] font-medium text-[18px] leading-[21px] font-montserrat">{data?.details?.name}</h1>
 
@@ -135,9 +130,7 @@ const LeftSideBarProjectDetails = () => {
 
           <div className="flex flex-col items-start">
             <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-medium text-[14px] leading-[23px] font-montserrat">
-              {formatEpochToHumanReadable(
-                getProjectPanelDate1Values(data)[data?.status as string as keyof typeof PrimaryProjectStatus] ?? 0,
-              )}
+              {formatEpochToHumanReadable(getProjectPanelDate1Values(data)[data?.status] ?? 0)}
             </h1>
             <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[12px] leading-[18px] font-montserrat no-ligatures">
               {ProjectPanelCaptionDate1[data?.status]}
@@ -153,9 +146,7 @@ const LeftSideBarProjectDetails = () => {
                 ProjectPanelDate2Classnames[data?.status]
               } font-medium text-[14px] leading-[23px] font-montserrat`}
             >
-              {formatEpochToHumanReadable(
-                getProjectPanelDate2Values(data)[data?.status as string as keyof typeof PrimaryProjectStatus] ?? 0,
-              )}
+              {formatEpochToHumanReadable(getProjectPanelDate2Values(data)[data?.status] ?? 0)}
             </h1>
             <h1
               className={`${
@@ -197,11 +188,14 @@ const LeftSideBarProjectDetails = () => {
             <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
               Status :
             </div>{' '}
-            <ProjectStatusChip
-              status={secondaryStatus as keyof typeof SecondaryProjectStatus | keyof typeof PrimaryProjectStatus}
-              statusType={StatusType?.SECONDARY}
-              rounded={true}
-            />
+            {secondaryStatus && (
+              <ProjectStatusChip
+                status={secondaryStatus}
+                statusType={StatusType?.SECONDARY}
+                rounded={true}
+                lastInProgressMilestone={data.lastInProgressMilestone}
+              />
+            )}
           </div>
         )}
 
@@ -230,7 +224,7 @@ const LeftSideBarProjectDetails = () => {
         </div>
 
         <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
-          {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.OPEN && (
+          {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
               disabled={isBlocked}
               onClick={() => {}}
@@ -240,9 +234,9 @@ const LeftSideBarProjectDetails = () => {
             </PrimaryButton>
           )}
           {userDetails.userType === UserType.CLIENT &&
-            (primaryProjectStatus === PrimaryProjectStatus.ACTIVE ||
-              primaryProjectStatus === PrimaryProjectStatus.ONGOING ||
-              primaryProjectStatus === PrimaryProjectStatus.BLOCKED) && (
+            (data?.status === ProjectPrimaryStatus.ACTIVE ||
+              data?.status === ProjectPrimaryStatus.ON_GOING ||
+              data?.status === ProjectPrimaryStatus.BLOCKED) && (
               <PrimaryButton
                 disabled={isBlocked}
                 onClick={() => {}}
@@ -252,12 +246,12 @@ const LeftSideBarProjectDetails = () => {
               </PrimaryButton>
             )}
           {((userDetails.userType === UserType.CLIENT &&
-            (primaryProjectStatus === PrimaryProjectStatus.ACTIVE ||
-              primaryProjectStatus === PrimaryProjectStatus.ONGOING ||
-              primaryProjectStatus === PrimaryProjectStatus.BLOCKED)) ||
+            (data?.status === ProjectPrimaryStatus.ACTIVE ||
+              data?.status === ProjectPrimaryStatus.ON_GOING ||
+              data?.status === ProjectPrimaryStatus.BLOCKED)) ||
             (userDetails.userType === UserType.TALENT &&
-              primaryProjectStatus !== PrimaryProjectStatus.TERMINATED &&
-              primaryProjectStatus !== PrimaryProjectStatus.COMPLETED)) && (
+              data?.status !== ProjectPrimaryStatus.TERMINATED &&
+              data?.status !== ProjectPrimaryStatus.COMPLETED)) && (
             <PrimaryButton
               onClick={handleMessageClick}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
@@ -265,7 +259,7 @@ const LeftSideBarProjectDetails = () => {
               <span>Message</span>
             </PrimaryButton>
           )}
-          {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.OPEN && (
+          {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
               disabled={isBlocked}
               onClick={() => {}}
@@ -274,7 +268,7 @@ const LeftSideBarProjectDetails = () => {
               Invite
             </PrimaryButton>
           )}
-          {userDetails.userType === UserType.CLIENT && primaryProjectStatus === PrimaryProjectStatus.WITHDRAWN && (
+          {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.WITHDRAWN && (
             <PrimaryButton
               disabled={isBlocked}
               onClick={() => {}}

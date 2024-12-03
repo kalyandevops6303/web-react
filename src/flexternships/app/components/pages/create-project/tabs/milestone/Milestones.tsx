@@ -20,6 +20,8 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
 import { useParams } from 'react-router-dom';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 
 export default function Milestones() {
   const {
@@ -37,6 +39,10 @@ export default function Milestones() {
     openModal,
     appendRemovedMilestoneId,
   } = useProjectCreationStore();
+
+  const setWip = useAppStore((state) => state.setWip);
+  const unsetWip = useAppStore((state) => state.unsetWip);
+  const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const [milestoneDurationState, setMilestoneDurationState] = useState<MilestoneInfoType>(MilestoneInfoType.BALANCED);
   const [newMilestoneIndex, setNewMilestoneIndex] = useState<number | null>(null);
@@ -151,6 +157,17 @@ export default function Milestones() {
     append({ title: '', duration: 1, description: '', deliverables: [' '] });
     setNewMilestoneIndex(watch('milestones').length - 1);
   };
+
+  useEffect(() => {
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await onSaveDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, []);
 
   return (
     <>

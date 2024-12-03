@@ -1,3 +1,4 @@
+import IndividualFeedback from '@/flexternships/app/project-details/tabs/performance/IndividualFeedback';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
 import { X } from 'react-feather';
@@ -18,18 +19,11 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
         >
           <X size={16} />
         </div>
-        <div className="flex flex-col grow gap-y-5">
+        <div className="flex flex-col grow gap-y-5 max-h-[70vh] overflow-y-auto overflow-x-hidden">
           <h1 className="text-[28px] text-center font-normal text-grey-heading">
             {viewMilestoneFeedbackModalTitle[feedbackType]}
           </h1>
-          {[MilestoneFeedbackType.INDIVIDUAL_FEEDBACK, MilestoneFeedbackType.PEER_FEEDBACK].includes(feedbackType) ? (
-            <div>Peer or Individual Feedback</div>
-          ) : (
-            <div>
-              WIP
-              {/* TODO: Self and Team Feedback */}
-            </div>
-          )}
+          <IndividualFeedback feedbackType={feedbackType} milestoneId={milestoneId} />
         </div>
       </div>
     </div>

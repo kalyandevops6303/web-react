@@ -55,13 +55,13 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
         <div className="flex flex-row gap-x-8 items-center">
           <MilestoneStatusTag status={status} />
           <StartsInTimer epoch={startDate} hideSeconds />
-          <div className="flex flex-col">
+          <div className="flex flex-col min-w-[88px]">
             <div className="text-sm text-grey not-italic font-normal leading-5.5">Start Date</div>
             <div className="text-base text-grey-heading not-italic font-medium leading-6">
               {formatEpochToHumanReadable(startDate, true, false, getUserTimezone())}
             </div>
           </div>
-          <div className="flex flex-col min-w-20">
+          <div className="flex flex-col min-w-[88px]">
             <div className="text-sm text-grey not-italic font-normal leading-5.5">
               {status === MilestoneStatus.COMPLETED && acceptedAt ? 'Completed' : '-'}
             </div>

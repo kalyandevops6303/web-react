@@ -8,6 +8,9 @@ import Layout from '@layouts/HorizontalLayout';
 // ** Menu Items Array
 // import navigation from '@src/navigation/horizontal';
 
+// ** Global Modals Container
+import GlobalModal from '@/flexternships/app/components/core/modals/global';
+
 const HorizontalLayout = (props) => (
   // const [menuData, setMenuData] = useState([])
 
@@ -18,6 +21,7 @@ const HorizontalLayout = (props) => (
 
   <Layout {...props}>
     <Outlet />
+    <GlobalModal />
   </Layout>
 );
 export default HorizontalLayout;

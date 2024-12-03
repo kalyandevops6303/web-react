@@ -16,6 +16,8 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 
 export default function Roles() {
   const rolesData = useProjectCreationStore((state) => state.data.roles);
@@ -24,6 +26,10 @@ export default function Roles() {
   const nextTab = useProjectCreationStore((state) => state.nextTab);
   const updateRolesData = useProjectCreationStore((state) => state.updateRolesData);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
+
+  const setWip = useAppStore((state) => state.setWip);
+  const unsetWip = useAppStore((state) => state.unsetWip);
+  const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const [expandedRoleIndex, setExpandedRoleIndex] = useState<number | null>(0);
 
@@ -79,6 +85,17 @@ export default function Roles() {
       });
     }
   }, [rolesData, reset]);
+
+  useEffect(() => {
+    setWip(saveForLaterModalContent, {
+      onConfirm: async () => {
+        await onSaveDraft();
+        closeGlobalModal();
+      },
+      onCancel: unsetWip,
+      onClose: closeGlobalModal,
+    });
+  }, []);
 
   return (
     <div className="flex flex-col">

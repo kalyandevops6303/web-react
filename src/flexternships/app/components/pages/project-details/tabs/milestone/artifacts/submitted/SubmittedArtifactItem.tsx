@@ -64,9 +64,12 @@ export default function SubmittedArtifactItem(props: Props) {
             <Link className="text-grey" size={24} />
           )}
         </span>
-        <span className="truncate w-[175px]">
-          {data.type === 'DOCUMENTS' ? data.metadata?.fileName : data.metadata?.url}
-        </span>
+        <div className="flex flex-row w-[175px]">
+          <span className="truncate w-11/12">
+            {data.type === 'DOCUMENTS' ? data.metadata?.fileName : data.metadata?.url}
+          </span>
+          {!data.isRead && <span className="w-[7px] h-[7px] bg-error rounded-full" />}
+        </div>
       </div>
       <div className="py-4 px-2.5 w-[319px] break-all">
         <span>{data.description}</span>
