@@ -2,7 +2,7 @@ import TextInput from '@flexternships/components/core/form/TextInput';
 import Spinner from '@flexternships/components/core/Spinner';
 import { MilestoneArtifactErrorType, MilestoneArtifactType, ToastType } from '@flexternships/enums/core-enums';
 import { MilestoneDraftArtifact } from '@flexternships/types/project-milestones-types';
-import { deleteMilestoneArtifactById, getFileDownloadUrl } from '@flexternships/services/project-management-v2';
+import { getFileDownloadUrl } from '@flexternships/services/project-management-v2';
 import { getUserTimezone, showToastMessage } from '@flexternships/utils/core-utils';
 import { formatEpochToHumanReadable, formatEpochToTimeInTimezone } from '@flexternships/utils/date-utils';
 import { getFileIcon, getFileSize } from '@flexternships/utils/file-utils';
@@ -13,20 +13,11 @@ import { useProjectMilestonesStore } from '@flexternships/stores/project-milesto
 import { Progress } from '@/flexternships/app/components/ui/progress';
 import { isEmpty } from 'lodash';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
-import {
-  getMilestoneDetailsModalCancelCtaText,
-  getMilestoneDetailsModalConfirmCtaText,
-  getMilestoneDetailsModalDescription,
-  getMilestoneDetailsModalTitle,
-} from '@/flexternships/static/milestones-content';
-import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 import { convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
 
 export default function DraftArtifactItem(props: Props) {
-  const { last = false, data, index, control, errors, remove, handleFileUpload } = props;
-  const activeModal = useProjectMilestonesStore((state) => state.activeModal);
+  const { last = false, data, index, control, errors, handleFileUpload } = props;
   const openModal = useProjectMilestonesStore((state) => state.openModal);
-  const closeModal = useProjectMilestonesStore((state) => state.closeModal);
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
 
@@ -61,20 +52,8 @@ export default function DraftArtifactItem(props: Props) {
     }
   };
 
-  const handleDeleteClick = async () => {
-    if (data.artifactId) {
-      await deleteMilestoneArtifactById(data.artifactId);
-    }
-    openModal(MilestoneDetailsModalType.ARTIFCAT_REMOVED);
-  };
-
   const openRemoveArtifactModal = () => {
-    openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT);
-  };
-
-  const closeWithRemove = () => {
-    closeModal();
-    remove(index);
+    openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT, { ...data, index });
   };
 
   const handleTryAgain = () => {
@@ -167,7 +146,7 @@ export default function DraftArtifactItem(props: Props) {
             </div>
             <div className="flex flex-row justify-between">
               <span className="text-sm text-grey font-normal leading-[21px]">
-                {getFileSize(data.metadata?.size ?? 0)}
+                {data.metadata?.size && getFileSize(data.metadata?.size ?? 0)}
               </span>
               {data.artifactId && (
                 <span className="text-grey-heading font-semibold text-sm leading-[21px]">Draft Saved</span>
@@ -207,18 +186,6 @@ export default function DraftArtifactItem(props: Props) {
           <Trash2 size={24} />
         </span>
       </div>
-      {activeModal && (
-        <RemoveArtifactModal
-          isOpen={true}
-          onClose={activeModal === MilestoneDetailsModalType.ARTIFCAT_REMOVED ? closeWithRemove : closeModal}
-          onConfirm={handleDeleteClick}
-          artifact={data}
-          title={getMilestoneDetailsModalTitle(activeModal)}
-          description={getMilestoneDetailsModalDescription(activeModal)}
-          cancelCtaText={getMilestoneDetailsModalCancelCtaText(activeModal)}
-          confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
-        />
-      )}
     </div>
   );
 }
