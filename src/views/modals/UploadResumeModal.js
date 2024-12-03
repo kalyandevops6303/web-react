@@ -8,8 +8,8 @@ import uploadResumeImage from '../../assets/images/uploadResumeImage.png';
 const UploadResumeModal = ({ modal, uploadButton, toggleModal }) => (
   <Modal
     isOpen={modal}
-    contentClassName="custom-larger-than-medium-modal-style"
-    className="modal-dialog-centered modal-lg"
+    contentClassName="custom-larger-than-medium-modal-style modal-dialog"
+    className="modal-dialog-centered modal-lg trumio"
   >
     <ModalHeader toggle={toggleModal} />
     <ModalBody className="py-0">

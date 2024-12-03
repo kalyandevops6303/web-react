@@ -201,16 +201,16 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
   }, []);
 
   return (
-    <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered">
+    <Modal isOpen={modal} contentClassName="custom-modal-style " className="modal-dialog trumio">
       <ModalHeader toggle={isLoading ? null : toggleModal} />
-      <ModalBody className="pt-0 px-5">
-        <h2 className="font-large-1 text-center mb-2">Email Customer Support</h2>
+      <ModalBody className="pt-0 px-10">
+        <h2 className="font-large-1 text-center mb-7 text-[28px]">Email Customer Support</h2>
         <SupportModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-1">
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
-                  <CardText className="m-0 me-75 fw-bold">TO: </CardText>{' '}
+                  <CardText className="m-0 me-75 mr-3 fw-bold">TO: </CardText>{' '}
                   <Input
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
@@ -222,7 +222,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
             <Row className="mb-1">
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
-                  <CardText className="m-0 me-75 fw-bold">CC: </CardText>{' '}
+                  <CardText className="m-0 me-75 mr-3 fw-bold">CC: </CardText>{' '}
                   <Input
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
@@ -233,8 +233,8 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
             </Row>
             <Row className="mb-1">
               <Col sm="12" md="12" lg="7">
-                <Label className="form-label" for="issueType">
-                  Issue type
+                <Label className="form-label text-grey font-normal text-sm" for="issueType">
+                  Issue Type
                 </Label>
                 <Controller
                   id="issueType"
@@ -326,6 +326,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                         onWheel={(e) => e.target.blur()}
                         placeholder="Enter institute"
                         invalid={errors.institute && true}
+                        style={{ height: '54px' }}
                       />
                     )}
                   />
@@ -360,7 +361,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
 
             <Row className="mb-1">
               <Col sm="12" md="12" lg="12">
-                <Label className="form-label" for="skill">
+                <Label className="form-label text-grey font-normal text-sm" for="skill">
                   Tell us in detail how we can help you?
                   <span className="label-asterisk me-50">*</span>
                 </Label>
