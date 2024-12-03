@@ -1044,7 +1044,7 @@ const FlexternEducational = () => {
                     ))
                   )}
                   {fields?.length > 0 && (
-                    <Row className="mt-3 mb-3">
+                    <Row className="mt-5 mb-5">
                       <div
                         className="d-flex align-items-center upload-button cursor-pointer"
                         onClick={handleAddEducation}
