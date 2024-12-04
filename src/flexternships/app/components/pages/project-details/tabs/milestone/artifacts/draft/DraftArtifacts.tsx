@@ -21,7 +21,7 @@ import { useParams } from 'react-router-dom';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { isEmpty } from 'lodash';
 import UploadArtifactDocument from './UploadArtifactDocument';
-import { getFileUploadUrl } from '@/flexternships/services/project-management-v2';
+import { deleteMilestoneArtifactById, getFileUploadUrl } from '@/flexternships/services/project-management-v2';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
 import ConfirmArtifactsSubmissionModal from '@/flexternships/app/components/core/modals/milestone/ConfirmArtifactsSubmissionModal';
@@ -29,12 +29,15 @@ import SuccessfulArtifactsSubmissionModal from '@/flexternships/app/components/c
 import {
   draftSavedModalHighlightText,
   draftSavedModalNote,
+  getMilestoneDetailsModalCancelCtaText,
+  getMilestoneDetailsModalConfirmCtaText,
   getMilestoneDetailsModalTitle,
 } from '@/flexternships/static/milestones-content';
 import { getMilestoneDetailsModalDescription } from '@/flexternships/static/milestones-content';
 import DraftSavedModal from '@/flexternships/app/components/core/modals/milestone/DraftSavedModal';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
@@ -46,7 +49,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   const activeModal = useProjectMilestonesStore((state) => state.activeModal);
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
-
+  const modalMetadata = useProjectMilestonesStore((state) => state.modalMetadata);
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
@@ -99,7 +102,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   };
 
   const openArtifactRemovedModal = () => {
-    openModal(MilestoneDetailsModalType.ARTIFCAT_REMOVED);
+    openModal(MilestoneDetailsModalType.ARTIFACT_REMOVED);
   };
 
   const openConfirmArtifactsSubmissionModal = () => {
@@ -285,6 +288,19 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
     handleFileUpload(appendedIndex, file);
   };
 
+  const handleDeleteClick = async () => {
+    if (modalMetadata?.artifactId) {
+      await deleteMilestoneArtifactById(modalMetadata.artifactId);
+    }
+    openModal(MilestoneDetailsModalType.ARTIFACT_REMOVED, modalMetadata);
+  };
+
+  const closeWithRemove = () => {
+    if (modalMetadata?.index === undefined) return;
+    closeModal();
+    remove(modalMetadata.index);
+  };
+
   return (
     <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
       <h2 className="text-lg font-normal not-italic text-grey-heading">Saved Drafts</h2>
@@ -381,6 +397,21 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           description={getMilestoneDetailsModalDescription(MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED)}
           note={draftSavedModalNote}
           highlightText={draftSavedModalHighlightText}
+        />
+      )}
+      {activeModal && !isEmpty(modalMetadata) && (
+        <RemoveArtifactModal
+          isOpen={
+            activeModal === MilestoneDetailsModalType.ARTIFACT_REMOVED ||
+            activeModal === MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT
+          }
+          onClose={activeModal === MilestoneDetailsModalType.ARTIFACT_REMOVED ? closeWithRemove : closeModal}
+          onConfirm={handleDeleteClick}
+          artifact={modalMetadata}
+          title={getMilestoneDetailsModalTitle(activeModal)}
+          description={getMilestoneDetailsModalDescription(activeModal)}
+          cancelCtaText={getMilestoneDetailsModalCancelCtaText(activeModal)}
+          confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
         />
       )}
     </div>

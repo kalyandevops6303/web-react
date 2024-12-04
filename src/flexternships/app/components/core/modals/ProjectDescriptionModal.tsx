@@ -18,9 +18,7 @@ export default function ProjectDescriptionModal(props: ProjectDescriptionModalPr
         <CloseModalButton onClick={handleClose} />
         <div className="relative flex flex-col items-start gap-5 text-grey-heading text-xl font-medium leading-[28px]">
           <h1>Project Description</h1>
-          <p className="w-full max-w-full break-words text-sm">
-            {data}
-          </p>
+          <p className="w-full max-w-full break-words text-sm">{data}</p>
         </div>
       </div>
     </div>

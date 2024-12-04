@@ -324,13 +324,16 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
         options: departmentNameOptions.filter(
           (department) =>
             department.label.toLowerCase().startsWith(search.toLowerCase()) ||
-          department.label.toLowerCase().includes(search.toLowerCase()),
+            department.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
     try {
       const response = await departmentNamesService();
-      const options = response?.data?.data?.data?.map((department) => ({ label: department.department_name, value: department.department_name }));
+      const options = response?.data?.data?.data?.map((department) => ({
+        label: department.department_name,
+        value: department.department_name,
+      }));
 
       setDepartmentNameOptions(options);
 
@@ -467,7 +470,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   };
 
   const ExpandCollapseComp = (
-    <div className='d-flex align-items-center me-10'>
+    <div className="d-flex align-items-center me-10">
       <Label className="view-label me-1">View:</Label>
       <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
       <Popover
@@ -522,7 +525,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
               <Input value={inputText} onChange={handleSearchTextChange} placeholder={getSearchPlaceholder()} />
             </InputGroup>
           </div>
-          <Row className='me-10'>
+          <Row className="me-10">
             {primaryFilter !== 'talents' &&
               primaryFilter !== 'clients' &&
               primaryFilter !== 'teams' &&
@@ -699,7 +702,10 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     onChange={(value) => onChangeFilter('departmentNames', value)}
                     value={
                       secondFilterState.departmentNames.length > 0
-                        ? { value: secondFilterState.departmentNames[0].value, label: secondFilterState.departmentNames[0].label }
+                        ? {
+                            value: secondFilterState.departmentNames[0].value,
+                            label: secondFilterState.departmentNames[0].label,
+                          }
                         : null
                     }
                   />

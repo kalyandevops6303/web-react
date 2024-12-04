@@ -51,7 +51,11 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
             <p className="mb-25">Team</p>
           </div>
           <p className="active-project-team-name">
-            {(data?.bid_by && 'name' in data?.bid_by) ? data?.bid_by?.name : `${data?.bid_by?.first_name} ${data?.bid_by?.last_name}`}
+            {data?.bid_by
+              ? 'name' in data.bid_by
+                ? data.bid_by.name
+                : `${data.bid_by.first_name} ${data.bid_by.last_name}`
+              : ''}
           </p>
           <div className="mb-1">
             {data?.worker_details.length > 3 ? (

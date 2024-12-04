@@ -21,11 +21,4 @@ export default function HandleFeedbacks() {
   }
 
   return <div>{componentsByFeedbackType[feedbackType as keyof typeof componentsByFeedbackType]}</div>;
-
-  // return (
-  //   <div className="w-full flex flex-row flex-wrap items-start gap-[10px] lg:gap-[26px]">
-  //     <div>{componentsByFeedbackType[feedbackType as keyof typeof componentsByFeedbackType]}</div>
-  //     <FunFacts />
-  //   </div>
-  // );
 }

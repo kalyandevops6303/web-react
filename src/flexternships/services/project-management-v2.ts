@@ -509,8 +509,9 @@ export const putArtifactsByMilestoneId = async (
         metadata:
           artifact.type === MilestoneArtifactType.DOCUMENTS
             ? {
-                file_name: artifact.metadata?.fileName ?? '',
-                file_key: artifact.metadata?.fileKey ?? '',
+                file_name: artifact.metadata?.fileName,
+                file_key: artifact.metadata?.fileKey,
+                size: artifact.metadata?.size,
               }
             : {
                 url: artifact.metadata?.url ?? '',

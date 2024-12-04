@@ -44,11 +44,7 @@ export default function RecognitionCard(props: RecognitionCardProps) {
           <span>{recognitionCardContent.description[userDetails.userType]}</span>
         </div>
       </div>
-      <PrimaryButton
-        className="m-0 self-stretch whitespace-nowrap"
-        onClick={openRecognitionModal}
-        disabled={isDisabled}
-      >
+      <PrimaryButton className="m-0 whitespace-nowrap" onClick={openRecognitionModal} disabled={isDisabled}>
         {recognitionCardContent.primaryCtaText[userDetails.userType]}
       </PrimaryButton>
       <KudosAndWowModal

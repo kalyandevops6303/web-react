@@ -555,7 +555,7 @@ const FlexternSocial = () => {
                   <h5 className="m-0 mt-2 mb-1 text-lg font-medium">Other Social Links</h5>
                   {otherSocialLinksFields?.map((item, index) => (
                     <Row key={item.id} className="mb-1">
-                      <Col sm="12" md="12" lg="5">
+                      <Col sm="12" md="12" lg="6">
                         <Label className="form-label" for={`otherSocialLinks[${index}].linkName`}>
                           Link Name
                         </Label>
@@ -597,26 +597,16 @@ const FlexternSocial = () => {
                             </FormFeedback>
                           )}
                       </Col>
-                      <Col sm="12" md="12" lg="5">
+                      <Col sm="12" md="12" lg="6">
                         <Label className="form-label" for={`otherSocialLinks[${index}].link`}>
                           Link
                         </Label>
-                        <Controller
-                          id={`otherSocialLinks[${index}].link`}
-                          name={`otherSocialLinks[${index}].link`}
-                          control={control}
-                          invalid={
-                            errors &&
-                            errors.otherSocialLinks &&
-                            errors.otherSocialLinks.length > 0 &&
-                            errors.otherSocialLinks[index] &&
-                            errors.otherSocialLinks[index].link &&
-                            true
-                          }
-                          render={({ field }) => (
-                            <Input
-                              {...field}
-                              placeholder="Enter URL"
+                        <div className="d-flex gap-2">
+                          <div className="flex-grow-1">
+                            <Controller
+                              id={`otherSocialLinks[${index}].link`}
+                              name={`otherSocialLinks[${index}].link`}
+                              control={control}
                               invalid={
                                 errors &&
                                 errors.otherSocialLinks &&
@@ -625,25 +615,35 @@ const FlexternSocial = () => {
                                 errors.otherSocialLinks[index].link &&
                                 true
                               }
+                              render={({ field }) => (
+                                <Input
+                                  {...field}
+                                  placeholder="Enter URL"
+                                  invalid={
+                                    errors &&
+                                    errors.otherSocialLinks &&
+                                    errors.otherSocialLinks.length > 0 &&
+                                    errors.otherSocialLinks[index] &&
+                                    errors.otherSocialLinks[index].link &&
+                                    true
+                                  }
+                                />
+                              )}
                             />
-                          )}
-                        />
-                        {errors &&
-                          errors.otherSocialLinks &&
-                          errors.otherSocialLinks.length > 0 &&
-                          errors.otherSocialLinks[index] &&
-                          errors.otherSocialLinks[index] && (
-                            <FormFeedback>
-                              {errors.otherSocialLinks[index].link && errors.otherSocialLinks[index].link.message}
-                            </FormFeedback>
-                          )}
-                      </Col>
-                      <Col sm="12" md="12" lg="2">
-                        {index !== 0 && (
-                          <Button type="button" color="flat-danger" className="mt-2" onClick={() => remove(index)}>
+                            {errors &&
+                              errors.otherSocialLinks &&
+                              errors.otherSocialLinks.length > 0 &&
+                              errors.otherSocialLinks[index] &&
+                              errors.otherSocialLinks[index] && (
+                                <FormFeedback>
+                                  {errors.otherSocialLinks[index].link && errors.otherSocialLinks[index].link.message}
+                                </FormFeedback>
+                              )}
+                          </div>
+                          <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
                             Remove
                           </Button>
-                        )}
+                        </div>
                       </Col>
                     </Row>
                   ))}

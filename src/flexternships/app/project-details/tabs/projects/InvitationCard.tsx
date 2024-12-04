@@ -18,7 +18,7 @@ export default function InvitationCard() {
   const isProjectInvitationDetailsLoading = useProjectsStore((state) => state.isProjectInvitationDetailsLoading);
 
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
-  console.log(projectInvitationDetails)
+  console.log(projectInvitationDetails);
   const invitationCardData = {
     isCollapsible: false,
     bordered: true,
@@ -88,15 +88,15 @@ export default function InvitationCard() {
           </div>
         </div>
         <div className="flex">
-          <div className='border-l-0 border-y-0 px-9 border-r-1 border-grey-50 '>
+          <div className="border-l-0 border-y-0 px-9 border-r-1 border-grey-50 ">
             <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.start_date}</div>
             <div className={Styles.invitationCardDetailsSubtitle}>Start Date</div>
           </div>
-          <div className='border-l-0 border-y-0 px-9 border-r-1 border-grey-50 '>
+          <div className="border-l-0 border-y-0 px-9 border-r-1 border-grey-50 ">
             <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.role}</div>
             <div className={Styles.invitationCardDetailsSubtitle}>Role</div>
           </div>
-          <div className='px-9'>
+          <div className="px-9">
             <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.estimated_duration}</div>
             <div className={Styles.invitationCardDetailsSubtitle}>Estimated Duration</div>
           </div>

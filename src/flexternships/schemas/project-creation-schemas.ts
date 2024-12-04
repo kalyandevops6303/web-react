@@ -29,7 +29,8 @@ export const ProjectDetailsSchema = yup.object().shape({
     .number()
     .required('Estimated weekly hours are required')
     .positive('Estimated weekly hours should be positive')
-    .max(168, 'Estimated weekly hours cannot exceed 168 hours'),
+    .max(168, 'Estimated weekly hours cannot exceed 168 hours')
+    .integer('Estimated weekly hours must be an integer'),
   totalProjectHoursEach: yup
     .number()
     .required('Total project hours each is required')

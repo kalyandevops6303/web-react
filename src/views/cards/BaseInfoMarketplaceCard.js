@@ -222,24 +222,24 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           <div onClick={(e) => handleNavigate(e)} className="d-flex w-100 align-items-center">
             <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                <span className='company'>
+                <span className="company">
                   {clientDetails?.title ?? (flexTern ? clientDetails?.department_name : clientDetails?.company_name)}
                 </span>
               </CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
                 {!isEmpty(delegateDetails) ? (
                   <>
-                    <span className='name'>
+                    <span className="name">
                       {delegateDetails?.first_name}&nbsp;
                       {delegateDetails?.last_name}
                     </span>{' '}
-                    <span className='name'>
+                    <span className="name">
                       ({clientDetails?.first_name}&nbsp;
                       {clientDetails?.last_name})
                     </span>
                   </>
                 ) : (
-                  <span className='name'>
+                  <span className="name">
                     {clientDetails?.first_name}&nbsp;
                     {clientDetails?.last_name}
                   </span>

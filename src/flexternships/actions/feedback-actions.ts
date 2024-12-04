@@ -42,3 +42,7 @@ export const getFeedbackResponseInfo = async (
   }));
   set({ isFeedbackResponseLoading: false });
 };
+
+export const setSurveyProgressData = async (data: any, set: any) => {
+  set({ surveyProgress: data });
+};

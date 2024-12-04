@@ -12,7 +12,7 @@ import { Home } from 'react-feather';
 const BreadCrumbs = ({ steps }: { steps: BreadCrumbType[] }) => {
   return (
     <Breadcrumb>
-      <BreadcrumbList className='text-sm'>
+      <BreadcrumbList className="text-sm">
         <BreadcrumbLink href="/dashboard">
           <Home size={16} color="#00B0FF" />
         </BreadcrumbLink>

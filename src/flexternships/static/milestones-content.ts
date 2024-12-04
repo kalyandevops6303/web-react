@@ -66,7 +66,7 @@ export function getMilestoneDetailsModalTitle(type: MilestoneDetailsModalType): 
       return 'Great Job!';
     case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
       return 'Are you sure you want to remove this artifact?';
-    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
+    case MilestoneDetailsModalType.ARTIFACT_REMOVED:
       return 'Removed Artifact';
     case MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION:
       return 'Are you sure you want to make this submission?';
@@ -87,7 +87,7 @@ export function getMilestoneDetailsModalDescription(type: MilestoneDetailsModalT
       return 'You have successfully completed the milestone.';
     case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
       return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
+    case MilestoneDetailsModalType.ARTIFACT_REMOVED:
       return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
     case MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION:
       return 'Only after submission client will receive these files.';
@@ -117,7 +117,7 @@ export function getMilestoneDetailsModalCancelCtaText(type: MilestoneDetailsModa
   switch (type) {
     case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
       return 'Cancel';
-    case MilestoneDetailsModalType.ARTIFCAT_REMOVED:
+    case MilestoneDetailsModalType.ARTIFACT_REMOVED:
       return 'Close';
     default:
       return undefined;

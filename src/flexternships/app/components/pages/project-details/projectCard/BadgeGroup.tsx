@@ -14,8 +14,11 @@ const BadgeGroup = ({ className, tags }: { className?: string; tags: BadgeType[]
         </h1>
       ))}
       {tags?.length > 4 && (
-        <h1 onClick={()=>setShowMore(!showMore)} className={`text-xs px-2 py-1 ${className} bg-white border-0 font-semibold rounded-md`}>
-          {showMore ? "Show Less" : `+${tags?.length - 3}`}
+        <h1
+          onClick={() => setShowMore(!showMore)}
+          className={`text-xs px-2 py-1 ${className} bg-white border-0 font-semibold rounded-md`}
+        >
+          {showMore ? 'Show Less' : `+${tags?.length - 3}`}
         </h1>
       )}
     </div>
