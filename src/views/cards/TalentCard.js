@@ -135,7 +135,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                         {data?.last_name}
                       </Link>
                     </CardTitle>
-                    <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                    <CardText className="truncate-1 font-small-3 fs-6 fw-300 mb-25 marketplace-card-role">
                       {data?.role?.name || 'Role'}
                     </CardText>
                     <div className="d-flex teamcard-flex-cloumn">
@@ -174,7 +174,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                     </div>
                   </Col>
                 </div>
-                <div className="mt-2">{data?.professional_intro && parse(data?.professional_intro)}</div>
+                <div className="mt-2 font-size">{data?.professional_intro && parse(data?.professional_intro)}</div>
               </div>
               <div className="w-25 teamcard-width">
                 <IconWrapper className="d-flex flex-column align-items-start pt-50">
@@ -229,7 +229,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                     ) : null}
                   </div>
                 </IconWrapper>
-                <div className="">
+                <div className="px-8">
                   {data?.expertise?.skills && (
                     <BadgeGroup
                       title="Skills"

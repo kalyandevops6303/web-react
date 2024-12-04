@@ -32,6 +32,7 @@ import {
   getProjectPanelDate2Values,
 } from './leftSidebarProjectPanel/ProjectData';
 import toast from 'react-hot-toast';
+import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -126,7 +127,7 @@ const LeftSideBarProjectDetails = () => {
 
       <div className="w-full flex flex-row  items-center justify-start gap-5">
         <div className="flex flex-row items-center gap-1">
-          <div className={ProjectPanelIcon1Classnames[data?.status]}>{getProjectPanelDate1Icon(data)}</div>
+          <div className={ProjectPanelIcon1Classnames[data?.status] + 'border rounded-full'}>{getProjectPanelDate1Icon(data)}</div>
 
           <div className="flex flex-col items-start">
             <h1 className="text-[var(--1-theme-color-heading-display-text,#5E5873)] font-medium text-[14px] leading-[23px] font-montserrat">
@@ -138,7 +139,7 @@ const LeftSideBarProjectDetails = () => {
           </div>
         </div>
         <div className="flex flex-row items-center gap-1">
-          <div className={ProjectPanelIcon2Classnames[data?.status]}>{getProjectPanelDate2Icon(data)}</div>
+          <div className={ProjectPanelIcon2Classnames[data?.status]  + 'border rounded-full'}>{getProjectPanelDate2Icon(data)}</div>
 
           <div className="flex flex-col items-start">
             <h1
@@ -213,9 +214,7 @@ const LeftSideBarProjectDetails = () => {
             Description:{' '}
           </h1>
           <p className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat break-words">
-            {showMore
-              ? data?.details?.description
-              : `${data?.details?.description?.slice(0, 100)}` +
+            {`${data?.details?.description?.slice(0, 100)}` +
                 (data?.details?.description?.length > 100 ? '...' : '')}
             <span onClick={handleToggle} className="text-skyblue cursor-pointer">
               {data?.details?.description?.length > 100 ? (showMore ? ' read less' : ' read more') : null}
@@ -259,7 +258,7 @@ const LeftSideBarProjectDetails = () => {
               <span>Message</span>
             </PrimaryButton>
           )}
-          {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
+          {/* {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
               disabled={isBlocked}
               onClick={() => {}}
@@ -267,7 +266,7 @@ const LeftSideBarProjectDetails = () => {
             >
               Invite
             </PrimaryButton>
-          )}
+          )} */}
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.WITHDRAWN && (
             <PrimaryButton
               disabled={isBlocked}
@@ -279,6 +278,10 @@ const LeftSideBarProjectDetails = () => {
           )}
         </div>
       </div>
+      {
+        showMore && 
+        <ProjectDescriptionModal isOpen={showMore} onClose={()=>setShowMore(false)} data={data?.details?.description} />
+      }
     </div>
   );
 };

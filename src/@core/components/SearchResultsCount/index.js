@@ -2,7 +2,7 @@ import React from 'react';
 
 const SearchResultsCount = ({ metaData }) => {
   return (
-    <p className="font-medium-1 fw-bolder">
+    <p className="font-medium-1 fw-bolder mb-5">
       Search Results Found
       {metaData?.total_records < 10
         ? ` 0${metaData?.total_records === 0 ? '' : metaData?.total_records}`

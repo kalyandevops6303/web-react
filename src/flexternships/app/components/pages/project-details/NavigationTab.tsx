@@ -20,27 +20,27 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
       key={index}
       className={`${isActive ? activeTabClass : inactiveTabClass} group ${
         !(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'
-      } duration-200 hover:cursor-pointer hover:text-trublue-secondary-500   first:rounded-tl last:rounded-tr flex flex-row w-fit px-5 py-3 items-start justify-start gap-2`}
+      } duration-200 hover:cursor-pointer hover:text-trublue-secondary-500 first:rounded-tl last:rounded-tr flex flex-row w-fit p-3 items-start justify-start gap-2`}
     >
       <div
-        className={`px-2 py-2 rounded-sm ${
+        className={`h-[38px] w-[38px] flex flex-col justify-center items-center  ${
           isActive ? activeIconClass : inactiveIconClass
-        } group-hover:bg-white group-hover:text-trublue-secondary-500`}
+        } border rounded-[5px] group-hover:bg-white group-hover:text-trublue-secondary-500`}
       >
         {tab.icon}
       </div>
       <div className="flex flex-col items-start justify-center">
         <h1
           className={`font-semibold text-sm ${
-            isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'
-          } group-hover:text-trublue-secondary-500`}
+            isActive ? 'text-trublue-secondary-500' : 'text-grey-800'
+          } group-hover:text-trublue-secondary-500 font-semibold`}
         >
           {tab.title}
         </h1>
         <h1
           className={`${
             isActive ? 'text-trublue-secondary-500' : 'text-grey-loadingText'
-          } group-hover:text-trublue-secondary-500 text-xs lg:text-sm`}
+          }  font-light group-hover:text-trublue-secondary-500 text-xs`}
         >
           {tab.description}
         </h1>

@@ -16,6 +16,11 @@ import {
   CardText,
   Button,
   Spinner,
+  Table,
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  AccordionBody,
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
@@ -48,6 +53,7 @@ import { isEmpty } from 'lodash';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
+import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -111,7 +117,9 @@ const ProjectModal = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
+  const milestoneDetails = useProjectMilestonesStore((state) => state.projectMilestones);
+  console.log('milestoneDetails', milestoneDetails);
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
@@ -119,10 +127,18 @@ const ProjectModal = ({
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const [selectedFileKey, setSelectedFileKey] = useState(null);
   const [reportModal, setReportModal] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState('1');
   const [successReportModal, setSuccessReportModal] = useState(false);
   const alreadyReported = useSelector(selectAlreadyReported);
   // const checkReportLoading = useSelector(selectCheckReportLoading);
 
+  const toggle = (id) => {
+    if (accordionOpen === id) {
+      setAccordionOpen();
+    } else {
+      setAccordionOpen(id);
+    }
+  };
   useEffect(() => {
     dispatch(
       checkIfReported({
@@ -134,6 +150,12 @@ const ProjectModal = ({
       }),
     );
   }, [cardData]);
+
+  useEffect(() => {
+    if (data) {
+      populateProjectMilestones(data._id);
+    }
+  }, [data]);
 
   const onReportSuccess = () => {
     setReportModal(false);
@@ -500,17 +522,20 @@ const ProjectModal = ({
               </CardBody>
             </Card>
           )}
-          <Card>
-            <CardHeader>
-              <CardTitle className="mb-0 d-flex justify-content-between w-100">
-                <span>Requirement Details</span>
-              </CardTitle>
-            </CardHeader>
-            <CardBody>
-              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" gapWrap />
-              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" gapWrap />
-            </CardBody>
-          </Card>
+          {(data?.proficiency?.skills?.lenght > 0 || data?.proficiency?.tools?.length > 0) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="mb-0 d-flex justify-content-between w-100">
+                  <span>Requirement Details</span>
+                </CardTitle>
+              </CardHeader>
+              <CardBody>
+                <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" gapWrap />
+                <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" gapWrap />
+              </CardBody>
+            </Card>
+          )}
+
           {selectUserDetailsData?._id === data?.client_details?.user_id ||
           data?.has_bid ||
           isViewable ||

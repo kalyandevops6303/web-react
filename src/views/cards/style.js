@@ -43,6 +43,19 @@ const ProjectCardWrap = styled(CardWrap)`
   .show-more-less-clickable {
     text-decoration: none;
   }
+  .font-posted {
+    font-size: 14px;
+    color: ${theme.checkboxLabel};
+  }
+  .font-name {
+    font-size: 18px;
+  }
+  .name {
+    color: ${theme.headingTextColor};
+  }
+  .company {
+    color: ${theme.gray};
+  }
   .project-stats {
     .project {
       margin-right: 1.2rem;
@@ -181,6 +194,10 @@ const TeamCardWrap = styled(CardWrap)`
     border-radius: 1rem;
     color: black;
     font-weight: 600;
+  }
+
+  .font-size {
+    font-size: 14px;
   }
 
   @media only screen and (max-device-width: 600px) {

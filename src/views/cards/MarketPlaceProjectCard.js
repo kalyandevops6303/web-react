@@ -240,9 +240,9 @@ const MarketPlaceProjectCard = ({
                   </CustomBadge>
                 </div>
                 <CardTitle className="d-flex align-items-center">
-                  <span className="cursor-pointer">{project?.details?.name ?? project?.name}</span>
+                  <span className="cursor-pointer font-name">{project?.details?.name ?? project?.name}</span>
                 </CardTitle>
-                <div className="d-flex gap-sm-5 flex-wrap project-stats">
+                <div className="d-flex gap-sm-2 -mt-4 flex-wrap project-stats">
                   <PermissionWrapper
                     permissions={appPermissions}
                     permissionName={['MARKETPLACE.PROJECT_DETAILS.PRICE']}
@@ -267,7 +267,7 @@ const MarketPlaceProjectCard = ({
                         'Location'}
                     </CardText>
                   </PermissionWrapper>
-                  <CardText className=" mb-1">
+                  <CardText className="font-posted">
                     {`Posted ${project?.posted_date ? DateTime?.fromMillis(project?.posted_date)?.toRelative() : '-'}`}
                   </CardText>
                 </div>
@@ -277,14 +277,14 @@ const MarketPlaceProjectCard = ({
                   <>
                     {!showFullText ? (
                       <div
-                        className="my-div"
+                        className="my-div posted"
                         ref={divRef}
-                        style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop: '10px' }}
+                        style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop: '10px', fontSize: '16px' }}
                       >
                         {descriptionToShow}
                       </div>
                     ) : (
-                      <div className="my-div" ref={divRef}>
+                      <div className="my-div posted" ref={divRef}>
                         {descriptionToShow}
                       </div>
                     )}

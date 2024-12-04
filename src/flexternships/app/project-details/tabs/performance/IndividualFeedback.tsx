@@ -10,6 +10,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { getScoreLabel } from '@/flexternships/utils/score-utils';
 import { useEffect, useState } from 'react';
 import { User } from 'react-feather';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
 
 export default function IndividualFeedback(props: IndividualFeedbackProps) {
@@ -69,7 +70,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
       <div className="flex items-center justify-between w-full mr-5 h-10">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={image_uri} />
+            <AvatarImage src={image_uri ? image_uri : defaultAvatar} />
             <AvatarFallback>
               <User color="#6E6B7B" />
             </AvatarFallback>

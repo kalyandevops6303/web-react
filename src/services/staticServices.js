@@ -34,6 +34,8 @@ const currenciesService = () => DataService.get(API.static.currencies);
 
 const companyIndustriesService = () => DataService.get(API.static.companyIndustries);
 
+const departmentNamesService = () => DataService.get(API.project.departmentName);
+
 const projectAreasService = () => DataService.get(API.static.projectAreas);
 
 const servicesService = () => DataService.get(API.static.services);
@@ -59,6 +61,7 @@ export {
   timezonesService,
   currenciesService,
   companyIndustriesService,
+  departmentNamesService,
   projectAreasService,
   servicesService,
   disputeTypesService,
