@@ -3,11 +3,18 @@
 import { ChevronLeft, Heart, Link2, Users } from 'react-feather';
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
 import ExpandableText from '../../components/core/ExpandableText';
+import { useRef } from 'react';
 
 import defaultAvatar from '@flexternships/assets/images/ic_trumio_logo.png';
 import SecondaryButton from '../../components/core/buttons/SecondaryButton';
 
 export default function ClientPublicProfile() {
+  const delegatesRef = useRef<HTMLDivElement>(null);
+
+  const scrollToDelegates = () => {
+    delegatesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="flexternships-page">
       {/* TODO: Add Breadcrumbs */}
@@ -38,7 +45,7 @@ export default function ClientPublicProfile() {
               <PrimaryIconText
                 icon={<Users size={18} className="text-trublue-secondary-500" />}
                 text="View All Delegates"
-                onClick={() => {}}
+                onClick={scrollToDelegates}
               />
             </div>
             <div>
@@ -68,7 +75,7 @@ export default function ClientPublicProfile() {
               </SecondaryButton>
             </div>
           </div>
-          <div className="flex flex-col gap-y-6 p-6 pt-4 bg-white rounded-md shadow-card">
+          <div ref={delegatesRef} className="flex flex-col gap-y-6 p-6 pt-4 bg-white rounded-md shadow-card">
             <div className="flex flex-row items-center gap-x-3">
               <span className="text-grey-heading text-lg font-medium leading-7">Delegate(s)</span>
               <span className="text-grey text-xs font-normal leading-5">(3 members)</span>
@@ -112,7 +119,7 @@ export default function ClientPublicProfile() {
             </div>
           </div>
           <div className="bg-white rounded-md shadow-card p-6">
-            <div className="text-base font-semibold text-grey-heading">Company Tagline</div>
+            <div className="text-base font-semibold text-grey-heading mb-4">Company Tagline</div>
             <div className="text-grey text-sm font-light">
               <ExpandableText charLimit={200}>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet
@@ -133,10 +140,10 @@ export default function ClientPublicProfile() {
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="text-grey text-sm font-normal leading-[21px]">Roles</div>
                       <div className="flex flex-row flex-wrap gap-x-1">
-                        <span className="px-3 py-2 text-[#005EFF] text-sm font-normal leading-4.5 border-1 border-[#005EFF] rounded-[4px]">
+                        <span className="px-4 py-1 text-[#005EFF] text-sm font-normal leading-4.5 border-1 border-[#005EFF] rounded-[4px]">
                           Front-End Dev
                         </span>
-                        <span className="px-3 py-2 text-[#005EFF] text-sm font-normal leading-4.5 border-1 border-[#005EFF] rounded-[4px]">
+                        <span className="px-4 py-1 text-[#005EFF] text-sm font-normal leading-4.5 border-1 border-[#005EFF] rounded-[4px]">
                           Back-End Dev
                         </span>
                       </div>
