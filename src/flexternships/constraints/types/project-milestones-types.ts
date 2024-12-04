@@ -94,6 +94,7 @@ export type ProjectMilestonesState = {
   isMilestonesLoading: boolean;
   isMilestoneDetailsLoading: boolean;
   activeModal: MilestoneDetailsModalType | undefined;
+  modalMetadata?: Record<string, any>;
   projectMilestones: MilestoneDetails[];
   milestoneDetails: MilestoneDetails;
 };
@@ -104,7 +105,7 @@ export type ProjectMilestonesActions = {
   markMilestoneAsCompleted: (milestoneId: string) => Promise<void>;
   acceptMilestone: (milestoneId: string) => Promise<void>;
   closeModal: () => void;
-  openModal: (modal: MilestoneDetailsModalType) => void;
+  openModal: (modal: MilestoneDetailsModalType, metadata?: Record<string, any>) => void;
 };
 
 export type ProjectMilestonesStore = ProjectMilestonesState & ProjectMilestonesActions;

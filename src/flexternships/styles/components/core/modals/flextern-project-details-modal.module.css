@@ -1,0 +1,11 @@
+.projectDetailsCard {
+  @apply bg-white shadow-card rounded-md;
+}
+
+.projectDetailsCardHeader {
+  @apply text-lg font-medium text-grey-heading leading-[26px];
+}
+
+.projectDetailsCardBody {
+  @apply flex flex-row flex-wrap gap-y-10 gap-x-6 p-6;
+}

@@ -5,6 +5,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import Spinner from '@/flexternships/app/components/core/Spinner';
+import teamPuzzleGif from '@/flexternships/assets/gifs/team-puzzle.gif';
 
 export default function TeamTab(props: InputProps) {
   const { className } = props;
@@ -31,14 +32,16 @@ export default function TeamTab(props: InputProps) {
 
   return (
     <div className="my-5 max-w-5xl rounded-md bg-grey-light shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
-      <div className="w-full pt-6">
-        <p className="text-lg px-6 pb-3 font-medium text-grey-heading">Project Team</p>
-        <svg xmlns="http://www.w3.org/2000/svg" width="1039" height="2" viewBox="0 0 1039 2" fill="none">
-          <path d="M1 1L1038 0.999792" stroke="#EBE9F1" stroke-linecap="square" />
-        </svg>
+      <div className="pt-6">
+        <p className="text-lg px-6 pb-4 font-medium text-grey-heading border-b-1 border-grey-border">Project Team</p>
       </div>
-      <div className={`flex w-full flex-col items-center gap-6  p-6 ${className ?? ''}`}>
-        {teamDetails &&
+      <div className={`flex flex-col gap-6 p-6 ${className ?? ''}`}>
+        {teamDetails.length === 0 ? (
+          <div className="py-5 gap-y-5 flex flex-col items-center rounded-md bg-white shadow-card">
+            <img src={teamPuzzleGif} alt="team-puzzle" className="w-[176px] h-[141px] object-cover" />
+            <p className="text-grey-300 text-sm font-medium tracking-wide">No talents found</p>
+          </div>
+        ) : (
           teamDetails.map((teamMember, index) => (
             <div className="w-full" key={index}>
               <TeamCard
@@ -51,7 +54,8 @@ export default function TeamTab(props: InputProps) {
                 profileImage={teamMember?.profileImage}
               />
             </div>
-          ))}
+          ))
+        )}
       </div>
     </div>
   );
