@@ -6,7 +6,11 @@ export default function ProjectDetailsItem(props: Props) {
   return (
     <div className={`${Styles.projectDetailsItem} ${className ?? ''}`}>
       <div className={Styles.projectDetailsItemValueContainer}>
-        <span className={Styles.projectDetailsItemValue}>{value}</span>{' '}
+        {value ? (
+          <span className={Styles.projectDetailsItemValue}>{value}</span>
+        ) : (
+          <span className="text-lg text-grey-300 font-normal italic">(Add {title.toLowerCase()})</span>
+        )}{' '}
         <span className={Styles.projectDetailsItemGreymatter}>{greymatter}</span>
       </div>
       <div className={Styles.projectDetailsItemTitle}>
@@ -19,7 +23,7 @@ export default function ProjectDetailsItem(props: Props) {
 
 type Props = {
   title: string;
-  value: string;
+  value?: string;
   greymatter?: string;
   className?: string;
   tooltip?: string;

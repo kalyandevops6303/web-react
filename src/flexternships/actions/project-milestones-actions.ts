@@ -48,9 +48,9 @@ export const acceptMilestone = async (milestoneId: string) => {
 };
 
 export const closeModal = (set: any) => {
-  set({ activeModal: undefined });
+  set({ activeModal: undefined, modalMetadata: undefined });
 };
 
-export const openModal = (modal: MilestoneDetailsModalType, set: any) => {
-  set({ activeModal: modal });
+export const openModal = (modal: MilestoneDetailsModalType, set: any, metadata?: Record<string, any>) => {
+  set({ activeModal: modal, modalMetadata: metadata });
 };

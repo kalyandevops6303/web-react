@@ -36,7 +36,7 @@ export const useProjectMilestonesStore = create<ProjectMilestonesStore>((set) =>
   markMilestoneAsCompleted: async (milestoneId: string) => markMilestoneAsCompleted(milestoneId),
   acceptMilestone: async (milestoneId: string) => acceptMilestone(milestoneId),
   closeModal: () => closeModal(set),
-  openModal: (modal: MilestoneDetailsModalType) => openModal(modal, set),
+  openModal: (modal: MilestoneDetailsModalType, metadata?: Record<string, any>) => openModal(modal, set, metadata),
 }));
 
 const defaultMilestoneArtifactsInitState: MilestoneArtifactsState = {
