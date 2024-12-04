@@ -13,6 +13,7 @@ import MilestoneItem from '../../../pages/create-project/tabs/preview/MilestoneI
 import PrimaryButton from '../../buttons/PrimaryButton';
 import ExpandableText from '../../ExpandableText';
 import SecondaryButton from '../../buttons/SecondaryButton';
+import { Accordion, AccordionItem, AccordionContent, AccordionTrigger } from '../../../ui/accordion';
 
 export default function FlexternProjectDetailsModal(props: FlexternProjectDetailsModalProps) {
   const { data, isOpen, onClose, ctas } = props;
@@ -24,7 +25,9 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
         className={`flex flex-col gap-y-6 py-8 px-6 bg-white-fa rounded-md max-h-[80vh] overflow-y-scroll overflow-x-hidden ${TabStyles.previewTab}`}
       >
         <div className={Styles.projectDetailsCard}>
-          <div className={Styles.projectDetailsCardHeader}>Project Details</div>
+          <div className={`px-6 pt-6 pb-4 border-b-1 border-grey-border ${Styles.projectDetailsCardHeader}`}>
+            Project Details
+          </div>
           <div className={Styles.projectDetailsCardBody}>
             <ProjectDetailsItem
               className="w-[460px] m-0"
@@ -87,13 +90,24 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
         </div>
 
         <div className={Styles.projectDetailsCard}>
-          <div className={Styles.projectDetailsCardHeader}>Project Description</div>
-          <div className={Styles.projectDetailsCardBody}>
-            <ExpandableText className="text-base text-grey-heading font-normal leading-6" charLimit={350}>
-              {data?.requirements?.projectDescription || '(Add description)'}
-            </ExpandableText>
-          </div>
+          <Accordion type="single" defaultValue="description" collapsible>
+            <AccordionItem value="description" className="p-0 m-0 border-0">
+              <AccordionTrigger
+                className={`p-0 m-0 px-6 pt-6 pb-4 data-[state=open]:border-b-1 data-[state=open]:border-grey-border hover:no-underline`}
+              >
+                <div className={Styles.projectDetailsCardHeader}>Project Description</div>
+              </AccordionTrigger>
+              <AccordionContent className="p-0 m-0">
+                <div className={Styles.projectDetailsCardBody}>
+                  <ExpandableText className="text-base text-grey-heading font-normal leading-6" charLimit={350}>
+                    {data?.requirements?.projectDescription || '(Add description)'}
+                  </ExpandableText>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
+
         {(data?.requirements?.documents?.length ?? 0) > 0 &&
           data.requirements?.documents.map((document) => (
             <HorizontalFileCard
@@ -106,45 +120,67 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
           ))}
 
         <div className={Styles.projectDetailsCard}>
-          <div className={Styles.projectDetailsCardHeader}>Roles</div>
-          <div className={Styles.projectDetailsCardBody}>
-            <div className={`${TabStyles.rolesPreview} m-0`}>
-              <div className={TabStyles.rolesPreviewHeader}>
-                <div className={`${TabStyles.rolesPreviewHeaderItem} w-[240px]`}>Role</div>
-                <div className={`${TabStyles.rolesPreviewHeaderItem} w-[100px]`}>Count</div>
-                <div className={`${TabStyles.rolesPreviewHeaderItem} grow`}>Skills</div>
-                <div className={`${TabStyles.rolesPreviewHeaderItem} grow`}>Tools</div>
-              </div>
-              <div>
-                {data?.roles?.map((role, index) => (
-                  <RoleItem key={index} data={role} last={index === (data?.roles?.length || 0) - 1} />
-                ))}
-              </div>
-            </div>
-          </div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="roles" className="p-0 m-0 border-0">
+              <AccordionTrigger
+                className={`p-0 m-0 px-6 pt-6 pb-4 data-[state=open]:border-b-1 data-[state=open]:border-grey-border hover:no-underline`}
+              >
+                <div className={Styles.projectDetailsCardHeader}>Roles</div>
+              </AccordionTrigger>
+              <AccordionContent className="p-0 m-0">
+                <div className={Styles.projectDetailsCardBody}>
+                  <div className={`${TabStyles.rolesPreview} m-0`}>
+                    <div className={TabStyles.rolesPreviewHeader}>
+                      <div className={`${TabStyles.rolesPreviewHeaderItem} w-[240px]`}>Role</div>
+                      <div className={`${TabStyles.rolesPreviewHeaderItem} w-[100px]`}>Count</div>
+                      <div className={`${TabStyles.rolesPreviewHeaderItem} grow`}>Skills</div>
+                      <div className={`${TabStyles.rolesPreviewHeaderItem} grow`}>Tools</div>
+                    </div>
+                    <div>
+                      {data?.roles?.map((role, index) => (
+                        <RoleItem key={index} data={role} last={index === (data?.roles?.length || 0) - 1} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
+
         <div className={Styles.projectDetailsCard}>
-          <div className={Styles.projectDetailsCardHeader}>Milestones</div>
-          <div className={Styles.projectDetailsCardBody}>
-            <div className={`${TabStyles.milestonesPreview} m-0`}>
-              <div className={TabStyles.milestonesPreviewHeader}>
-                <div className={`${TabStyles.milestonesPreviewHeaderItem} w-[200px]`}>Milestone Count</div>
-                <div className={`${TabStyles.milestonesPreviewHeaderItem} w-[120px]`}>Duration</div>
-                <div className={`${TabStyles.milestonesPreviewHeaderItem} grow`}>Milestone Name</div>
-              </div>
-              <div className={TabStyles.milestonesPreviewBody}>
-                {data?.milestones?.map((milestone, index) => (
-                  <MilestoneItem
-                    key={index}
-                    data={milestone}
-                    milestoneIndex={index}
-                    last={index === (data?.milestones?.length || 0) - 1}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="milestones" className="p-0 m-0 border-0">
+              <AccordionTrigger
+                className={`p-0 m-0 px-6 pt-6 pb-4 data-[state=open]:border-b-1 data-[state=open]:border-grey-border hover:no-underline`}
+              >
+                <div className={Styles.projectDetailsCardHeader}>Milestones</div>
+              </AccordionTrigger>
+              <AccordionContent className="p-0 m-0">
+                <div className={Styles.projectDetailsCardBody}>
+                  <div className={`${TabStyles.milestonesPreview} m-0`}>
+                    <div className={TabStyles.milestonesPreviewHeader}>
+                      <div className={`${TabStyles.milestonesPreviewHeaderItem} w-[200px]`}>Milestone Count</div>
+                      <div className={`${TabStyles.milestonesPreviewHeaderItem} w-[120px]`}>Duration</div>
+                      <div className={`${TabStyles.milestonesPreviewHeaderItem} grow`}>Milestone Name</div>
+                    </div>
+                    <div className={TabStyles.milestonesPreviewBody}>
+                      {data?.milestones?.map((milestone, index) => (
+                        <MilestoneItem
+                          key={index}
+                          data={milestone}
+                          milestoneIndex={index}
+                          last={index === (data?.milestones?.length || 0) - 1}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
+
         <div className="flex flex-row gap-x-6 justify-end">
           {ctas.map((cta) =>
             cta.type === 'primary' ? (
