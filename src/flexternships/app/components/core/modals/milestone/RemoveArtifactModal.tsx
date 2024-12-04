@@ -13,8 +13,6 @@ export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
   const { onClose, isOpen, onConfirm, title, description, confirmCtaText, artifact, cancelCtaText } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
-  console.log('artifact', artifact);
-
   const handleConfirm = async () => {
     setIsConfirmLoading(true);
     try {
