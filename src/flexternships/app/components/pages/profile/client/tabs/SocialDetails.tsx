@@ -146,7 +146,6 @@ export default function SocialDetails() {
                 <div key={field.id} className="flex flex-row gap-x-2">
                   <div className="flex flex-row flex-wrap gap-x-6">
                     <Controller
-                      key={field.id}
                       name={`socialLinks.${index}.platform`}
                       control={control}
                       render={({ field: { value, onChange } }) => (
@@ -162,7 +161,6 @@ export default function SocialDetails() {
                       )}
                     />
                     <Controller
-                      key={field.id}
                       name={`socialLinks.${index}.url`}
                       control={control}
                       render={({ field: { value, onChange } }) => (
