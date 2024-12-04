@@ -52,6 +52,7 @@ import ProjectsTab from '@/flexternships/app/project-details/tabs/projects/page'
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 import FlexternshipsContractView from '@/flexternships/app/project-details/sign-documents/page';
 import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
+import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -101,6 +102,10 @@ export const FlexternshipRoutes = [
   {
     path: '/search',
     element: <Search />,
+  },
+  {
+    path: '/profile/client/:userId',
+    element: <ClientPublicProfile />,
   },
   {
     path: '/profile/:userType/:userId',
