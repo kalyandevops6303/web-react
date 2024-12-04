@@ -1,22 +1,9 @@
 import { cn } from '@/flexternships/lib/utils';
 import { X } from 'react-feather';
-import { useEffect } from 'react';
 import { Dialog, DialogContent } from '../../ui/dialog';
 
 export default function GenericModal(props: GenericModalProps) {
   const { children, onClose, isOpen = false, className } = props;
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
