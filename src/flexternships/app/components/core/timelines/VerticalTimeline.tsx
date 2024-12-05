@@ -6,10 +6,11 @@ export default function VerticalTimeline(props: VerticalTimelineProps) {
 
   return (
     <div className="w-full">
-      <ol className={`relative border-s border-gray-200 border-l h-fit ${checked && 'border-[#28C76F]'}`}>
+      <ol className={`relative ${checked && 'border-[#28C76F]'}`}>
+        <div className="absolute border-1 border-gray-200 h-[27rem] lg:h-[25rem] xl:h-[24rem]"></div>
         {timelineItems?.map((timelineItem, index) => (
           <li className="mb-10 ms-2 bg-r" key={index}>
-            <div className={`absolute rounded-full -left-[0.65rem] ${!checked ? 'bg-gray-200' : 'bg-[#28C76F]'}`}>
+            <div className={`absolute rounded-full -left-[0.55rem] ${!checked ? 'bg-gray-200' : 'bg-[#28C76F]'}`}>
               {checked ? (
                 <Check size="20" color="white" />
               ) : (

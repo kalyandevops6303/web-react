@@ -24,6 +24,10 @@ export const routes = {
       getProjectInvitationDetails: `${serviceUrls.projectManagementV2}/project/invitation-details`,
       getSelfOrTeamPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/overview`,
       getPeerOrIndividualPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/individual/overview`,
+
+      terminateProject: `${serviceUrls.projectManagementV2}/project/terminate`,
+      withdrawProject: `${serviceUrls.projectManagementV2}/project/withdraw`,
+      relistProject: `${serviceUrls.projectManagementV2}/project/relist-date`,
     },
     legal: {
       details: `${serviceUrls.projectManagementV2}/legal/document`,

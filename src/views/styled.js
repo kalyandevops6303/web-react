@@ -482,12 +482,32 @@ const TeamCreatedModalLogoImg = styled.img`
 `;
 
 const Elevate = styled.div`
+  width: 100%;
   transition: box-shadow 0.3s; /* Optional: Add a transition for a smoother effect on hover */
   border-radius: 0.375rem;
   box-shadow: ${(props) => (props.active === true ? `0px 0px 0px 1px ${theme.blueBorderColorv2}` : '')};
   &:hover {
     box-shadow: ${(props) => (props.active === false ? '' : `0px 0px 0px 1px ${theme.blueBorderColorv2}`)};
   }
+`;
+
+const ElevateWarning = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  border-radius: 0.375rem;
+  box-shadow: ${`0px 0px 0px 1px ${theme.red}`};
+`;
+
+const WarningMessage = styled.div`
+  width: 100%;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 100%), #ea5455;
+  display: flex;
+  align-items: center;
+  border-radius: 0.375rem;
+  padding: 12px 40px;
+  gap: 4px;
 `;
 const ElevateShadow = styled(Elevate)`
   &:hover {
@@ -547,6 +567,8 @@ export {
   TeamCreatedModalImageWrapper,
   TeamCreatedModalLogoImg,
   Elevate,
+  ElevateWarning,
+  WarningMessage,
   CircularBackButtonContainer,
   TooltipWrapper,
   DisputeCount,

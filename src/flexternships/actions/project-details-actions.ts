@@ -5,7 +5,7 @@ import {
   getProjectInvitationDetailsService,
   getSelfOrTeamPerformanceDetailsService,
 } from '../services/project-details';
-import { getProjectDetailsById } from '../services/project-management-v2';
+import { getProjectDetailsById, relistProject, terminateProject, withdrawProject } from '../services/project-management-v2';
 
 export const populateTeamDetails = async (set: any, projectId: string): Promise<void> => {
   set({ isTeamDetailsLoading: true });
@@ -50,3 +50,30 @@ export const getPeerOrIndividualPerformanceDetails = async (milestoneId: string,
   const res: any = await getPeerOrIndividualPerformanceDetailsService(milestoneId, feedbackType);
   set({ performanceDetails: res, isPerformanceDetailsLoading: false });
 };
+
+export const setTerminateProject = async (projectId: string, set:any) => {
+  set({ isProjectsLoading: true, projectDetailsLoading: true });
+  await terminateProject(projectId);
+  await getProjectDetails(projectId, set);
+  set({ isProjectsLoading: false, projectDetailsLoading: false });
+}
+
+export const setWithdrawProject = async (projectId: string, set:any) => {
+  set({ isProjectsLoading: true, projectDetailsLoading: true });
+  await withdrawProject(projectId);
+  await getProjectDetails(projectId, set);
+  set({ isProjectsLoading: false, projectDetailsLoading: false });
+}
+
+export const setRelistProject = async (projectId: string, startDate:number, endDate:number, set:any) => {
+  set({ isProjectsLoading: true, projectDetailsLoading: true });
+  await relistProject(projectId, startDate, endDate);
+  await getProjectDetails(projectId, set);
+  set({ isProjectsLoading: false, projectDetailsLoading: false });
+}
+
+export const setInvitationAsRead = async (projectId: string, set:any) => {
+  set({ isProjectInvitationDetailsLoading: true });
+  await getProjectInvitationDetailsService(projectId);
+  set({ isProjectInvitationDetailsLoading: false });
+}

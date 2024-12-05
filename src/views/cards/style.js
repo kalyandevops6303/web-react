@@ -12,6 +12,18 @@ const CardWrap = styled.div`
   .card-body {
     padding: 2.1rem 2.6rem 1.8rem 2.6rem;
   }
+  .warning {
+    color: ${theme.red};
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    .red{
+      color: ${theme.red};
+    }
+  }
 `;
 
 const EstimatedTimeHeading = styled.h1`

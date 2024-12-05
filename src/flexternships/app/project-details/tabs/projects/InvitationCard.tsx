@@ -16,9 +16,15 @@ export default function InvitationCard() {
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectInvitationDetails = useProjectsStore((state) => state.projectInvitationDetails);
   const isProjectInvitationDetailsLoading = useProjectsStore((state) => state.isProjectInvitationDetailsLoading);
+  const setProjectInvitationRead = useProjectsStore((state) => state.setProjectInvitationRead);
 
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
-  console.log(projectInvitationDetails);
+
+  useEffect(() => {
+    if (projectInvitationDetails?.is_read === false) {
+      setProjectInvitationRead(params?.projectId as string);
+    }
+  }, [projectInvitationDetails]);
   const invitationCardData = {
     isCollapsible: false,
     bordered: true,
@@ -27,8 +33,13 @@ export default function InvitationCard() {
       <div className="flex w-full items-center mr-3 justify-between">
         <div className="flex flex-col text-left">
           <div className="text-[#B9B9C3] font-sans text-[12px] font-semibold leading-[16px]">STEP 1</div>
-          <div className="text-[#5E5873] font-sans text-[16px] font-medium leading-[24px] !no-underline hover:!no-underline">
-            Invitation
+          <div className="relative">
+            {projectInvitationDetails?.is_read && (
+              <div className="absolute top-0 -right-2 w-2 h-2 border bg-[#EA5455] rounded-full border-[#EA5455]"></div>
+            )}
+            <div className="text-[#5E5873] font-sans text-[16px] font-medium leading-[24px] !no-underline hover:!no-underline">
+              Invitation
+            </div>
           </div>
         </div>
         <div>

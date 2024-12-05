@@ -23,6 +23,7 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
 function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
@@ -115,7 +116,14 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
               <div className="w-75">
                 <div className="d-flex">
                   <Avatar
-                    img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                    img={
+                      data?.image_uri?.length > 0
+                        ? data?.image_uri
+                        : generateAvatar(
+                            data?.first_name + ' ' + data?.last_name,
+                            data?.first_name.charAt(0).toUpperCase() + data?.last_name.charAt(0).toUpperCase(),
+                          )
+                    }
                     imgHeight="40"
                     imgWidth="40"
                     className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}

@@ -18,7 +18,7 @@ import {
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
@@ -33,6 +33,7 @@ import {
 } from './leftSidebarProjectPanel/ProjectData';
 import toast from 'react-hot-toast';
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
+import RelistModal from '../../core/modals/RelistModal';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -40,15 +41,19 @@ enum UserTypeChipClassnames {
 }
 
 const LeftSideBarProjectDetails = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const { projectId, milestoneId } = params;
 
   const data = useProjectsStore((state) => state.projectDetails);
+  const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
+  const setWithdrawProject = useProjectsStore((state) => state.setWithdrawProject);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
 
   const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
+  const [showRelistModal, setShowRelistModal] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
   const [isBlocked, setIsBlocked] = useState(true);
@@ -229,7 +234,9 @@ const LeftSideBarProjectDetails = () => {
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
               disabled={isBlocked}
-              onClick={() => {}}
+              onClick={async() =>{ await setWithdrawProject(data?.id);
+                navigate(`/project-details/${data?.id}/team`);
+              }}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
             >
               Withdraw
@@ -241,7 +248,10 @@ const LeftSideBarProjectDetails = () => {
               data?.status === ProjectPrimaryStatus.BLOCKED) && (
               <PrimaryButton
                 disabled={isBlocked}
-                onClick={() => {}}
+                onClick={async () => {
+                  await setTerminateProject(data?.id);
+                  navigate(`/project-details/${data?.id}/team`);
+                }}
                 className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
               >
                 Terminate
@@ -273,7 +283,9 @@ const LeftSideBarProjectDetails = () => {
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.WITHDRAWN && (
             <PrimaryButton
               disabled={isBlocked}
-              onClick={() => {}}
+              onClick={() => {
+                setShowRelistModal(true);
+              }}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
             >
               Re-List
@@ -288,6 +300,9 @@ const LeftSideBarProjectDetails = () => {
           data={data?.details?.description}
         />
       )}
+      {showRelistModal && <RelistModal isOpen={showRelistModal} onClose={() => {
+        setShowRelistModal(false);
+      }} projectId={projectId ?? ''} />}
     </div>
   );
 };

@@ -4,8 +4,6 @@ import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 
 export default function TeamCard(props: InputProps) {
   const { averageRating, ratingText, ratingColor, name, profileImage, designation, kudos, wow } = props;
-
-  console.log(kudos, wow);
   return (
     <div className="flex py-5 px-5 items-center gap-x-7 rounded-md bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
       <div className="flex items-center gap-x-4">
