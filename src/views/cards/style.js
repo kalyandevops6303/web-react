@@ -20,7 +20,7 @@ const CardWrap = styled.div`
     justify-content: space-between;
     align-items: center;
 
-    .red{
+    .red {
       color: ${theme.red};
     }
   }

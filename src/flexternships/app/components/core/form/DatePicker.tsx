@@ -22,7 +22,7 @@ export function DatePicker(props: InputProps) {
     error,
     fromDate,
     timeZone = 'Asia/Kolkata',
-    disabled=false,
+    disabled = false,
   } = props;
 
   const calendarRef = React.useRef<HTMLButtonElement>(null);
@@ -70,7 +70,7 @@ export function DatePicker(props: InputProps) {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white">
         <Calendar
-         disabled={disabled}
+          disabled={disabled}
           mode="single"
           selected={
             value

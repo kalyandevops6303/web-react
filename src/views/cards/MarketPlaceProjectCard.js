@@ -31,9 +31,7 @@ import { AlertCircle } from 'react-feather';
 
 const MarketPlaceCardWrapper = ({ children, daysGap }) => {
   const Wrapper = daysGap > 60 ? ElevateWarning : Elevate;
-  return(
-    <Wrapper>{children}</Wrapper>
-  )
+  return <Wrapper>{children}</Wrapper>;
 };
 
 const MarketPlaceProjectCard = ({
@@ -239,19 +237,21 @@ const MarketPlaceProjectCard = ({
       <Card onClick={handleShowProject} className="cursor-pointer">
         {isNewTag && <NewTag />}
         <MarketPlaceCardWrapper daysGap={daysGap}>
-          {daysGap > 60 && <WarningMessage>
-            <AlertCircle size={18} color="red" />
-            <div className='warning'>
-            <h1 className='red'>
-              <span className="fw-bold">Over 60 Days : &nbsp;</span>
-              Your project has been in open status for over 60 days. Please take action to avoid this project being
-              withdrawn
-            </h1>
-            {/* <span className='fw-bold'>
+          {daysGap > 60 && (
+            <WarningMessage>
+              <AlertCircle size={18} color="red" />
+              <div className="warning">
+                <h1 className="red">
+                  <span className="fw-bold">Over 60 Days : &nbsp;</span>
+                  Your project has been in open status for over 60 days. Please take action to avoid this project being
+                  withdrawn
+                </h1>
+                {/* <span className='fw-bold'>
               7 Days Left
             </span> */}
-            </div>
-          </WarningMessage>}
+              </div>
+            </WarningMessage>
+          )}
           <CardBody>
             <Row>
               <Col lg="8">

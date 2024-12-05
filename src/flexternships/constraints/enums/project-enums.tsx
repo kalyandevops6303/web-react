@@ -116,5 +116,4 @@ export const ProjectPanelDate2Classnames = {
   [ProjectPrimaryStatus.COMPLETED]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
   [ProjectPrimaryStatus.WITHDRAWN]: 'text-[#EA5455]',
   [ProjectPrimaryStatus.BLOCKED]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
-  
 };

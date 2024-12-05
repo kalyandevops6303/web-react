@@ -234,7 +234,8 @@ const LeftSideBarProjectDetails = () => {
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
               disabled={isBlocked}
-              onClick={async() =>{ await setWithdrawProject(data?.id);
+              onClick={async () => {
+                await setWithdrawProject(data?.id);
                 navigate(`/project-details/${data?.id}/team`);
               }}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
@@ -300,9 +301,15 @@ const LeftSideBarProjectDetails = () => {
           data={data?.details?.description}
         />
       )}
-      {showRelistModal && <RelistModal isOpen={showRelistModal} onClose={() => {
-        setShowRelistModal(false);
-      }} projectId={projectId ?? ''} />}
+      {showRelistModal && (
+        <RelistModal
+          isOpen={showRelistModal}
+          onClose={() => {
+            setShowRelistModal(false);
+          }}
+          projectId={projectId ?? ''}
+        />
+      )}
     </div>
   );
 };
