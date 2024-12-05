@@ -75,7 +75,6 @@ export default function PeerFeedback() {
   }, [activeTeamMember]);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
-    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: peerFeedbackForm?._id,
       milestone_id: params?.milestoneId,

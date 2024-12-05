@@ -41,7 +41,6 @@ export default function TeamFeedback() {
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
-    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: teamFeedbackForm?._id,
       milestone_id: params?.milestoneId,

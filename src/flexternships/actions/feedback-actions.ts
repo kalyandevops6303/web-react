@@ -24,8 +24,8 @@ export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, s
     feedbackFormSubmission: data,
   }));
   set({ isSubmitFeedbackLoading: false });
+  onSuccess && onSuccess();
   showToastMessage(ToastType.SUCCESS, `Feedback has been submitted successfully`);
-  onSuccess && setTimeout(() => onSuccess(), 1500);
 };
 
 export const getFeedbackResponseInfo = async (
