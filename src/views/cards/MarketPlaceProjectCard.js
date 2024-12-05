@@ -271,7 +271,7 @@ const MarketPlaceProjectCard = ({
                     </Badge>
                   </CustomBadge>
                 </div>
-                <CardTitle className="d-flex align-items-center">
+                <CardTitle className="d-flex align-items-center mb-3">
                   <span className="cursor-pointer font-name">{project?.details?.name ?? project?.name}</span>
                 </CardTitle>
                 <div className="d-flex gap-sm-2 -mt-4 flex-wrap project-stats">
@@ -299,7 +299,7 @@ const MarketPlaceProjectCard = ({
                         'Location'}
                     </CardText>
                   </PermissionWrapper>
-                  <CardText className="font-posted">
+                  <CardText className=" mb-1 font-posted">
                     {`Posted ${project?.posted_date ? DateTime?.fromMillis(project?.posted_date)?.toRelative() : '-'}`}
                   </CardText>
                 </div>
@@ -308,11 +308,7 @@ const MarketPlaceProjectCard = ({
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {!showFullText ? (
-                      <div
-                        className="my-div posted"
-                        ref={divRef}
-                        style={{ maxHeight: '6.1rem', overflow: 'hidden', marginTop: '10px', fontSize: '16px' }}
-                      >
+                      <div className="my-div posted" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden', fontSize: '16px' }}>
                         {descriptionToShow}
                       </div>
                     ) : (

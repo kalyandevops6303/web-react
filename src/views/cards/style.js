@@ -26,6 +26,22 @@ const CardWrap = styled.div`
   }
 `;
 
+const CardInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  column-gap: 8px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  font-size: 14px;
+  line-height: 22px;
+  .info-heading {
+    font-weight: 600;
+  }
+  .info-content {
+    font-weight: 400;
+  }
+`;
+
 const EstimatedTimeHeading = styled.h1`
   background-color: #fbc02d1f;
   width: fit-content;
@@ -38,6 +54,27 @@ const EstimatedTimeHeading = styled.h1`
 
 const ProjectCardWrap = styled(CardWrap)`
   margin: auto;
+  &.blocked {
+    border: 1px solid ${theme.red};
+    border-radius: 6px;
+    margin-bottom: 16px;
+    .card {
+      margin-bottom: 0;
+      .card-elevate {
+        &:hover {
+          box-shadow: none;
+        }
+      }
+    }
+    .card-body {
+      padding-top: 20px;
+    }
+    .blocked-card-info {
+      padding: 12px 40px;
+      color: ${theme.red};
+      background-color: ${theme.lightRedColor};
+    }
+  }
   margin-top: 1rem;
   width: 98%;
   .card-body {
@@ -533,6 +570,7 @@ const DraftSkillsAndToolsContainer = styled.div`
 export {
   CardWrap,
   ProjectCardWrap,
+  CardInfoWrapper,
   TeamCardWrap,
   UserCardWrap,
   ClientCardWrap,

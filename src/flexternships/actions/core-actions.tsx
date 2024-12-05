@@ -3,6 +3,7 @@ import { getUserDetails } from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
 import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
 import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 // Flextern User Actions
 export const populateUserDetails = async (force: boolean, get: any, set: any) => {
@@ -43,20 +44,31 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         },
         role: data.talent_info?.role,
         imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
+        isBlocked: data.is_blocked,
       },
     });
   } catch (error) {
-    showToastMessage(ToastType.ERROR, 'An unexpected error occurred while fetching user details');
+    showToastMessage(
+      ToastType.ERROR,
+      <Toast type={ToastType.ERROR} description="An unexpected error occurred while fetching user details" />,
+    );
   }
   set({ isUserDetailsLoading: false });
 };
 
 // App Actions
-export const openModal = (modalType: GlobalModalType, set: any, metadata?: Record<string, string>) => {
+export const openModal = (
+  modalType: GlobalModalType,
+  set: any,
+  modalActions?: GlobalModalActions,
+  modalContent?: Partial<GlobalModalContent>,
+  metadata?: Record<string, string>,
+) => {
   set((state: AppState) => ({
     ...state,
     modal: modalType,
-    modalContent: { ...state.modalContent, metadata },
+    modalContent: { ...state.modalContent, metadata, ...modalContent },
+    modalActions: { ...state.modalActions, ...modalActions },
   }));
 };
 

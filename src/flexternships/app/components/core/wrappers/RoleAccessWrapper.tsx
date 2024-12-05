@@ -1,19 +1,31 @@
-import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import {
+  FlexternUserAppRole,
+  FlexternUserCheckpoint,
+  GlobalModalType,
+} from '@/flexternships/constraints/enums/core-enums';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import React, { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import AccessDenied from '../../pages/defaults/AccessDenied';
 import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
+import { GlobalModalActions } from '@/flexternships/constraints/types/core-types';
+import { projectsBlockedModalContent } from '@/flexternships/static/core-content';
 
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
 export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
-  const { children, allowedAppRoles, fallbackRoute, noPadding = false } = props;
+  const { children, allowedAppRoles, fallbackRoute, noPadding = false, allowBlockedUsers = false } = props;
   const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
   const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
+  const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
   const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
+
+  const openGlobalModal = useAppStore((state) => state.openModal);
+  const closeGlobalModal = useAppStore((state) => state.closeModal);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     populateUserDetails();
@@ -63,6 +75,20 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     );
   }
 
+  if (!allowBlockedUsers && isUserBlocked) {
+    const allowedAction = async () => {
+      closeGlobalModal();
+      navigate('/projects/blocked');
+    };
+    const modalActions: GlobalModalActions = {
+      onClose: allowedAction,
+      onConfirm: allowedAction,
+      onCancel: allowedAction,
+    };
+
+    openGlobalModal(GlobalModalType.PROJECTS_BLOCKED, modalActions, projectsBlockedModalContent);
+  }
+
   // If all checks pass, render the children components
   return <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-20 '}`}>{children}</div>;
 }
@@ -78,5 +104,6 @@ type RoleAccessWrapperProps = {
     }[];
   }[];
   fallbackRoute?: string;
+  allowBlockedUsers?: boolean;
   noPadding?: boolean;
 };

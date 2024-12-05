@@ -725,10 +725,10 @@ const FlexternEducational = () => {
         );
 
         // Set other education details (remaining entries)
-        if (res.educational_institute.length > 1) {
+        if (res?.educational_institute?.length > 1) {
           setValue(
             'otherEducationDetails',
-            res.educational_institute.slice(1).map((detail) => ({
+            res?.educational_institute?.slice(1).map((detail) => ({
               educationInstitution: {
                 label: detail.institution.name,
                 value: detail.institution._id,

@@ -52,7 +52,8 @@ const CustomBadge = styled.span`
     color: ${theme.darkBlueColor};
     border: ${`1px solid ${theme.darkBlueColor}`};
   }
-  .DISPUTED {
+  .DISPUTED,
+  .BLOCKED {
     background: ${theme.lightRedColor} !important;
     color: ${theme.disputeBorderRedColor};
     border: ${`2px solid ${theme.disputeBorderRedColor}`};

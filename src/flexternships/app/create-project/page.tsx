@@ -50,7 +50,7 @@ export default function CreateFlexternProject() {
 
   const onBack = () => {
     if (isWorkInProgress) {
-      openGlobalModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/dashboard' });
+      openGlobalModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/dashboard' });
       return;
     }
     navigate('/dashboard');

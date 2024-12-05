@@ -37,6 +37,7 @@ import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/mis
 import CelebrationModal from '@/flexternships/app/components/core/modals/milestone/CelebrationModal';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -66,7 +67,13 @@ export default function MilestoneDetails() {
       try {
         await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
-        showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching milestone details');
+        showToastMessage(
+          ToastType.ERROR,
+          <Toast
+            type={ToastType.ERROR}
+            description={error instanceof Error ? error.message : 'Error fetching milestone details'}
+          />,
+        );
       }
     };
     fetchMilestoneDetails();
@@ -88,7 +95,7 @@ export default function MilestoneDetails() {
   const goBackToAllMilestones = () => {
     const nextPath = `/project-details/${milestoneDetails.projectDetails.projectId}/milestone`;
     if (isWorkInProgress) {
-      openGlobalModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      openGlobalModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
       return;
     }
     navigate(nextPath);

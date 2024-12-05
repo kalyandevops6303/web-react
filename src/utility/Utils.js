@@ -661,7 +661,7 @@ export const getModifiedProjectResponse = ({ data }) => {
       is_invited: project?.is_invited,
       client: {
         user_id: data.client._id,
-        departmentName: data.client.department_name,
+        departmentName: data.client.department || data.client.department_name,
       },
       requirements: {
         projectName: project.name,
@@ -944,4 +944,20 @@ export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
   );
 
   return filteredObj;
+};
+
+export const formatDateWithTime = (date) => {
+  if (!date) return '';
+
+  return new Date(date)
+    .toLocaleString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+    .replace(',', '')
+    .replace(/\s+/g, ' ');
 };

@@ -115,9 +115,9 @@ const MarketPlaceDraftProjectCard = ({ isSearchPage, isExpanded, data, isPopover
                     </Badge>
                   </CustomDraftProjectBadge>
                 </div>
-                <CardTitle className="d-flex align-items-center">
+                <CardTitle className="d-flex align-items-center mb-3">
                   <span className="cursor-pointer">
-                    {project?.details?.name ?? project?.name ?? '(Untitled Project)'}
+                    {project?.details?.name || project?.name || '(Untitled Project)'}
                   </span>
                 </CardTitle>
                 <div className="d-flex flex-wrap project-stats">
@@ -139,7 +139,7 @@ const MarketPlaceDraftProjectCard = ({ isSearchPage, isExpanded, data, isPopover
                           data?.client?.country_name}
                       </CardText>
                     ))}
-                  <CardText className="mb-1">
+                  <CardText className="mb-6">
                     {`Edited ${project?.posted_date ? DateTime?.fromMillis(project?.posted_date)?.toRelative() : '-'}`}
                   </CardText>
                 </div>
@@ -154,7 +154,7 @@ const MarketPlaceDraftProjectCard = ({ isSearchPage, isExpanded, data, isPopover
                         dangerouslySetInnerHTML={{ __html: project?.details?.description ?? project?.description }}
                       />
                     ) : (
-                      <p className="empty-text m-0 mt-50">
+                      <p className="empty-text m-0">
                         <i>(Add Description)</i>
                       </p>
                     )}
