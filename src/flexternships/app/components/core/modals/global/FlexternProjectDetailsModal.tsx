@@ -20,7 +20,6 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
 
   return (
     <GenericModal onClose={onClose} className="max-w-[1240px]" isOpen={isOpen}>
-      {/* TODO: Add Accordions */}
       <div
         className={`flex flex-col gap-y-6 py-8 px-6 bg-white-fa rounded-md max-h-[80vh] overflow-y-scroll overflow-x-hidden ${TabStyles.previewTab}`}
       >
@@ -93,7 +92,7 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
           <Accordion type="single" defaultValue="description" collapsible>
             <AccordionItem value="description" className="p-0 m-0 border-0">
               <AccordionTrigger
-                className={`p-0 m-0 px-6 pt-6 pb-4 data-[state=open]:border-b-1 data-[state=open]:border-grey-border hover:no-underline`}
+                className={`p-0 m-0 px-6 pt-6 pb-4 data-[state=open]:border-b-1 data-[state=open]:border-grey-border outline-none hover:no-underline`}
               >
                 <div className={Styles.projectDetailsCardHeader}>Project Description</div>
               </AccordionTrigger>

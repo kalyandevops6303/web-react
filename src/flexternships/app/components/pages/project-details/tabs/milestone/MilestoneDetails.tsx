@@ -88,7 +88,7 @@ export default function MilestoneDetails() {
   const goBackToAllMilestones = () => {
     const nextPath = `/project-details/${milestoneDetails.projectDetails.projectId}/milestone`;
     if (isWorkInProgress) {
-      openGlobalModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      openGlobalModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
       return;
     }
     navigate(nextPath);

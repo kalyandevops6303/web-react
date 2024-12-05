@@ -43,6 +43,7 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         },
         role: data.talent_info?.role,
         imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
+        isBlocked: data.is_blocked,
       },
     });
   } catch (error) {
@@ -52,11 +53,18 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
 };
 
 // App Actions
-export const openModal = (modalType: GlobalModalType, set: any, metadata?: Record<string, string>) => {
+export const openModal = (
+  modalType: GlobalModalType,
+  set: any,
+  modalActions?: GlobalModalActions,
+  modalContent?: Partial<GlobalModalContent>,
+  metadata?: Record<string, string>,
+) => {
   set((state: AppState) => ({
     ...state,
     modal: modalType,
-    modalContent: { ...state.modalContent, metadata },
+    modalContent: { ...state.modalContent, metadata, ...modalContent },
+    modalActions: { ...state.modalActions, ...modalActions },
   }));
 };
 

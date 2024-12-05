@@ -32,7 +32,12 @@ const defaultAppState: AppState = {
 
 export const useAppStore = create<AppStore>((set, _get) => ({
   ...defaultAppState,
-  openModal: (modalType: GlobalModalType, metadata?: Record<string, string>) => openModal(modalType, set, metadata),
+  openModal: (
+    modalType: GlobalModalType,
+    modalActions?: GlobalModalActions,
+    modalContent?: Partial<GlobalModalContent>,
+    metadata?: Record<string, string>,
+  ) => openModal(modalType, set, modalActions, modalContent, metadata),
   closeModal: () => closeModal(set),
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) =>
     setWip(modalContent, modalActions, set),

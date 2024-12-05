@@ -7,7 +7,7 @@ import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import DateTime from '../../lib/date-time';
-import { EstimatedTimeHeading, ProjectCardWrap } from './style';
+import { EstimatedTimeHeading, ProjectCardWrap, CardInfoWrapper } from './style';
 import { CustomBadge, Elevate } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import ProjectWithTeamUI from './ProjectWithTeamUI';
@@ -21,6 +21,7 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import PermissionWrapper from '@/PermissionWrapper';
+import { AlertCircle } from 'react-feather';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -77,6 +78,7 @@ const ProjectCard = ({
     SIGN_REQUESTED: 'Sign Requested',
     NOT_FUNDED: 'Not Funded',
     INTIATE_FUNDS: 'Initiate Funds',
+    BLOCKED: 'Blocked',
   };
 
   const primaryStatus = {
@@ -90,6 +92,7 @@ const ProjectCard = ({
     ACTIVE: 'Active',
     WITHDRAWN: 'Withdrawn',
     DISPUTED: 'Disputed',
+    BLOCKED: 'Blocked',
   };
 
   const divRef = useRef(null);
@@ -144,10 +147,23 @@ const ProjectCard = ({
     return switchData?.navigateTo;
   };
   return (
-    <ProjectCardWrap>
+    <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
         {isNewTag && <NewTag />}
-        <Elevate>
+        {primaryStatus[data?.status] === primaryStatus.BLOCKED && (
+          <CardInfoWrapper className={`${data?.status?.toLowerCase()}-card-info`}>
+            <div className="d-flex flex-row align-items-center">
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <span className="info-heading mr-1">Temporarily Blocked:</span>
+              <span className="info-content">
+                Request you to complete the feedback forms in order to resume back to the project viewing.
+              </span>
+            </div>
+          </CardInfoWrapper>
+        )}
+        <Elevate className="card-elevate">
           <CardBody>
             <Row>
               <Col lg="8">
@@ -159,11 +175,11 @@ const ProjectCard = ({
                       } truncate-1`}
                       color="badge"
                     >
-                      {`${statusEnum[data?.status] ? statusEnum[data?.status] : data?.status}`}
+                      {`${statusEnum[data?.status] || data?.status}`}
                     </Badge>
                   </CustomBadge>
                 </div>
-                <CardTitle className="d-flex align-items-center">
+                <CardTitle className="d-flex align-items-center mb-3">
                   <span className="cursor-pointer" onClick={handleRedirection}>
                     {data?.name || data?.details?.name}
                   </span>
@@ -181,7 +197,7 @@ const ProjectCard = ({
                     </CardText>
                   </PermissionWrapper>
                   {(data?.assigned_date || data?.completed_date || data?.invite_date || data?.listing_details) && (
-                    <CardText className="mb-1">
+                    <CardText className="mb-6">
                       {(data?.assigned_date || data?.listing_details?.start_date_epoch) && (
                         <span className="me-1">
                           Assigned Date:{' '}
@@ -219,7 +235,7 @@ const ProjectCard = ({
                       {data?.client?.office_address?.country?.name || 'Location'}
                     </CardText>
                   </PermissionWrapper>
-                  <CardText className=" mb-1">
+                  <CardText className=" mb-6">
                     {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
                   </CardText>
                 </div>
@@ -229,14 +245,14 @@ const ProjectCard = ({
                   <>
                     {!showFullText ? (
                       <div
-                        className="my-div"
+                        className="my-div mb-6"
                         ref={divRef}
                         style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
                       >
                         {data?.details?.description}
                       </div>
                     ) : (
-                      <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
+                      <div className="my-div mb-6" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
                         {data?.details?.description}
                       </div>
                     )}
