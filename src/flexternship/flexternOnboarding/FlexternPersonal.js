@@ -579,27 +579,27 @@ const FlexternPersonal = () => {
     };
 
     dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    if (IsresumeParsed) {
-      const languagesWritten = watch('writeLanguages')?.map((language) => ({
-        name: language.label,
-        _id: language.value,
-      }));
-      const languagesSpoken = watch('speakLanguages')?.map((language) => ({
-        name: language.label,
-        _id: language.value,
-      }));
-      const resumeUpdatedData = {
-        target_info: {
-          ...parsedResumeData,
-          languages_speak: languagesSpoken,
-          languages_write: languagesWritten,
-          tagline,
-          professional_introduction: professionalIntroduction,
-        },
-      };
+    // if (IsresumeParsed) {
+    //   const languagesWritten = watch('writeLanguages')?.map((language) => ({
+    //     name: language.label,
+    //     _id: language.value,
+    //   }));
+    //   const languagesSpoken = watch('speakLanguages')?.map((language) => ({
+    //     name: language.label,
+    //     _id: language.value,
+    //   }));
+    //   const resumeUpdatedData = {
+    //     target_info: {
+    //       ...parsedResumeData,
+    //       languages_speak: languagesSpoken,
+    //       languages_write: languagesWritten,
+    //       tagline,
+    //       professional_introduction: professionalIntroduction,
+    //     },
+    //   };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
-    }
+    //   dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    // }
   };
 
   const loadTalentRolesOptions = async (search) => {
@@ -689,19 +689,14 @@ const FlexternPersonal = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
           },
           uploadData: {
             file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
-          lastModified:
-            savedFormDocuments != null
-              ? savedFormDocuments[0]?.lastModified
-                ? savedFormDocuments[0]?.lastModified
-                : res?.talent_info?.resume?.created_at
-              : res?.talent_info?.resume?.created_at,
+          lastModified: res?.talent_info?.resume?.created_at,
         };
         dispatch(
           setFileKey(
@@ -1104,7 +1099,6 @@ const FlexternPersonal = () => {
                                       type="file"
                                       max={1}
                                       accept="application/pdf"
-                                      // style={{ display: 'none' }}
                                       className="d-none"
                                       onChange={(e) => {
                                         handleFileChange(e);

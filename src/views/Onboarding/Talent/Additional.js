@@ -485,307 +485,293 @@ const Additional = () => {
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className="d-flex gap-2">
-            <Row className="w-75">
-              <Col>
-                <Card>
-                  <CardHeader>
-                    <h4 className="m-0 mt-1 text-lg font-medium">Gender</h4>
-                  </CardHeader>
-                  <hr className="m-0 card-header-border" />
-                  <CardBody>
-                    <Row className="mt-0">
-                      <h5 className="m-0">
-                        How do you identify?
-                        <span className="label-asterisk me-50">*</span>
-                      </h5>
-                      <Row className="custom-checkbox-border">
-                        <Controller
-                          control={control}
-                          name="gender"
-                          id="gender"
-                          render={({ field }) => (
-                            <div className="demo-inline-spacing">
-                              <div
-                                style={{ maxWidth: '350px' }}
-                                className="form-check form-check-inline checkbox-custom-margin"
-                              >
-                                <Input
-                                  type="radio"
-                                  {...field}
-                                  id="male"
-                                  value="MALE"
-                                  checked={field.value === 'MALE'}
-                                />
-                                <Label for="male" className="form-check-label">
-                                  Male
-                                </Label>
-                              </div>
-                              <div
-                                style={{ maxWidth: '350px' }}
-                                className="form-check form-check-inline checkbox-custom-margin"
-                              >
-                                <Input
-                                  type="radio"
-                                  {...field}
-                                  id="female"
-                                  value="FEMALE"
-                                  checked={field.value === 'FEMALE'}
-                                />
-                                <Label htmlFor="female" className="form-check-label">
-                                  Female
-                                </Label>
-                              </div>
-                              <div
-                                style={{ maxWidth: '350px' }}
-                                className="form-check form-check-inline checkbox-custom-margin"
-                              >
-                                <Input
-                                  type="radio"
-                                  {...field}
-                                  id="other"
-                                  value="OTHER"
-                                  checked={field.value === 'OTHER'}
-                                />
-                                <Label htmlFor="other" className="form-check-label">
-                                  Prefer not to say
-                                </Label>
-                              </div>
+          <Row className="w-100">
+            <Col xs="12" sm="12" lg="8">
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Gender</h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
+                <CardBody>
+                  <Row className="mt-0">
+                    <h5 className="m-0">
+                      How do you identify?
+                      <span className="label-asterisk me-50">*</span>
+                    </h5>
+                    <Row className="custom-checkbox-border">
+                      <Controller
+                        control={control}
+                        name="gender"
+                        id="gender"
+                        render={({ field }) => (
+                          <div className="demo-inline-spacing">
+                            <div
+                              style={{ maxWidth: '350px' }}
+                              className="form-check form-check-inline checkbox-custom-margin"
+                            >
+                              <Input type="radio" {...field} id="male" value="MALE" checked={field.value === 'MALE'} />
+                              <Label for="male" className="form-check-label">
+                                Male
+                              </Label>
                             </div>
-                          )}
-                        />
-                        {errors.gender && <FormFeedback>{errors.gender.message}</FormFeedback>}
-                      </Row>
-                    </Row>
-                  </CardBody>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <h4 className="m-0 mt-1 text-lg font-medium">Location</h4>
-                  </CardHeader>
-                  <hr className="m-0 card-header-border" />
-                  <CardBody>
-                    <Row className="mb-1">
-                      <Col sm="12" md="12" lg="6">
-                        <Label className="form-label" for="country">
-                          Country<span className="label-asterisk me-50">*</span>
-                        </Label>
-                        <Controller
-                          id="country"
-                          name="country"
-                          control={control}
-                          invalid={errors.country && true}
-                          render={({ field }) => (
-                            <AsyncPaginate
-                              styles={customDropdownStyles}
-                              loadOptions={loadCountriesOptions}
-                              classNamePrefix="select"
-                              placeholder="Select your country"
-                              theme={selectThemeColors}
-                              className={classNames('react-select', {
-                                'is-invalid': errors && errors.country,
-                              })}
-                              {...field}
-                            />
-                          )}
-                        />
-                        {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <h4 className="m-0 mt-1 text-lg font-medium">Identity Verification (optional)</h4>
-                  </CardHeader>
-                  <hr className="m-0 card-header-border" />
-                  <CardBody className="d-flex flex-column">
-                    <div className="d-flex">
-                      <Col className="w-100 ">
-                        <h5 className="text-sm font-normal text-grey-500">
-                          Please upload a valid government approved photo ID (like passport, PAN card, Institute ID,
-                          Driver's License)
-                        </h5>
-
-                        {files?.length === 0 && (
-                          <>
-                            <Label for="photoId" className="mt-4  d-flex align-items-center  cursor-pointer">
-                              <h5
-                                className="font-bold  py-3"
-                                style={{
-                                  background: '#0065c1',
-                                  color: 'white',
-                                  borderRadius: '5px',
-                                  paddingLeft: '48px',
-                                  paddingRight: '48px',
-                                }}
-                              >
-                                Upload ID
-                              </h5>
-                            </Label>
-                            <Controller
-                              id="photoId"
-                              name="photoId"
-                              control={control}
-                              render={({ field }) => (
-                                <Input
-                                  {...field}
-                                  ref={filesRef}
-                                  id="photoId"
-                                  type="file"
-                                  max={1}
-                                  accept="application/pdf"
-                                  style={{ display: 'none' }}
-                                  onChange={(e) => {
-                                    handleFileChange(e);
-                                  }}
-                                />
-                              )}
-                            />
-                          </>
+                            <div
+                              style={{ maxWidth: '350px' }}
+                              className="form-check form-check-inline checkbox-custom-margin"
+                            >
+                              <Input
+                                type="radio"
+                                {...field}
+                                id="female"
+                                value="FEMALE"
+                                checked={field.value === 'FEMALE'}
+                              />
+                              <Label htmlFor="female" className="form-check-label">
+                                Female
+                              </Label>
+                            </div>
+                            <div
+                              style={{ maxWidth: '350px' }}
+                              className="form-check form-check-inline checkbox-custom-margin"
+                            >
+                              <Input
+                                type="radio"
+                                {...field}
+                                id="other"
+                                value="OTHER"
+                                checked={field.value === 'OTHER'}
+                              />
+                              <Label htmlFor="other" className="form-check-label">
+                                Prefer not to say
+                              </Label>
+                            </div>
+                          </div>
                         )}
-                      </Col>
-                    </div>
-                    {files && files.length > 0 && fileList()}
-                  </CardBody>
-                </Card>
+                      />
+                      {errors.gender && <FormFeedback>{errors.gender.message}</FormFeedback>}
+                    </Row>
+                  </Row>
+                </CardBody>
+              </Card>
 
-                <div className="d-flex justify-content-between align-items-center pb-2 w-100">
-                  <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-                    <UploadIconContainer>
-                      <ChevronLeft size={18} color={theme.activeNavPillText} />
-                    </UploadIconContainer>
-                    <h5 className="fw-bold">Back</h5>
-                  </div>
-                  <div className="d-flex justify-content-end">
-                    {/* {flexternBoolean && trumioTalent ? ( */}
-                    <Button
-                      color="primary"
-                      outline
-                      className="d-flex align-items-center justify-content-between me-2"
-                      onClick={onSkipClick}
-                    >
-                      <span className="me-50">Skip</span>
-                      <ChevronRight size={14} />
-                    </Button>
-                    {/* ) : null} */}
-                    <Button
-                      className="d-flex align-items-center justify-content-between"
-                      color="primary"
-                      type="submit"
-                      disabled={!isValid || profileDetailsIsLoading}
-                    >
-                      {profileDetailsIsLoading ? (
-                        <Spinner size="sm" />
-                      ) : (
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Location</h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
+                <CardBody>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Label className="form-label" for="country">
+                        Country<span className="label-asterisk me-50">*</span>
+                      </Label>
+                      <Controller
+                        id="country"
+                        name="country"
+                        control={control}
+                        invalid={errors.country && true}
+                        render={({ field }) => (
+                          <AsyncPaginate
+                            styles={customDropdownStyles}
+                            loadOptions={loadCountriesOptions}
+                            classNamePrefix="select"
+                            placeholder="Select your country"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid': errors && errors.country,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Identity Verification (optional)</h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
+                <CardBody className="d-flex flex-column">
+                  <div className="d-flex">
+                    <Col className="w-100 ">
+                      <h5 className="text-sm font-normal text-grey-500">
+                        Please upload a valid government approved photo ID (like passport, PAN card, Institute ID,
+                        Driver's License)
+                      </h5>
+
+                      {files?.length === 0 && (
                         <>
-                          <span className="me-50">Save & Continue</span>
+                          <Label for="photoId" className="mt-4  d-flex align-items-center  cursor-pointer">
+                            <h5
+                              className="font-bold  py-3"
+                              style={{
+                                background: '#0065c1',
+                                color: 'white',
+                                borderRadius: '5px',
+                                paddingLeft: '48px',
+                                paddingRight: '48px',
+                              }}
+                            >
+                              Upload ID
+                            </h5>
+                          </Label>
+                          <Controller
+                            id="photoId"
+                            name="photoId"
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                ref={filesRef}
+                                id="photoId"
+                                type="file"
+                                max={1}
+                                accept="application/pdf"
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                  handleFileChange(e);
+                                }}
+                              />
+                            )}
+                          />
                         </>
                       )}
-                    </Button>
+                    </Col>
                   </div>
+                  {files && files.length > 0 && fileList()}
+                </CardBody>
+              </Card>
+
+              <div className="d-flex justify-content-between align-items-center pb-2 w-100">
+                <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+                  <UploadIconContainer>
+                    <ChevronLeft size={18} color={theme.activeNavPillText} />
+                  </UploadIconContainer>
+                  <h5 className="fw-bold">Back</h5>
                 </div>
-              </Col>
-            </Row>
-            <Row className="w-25">
-              <Col>
-                <Card>
-                  <CardHeader>
-                    <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
-                    <CardText className="m-0 mt-1 ">
-                      Make it easier for others to find you by completing your profile.
-                    </CardText>
-                    <h3 className="m-0 mt-1 mb-1 text-lg font-semibold text-grey">{overallPercentageCompletion}%</h3>
-                    <Progress
-                      value={overallPercentageCompletion}
-                      style={{ height: '0.5rem' }}
-                      className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
-                    />
-                  </CardHeader>
-
-                  <CardBody>
-                    <hr className="m-0 card-header-border" />
-
-                    {isTrumioTalent && (
-                      <div className="d-flex gap-1 mt-1">
-                        <div className="custom-checkbox-wrapper">
-                          <Input
-                            type="checkbox"
-                            id="customCheckbox"
-                            className="custom-checkbox-input"
-                            checked={isProjectReady}
-                          />
-                          <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                        </div>
-                        <div>
-                          <CardText className="m-0">Client Projects Ready</CardText>
-                          <b
-                            className="text-primary cursor-pointer"
-                            onClick={() =>
-                              navigate(
-                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                  ?.path || '/marketplace',
-                              )
-                            }
-                          >
-                            {isProjectReady
-                              ? 'Explore Projects'
-                              : `${
-                                  returnCompleteProfileDetailsCta(
-                                    userTypes.talent,
-                                    profileCompletionProjectMissingValues,
-                                  )?.label
-                                }`}{' '}
-                            <ChevronRight size="1.2em" />
-                          </b>
-                        </div>
-                      </div>
+                <div className="d-flex justify-content-end">
+                  {/* {flexternBoolean && trumioTalent ? ( */}
+                  <Button
+                    color="primary"
+                    outline
+                    className="d-flex align-items-center justify-content-between me-2"
+                    onClick={onSkipClick}
+                  >
+                    <span className="me-50">Skip</span>
+                    <ChevronRight size={14} />
+                  </Button>
+                  {/* ) : null} */}
+                  <Button
+                    className="d-flex align-items-center justify-content-between"
+                    color="primary"
+                    type="submit"
+                    disabled={!isValid || profileDetailsIsLoading}
+                  >
+                    {profileDetailsIsLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <>
+                        <span className="me-50">Save & Continue</span>
+                      </>
                     )}
+                  </Button>
+                </div>
+              </div>
+            </Col>
+            <Col xs="12" sm="12" lg="4">
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
+                  <CardText className="m-0 mt-1 ">
+                    Make it easier for others to find you by completing your profile.
+                  </CardText>
+                  <h3 className="m-0 mt-1 mb-1 text-lg font-semibold text-grey">{overallPercentageCompletion}%</h3>
+                  <Progress
+                    value={overallPercentageCompletion}
+                    style={{ height: '0.5rem' }}
+                    className={`${giveProgressBarColorClassName(overallPercentageCompletion)} p-0 m-0 w-100`}
+                  />
+                </CardHeader>
 
-                    {isFlextern && (
-                      <div className="d-flex gap-1 mt-1">
-                        <div className="custom-checkbox-wrapper">
-                          <Input
-                            type="checkbox"
-                            id="customCheckbox2"
-                            className="custom-checkbox-input"
-                            checked={isFlexternReady}
-                          />
-                          <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                        </div>
-                        <div>
-                          <CardText className="m-0">Flexternship Ready</CardText>
-                          <b
-                            className="text-primary cursor-pointer d-flex align-items-center"
-                            onClick={() =>
-                              navigate(
+                <CardBody>
+                  <hr className="m-0 card-header-border" />
+
+                  {isTrumioTalent && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox"
+                          className="custom-checkbox-input"
+                          checked={isProjectReady}
+                        />
+                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Client Projects Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                ?.path || '/marketplace',
+                            )
+                          }
+                        >
+                          {isProjectReady
+                            ? 'Explore Projects'
+                            : `${
+                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
+                                  ?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
+                      </div>
+                    </div>
+                  )}
+
+                  {isFlextern && (
+                    <div className="d-flex gap-1 mt-1">
+                      <div className="custom-checkbox-wrapper">
+                        <Input
+                          type="checkbox"
+                          id="customCheckbox2"
+                          className="custom-checkbox-input"
+                          checked={isFlexternReady}
+                        />
+                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                      </div>
+                      <div>
+                        <CardText className="m-0">Flexternship Ready</CardText>
+                        <b
+                          className="text-primary cursor-pointer d-flex align-items-center"
+                          onClick={() =>
+                            navigate(
+                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
+                                ?.path || '/dashboard',
+                            )
+                          }
+                        >
+                          {isFlexternReady
+                            ? 'Explore Flexternships'
+                            : `${
                                 returnCompleteProfileDetailsCta(
                                   userTypes.talent,
                                   profileCompletionFlexternMissingValues,
-                                )?.path || '/dashboard',
-                              )
-                            }
-                          >
-                            {isFlexternReady
-                              ? 'Explore Flexternships'
-                              : `${
-                                  returnCompleteProfileDetailsCta(
-                                    userTypes.talent,
-                                    profileCompletionFlexternMissingValues,
-                                  )?.label
-                                }`}{' '}
-                            <ChevronRight size="1.2em" />
-                          </b>
-                        </div>
+                                )?.label
+                              }`}{' '}
+                          <ChevronRight size="1.2em" />
+                        </b>
                       </div>
-                    )}
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </div>
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
         </Form>
       )}
 
