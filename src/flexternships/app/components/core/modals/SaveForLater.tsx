@@ -8,6 +8,7 @@ import { useProjectCreationStore } from '@flexternships/stores/project-creation-
 import { ModalType } from '@flexternships/types/project-creation-types';
 import { showToastMessage } from '@flexternships/utils/core-utils';
 import { ToastType } from '@flexternships/enums/core-enums';
+import Toast from '../Toasts/Toast';
 
 export default function SaveForLater(props: Props) {
   const { onCancel } = props;
@@ -25,9 +26,12 @@ export default function SaveForLater(props: Props) {
     setIsSaving(true);
     try {
       await saveDraft();
-      showToastMessage(ToastType.SUCCESS, 'Draft saved successfully');
+      showToastMessage(ToastType.SUCCESS, <Toast type={ToastType.SUCCESS} description="Draft saved successfully" />);
     } catch (error) {
-      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
+      showToastMessage(
+        ToastType.ERROR,
+        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
+      );
     } finally {
       setIsSaving(false);
     }

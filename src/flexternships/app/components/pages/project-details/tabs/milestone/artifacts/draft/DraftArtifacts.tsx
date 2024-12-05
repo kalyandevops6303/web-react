@@ -38,6 +38,7 @@ import DraftSavedModal from '@/flexternships/app/components/core/modals/mileston
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
@@ -147,9 +148,12 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
         await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          showToastMessage(ToastType.ERROR, error.message);
+          showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
         } else {
-          showToastMessage(ToastType.ERROR, 'An unexpected error occurred');
+          showToastMessage(
+            ToastType.ERROR,
+            <Toast type={ToastType.ERROR} description="An unexpected error occurred" />,
+          );
         }
       } finally {
         setSaveDraftLoading(false);
@@ -167,9 +171,12 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
         openModal(MilestoneDetailsModalType.ARTIFCATS_SUBMITTED);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          showToastMessage(ToastType.ERROR, error.message);
+          showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
         } else {
-          showToastMessage(ToastType.ERROR, 'An unexpected error occurred');
+          showToastMessage(
+            ToastType.ERROR,
+            <Toast type={ToastType.ERROR} description="An unexpected error occurred" />,
+          );
         }
       } finally {
         setSubmitDraftLoading(false);

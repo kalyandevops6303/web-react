@@ -12,6 +12,7 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import Spinner from '../Spinner';
 import { submitKudosOrWow } from '@/flexternships/services/project-management-v2';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import Toast from '../Toasts/Toast';
 
 function KudosAndWowModal(props: KudosAndWowModalProps) {
   const { recognitionType, isOpen = false, closeModal, projectId, milestoneId } = props;
@@ -39,7 +40,13 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
           .filter((member: any) => member.id !== userDetails.id);
         setTeamMembers(formattedData);
       } catch (error) {
-        showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching team details');
+        showToastMessage(
+          ToastType.ERROR,
+          <Toast
+            type={ToastType.ERROR}
+            description={error instanceof Error ? error.message : 'Error fetching team details'}
+          />,
+        );
       } finally {
         setIsTeamMembersLoading(false);
       }
