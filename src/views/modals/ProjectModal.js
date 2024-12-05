@@ -288,7 +288,7 @@ const ProjectModal = ({
   const getCtasForFlexternProjectModal = () => {
     if (
       (location.pathname.split('/').includes('my_listings') ||
-        [data.client.user_id, data.client._id].includes(userDetails._id)) &&
+        [data.client.user_id, data.client._id].includes(userDetails.id)) &&
       data.status === ProjectPrimaryStatus.WITHDRAWN
     ) {
       return [
@@ -301,7 +301,7 @@ const ProjectModal = ({
     } else if (
       data.is_invited ||
       location.pathname.split('/').includes('my_listings') ||
-      [data.client.user_id, data.client._id].includes(userDetails._id)
+      [data.client.user_id, data.client._id].includes(userDetails.id)
     ) {
       return [
         {
