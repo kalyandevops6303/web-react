@@ -26,6 +26,7 @@ import TextIcon from '../assets/images/TXT.svg';
 import JPGIcon from '../assets/images/JPG.svg';
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -653,6 +654,45 @@ export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
 
 export const getModifiedProjectResponse = ({ data }) => {
   const project = data?.project;
+
+  if (isFlexternshipApp) {
+    return {
+      _id: project?._id,
+      is_invited: project?.is_invited,
+      client: {
+        user_id: data.client._id,
+        departmentName: data.client.department_name,
+      },
+      requirements: {
+        projectName: project.name,
+        estimatedStartDate: project.expected_start_date,
+        estimatedDuration: project.duration,
+        estimatedWeeklyHours: project.duration_hours_per_week,
+        totalProjectHoursEach: (project.duration || 0) * (project.duration_hours_per_week || 0),
+        projectDescription: project?.description,
+        documents: project?.documents?.map((doc) => ({
+          fileName: doc.file_name,
+          fileKey: doc.file_key,
+          downloadUrl: doc.download_url,
+          size: doc.size,
+          createdAt: doc.created_at,
+        })),
+      },
+      roles: project?.roles?.map((projectRole) => ({
+        role: projectRole?.role,
+        count: projectRole?.count,
+        skills: projectRole?.proficiency?.skills,
+        tools: projectRole?.proficiency?.tools,
+      })),
+      milestones: project?.milestones?.map((milestone) => ({
+        _id: milestone?._id,
+        title: milestone?.name,
+        duration: milestone?.estimated_duration?.duration,
+        description: milestone?.description,
+        deliverables: milestone?.deliverables,
+      })),
+    };
+  }
   return {
     _id: project?._id,
     created_at: project?.posted_date,
@@ -904,4 +944,20 @@ export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
   );
 
   return filteredObj;
+};
+
+export const formatDateWithTime = (date) => {
+  if (!date) return '';
+
+  return new Date(date)
+    .toLocaleString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+    .replace(',', '')
+    .replace(/\s+/g, ' ');
 };

@@ -15,7 +15,7 @@ import BaseInfoUI from './BaseInfoCardUI';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
-import { convertUnixTimestampToDate, getPath, getReadType } from '../../utility/Utils';
+import { convertUnixTimestampToDate, getModifiedProjectResponse, getPath, getReadType } from '../../utility/Utils';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
@@ -273,7 +273,18 @@ const ProjectCard = ({
       {showModal && (
         <ProjectModal
           onUpdateCard={updateCard}
-          data={data}
+          data={getModifiedProjectResponse({
+            data: {
+              project: {
+                ...data,
+                ...data.details,
+                duration: data?.details?.expected_duration?.duration,
+                duration_hours_per_week: data?.details?.expected_duration?.hours_per_week,
+                is_invited: true,
+              },
+              client: data.client_info[0],
+            },
+          })}
           modal={showModal}
           toggleModal={handleToggle}
           setCreateBidModal={setCreateBidModal}

@@ -20,6 +20,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);
@@ -48,9 +49,12 @@ export default function Preview() {
       } catch (error: unknown) {
         if (error instanceof Error) {
           closeModal();
-          showToastMessage(ToastType.ERROR, error.message);
+          showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
         } else {
-          showToastMessage(ToastType.ERROR, 'Failed to create project. Please try again.');
+          showToastMessage(
+            ToastType.ERROR,
+            <Toast type={ToastType.ERROR} description="Failed to create project. Please try again." />,
+          );
         }
       }
     };
@@ -77,7 +81,10 @@ export default function Preview() {
     try {
       await saveAsDraft(projectId);
     } catch (error) {
-      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
+      showToastMessage(
+        ToastType.ERROR,
+        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
+      );
     }
   };
 

@@ -13,6 +13,7 @@ const defaultInitState = {
 export const useLegalStore = create<any>((set) => ({
   ...defaultInitState,
   getLegalDocDetails: async (projectId: string, docType: string) => legalDocDetails(projectId, docType, set),
-  signDocument: async (projectId: string, docType: string) => signDocument(projectId, docType, set),
+  signDocument: async (projectId: string, docType: string, onSuccess: () => void) =>
+    signDocument(projectId, docType, onSuccess, set),
   getLegalDocStatus: async (projectId: string, docType: string) => legalDocSignedStatus(projectId, docType, set),
 }));

@@ -6,12 +6,14 @@ import { Checkbox } from '@flexternships/app/components/ui/checkbox';
 import { DocTypes } from '@/flexternships/constraints/enums/project-enums';
 import { toLower, toUpper } from 'lodash';
 import LegalDocSignee from './LegalDocSignee';
-import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useLegalStore } from '@/flexternships/stores/legal-store';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useParams } from 'react-router-dom';
 import Spinner from '../../../core/Spinner';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import Toast from '../../../core/Toasts/Toast';
 
 export default function LegalDocCard(props: LegalDocCardProps) {
   const { docType } = props;
@@ -30,6 +32,13 @@ export default function LegalDocCard(props: LegalDocCardProps) {
   const getLegalDocDetails = useLegalStore((state) => state.getLegalDocDetails);
   const signDocument = useLegalStore((state) => state.signDocument);
 
+  const styles = {
+    checkbox: {
+      checked: 'shadow-[0px_2px_4px_0px_rgba(1,133,228,0.4)] bg-[#0185E4] text-white border-none rounded-[4px] h-5 w-5',
+      unchecked: 'border border-2 border-gray-300 shadow-none rounded-[4px] h-5 w-5',
+    },
+  };
+
   const hasSigned = () => {
     const currentUserSignature = legalDocDetails?.signatures?.filter((signature: any) => {
       return signature.user_id === currentUserDetails?.id;
@@ -39,21 +48,25 @@ export default function LegalDocCard(props: LegalDocCardProps) {
   };
 
   const handleConfirmAgreement = () => {
-    signDocument(params?.projectId, toUpper(docType));
+    signDocument(params?.projectId, toUpper(docType), () => {
+      showToastMessage(
+        ToastType.SUCCESS,
+        <Toast
+          type={ToastType.SUCCESS}
+          title={`${docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'} signed`}
+          description={`'${projectDetails?.details?.name}' ${
+            docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'
+          } signed by project member`}
+        />,
+      );
+    });
   };
+
+  useEffect(() => {
+    console.log('projectDetails', projectDetails);
+  }, [projectDetails]);
 
   const [termsRead, setTermsRead] = useState(false);
-
-  const clientSigneeData = {
-    company: projectDetails?.clientInfo?.companyName || '',
-    name: `${projectDetails?.clientInfo?.firstName || ''} ${projectDetails?.clientInfo?.firstName || ''}`,
-    image_uri: projectDetails?.clientInfo?.imageUri ?? '', // Fallback if imageUri is undefined
-    signed: true,
-    signedDate: new Date(legalDocDetails?.updated_at),
-    userType: UserType.CLIENT,
-    disabled: true,
-    isCurrentUser: false,
-  };
 
   const talentSigneeData = legalDocDetails?.signatures?.map((signature: any) => {
     return {
@@ -78,7 +91,7 @@ export default function LegalDocCard(props: LegalDocCardProps) {
   }, [isSignDocumentLoading]);
 
   return (
-    <SimpleElevatedCard className="w-full max-w-[1021px] p-5">
+    <SimpleElevatedCard className="w-full w-full max-w-[1021px] p-5 ">
       <div className={Styles.contentHeader}>Standard {docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'}</div>
       {isLegalDetailsLoading ? (
         <div className="d-flex justify-center">
@@ -95,7 +108,12 @@ export default function LegalDocCard(props: LegalDocCardProps) {
       )}
 
       <div className="flex items-center space-x-2 my-5">
-        <Checkbox id="terms" checked={termsRead || hasSigned()} onCheckedChange={() => setTermsRead(!termsRead)} />
+        <Checkbox
+          className={termsRead || hasSigned() ? styles.checkbox.checked : styles.checkbox.unchecked}
+          id="terms"
+          checked={termsRead || hasSigned()}
+          onCheckedChange={() => setTermsRead(!termsRead)}
+        />
         <label htmlFor="terms" className="leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           I have read Terms & Conditions
         </label>
@@ -103,15 +121,8 @@ export default function LegalDocCard(props: LegalDocCardProps) {
 
       {!isLegalDetailsLoading && (
         <div className="mt-10">
-          <div className="text-[#6E6B7B] font-semibold font-montserrat text-base leading-[21px] mb-3">Client</div>
-          <LegalDocSignee {...clientSigneeData} />
-        </div>
-      )}
-
-      {!isLegalDetailsLoading && (
-        <div className="mt-10">
           <div className="text-[#6E6B7B] font-semibold font-montserrat text-base leading-[21px] mb-3">
-            Team name / Team member
+            Team Member Name
           </div>
           {talentSigneeData?.map((item: any) => (
             <div className="my-5">

@@ -28,6 +28,8 @@ import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePrevie
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { CustomDraftProjectBadge } from '../cards/style';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
+import FlexternProjectDetailsModal from '@/flexternships/app/components/core/modals/global/FlexternProjectDetailsModal';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -93,6 +95,40 @@ const DraftProjectModal = ({ modal, toggleModal, data, setDeleteDraftModal }) =>
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
   };
+
+  const handleEditDraft = () => {
+    toggleModal();
+    navigate(`/create-project/${data?._id}`);
+  };
+
+  const handleDeleteDraft = () => {
+    toggleModal();
+    setDeleteDraftModal(true);
+  };
+
+  if (isFlexternshipApp) {
+    return (
+      <FlexternProjectDetailsModal
+        data={data}
+        isOpen={modal}
+        onClose={toggleModal}
+        ctas={[
+          {
+            label: 'Delete Draft',
+            type: 'secondary',
+            error: true,
+            onClick: handleDeleteDraft,
+          },
+          {
+            label: 'Edit Draft',
+            type: 'primary',
+            error: false,
+            onClick: handleEditDraft,
+          },
+        ]}
+      />
+    );
+  }
 
   return (
     <Modal

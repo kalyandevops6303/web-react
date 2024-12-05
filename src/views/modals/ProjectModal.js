@@ -48,6 +48,9 @@ import { isEmpty } from 'lodash';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
+import FlexternProjectDetailsModal from '@/flexternships/app/components/core/modals/global/FlexternProjectDetailsModal';
+import { ProjectPrimaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -122,6 +125,8 @@ const ProjectModal = ({
   const [successReportModal, setSuccessReportModal] = useState(false);
   const alreadyReported = useSelector(selectAlreadyReported);
   // const checkReportLoading = useSelector(selectCheckReportLoading);
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   useEffect(() => {
     dispatch(
@@ -270,6 +275,55 @@ const ProjectModal = ({
     : [];
 
   const appPermissions = useSelector(appPermissionsSelector);
+
+  const handleViewFlexternProject = () => {
+    navigate(`/project-details/${data?._id}/team`);
+  };
+
+  const handleRelistFlexternProject = () => {
+    toggleModal();
+    setRelistConfirmationModal(true);
+  };
+
+  const getCtasForFlexternProjectModal = () => {
+    if (location.pathname.split('/').includes('my_listings') && data.status === ProjectPrimaryStatus.WITHDRAWN) {
+      return [
+        {
+          type: 'secondary',
+          label: 'Re-list',
+          onClick: handleRelistFlexternProject,
+        },
+      ];
+    } else if (
+      data.is_invited ||
+      location.pathname.split('/').includes('my_listings') ||
+      data.client.user_id === userDetails._id
+    ) {
+      return [
+        {
+          type: 'primary',
+          label: (
+            <>
+              View Project <ChevronRight size={18} />
+            </>
+          ),
+          onClick: handleViewFlexternProject,
+        },
+      ];
+    }
+    return [];
+  };
+
+  if (isFlexternshipApp) {
+    return (
+      <FlexternProjectDetailsModal
+        data={data}
+        isOpen={modal}
+        onClose={toggleModal}
+        ctas={getCtasForFlexternProjectModal()}
+      />
+    );
+  }
 
   return (
     <Modal

@@ -159,7 +159,6 @@ export function getTimeLeftIfWithin24Hours(
     seconds: Math.floor(diff.seconds),
   };
 }
-
 /**
  * Converts a Date object to a different timezone
  * @param date - The Date object to convert
@@ -172,4 +171,19 @@ export function convertDateToTimezone(date: Date, timezone: string): Date {
     throw new TypeError('Expected a Date object');
   }
   return DateTime.fromJSDate(date).setZone(timezone).toJSDate();
+}
+
+/**
+ * Converts an epoch timestamp to a time string in the specified timezone
+ * @param epoch - The epoch timestamp in milliseconds
+ * @param timezone - Optional IANA timezone string (e.g. 'America/New_York'). Defaults to local timezone if not specified
+ * @returns A formatted time string in the specified timezone
+ * @throws {TypeError} If epoch is not a number
+ */
+export function formatEpochToTimeInTimezone(epoch: number, timezone?: string): string {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+  const dt = DateTime.fromMillis(epoch);
+  return timezone ? dt.setZone(timezone).toFormat('h:mm a') : dt.toFormat('h:mm a');
 }

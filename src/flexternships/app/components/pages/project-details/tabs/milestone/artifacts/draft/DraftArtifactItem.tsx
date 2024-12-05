@@ -2,10 +2,10 @@ import TextInput from '@flexternships/components/core/form/TextInput';
 import Spinner from '@flexternships/components/core/Spinner';
 import { MilestoneArtifactErrorType, MilestoneArtifactType, ToastType } from '@flexternships/enums/core-enums';
 import { MilestoneDraftArtifact } from '@flexternships/types/project-milestones-types';
-import { deleteMilestoneArtifactById, getFileDownloadUrl } from '@flexternships/services/project-management-v2';
-import { showToastMessage } from '@flexternships/utils/core-utils';
-import { formatEpochToHumanReadable } from '@flexternships/utils/date-utils';
-import { getFileIcon } from '@flexternships/utils/file-utils';
+import { getFileDownloadUrl } from '@flexternships/services/project-management-v2';
+import { getUserTimezone, showToastMessage } from '@flexternships/utils/core-utils';
+import { formatEpochToHumanReadable, formatEpochToTimeInTimezone } from '@flexternships/utils/date-utils';
+import { getFileIcon, getFileSize } from '@flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link, Trash2 } from 'react-feather';
 import { Control, Controller, UseFieldArrayRemove } from 'react-hook-form';
@@ -13,20 +13,12 @@ import { useProjectMilestonesStore } from '@flexternships/stores/project-milesto
 import { Progress } from '@/flexternships/app/components/ui/progress';
 import { isEmpty } from 'lodash';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
-import {
-  getMilestoneDetailsModalCancelCtaText,
-  getMilestoneDetailsModalConfirmCtaText,
-  getMilestoneDetailsModalDescription,
-  getMilestoneDetailsModalTitle,
-} from '@/flexternships/static/milestones-content';
-import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 import { convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 export default function DraftArtifactItem(props: Props) {
-  const { last = false, data, index, control, errors, remove, handleFileUpload } = props;
-  const activeModal = useProjectMilestonesStore((state) => state.activeModal);
+  const { last = false, data, index, control, errors, handleFileUpload } = props;
   const openModal = useProjectMilestonesStore((state) => state.openModal);
-  const closeModal = useProjectMilestonesStore((state) => state.closeModal);
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
 
@@ -40,7 +32,7 @@ export default function DraftArtifactItem(props: Props) {
       const downloadResponse = await getFileDownloadUrl(data.metadata?.fileKey ?? '');
       window.open(downloadResponse.data, '_blank');
     } catch (error) {
-      showToastMessage(ToastType.ERROR, 'Failed to download file');
+      showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description="Failed to download file" />);
     } finally {
       setMainActionLoading(false);
     }
@@ -61,20 +53,8 @@ export default function DraftArtifactItem(props: Props) {
     }
   };
 
-  const handleDeleteClick = async () => {
-    if (data.artifactId) {
-      await deleteMilestoneArtifactById(data.artifactId);
-    }
-    openModal(MilestoneDetailsModalType.ARTIFCAT_REMOVED);
-  };
-
   const openRemoveArtifactModal = () => {
-    openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT);
-  };
-
-  const closeWithRemove = () => {
-    closeModal();
-    remove(index);
+    openModal(MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT, { ...data, index });
   };
 
   const handleTryAgain = () => {
@@ -156,7 +136,24 @@ export default function DraftArtifactItem(props: Props) {
             Try Again
           </div>
         ) : (
-          formatEpochToHumanReadable(data.uploadedAt ?? 0, false, true)
+          <div className="flex flex-col">
+            <div className="flex flex-row justify-between">
+              <span className="text-sm text-grey font-normal leading-[21px]">
+                {formatEpochToHumanReadable(data.uploadedAt ?? 0, false, false, getUserTimezone())}
+              </span>
+              <span className="text-sm text-grey font-normal leading-[21px]">
+                {formatEpochToTimeInTimezone(data.uploadedAt ?? 0, getUserTimezone())}
+              </span>
+            </div>
+            <div className="flex flex-row justify-between">
+              <span className="text-sm text-grey font-normal leading-[21px]">
+                {data.metadata?.size && getFileSize(data.metadata?.size ?? 0)}
+              </span>
+              {data.artifactId && (
+                <span className="text-grey-heading font-semibold text-sm leading-[21px]">Draft Saved</span>
+              )}
+            </div>
+          </div>
         )}
       </div>
       <div className="py-4 px-2.5 w-[122px] flex flex-row items-center gap-x-3">
@@ -190,18 +187,6 @@ export default function DraftArtifactItem(props: Props) {
           <Trash2 size={24} />
         </span>
       </div>
-      {activeModal && (
-        <RemoveArtifactModal
-          isOpen={true}
-          onClose={activeModal === MilestoneDetailsModalType.ARTIFCAT_REMOVED ? closeWithRemove : closeModal}
-          onConfirm={handleDeleteClick}
-          artifact={data}
-          title={getMilestoneDetailsModalTitle(activeModal)}
-          description={getMilestoneDetailsModalDescription(activeModal)}
-          cancelCtaText={getMilestoneDetailsModalCancelCtaText(activeModal)}
-          confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
-        />
-      )}
     </div>
   );
 }

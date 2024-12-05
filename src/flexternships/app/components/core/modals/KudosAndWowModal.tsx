@@ -12,6 +12,7 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import Spinner from '../Spinner';
 import { submitKudosOrWow } from '@/flexternships/services/project-management-v2';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import Toast from '../Toasts/Toast';
 
 function KudosAndWowModal(props: KudosAndWowModalProps) {
   const { recognitionType, isOpen = false, closeModal, projectId, milestoneId } = props;
@@ -39,7 +40,13 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
           .filter((member: any) => member.id !== userDetails.id);
         setTeamMembers(formattedData);
       } catch (error) {
-        showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching team details');
+        showToastMessage(
+          ToastType.ERROR,
+          <Toast
+            type={ToastType.ERROR}
+            description={error instanceof Error ? error.message : 'Error fetching team details'}
+          />,
+        );
       } finally {
         setIsTeamMembersLoading(false);
       }
@@ -102,7 +109,7 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
           </div>
         ) : (
           <div className="mt-[3.38rem] mb-[3.31rem] mx-[3.75rem] bg-white  pl-4 pb-8">
-            <p className="w-[40.5rem] text-grey-600 text-sm font-medium leading-snug pt-8">
+            <p className="w-[40.5rem] text-grey-600 text-sm font-medium leading-5.2 pt-8">
               {recognitionType === RecognitionType.WOW ? RecognitionSubHeading.WOW : RecognitionSubHeading.KUDOS}
             </p>
             <p className="mt-[1.63rem] text-grey-heading text-lg font-medium">
@@ -121,32 +128,39 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
                         }
                       : {}
                   }
-                  className={`flex justify-center items-center gap-[0.875rem] w-[14.75rem] border bg-trublue-bg_secondary cursor-pointer ${
+                  className={`flex flex-row items-center gap-x-1.5 border cursor-pointer ${
                     teamMember.selected ? 'border-trublue-secondary-500' : 'border-grey-50'
-                  } rounded-md p-[0.625rem_1.25rem_0.625rem_2.0625rem]`}
+                  } rounded-md px-3.5 py-2.5`}
                 >
-                  {recognitionType === RecognitionType.WOW ? (
+                  <div className="flex items-center gap-x-3.5">
+                    {recognitionType === RecognitionType.WOW ? (
+                      <img
+                        src={Wow}
+                        style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
+                        className="w-8 h-8 object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={ThumbsUp}
+                        style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
+                        className="w-8 h-8"
+                      />
+                    )}
                     <img
-                      src={Wow}
-                      style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
-                      className="w-8 h-8 object-cover"
+                      src={teamMember.profileImage || defaultAvatar}
+                      className="w-9 h-9 rounded-full border-2 border-white shadow-card object-cover"
                     />
-                  ) : (
-                    <img
-                      src={ThumbsUp}
-                      style={!teamMember.selected ? { mixBlendMode: 'luminosity' } : {}}
-                      className="w-8 h-8"
-                    />
-                  )}
-                  <img
-                    src={teamMember.profileImage || defaultAvatar}
-                    className="w-9 h-9 rounded-[50%] border-[0.25rem] border-white"
-                  />
-                  <p className="min-w-[7.875rem] text-sm font-normal text-grey-heading">{teamMember.name}</p>
+                  </div>
+                  <span className="w-32 text-sm font-normal text-grey-heading leading-normal">{teamMember.name}</span>
                 </div>
               ))}
             </div>
-            <PrimaryButton onClick={handleSubmit} className="mt-[1.63rem]" loading={isSubmitLoading}>
+            <PrimaryButton
+              onClick={handleSubmit}
+              disabled={selectedCount === 0}
+              className="mt-[1.63rem]"
+              loading={isSubmitLoading}
+            >
               Submit
             </PrimaryButton>
           </div>
