@@ -945,3 +945,19 @@ export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
 
   return filteredObj;
 };
+
+export const formatDateWithTime = (date) => {
+  if (!date) return '';
+
+  return new Date(date)
+    .toLocaleString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+    .replace(',', '')
+    .replace(/\s+/g, ' ');
+};

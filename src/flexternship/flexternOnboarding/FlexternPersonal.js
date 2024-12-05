@@ -56,6 +56,8 @@ import {
   filteredFormSchema,
   isEmpty,
   giveProgressBarColorClassName,
+  renderFormattedListingDate,
+  formatDateWithTime,
 } from '../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
@@ -82,7 +84,6 @@ import {
   setResumeDataUploadedForPersonal,
   setResumeParsed,
 } from '../../redux/reducers/formData';
-
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
 import UploadResumeModal from '../../views/modals/UploadResumeModal';
@@ -363,6 +364,7 @@ const FlexternPersonal = () => {
               file_key: savedFormDocuments[0]?.uploadData?.file_key,
             },
             isUploaded: true,
+            lastModified: savedFormDocuments[0]?.lastModified,
           },
         ]);
       }
@@ -375,6 +377,7 @@ const FlexternPersonal = () => {
       id: uuidv4(),
       file,
       uploadData: response?.data?.data,
+      lastModified: file.lastModified,
       isUploaded: false,
     };
     dispatch(setFormDocuments([fileWithUrl]));
@@ -444,8 +447,8 @@ const FlexternPersonal = () => {
   };
 
   const fileList = () => (
-    <div className="custom-card mb-1">
-      <Card className="py-1">
+    <div className="custom-card ">
+      <Card className="mb-0">
         {files?.map((file, index) => (
           <Row
             key={file.id}
@@ -468,7 +471,10 @@ const FlexternPersonal = () => {
                 ) : (
                   <div className="d-flex align-items-center w-100 ">
                     <span>{renderFilePreview(file.file)}</span>
-                    <span className="w-75">{file.file.name}</span>
+                    <div className="d-flex flex-column">
+                      <span className="text-sm text-grey-heading font-medium">{file.file.name}</span>
+                      <span className="text-xs text-grey font-normal"> {formatDateWithTime(file.lastModified)}</span>
+                    </div>
                   </div>
                 )}
               </Col>
@@ -690,6 +696,12 @@ const FlexternPersonal = () => {
             file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
+          lastModified:
+            savedFormDocuments != null
+              ? savedFormDocuments[0]?.lastModified
+                ? savedFormDocuments[0]?.lastModified
+                : res?.talent_info?.resume?.created_at
+              : res?.talent_info?.resume?.created_at,
         };
         dispatch(
           setFileKey(
@@ -786,6 +798,7 @@ const FlexternPersonal = () => {
                 file_key: savedFormDocuments[0]?.uploadData?.file_key,
               },
               isUploaded: true,
+              lastModified: savedFormDocuments[0]?.lastModified,
             },
           ]);
           dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
@@ -811,6 +824,7 @@ const FlexternPersonal = () => {
               file_key: savedFormDocuments[0]?.uploadData?.file_key,
             },
             isUploaded: true,
+            lastModified: savedFormDocuments[0]?.lastModified,
           },
         ]);
         dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
@@ -821,6 +835,12 @@ const FlexternPersonal = () => {
     dispatch(getLanguages());
   }, [parseResume, parsedResumeData, parsedUploaded]);
 
+  const handleParseResumeToggle = () => {
+    setParsedUploaded(false);
+    setParseResume(!parseResume);
+    dispatch(setResumeParsed(!parseResume));
+  };
+
   return (
     <ProfileFormContainer>
       {userDetailsIsLoading && languagesIsLoading ? (
@@ -830,7 +850,7 @@ const FlexternPersonal = () => {
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="w-100">
-            <Col className="w-75" xs="100" sm="75" lg="75">
+            <Col className="w-70" xs="12" sm="12" lg="8">
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg font-medium">About</h4>
@@ -1022,86 +1042,79 @@ const FlexternPersonal = () => {
                 </div>
               </div>
             </Col>
-            <Col className="w-25">
+            <Col xs="12" sm="12" lg="4">
               <Card>
                 <CardHeader>
-                  <h4 className="m-0 mt-1 text-lg font-medium">
+                  <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
                     Resume <span className="label-asterisk">*</span>
                   </h4>
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
-                <CardBody>
+                <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
                   {/* IsresumeParsed ? resumeParsedLoading :  */}
-                  <div className="d-flex flex-column">
-                    <div style={{ backgroundColor: '#0185E426', padding: '20px 20px 12px 20px' }}>
-                      <div className="d-flex">
+                  <div className="d-flex flex-column gap-7">
+                    <div
+                      style={{
+                        background: parseResume ? '#0185E426' : theme.greyedOutBackground,
+                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                      }}
+                    >
+                      <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
                         <Col lg="fit">
                           <Info className="font-medium-3 me-50" color="#004280" />
                         </Col>
                         <Col className="w-100 ">
-                          <Row
+                          <div
                             style={{ color: '#004280' }}
-                            className="d-flex flex-xl-row flex-column align-items-xl-center w-100  flex-wrap justify-content-between"
+                            className="d-flex w-100  justify-content-between align-items-center"
                           >
                             <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
                               Auto Fill {files && files?.length > 0 && 'Profile'}
                               {files && files.length === 0 && <span> - Upload your resume</span>}
                             </Col>
-                            <Col lg="2">
-                              {resumeParsedLoading ? (
-                                <Spinner size="sm" />
-                              ) : (
-                                !uploadingFiles.includes(files[0]) &&
-                                files &&
-                                files.length > 0 && (
-                                  <FormGroup switch>
+                            {resumeParsedLoading ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              !uploadingFiles.includes(files[0]) &&
+                              !isEmpty(files) && (
+                                <FormGroup switch className="p-0">
+                                  <Input type="switch" checked={parseResume} onClick={handleParseResumeToggle} />
+                                </FormGroup>
+                              )
+                            )}
+                          </div>
+                          {files?.length == 0 && (
+                            <div className=" px-0 py-0">
+                              <>
+                                <Label
+                                  for="resume"
+                                  className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
+                                >
+                                  <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
+                                </Label>
+                                <Controller
+                                  id="resume"
+                                  name="resume"
+                                  control={control}
+                                  render={({ field }) => (
                                     <Input
-                                      type="switch"
-                                      checked={parseResume}
-                                      onClick={() => {
-                                        setParsedUploaded(false);
-                                        setParseResume(!parseResume);
-                                        dispatch(setResumeParsed(!parseResume));
+                                      {...field}
+                                      ref={filesRef}
+                                      id="resume"
+                                      type="file"
+                                      max={1}
+                                      accept="application/pdf"
+                                      // style={{ display: 'none' }}
+                                      className="d-none"
+                                      onChange={(e) => {
+                                        handleFileChange(e);
                                       }}
                                     />
-                                  </FormGroup>
-                                )
-                              )}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <div className="w-full p-2 py-0">
-                              {files?.length === 0 && (
-                                <>
-                                  <Label
-                                    for="resume"
-                                    className="me-2 mt-2  d-flex flex-col align-items-center upload-button cursor-pointer"
-                                  >
-                                    <h5 className="fw-bold">Upload Resume</h5>
-                                  </Label>
-                                  <Controller
-                                    id="resume"
-                                    name="resume"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <Input
-                                        {...field}
-                                        ref={filesRef}
-                                        id="resume"
-                                        type="file"
-                                        max={1}
-                                        accept="application/pdf"
-                                        style={{ display: 'none' }}
-                                        onChange={(e) => {
-                                          handleFileChange(e);
-                                        }}
-                                      />
-                                    )}
-                                  />
-                                </>
-                              )}
+                                  )}
+                                />
+                              </>
                             </div>
-                          </Row>
+                          )}
                         </Col>
                       </div>
                     </div>
