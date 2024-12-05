@@ -1104,7 +1104,6 @@ const FlexternPersonal = () => {
                                       type="file"
                                       max={1}
                                       accept="application/pdf"
-                                      // style={{ display: 'none' }}
                                       className="d-none"
                                       onChange={(e) => {
                                         handleFileChange(e);
