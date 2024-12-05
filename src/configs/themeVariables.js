@@ -110,6 +110,7 @@ const disputeBorderRedColor = '#E05152';
 const disputeCountBackgroundColor = '#FFF8F8';
 const checkboxGradient = 'linear-gradient(0deg, rgba(255, 183, 1, 0.12) 0%, rgba(255, 183, 1, 0.12) 100%), #FFF;';
 const checkboxGradientActive = 'linear-gradient(0deg, rgba(0, 178, 255, 0.12) 0%, rgba(0, 178, 255, 0.12) 100%), #FFF;';
+const greyedOutBackground = 'linear-gradient(0deg, rgba(224, 224, 224, 0.50) 0%, rgba(224, 224, 224, 0.50) 100%), #FFF';
 const theme = {
   primary: primaryColor, // primary color for all components
   headerShadow: headerShadowColor, // color for header shadow
@@ -225,5 +226,6 @@ const theme = {
   disputeCountBackgroundColor,
   checkboxGradient,
   checkboxGradientActive,
+  greyedOutBackground,
 };
 export default theme;

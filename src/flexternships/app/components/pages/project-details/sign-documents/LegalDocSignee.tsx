@@ -12,6 +12,12 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
   const isSignDocumentLoading = useLegalStore((state) => state.isSignLegalDocumentLoading);
   const [showSpinner, setShowSpinner] = useState<boolean>(false);
 
+  const styles = {
+    signed:
+      'bg-white border border-[#0185E4] text-[#0185E4] text-center font-medium font-montserrat text-sm tracking-[0.4px] hover:shadow-none cursor-default',
+    pending: 'text-white text-center font-medium font-montserrat text-sm tracking-[0.4px]',
+  };
+
   const handleClick = (event: any) => {
     setShowSpinner(true);
     onClick && onClick(event);
@@ -42,12 +48,10 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
 
       <div className="flex flex-col">
         <PrimaryButton
-          disabled={disabled}
-          className={`${
-            signed
-              ? 'bg-white border border-[#0185E4] text-[#0185E4] text-center font-medium font-montserrat text-sm tracking-[0.4px]'
-              : 'text-white text-center font-medium font-montserrat text-sm tracking-[0.4px]'
-          } m-0 mb-2 flex w-[208px] h-[37px] p-[10px_22px] justify-center items-center gap-[8px] shrink-0`}
+          disabled={disabled || signed}
+          className={`m-0 mb-2 flex w-[208px] h-[37px] p-[10px_22px] justify-center items-center gap-[8px] shrink-0 ${
+            signed ? styles.signed : styles.pending
+          }`}
           onClick={handleClick as any}
         >
           <div className={`flex items-center ${signed && 'gap-2'}`}>
