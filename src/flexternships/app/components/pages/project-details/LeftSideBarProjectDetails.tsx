@@ -67,15 +67,15 @@ const LeftSideBarProjectDetails = () => {
   };
   const handleRelist = () => {
     setShowRelistModal(true);
-  }
+  };
   const handleTerminateProject = async () => {
     await setTerminateProject(data?.id);
     navigate(`/project-details/${data?.id}/team`);
-  }
+  };
   const handleWithdrawProject = async () => {
     await setWithdrawProject(data?.id);
     navigate(`/project-details/${data?.id}/team`);
-  }
+  };
   const handleCloseDescriptionModal = () => setShowMore(false);
 
   const daysLeft =

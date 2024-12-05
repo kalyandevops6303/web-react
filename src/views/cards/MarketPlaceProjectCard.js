@@ -308,7 +308,11 @@ const MarketPlaceProjectCard = ({
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {!showFullText ? (
-                      <div className="my-div posted" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden', fontSize: '16px' }}>
+                      <div
+                        className="my-div posted"
+                        ref={divRef}
+                        style={{ maxHeight: '6.1rem', overflow: 'hidden', fontSize: '16px' }}
+                      >
                         {descriptionToShow}
                       </div>
                     ) : (
