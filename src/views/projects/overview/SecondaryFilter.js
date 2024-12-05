@@ -32,6 +32,8 @@ import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { SecondaryProjectStatus } from '@/flexternships/constraints/enums/project-enums';
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -325,7 +327,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       const options = response?.data?.data?.data.map((option) => {
         return {
           value: option.status,
-          label: option.status,
+          label: SecondaryProjectStatus[option.status],
         };
       });
 
@@ -508,7 +510,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
                     loadOptions={loadDepartmentNameOptions}
-                    classNamePrefix="select"
+                    classNamePrefix="wide"
                     placeholder="Select department name"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
@@ -531,7 +533,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
                     loadOptions={loadSecondaryStatusesOptions}
-                    classNamePrefix="select"
+                    classNamePrefix="wide"
                     placeholder="Select status"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
@@ -573,7 +575,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     debounceTimeout={1000}
                     additional={{ page: 1 }}
                     loadOptions={loadProjectNamesOptions}
-                    classNamePrefix="select"
+                    classNamePrefix="wide"
                     placeholder="Select project name"
                     theme={selectThemeColors}
                     className={classNames('react-select')}

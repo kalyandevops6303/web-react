@@ -41,7 +41,6 @@ export default function TeamFeedback() {
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
-    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: teamFeedbackForm?._id,
       milestone_id: params?.milestoneId,
@@ -52,7 +51,9 @@ export default function TeamFeedback() {
       feedback_result: survey.data,
     };
 
-    submitFeedback(submitFeedbackData);
+    submitFeedback(submitFeedbackData, () => {
+      navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+    });
   };
 
   if (isFeedbackFormLoading) {

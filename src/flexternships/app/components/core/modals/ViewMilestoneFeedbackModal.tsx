@@ -1,4 +1,5 @@
 import IndividualFeedback from '@/flexternships/app/project-details/tabs/performance/IndividualFeedback';
+import MilestoneFeedback from '@/flexternships/app/project-details/tabs/performance/MilestoneFeedback';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
 import { X } from 'react-feather';
@@ -12,7 +13,7 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-10 min-w-[1038px] relative">
+      <div className="bg-white rounded-lg p-10 w-[1038px] relative">
         <div
           className="absolute -top-2 -right-2 bg-white rounded-md p-2 shadow-table cursor-pointer"
           onClick={closeModal}
@@ -23,7 +24,12 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
           <h1 className="text-[28px] text-center font-normal text-grey-heading">
             {viewMilestoneFeedbackModalTitle[feedbackType]}
           </h1>
-          <IndividualFeedback feedbackType={feedbackType} milestoneId={milestoneId} />
+          {feedbackType === MilestoneFeedbackType.TEAM_FEEDBACK ||
+          feedbackType === MilestoneFeedbackType.SELF_FEEDBACK ? (
+            <MilestoneFeedback feedbackType={feedbackType} milestoneId={milestoneId} />
+          ) : (
+            <IndividualFeedback feedbackType={feedbackType} milestoneId={milestoneId} />
+          )}
         </div>
       </div>
     </div>
