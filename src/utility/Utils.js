@@ -661,7 +661,7 @@ export const getModifiedProjectResponse = ({ data }) => {
       is_invited: project?.is_invited,
       client: {
         user_id: data.client._id,
-        departmentName: data.client.department_name,
+        departmentName: data.client.department || data.client.department_name,
       },
       requirements: {
         projectName: project.name,

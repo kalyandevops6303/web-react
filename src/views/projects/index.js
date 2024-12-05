@@ -47,6 +47,7 @@ const Projects = () => {
     useMatch('/projects/completed') ||
     useMatch('/projects/terminated') ||
     useMatch('/projects/dispute') ||
+    useMatch('/projects/blocked') ||
     useMatch('/projects/invited');
   const filterFromUrl = location.pathname.split('/').pop();
   const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || filterFromUrl);
@@ -75,6 +76,7 @@ const Projects = () => {
     completed: 'Completed',
     terminated: 'Terminated',
     dispute: 'Dispute',
+    blocked: 'Blocked',
     invited: 'Invited',
   };
 
@@ -132,6 +134,16 @@ const Projects = () => {
               </PermissionWrapper>
             }
           />
+          {primaryFilter === 'blocked' && (
+            <Route
+              path="/"
+              element={
+                <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.BLOCKED']}>
+                  <SecondaryFiltersWrapper primaryFilter={primaryFilter} />
+                </PermissionWrapper>
+              }
+            />
+          )}
           <Route
             path="invited"
             element={

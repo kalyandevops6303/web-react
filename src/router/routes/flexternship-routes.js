@@ -52,6 +52,7 @@ import ProjectsTab from '@/flexternships/app/project-details/tabs/projects/page'
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 import FlexternshipsContractView from '@/flexternships/app/project-details/sign-documents/page';
 import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
+import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -108,7 +109,34 @@ export const FlexternshipRoutes = [
   },
   {
     path: '/marketplace/*',
-    element: <MarketPlace />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/talent-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <MarketPlace />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: '/project-details/:projectId',
@@ -136,8 +164,9 @@ export const FlexternshipRoutes = [
             ],
           },
         ]}
+        allowBlockedUsers
       >
-        <FlexternshipProjectDetails />
+        <RedirectToTeamTab />
       </RoleAccessWrapper>
     ),
   },
@@ -167,6 +196,7 @@ export const FlexternshipRoutes = [
             ],
           },
         ]}
+        allowBlockedUsers
       >
         <FlexternshipProjectDetails />
       </RoleAccessWrapper>
@@ -198,6 +228,7 @@ export const FlexternshipRoutes = [
             ],
           },
         ]}
+        allowBlockedUsers
       >
         <FlexternshipProjectDetails />
       </RoleAccessWrapper>
@@ -216,8 +247,67 @@ export const FlexternshipRoutes = [
     element: <ContractView />,
   },
   {
+    path: '/projects/blocked',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/talent-onboarding',
+              },
+            ],
+          },
+        ]}
+        allowBlockedUsers
+      >
+        <Projects />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
     path: '/projects/*',
-    element: <Projects />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/talent-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <Projects />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: '/auth/*',
