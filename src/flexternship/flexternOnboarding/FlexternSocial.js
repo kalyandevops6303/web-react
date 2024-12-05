@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
@@ -24,12 +24,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
 import theme from '../../configs/themeVariables';
 import {
+  deleteResume,
   getResumeParsedDetails,
   getUserDetails,
   saveProfileDetails,
   saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import {
+  deleteResumeLoading,
   profileDetailsLoading,
   resumeParsedDetails,
   resumeParsedDetailsLoading,
@@ -46,8 +48,12 @@ import {
   isUrlWithoutProtocol,
   removeEmptyKeys,
   giveProgressBarColorClassName,
+  formatDateWithTime,
+  downloadFile,
+  downloadUploadedFile,
+  renderFilePreview,
 } from '../../utility/Utils';
-import { userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
+import { maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
   fileKey,
@@ -55,6 +61,8 @@ import {
   formDocuments,
   resumeDataUploadedForSocial,
   resumeParsed,
+  resumeDataUploadedForPersonal,
+  resumeDataUploadedForEducation,
 } from '../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
@@ -65,11 +73,14 @@ import {
   setResumeParsed,
 } from '../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
-import { updateParsedResumeService } from '../../services/talentOnboardingServices';
+import { updateParsedResumeService, resumeUploadService } from '../../services/talentOnboardingServices';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
+import { downloadUrlLoading, userData } from '@/redux/selectors/dashboardSelectors';
+import { projectFileUploadToAzureService } from '../../services/createProjectServices';
+import uuidv4 from '../../lib/uuidv4';
 
 const FlexternSocial = () => {
   const SocialSchema = yup.object().shape({
@@ -82,6 +93,13 @@ const FlexternSocial = () => {
         link: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
       }),
     ),
+    resume: yup
+      .object()
+      .shape({
+        file_name: yup.string().required('Resume is required'),
+        file_key: yup.string().required('Resume is required'),
+      })
+      .required('Resume is required'),
   });
 
   const savedFormData = useSelector(formData);
@@ -92,7 +110,12 @@ const FlexternSocial = () => {
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
   const isResumeDataUploadedForSocial = useSelector(resumeDataUploadedForSocial);
-  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForSocial || false);
+  const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
+  const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+  const [parsedUploaded, setParsedUploaded] = useState(
+    isResumeDataUploadedForSocial || isResumeDataUploadedForEducation || isResumeDataUploadedForPersonal || false,
+  );
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [files, setFiles] = useState(savedFormDocuments || []);
@@ -117,6 +140,7 @@ const FlexternSocial = () => {
       twitterLink: savedFormData?.twitterLink || '',
       githubLink: savedFormData?.githubLink || '',
       otherSocialLinks: savedFormData?.otherSocialLinks || [defaultLink],
+      resume: savedFormData?.resume || null,
     },
   });
 
@@ -132,7 +156,7 @@ const FlexternSocial = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-
+  const [uploadingFiles, setUploadingFiles] = useState([]);
   const localFormData = useWatch({ control });
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
@@ -156,6 +180,11 @@ const FlexternSocial = () => {
   const getOverallPercentageCompletion = () => {
     setOverallPercentageCompletion(profileCompletionFlextern);
   };
+  const handleParseResumeToggle = () => {
+    setParsedUploaded(false);
+    setParseResume(!parseResume);
+    dispatch(setResumeParsed(!parseResume));
+  };
 
   useEffect(() => {
     getOverallPercentageCompletion();
@@ -173,9 +202,45 @@ const FlexternSocial = () => {
   }, [parseResume]);
 
   useEffect(() => {
-    if (files?.length > 0 && !files[0].file?.name) setFiles([]);
+    if (!files || (files?.length > 0 && !files[0].file?.name)) {
+      setFiles([]);
+    }
   }, [files]);
+  const isDeleteResumeLoading = useSelector(deleteResumeLoading);
+  const handleRemoveFile = async (file) => {
+    const uploadedFiles = files;
+    dispatch(
+      deleteResume(() => {
+        const filtered = uploadedFiles.filter((i) => i.id !== file.id);
+        dispatch(setFormDocuments(null));
+        setFiles([...filtered]);
+      }),
+    );
+    setValue('resume', null, { shouldValidate: true });
+  };
+  const isFileValid = (file) => {
+    if (file.size > maxFileSize) {
+      ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
+      return false;
+    }
+    return true;
+  };
+  const handleUploadFile = async (file) => {
+    try {
+      setUploadingFiles([file]);
 
+      await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': 'multipart/form-data',
+      });
+    } catch (error) {
+      dispatch(resumeParsedDetailsSuccess(null));
+      setParseResume(false);
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
+    } finally {
+      setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
+    }
+  };
   useEffect(() => {
     if (parseResume === false) {
       if (savedFormData) {
@@ -260,21 +325,27 @@ const FlexternSocial = () => {
 
     const reqData = {
       social_links,
+      resume: !isEmpty(files)
+        ? {
+            file_name: files[0]?.file?.name || '',
+            file_key: files[0]?.uploadData?.file_key || '',
+          }
+        : {},
     };
     if (reqData) {
       dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
     }
 
-    if (IsresumeParsed) {
-      const resumeUpdatedData = {
-        target_info: {
-          ...parsedResumeData,
-          social_links,
-        },
-      };
+    // if (IsresumeParsed) {
+    //   const resumeUpdatedData = {
+    //     target_info: {
+    //       ...parsedResumeData,
+    //       social_links,
+    //     },
+    //   };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
-    }
+    //   dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    // }
   };
 
   const isValidURL = (url) => {
@@ -370,7 +441,17 @@ const FlexternSocial = () => {
             file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
+          lastModified:
+            savedFormDocuments != null
+              ? savedFormDocuments[0]?.lastModified
+                ? savedFormDocuments[0]?.lastModified
+                : res?.talent_info?.resume?.created_at
+              : res?.talent_info?.resume?.created_at,
         };
+        setValue('resume', {
+          file_name: fileUrl?.file?.name,
+          file_key: fileUrl?.uploadData?.file_key,
+        });
         setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key ?? savedFormDocuments[0]?.uploadData?.file_key));
         dispatch(setFormDocuments([fileUrl]));
@@ -463,8 +544,173 @@ const FlexternSocial = () => {
           setValue('otherSocialLinks', [defaultLink]);
         }
       }
+      if (savedFormDocuments) {
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+            lastModified: savedFormDocuments[0]?.lastModified,
+          },
+        ]);
+      }
     }
   };
+  const fetchUploadUrl = async (file) => {
+    const response = await resumeUploadService(file.name);
+    const fileWithUrl = {
+      id: uuidv4(),
+      file,
+      uploadData: response?.data?.data,
+      lastModified: file.lastModified,
+      isUploaded: false,
+    };
+    dispatch(setFormDocuments([fileWithUrl]));
+    setFiles([fileWithUrl]);
+    await handleUploadFile(fileWithUrl);
+    dispatch(setFileKey(response?.data?.data?.file_key));
+    setValue(
+      'resume',
+      {
+        file_name: file?.name,
+        file_key: response?.data?.data?.file_key,
+      },
+      { shouldValidate: true },
+    );
+    trigger(['resume']);
+    // if (response)
+    //   dispatch(
+    //     getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
+    //   );
+    dispatch(setResumeParsed(true));
+    setParseResume(true);
+  };
+
+  const handleFileChange = async (e) => {
+    if (e.target.files) {
+      if (isFileValid(e.target.files[0])) {
+        dispatch(clearAllFormData());
+        await fetchUploadUrl(e.target.files[0]);
+        setParseResume(true);
+        dispatch(setResumeParsed(true));
+      }
+    } else {
+      e.target.value = '';
+    }
+  };
+
+  const filesRef = useRef();
+  useEffect(() => {
+    const fileReRender = async () => {
+      if (savedFormDocuments != null) {
+        filesRef.current = files;
+        setFiles(savedFormDocuments);
+        dispatch(setFormDocuments(savedFormDocuments));
+      } else {
+        setFiles([]);
+      }
+    };
+    fileReRender();
+  }, [savedFormDocuments]);
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
+  const downloadResume = (file) => {
+    if (file.isUploaded) {
+      dispatch(
+        getDownloadUrl({
+          fileKey: file?.uploadData?.file_key,
+          onSuccess: onDownloadResumeUrlSuccess,
+          fileName: file.file.name,
+        }),
+      );
+    } else {
+      downloadUploadedFile({ file: file.file });
+    }
+  };
+
+  const fileList = () => (
+    <div className="custom-card ">
+      <Card className="mb-0">
+        {files?.map((file, index) => (
+          <Row
+            key={file.id}
+            className={
+              index !== files.length - 1
+                ? 'd-flex flex-column align-items-start mb-1'
+                : 'd-flex flex-column align-items-start'
+            }
+          >
+            <div className="d-flex flex-wrap w-100 gap-1 gap-xl-0 justify-content-between">
+              <Col
+                className="d-flex cursor-pointer justify-content-between align-items-center  px-1 w-100"
+                style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                onClick={() => downloadResume(file)}
+              >
+                {downloadUrlIsLoading ? (
+                  <div className="d-flex align-items-center justify-content-center w-100">
+                    <Spinner color="primary" />
+                  </div>
+                ) : (
+                  <div className="d-flex align-items-center w-100 ">
+                    <span>{renderFilePreview(file.file)}</span>
+                    <div className="d-flex flex-column">
+                      <span className="text-sm text-grey-heading font-medium">{file.file.name}</span>
+                      <span className="text-xs text-grey font-normal"> {formatDateWithTime(file.lastModified)}</span>
+                    </div>
+                  </div>
+                )}
+              </Col>
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
+                onClick={() => {
+                  handleRemoveFile(file);
+                  setParseResume(false);
+                  dispatch(resumeParsedDetailsSuccess(null));
+                  dispatch(setResumeParsed(false));
+                }}
+              >
+                {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
+              </Button>
+            </div>
+            {/* <Row className="mt-2">
+              <Row>
+                <Col>{uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}</Col>
+                <Col>{getFileSize(file.file.size)}</Col>
+              </Row>
+              <Row className="d-flex align-items-center">
+                <Col>{requiredFormattedDate}</Col>
+                <Col>
+                  <Button
+                    color="flat-danger"
+                    className="btn-left-margin"
+                    disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
+                    onClick={() => {
+                      handleRemoveFile(file);
+                      setParseResume(false);
+                      dispatch(resumeParsedDetailsSuccess(null));
+                      dispatch(setResumeParsed(false));
+                    }}
+                  >
+                    {isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
+                  </Button>
+                </Col>
+              </Row>
+            </Row> */}
+          </Row>
+        ))}
+      </Card>
+    </div>
+  );
   useEffect(() => {
     if (parseResume) {
       if (parsedUploaded) {
@@ -472,6 +718,22 @@ const FlexternSocial = () => {
       } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+        if (savedFormDocuments) {
+          setFiles([
+            {
+              file: {
+                name: savedFormDocuments[0]?.file?.name,
+                size: savedFormDocuments[0]?.file?.size,
+              },
+              uploadData: {
+                file_key: savedFormDocuments[0]?.uploadData?.file_key,
+              },
+              isUploaded: true,
+              lastModified: savedFormDocuments[0]?.lastModified,
+            },
+          ]);
+          dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        }
       } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
@@ -480,6 +742,20 @@ const FlexternSocial = () => {
             savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
           ),
         );
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+            lastModified: savedFormDocuments[0]?.lastModified,
+          },
+        ]);
+        dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
@@ -491,14 +767,14 @@ const FlexternSocial = () => {
       {accountCreatedModal && (
         <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
       )}
-      {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) ? (
+      {userDetailsIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="w-100">
-            <Col className="w-75" xs="100" sm="100" lg="75">
+            <Col className="w-70" xs="12" sm="12" lg="8">
               <Card className="w-100">
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg font-medium">Social Links</h4>
@@ -702,41 +978,85 @@ const FlexternSocial = () => {
               </div>
             </Col>
 
-            <Col>
-              {((userData?.talent_info?.resume && Object.keys(userData.talent_info.resume).length > 0) ||
-                !isEmpty(files)) && (
-                <Card>
-                  <CardBody>
-                    <div className="d-flex flex-column">
-                      <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
+            <Col xs="12" sm="12" lg="4">
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
+                    Resume <span className="label-asterisk">*</span>
+                  </h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
+                <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
+                  {/* IsresumeParsed ? resumeParsedLoading :  */}
+                  <div className="d-flex flex-column gap-7">
+                    <div
+                      style={{
+                        background: parseResume ? '#0185E426' : theme.greyedOutBackground,
+                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                      }}
+                    >
+                      <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
                         <Col lg="fit">
                           <Info className="font-medium-3 me-50" color="#004280" />
                         </Col>
-
-                        <Col>
-                          <div className="d-flex justify-content-between w-100">
-                            <span style={{ color: '#004280' }}>
-                              <span className="fw-bold">Auto Fill</span>
-
-                              <FormGroup switch>
-                                <Input
-                                  type="switch"
-                                  checked={parseResume}
-                                  onClick={() => {
-                                    setParsedUploaded(false);
-                                    setParseResume(!parseResume);
-                                    dispatch(setResumeParsed(!parseResume));
-                                  }}
-                                />
-                              </FormGroup>
-                            </span>
+                        <Col className="w-100 ">
+                          <div
+                            style={{ color: '#004280' }}
+                            className="d-flex w-100  justify-content-between align-items-center"
+                          >
+                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
+                              Auto Fill {files && files?.length > 0 && 'Profile'}
+                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            </Col>
+                            {resumeParsedLoading ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              !uploadingFiles.includes(files[0]) &&
+                              !isEmpty(files) && (
+                                <FormGroup switch className="p-0">
+                                  <Input type="switch" checked={parseResume} onClick={handleParseResumeToggle} />
+                                </FormGroup>
+                              )
+                            )}
                           </div>
+                          {files?.length == 0 && (
+                            <div className=" px-0 py-0">
+                              <>
+                                <Label
+                                  for="resume"
+                                  className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
+                                >
+                                  <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
+                                </Label>
+                                <Controller
+                                  id="resume"
+                                  name="resume"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <Input
+                                      {...field}
+                                      ref={filesRef}
+                                      id="resume"
+                                      type="file"
+                                      max={1}
+                                      accept="application/pdf"
+                                      className="d-none"
+                                      onChange={(e) => {
+                                        handleFileChange(e);
+                                      }}
+                                    />
+                                  )}
+                                />
+                              </>
+                            </div>
+                          )}
                         </Col>
                       </div>
                     </div>
-                  </CardBody>
-                </Card>
-              )}
+                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
+                  </div>
+                </CardBody>
+              </Card>
 
               <Card>
                 <CardHeader>
