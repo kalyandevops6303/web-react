@@ -1,4 +1,3 @@
-import Toast from '../app/components/core/Toasts/Toast';
 import { ToastType } from '../constraints/enums/core-enums';
 import {
   getFeedbackResponseService,
@@ -6,6 +5,7 @@ import {
   submitFeedbackService,
 } from '../services/feedback-service';
 import { showToastMessage } from '../utils/core-utils';
+import Toast from '../app/components/core/Toasts/Toast';
 
 export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: string, set: any) => {
   set({ isFeedbackFormLoading: true });

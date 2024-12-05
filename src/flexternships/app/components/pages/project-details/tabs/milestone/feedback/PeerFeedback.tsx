@@ -39,12 +39,20 @@ export default function PeerFeedback() {
 
   useEffect(() => {
     if (team) {
+      // Check for the first member without feedback
       const firstMemberWithoutFeedback = team.find(
-        (member: { feedback_id: undefined }) => member.feedback_id === undefined,
+        (member: { feedback_id: string | undefined }) => member.feedback_id === undefined,
       );
-      setActiveTeamMember(firstMemberWithoutFeedback || team[0]); // Fallback to the first element if none matches
+
+      if (!firstMemberWithoutFeedback) {
+        // Navigate if all members have feedback
+        navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+      } else {
+        // Set the active team member to the first one without feedback
+        setActiveTeamMember(firstMemberWithoutFeedback);
+      }
     }
-  }, [team]);
+  }, [team, params, setActiveTeamMember, navigate]);
 
   useEffect(() => {
     if (activeTeamMember) {
@@ -67,7 +75,6 @@ export default function PeerFeedback() {
   }, [activeTeamMember]);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
-    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: peerFeedbackForm?._id,
       milestone_id: params?.milestoneId,

@@ -29,7 +29,6 @@ export default function SelfFeedback() {
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
-    console.log(survey.data);
     const submitFeedbackData: any = {
       feedback_id: selfFeedbackForm?._id,
       milestone_id: params?.milestoneId,
@@ -40,7 +39,9 @@ export default function SelfFeedback() {
       feedback_result: survey.data,
     };
 
-    submitFeedback(submitFeedbackData);
+    submitFeedback(submitFeedbackData, () => {
+      navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+    });
   };
 
   if (isFeedbackFormLoading) {
