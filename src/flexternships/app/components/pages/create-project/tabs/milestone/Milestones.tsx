@@ -22,6 +22,7 @@ import DurationUpdated from '@/flexternships/app/components/core/modals/Duration
 import { useParams } from 'react-router-dom';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 export default function Milestones() {
   const {
@@ -149,7 +150,10 @@ export default function Milestones() {
       updateMilestonesData(watch('milestones'));
       await saveDraft(projectId);
     } catch (error) {
-      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
+      showToastMessage(
+        ToastType.ERROR,
+        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
+      );
     }
   };
 

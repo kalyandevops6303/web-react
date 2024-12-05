@@ -66,6 +66,7 @@ export type FlexternClientDetails = {
     dialCode: string;
     name: string;
   };
+  isBlocked?: boolean;
 };
 
 export type FlexternTalentDetails = {
@@ -84,6 +85,7 @@ export type FlexternTalentDetails = {
     dialCode: string;
     name: string;
   };
+  isBlocked?: boolean;
 };
 
 export type FlexternUser = {
@@ -121,7 +123,12 @@ export type AppState = {
 };
 
 export type AppActions = {
-  openModal: (modalType: GlobalModalType, metadata?: Record<string, string>) => void;
+  openModal: (
+    modalType: GlobalModalType,
+    modalActions?: GlobalModalActions,
+    modalContent?: Partial<GlobalModalContent>,
+    metadata?: Record<string, string>,
+  ) => void;
   closeModal: () => void;
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
   unsetWip: () => void;

@@ -82,4 +82,5 @@ export enum ServerResponseStatus {
 
 export enum GlobalModalType {
   UNSAVED_WORK = 'UNSAVED_WORK',
+  PROJECTS_BLOCKED = 'PROJECTS_BLOCKED',
 }
