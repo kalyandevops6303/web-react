@@ -52,21 +52,37 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   useEffect(() => {
     if (milestoneId && performanceDetails) {
       setFilteredPerformanceDetails(
-        performanceDetails?.filter((feedback: any) => feedback?.milestone_id === milestoneId),
+        performanceDetails
+          ?.map((feedback: any, index: number) => {
+            return {
+              ...feedback,
+              index,
+            };
+          })
+          .filter((feedback: any) => feedback?.milestone_id === milestoneId),
       );
     } else if (performanceDetails) {
-      setFilteredPerformanceDetails(performanceDetails);
+      setFilteredPerformanceDetails(
+        performanceDetails?.map((feedback: any, index: number) => {
+          return {
+            ...feedback,
+            index,
+          };
+        }),
+      );
     }
   }, [performanceDetails, milestoneId]);
 
   const getHeaderContent = (peerFeedback: any) => {
-    const { name, score } = peerFeedback;
+    const { score } = peerFeedback;
 
     return (
       <div className="flex items-center justify-between w-full mr-5 h-10">
         <div className="flex items-center gap-2">
           <div className="flex flex-col text-left">
-            <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">{name}</div>
+            <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">
+              Milestone #{peerFeedback?.index + 1}
+            </div>
           </div>
         </div>
 
