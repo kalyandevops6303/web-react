@@ -10,6 +10,7 @@ export default function GenericModal(props: GenericModalProps) {
   return (
     <Dialog open={isOpen} modal onOpenChange={(newState: boolean) => !newState && onClose()}>
       <DialogContent hideClose className={cn('p-0 m-0 border-0 max-w-2xl', className)}>
+        {/* Required for screen readers */}
         <DialogTitle hidden>Modal Title</DialogTitle>
         <div className={cn('bg-white rounded-lg relative')}>
           <div
