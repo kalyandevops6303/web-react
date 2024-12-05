@@ -18,7 +18,7 @@ const Statbox = ({ onClick, isActive, elevate, className, isMarketPlaceTab, titl
       <CardBody>
         <div className="d-flex align-items-center justify-content-between">
           <div className="my-auto">
-            <h3 className={`fw-bolder ${desc === 'Availability' && 'time'}`}>{title}</h3>
+            <h3 className={`fw-bolder ${desc === 'Availability' && 'time'} stat-number`}>{title}</h3>
             <CardText className="mb-0 stat-desc">{desc}</CardText>
           </div>
           <Avatar color={color} icon={icon} className="stat-avatar" />

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { appendAuthToken } from '../utils/local-storage';
 import { handleError } from '../utils/error-utils';
 import { routes } from '../utils/api';
+import API from '@/configs/api';
 
 /**
  * Fetches the team details for a project
@@ -34,6 +35,18 @@ export const getProjectInvitationDetailsService = async (projectId: string) => {
     return response?.data?.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occured while fetching project invitation details');
+  }
+};
+
+export const markInvitationAsRead = async (projectId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers };
+  const data = { project_id: projectId, type: 'PROJECT_INVITATION' };
+
+  try {
+    await axios.post(`${API.dashboard.updateCardStatus}`, data, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occured while marking invitation as read');
   }
 };
 

@@ -608,3 +608,36 @@ export const submitKudosOrWow = async (milestoneId: string, teamMemberIds: strin
     handleError(error as Error, 'An unexpected error occurred while submitting kudos or wow');
   }
 };
+
+export const terminateProject = async (projectId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { project_id: projectId } };
+
+  try {
+    await axios.put(routes.projectManagementV2.project.terminateProject, {}, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while terminating the project');
+  }
+};
+
+export const withdrawProject = async (projectId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { project_id: projectId } };
+
+  try {
+    await axios.put(routes.projectManagementV2.project.withdrawProject, {}, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while withdrawing the project');
+  }
+};
+
+export const relistProject = async (projectId: string, startDate: number, endDate: number) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { project_id: projectId, start_date: startDate, end_date: endDate } };
+
+  try {
+    await axios.put(routes.projectManagementV2.project.relistProject, {}, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while withdrawing the project');
+  }
+};

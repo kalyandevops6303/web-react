@@ -12,6 +12,18 @@ const CardWrap = styled.div`
   .card-body {
     padding: 2.1rem 2.6rem 1.8rem 2.6rem;
   }
+  .warning {
+    color: ${theme.red};
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    .red {
+      color: ${theme.red};
+    }
+  }
 `;
 
 const CardInfoWrapper = styled.div`
@@ -79,6 +91,19 @@ const ProjectCardWrap = styled(CardWrap)`
   }
   .show-more-less-clickable {
     text-decoration: none;
+  }
+  .font-posted {
+    font-size: 14px;
+    color: ${theme.checkboxLabel};
+  }
+  .font-name {
+    font-size: 18px;
+  }
+  .name {
+    color: ${theme.headingTextColor};
+  }
+  .company {
+    color: ${theme.gray};
   }
   .project-stats {
     .project {
@@ -218,6 +243,10 @@ const TeamCardWrap = styled(CardWrap)`
     border-radius: 1rem;
     color: black;
     font-weight: 600;
+  }
+
+  .font-size {
+    font-size: 14px;
   }
 
   @media only screen and (max-device-width: 600px) {

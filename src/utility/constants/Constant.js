@@ -107,7 +107,7 @@ const projectTypesOptions = [
 ];
 const sortingOptions = [
   { label: 'New', value: 'NEW' },
-  { label: 'Recommended', value: 'RECOMMENDED' },
+  // { label: 'Recommended', value: 'RECOMMENDED' },
   { label: 'Favorite', value: 'FAVOURITE' },
 ];
 const projectStatusEnum = {

@@ -41,7 +41,7 @@ const BreadCrumbs = (props) => {
         <div className="row breadcrumbs-top">
           <div className="col-12 px-0">
             <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none">
-              <Breadcrumb className="d-flex align-items-center p-0 m-0">
+              <Breadcrumb className="d-flex fs-6 align-items-center p-0 m-0 ">
                 <BreadcrumbItem tag="li" className="d-flex align-items-center">
                   <Link to="/dashboard">
                     <Home color={theme.activeColor} size={14} />

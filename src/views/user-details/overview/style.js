@@ -35,10 +35,14 @@ const StatboxWrap = styled(Card)`
   }
   .stat-desc {
     font-weight: 400;
-    font-size: 13px;
+    font-size: 14px;
   }
   .time {
-    font-size: 13px;
+    font-size: 20px;
+  }
+  .stat-number {
+    font-size: 20px;
+    font-weight: 600;
   }
 
   .bg-light-orange {

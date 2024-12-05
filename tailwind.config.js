@@ -23,7 +23,9 @@ module.exports = {
           },
         },
         orange: {
-          DEFAULT: "#FF9F43"
+          DEFAULT: "#FF9F43",
+          dark: "#FF6D00",
+          light: "#FF6D001F"
         },
         violet: {
           DEFAULT: "#584CDB"
@@ -45,6 +47,7 @@ module.exports = {
           500: "#6A7071",
           600: "#515759",
           700: "#394042",
+          800: "#757575",
           loadingText: "#9E9E9E"
         },
         skyblue: {

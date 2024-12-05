@@ -1,5 +1,6 @@
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
 import { Check, User } from 'react-feather';
 import { MouseEvent, useEffect, useState } from 'react';
@@ -33,7 +34,7 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
     <div className="flex items-start justify-between">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={image_uri} />
+          <AvatarImage src={image_uri ? image_uri : defaultAvatar} />
           <AvatarFallback>
             <User color="#6E6B7B" />
           </AvatarFallback>
