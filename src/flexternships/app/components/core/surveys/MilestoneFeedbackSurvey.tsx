@@ -51,6 +51,7 @@ import { User } from 'react-feather';
 
 import '@flexternships/styles/pages/survey/survey.css';
 import SurveyProgress from './SurveyProgress';
+import { useRef } from 'react';
 interface SurveyFormProps {
   surveyJson: SurveyJson;
   onComplete: (survey: SurveyModel) => void;
@@ -66,6 +67,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   survey.onComplete.add(onComplete);
 
   const setSurveyProgress = useFeedbackStore((state) => state.setSurveyProgress);
+  const submitButtonRef = useRef<HTMLInputElement | undefined | null>(undefined);
 
   survey.applyTheme({
     themeName: 'default',
@@ -233,10 +235,8 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
 
     if (submitButton) {
-      submitButton.style.borderRadius = '6px';
-      submitButton.disabled = true;
-      if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
-      else submitButton.style.backgroundColor = '#0065C1';
+      submitButtonRef.current = submitButton;
+      submitButtonRef.current.disabled = true;
     }
 
     if (options.question.hasComment) {
@@ -265,10 +265,13 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
           const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
 
           if (submitButton) {
-            submitButton.style.borderRadius = '6px';
-            submitButton.disabled = answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length; // Disable if incomplete
-            if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
-            else submitButton.style.backgroundColor = '#0065C1';
+            submitButtonRef.current = submitButton;
+
+            if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+              submitButtonRef.current.disabled = true;
+            } else {
+              submitButtonRef.current.disabled = false;
+            }
           }
         });
       }
@@ -300,10 +303,12 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
           const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
 
           if (submitButton) {
-            submitButton.style.borderRadius = '6px';
-            submitButton.disabled = answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length; // Disable if incomplete
-            if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
-            else submitButton.style.backgroundColor = '#0065C1';
+            submitButtonRef.current = submitButton;
+            if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+              submitButtonRef.current.disabled = true;
+            } else {
+              submitButtonRef.current.disabled = false;
+            }
           }
         });
       }
@@ -352,10 +357,12 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     const submitButton: HTMLInputElement | null | undefined = submitButtonWrapper?.querySelector('input');
 
     if (submitButton) {
-      submitButton.style.borderRadius = '6px';
-      submitButton.disabled = answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length; // Disable if incomplete
-      if (submitButton.disabled) submitButton.style.backgroundColor = '#99C1E6';
-      else submitButton.style.backgroundColor = '#0065C1';
+      submitButtonRef.current = submitButton;
+      if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+        submitButtonRef.current.disabled = true;
+      } else {
+        submitButtonRef.current.disabled = false;
+      }
     }
   });
 
@@ -439,7 +446,17 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     .scrollbar-hide::-webkit-scrollbar {
       display: none; /* Chrome, Safari, Edge */
     }
-`;
+
+    #sv-nav-complete input {
+      border-radius: 6px !important;
+      background: #0065C1 !important;
+    }
+
+    #sv-nav-complete input:disabled {
+      border-radius: 6px !important;
+      background: #99C1E6 !important;
+    }
+  `;
 
   const styleSheet = document.createElement('style');
   styleSheet.type = 'text/css';
