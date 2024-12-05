@@ -44,6 +44,7 @@ export const SecondaryProjectStatus = {
   SIGN_REQUESTED: 'Sign Requested',
   NOT_FUNDED: 'Not Funded',
   INITIATE_FUNDS: 'Initiate Funds',
+  MILESTEONE: 'Milestone',
 };
 
 export const enum DocTypes {

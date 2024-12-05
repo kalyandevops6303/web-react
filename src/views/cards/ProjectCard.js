@@ -260,7 +260,7 @@ const ProjectCard = ({
                 )}
 
                 {isContentOverflowing && (
-                  <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
+                  <CardText className="cursor-pointer show-more mb-5" onClick={(e) => handleToggleView(e)}>
                     {showFullText ? 'Show less' : 'Show more'}
                   </CardText>
                 )}

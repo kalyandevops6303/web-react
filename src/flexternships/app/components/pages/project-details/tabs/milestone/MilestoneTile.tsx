@@ -14,9 +14,10 @@ import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 interface MilestoneTileProps {
   data: MilestoneDetails;
+  disabled?: boolean;
 }
 
-const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
+const MilestoneTile: React.FC<MilestoneTileProps> = ({ data, disabled }) => {
   const {
     id,
     seq,
@@ -42,8 +43,12 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data }) => {
 
   const referenceDateForFeedback = userDetails.userType === UserType.CLIENT ? acceptedAt : submittedAt;
 
+  const styles = {
+    disabled: 'opacity-50 cursor-not-allowed pointer-events-none',
+  };
+
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${disabled ? styles.disabled : ''}`}>
       <div
         className="flex flex-row gap-x-6 bg-white rounded-md py-3 px-6 items-center cursor-pointer z-10"
         onClick={clickHandler}
