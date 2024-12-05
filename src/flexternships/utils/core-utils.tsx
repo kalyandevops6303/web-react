@@ -1,3 +1,4 @@
+import React from 'react';
 import { toast, ToastOptions } from 'react-hot-toast';
 import {
   MilestoneStatus,
@@ -15,26 +16,25 @@ import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-
  * @param type - The type of toast message (ERROR, SUCCESS, or default).
  * @param message - The content of the toast message.
  */
-export const showToastMessage = (type: ToastType, message: string) => {
-  const options = {
-    position: 'top-center',
+export const showToastMessage = (type: ToastType, message: React.ReactNode) => {
+  const options: ToastOptions = {
+    position: 'top-left',
     duration: 6000,
-    className: 'flex gap-x-2 p-2 text-xs',
-    icon: '👍',
-  } as ToastOptions;
+    // className: 'flex w-[1393px] p-4 items-start gap-6 flex gap-x-2 p-2 text-xs',
+  };
+
   switch (type) {
     case ToastType.ERROR:
-      toast.error(message, { ...options, icon: '❌' });
+      toast.error(<>{message}</>, { ...options, icon: null });
       break;
     case ToastType.SUCCESS:
-      toast.success(message, { ...options, icon: '✅' });
+      toast.success(<>{message}</>, { ...options, icon: null });
       break;
     default:
-      toast(message, { ...options, icon: 'ℹ️' });
+      toast(<>{message}</>, { ...options, icon: null });
       break;
   }
 };
-
 export const getUserTimezone = () => {
   return useFlexternUserStore.getState().userDetails?.timezone?.name || 'Asia/Kolkata';
 };

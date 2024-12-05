@@ -1,3 +1,4 @@
+import Toast from '../app/components/core/Toasts/Toast';
 import { ToastType } from '../constraints/enums/core-enums';
 import {
   getFeedbackResponseService,
@@ -24,7 +25,10 @@ export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, s
     feedbackFormSubmission: data,
   }));
   set({ isSubmitFeedbackLoading: false });
-  showToastMessage(ToastType.SUCCESS, `Feedback has been submitted successfully`);
+  showToastMessage(
+    ToastType.SUCCESS,
+    <Toast type={ToastType.SUCCESS} description="Feedback has been submitted successfully" />,
+  );
   onSuccess();
 };
 
