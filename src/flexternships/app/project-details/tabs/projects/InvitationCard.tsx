@@ -21,7 +21,7 @@ export default function InvitationCard() {
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
   useEffect(() => {
-    if (projectInvitationDetails?.is_read === false) {
+    if (!projectInvitationDetails?.is_read) {
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);

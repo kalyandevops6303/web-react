@@ -65,6 +65,18 @@ const LeftSideBarProjectDetails = () => {
   const handleMessageClick = () => {
     window.open(CHAT_ENTRY_POINT, '_blank');
   };
+  const handleRelist = () => {
+    setShowRelistModal(true);
+  }
+  const handleTerminateProject = async () => {
+    await setTerminateProject(data?.id);
+    navigate(`/project-details/${data?.id}/team`);
+  }
+  const handleWithdrawProject = async () => {
+    await setWithdrawProject(data?.id);
+    navigate(`/project-details/${data?.id}/team`);
+  }
+  const handleCloseDescriptionModal = () => setShowMore(false);
 
   const daysLeft =
     Date.now() < data?.details?.expectedStartDate
@@ -234,10 +246,7 @@ const LeftSideBarProjectDetails = () => {
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
               disabled={isBlocked}
-              onClick={async () => {
-                await setWithdrawProject(data?.id);
-                navigate(`/project-details/${data?.id}/team`);
-              }}
+              onClick={handleWithdrawProject}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
             >
               Withdraw
@@ -249,10 +258,7 @@ const LeftSideBarProjectDetails = () => {
               data?.status === ProjectPrimaryStatus.BLOCKED) && (
               <PrimaryButton
                 disabled={isBlocked}
-                onClick={async () => {
-                  await setTerminateProject(data?.id);
-                  navigate(`/project-details/${data?.id}/team`);
-                }}
+                onClick={handleTerminateProject}
                 className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
               >
                 Terminate
@@ -284,9 +290,7 @@ const LeftSideBarProjectDetails = () => {
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.WITHDRAWN && (
             <PrimaryButton
               disabled={isBlocked}
-              onClick={() => {
-                setShowRelistModal(true);
-              }}
+              onClick={handleRelist}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
             >
               Re-List
@@ -297,7 +301,7 @@ const LeftSideBarProjectDetails = () => {
       {showMore && (
         <ProjectDescriptionModal
           isOpen={showMore}
-          onClose={() => setShowMore(false)}
+          onClose={handleCloseDescriptionModal}
           data={data?.details?.description}
         />
       )}
