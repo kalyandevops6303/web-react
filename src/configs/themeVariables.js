@@ -1,5 +1,3 @@
-import { getRandomValues } from 'crypto';
-
 const primaryColor = '#0065C1';
 const headerShadowColor = 'rgba(58, 105, 187, 0.15)';
 const headerBackgroundColor = '#fafafa';

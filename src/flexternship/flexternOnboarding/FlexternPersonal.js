@@ -835,6 +835,12 @@ const FlexternPersonal = () => {
     dispatch(getLanguages());
   }, [parseResume, parsedResumeData, parsedUploaded]);
 
+  const handleParseResumeToggle = () => {
+    setParsedUploaded(false);
+    setParseResume(!parseResume);
+    dispatch(setResumeParsed(!parseResume));
+  };
+
   return (
     <ProfileFormContainer>
       {userDetailsIsLoading && languagesIsLoading ? (
@@ -1066,30 +1072,18 @@ const FlexternPersonal = () => {
                               Auto Fill {files && files?.length > 0 && 'Profile'}
                               {files && files.length === 0 && <span> - Upload your resume</span>}
                             </Col>
-                            {/* <Col lg="10"> */}
                             {resumeParsedLoading ? (
                               <Spinner size="sm" />
                             ) : (
                               !uploadingFiles.includes(files[0]) &&
-                              files &&
-                              files.length > 0 && (
+                              !isEmpty(files) && (
                                 <FormGroup switch className="p-0">
-                                  <Input
-                                    type="switch"
-                                    checked={parseResume}
-                                    onClick={() => {
-                                      setParsedUploaded(false);
-                                      setParseResume(!parseResume);
-                                      dispatch(setResumeParsed(!parseResume));
-                                    }}
-                                  />
+                                  <Input type="switch" checked={parseResume} onClick={handleParseResumeToggle} />
                                 </FormGroup>
                               )
                             )}
-                            {/* </Col> */}
                           </div>
                           {files?.length == 0 && (
-                            // <Row>
                             <div className=" px-0 py-0">
                               <>
                                 <Label
@@ -1110,7 +1104,8 @@ const FlexternPersonal = () => {
                                       type="file"
                                       max={1}
                                       accept="application/pdf"
-                                      style={{ display: 'none' }}
+                                      // style={{ display: 'none' }}
+                                      className="d-none"
                                       onChange={(e) => {
                                         handleFileChange(e);
                                       }}
@@ -1119,7 +1114,6 @@ const FlexternPersonal = () => {
                                 />
                               </>
                             </div>
-                            // </Row>
                           )}
                         </Col>
                       </div>
