@@ -5,6 +5,7 @@ import {
   submitFeedbackService,
 } from '../services/feedback-service';
 import { showToastMessage } from '../utils/core-utils';
+import Toast from '../app/components/core/Toasts/Toast';
 
 export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: string, set: any) => {
   set({ isFeedbackFormLoading: true });
@@ -24,7 +25,10 @@ export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, s
     feedbackFormSubmission: data,
   }));
   set({ isSubmitFeedbackLoading: false });
-  showToastMessage(ToastType.SUCCESS, `Feedback has been submitted successfully`);
+  showToastMessage(
+    ToastType.SUCCESS,
+    <Toast type={ToastType.SUCCESS} description="Feedback has been submitted successfully" />,
+  );
   onSuccess();
 };
 

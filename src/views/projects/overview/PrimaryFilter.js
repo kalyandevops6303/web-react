@@ -9,6 +9,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import PlusUsers from '../../../assets/images/PlusUsers.svg';
 import { appPermissionsSelector, selectAuthUserData } from '@src/redux/selectors/authSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
@@ -94,19 +95,36 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
               />
             </Col>
           </PermissionWrapper>
-          <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.DISPUTED']}>
-            <Col onClick={() => handlePrimaryCard('dispute')}>
-              <Statbox
-                isActive={selected === 'dispute'}
-                className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
-                isMarketPlaceTab
-                title={selectCardData?.dispute || 0}
-                desc="Disputed"
-                icon={<Flag height={20} />}
-                color="light-red"
-              />
-            </Col>
-          </PermissionWrapper>
+          {!isFlexternshipApp && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.DISPUTED']}>
+              <Col onClick={() => handlePrimaryCard('dispute')}>
+                <Statbox
+                  isActive={selected === 'dispute'}
+                  className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
+                  isMarketPlaceTab
+                  title={selectCardData?.dispute || 0}
+                  desc="Disputed"
+                  icon={<Flag height={20} />}
+                  color="light-red"
+                />
+              </Col>
+            </PermissionWrapper>
+          )}
+          {isFlexternshipApp && (
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.BLOCKED']}>
+              <Col onClick={() => handlePrimaryCard('blocked')}>
+                <Statbox
+                  isActive={selected === 'blocked'}
+                  className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
+                  isMarketPlaceTab
+                  title={selectCardData?.blocked ?? 0}
+                  desc="Blocked"
+                  icon={<Flag height={20} />}
+                  color="light-red"
+                />
+              </Col>
+            </PermissionWrapper>
+          )}
         </>
       </Row>
       <Row>

@@ -6,13 +6,12 @@ import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enu
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
-import { getScoreLabel } from '@/flexternships/utils/score-utils';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
 
 export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
-  const { feedbackType } = props;
+  const { feedbackType, milestoneId } = props;
   const params = useParams();
 
   const performanceDetails = useProjectsStore((state) => state.performanceDetails);
@@ -28,7 +27,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
 
   const [currentOpened, setCurrentOpened] = useState<any>(null);
-  const [formattedFeedbackResponse, setFormattedFeedbackResponse] = useState<any>(null);
+  const [filteredPerformanceDetails, setFilteredPerformanceDetails] = useState<any>([]);
 
   const handleAccordionToggle = (peerFeedback: any) => {
     if (peerFeedback._id === currentOpened?._id) setCurrentOpened(null);
@@ -41,23 +40,6 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   }, []);
 
   useEffect(() => {
-    setFormattedFeedbackResponse(
-      feedbackResponse?.feedback?.pages?.map((page: any) => {
-        return {
-          name: page?.name,
-          values: page?.elements?.map((element: any) => {
-            return {
-              type: element?.type,
-              name: element?.name,
-              value: feedbackResponse?.feedback_result[element?.name] ?? '',
-            };
-          }),
-        };
-      }),
-    );
-  }, [feedbackResponse]);
-
-  useEffect(() => {
     if (currentOpened && teamDetails && currentOpened?.feedback_id) {
       const receiverId = currentUserType === UserType.CLIENT ? teamDetails[0].id : currentUserId;
       const feedbackType = currentUserType === UserType.CLIENT ? FeedbackTypesAPI.TEAM : FeedbackTypesAPI.SELF;
@@ -66,6 +48,16 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
       getFeedbackResponse(receiverId, milestoneId, feedbackType);
     }
   }, [currentOpened]);
+
+  useEffect(() => {
+    if (milestoneId && performanceDetails) {
+      setFilteredPerformanceDetails(
+        performanceDetails?.filter((feedback: any) => feedback?.milestone_id === milestoneId),
+      );
+    } else if (performanceDetails) {
+      setFilteredPerformanceDetails(performanceDetails);
+    }
+  }, [performanceDetails, milestoneId]);
 
   const getHeaderContent = (peerFeedback: any) => {
     const { name, score } = peerFeedback;
@@ -81,7 +73,10 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
         {score != undefined && (
           <div className="flex items-center gap-5">
             <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
-              {getScoreLabel(score as number)}
+              {score}
+              <span className="text-[var(--Grey-300,#9C9FA1)] text-right font-montserrat text-[14px] font-medium leading-[22px]">
+                /5
+              </span>
             </div>
             <SteppedProgress value={score} />
           </div>
@@ -100,7 +95,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
         </div>
       ) : (
         <div>
-          {performanceDetails?.map((peerFeedback: any) => (
+          {filteredPerformanceDetails?.map((peerFeedback: any) => (
             <>
               {peerFeedback?.feedback_id && (
                 <CollapsableCard
@@ -110,7 +105,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
                   isOpen={peerFeedback?._id === currentOpened?._id}
                   onToggle={() => handleAccordionToggle(peerFeedback)}
                 >
-                  <IndividualFeedbackResponse response={formattedFeedbackResponse} />
+                  <IndividualFeedbackResponse response={feedbackResponse} />
                 </CollapsableCard>
               )}
             </>
@@ -123,4 +118,5 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
 
 type MilestoneFeedbackProps = {
   feedbackType: string;
+  milestoneId?: string;
 };
