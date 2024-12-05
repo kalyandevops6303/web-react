@@ -61,3 +61,11 @@ export type FlexternUserProfileFormActions = {
 };
 
 export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserProfileFormActions;
+
+// Public Profile Types
+// Todo: Add more details
+export type FlexternClientPublicProfileDetails = {
+  firstname: string;
+  lastname: string;
+  imageUri?: string;
+};

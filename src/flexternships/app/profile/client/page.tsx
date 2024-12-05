@@ -3,17 +3,48 @@
 import { ChevronLeft, Heart, Link2, Users } from 'react-feather';
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
 import ExpandableText from '../../components/core/ExpandableText';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import defaultAvatar from '@flexternships/assets/images/ic_trumio_logo.png';
 import SecondaryButton from '../../components/core/buttons/SecondaryButton';
+import { FlexternClientPublicProfileDetails } from '@/flexternships/constraints/types/user-profile-types';
+import { getClientPublicDetails } from '@/flexternships/services/dashboard-service';
+import { useParams } from 'react-router-dom';
+import Spinner from '../../components/core/Spinner';
 
 export default function ClientPublicProfile() {
+  const [clientDetails, setClientDetails] = useState<FlexternClientPublicProfileDetails>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { userId } = useParams();
+
+  useEffect(() => {
+    const retrieveClientDetails = async () => {
+      if (!userId) {
+        throw new Error('Invalid page url or user id not found');
+      }
+      // const data = await getClientPublicDetails(userId);
+      // setClientDetails(data);
+      setIsLoading(false);
+    };
+    retrieveClientDetails();
+  }, [userId, getClientPublicDetails]);
+
   const delegatesRef = useRef<HTMLDivElement>(null);
 
   const scrollToDelegates = () => {
     delegatesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-row justify-center items-center h-screen">
+        <div className="size-10">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flexternships-page">

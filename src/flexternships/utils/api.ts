@@ -92,4 +92,9 @@ export const routes = {
       changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
     },
   },
+  dashboardV2: {
+    clientDetails: {
+      getClientPublicDetails: `${serviceUrls.dashboardV2}/client/details`,
+    },
+  },
 };
