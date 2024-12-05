@@ -127,7 +127,7 @@ export default function RelistModal(props: RelistModalProps) {
                 value={inputs.startDate ?? 0}
                 onChange={handleEstimatedStartDateChange}
                 className="w-[272px]"
-                label="Estimated Start Date"
+                label="Listing Start Date"
                 placeholder="Enter start date"
                 fromDate={getTodayDate(getUserTimezone())}
                 timeZone={getUserTimezone()}
@@ -138,7 +138,7 @@ export default function RelistModal(props: RelistModalProps) {
                 value={inputs.endDate ?? 0}
                 onChange={handleEstimatedEndDateChange}
                 className="w-[272px]"
-                label="Estimated End Date"
+                label="Listing End Date"
                 placeholder="Enter end date"
                 fromDate={inputs.startDate > 0 ? new Date(inputs.startDate) : undefined}
                 timeZone={getUserTimezone()}
