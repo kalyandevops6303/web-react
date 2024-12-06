@@ -1,5 +1,4 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
-import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
@@ -8,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { User } from 'react-feather';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
+import Rating from '@/flexternships/app/components/core/feedback/Rating';
 
 export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const { milestoneId, feedbackType } = props;
@@ -60,14 +60,8 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
 
         {score != undefined && (
           <div className="flex items-center gap-5">
-            <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
-              {/* {getScoreLabel(score)} */}
-              {score}
-              <span className="text-[var(--Grey-300,#9C9FA1)] text-right font-montserrat text-[14px] font-medium leading-[22px]">
-                /5
-              </span>
-            </div>
-            <SteppedProgress value={score} />
+            <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]"></div>
+            <Rating rating={score} ratingText={''} ratingColor={'#0185E4'} showTotalScore={true} />
           </div>
         )}
       </div>
