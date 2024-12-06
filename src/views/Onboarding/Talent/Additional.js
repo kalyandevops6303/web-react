@@ -226,7 +226,7 @@ const Additional = () => {
       file: {
         name: file.name,
         size: file.size,
-        lastModified: file.lastModified,
+        lastModified: Date.now(),
       },
       uploadData: response?.data?.data,
       isUploaded: false,
