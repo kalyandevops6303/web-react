@@ -1,0 +1,258 @@
+import React, { useState } from 'react';
+import SimpleElevatedCard from './SimpleElevatedCard';
+import PrimaryButton from '../buttons/PrimaryButton';
+import mapIdsToNames from '@flexternships/app/utils/mappingUtils';
+import { AVAILABLE_ROLES, AVAILABLE_SKILLS, AVAILABLE_TOOLS } from '../../../constants';
+
+type ProjectCardProps = {
+  title: string;
+  description: string;
+  domain?: string;
+  milestones?: Array<{
+    index: number;
+    title: string;
+    description: string;
+    time: string;
+    roles: string[];
+    deliverables: string[];
+  }>;
+  tech_stack?: string[];
+  total_duration_weeks?: number;
+  roles?: Array<{
+    role_id: string;
+    proficiency: {
+      skills?: string[];
+      tools?: string[];
+    };
+    count: number;
+  }>;
+};
+
+const formatDescription = (description: string) => {
+  if (!description) return null;
+  const lines = description.split('\n');
+  let formattedLines: JSX.Element[] = [];
+  let indentLevel = 0;
+
+  lines.forEach((line, index) => {
+    const trimmedLine = line.trim();
+    if (trimmedLine.startsWith('*')) {
+      indentLevel = 0;
+      formattedLines.push(
+        <h3 key={index} className="font-bold mt-4 mb-2">
+          {trimmedLine.substring(1).trim()}
+        </h3>
+      );
+    } else if (trimmedLine.startsWith('-')) {
+      indentLevel = 1;
+      formattedLines.push(
+        <li key={index} className="ml-6 list-disc">
+          {trimmedLine.substring(1).trim()}
+        </li>
+      );
+    } else if (trimmedLine) {
+      formattedLines.push(
+        <p key={index} className={`mb-2 ${indentLevel > 0 ? 'ml-6' : ''}`}>
+          {trimmedLine}
+        </p>
+      );
+    }
+  });
+
+  return <div className="text-left">{formattedLines}</div>;
+};
+
+const ProjectCard = ({ 
+  title, 
+  description, 
+  domain,
+  milestones = [],
+  tech_stack = [],
+  total_duration_weeks,
+  roles = []
+}: ProjectCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log('Incoming data:', {
+    roles: roles.map(r => r.role_id),
+    milestoneRoles: milestones.flatMap(m => m.roles),
+    techStack: tech_stack,
+    availableRoles: AVAILABLE_ROLES.map(r => r.id),
+    availableSkills: AVAILABLE_SKILLS.map(s => s.id),
+    availableTools: AVAILABLE_TOOLS.map(t => t.id),
+  });
+
+  // Map role IDs to names
+  const roleNames = mapIdsToNames(roles.map(role => role.role_id), AVAILABLE_ROLES);
+  console.log('Mapped role names:', roleNames);
+  
+  // Map skills and tools for each role
+  const mappedRoles = roles.map((role, index) => ({
+    ...role,
+    name: mapIdsToNames([role.role_id], AVAILABLE_ROLES)[0],
+    proficiency: {
+      skills: mapIdsToNames(role.proficiency.skills || [], AVAILABLE_SKILLS),
+      tools: mapIdsToNames(role.proficiency.tools || [], AVAILABLE_TOOLS)
+    }
+  }));
+
+  // Map tech stack IDs to names
+  const techStackNames = mapIdsToNames(tech_stack, AVAILABLE_TOOLS);
+
+  // Map milestone role IDs to names
+  const mappedMilestones = milestones.map(milestone => ({
+    ...milestone,
+    roles: mapIdsToNames(milestone.roles, AVAILABLE_ROLES)
+  }));
+
+  return (
+    <>
+      <SimpleElevatedCard className="p-4 mb-4">
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+            {domain && (
+              <span className="px-2 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
+                {domain}
+              </span>
+            )}
+          </div>
+          <p className="text-gray-600 text-sm whitespace-pre-line line-clamp-3 mb-3">
+            {description}
+          </p>
+          <div className="flex justify-end">
+            <PrimaryButton onClick={() => setIsModalOpen(true)}>
+              View Details
+            </PrimaryButton>
+          </div>
+        </div>
+      </SimpleElevatedCard>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">{title}</h2>
+                {domain && (
+                  <span className="px-2 py-1 text-sm bg-blue-100 text-blue-800 rounded-full mt-2 inline-block">
+                    {domain}
+                  </span>
+                )}
+              </div>
+              {total_duration_weeks && (
+                <div className="text-right">
+                  <span className="text-gray-600">Duration</span>
+                  <p className="font-medium">{total_duration_weeks} weeks</p>
+                </div>
+              )}
+            </div>
+
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold mb-3">Project Overview</h3>
+              {formatDescription(description)}
+            </div>
+
+            {techStackNames.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-3">Tech Stack</h3>
+                <div className="flex flex-wrap gap-2">
+                  {techStackNames.map((tech, index) => (
+                    <span key={index} className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {mappedRoles.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-3">Team Requirements</h3>
+                <div className="grid gap-4">
+                  {mappedRoles.map((role, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="font-medium">{role.name}</h4>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                          {role.count} needed
+                        </span>
+                      </div>
+                      {role.proficiency.skills.length > 0 && (
+                        <div className="mb-2">
+                          <h5 className="text-sm font-medium text-gray-700 mb-1">Required Skills</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {role.proficiency.skills.map((skill, skillIndex) => (
+                              <span key={skillIndex} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {role.proficiency.tools.length > 0 && (
+                        <div>
+                          <h5 className="text-sm font-medium text-gray-700 mb-1">Required Tools</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {role.proficiency.tools.map((tool, toolIndex) => (
+                              <span key={toolIndex} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
+                                {tool}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {mappedMilestones.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-3">Project Milestones</h3>
+                <div className="space-y-4">
+                  {mappedMilestones.map((milestone, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="font-medium">{milestone.title}</h4>
+                        <span className="text-sm text-gray-500">{milestone.time}</span>
+                      </div>
+                      <p className="text-gray-600 mb-4">{milestone.description}</p>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <h5 className="text-sm font-medium text-gray-700 mb-2">Required Roles</h5>
+                          <ul className="list-disc pl-4 space-y-1">
+                            {milestone.roles.map((role, roleIndex) => (
+                              <li key={roleIndex}>{role}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h5 className="text-sm font-medium text-gray-700 mb-2">Deliverables</h5>
+                          <ul className="list-disc pl-4 space-y-1">
+                            {milestone.deliverables.map((deliverable, delIndex) => (
+                              <li key={delIndex}>{deliverable}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end mt-6">
+              <PrimaryButton onClick={() => setIsModalOpen(false)}>
+                Close
+              </PrimaryButton>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ProjectCard; 
