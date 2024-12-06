@@ -81,7 +81,9 @@ import {
   setFileKey,
   setFormData,
   setFormDocuments,
+  setResumeDataUploadedForEducation,
   setResumeDataUploadedForPersonal,
+  setResumeDataUploadedForSocial,
   setResumeParsed,
 } from '../../redux/reducers/formData';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
@@ -249,6 +251,9 @@ const FlexternPersonal = () => {
       deleteResume(() => {
         const filtered = uploadedFiles.filter((i) => i.id !== file.id);
         dispatch(setFormDocuments(null));
+        dispatch(setResumeDataUploadedForPersonal(false));
+        dispatch(setResumeDataUploadedForEducation(false));
+        dispatch(setResumeDataUploadedForSocial(false));
         setFiles([...filtered]);
       }),
     );
@@ -301,6 +306,41 @@ const FlexternPersonal = () => {
     }
   };
 
+  const onGetUserResumeDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+        const fileUrl = {
+          file: {
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
+          },
+          uploadData: {
+            file_key: res?.talent_info?.resume?.file_key,
+          },
+          isUploaded: true,
+          lastModified: res?.talent_info?.resume?.created_at,
+        };
+        dispatch(
+          setFileKey(
+            savedFormDocuments != null
+              ? savedFormDocuments[0]?.uploadData?.file_key
+              : res?.talent_info?.resume?.file_key,
+          ),
+        );
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
+        setFiles([fileUrl]);
+        dispatch(setFormDocuments([fileUrl]));
+      }
+    }
+  };
+
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
     if (res) {
@@ -309,6 +349,41 @@ const FlexternPersonal = () => {
       }
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
+      }
+      if (res?.role) {
+        setValue(
+          'role',
+          {
+            label: res?.role?.name,
+            value: res?.role?._id,
+          },
+          { shouldValidate: true },
+        );
+      } else if (userData?.talent_info?.role) {
+        setValue(
+          'role',
+          {
+            label: userData?.talent_info?.role?.name,
+            value: userData?.talent_info?.role?._id,
+          },
+          { shouldValidate: true },
+        );
+      }
+      if (userData?.availability?.timezone) {
+        if ('name' in userData?.availability?.timezone) {
+          setValue(
+            'workingTimeZone',
+            {
+              label: savedFormData?.workingTimeZone?.label
+                ? `${savedFormData?.workingTimeZone?.label}`
+                : `${userData?.availability?.timezone?.name} (${userData?.availability?.timezone?.abbreviation})`,
+              value: savedFormData?.workingTimeZone?.value
+                ? savedFormData?.workingTimeZone?.value
+                : userData?.availability?.timezone?._id,
+            },
+            { shouldValidate: true },
+          );
+        }
       }
       if (res?.languages_speak && res?.languages_speak.length > 0) {
         setValue(
@@ -697,17 +772,15 @@ const FlexternPersonal = () => {
           isUploaded: true,
           lastModified: res?.talent_info?.resume?.created_at,
         };
-        dispatch(
-          setFileKey(
-            savedFormDocuments != null
-              ? savedFormDocuments[0]?.uploadData?.file_key
-              : res?.talent_info?.resume?.file_key,
-          ),
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key));
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
         );
-        setValue('resume', {
-          file_name: fileUrl?.file?.name,
-          file_key: fileUrl?.uploadData?.file_key,
-        });
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       } else {
@@ -799,6 +872,7 @@ const FlexternPersonal = () => {
           ]);
           dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
         }
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
@@ -824,6 +898,7 @@ const FlexternPersonal = () => {
           },
         ]);
         dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));

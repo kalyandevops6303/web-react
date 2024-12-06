@@ -70,6 +70,8 @@ import {
   setFormData,
   setFormDocuments,
   setResumeDataUploadedForSocial,
+  setResumeDataUploadedForEducation,
+  setResumeDataUploadedForPersonal,
   setResumeParsed,
 } from '../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
@@ -113,9 +115,7 @@ const FlexternSocial = () => {
   const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
   const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  const [parsedUploaded, setParsedUploaded] = useState(
-    isResumeDataUploadedForSocial || isResumeDataUploadedForEducation || isResumeDataUploadedForPersonal || false,
-  );
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForSocial || false);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [files, setFiles] = useState(savedFormDocuments || []);
@@ -213,6 +213,9 @@ const FlexternSocial = () => {
       deleteResume(() => {
         const filtered = uploadedFiles.filter((i) => i.id !== file.id);
         dispatch(setFormDocuments(null));
+        dispatch(setResumeDataUploadedForEducation(false));
+        dispatch(setResumeDataUploadedForPersonal(false));
+        dispatch(setResumeDataUploadedForSocial(false));
         setFiles([...filtered]);
       }),
     );
@@ -448,12 +451,44 @@ const FlexternSocial = () => {
                 : res?.talent_info?.resume?.created_at
               : res?.talent_info?.resume?.created_at,
         };
-        setValue('resume', {
-          file_name: fileUrl?.file?.name,
-          file_key: fileUrl?.uploadData?.file_key,
-        });
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
         setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key ?? savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(setFormDocuments([fileUrl]));
+      }
+    }
+  };
+  const onGetUserResumeDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+        const fileUrl = {
+          file: {
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
+          },
+          uploadData: {
+            file_key: res?.talent_info?.resume?.file_key,
+          },
+          isUploaded: true,
+          lastModified: res?.talent_info?.resume?.created_at,
+        };
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key));
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
+        setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
     }
@@ -734,6 +769,7 @@ const FlexternSocial = () => {
           ]);
           dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
         }
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
@@ -756,6 +792,7 @@ const FlexternSocial = () => {
           },
         ]);
         dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
