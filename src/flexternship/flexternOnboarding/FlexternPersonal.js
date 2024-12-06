@@ -169,7 +169,7 @@ const FlexternPersonal = () => {
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [workingTimeZonesOptions, setWorkingTimeZonesOptions] = useState([]);
-  const [resumeModalOpen, setResumeModalOpen] = useState(true);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [languagesOptions, setLanguagesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [files, setFiles] = useState(savedFormDocuments ?? []);
@@ -377,7 +377,7 @@ const FlexternPersonal = () => {
       id: uuidv4(),
       file,
       uploadData: response?.data?.data,
-      lastModified: file.lastModified,
+      lastModified: Date.now(),
       isUploaded: false,
     };
     dispatch(setFormDocuments([fileWithUrl]));
@@ -400,7 +400,6 @@ const FlexternPersonal = () => {
     dispatch(setResumeParsed(true));
     setParseResume(true);
   };
-
   const handleFileChange = async (e) => {
     if (e.target.files) {
       if (isFileValid(e.target.files[0])) {
@@ -711,6 +710,8 @@ const FlexternPersonal = () => {
         });
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
+      } else {
+        setResumeModalOpen(true);
       }
       if (res?.talent_info?.languages_speak.length > 0) {
         setValue(
@@ -1209,51 +1210,49 @@ const FlexternPersonal = () => {
           </Row>
         </Form>
       )}
-      {files?.length === 0 &&
-        (!userData?.talent_info?.resume || Object.keys(userData?.talent_info?.resume).length === 0) &&
-        resumeModalOpen && (
-          <UploadResumeModal
-            modal={resumeModalOpen}
-            toggleModal={() => setResumeModalOpen(false)}
-            uploadButton={
-              <div className="d-flex justify-content-center mt-1 align-items-center">
-                <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
-                  <h5
-                    style={{
-                      background: '#0065c1',
-                      color: 'white',
-                      paddingBlock: '12px',
-                      borderRadius: '5px',
-                      paddingInline: '16px',
+      {resumeModalOpen && (
+        <UploadResumeModal
+          modal={resumeModalOpen}
+          toggleModal={() => setResumeModalOpen(false)}
+          uploadButton={
+            <div className="d-flex justify-content-center mt-1 align-items-center">
+              <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
+                <h5
+                  style={{
+                    background: '#0065c1',
+                    color: 'white',
+                    paddingBlock: '12px',
+                    borderRadius: '5px',
+                    paddingInline: '16px',
+                  }}
+                  className="fw-bold"
+                >
+                  Upload Resume
+                </h5>
+              </Label>
+              <Controller
+                id="resume"
+                name="resume"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    ref={filesRef}
+                    id="resume"
+                    type="file"
+                    max={1}
+                    accept="application/pdf"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      handleFileChange(e);
                     }}
-                    className="fw-bold"
-                  >
-                    Upload Resume
-                  </h5>
-                </Label>
-                <Controller
-                  id="resume"
-                  name="resume"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      ref={filesRef}
-                      id="resume"
-                      type="file"
-                      max={1}
-                      accept="application/pdf"
-                      style={{ display: 'none' }}
-                      onChange={(e) => {
-                        handleFileChange(e);
-                      }}
-                    />
-                  )}
-                />
-              </div>
-            }
-          />
-        )}
+                  />
+                )}
+              />
+            </div>
+          }
+        />
+      )}
     </ProfileFormContainer>
   );
 };

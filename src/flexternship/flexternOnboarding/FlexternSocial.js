@@ -567,7 +567,7 @@ const FlexternSocial = () => {
       id: uuidv4(),
       file,
       uploadData: response?.data?.data,
-      lastModified: file.lastModified,
+      lastModified: Date.now(),
       isUploaded: false,
     };
     dispatch(setFormDocuments([fileWithUrl]));
