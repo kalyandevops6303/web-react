@@ -11,7 +11,9 @@ export default function TeamCard(props: InputProps) {
         <span className="text-grey text-sm font-semibold w-[200px]">{name}</span>
       </div>
       <span className="text-grey text-sm font-medium w-[200px]"> {designation}</span>
-      {averageRating && <Rating rating={averageRating} ratingText={ratingText} ratingColor={ratingColor} />}
+      {!(!averageRating && averageRating !== 0) && (
+        <Rating rating={averageRating} ratingText={ratingText} ratingColor={ratingColor} />
+      )}
       {kudos && <KudosAndWow kudos={kudos} />}
       {wow && <KudosAndWow wow={wow} />}
     </div>

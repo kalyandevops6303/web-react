@@ -12,18 +12,18 @@ export default function Rating(props: InputProps) {
     setRatingArr(arr);
   }, []);
 
-  if (!rating) return null;
+  if (!rating && rating !== 0) return null;
 
   return (
     <div className={`flex items-center gap-x-4 ${className ?? ''}`}>
       {ratingText && <span className="font-semibold text-sm text-right text-grey-600 ">{ratingText}</span>}
-      <span className="text-right text-grey-600">{rating}</span>
+      <span className="text-right text-sm font-semibold leading-5.5 text-grey-600">{rating}</span>
       <div className="flex space-x-2">
         {ratingArr.map((val, index) => (
           <div
             key={index}
             style={{ borderColor: ratingColor }}
-            className="relative w-[2rem] h-[0.625rem] rounded-[0.75rem] border border-solid"
+            className="relative w-[2rem] h-[0.625rem] rounded-[0.75rem] border-1 border-solid"
           >
             <div
               style={{
