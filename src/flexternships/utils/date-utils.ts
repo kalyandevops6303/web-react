@@ -132,7 +132,6 @@ export function formatEpochToDuration(epoch: number): string {
 
   return parts.join(' ');
 }
-
 /**
  * Checks if a given epoch time is within the next 24 hours and returns remaining time
  * @param epoch - The epoch time to check (in milliseconds)
@@ -148,15 +147,17 @@ export function getTimeLeftIfWithin24Hours(
   const now = DateTime.now();
   const target = DateTime.fromMillis(epoch);
   const diff = target.diff(now, ['hours', 'minutes', 'seconds']);
+  const { hours, minutes, seconds } = diff.toObject();
 
-  if (diff.hours < 0 || diff.hours >= 24) {
+  // Return undefined if target is in the past or more than 24 hours away
+  if (hours == null || minutes == null || seconds == null || hours < 0 || minutes < 0 || seconds < 0 || hours >= 24) {
     return undefined;
   }
 
   return {
-    hours: Math.floor(diff.hours),
-    minutes: Math.floor(diff.minutes),
-    seconds: Math.floor(diff.seconds),
+    hours: Math.floor(hours),
+    minutes: Math.floor(minutes),
+    seconds: Math.floor(seconds),
   };
 }
 /**
