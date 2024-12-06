@@ -22,6 +22,7 @@ import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/e
 import { useNavigate } from 'react-router-dom';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function CompanyDetails() {
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
@@ -103,9 +104,11 @@ export default function CompanyDetails() {
       await updateClientCompanyInfo(data);
       goToNextTab();
     } catch (error) {
+      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
+        <Toast type={ToastType.ERROR} toastId={toastId} description="Failed to save draft. Please try again." />,
+        toastId,
       );
     }
     setIsSaveLoading(false);

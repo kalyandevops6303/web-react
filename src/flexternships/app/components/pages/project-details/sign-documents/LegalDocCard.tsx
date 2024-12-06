@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom';
 import Spinner from '../../../core/Spinner';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import Toast from '../../../core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function LegalDocCard(props: LegalDocCardProps) {
   const { docType } = props;
@@ -49,15 +50,18 @@ export default function LegalDocCard(props: LegalDocCardProps) {
 
   const handleConfirmAgreement = () => {
     signDocument(params?.projectId, toUpper(docType), () => {
+      const toastId = uuidv4();
       showToastMessage(
         ToastType.SUCCESS,
         <Toast
           type={ToastType.SUCCESS}
+          toastId={toastId}
           title={`${docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'} signed`}
           description={`'${projectDetails?.details?.name}' ${
             docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'
           } signed by project member`}
         />,
+        toastId,
       );
     });
   };

@@ -25,6 +25,7 @@ import { isEmpty } from 'lodash';
 import { ListingChoice } from '@/flexternships/constraints/types/project-creation-types';
 import { useParams } from 'react-router-dom';
 import Toast from '../../../core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Listing() {
   const isSaveDraftLoading = useProjectCreationStore((state) => state.isSaveDraftLoading);
@@ -68,9 +69,11 @@ export default function Listing() {
       formatAndUpdateData();
       await saveAsDraft(projectId);
     } catch (error) {
+      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
+        <Toast type={ToastType.ERROR} toastId={toastId} description="Failed to save draft. Please try again." />,
+        toastId,
       );
     }
   };

@@ -13,6 +13,7 @@ import Spinner from '../Spinner';
 import { submitKudosOrWow } from '@/flexternships/services/project-management-v2';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import Toast from '../Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 function KudosAndWowModal(props: KudosAndWowModalProps) {
   const { recognitionType, isOpen = false, closeModal, projectId, milestoneId } = props;
@@ -40,12 +41,15 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
           .filter((member: any) => member.id !== userDetails.id);
         setTeamMembers(formattedData);
       } catch (error) {
+        const toastId = uuidv4();
         showToastMessage(
           ToastType.ERROR,
           <Toast
             type={ToastType.ERROR}
             description={error instanceof Error ? error.message : 'Error fetching team details'}
+            toastId={toastId}
           />,
+          toastId,
         );
       } finally {
         setIsTeamMembersLoading(false);
@@ -80,14 +84,28 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
     try {
       await submitKudosOrWow(milestoneId, selectedTeamMemberIds);
       closeModal();
+      const toastId = uuidv4();
       showToastMessage(
         ToastType.SUCCESS,
-        `${recognitionType === RecognitionType.WOW ? 'WoW' : 'Kudos'} submitted successfully`,
+        <Toast
+          type={ToastType.SUCCESS}
+          toastId={toastId}
+          description={`${recognitionType === RecognitionType.WOW ? 'WoW' : 'Kudos'} submitted successfully`}
+        />,
+        toastId,
       );
     } catch (error) {
+      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        error instanceof Error ? error.message : 'An unexpected error occurred while submitting kudos or wow',
+        <Toast
+          type={ToastType.ERROR}
+          toastId={toastId}
+          description={
+            error instanceof Error ? error.message : 'An unexpected error occurred while submitting kudos or wow'
+          }
+        />,
+        toastId,
       );
     } finally {
       setIsSubmitLoading(false);

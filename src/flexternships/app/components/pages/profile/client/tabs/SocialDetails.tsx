@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function SocialDetails() {
   // user profile stores
@@ -85,9 +86,11 @@ export default function SocialDetails() {
       await updateClientSocialInfo(data);
       handleNext();
     } catch (error) {
+      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
+        <Toast type={ToastType.ERROR} toastId={toastId} description="Failed to save draft. Please try again." />,
+        toastId,
       );
     }
     setIsSaveLoading(false);
