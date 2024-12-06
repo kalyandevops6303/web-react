@@ -1,5 +1,4 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
-import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
@@ -9,6 +8,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
+import Rating from '@/flexternships/app/components/core/feedback/Rating';
 
 export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   const { feedbackType, milestoneId } = props;
@@ -88,13 +88,8 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
 
         {score != undefined && (
           <div className="flex items-center gap-5">
-            <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]">
-              {score}
-              <span className="text-[var(--Grey-300,#9C9FA1)] text-right font-montserrat text-[14px] font-medium leading-[22px]">
-                /5
-              </span>
-            </div>
-            <SteppedProgress value={score} />
+            <div className="text-[#5E5873] text-right font-[600] font-[Montserrat] text-[14px]"></div>
+            <Rating rating={score} ratingText={''} ratingColor={'#0185E4'} showTotalScore={true} />
           </div>
         )}
       </div>
