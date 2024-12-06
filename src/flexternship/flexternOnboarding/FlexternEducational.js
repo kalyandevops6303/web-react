@@ -615,18 +615,28 @@ const FlexternEducational = () => {
         );
       }
       if (!isEmpty(res?.talent_info?.educational_institute)) {
-        setValue('institution', {
-          label: savedFormData?.institution?.label || res?.talent_info?.educational_institute?.institution?.name,
-          value: savedFormData?.institution?.value || res?.talent_info?.educational_institute?.institution?._id,
-        });
+        setValue(
+          'institution',
+          isEmpty(res?.talent_info?.educational_institute?.institution)
+            ? null
+            : {
+                label: savedFormData?.institution?.label || res?.talent_info?.educational_institute?.institution?.name,
+                value: savedFormData?.institution?.value || res?.talent_info?.educational_institute?.institution?._id,
+              },
+        );
+        setValue(
+          'education',
+          isEmpty(res?.talent_info?.educational_institute?.education)
+            ? null
+            : {
+                label: savedFormData?.education?.label || res?.talent_info?.educational_institute?.education?.name,
+                value: savedFormData?.education?.value || res?.talent_info?.educational_institute?.education?._id,
+              },
+        );
         setValue(
           'institutionEmail',
           savedFormData?.institutionEmail || res?.talent_info?.educational_institute?.institute_email,
         );
-        setValue('education', {
-          label: savedFormData?.education?.label || res?.talent_info?.educational_institute?.education?.name,
-          value: savedFormData?.education?.value || res?.talent_info?.educational_institute?.education?._id,
-        });
         setValue(
           'startYear',
           res?.talent_info?.educational_institute?.start_year === 0
