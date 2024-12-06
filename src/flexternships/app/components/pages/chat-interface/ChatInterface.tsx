@@ -66,12 +66,25 @@ export default function ChatInterface() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    ws.current = new WebSocket('ws://localhost:8000/ws-bulk-generation');
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      console.error('No access token found in localStorage');
+      navigate('/login');
+      return;
+    }
+//ws://localhost:8000/ws-bulk-generation
+// wss://tru-dev-api.trumio.ai/ai-assist/api/v1/ws-bulk-generation?token=${token}
+    ws.current = new WebSocket(`wss://tru-dev-api.trumio.ai/ai-assist/api/v1/ws-bulk-generation?token=${token}`);
     
     if (ws.current) {
       ws.current.onmessage = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
         handleWebSocketMessage(data);
+      };
+
+      ws.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        // Handle potential token expiration or other auth errors
       };
     }
 
@@ -80,7 +93,7 @@ export default function ChatInterface() {
         ws.current.close();
       }
     };
-  }, []);
+  }, [navigate]);
 
   const handleWebSocketMessage = (data: WebSocketMessage) => {
     switch (data.message_type) {
