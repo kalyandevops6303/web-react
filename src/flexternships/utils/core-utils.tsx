@@ -16,10 +16,11 @@ import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-
  * @param type - The type of toast message (ERROR, SUCCESS, or default).
  * @param message - The content of the toast message.
  */
-export const showToastMessage = (type: ToastType, message: React.ReactNode) => {
+export const showToastMessage = (type: ToastType, message: React.ReactNode, toastId?: string) => {
   const options: ToastOptions = {
     position: 'top-left',
     duration: 6000,
+    id: toastId,
     // className: 'flex w-[1393px] p-4 items-start gap-6 flex gap-x-2 p-2 text-xs',
   };
 

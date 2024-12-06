@@ -23,6 +23,7 @@ import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import Toast from '../../../core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -87,9 +88,11 @@ export default function Requirements() {
     try {
       await saveAsDraft(projectId);
     } catch (error) {
+      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
+        <Toast type={ToastType.ERROR} toastId={toastId} description="Failed to save draft. Please try again." />,
+        toastId,
       );
     }
   };

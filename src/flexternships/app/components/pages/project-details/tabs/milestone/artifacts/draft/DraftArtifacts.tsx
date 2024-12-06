@@ -39,6 +39,7 @@ import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
@@ -148,11 +149,18 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
         await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
-        } else {
+          const toastId = uuidv4();
           showToastMessage(
             ToastType.ERROR,
-            <Toast type={ToastType.ERROR} description="An unexpected error occurred" />,
+            <Toast type={ToastType.ERROR} toastId={toastId} description={error.message} />,
+            toastId,
+          );
+        } else {
+          const toastId = uuidv4();
+          showToastMessage(
+            ToastType.ERROR,
+            <Toast type={ToastType.ERROR} toastId={toastId} description="An unexpected error occurred" />,
+            toastId,
           );
         }
       } finally {
@@ -171,11 +179,18 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
         openModal(MilestoneDetailsModalType.ARTIFCATS_SUBMITTED);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
-        } else {
+          const toastId = uuidv4();
           showToastMessage(
             ToastType.ERROR,
-            <Toast type={ToastType.ERROR} description="An unexpected error occurred" />,
+            <Toast type={ToastType.ERROR} toastId={toastId} description={error.message} />,
+            toastId,
+          );
+        } else {
+          const toastId = uuidv4();
+          showToastMessage(
+            ToastType.ERROR,
+            <Toast type={ToastType.ERROR} toastId={toastId} description="An unexpected error occurred" />,
+            toastId,
           );
         }
       } finally {

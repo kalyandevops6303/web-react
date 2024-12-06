@@ -6,6 +6,7 @@ import {
 } from '../services/feedback-service';
 import { showToastMessage } from '../utils/core-utils';
 import Toast from '../app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: string, set: any) => {
   set({ isFeedbackFormLoading: true });
@@ -25,9 +26,12 @@ export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, s
     feedbackFormSubmission: data,
   }));
   set({ isSubmitFeedbackLoading: false });
+
+  const toastId = uuidv4();
   showToastMessage(
     ToastType.SUCCESS,
-    <Toast type={ToastType.SUCCESS} description="Feedback has been submitted successfully" />,
+    <Toast type={ToastType.SUCCESS} toastId={toastId} description="Feedback has been submitted successfully" />,
+    toastId,
   );
   onSuccess();
 };

@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { Download, ExternalLink, Link } from 'react-feather';
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function SubmittedArtifactItem(props: Props) {
   const { last = false, data } = props;
@@ -30,7 +31,12 @@ export default function SubmittedArtifactItem(props: Props) {
       const downloadResponse = await getFileDownloadUrl(data.metadata.fileKey);
       window.open(downloadResponse.data, '_blank');
     } catch (error) {
-      showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description="Failed to download file" />);
+      const toastId = uuidv4();
+      showToastMessage(
+        ToastType.ERROR,
+        <Toast type={ToastType.ERROR} toastId={toastId} description="Failed to download file" />,
+        toastId,
+      );
     } finally {
       setMainActionLoading(false);
     }

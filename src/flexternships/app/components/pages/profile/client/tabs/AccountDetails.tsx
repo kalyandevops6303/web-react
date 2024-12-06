@@ -19,6 +19,7 @@ import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSe
 import { fetchTimezonesPaginated } from '@/flexternships/services/user-management';
 import { useNavigate } from 'react-router-dom';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function AccountDetails() {
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
@@ -90,11 +91,22 @@ export default function AccountDetails() {
       goToNextTab();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
-      } else {
+        const toastId = uuidv4();
         showToastMessage(
           ToastType.ERROR,
-          <Toast type={ToastType.ERROR} description="Failed to save account details. Please try again." />,
+          <Toast type={ToastType.ERROR} toastId={toastId} description={error.message} />,
+          toastId,
+        );
+      } else {
+        const toastId = uuidv4();
+        showToastMessage(
+          ToastType.ERROR,
+          <Toast
+            type={ToastType.ERROR}
+            toastId={toastId}
+            description="Failed to save account details. Please try again."
+          />,
+          toastId,
         );
       }
     }
