@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Spinner } from 'reactstrap';
@@ -11,6 +11,7 @@ import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjec
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
 import { getItem } from '../../../utility/localStorageControl';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
+import axios from 'axios';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
@@ -23,6 +24,27 @@ const CreateProjectButton = () => {
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
+  const [hasAyeshaBotAccess, setHasAyeshaBotAccess] = useState(false);
+
+  useEffect(() => {
+    const checkPermittedFeatures = async () => {
+      try {
+        const accessToken = getItem('access_token');
+        const response = await axios.get('https://tru-dev-api.trumio.ai/user/api/v1/features/permitted-features', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+        const features = response.data?.data || [];
+        setHasAyeshaBotAccess(features.some(feature => feature.feature_name === "Ayesha Bot"));
+      } catch (error) {
+        console.error('Error fetching permitted features:', error);
+        setHasAyeshaBotAccess(false);
+      }
+    };
+
+    checkPermittedFeatures();
+  }, []);
 
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
@@ -78,29 +100,29 @@ const CreateProjectButton = () => {
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
           {location?.pathname?.includes('my_listings') && (
-            <>
-              <Button
-                color="primary"
-                outline
-                className="me-1"
-                onClick={() =>
-                  navigate('/marketplace/my_listings', {
-                    state: {
-                      isDraftProjects: true,
-                    },
-                  })
-                }
-              >
-                View Draft
-              </Button>
-              <Button 
-                color="primary"
-                onClick={() => navigate('/chat-interface')}
-                className="me-1"
-              >
-                Generate Project
-              </Button>
-            </>
+            <Button
+              color="primary"
+              outline
+              className="me-1"
+              onClick={() =>
+                navigate('/marketplace/my_listings', {
+                  state: {
+                    isDraftProjects: true,
+                  },
+                })
+              }
+            >
+              View Draft
+            </Button>
+          )}
+          {hasAyeshaBotAccess && (
+            <Button 
+              color="primary"
+              onClick={() => navigate('/chat-interface')}
+              className="me-1"
+            >
+              Generate Project
+            </Button>
           )}
           <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
             {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}

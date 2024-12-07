@@ -46,6 +46,7 @@ type Project = {
   tools?: string[];
   duration?: string;
   teamSize?: number;
+  roles?: string[];
 };
 
 type WebSocketMessage = {
@@ -164,7 +165,10 @@ export default function ChatInterface() {
                         title={project.title}
                         description={project.description}
                         domain={msg.domain}
-                        milestones={project.milestones}
+                        milestones={project.milestones?.map((milestone, i) => ({
+                            ...milestone,
+                            index: i
+                        }))}
                         tech_stack={project.skills}
                         total_duration_weeks={project.duration ? parseInt(project.duration) : undefined}
                         roles={project.roles}
