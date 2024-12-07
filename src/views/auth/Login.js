@@ -234,7 +234,7 @@ const Login = () => {
               </Label>
               <Label
                 tag={Link}
-                to="/auth"
+                to="/auth/signup"
                 className="primary"
                 onClick={() => {
                   removeItem('isUserVisited');
