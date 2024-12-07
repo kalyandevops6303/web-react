@@ -50,7 +50,7 @@ const UserType = () => {
     if (googleId) {
       dispatch(loginUserWithGoogle({ id_token: googleId, user_type: type, onError, onSuccess }));
     } else {
-      navigate('register');
+      navigate('/auth/register');
     }
   };
   useEffect(() => {
