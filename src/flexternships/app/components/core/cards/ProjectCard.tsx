@@ -73,11 +73,11 @@ const ProjectCard = ({
 }: ProjectCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Map role IDs to names
-  const roleNames = mapIdsToNames(
-    roles.map((role) => role.role_id),
-    AVAILABLE_ROLES,
-  );
+  // // Map role IDs to names
+  // const roleNames = mapIdsToNames(
+  //   roles.map((role) => role.role_id),
+  //   AVAILABLE_ROLES,
+  // );
 
   // Map skills and tools for each role
   const mappedRoles = roles.map((role) => ({
