@@ -73,21 +73,14 @@ const ProjectCard = ({
 }: ProjectCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log('Incoming data:', {
-    roles: roles.map((r) => r.role_id),
-    milestoneRoles: milestones.flatMap((m) => m.roles),
-    techStack: tech_stack,
-    availableRoles: AVAILABLE_ROLES.map((r) => r.id),
-    availableSkills: AVAILABLE_SKILLS.map((s) => s.id),
-    availableTools: AVAILABLE_TOOLS.map((t) => t.id),
-  });
+
 
   // Map role IDs to names
   const roleNames = mapIdsToNames(
     roles.map((role) => role.role_id),
     AVAILABLE_ROLES,
   );
-  console.log('Mapped role names:', roleNames);
+  
 
   // Map skills and tools for each role
   const mappedRoles = roles.map((role) => ({
