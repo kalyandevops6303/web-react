@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import SimpleElevatedCard from './SimpleElevatedCard';
 import PrimaryButton from '../buttons/PrimaryButton';
 import mapIdsToNames from '@flexternships/app/utils/mappingUtils';
 import { AVAILABLE_ROLES, AVAILABLE_SKILLS, AVAILABLE_TOOLS } from '../../../constants';
+import { useState } from 'react';
 
 type ProjectCardProps = {
   title: string;
@@ -87,7 +87,7 @@ const ProjectCard = ({
   console.log('Mapped role names:', roleNames);
   
   // Map skills and tools for each role
-  const mappedRoles = roles.map((role, index) => ({
+  const mappedRoles = roles.map(role => ({
     ...role,
     name: mapIdsToNames([role.role_id], AVAILABLE_ROLES)[0],
     proficiency: {

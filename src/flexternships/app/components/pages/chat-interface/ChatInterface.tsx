@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
@@ -27,6 +27,7 @@ type Message = {
     tools?: string[];
     duration?: string;
     teamSize?: number;
+    roles?: string[];
   }>;
   domain?: string;
 };
@@ -61,7 +62,7 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [projects, setProjects] = useState<Array<any>>([]);
+  const [_projects, setProjects] = useState<Array<any>>([]);
   const ws = useRef<WebSocket | null>(null);
   const chatRef = useRef(null);
   const navigate = useNavigate();
@@ -171,7 +172,11 @@ export default function ChatInterface() {
                         }))}
                         tech_stack={project.skills}
                         total_duration_weeks={project.duration ? parseInt(project.duration) : undefined}
-                        roles={project.roles}
+                        roles={project.roles?.map(role => ({
+                          role_id: role,
+                          proficiency: {},
+                          count: 1
+                        }))}
                       />
                     ))}
                   </div>
