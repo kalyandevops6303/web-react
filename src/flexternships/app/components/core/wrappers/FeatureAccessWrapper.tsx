@@ -26,8 +26,8 @@ export default function FeatureAccessWrapper(props: FeatureAccessWrapperProps) {
         const accessToken = localStorage.getItem('access_token');
         const response = await axios.get('https://tru-dev-api.trumio.ai/user/api/v1/features/permitted-features', {
           headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
         const features = response.data?.data || [];
         setHasAccess(features.some((feature: Feature) => feature.feature_name === featureName));

@@ -253,7 +253,6 @@ const PrivateDashboard = () => {
           <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
             {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
           </Button>
-          
         </DashboardHeaderWrapper>
       )}
       {userDetailsData?.team_type === userTypes.team && (

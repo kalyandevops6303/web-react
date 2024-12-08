@@ -32,11 +32,11 @@ const CreateProjectButton = () => {
         const accessToken = getItem('access_token');
         const response = await axios.get('https://tru-dev-api.trumio.ai/user/api/v1/features/permitted-features', {
           headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
         const features = response.data?.data || [];
-        setHasAyeshaBotAccess(features.some(feature => feature.feature_name === "Ayesha Bot"));
+        setHasAyeshaBotAccess(features.some((feature) => feature.feature_name === 'Ayesha Bot'));
       } catch (error) {
         console.error('Error fetching permitted features:', error);
         setHasAyeshaBotAccess(false);
@@ -116,11 +116,7 @@ const CreateProjectButton = () => {
             </Button>
           )}
           {hasAyeshaBotAccess && (
-            <Button 
-              color="primary"
-              onClick={() => navigate('/chat-interface')}
-              className="me-1"
-            >
+            <Button color="primary" onClick={() => navigate('/chat-interface')} className="me-1">
               Generate Project
             </Button>
           )}

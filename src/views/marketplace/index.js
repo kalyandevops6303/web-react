@@ -110,11 +110,7 @@ const MarketPlace = () => {
             <CreateProjectButton />
           </div>
         </div>
-        <PrimaryFilter 
-          selected={primaryFilter} 
-          handlePrimaryChangeFilter={handlePrimaryChangeFilter} 
-          isTab={isTab} 
-        />
+        <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
         <Routes>
           <Route
             path="all_listings"

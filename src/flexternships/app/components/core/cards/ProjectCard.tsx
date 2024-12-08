@@ -41,20 +41,20 @@ const formatDescription = (description: string) => {
       formattedLines.push(
         <h3 key={index} className="font-bold mt-4 mb-2">
           {trimmedLine.substring(1).trim()}
-        </h3>
+        </h3>,
       );
     } else if (trimmedLine.startsWith('-')) {
       indentLevel = 1;
       formattedLines.push(
         <li key={index} className="ml-6 list-disc">
           {trimmedLine.substring(1).trim()}
-        </li>
+        </li>,
       );
     } else if (trimmedLine) {
       formattedLines.push(
         <p key={index} className={`mb-2 ${indentLevel > 0 ? 'ml-6' : ''}`}>
           {trimmedLine}
-        </p>
+        </p>,
       );
     }
   });
@@ -62,47 +62,50 @@ const formatDescription = (description: string) => {
   return <div className="text-left">{formattedLines}</div>;
 };
 
-const ProjectCard = ({ 
-  title, 
-  description, 
+const ProjectCard = ({
+  title,
+  description,
   domain,
   milestones = [],
   tech_stack = [],
   total_duration_weeks,
-  roles = []
+  roles = [],
 }: ProjectCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   console.log('Incoming data:', {
-    roles: roles.map(r => r.role_id),
-    milestoneRoles: milestones.flatMap(m => m.roles),
+    roles: roles.map((r) => r.role_id),
+    milestoneRoles: milestones.flatMap((m) => m.roles),
     techStack: tech_stack,
-    availableRoles: AVAILABLE_ROLES.map(r => r.id),
-    availableSkills: AVAILABLE_SKILLS.map(s => s.id),
-    availableTools: AVAILABLE_TOOLS.map(t => t.id),
+    availableRoles: AVAILABLE_ROLES.map((r) => r.id),
+    availableSkills: AVAILABLE_SKILLS.map((s) => s.id),
+    availableTools: AVAILABLE_TOOLS.map((t) => t.id),
   });
 
   // Map role IDs to names
-  const roleNames = mapIdsToNames(roles.map(role => role.role_id), AVAILABLE_ROLES);
+  const roleNames = mapIdsToNames(
+    roles.map((role) => role.role_id),
+    AVAILABLE_ROLES,
+  );
   console.log('Mapped role names:', roleNames);
-  
+
   // Map skills and tools for each role
-  const mappedRoles = roles.map(role => ({
+  const mappedRoles = roles.map((role) => ({
     ...role,
     name: mapIdsToNames([role.role_id], AVAILABLE_ROLES)[0],
     proficiency: {
       skills: mapIdsToNames(role.proficiency.skills || [], AVAILABLE_SKILLS),
-      tools: mapIdsToNames(role.proficiency.tools || [], AVAILABLE_TOOLS)
-    }
+      tools: mapIdsToNames(role.proficiency.tools || [], AVAILABLE_TOOLS),
+    },
   }));
 
   // Map tech stack IDs to names
   const techStackNames = mapIdsToNames(tech_stack, AVAILABLE_TOOLS);
 
   // Map milestone role IDs to names
-  const mappedMilestones = milestones.map(milestone => ({
+  const mappedMilestones = milestones.map((milestone) => ({
     ...milestone,
-    roles: mapIdsToNames(milestone.roles, AVAILABLE_ROLES)
+    roles: mapIdsToNames(milestone.roles, AVAILABLE_ROLES),
   }));
 
   return (
@@ -111,19 +114,11 @@ const ProjectCard = ({
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-            {domain && (
-              <span className="px-2 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
-                {domain}
-              </span>
-            )}
+            {domain && <span className="px-2 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">{domain}</span>}
           </div>
-          <p className="text-gray-600 text-sm whitespace-pre-line line-clamp-3 mb-3">
-            {description}
-          </p>
+          <p className="text-gray-600 text-sm whitespace-pre-line line-clamp-3 mb-3">{description}</p>
           <div className="flex justify-end">
-            <PrimaryButton onClick={() => setIsModalOpen(true)}>
-              View Details
-            </PrimaryButton>
+            <PrimaryButton onClick={() => setIsModalOpen(true)}>View Details</PrimaryButton>
           </div>
         </div>
       </SimpleElevatedCard>
@@ -244,9 +239,7 @@ const ProjectCard = ({
             )}
 
             <div className="flex justify-end mt-6">
-              <PrimaryButton onClick={() => setIsModalOpen(false)}>
-                Close
-              </PrimaryButton>
+              <PrimaryButton onClick={() => setIsModalOpen(false)}>Close</PrimaryButton>
             </div>
           </div>
         </div>
@@ -255,4 +248,4 @@ const ProjectCard = ({
   );
 };
 
-export default ProjectCard; 
+export default ProjectCard;

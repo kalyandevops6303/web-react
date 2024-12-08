@@ -14,7 +14,6 @@ import { clearData } from '../../redux/reducers/project';
 import { appPermissionsSelector, selectAuthUserData } from '../../redux/selectors/authSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 
-
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
     .primary-row {

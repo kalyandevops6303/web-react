@@ -74,10 +74,10 @@ export default function ChatInterface() {
       navigate('/login');
       return;
     }
-//ws://localhost:8000/ws-bulk-generation
-// wss://tru-dev-api.trumio.ai/ai-assist/api/v1/ws-bulk-generation?token=${token}
+    //ws://localhost:8000/ws-bulk-generation
+    // wss://tru-dev-api.trumio.ai/ai-assist/api/v1/ws-bulk-generation?token=${token}
     ws.current = new WebSocket(`wss://tru-dev-api.trumio.ai/ai-assist/api/v1/ws-bulk-generation?token=${token}`);
-    
+
     if (ws.current) {
       ws.current.onmessage = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
@@ -102,29 +102,32 @@ export default function ChatInterface() {
       case 'initial':
       case 'clarification':
       case 'number_request':
-        setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
+        setMessages((prev) => [...prev, { role: 'assistant', content: data.content }]);
         setIsLoading(false);
         break;
       case 'projects':
         setProjects(data.content.projects);
-        setMessages(prev => [...prev, { 
-          role: 'assistant', 
-          content: `Generated ${data.content.num_projects} ${data.content.domain} projects successfully!`,
-          projects: data.content.projects.map((project: Project) => ({
-            ...project,
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: `Generated ${data.content.num_projects} ${data.content.domain} projects successfully!`,
+            projects: data.content.projects.map((project: Project) => ({
+              ...project,
+              domain: data.content.domain,
+              milestones: project.milestones || [],
+              skills: project.skills || [],
+              tools: project.tools || [],
+              duration: project.duration,
+              teamSize: project.teamSize,
+            })),
             domain: data.content.domain,
-            milestones: project.milestones || [],
-            skills: project.skills || [],
-            tools: project.tools || [],
-            duration: project.duration,
-            teamSize: project.teamSize
-          })),
-          domain: data.content.domain
-        }]);
+          },
+        ]);
         setIsLoading(false);
         break;
       case 'error':
-        setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
+        setMessages((prev) => [...prev, { role: 'assistant', content: data.content }]);
         setIsLoading(false);
         break;
     }
@@ -133,7 +136,7 @@ export default function ChatInterface() {
   const handleButtonClick = () => {
     if (!input.trim() || isLoading || !ws.current) return;
 
-    setMessages(prev => [...prev, { role: 'user', content: input }]);
+    setMessages((prev) => [...prev, { role: 'user', content: input }]);
     ws.current.send(JSON.stringify({ message: input }));
     setInput('');
     setIsLoading(true);
@@ -155,7 +158,12 @@ export default function ChatInterface() {
       <SimpleElevatedCard className={Styles.chatContainer}>
         <div className={Styles.messagesArea} ref={chatRef}>
           {messages.map((msg, idx) => (
-            <div key={idx} className={`${Styles.messageWrapper} ${msg.role === 'user' ? Styles.userMessage : Styles.assistantMessage}`}>
+            <div
+              key={idx}
+              className={`${Styles.messageWrapper} ${
+                msg.role === 'user' ? Styles.userMessage : Styles.assistantMessage
+              }`}
+            >
               <div className={`${Styles.messageContent} ${msg.role === 'user' ? 'bg-blue-500 rounded-lg p-3' : ''}`}>
                 {msg.content}
                 {msg.projects && (
@@ -167,15 +175,15 @@ export default function ChatInterface() {
                         description={project.description}
                         domain={msg.domain}
                         milestones={project.milestones?.map((milestone, i) => ({
-                            ...milestone,
-                            index: i
+                          ...milestone,
+                          index: i,
                         }))}
                         tech_stack={project.skills}
                         total_duration_weeks={project.duration ? parseInt(project.duration) : undefined}
-                        roles={project.roles?.map(role => ({
+                        roles={project.roles?.map((role) => ({
                           role_id: role,
                           proficiency: {},
-                          count: 1
+                          count: 1,
                         }))}
                       />
                     ))}
@@ -190,7 +198,7 @@ export default function ChatInterface() {
             </div>
           )}
         </div>
-        
+
         <form onSubmit={handleButtonClick} className={Styles.inputArea}>
           <div className={Styles.inputWrapper}>
             <input
@@ -201,11 +209,7 @@ export default function ChatInterface() {
               className={Styles.input}
               placeholder="Type your request (e.g., 'Generate 5 BFSI projects')"
             />
-            <PrimaryButton
-              onClick={handleButtonClick}
-              disabled={isLoading}
-              className={Styles.sendButton}
-            >
+            <PrimaryButton onClick={handleButtonClick} disabled={isLoading} className={Styles.sendButton}>
               Send
             </PrimaryButton>
           </div>
@@ -213,4 +217,4 @@ export default function ChatInterface() {
       </SimpleElevatedCard>
     </div>
   );
-} 
+}
