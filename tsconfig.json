@@ -47,7 +47,8 @@
       "@flexternships/stores/*": ["./src/flexternships/stores/*"],
       "@flexternships/actions/*": ["./src/flexternships/actions/*"],
       "@flexternships/schemas/*": ["./src/flexternships/schemas/*"],
-      "@flexternships/services/*": ["./src/flexternships/services/*"]
+      "@flexternships/services/*": ["./src/flexternships/services/*"],
+      
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],

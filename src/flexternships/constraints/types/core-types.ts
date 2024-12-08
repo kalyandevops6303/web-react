@@ -59,7 +59,7 @@ export type FlexternClientDetails = {
   emailVerified: boolean;
   countryCode: string;
   oauthType: string;
-  accountStatus: 'ACTIVE'; // Assuming these are the possible account statuses
+  accountStatus: 'ACTIVE';
   phone: string;
   phoneCountry: {
     code: string;
@@ -136,3 +136,9 @@ export type AppActions = {
 };
 
 export type AppStore = AppState & AppActions;
+
+// Add the Feature type definition
+export type Feature = {
+  feature_id: string;
+  feature_name: string;
+};

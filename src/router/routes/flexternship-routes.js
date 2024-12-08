@@ -54,7 +54,6 @@ import FlexternshipsContractView from '@/flexternships/app/project-details/sign-
 import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
-import FeatureAccessWrapper from '@/flexternships/app/components/core/wrappers/FeatureAccessWrapper';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -487,10 +486,10 @@ export const FlexternshipRoutes = [
             ],
           },
         ]}
+        featureName="Ayesha Bot"
+        fallbackRoute="/dashboard"
       >
-        <FeatureAccessWrapper featureName="Ayesha Bot" fallbackRoute="/dashboard">
-          <ChatInterface />
-        </FeatureAccessWrapper>
+        <ChatInterface />
       </RoleAccessWrapper>
     ),
   },

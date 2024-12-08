@@ -3,6 +3,17 @@ import PrimaryButton from '../buttons/PrimaryButton';
 import mapIdsToNames from '@flexternships/app/utils/mappingUtils';
 import { AVAILABLE_ROLES, AVAILABLE_SKILLS, AVAILABLE_TOOLS } from '../../../constants';
 import { useState } from 'react';
+import GenericModal from '../modals/GenericModal';
+
+interface Role {
+  role_id: string;
+  name?: string;
+  proficiency: {
+    skills?: string[];
+    tools?: string[];
+  };
+  count: number;
+}
 
 type ProjectCardProps = {
   title: string;
@@ -18,14 +29,7 @@ type ProjectCardProps = {
   }>;
   tech_stack?: string[];
   total_duration_weeks?: number;
-  roles?: Array<{
-    role_id: string;
-    proficiency: {
-      skills?: string[];
-      tools?: string[];
-    };
-    count: number;
-  }>;
+  roles?: Array<Role>;
 };
 
 const formatDescription = (description: string) => {
@@ -113,9 +117,9 @@ const ProjectCard = ({
         </div>
       </SimpleElevatedCard>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <GenericModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white p-6 rounded-lg">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-2xl font-semibold">{title}</h2>
@@ -233,7 +237,7 @@ const ProjectCard = ({
             </div>
           </div>
         </div>
-      )}
+      </GenericModal>
     </>
   );
 };

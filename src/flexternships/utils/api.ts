@@ -95,5 +95,15 @@ export const routes = {
     password: {
       changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
     },
+    features: {
+      permittedFeatures: `${serviceUrls.userManagement}/features/permitted-features`,
+    },
   },
+};
+
+export const wsEndpoints = {
+  bulkGeneration: `ws${baseUrl.startsWith('https') ? 's' : ''}://${baseUrl.replace(
+    /^https?:\/\//,
+    '',
+  )}/ai-assist/api/v1/ws-bulk-generation`,
 };

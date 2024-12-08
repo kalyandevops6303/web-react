@@ -8,27 +8,13 @@ import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleE
 import Spinner from '@flexternships/app/components/core/Spinner';
 import Styles from '@flexternships/styles/pages/chat-interface/chat-interface.module.css';
 import ProjectCard from '@flexternships/app/components/core/cards/ProjectCard';
+import { MessageRole } from '@flexternships/enums/core-enums';
+import { wsEndpoints } from '@flexternships/utils/api';
 
 type Message = {
-  role: 'user' | 'assistant';
-  content: string;
-  projects?: Array<{
-    title: string;
-    description: string;
-    domain?: string;
-    milestones?: Array<{
-      title: string;
-      description: string;
-      time: string;
-      roles: string[];
-      deliverables: string[];
-    }>;
-    skills?: string[];
-    tools?: string[];
-    duration?: string;
-    teamSize?: number;
-    roles?: string[];
-  }>;
+  role: MessageRole;
+  content: any;
+  projects?: Project[];
   domain?: string;
 };
 
@@ -74,9 +60,7 @@ export default function ChatInterface() {
       navigate('/login');
       return;
     }
-    //ws://localhost:8000/ws-bulk-generation
-    // wss://tru-dev-api.trumio.ai/ai-assist/api/v1/ws-bulk-generation?token=${token}
-    ws.current = new WebSocket(`wss://tru-dev-api.trumio.ai/ai-assist/api/v1/ws-bulk-generation?token=${token}`);
+    ws.current = new WebSocket(`${wsEndpoints.bulkGeneration}?token=${token}`);
 
     if (ws.current) {
       ws.current.onmessage = (event: MessageEvent) => {
@@ -102,7 +86,7 @@ export default function ChatInterface() {
       case 'initial':
       case 'clarification':
       case 'number_request':
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.content }]);
+        setMessages((prev) => [...prev, { role: 'assistant' as MessageRole, content: data.content }]);
         setIsLoading(false);
         break;
       case 'projects':
@@ -110,24 +94,16 @@ export default function ChatInterface() {
         setMessages((prev) => [
           ...prev,
           {
-            role: 'assistant',
-            content: `Generated ${data.content.num_projects} ${data.content.domain} projects successfully!`,
-            projects: data.content.projects.map((project: Project) => ({
-              ...project,
-              domain: data.content.domain,
-              milestones: project.milestones || [],
-              skills: project.skills || [],
-              tools: project.tools || [],
-              duration: project.duration,
-              teamSize: project.teamSize,
-            })),
+            role: 'assistant' as const,
+            content: data.content,
+            projects: data.content.projects,
             domain: data.content.domain,
-          },
+          } as Message,
         ]);
         setIsLoading(false);
         break;
       case 'error':
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.content }]);
+        setMessages((prev) => [...prev, { role: 'assistant' as MessageRole, content: data.content }]);
         setIsLoading(false);
         break;
     }
@@ -136,7 +112,7 @@ export default function ChatInterface() {
   const handleButtonClick = () => {
     if (!input.trim() || isLoading || !ws.current) return;
 
-    setMessages((prev) => [...prev, { role: 'user', content: input }]);
+    setMessages((prev) => [...prev, { role: MessageRole.USER, content: input }]);
     ws.current.send(JSON.stringify({ message: input }));
     setInput('');
     setIsLoading(true);
@@ -161,11 +137,17 @@ export default function ChatInterface() {
             <div
               key={idx}
               className={`${Styles.messageWrapper} ${
-                msg.role === 'user' ? Styles.userMessage : Styles.assistantMessage
+                msg.role === MessageRole.USER ? Styles.userMessage : Styles.assistantMessage
               }`}
             >
-              <div className={`${Styles.messageContent} ${msg.role === 'user' ? 'bg-blue-500 rounded-lg p-3' : ''}`}>
-                {msg.content}
+              <div
+                className={`${Styles.messageContent} ${
+                  msg.role === MessageRole.USER ? 'bg-blue-500 rounded-lg p-3' : ''
+                }`}
+              >
+                {(typeof msg.content === 'string' || !msg.projects) &&
+                  (typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content))}
+
                 {msg.projects && (
                   <div className="mt-4 grid grid-cols-1 gap-4">
                     {msg.projects.map((project, projectIdx) => (
@@ -174,17 +156,10 @@ export default function ChatInterface() {
                         title={project.title}
                         description={project.description}
                         domain={msg.domain}
-                        milestones={project.milestones?.map((milestone, i) => ({
-                          ...milestone,
-                          index: i,
-                        }))}
+                        milestones={project.milestones?.map((milestone, i) => ({ ...milestone, index: i }))}
                         tech_stack={project.skills}
                         total_duration_weeks={project.duration ? parseInt(project.duration) : undefined}
-                        roles={project.roles?.map((role) => ({
-                          role_id: role,
-                          proficiency: {},
-                          count: 1,
-                        }))}
+                        roles={project.roles}
                       />
                     ))}
                   </div>
