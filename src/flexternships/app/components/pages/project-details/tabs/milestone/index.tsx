@@ -55,6 +55,7 @@ export default function MilestoneTab() {
       ProjectPrimaryStatus.COMPLETED,
       ProjectPrimaryStatus.TERMINATED,
       ProjectPrimaryStatus.WITHDRAWN,
+      ProjectPrimaryStatus.BLOCKED,
     ].includes(projectDetails.status) ||
     (projectDetails.status === ProjectPrimaryStatus.ACTIVE &&
       projectDetails.secondaryStatus.next === ProjectSecondaryStatus.MILESTONE);
