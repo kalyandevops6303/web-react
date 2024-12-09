@@ -280,9 +280,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getTalentNameService(page, search);
       const options = response?.data?.data?.data.map((option) => ({
-          value: option.talent_id,
-          label: option.talent_name,
-        }));
+        value: option.talent_id,
+        label: option.talent_name,
+      }));
       return {
         options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
@@ -300,9 +300,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       const response = await getDepartmentNameService(page, search);
 
       const options = response?.data?.data?.data.map((option) => ({
-          value: option.department_name,
-          label: option.department_name,
-        }));
+        value: option.department_name,
+        label: option.department_name,
+      }));
       return {
         options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
@@ -319,9 +319,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getSecondaryStatuses(page, search);
       const options = response?.data?.data?.data.map((option) => ({
-          value: option.status,
-          label: SecondaryProjectStatus[option.status],
-        }));
+        value: option.status,
+        label: SecondaryProjectStatus[option.status],
+      }));
 
       return {
         options,
@@ -340,9 +340,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       const response = await getProjectNames(page, search);
 
       const options = response?.data?.data?.data.map((option) => ({
-          value: option._id,
-          label: option.name,
-        }));
+        value: option._id,
+        label: option.name,
+      }));
 
       return {
         options,
