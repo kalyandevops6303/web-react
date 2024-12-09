@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
@@ -605,7 +605,17 @@ const FlexternSocial = () => {
       lastModified: Date.now(),
       isUploaded: false,
     };
-    dispatch(setFormDocuments([fileWithUrl]));
+    dispatch(setFormDocuments([{
+      id: fileWithUrl?.id,
+      file: {
+        name: file?.name,
+        size: file?.size,
+      },
+      uploadData: fileWithUrl?.uploadData,
+      lastModified: fileWithUrl?.lastModified,
+      isUploaded: fileWithUrl?.isUploaded,
+    }]));
+    // dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
@@ -639,19 +649,6 @@ const FlexternSocial = () => {
     }
   };
 
-  const filesRef = useRef();
-  useEffect(() => {
-    const fileReRender = async () => {
-      if (savedFormDocuments != null) {
-        filesRef.current = files;
-        setFiles(savedFormDocuments);
-        dispatch(setFormDocuments(savedFormDocuments));
-      } else {
-        setFiles([]);
-      }
-    };
-    fileReRender();
-  }, [savedFormDocuments]);
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -1072,7 +1069,6 @@ const FlexternSocial = () => {
                                   render={({ field }) => (
                                     <Input
                                       {...field}
-                                      ref={filesRef}
                                       id="resume"
                                       type="file"
                                       max={1}

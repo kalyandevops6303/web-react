@@ -455,7 +455,16 @@ const FlexternPersonal = () => {
       lastModified: Date.now(),
       isUploaded: false,
     };
-    dispatch(setFormDocuments([fileWithUrl]));
+    dispatch(setFormDocuments([{
+      id: fileWithUrl?.id,
+      file: {
+        name: file?.name,
+        size: file?.size,
+      },
+      uploadData: fileWithUrl?.uploadData,
+      lastModified: fileWithUrl?.lastModified,
+      isUploaded: fileWithUrl?.isUploaded,
+    }]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
@@ -480,27 +489,13 @@ const FlexternPersonal = () => {
       if (isFileValid(e.target.files[0])) {
         dispatch(clearAllFormData());
         await fetchUploadUrl(e.target.files[0]);
-        setParseResume(true);
+        setParseResume(true); 
         dispatch(setResumeParsed(true));
       }
     } else {
       e.target.value = '';
     }
   };
-
-  const filesRef = useRef();
-  useEffect(() => {
-    const fileReRender = async () => {
-      if (savedFormDocuments != null) {
-        filesRef.current = files;
-        setFiles(savedFormDocuments);
-        dispatch(setFormDocuments(savedFormDocuments));
-      } else {
-        setFiles([]);
-      }
-    };
-    fileReRender();
-  }, [savedFormDocuments]);
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -1170,7 +1165,6 @@ const FlexternPersonal = () => {
                                   render={({ field }) => (
                                     <Input
                                       {...field}
-                                      ref={filesRef}
                                       id="resume"
                                       type="file"
                                       max={1}
@@ -1305,25 +1299,6 @@ const FlexternPersonal = () => {
                   Upload Resume
                 </h5>
               </Label>
-              <Controller
-                id="resume"
-                name="resume"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    ref={filesRef}
-                    id="resume"
-                    type="file"
-                    max={1}
-                    accept="application/pdf"
-                    style={{ display: 'none' }}
-                    onChange={(e) => {
-                      handleFileChange(e);
-                    }}
-                  />
-                )}
-              />
             </div>
           }
         />

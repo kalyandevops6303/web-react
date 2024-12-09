@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AsyncPaginate, reduceGroupedOptions } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -743,23 +743,48 @@ const FlexternEducational = () => {
           setValue('institutionEmail', userData?.talent_info?.educational_institute?.institute_email);
         }
         const primaryEducation = res.educational_institute[0];
+       if(primaryEducation?.institution) {
         setValue(
           'institution',
-          {
-            label: primaryEducation?.institution?.name,
-            value: primaryEducation?.institution?._id,
-          },
+            {
+                label: primaryEducation?.institution?.name,
+                value: primaryEducation?.institution?._id,
+              },
+        
           { shouldValidate: true },
-        );
-
+        )
+       } else if(userData?.talent_info?.educational_institute?.institution) {
+        setValue(
+          'institution',
+            {
+                label: userData?.talent_info?.educational_institute?.institution?.name,
+                value: userData?.talent_info?.educational_institute?.institution?._id,
+              },
+        
+          { shouldValidate: true },
+        )
+       } 
+        
+        if(primaryEducation?.education) {
         setValue(
           'education',
-          {
-            label: primaryEducation?.education?.name,
-            value: primaryEducation?.education?._id,
-          },
+            {
+                label: primaryEducation?.education?.name,
+                value: primaryEducation?.education?._id,
+              },
+        
           { shouldValidate: true },
-        );
+        ) 
+      }  else if(userData?.talent_info?.educational_institute?.education) {
+          setValue(
+            'education',
+              {
+                  label: userData?.talent_info?.educational_institute?.education?.name,
+                  value: userData?.talent_info?.educational_institute?.education?._id,
+                },
+            { shouldValidate: true },
+          )
+        }
 
         // Set other education details (remaining entries)
         if (res?.educational_institute?.length > 1) {
@@ -777,7 +802,86 @@ const FlexternEducational = () => {
             })),
             { shouldValidate: true },
           );
+        } else {
+          setValue(
+            'otherEducationDetails',
+            userData?.talent_info?.other_educational_institutes
+              ? userData?.talent_info?.other_educational_institutes?.map((detail) => ({
+                  educationInstitution: {
+                    label: detail.institution.name,
+                    value: detail.institution._id,
+                  },
+                  education: { label: detail.education.name, value: detail.education._id },
+                }))
+              : null,
+            { shouldValidate: true },
+          );
         }
+      } else if (res?.educational_institute?.length === 0) {
+        setValue(
+          'institution',
+          userData?.talent_info?.educational_institute?.institution
+            ? {
+                label: userData?.talent_info?.educational_institute?.institution?.name,
+                value: userData?.talent_info?.educational_institute?.institution?._id,
+              }
+            : null,
+            { shouldValidate: true },
+        );
+
+        setValue(
+          'education',
+          userData?.talent_info?.educational_institute?.education
+            ? {
+                label: userData?.talent_info?.educational_institute?.education?.name,
+                value: userData?.talent_info?.educational_institute?.education?._id,
+              }
+            : null,
+          { shouldValidate: true },
+        );
+
+        setValue(
+          'institutionEmail',
+          userData?.talent_info?.educational_institute?.institute_email
+            ? userData?.talent_info?.educational_institute?.institute_email
+            : null,
+        );
+
+        setValue(
+          'startYear',
+          userData?.talent_info?.educational_institute?.start_year
+            ? {
+                label: userData?.talent_info?.educational_institute?.start_year,
+                value: userData?.talent_info?.educational_institute?.start_year,
+              }
+            : null,
+          { shouldValidate: true },
+        );
+
+        setValue(
+          'graduationYear',
+          userData?.talent_info?.educational_institute?.grad_year
+            ? {
+                label: userData?.talent_info?.educational_institute?.grad_year,
+                value: userData?.talent_info?.educational_institute?.grad_year,
+              }
+            : null,
+          { shouldValidate: true },
+        );
+
+        setValue(
+          'otherEducationDetails',
+          userData?.talent_info?.other_educational_institutes
+            ? userData?.talent_info?.other_educational_institutes?.map((detail) => ({
+                educationInstitution: {
+                  label: detail.institution.name,
+                  value: detail.institution._id,
+                },
+                education: { label: detail.education.name, value: detail.education._id },
+              }))
+            : null,
+          { shouldValidate: true },
+        );
       }
 
       // Handle tools
@@ -842,7 +946,17 @@ const FlexternEducational = () => {
       lastModified: Date.now(),
       isUploaded: false,
     };
-    dispatch(setFormDocuments([fileWithUrl]));
+    // dispatch(setFormDocuments([fileWithUrl]));
+    dispatch(setFormDocuments([{
+      id: fileWithUrl?.id,
+      file: {
+        name: file?.name,
+        size: file?.size,
+      },
+      uploadData: fileWithUrl?.uploadData,
+      lastModified: fileWithUrl?.lastModified,
+      isUploaded: fileWithUrl?.isUploaded,
+    }]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
@@ -875,20 +989,6 @@ const FlexternEducational = () => {
       e.target.value = '';
     }
   };
-
-  const filesRef = useRef();
-  useEffect(() => {
-    const fileReRender = async () => {
-      if (savedFormDocuments != null) {
-        filesRef.current = files;
-        setFiles(savedFormDocuments);
-        dispatch(setFormDocuments(savedFormDocuments));
-      } else {
-        setFiles([]);
-      }
-    };
-    fileReRender();
-  }, [savedFormDocuments]);
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -1566,7 +1666,6 @@ const FlexternEducational = () => {
                                   render={({ field }) => (
                                     <Input
                                       {...field}
-                                      ref={filesRef}
                                       id="resume"
                                       type="file"
                                       max={1}
