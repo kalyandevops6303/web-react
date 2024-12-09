@@ -81,7 +81,9 @@ import {
   setFileKey,
   setFormData,
   setFormDocuments,
+  setResumeDataUploadedForEducation,
   setResumeDataUploadedForPersonal,
+  setResumeDataUploadedForSocial,
   setResumeParsed,
 } from '../../redux/reducers/formData';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
@@ -169,7 +171,7 @@ const FlexternPersonal = () => {
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [workingTimeZonesOptions, setWorkingTimeZonesOptions] = useState([]);
-  const [resumeModalOpen, setResumeModalOpen] = useState(true);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [languagesOptions, setLanguagesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [files, setFiles] = useState(savedFormDocuments ?? []);
@@ -249,6 +251,9 @@ const FlexternPersonal = () => {
       deleteResume(() => {
         const filtered = uploadedFiles.filter((i) => i.id !== file.id);
         dispatch(setFormDocuments(null));
+        dispatch(setResumeDataUploadedForPersonal(false));
+        dispatch(setResumeDataUploadedForEducation(false));
+        dispatch(setResumeDataUploadedForSocial(false));
         setFiles([...filtered]);
       }),
     );
@@ -301,6 +306,41 @@ const FlexternPersonal = () => {
     }
   };
 
+  const onGetUserResumeDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+        const fileUrl = {
+          file: {
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
+          },
+          uploadData: {
+            file_key: res?.talent_info?.resume?.file_key,
+          },
+          isUploaded: true,
+          lastModified: res?.talent_info?.resume?.created_at,
+        };
+        dispatch(
+          setFileKey(
+            savedFormDocuments != null
+              ? savedFormDocuments[0]?.uploadData?.file_key
+              : res?.talent_info?.resume?.file_key,
+          ),
+        );
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
+        setFiles([fileUrl]);
+        dispatch(setFormDocuments([fileUrl]));
+      }
+    }
+  };
+
   const setResumeParsedDetails = async (res) => {
     const languageDetails = await loadLanguagesOptions();
     if (res) {
@@ -309,6 +349,41 @@ const FlexternPersonal = () => {
       }
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
+      }
+      if (res?.role) {
+        setValue(
+          'role',
+          {
+            label: res?.role?.name,
+            value: res?.role?._id,
+          },
+          { shouldValidate: true },
+        );
+      } else if (userData?.talent_info?.role) {
+        setValue(
+          'role',
+          {
+            label: userData?.talent_info?.role?.name,
+            value: userData?.talent_info?.role?._id,
+          },
+          { shouldValidate: true },
+        );
+      }
+      if (userData?.availability?.timezone) {
+        if ('name' in userData?.availability?.timezone) {
+          setValue(
+            'workingTimeZone',
+            {
+              label: savedFormData?.workingTimeZone?.label
+                ? `${savedFormData?.workingTimeZone?.label}`
+                : `${userData?.availability?.timezone?.name} (${userData?.availability?.timezone?.abbreviation})`,
+              value: savedFormData?.workingTimeZone?.value
+                ? savedFormData?.workingTimeZone?.value
+                : userData?.availability?.timezone?._id,
+            },
+            { shouldValidate: true },
+          );
+        }
       }
       if (res?.languages_speak && res?.languages_speak.length > 0) {
         setValue(
@@ -377,7 +452,7 @@ const FlexternPersonal = () => {
       id: uuidv4(),
       file,
       uploadData: response?.data?.data,
-      lastModified: file.lastModified,
+      lastModified: Date.now(),
       isUploaded: false,
     };
     dispatch(setFormDocuments([fileWithUrl]));
@@ -400,7 +475,6 @@ const FlexternPersonal = () => {
     dispatch(setResumeParsed(true));
     setParseResume(true);
   };
-
   const handleFileChange = async (e) => {
     if (e.target.files) {
       if (isFileValid(e.target.files[0])) {
@@ -579,27 +653,27 @@ const FlexternPersonal = () => {
     };
 
     dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    if (IsresumeParsed) {
-      const languagesWritten = watch('writeLanguages')?.map((language) => ({
-        name: language.label,
-        _id: language.value,
-      }));
-      const languagesSpoken = watch('speakLanguages')?.map((language) => ({
-        name: language.label,
-        _id: language.value,
-      }));
-      const resumeUpdatedData = {
-        target_info: {
-          ...parsedResumeData,
-          languages_speak: languagesSpoken,
-          languages_write: languagesWritten,
-          tagline,
-          professional_introduction: professionalIntroduction,
-        },
-      };
+    // if (IsresumeParsed) {
+    //   const languagesWritten = watch('writeLanguages')?.map((language) => ({
+    //     name: language.label,
+    //     _id: language.value,
+    //   }));
+    //   const languagesSpoken = watch('speakLanguages')?.map((language) => ({
+    //     name: language.label,
+    //     _id: language.value,
+    //   }));
+    //   const resumeUpdatedData = {
+    //     target_info: {
+    //       ...parsedResumeData,
+    //       languages_speak: languagesSpoken,
+    //       languages_write: languagesWritten,
+    //       tagline,
+    //       professional_introduction: professionalIntroduction,
+    //     },
+    //   };
 
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
-    }
+    //   dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    // }
   };
 
   const loadTalentRolesOptions = async (search) => {
@@ -689,33 +763,28 @@ const FlexternPersonal = () => {
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         const fileUrl = {
           file: {
-            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
           },
           uploadData: {
             file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
-          lastModified:
-            savedFormDocuments != null
-              ? savedFormDocuments[0]?.lastModified
-                ? savedFormDocuments[0]?.lastModified
-                : res?.talent_info?.resume?.created_at
-              : res?.talent_info?.resume?.created_at,
+          lastModified: res?.talent_info?.resume?.created_at,
         };
-        dispatch(
-          setFileKey(
-            savedFormDocuments != null
-              ? savedFormDocuments[0]?.uploadData?.file_key
-              : res?.talent_info?.resume?.file_key,
-          ),
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key));
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
         );
-        setValue('resume', {
-          file_name: fileUrl?.file?.name,
-          file_key: fileUrl?.uploadData?.file_key,
-        });
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
+      } else {
+        setResumeModalOpen(true);
       }
       if (res?.talent_info?.languages_speak.length > 0) {
         setValue(
@@ -803,6 +872,7 @@ const FlexternPersonal = () => {
           ]);
           dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
         }
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
@@ -828,6 +898,7 @@ const FlexternPersonal = () => {
           },
         ]);
         dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
@@ -1104,7 +1175,6 @@ const FlexternPersonal = () => {
                                       type="file"
                                       max={1}
                                       accept="application/pdf"
-                                      // style={{ display: 'none' }}
                                       className="d-none"
                                       onChange={(e) => {
                                         handleFileChange(e);
@@ -1215,51 +1285,49 @@ const FlexternPersonal = () => {
           </Row>
         </Form>
       )}
-      {files?.length === 0 &&
-        (!userData?.talent_info?.resume || Object.keys(userData?.talent_info?.resume).length === 0) &&
-        resumeModalOpen && (
-          <UploadResumeModal
-            modal={resumeModalOpen}
-            toggleModal={() => setResumeModalOpen(false)}
-            uploadButton={
-              <div className="d-flex justify-content-center mt-1 align-items-center">
-                <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
-                  <h5
-                    style={{
-                      background: '#0065c1',
-                      color: 'white',
-                      paddingBlock: '12px',
-                      borderRadius: '5px',
-                      paddingInline: '16px',
+      {resumeModalOpen && (
+        <UploadResumeModal
+          modal={resumeModalOpen}
+          toggleModal={() => setResumeModalOpen(false)}
+          uploadButton={
+            <div className="d-flex justify-content-center mt-1 align-items-center">
+              <Label for="resume" className="d-flex flex-col align-items-center upload-button cursor-pointer">
+                <h5
+                  style={{
+                    background: '#0065c1',
+                    color: 'white',
+                    paddingBlock: '12px',
+                    borderRadius: '5px',
+                    paddingInline: '16px',
+                  }}
+                  className="fw-bold"
+                >
+                  Upload Resume
+                </h5>
+              </Label>
+              <Controller
+                id="resume"
+                name="resume"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    ref={filesRef}
+                    id="resume"
+                    type="file"
+                    max={1}
+                    accept="application/pdf"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      handleFileChange(e);
                     }}
-                    className="fw-bold"
-                  >
-                    Upload Resume
-                  </h5>
-                </Label>
-                <Controller
-                  id="resume"
-                  name="resume"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      ref={filesRef}
-                      id="resume"
-                      type="file"
-                      max={1}
-                      accept="application/pdf"
-                      style={{ display: 'none' }}
-                      onChange={(e) => {
-                        handleFileChange(e);
-                      }}
-                    />
-                  )}
-                />
-              </div>
-            }
-          />
-        )}
+                  />
+                )}
+              />
+            </div>
+          }
+        />
+      )}
     </ProfileFormContainer>
   );
 };

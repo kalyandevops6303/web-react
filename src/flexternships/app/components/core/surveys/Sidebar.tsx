@@ -1,4 +1,5 @@
 import { Check, User } from 'react-feather';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 
 const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => void }) => {
@@ -17,7 +18,7 @@ const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => voi
           >
             <div className="flex flex-row items-center gap-2">
               <Avatar>
-                <AvatarImage src={item.image} />
+                <AvatarImage src={item.image ? item.image : defaultAvatar} />
                 <AvatarFallback>
                   <User color="#6E6B7B" />
                 </AvatarFallback>

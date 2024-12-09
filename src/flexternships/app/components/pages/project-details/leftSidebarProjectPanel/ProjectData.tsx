@@ -17,6 +17,7 @@ const getProjectPanelDate1Icon = (data: { status: string }) => {
     case 'ONGOING':
     case 'TERMINATED':
     case 'COMPLETED':
+    case 'ON_GOING':
     case 'BLOCKED': {
       return <img src={StartDateSVG} alt="Start Date Icon" />;
     }
@@ -35,7 +36,7 @@ const getProjectPanelDate2Icon = (data: { status: string }) => {
     case 'UPCOMING': {
       return <img src={StartDateSVG} alt="Start Date Icon" />;
     }
-    case 'ONGOING':
+    case 'ON_GOING':
     case 'COMPLETED': {
       return <img src={EndDateSVG} alt="End Date Icon" />;
     }

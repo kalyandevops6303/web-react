@@ -10,9 +10,11 @@ import ProjectsTab from './tabs/projects/page';
 import TeamTab from '../components/pages/project-details/tabs/team';
 import PerformanceTab from './tabs/performance/page';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
+import Spinner from '../components/core/Spinner';
 
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+  const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectLoading = useProjectsStore((state) => state.isProjectsLoading);
@@ -96,12 +98,18 @@ export default function FlexternshipProjectDetails() {
           />
         </div>
       )}
-      <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
-        {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
-        <div className="flex flex-col flex-grow items-start gap-5">
-          <ProjectDetailsTabNavigation tabs={tabs} />
+      {projectDetailsLoading ? (
+        <div className="w-full h-full min-h-[60vh] flex justify-center items-center mx-auto">
+          <Spinner />
         </div>
-      </div>
+      ) : (
+        <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
+          {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
+          <div className="flex flex-col flex-grow items-start gap-5">
+            <ProjectDetailsTabNavigation tabs={tabs} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

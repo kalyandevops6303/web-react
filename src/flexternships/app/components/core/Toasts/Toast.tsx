@@ -1,8 +1,9 @@
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { Info } from 'react-feather';
+import { Info, X } from 'react-feather';
+import toast from 'react-hot-toast';
 
 export default function Toast(props: ToastProps) {
-  const { type, title, description } = props;
+  const { type, title, description, toastId } = props;
 
   const styles = {
     [ToastType.SUCCESS]: 'border-l-[#004280] bg-[#e3f3ff] text-[#004280]',
@@ -11,15 +12,25 @@ export default function Toast(props: ToastProps) {
 
   return (
     <div
-      className={`rounded-[6px] border-l-[4px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.08)] flex w-[1393px] max-w-full p-4 items-center gap-6 flex gap-x-2 p-2 text-xs ${styles[type]}`}
+      className={`rounded-[6px] border-l-[4px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.08)] flex w-[1393px] max-w-full p-4 items-center justify-between gap-6 flex gap-x-2 p-2 text-xs ${styles[type]}`}
     >
-      <Info size={20} color={type === ToastType.SUCCESS ? '#004280' : '#FF0000'} />
-      <div>
-        <span className={`font-montserrat text-[14px] font-semibold leading-normal ${styles[type]}`}>{title}</span>
-        <span className={`font-montserrat text-[14px] font-medium leading-normal ${styles[type]}`}>
-          {title && ' - '}
-          {description}
-        </span>
+      <div className="flex items-center gap-2">
+        <Info size={16} color={type === ToastType.SUCCESS ? '#004280' : '#FF0000'} />
+        <div>
+          <span className={`font-montserrat text-[14px] font-semibold leading-normal ${styles[type]}`}>{title}</span>
+          <span className={`font-montserrat text-[14px] font-medium leading-normal ${styles[type]}`}>
+            {title && ' - '}
+            {description}
+          </span>
+        </div>
+      </div>
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          toast.dismiss(toastId);
+        }}
+      >
+        <X className="opacity-50" size={15} />
       </div>
     </div>
   );
@@ -29,4 +40,5 @@ type ToastProps = {
   title?: string;
   description: string;
   type: ToastType;
+  toastId?: string;
 };

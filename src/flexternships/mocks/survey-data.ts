@@ -164,7 +164,6 @@ export const mockSelfFeedbackSurveyJson = {
       },
       placeholder: 'Please type here',
       isRequired: true, // Set isRequired to true
-      commentRequired: true, // Added commentRequired to true
     },
   ],
   completeText: 'Submit Feedback',

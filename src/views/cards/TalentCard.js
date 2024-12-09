@@ -23,6 +23,7 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
 function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
@@ -115,7 +116,14 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
               <div className="w-75">
                 <div className="d-flex">
                   <Avatar
-                    img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                    img={
+                      data?.image_uri?.length > 0
+                        ? data?.image_uri
+                        : generateAvatar(
+                            data?.user_id,
+                            (data?.first_name?.charAt(0) || '') + (data?.last_name?.charAt(0) || ''),
+                          )
+                    }
                     imgHeight="40"
                     imgWidth="40"
                     className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
@@ -135,7 +143,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                         {data?.last_name}
                       </Link>
                     </CardTitle>
-                    <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                    <CardText className="truncate-1 font-small-3 fs-6 fw-300 mb-25 marketplace-card-role">
                       {data?.role?.name || 'Role'}
                     </CardText>
                     <div className="d-flex teamcard-flex-cloumn">
@@ -174,7 +182,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                     </div>
                   </Col>
                 </div>
-                <div className="mt-2">{data?.professional_intro && parse(data?.professional_intro)}</div>
+                <div className="mt-2 font-size">{data?.professional_intro && parse(data?.professional_intro)}</div>
               </div>
               <div className="w-25 teamcard-width">
                 <IconWrapper className="d-flex flex-column align-items-start pt-50">
@@ -229,7 +237,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                     ) : null}
                   </div>
                 </IconWrapper>
-                <div className="">
+                <div className="px-8">
                   {data?.expertise?.skills && (
                     <BadgeGroup
                       title="Skills"

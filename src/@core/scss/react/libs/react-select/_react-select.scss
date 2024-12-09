@@ -1,6 +1,14 @@
 @import '../../../base/bootstrap-extended/include';
 @import '../../../base/components/include';
 
+.wide__control {
+  width: max-content !important;
+}
+
+.wide__menu {
+  width: max-content !important;
+}
+
 // InValid Select
 .react-select.is-invalid {
   .select__control {

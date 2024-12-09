@@ -22,6 +22,7 @@ import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../uti
 import { getListProjects, getUsers } from '../../../redux/actions/marketPlaceActions';
 import {
   companyIndustriesService,
+  departmentNamesService,
   projectAreasService,
   skillsService,
   toolsService,
@@ -87,6 +88,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
     project_types: [],
     skills: [],
     tools: [],
+    departmentNames: [],
     sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMENDED' }] : [],
     industries: [],
     project_areas: [],
@@ -99,6 +101,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
+  const [departmentNameOptions, setDepartmentNameOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -135,7 +138,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
 
   useEffect(() => {
     setHasMore(true);
-    if (currentPreview.length === 0 || selectMarketPlaceData?.length === selectMarkeMetaData?.total_records) {
+    if (currentPreview?.length === 0 || selectMarketPlaceData?.length === selectMarkeMetaData?.total_records) {
       setHasMore(false);
     }
   }, [currentPreview]);
@@ -238,6 +241,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       project_types: [],
       skills: [],
       tools: [],
+      departmentNames: [],
       sort_by: [],
       industries: [],
       project_areas: [],
@@ -305,6 +309,33 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       const options = response?.data?.data?.map((industry) => ({ label: industry.name, value: industry._id }));
 
       setCompanyIndustriesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadDepartmentNameOptions = async (search) => {
+    if (search) {
+      return {
+        options: departmentNameOptions.filter(
+          (department) =>
+            department.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            department.label.toLowerCase().includes(search.toLowerCase()),
+        ),
+      };
+    }
+    try {
+      const response = await departmentNamesService();
+      const options = response?.data?.data?.data?.map((department) => ({
+        label: department.department_name,
+        value: department.department_name,
+      }));
+
+      setDepartmentNameOptions(options);
 
       return {
         options,
@@ -439,7 +470,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   };
 
   const ExpandCollapseComp = (
-    <>
+    <div className="d-flex align-items-center me-10">
       <Label className="view-label me-1">View:</Label>
       <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
       <Popover
@@ -476,7 +507,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
           </div>
         </PopoverBody>
       </Popover>
-    </>
+    </div>
   );
   if (isCardLoading && !selectCardData) {
     return <div />;
@@ -494,7 +525,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
               <Input value={inputText} onChange={handleSearchTextChange} placeholder={getSearchPlaceholder()} />
             </InputGroup>
           </div>
-          <Row>
+          <Row className="me-10">
             {primaryFilter !== 'talents' &&
               primaryFilter !== 'clients' &&
               primaryFilter !== 'teams' &&
@@ -509,6 +540,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
               ))}
             <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TYPE']}>
               {(userType === userTypes.talent ||
+                userType === userTypes.client ||
                 userType === userTypes.team ||
                 primaryFilter === 'talents' ||
                 primaryFilter === 'teams') &&
@@ -523,7 +555,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                       theme={selectThemeColors}
                       onChange={onChangeSort}
                       value={
-                        secondFilterState.sort_by.length > 0
+                        secondFilterState?.sort_by?.length > 0
                           ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
                           : null
                       }
@@ -543,7 +575,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     theme={selectThemeColors}
                     onChange={(value) => onChangeFilter('bid_statuses', value)}
                     value={
-                      secondFilterState.bid_statuses.length > 0
+                      secondFilterState?.bid_statuses?.length > 0
                         ? {
                             value: secondFilterState.bid_statuses[0].value,
                             label: secondFilterState.bid_statuses[0].label,
@@ -568,7 +600,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                           theme={selectThemeColors}
                           onChange={(value) => onChangeFilter('statuses', value)}
                           value={
-                            secondFilterState.statuses.length > 0
+                            secondFilterState?.statuses?.length > 0
                               ? {
                                   value: secondFilterState.statuses[0].value,
                                   label: secondFilterState.statuses[0].label,
@@ -593,7 +625,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     theme={selectThemeColors}
                     onChange={(value) => onChangeFilter('project_types', value)}
                     value={
-                      secondFilterState.project_types.length > 0
+                      secondFilterState?.project_types?.length > 0
                         ? {
                             value: secondFilterState.project_types[0].value,
                             label: secondFilterState.project_types[0].label,
@@ -620,7 +652,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('skills', value)}
                     value={
-                      secondFilterState.skills.length > 0
+                      secondFilterState?.skills?.length > 0
                         ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
                         : null
                     }
@@ -644,8 +676,36 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('tools', value)}
                     value={
-                      secondFilterState.tools.length > 0
+                      secondFilterState?.tools?.length > 0
                         ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+
+            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TOOLS']}>
+              {(primaryFilter === 'all_listings' ||
+                primaryFilter === 'talents' ||
+                primaryFilter === 'teams' ||
+                (appRole === appRoles.flexternClient && primaryFilter === 'my_listings')) && (
+                <Col>
+                  <Label className="form-label">Department Name</Label>
+                  <AsyncPaginate
+                    isClearable
+                    loadOptions={loadDepartmentNameOptions}
+                    classNamePrefix="wide"
+                    placeholder="Select department"
+                    theme={selectThemeColors}
+                    className={classNames('react-select')}
+                    onChange={(value) => onChangeFilter('departmentNames', value)}
+                    value={
+                      secondFilterState?.departmentNames?.length > 0
+                        ? {
+                            value: secondFilterState.departmentNames[0].value,
+                            label: secondFilterState.departmentNames[0].label,
+                          }
                         : null
                     }
                   />
@@ -665,7 +725,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('industries', value)}
                     value={
-                      secondFilterState.industries.length > 0
+                      secondFilterState?.industries?.length > 0
                         ? { value: secondFilterState.industries[0].value, label: secondFilterState.industries[0].label }
                         : null
                     }
@@ -686,7 +746,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     className={classNames('react-select')}
                     onChange={(value) => onChangeFilter('project_areas', value)}
                     value={
-                      secondFilterState.project_areas.length > 0
+                      secondFilterState?.project_areas?.length > 0
                         ? {
                             value: secondFilterState.project_areas[0].value,
                             label: secondFilterState.project_areas[0].label,

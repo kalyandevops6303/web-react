@@ -18,21 +18,21 @@ const ProjectStatusChip = ({
   const ProjectStatusChipClassnames = {
     [ProjectPrimaryStatus.OPEN]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.DRAFT]: '',
-    [ProjectPrimaryStatus.ACTIVE]: 'bg-green-200 text-green-600 border border-green-400',
-    [ProjectPrimaryStatus.ON_GOING]: 'bg-green-200 text-green-600 border border-green-400',
-    [ProjectPrimaryStatus.TERMINATED]: 'bg-red-100 text-red-600 border border-red-400',
-    [ProjectPrimaryStatus.COMPLETED]: 'bg-orange-200 text-orange-600 border border-orange-400',
-    [ProjectPrimaryStatus.WITHDRAWN]: 'bg-orange-50 text-orange-500 border-2 border-orange-500',
-    [ProjectPrimaryStatus.BLOCKED]: 'bg-[#EA5455] border border-[#EA5455] bg-[rgba(234,84,85,0.12)]',
+    [ProjectPrimaryStatus.ACTIVE]: 'bg-[#28C76F1F] text-success border border-success',
+    [ProjectPrimaryStatus.ON_GOING]: 'bg-[#28C76F1F] text-success border border-success',
+    [ProjectPrimaryStatus.TERMINATED]: 'bg-[#B71C1C1F] text-[#B71C1C] border border-[#B71C1C]',
+    [ProjectPrimaryStatus.COMPLETED]: 'bg-skyblue-light text-skyblue border border-skyblue',
+    [ProjectPrimaryStatus.WITHDRAWN]: 'bg-orange-light text-orange-dark border-1 border-orange-dark',
+    [ProjectPrimaryStatus.BLOCKED]: 'bg-[#EA54551F] text-[#EA5455] border border-[#EA5455]',
   };
 
   const SecondaryStatusChipClassNames = {
-    [ProjectSecondaryStatus.SIGN_DOCUMENTS]: 'bg-orange-50 text-orange-600',
-    [ProjectSecondaryStatus.SIGN_CONTRACT]: 'bg-orange-50 text-orange-600',
-    [ProjectSecondaryStatus.MILESTONE]: 'bg-orange-50 text-orange-600',
+    [ProjectSecondaryStatus.SIGN_DOCUMENTS]: 'bg-[#00B0FF1F] text-[#00B0FF]',
+    [ProjectSecondaryStatus.SIGN_CONTRACT]: 'bg-[#00B0FF1F] text-[#00B0FF]',
+    [ProjectSecondaryStatus.MILESTONE]: 'bg-[#FF6D001F] text-[#FF6D00]',
     [ProjectSecondaryStatus.SIGN_NDA]: 'bg-orange-50 text-orange-600',
-    [ProjectSecondaryStatus.SIGN_REQUESTED]: 'bg-orange-50 text-orange-600',
-    [ProjectSecondaryStatus.COMPLETED]: 'bg-green-200 text-green-600',
+    [ProjectSecondaryStatus.SIGN_REQUESTED]: 'bg-[#00B0FF1F] text-[#00B0FF]',
+    [ProjectSecondaryStatus.COMPLETED]: 'bg-[#00C8531F] text-[#00C853]',
   };
 
   const statusClass =

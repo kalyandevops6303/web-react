@@ -24,11 +24,9 @@ export enum StatusType {
 
 export const SecondaryProjectStatus = {
   OPEN: 'Open',
-  TO_BE_LISTED: 'To Be Listed',
   IN_REVIEW: 'In Review',
   TERMINATED: 'Terminated',
   CLOSED: 'Closed',
-  LISTING_EXPIRED: 'Expired',
   ON_GOING: 'On Going',
   COMPLETED: 'Completed',
   ACTIVE: 'Active',
@@ -44,6 +42,7 @@ export const SecondaryProjectStatus = {
   SIGN_REQUESTED: 'Sign Requested',
   NOT_FUNDED: 'Not Funded',
   INITIATE_FUNDS: 'Initiate Funds',
+  MILESTEONE: 'Milestone',
 };
 
 export const enum DocTypes {

@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import parse from 'html-react-parser';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
-import { CustomBadge, Elevate } from '../styled';
+import { CustomBadge, Elevate, ElevateWarning, WarningMessage } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import RelistConfirmationModal from '../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../modals/RelistListingDetailsModal';
@@ -19,7 +19,7 @@ import { appPermissionsSelector, selectUserData } from '../../redux/selectors/au
 import { userTypes } from '../../utility/constants/Constant';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
-import { getModifiedProjectResponse, getReadType } from '../../utility/Utils';
+import { calculateDays, getModifiedProjectResponse, getReadType } from '../../utility/Utils';
 import BaseInfoForBidReceived from './BaseInfoForBidReceived';
 import BaseInfoMarketplaceCard from './BaseInfoMarketplaceCard';
 import DeleteDraftModal from '../modals/DeleteDraftModal';
@@ -27,6 +27,12 @@ import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import { deleteDraftBid } from '../../redux/actions/createBidActions';
 import { deleteDraftBidLoading } from '../../redux/selectors/createBidSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
+import { AlertCircle } from 'react-feather';
+
+const MarketPlaceCardWrapper = ({ children, daysGap }) => {
+  const Wrapper = daysGap > 60 ? ElevateWarning : Elevate;
+  return <Wrapper>{children}</Wrapper>;
+};
 
 const MarketPlaceProjectCard = ({
   primaryFilter,
@@ -56,6 +62,7 @@ const MarketPlaceProjectCard = ({
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
   const [deleteDraftModal, setDeleteDraftModal] = useState(null);
+  const [daysGap, setDaysGap] = useState(0);
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
@@ -79,6 +86,16 @@ const MarketPlaceProjectCard = ({
     e.stopPropagation();
     setShowFullText(!showFullText);
   };
+
+  useEffect(() => {
+    if (project?.is_read === false) {
+      setIsTagNew(false);
+    }
+    if (project?.listing_start_date) {
+      const { daysBetween } = calculateDays(project?.listing_start_date, new Date());
+      setDaysGap(daysBetween);
+    }
+  }, [project]);
 
   const statusEnum = {
     OPEN: 'Open Listing',
@@ -219,7 +236,22 @@ const MarketPlaceProjectCard = ({
       )}
       <Card onClick={handleShowProject} className="cursor-pointer">
         {isNewTag && <NewTag />}
-        <Elevate>
+        <MarketPlaceCardWrapper daysGap={daysGap}>
+          {daysGap > 60 && (
+            <WarningMessage>
+              <AlertCircle size={18} color="red" />
+              <div className="warning">
+                <h1 className="red">
+                  <span className="fw-bold">Over 60 Days : &nbsp;</span>
+                  Your project has been in open status for over 60 days. Please take action to avoid this project being
+                  withdrawn
+                </h1>
+                {/* <span className='fw-bold'>
+              7 Days Left
+            </span> */}
+              </div>
+            </WarningMessage>
+          )}
           <CardBody>
             <Row>
               <Col lg="8">
@@ -240,9 +272,9 @@ const MarketPlaceProjectCard = ({
                   </CustomBadge>
                 </div>
                 <CardTitle className="d-flex align-items-center mb-3">
-                  <span className="cursor-pointer">{project?.details?.name ?? project?.name}</span>
+                  <span className="cursor-pointer font-name">{project?.details?.name ?? project?.name}</span>
                 </CardTitle>
-                <div className="d-flex gap-sm-5 flex-wrap project-stats">
+                <div className="d-flex gap-sm-2 -mt-4 flex-wrap project-stats">
                   <PermissionWrapper
                     permissions={appPermissions}
                     permissionName={['MARKETPLACE.PROJECT_DETAILS.PRICE']}
@@ -267,7 +299,7 @@ const MarketPlaceProjectCard = ({
                         'Location'}
                     </CardText>
                   </PermissionWrapper>
-                  <CardText className="mb-6">
+                  <CardText className=" mb-1 font-posted">
                     {`Posted ${project?.posted_date ? DateTime?.fromMillis(project?.posted_date)?.toRelative() : '-'}`}
                   </CardText>
                 </div>
@@ -276,11 +308,15 @@ const MarketPlaceProjectCard = ({
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {!showFullText ? (
-                      <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                      <div
+                        className="my-div posted"
+                        ref={divRef}
+                        style={{ maxHeight: '6.1rem', overflow: 'hidden', fontSize: '16px' }}
+                      >
                         {descriptionToShow}
                       </div>
                     ) : (
-                      <div className="my-div" ref={divRef}>
+                      <div className="my-div posted" ref={divRef}>
                         {descriptionToShow}
                       </div>
                     )}
@@ -311,7 +347,7 @@ const MarketPlaceProjectCard = ({
               </Col>
             </Row>
           </CardBody>
-        </Elevate>
+        </MarketPlaceCardWrapper>
       </Card>
       {showModal && (
         <ProjectModal

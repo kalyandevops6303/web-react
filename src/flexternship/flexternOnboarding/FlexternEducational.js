@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { AsyncPaginate, reduceGroupedOptions } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -27,13 +27,17 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
 import theme from '../../configs/themeVariables';
 import {
+  deleteResume,
   getUserDetails,
   saveProfileDetails,
   getResumeParsedDetails,
   saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
+import { resumeUploadService, updateParsedResumeService } from '../../services/talentOnboardingServices';
+import { downloadUrlLoading, userData } from '../../redux/selectors/dashboardSelectors';
 import {
+  deleteResumeLoading,
   profileDetailsLoading,
   userDetailsLoading,
   resumeParsedDetails,
@@ -55,14 +59,19 @@ import {
   userTypes,
   studyYears,
   graduationYears,
+  maxFileSize,
 } from '../../utility/constants/Constant';
 import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import {
+  formatDateWithTime,
+  downloadFile,
+  downloadUploadedFile,
   filteredFormSchema,
   isEmpty,
   removeEmptyKeys,
   returnFilteredDropdownOptions,
   giveProgressBarColorClassName,
+  renderFilePreview,
 } from '../../utility/Utils';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
@@ -71,6 +80,8 @@ import {
   formDocuments,
   resumeDataUploadedForEducation,
   fileKey,
+  resumeDataUploadedForPersonal,
+  resumeDataUploadedForSocial,
 } from '../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
@@ -79,9 +90,10 @@ import {
   setFormDocuments,
   setResumeDataUploadedForEducation,
   setFileKey,
+  setResumeDataUploadedForPersonal,
+  setResumeDataUploadedForSocial,
 } from '../../redux/reducers/formData';
-import { updateParsedResumeService } from '../../services/talentOnboardingServices';
-
+import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
 
@@ -91,6 +103,8 @@ import FeedbackForCustomerSupportModal from '../../views/modals/CustomerSupportF
 import NoteComponent from '../../views/Onboarding/NoteComponent';
 import CustomerSupportCTA from '../../views/Onboarding/CustomerSupportCTA';
 import Select from 'react-select';
+import uuidv4 from '../../lib/uuidv4';
+import { projectFileUploadToAzureService } from '../../services/createProjectServices';
 const EducationFormRow = ({
   index,
   control,
@@ -260,6 +274,13 @@ const FlexternEducational = () => {
       .max(5, 'Maximum of five skills can be added')
       .min(1, 'At least one skill is required')
       .required('Skill is required'),
+    resume: yup
+      .object()
+      .shape({
+        file_name: yup.string().required('Resume is required'),
+        file_key: yup.string().required('Resume is required'),
+      })
+      .required('Resume is required'),
   });
   const savedFormData = useSelector(formData);
   const fileKeyDetails = useSelector(fileKey);
@@ -267,6 +288,7 @@ const FlexternEducational = () => {
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const {
     control,
     handleSubmit,
@@ -289,6 +311,7 @@ const FlexternEducational = () => {
       institutionEmail: savedFormData?.institutionEmail || null,
       institution: savedFormData?.institution || null,
       education: savedFormData?.education || null,
+      resume: savedFormData?.resume || null,
     },
   });
 
@@ -297,9 +320,15 @@ const FlexternEducational = () => {
     name: 'otherEducationDetails',
   });
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
+  const [uploadingFiles, setUploadingFiles] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
+  const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
+  const isResumeDataUploadedForSocial = useSelector(resumeDataUploadedForSocial);
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
+  const [files, setFiles] = useState(savedFormDocuments || []);
 
   const localFormData = useWatch({ control });
 
@@ -329,15 +358,58 @@ const FlexternEducational = () => {
         const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
         trigger(keysWithValues);
       }
+      setFiles(savedFormDocuments || []);
     }
   }, [parseResume]);
+  useEffect(() => {
+    if (!files || (files?.length > 0 && !files[0].file?.name)) {
+      setFiles([]);
+    }
+  }, [files]);
+  const isDeleteResumeLoading = useSelector(deleteResumeLoading);
+  const handleRemoveFile = async (file) => {
+    const uploadedFiles = files;
+    await dispatch(
+      deleteResume(() => {
+        const filtered = uploadedFiles.filter((i) => i.id !== file.id);
+        dispatch(setFormDocuments(null));
+        dispatch(setResumeDataUploadedForEducation(false));
+        dispatch(setResumeDataUploadedForPersonal(false));
+        dispatch(setResumeDataUploadedForSocial(false));
+        setFiles([...filtered]);
+      }),
+    );
+    setValue('resume', null, { shouldValidate: true });
+  };
+  const isFileValid = (file) => {
+    if (file.size > maxFileSize) {
+      ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
+      return false;
+    }
+    return true;
+  };
+  const handleUploadFile = async (file) => {
+    try {
+      setUploadingFiles([file]);
+
+      await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': 'multipart/form-data',
+      });
+    } catch (error) {
+      dispatch(resumeParsedDetailsSuccess(null));
+      setParseResume(false);
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
+    } finally {
+      setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
+    }
+  };
+
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
   // const [certificatesOptions, setCertificatesOptions] = useState(null);
-  const [files, setFiles] = useState(savedFormDocuments || []);
-  const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
-  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
+
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const supportData = useSelector((state) => state.support.supportCount);
@@ -390,70 +462,6 @@ const FlexternEducational = () => {
       navigate(`/${userOnboarding.talent}/social-details`);
     }
     dispatch(setResumeDataUploadedForEducation(parseResume));
-  };
-
-  const onSubmit = (data) => {
-    const {
-      otherEducationDetails,
-      skills,
-      tools,
-      certificates,
-      startYear,
-      graduationYear,
-      institutionEmail,
-      institution,
-      education,
-    } = data;
-
-    const other_educational_institutes = otherEducationDetails?.map((educationDetail) => ({
-      institution: educationDetail.educationInstitution.value,
-      education: educationDetail.education.value,
-    }));
-    const expertise = {
-      skills: skills?.map((skill) => skill.value),
-      tools: tools?.map((tool) => tool.value),
-      certificates: certificates?.map((certificate) => certificate.value),
-    };
-
-    const reqData = {
-      educational_institute: {
-        institution: institution?.value,
-        institute_email: institutionEmail,
-        institute_email_verify: false,
-        education: education?.value,
-        start_year: parseInt(startYear?.value, 10) || 0,
-        grad_year: parseInt(graduationYear?.value, 10) || 0,
-      },
-      other_educational_institutes: other_educational_institutes,
-      expertise,
-    };
-
-    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    if (IsresumeParsed) {
-      const resumeUpdatedData = {
-        target_info: {
-          ...parsedResumeData,
-          educational_institute: otherEducationDetails?.map((details) => ({
-            institution: { name: details.educationInstitution.label, _id: details.educationInstitution.value },
-            education: { name: details.education.label, _id: details.education.value },
-          })),
-          skills: skills?.map((skill) => ({
-            name: skill?.label,
-            _id: skill?.value,
-          })),
-          tools: tools?.map((tool) => ({
-            name: tool?.label,
-            _id: tool?.value,
-          })),
-          certificates: certificates?.map((certificate) => ({
-            name: certificate?.label,
-            _id: certificate?.value,
-          })),
-        },
-      };
-
-      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
-    }
   };
 
   const loadInstitutesOptions = async (search, prevOptions, { page }) => {
@@ -610,26 +618,46 @@ const FlexternEducational = () => {
         );
       }
       if (!isEmpty(res?.talent_info?.educational_institute)) {
-        setValue('institution', {
-          label: savedFormData?.institution?.label || res?.talent_info?.educational_institute?.institution?.name,
-          value: savedFormData?.institution?.value || res?.talent_info?.educational_institute?.institution?._id,
-        });
+        setValue(
+          'institution',
+          isEmpty(res?.talent_info?.educational_institute?.institution)
+            ? null
+            : {
+                label: savedFormData?.institution?.label || res?.talent_info?.educational_institute?.institution?.name,
+                value: savedFormData?.institution?.value || res?.talent_info?.educational_institute?.institution?._id,
+              },
+        );
+        setValue(
+          'education',
+          isEmpty(res?.talent_info?.educational_institute?.education)
+            ? null
+            : {
+                label: savedFormData?.education?.label || res?.talent_info?.educational_institute?.education?.name,
+                value: savedFormData?.education?.value || res?.talent_info?.educational_institute?.education?._id,
+              },
+        );
         setValue(
           'institutionEmail',
           savedFormData?.institutionEmail || res?.talent_info?.educational_institute?.institute_email,
         );
-        setValue('education', {
-          label: savedFormData?.education?.label || res?.talent_info?.educational_institute?.education?.name,
-          value: savedFormData?.education?.value || res?.talent_info?.educational_institute?.education?._id,
-        });
-        setValue('startYear', {
-          label: savedFormData?.startYear?.label || res?.talent_info?.educational_institute?.start_year,
-          value: savedFormData?.startYear?.value || res?.talent_info?.educational_institute?.start_year,
-        });
-        setValue('graduationYear', {
-          label: savedFormData?.graduationYear?.label || res?.talent_info?.educational_institute?.grad_year,
-          value: savedFormData?.graduationYear?.value || res?.talent_info?.educational_institute?.grad_year,
-        });
+        setValue(
+          'startYear',
+          res?.talent_info?.educational_institute?.start_year === 0
+            ? null // Set to null to show placeholder
+            : {
+                label: savedFormData?.startYear?.label || res?.talent_info?.educational_institute?.start_year,
+                value: savedFormData?.startYear?.value || res?.talent_info?.educational_institute?.start_year,
+              },
+        );
+        setValue(
+          'graduationYear',
+          res?.talent_info?.educational_institute?.grad_year === 0
+            ? null // Set to null to show placeholder
+            : {
+                label: savedFormData?.graduationYear?.label || res?.talent_info?.educational_institute?.grad_year,
+                value: savedFormData?.graduationYear?.value || res?.talent_info?.educational_institute?.grad_year,
+              },
+        );
       }
       if (res?.talent_info?.expertise?.tools.length > 0) {
         setValue(
@@ -669,9 +697,18 @@ const FlexternEducational = () => {
             file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
+          lastModified: res?.talent_info?.resume?.created_at,
         };
-        setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key));
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
+        setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
     }
@@ -730,12 +767,12 @@ const FlexternEducational = () => {
             'otherEducationDetails',
             res?.educational_institute?.slice(1).map((detail) => ({
               educationInstitution: {
-                label: detail.institution.name,
-                value: detail.institution._id,
+                label: detail?.institution?.name,
+                value: detail?.institution?._id,
               },
               education: {
-                label: detail.education.name,
-                value: detail.education._id,
+                label: detail?.education?.name,
+                value: detail?.education?._id,
               },
             })),
             { shouldValidate: true },
@@ -778,7 +815,269 @@ const FlexternEducational = () => {
           { shouldValidate: true },
         );
       }
+      if (savedFormDocuments) {
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+            lastModified: savedFormDocuments[0]?.lastModified,
+          },
+        ]);
+      }
     }
+  };
+
+  const fetchUploadUrl = async (file) => {
+    const response = await resumeUploadService(file.name);
+    const fileWithUrl = {
+      id: uuidv4(),
+      file,
+      uploadData: response?.data?.data,
+      lastModified: Date.now(),
+      isUploaded: false,
+    };
+    dispatch(setFormDocuments([fileWithUrl]));
+    setFiles([fileWithUrl]);
+    await handleUploadFile(fileWithUrl);
+    dispatch(setFileKey(response?.data?.data?.file_key));
+    setValue(
+      'resume',
+      {
+        file_name: file?.name,
+        file_key: response?.data?.data?.file_key,
+      },
+      { shouldValidate: true },
+    );
+    trigger(['resume']);
+    // if (response)
+    //   dispatch(
+    //     getResumeParsedDetails(setResumeParsedDetails, setParseResume, response?.data?.data?.file_key, setFiles),
+    //   );
+    dispatch(setResumeParsed(true));
+    setParseResume(true);
+  };
+
+  const handleFileChange = async (e) => {
+    if (e.target.files) {
+      if (isFileValid(e.target.files[0])) {
+        dispatch(clearAllFormData());
+        await fetchUploadUrl(e.target.files[0]);
+        setParseResume(true);
+        dispatch(setResumeParsed(true));
+      }
+    } else {
+      e.target.value = '';
+    }
+  };
+
+  const filesRef = useRef();
+  useEffect(() => {
+    const fileReRender = async () => {
+      if (savedFormDocuments != null) {
+        filesRef.current = files;
+        setFiles(savedFormDocuments);
+        dispatch(setFormDocuments(savedFormDocuments));
+      } else {
+        setFiles([]);
+      }
+    };
+    fileReRender();
+  }, [savedFormDocuments]);
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
+  const downloadResume = (file) => {
+    if (file.isUploaded) {
+      dispatch(
+        getDownloadUrl({
+          fileKey: file?.uploadData?.file_key,
+          onSuccess: onDownloadResumeUrlSuccess,
+          fileName: file.file.name,
+        }),
+      );
+    } else {
+      downloadUploadedFile({ file: file.file });
+    }
+  };
+  const onGetUserResumeDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+        const fileUrl = {
+          file: {
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
+          },
+          uploadData: {
+            file_key: res?.talent_info?.resume?.file_key,
+          },
+          isUploaded: true,
+          lastModified: res?.talent_info?.resume?.created_at,
+        };
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key));
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
+        setFiles([fileUrl]);
+        dispatch(setFormDocuments([fileUrl]));
+      }
+    }
+  };
+  const fileList = () => (
+    <div className="custom-card ">
+      <Card className="mb-0">
+        {files?.map((file, index) => (
+          <Row
+            key={file.id}
+            className={
+              index !== files.length - 1
+                ? 'd-flex flex-column align-items-start mb-1'
+                : 'd-flex flex-column align-items-start'
+            }
+          >
+            <div className="d-flex flex-wrap w-100 gap-1 gap-xl-0 justify-content-between">
+              <Col
+                className="d-flex cursor-pointer justify-content-between align-items-center  px-1 w-100"
+                style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                onClick={() => downloadResume(file)}
+              >
+                {downloadUrlIsLoading ? (
+                  <div className="d-flex align-items-center justify-content-center w-100">
+                    <Spinner color="primary" />
+                  </div>
+                ) : (
+                  <div className="d-flex align-items-center w-100 ">
+                    <span>{renderFilePreview(file.file)}</span>
+                    <div className="d-flex flex-column">
+                      <span className="text-sm text-grey-heading font-medium">{file.file.name}</span>
+                      <span className="text-xs text-grey font-normal"> {formatDateWithTime(file.lastModified)}</span>
+                    </div>
+                  </div>
+                )}
+              </Col>
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
+                onClick={() => {
+                  handleRemoveFile(file);
+                  setParseResume(false);
+                  dispatch(resumeParsedDetailsSuccess(null));
+                  dispatch(setResumeParsed(false));
+                }}
+              >
+                {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
+              </Button>
+            </div>
+            {/* <Row className="mt-2">
+              <Row>
+                <Col>{uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}</Col>
+                <Col>{getFileSize(file.file.size)}</Col>
+              </Row>
+              <Row className="d-flex align-items-center">
+                <Col>{requiredFormattedDate}</Col>
+                <Col>
+                  <Button
+                    color="flat-danger"
+                    className="btn-left-margin"
+                    disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
+                    onClick={() => {
+                      handleRemoveFile(file);
+                      setParseResume(false);
+                      dispatch(resumeParsedDetailsSuccess(null));
+                      dispatch(setResumeParsed(false));
+                    }}
+                  >
+                    {isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
+                  </Button>
+                </Col>
+              </Row>
+            </Row> */}
+          </Row>
+        ))}
+      </Card>
+    </div>
+  );
+  const onSubmit = (data) => {
+    const {
+      otherEducationDetails,
+      skills,
+      tools,
+      certificates,
+      startYear,
+      graduationYear,
+      institutionEmail,
+      institution,
+      education,
+    } = data;
+
+    const other_educational_institutes = otherEducationDetails?.map((educationDetail) => ({
+      institution: educationDetail.educationInstitution.value,
+      education: educationDetail.education.value,
+    }));
+    const expertise = {
+      skills: skills?.map((skill) => skill.value),
+      tools: tools?.map((tool) => tool.value),
+      certificates: certificates?.map((certificate) => certificate.value),
+    };
+
+    const reqData = {
+      educational_institute: {
+        institution: institution?.value,
+        institute_email: institutionEmail,
+        institute_email_verify: false,
+        education: education?.value,
+        start_year: parseInt(startYear?.value, 10) || 0,
+        grad_year: parseInt(graduationYear?.value, 10) || 0,
+      },
+      resume: !isEmpty(files)
+        ? {
+            file_name: files[0]?.file?.name || '',
+            file_key: files[0]?.uploadData?.file_key || '',
+          }
+        : {},
+      other_educational_institutes: other_educational_institutes,
+      expertise,
+    };
+
+    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    // if (IsresumeParsed) {
+    //   const resumeUpdatedData = {
+    //     target_info: {
+    //       ...parsedResumeData,
+    //       educational_institute: otherEducationDetails?.map((details) => ({
+    //         institution: { name: details.educationInstitution.label, _id: details.educationInstitution.value },
+    //         education: { name: details.education.label, _id: details.education.value },
+    //       })),
+    //       skills: skills?.map((skill) => ({
+    //         name: skill?.label,
+    //         _id: skill?.value,
+    //       })),
+    //       tools: tools?.map((tool) => ({
+    //         name: tool?.label,
+    //         _id: tool?.value,
+    //       })),
+    //       certificates: certificates?.map((certificate) => ({
+    //         name: certificate?.label,
+    //         _id: certificate?.value,
+    //       })),
+    //     },
+    //   };
+
+    //   dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    // }
   };
 
   useEffect(() => {
@@ -788,6 +1087,23 @@ const FlexternEducational = () => {
       } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+        if (savedFormDocuments) {
+          setFiles([
+            {
+              file: {
+                name: savedFormDocuments[0]?.file?.name,
+                size: savedFormDocuments[0]?.file?.size,
+              },
+              uploadData: {
+                file_key: savedFormDocuments[0]?.uploadData?.file_key,
+              },
+              isUploaded: true,
+              lastModified: savedFormDocuments[0]?.lastModified,
+            },
+          ]);
+          dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        }
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
@@ -796,6 +1112,21 @@ const FlexternEducational = () => {
             savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
           ),
         );
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+            lastModified: savedFormDocuments[0]?.lastModified,
+          },
+        ]);
+        dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
@@ -810,7 +1141,11 @@ const FlexternEducational = () => {
     setCustomerSupportModal(true);
     setDefaultSelected(value);
   };
-
+  const handleParseResumeToggle = () => {
+    setParsedUploaded(false);
+    setParseResume(!parseResume);
+    dispatch(setResumeParsed(!parseResume));
+  };
   const toggleSupportModal = () => {
     setCustomerSupportModal(!customerSupportModal);
   };
@@ -833,14 +1168,14 @@ const FlexternEducational = () => {
 
   return (
     <ProfileFormContainer>
-      {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) ? (
+      {userDetailsIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="w-100">
-            <Col className="w-75" xs="100" sm="100" lg="80">
+            <Col className="w-70" xs="12" sm="12" lg="8">
               <Card className="w-100">
                 <CardHeader className="d-flex align-items-end">
                   <h4 className="m-0 mt-1 text-lg font-medium">Current Education</h4>
@@ -1167,48 +1502,92 @@ const FlexternEducational = () => {
                       <Spinner size="sm" />
                     ) : (
                       <>
-                        <span className="me-50">Save Continue</span>
+                        <span className="me-50">Save & Continue</span>
                       </>
                     )}
                   </Button>
                 </div>
               </div>
             </Col>
-            <Col>
-              {((userData?.talent_info?.resume && Object.keys(userData.talent_info.resume).length > 0) ||
-                !isEmpty(files)) && (
-                <Card>
-                  <CardBody>
-                    <div className="d-flex flex-column">
-                      <div className="d-flex" style={{ backgroundColor: '#0185E426', padding: 20 }}>
+            <Col xs="12" sm="12" lg="4">
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
+                    Resume <span className="label-asterisk">*</span>
+                  </h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
+                <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
+                  {/* IsresumeParsed ? resumeParsedLoading :  */}
+                  <div className="d-flex flex-column gap-7">
+                    <div
+                      style={{
+                        background: parseResume ? '#0185E426' : theme.greyedOutBackground,
+                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                      }}
+                    >
+                      <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
                         <Col lg="fit">
                           <Info className="font-medium-3 me-50" color="#004280" />
                         </Col>
-
-                        <Col>
-                          <div className="d-flex justify-content-between w-100">
-                            <span style={{ color: '#004280' }}>
-                              <span className="fw-bold">Auto Fill</span>
-
-                              <FormGroup switch>
-                                <Input
-                                  type="switch"
-                                  checked={parseResume}
-                                  onClick={() => {
-                                    setParsedUploaded(false);
-                                    setParseResume(!parseResume);
-                                    dispatch(setResumeParsed(!parseResume));
-                                  }}
-                                />
-                              </FormGroup>
-                            </span>
+                        <Col className="w-100 ">
+                          <div
+                            style={{ color: '#004280' }}
+                            className="d-flex w-100  justify-content-between align-items-center"
+                          >
+                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
+                              Auto Fill {files && files?.length > 0 && 'Profile'}
+                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            </Col>
+                            {resumeParsedLoading ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              !uploadingFiles.includes(files[0]) &&
+                              !isEmpty(files) && (
+                                <FormGroup switch className="p-0">
+                                  <Input type="switch" checked={parseResume} onClick={handleParseResumeToggle} />
+                                </FormGroup>
+                              )
+                            )}
                           </div>
+                          {files?.length == 0 && (
+                            <div className=" px-0 py-0">
+                              <>
+                                <Label
+                                  for="resume"
+                                  className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
+                                >
+                                  <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
+                                </Label>
+                                <Controller
+                                  id="resume"
+                                  name="resume"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <Input
+                                      {...field}
+                                      ref={filesRef}
+                                      id="resume"
+                                      type="file"
+                                      max={1}
+                                      accept="application/pdf"
+                                      className="d-none"
+                                      onChange={(e) => {
+                                        handleFileChange(e);
+                                      }}
+                                    />
+                                  )}
+                                />
+                              </>
+                            </div>
+                          )}
                         </Col>
                       </div>
                     </div>
-                  </CardBody>
-                </Card>
-              )}
+                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
+                  </div>
+                </CardBody>
+              </Card>
 
               <Card>
                 <CardHeader>

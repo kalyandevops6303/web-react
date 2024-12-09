@@ -22,6 +22,7 @@ export function DatePicker(props: InputProps) {
     error,
     fromDate,
     timeZone = 'Asia/Kolkata',
+    disabled = false,
   } = props;
 
   const calendarRef = React.useRef<HTMLButtonElement>(null);
@@ -40,7 +41,7 @@ export function DatePicker(props: InputProps) {
 
   return (
     <Popover>
-      <PopoverTrigger ref={calendarRef} asChild>
+      <PopoverTrigger disabled={disabled} ref={calendarRef} asChild>
         <div className={`${Styles.formFieldContainer} ${className || ''}`}>
           <div className={Styles.formInputLabelContainer}>
             <span className={Styles.formInputLabel}>{label}</span>
@@ -69,6 +70,7 @@ export function DatePicker(props: InputProps) {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white">
         <Calendar
+          disabled={disabled}
           mode="single"
           selected={
             value
@@ -100,4 +102,5 @@ type InputProps = {
   error?: string;
   fromDate?: Date;
   timeZone?: string;
+  disabled?: boolean;
 };
