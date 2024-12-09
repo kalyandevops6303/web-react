@@ -32,7 +32,6 @@ import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
-import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
 import { SecondaryProjectStatus } from '@/flexternships/constraints/enums/project-enums';
 
 // eslint-disable-next-line react/prop-types
@@ -247,7 +246,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
-    console.log(metaDataFlextern);
     dispatch(
       getProjectListing({
         data: {
@@ -281,12 +279,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadTalentOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getTalentNameService(page, search);
-      const options = response?.data?.data?.data.map((option) => {
-        return {
+      const options = response?.data?.data?.data.map((option) => ({
           value: option.talent_id,
           label: option.talent_name,
-        };
-      });
+        }));
       return {
         options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
@@ -303,12 +299,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getDepartmentNameService(page, search);
 
-      const options = response?.data?.data?.data.map((option) => {
-        return {
+      const options = response?.data?.data?.data.map((option) => ({
           value: option.department_name,
           label: option.department_name,
-        };
-      });
+        }));
       return {
         options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
@@ -324,15 +318,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await getSecondaryStatuses(page, search);
-      const options = response?.data?.data?.data.map((option) => {
-        return {
+      const options = response?.data?.data?.data.map((option) => ({
           value: option.status,
           label: SecondaryProjectStatus[option.status],
-        };
-      });
+        }));
 
       return {
-        options: options,
+        options,
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -347,12 +339,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     try {
       const response = await getProjectNames(page, search);
 
-      const options = response?.data?.data?.data.map((option) => {
-        return {
+      const options = response?.data?.data?.data.map((option) => ({
           value: option._id,
           label: option.name,
-        };
-      });
+        }));
 
       return {
         options,

@@ -51,7 +51,6 @@ const LeftSideBarProjectDetails = () => {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
-
   const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
   const [showRelistModal, setShowRelistModal] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
