@@ -5,15 +5,15 @@ import getTeamId from '../../utility/commonUtils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
 import { apiAuthEndpoint } from '../api';
-
+import { getCookiesItem, setCookiesItem } from '@/utility/cookiesControl';
 const authHeader = () => ({
-  Authorization: `Bearer ${getItem('access_token')}`,
+  Authorization: `Bearer ${getCookiesItem('access_token')}`,
 });
 
 const client = axios.create({
   baseURL: '',
   headers: {
-    Authorization: `Bearer ${getItem('access_token')}`,
+    Authorization: `Bearer ${getCookiesItem('access_token')}`,
     'Content-Type': 'application/json',
   },
 });
@@ -137,7 +137,8 @@ client.interceptors.request.use(async (req) => {
     if (refreshTokenExpiry > new Date().valueOf()) {
       if (accessTokenExpiry < new Date().valueOf()) {
         await getRefreshToken().then((res) => {
-          setItem('access_token', res.data.data.access_token);
+          setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
+
           setItem('access_token_expires', res.data.data.access_token_expiry);
           req.headers.Authorization = `Bearer ${res.data.data.access_token}`;
         });

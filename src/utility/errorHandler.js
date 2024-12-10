@@ -14,7 +14,7 @@ import { messaging } from '../configs/api/firebase';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { v4 as uuidv4 } from 'uuid';
-
+import { getCookiesItem } from './cookiesControl';
 const { dispatch } = store;
 
 const MIN_ERROR_INTERVAL_MS = 5000; // Minimum time between error notifications (in milliseconds)
@@ -40,7 +40,7 @@ const handleError = (err, callBack) => {
 const handleErrorCode = async (err, callBack) => {
   const cometChatToken = getItem('cometChatToken');
   const fcmToken = getItem('fcmToken');
-  const accessToken = getItem('access_token');
+  const accessToken = getCookiesItem('access_token');
   const expiredError = getItem('expiredError');
   if (err?.response?.status === 401) {
     if (!expiredError) {
