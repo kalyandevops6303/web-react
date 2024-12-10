@@ -743,47 +743,47 @@ const FlexternEducational = () => {
           setValue('institutionEmail', userData?.talent_info?.educational_institute?.institute_email);
         }
         const primaryEducation = res.educational_institute[0];
-       if(primaryEducation?.institution) {
-        setValue(
-          'institution',
+        if (primaryEducation?.institution) {
+          setValue(
+            'institution',
             {
-                label: primaryEducation?.institution?.name,
-                value: primaryEducation?.institution?._id,
-              },
-        
-          { shouldValidate: true },
-        )
-       } else if(userData?.talent_info?.educational_institute?.institution) {
-        setValue(
-          'institution',
+              label: primaryEducation?.institution?.name,
+              value: primaryEducation?.institution?._id,
+            },
+
+            { shouldValidate: true },
+          );
+        } else if (userData?.talent_info?.educational_institute?.institution) {
+          setValue(
+            'institution',
             {
-                label: userData?.talent_info?.educational_institute?.institution?.name,
-                value: userData?.talent_info?.educational_institute?.institution?._id,
-              },
-        
-          { shouldValidate: true },
-        )
-       } 
-        
-        if(primaryEducation?.education) {
-        setValue(
-          'education',
-            {
-                label: primaryEducation?.education?.name,
-                value: primaryEducation?.education?._id,
-              },
-        
-          { shouldValidate: true },
-        ) 
-      }  else if(userData?.talent_info?.educational_institute?.education) {
+              label: userData?.talent_info?.educational_institute?.institution?.name,
+              value: userData?.talent_info?.educational_institute?.institution?._id,
+            },
+
+            { shouldValidate: true },
+          );
+        }
+
+        if (primaryEducation?.education) {
           setValue(
             'education',
-              {
-                  label: userData?.talent_info?.educational_institute?.education?.name,
-                  value: userData?.talent_info?.educational_institute?.education?._id,
-                },
+            {
+              label: primaryEducation?.education?.name,
+              value: primaryEducation?.education?._id,
+            },
+
             { shouldValidate: true },
-          )
+          );
+        } else if (userData?.talent_info?.educational_institute?.education) {
+          setValue(
+            'education',
+            {
+              label: userData?.talent_info?.educational_institute?.education?.name,
+              value: userData?.talent_info?.educational_institute?.education?._id,
+            },
+            { shouldValidate: true },
+          );
         }
 
         // Set other education details (remaining entries)
@@ -826,7 +826,7 @@ const FlexternEducational = () => {
                 value: userData?.talent_info?.educational_institute?.institution?._id,
               }
             : null,
-            { shouldValidate: true },
+          { shouldValidate: true },
         );
 
         setValue(
@@ -947,16 +947,20 @@ const FlexternEducational = () => {
       isUploaded: false,
     };
     // dispatch(setFormDocuments([fileWithUrl]));
-    dispatch(setFormDocuments([{
-      id: fileWithUrl?.id,
-      file: {
-        name: file?.name,
-        size: file?.size,
-      },
-      uploadData: fileWithUrl?.uploadData,
-      lastModified: fileWithUrl?.lastModified,
-      isUploaded: fileWithUrl?.isUploaded,
-    }]));
+    dispatch(
+      setFormDocuments([
+        {
+          id: fileWithUrl?.id,
+          file: {
+            name: file?.name,
+            size: file?.size,
+          },
+          uploadData: fileWithUrl?.uploadData,
+          lastModified: fileWithUrl?.lastModified,
+          isUploaded: fileWithUrl?.isUploaded,
+        },
+      ]),
+    );
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));

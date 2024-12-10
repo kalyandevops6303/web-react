@@ -605,16 +605,20 @@ const FlexternSocial = () => {
       lastModified: Date.now(),
       isUploaded: false,
     };
-    dispatch(setFormDocuments([{
-      id: fileWithUrl?.id,
-      file: {
-        name: file?.name,
-        size: file?.size,
-      },
-      uploadData: fileWithUrl?.uploadData,
-      lastModified: fileWithUrl?.lastModified,
-      isUploaded: fileWithUrl?.isUploaded,
-    }]));
+    dispatch(
+      setFormDocuments([
+        {
+          id: fileWithUrl?.id,
+          file: {
+            name: file?.name,
+            size: file?.size,
+          },
+          uploadData: fileWithUrl?.uploadData,
+          lastModified: fileWithUrl?.lastModified,
+          isUploaded: fileWithUrl?.isUploaded,
+        },
+      ]),
+    );
     // dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
@@ -648,7 +652,6 @@ const FlexternSocial = () => {
       e.target.value = '';
     }
   };
-
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });

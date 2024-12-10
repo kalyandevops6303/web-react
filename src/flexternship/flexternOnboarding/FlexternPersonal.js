@@ -455,16 +455,20 @@ const FlexternPersonal = () => {
       lastModified: Date.now(),
       isUploaded: false,
     };
-    dispatch(setFormDocuments([{
-      id: fileWithUrl?.id,
-      file: {
-        name: file?.name,
-        size: file?.size,
-      },
-      uploadData: fileWithUrl?.uploadData,
-      lastModified: fileWithUrl?.lastModified,
-      isUploaded: fileWithUrl?.isUploaded,
-    }]));
+    dispatch(
+      setFormDocuments([
+        {
+          id: fileWithUrl?.id,
+          file: {
+            name: file?.name,
+            size: file?.size,
+          },
+          uploadData: fileWithUrl?.uploadData,
+          lastModified: fileWithUrl?.lastModified,
+          isUploaded: fileWithUrl?.isUploaded,
+        },
+      ]),
+    );
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
@@ -489,7 +493,7 @@ const FlexternPersonal = () => {
       if (isFileValid(e.target.files[0])) {
         dispatch(clearAllFormData());
         await fetchUploadUrl(e.target.files[0]);
-        setParseResume(true); 
+        setParseResume(true);
         dispatch(setResumeParsed(true));
       }
     } else {
