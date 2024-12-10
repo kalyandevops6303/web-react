@@ -1,9 +1,8 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
-import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { User } from 'react-feather';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
@@ -16,26 +15,9 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const getPerformanceDetails = useProjectsStore((state) => state.getPeerOrIndividualPerformanceDetails);
   const isPerformanceDetailsLoading = useProjectsStore((state) => state.isPerformanceDetailsLoading);
 
-  const getFeedbackResponse = useFeedbackStore((state) => state.getFeedbackResponse);
-  const feedbackResponse = useFeedbackStore((state) => state.feedbackResponse);
-
-  const [currentOpened, setCurrentOpened] = useState<any>(null);
-
-  const handleAccordionToggle = (individualFeedback: any) => {
-    if (individualFeedback.user_id === currentOpened?.user_id) setCurrentOpened(null);
-    else setCurrentOpened(individualFeedback);
-  };
-
   useEffect(() => {
     if (milestoneId) getPerformanceDetails(milestoneId, feedbackType);
   }, [milestoneId]);
-
-  useEffect(() => {
-    if (currentOpened && currentOpened?.feedback_id) {
-      const receiverId = currentOpened?.user_id;
-      getFeedbackResponse(receiverId, milestoneId, feedbackType);
-    }
-  }, [currentOpened]);
 
   const getHeaderContent = (individualFeedback: any) => {
     const { image_uri, first_name, last_name, role, score } = individualFeedback;
@@ -68,31 +50,37 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
     );
   };
 
+  if (isPerformanceDetailsLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48 w-full">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {isPerformanceDetailsLoading ? (
-        <div className="flex flex-col items-center justify-center min-h-48">
-          <div className="h-8 w-8">
-            <Spinner />
-          </div>
-        </div>
-      ) : (
-        performanceDetails?.map((individualFeedback: any) => (
-          <>
-            {individualFeedback?.feedback_id && (
-              <CollapsableCard
-                white
-                className="mb-5 bg-white rounded-[10px]"
-                headerContent={getHeaderContent(individualFeedback)}
-                isOpen={individualFeedback?.user_id === currentOpened?.user_id}
-                onToggle={() => handleAccordionToggle(individualFeedback)}
-              >
-                <IndividualFeedbackResponse response={feedbackResponse} />
-              </CollapsableCard>
-            )}
-          </>
-        ))
-      )}
+      {performanceDetails?.map((individualFeedback: any) => (
+        <>
+          {individualFeedback?.feedback_id && (
+            <CollapsableCard
+              white
+              className="mb-5 bg-white rounded-[10px]"
+              headerContent={getHeaderContent(individualFeedback)}
+            >
+              {individualFeedback && (
+                <IndividualFeedbackResponse
+                  feedbackOverview={individualFeedback}
+                  milestoneId={milestoneId}
+                  feedbackType={feedbackType}
+                />
+              )}
+            </CollapsableCard>
+          )}
+        </>
+      ))}
     </div>
   );
 }

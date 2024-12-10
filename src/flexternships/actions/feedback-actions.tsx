@@ -7,6 +7,7 @@ import {
 import { showToastMessage } from '../utils/core-utils';
 import Toast from '../app/components/core/Toasts/Toast';
 import { v4 as uuidv4 } from 'uuid';
+import { FeedbackTypesAPI } from '../constraints/enums/feedback-enums';
 
 export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: string, set: any) => {
   set({ isFeedbackFormLoading: true });
@@ -40,15 +41,31 @@ export const getFeedbackResponseInfo = async (
   receiverId: string,
   milestoneId: string,
   feedbackType: string,
+  onSuccess: () => void,
   set: any,
 ) => {
   set({ isFeedbackResponseLoading: true });
   const data: any = await getFeedbackResponseService(receiverId, milestoneId, feedbackType);
-  set((state: any) => ({
-    ...state,
-    feedbackResponse: data,
-  }));
+  if (feedbackType === FeedbackTypesAPI.INDIVIDUAL || feedbackType === FeedbackTypesAPI.PEER) {
+    set((state: any) => ({
+      ...state,
+      feedbackResponse: {
+        ...state.feedbackResponse,
+        [receiverId]: data,
+      },
+    }));
+  } else {
+    set((state: any) => ({
+      ...state,
+      feedbackResponse: {
+        ...state.feedbackResponse,
+        [milestoneId]: data,
+      },
+    }));
+  }
+
   set({ isFeedbackResponseLoading: false });
+  onSuccess();
 };
 
 export const setSurveyProgressData = async (data: any, set: any) => {
