@@ -6,6 +6,7 @@ import getTeamId from '../../utility/commonUtils';
 import errorHandler from '../../utility/errorHandler';
 import { apiAuthEndpoint } from '../api';
 import { getCookiesItem, setCookiesItem } from '@/utility/cookiesControl';
+
 const authHeader = () => ({
   Authorization: `Bearer ${getCookiesItem('access_token')}`,
 });

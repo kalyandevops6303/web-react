@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
+import { logout as logoutZustand } from '@flexternships/utils/core-utils';
 import errorHandler from '../../utility/errorHandler';
 
 import {
@@ -88,7 +89,7 @@ import {
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
-import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
@@ -103,7 +104,6 @@ import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
-import { logout as logoutZustand } from '@flexternships/utils/core-utils';
 import { setCookiesItem } from '@/utility/cookiesControl';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {

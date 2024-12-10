@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
 import { CometChat } from '@cometchat-pro/chat';
+import { v4 as uuidv4 } from 'uuid';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
@@ -13,8 +14,8 @@ import { getItemFromSession, setItemFromSession } from './sessesionStorageContro
 import { messaging } from '../configs/api/firebase';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { v4 as uuidv4 } from 'uuid';
 import { getCookiesItem } from './cookiesControl';
+
 const { dispatch } = store;
 
 const MIN_ERROR_INTERVAL_MS = 5000; // Minimum time between error notifications (in milliseconds)
