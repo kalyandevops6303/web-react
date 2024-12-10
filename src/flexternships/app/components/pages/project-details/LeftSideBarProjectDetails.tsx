@@ -251,7 +251,7 @@ const LeftSideBarProjectDetails = () => {
               Withdraw
             </PrimaryButton>
           )}
-          {userDetails.userType === UserType.CLIENT &&
+          {/* {userDetails.userType === UserType.CLIENT &&
             (data?.status === ProjectPrimaryStatus.ACTIVE ||
               data?.status === ProjectPrimaryStatus.ON_GOING ||
               data?.status === ProjectPrimaryStatus.BLOCKED) && (
@@ -262,7 +262,7 @@ const LeftSideBarProjectDetails = () => {
               >
                 Terminate
               </PrimaryButton>
-            )}
+            )} */}
           {((userDetails.userType === UserType.CLIENT &&
             (data?.status === ProjectPrimaryStatus.ACTIVE ||
               data?.status === ProjectPrimaryStatus.ON_GOING ||
