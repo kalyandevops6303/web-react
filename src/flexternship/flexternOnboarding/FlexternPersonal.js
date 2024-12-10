@@ -81,6 +81,7 @@ import {
   setFileKey,
   setFormData,
   setFormDocuments,
+  setResumeDataUploadedForAdditional,
   setResumeDataUploadedForEducation,
   setResumeDataUploadedForPersonal,
   setResumeDataUploadedForSocial,
@@ -254,7 +255,9 @@ const FlexternPersonal = () => {
         dispatch(setResumeDataUploadedForPersonal(false));
         dispatch(setResumeDataUploadedForEducation(false));
         dispatch(setResumeDataUploadedForSocial(false));
+        dispatch(setResumeDataUploadedForAdditional(false));
         setFiles([...filtered]);
+        setParsedUploaded(false);
       }),
     );
     setValue('resume', null, { shouldValidate: true });
@@ -695,7 +698,6 @@ const FlexternPersonal = () => {
       return { options: [] };
     }
   };
-
   const loadPreferedWorkingTimezoneOptions = async (search) => {
     if (search) {
       return {

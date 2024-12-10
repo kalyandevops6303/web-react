@@ -110,6 +110,9 @@ import {
   downloadUrlSuccess,
   downloadUrlFailure,
   downloadUrlRequest,
+  downloadUrlForResumeSuccess,
+  downloadUrlForResumeFailure,
+  downloadUrlForResumeRequest,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -488,6 +491,18 @@ const getDownloadUrl =
       errorHandler(error, downloadUrlFailure);
     }
   };
+const getDownloadUrlForResume =
+  ({ fileKey, fileName, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(downloadUrlForResumeRequest());
+    try {
+      const res = await downloadUrlService(fileKey);
+      dispatch(downloadUrlForResumeSuccess(res.data.data));
+      onSuccess({ download_url: res.data.data, file_name: fileName });
+    } catch (error) {
+      errorHandler(error, downloadUrlForResumeFailure);
+    }
+  };
 
 export {
   getModalData,
@@ -520,4 +535,5 @@ export {
   getDashboardUpcomingPayments,
   getProjectInvitation,
   getDownloadUrl,
+  getDownloadUrlForResume,
 };

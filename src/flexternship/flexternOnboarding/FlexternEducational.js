@@ -92,6 +92,7 @@ import {
   setFileKey,
   setResumeDataUploadedForPersonal,
   setResumeDataUploadedForSocial,
+  setResumeDataUploadedForAdditional,
 } from '../../redux/reducers/formData';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
@@ -376,7 +377,9 @@ const FlexternEducational = () => {
         dispatch(setResumeDataUploadedForEducation(false));
         dispatch(setResumeDataUploadedForPersonal(false));
         dispatch(setResumeDataUploadedForSocial(false));
+        dispatch(setResumeDataUploadedForAdditional(false));
         setFiles([...filtered]);
+        setParsedUploaded(false);
       }),
     );
     setValue('resume', null, { shouldValidate: true });
