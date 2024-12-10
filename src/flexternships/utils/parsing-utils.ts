@@ -1,8 +1,13 @@
+import { ClientDelegateRole } from '../constraints/enums/profile-enums';
 import {
   MilestoneArtifact,
   MilestoneDetails,
   MilestoneDraftArtifact,
 } from '../constraints/types/project-milestones-types';
+import {
+  FlexternClientProjectDetails,
+  FlexternClientPublicProfileDetails,
+} from '../constraints/types/user-profile-types';
 
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
@@ -84,4 +89,52 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
   return separateArtifacts
     ? { milestoneDetails: formattedMilestoneDetails, artifactDetails: formattedArtifactDetails }
     : { ...formattedMilestoneDetails, ...formattedArtifactDetails };
+};
+export const parseClientPublicDetails = (data: Record<string, any>): FlexternClientPublicProfileDetails => {
+  return {
+    firstname: data.first_name,
+    lastname: data.last_name,
+    imageUri: data.image_uri,
+    title: data.title,
+    completedProjectsCount: data.completed_projects_count,
+    openListingsCount: data.open_listing_count,
+    companyDetails: {
+      companyLogo: data.company_logo,
+      companyName: data.company_name,
+      companyTagline: data.company_tagline,
+    },
+    officeAddress: {
+      country: data.office_address?.country?.name,
+      state: data.office_address?.state?.name,
+      city: data.office_address?.city?.name,
+      streetAddress: data.office_address?.street_address,
+      houseNumber: data.office_address?.house_number,
+      zipCode: data.office_address?.zip_code,
+    },
+    socialLinks: data.social_links,
+    delegates: data?.client_delegate?.map((delegate: Record<string, string | undefined>) => ({
+      firstname: delegate.first_name,
+      lastname: delegate.last_name,
+      imageUri: delegate.image_uri,
+      delegateType: delegate.delegate_type || ClientDelegateRole.FULL_ACCESS,
+    })),
+  };
+};
+
+export const parseClientCompletedProjects = (data: Record<string, any>): FlexternClientProjectDetails => {
+  return {
+    metadata: {
+      currentPage: data.metadata?.current_page,
+      pageSize: data.metadata?.page_size,
+      totalRecords: data.metadata?.total_records,
+      hasNextPage: data.metadata?.has_next_page,
+    },
+    projects:
+      data.data?.map((project: Record<string, any>) => ({
+        id: project._id,
+        name: project.details?.name,
+        description: project.details?.description,
+        roles: project.roles.role_id.map((role: Record<string, any>) => role.name),
+      })) || [],
+  };
 };

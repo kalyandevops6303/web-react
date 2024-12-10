@@ -1,3 +1,4 @@
+import { ClientDelegateRole } from '../enums/profile-enums';
 import { City, CompanyIndustry, Country, State, Timezone } from './core-types';
 
 export type FlexternClientAccountDetails = {
@@ -63,9 +64,49 @@ export type FlexternUserProfileFormActions = {
 export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserProfileFormActions;
 
 // Public Profile Types
-// Todo: Add more details
 export type FlexternClientPublicProfileDetails = {
   firstname: string;
   lastname: string;
   imageUri?: string;
+  title: string;
+  completedProjectsCount: number;
+  openListingsCount: number;
+  companyDetails: {
+    companyLogo: string;
+    companyName: string;
+    companyTagline: string;
+  };
+  officeAddress: {
+    country: string;
+    state: string;
+    city: string;
+    streetAddress: string;
+    houseNumber: string;
+    zipCode: string;
+  };
+  socialLinks: Array<{
+    platform: string;
+    url: string;
+  }>;
+  delegates: Array<{
+    firstname: string;
+    lastname: string;
+    imageUri: string;
+    delegateType: ClientDelegateRole | undefined;
+  }>;
+};
+
+export type FlexternClientProjectDetails = {
+  metadata: {
+    currentPage: number;
+    pageSize: number;
+    totalRecords: number;
+    hasNextPage: boolean;
+  };
+  projects: Array<{
+    id: string;
+    name: string;
+    description: string;
+    roles: string[];
+  }>;
 };
