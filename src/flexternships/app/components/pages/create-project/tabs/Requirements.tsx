@@ -97,6 +97,12 @@ export default function Requirements() {
     }
   };
 
+  useEffect(() => {
+    if (new Date().getTime() > watch('estimatedStartDate')) {
+      errors.estimatedStartDate = { type: 'manual', message: 'Please enter a valid start date' };
+    }
+  }, [watch('estimatedStartDate')]);
+
   // Watch for changes in estimatedDuration and estimatedWeeklyHours to autofill totalHours
   const estimatedDuration = watch('estimatedDuration');
   const estimatedWeeklyHours = watch('estimatedWeeklyHours');
