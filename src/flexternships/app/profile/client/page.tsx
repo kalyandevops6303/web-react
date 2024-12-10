@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, Heart, Link2, Users } from 'react-feather';
+import { Check, ChevronLeft, Database, Heart, Link2, Users } from 'react-feather';
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
 import ExpandableText from '../../components/core/ExpandableText';
 import { useEffect, useRef, useState } from 'react';
@@ -34,6 +34,7 @@ export default function ClientPublicProfile() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isProjectsLoading, setIsProjectsLoading] = useState(true);
+  const [isDelegatesInView, setIsDelegatesInView] = useState(false);
 
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -70,6 +71,21 @@ export default function ClientPublicProfile() {
   }, [clientProjectDetails.metadata.hasNextPage, isProjectsLoading]);
 
   const delegatesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsDelegatesInView(entry.isIntersecting);
+      },
+      { threshold: 0.1 },
+    );
+
+    if (delegatesRef.current) {
+      observer.observe(delegatesRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const fetchMoreProjects = async () => {
     if (!userId) {
@@ -141,13 +157,15 @@ export default function ClientPublicProfile() {
                 </div>
               </div>
             </div>
-            <div>
-              <PrimaryIconText
-                icon={<Users size={18} className="text-trublue-secondary-500" />}
-                text="View All Delegates"
-                onClick={scrollToDelegates}
-              />
-            </div>
+            {!isDelegatesInView && clientDetails?.delegates && clientDetails.delegates.length > 0 && (
+              <div>
+                <PrimaryIconText
+                  icon={<Users size={18} className="text-trublue-secondary-500" />}
+                  text="View All Delegates"
+                  onClick={scrollToDelegates}
+                />
+              </div>
+            )}
             <div>
               <div className="pb-2 text-lg font-medium text-grey-heading border-b-1 border-grey-border">Details</div>
               <div className="flex flex-col gap-y-5 pt-4">
@@ -235,7 +253,9 @@ export default function ClientPublicProfile() {
                   <div className="text-grey-heading text-xl font-semibold">{clientDetails.openListingsCount}</div>
                   <div className="text-sm text-grey font-light">Open Listings</div>
                 </div>
-                <div></div>
+                <div className="text-orange bg-orange-light rounded-full p-3">
+                  <Database size={24} />
+                </div>
               </div>
             )}
             {clientDetails?.completedProjectsCount !== undefined && (
@@ -244,7 +264,9 @@ export default function ClientPublicProfile() {
                   <div className="text-grey-heading text-xl font-semibold">{clientDetails.completedProjectsCount}</div>
                   <div className="text-sm text-grey font-light">Completed Projects</div>
                 </div>
-                <div></div>
+                <div className="text-success bg-success bg-opacity-10 rounded-full p-3">
+                  <Check size={24} />
+                </div>
               </div>
             )}
           </div>
