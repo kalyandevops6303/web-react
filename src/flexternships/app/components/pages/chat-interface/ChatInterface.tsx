@@ -10,42 +10,29 @@ import Styles from '@flexternships/styles/pages/chat-interface/chat-interface.mo
 import ProjectCard from '@flexternships/app/components/core/cards/ProjectCard';
 import { MessageRole } from '@flexternships/enums/core-enums';
 import { wsEndpoints } from '@flexternships/utils/api';
+import { ChatMessage, WebSocketMessage } from '@flexternships/types/core-types';
 
-type Message = {
-  role: MessageRole;
-  content: any;
-  projects?: Project[];
-  domain?: string;
-};
-
-type Project = {
-  title: string;
-  description: string;
-  domain?: string;
-  milestones?: Array<{
-    title: string;
-    description: string;
-    time: string;
-    roles: string[];
-    deliverables: string[];
-  }>;
-  skills?: string[];
-  tools?: string[];
-  duration?: string;
-  teamSize?: number;
-  roles?: string[];
-};
-
-type WebSocketMessage = {
-  message_type: 'initial' | 'clarification' | 'number_request' | 'projects' | 'error';
-  content: any;
-  projects?: Array<Project>;
-  num_projects?: number;
-  domain?: string;
+const formatWebSocketMessage = (data: WebSocketMessage): ChatMessage => {
+  switch (data.message_type) {
+    case 'initial':
+    case 'clarification':
+    case 'number_request':
+    case 'error':
+      return { role: 'assistant' as MessageRole, content: data.content };
+    case 'projects':
+      return {
+        role: 'assistant' as const,
+        content: data.content,
+        projects: data.content.projects,
+        domain: data.content.domain,
+      } as ChatMessage;
+    default:
+      return { role: 'assistant' as MessageRole, content: 'Unsupported message type' };
+  }
 };
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [_projects, setProjects] = useState<Array<any>>([]);
@@ -56,7 +43,6 @@ export default function ChatInterface() {
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-      console.error('No access token found in localStorage');
       navigate('/login');
       return;
     }
@@ -66,11 +52,6 @@ export default function ChatInterface() {
       ws.current.onmessage = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
         handleWebSocketMessage(data);
-      };
-
-      ws.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        // Handle potential token expiration or other auth errors
       };
     }
 
@@ -82,31 +63,13 @@ export default function ChatInterface() {
   }, [navigate]);
 
   const handleWebSocketMessage = (data: WebSocketMessage) => {
-    switch (data.message_type) {
-      case 'initial':
-      case 'clarification':
-      case 'number_request':
-        setMessages((prev) => [...prev, { role: 'assistant' as MessageRole, content: data.content }]);
-        setIsLoading(false);
-        break;
-      case 'projects':
-        setProjects(data.content.projects);
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: 'assistant' as const,
-            content: data.content,
-            projects: data.content.projects,
-            domain: data.content.domain,
-          } as Message,
-        ]);
-        setIsLoading(false);
-        break;
-      case 'error':
-        setMessages((prev) => [...prev, { role: 'assistant' as MessageRole, content: data.content }]);
-        setIsLoading(false);
-        break;
+    if (data.message_type === 'projects') {
+      setProjects(data.content.projects);
     }
+
+    const formattedMessage = formatWebSocketMessage(data);
+    setMessages((prev) => [...prev, formattedMessage]);
+    setIsLoading(false);
   };
 
   const handleButtonClick = () => {

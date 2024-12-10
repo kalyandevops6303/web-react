@@ -95,9 +95,9 @@ export const routes = {
     password: {
       changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
     },
-    features: {
-      permittedFeatures: `${serviceUrls.userManagement}/features/permitted-features`,
-    },
+    // features: {
+    //   permittedFeatures: `${serviceUrls.userManagement}/user/api/v1/features/permitted-features`,
+    // }, (Base url is not pointing to the correct url so hardcoded the url in feature-access-service.ts)
   },
 };
 

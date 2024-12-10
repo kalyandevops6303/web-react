@@ -1,6 +1,6 @@
 import SimpleElevatedCard from './SimpleElevatedCard';
 import PrimaryButton from '../buttons/PrimaryButton';
-import mapIdsToNames from '@flexternships/app/utils/mappingUtils';
+import mapIdsToNames from '@/flexternships/app/utils/mapping-utils';
 import { AVAILABLE_ROLES, AVAILABLE_SKILLS, AVAILABLE_TOOLS } from '../../../constants';
 import { useState } from 'react';
 import GenericModal from '../modals/GenericModal';
@@ -32,40 +32,6 @@ type ProjectCardProps = {
   roles?: Array<Role>;
 };
 
-const formatDescription = (description: string) => {
-  if (!description) return null;
-  const lines = description.split('\n');
-  let formattedLines: JSX.Element[] = [];
-  let indentLevel = 0;
-
-  lines.forEach((line, index) => {
-    const trimmedLine = line.trim();
-    if (trimmedLine.startsWith('*')) {
-      indentLevel = 0;
-      formattedLines.push(
-        <h3 key={index} className="font-bold mt-4 mb-2">
-          {trimmedLine.substring(1).trim()}
-        </h3>,
-      );
-    } else if (trimmedLine.startsWith('-')) {
-      indentLevel = 1;
-      formattedLines.push(
-        <li key={index} className="ml-6 list-disc">
-          {trimmedLine.substring(1).trim()}
-        </li>,
-      );
-    } else if (trimmedLine) {
-      formattedLines.push(
-        <p key={index} className={`mb-2 ${indentLevel > 0 ? 'ml-6' : ''}`}>
-          {trimmedLine}
-        </p>,
-      );
-    }
-  });
-
-  return <div className="text-left">{formattedLines}</div>;
-};
-
 const ProjectCard = ({
   title,
   description,
@@ -76,12 +42,6 @@ const ProjectCard = ({
   roles = [],
 }: ProjectCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // // Map role IDs to names
-  // const roleNames = mapIdsToNames(
-  //   roles.map((role) => role.role_id),
-  //   AVAILABLE_ROLES,
-  // );
 
   // Map skills and tools for each role
   const mappedRoles = roles.map((role) => ({
@@ -139,7 +99,7 @@ const ProjectCard = ({
 
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-3">Project Overview</h3>
-              {formatDescription(description)}
+              <p className="text-gray-600">{description}</p>
             </div>
 
             {techStackNames.length > 0 && (

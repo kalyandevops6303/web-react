@@ -1,4 +1,10 @@
-import { FlexternUserAppRole, FlexternUserCheckpoint, GlobalModalType, UserType } from '../enums/core-enums';
+import {
+  FlexternUserAppRole,
+  FlexternUserCheckpoint,
+  GlobalModalType,
+  UserType,
+  MessageRole,
+} from '../enums/core-enums';
 
 // Static Data Types
 
@@ -14,7 +20,13 @@ export type Tool = {
 
 export type Role = {
   _id: string;
+  role_id: string;
   name: string;
+  proficiency: {
+    skills?: string[];
+    tools?: string[];
+  };
+  count: number;
 };
 
 export type CompanyIndustry = {
@@ -100,7 +112,6 @@ export type FlexternUserActions = {
 
 export type FlexternUserStore = FlexternUser & FlexternUserActions;
 
-// App Types
 export type GlobalModalActions = {
   onConfirm: () => Promise<void>;
   onClose: () => void;
@@ -137,8 +148,42 @@ export type AppActions = {
 
 export type AppStore = AppState & AppActions;
 
-// Add the Feature type definition
 export type Feature = {
   feature_id: string;
   feature_name: string;
+};
+
+export type ChatMessage = {
+  role: MessageRole;
+  content: any;
+  projects?: ChatProject[];
+  domain?: string;
+};
+
+export type ChatMilestone = {
+  title: string;
+  description: string;
+  time: string;
+  roles: string[];
+  deliverables: string[];
+};
+
+export type ChatProject = {
+  title: string;
+  description: string;
+  domain?: string;
+  milestones?: Array<ChatMilestone>;
+  skills?: string[];
+  tools?: string[];
+  duration?: string;
+  teamSize?: number;
+  roles?: Role[];
+};
+
+export type WebSocketMessage = {
+  message_type: 'initial' | 'clarification' | 'number_request' | 'projects' | 'error';
+  content: any;
+  projects?: Array<ChatProject>;
+  num_projects?: number;
+  domain?: string;
 };

@@ -43,7 +43,7 @@ import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSe
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import PermissionWrapper from '../../PermissionWrapper';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
-import GenerateProjectButton from './overview/GenerateProjectButton';
+import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -247,14 +247,7 @@ const PrivateDashboard = () => {
       <span className="mb-2">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       </span>
-      {userDetailsData?.user_type === userTypes.client && (
-        <DashboardHeaderWrapper>
-          <GenerateProjectButton />
-          <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
-            {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
-          </Button>
-        </DashboardHeaderWrapper>
-      )}
+      {userDetailsData?.user_type === userTypes.client && <CreateProjectButton />}
       {userDetailsData?.team_type === userTypes.team && (
         <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onTeamInvite}>

@@ -11,7 +11,7 @@ import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjec
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
 import { getItem } from '../../../utility/localStorageControl';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
-import axios from 'axios';
+import { featureAccessService } from '@flexternships/services/feature-access-service';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
@@ -27,23 +27,17 @@ const CreateProjectButton = () => {
   const [hasAyeshaBotAccess, setHasAyeshaBotAccess] = useState(false);
 
   useEffect(() => {
-    const checkPermittedFeatures = async () => {
+    const checkAccess = async () => {
       try {
-        const accessToken = getItem('access_token');
-        const response = await axios.get('https://tru-dev-api.trumio.ai/user/api/v1/features/permitted-features', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const features = response.data?.data || [];
-        setHasAyeshaBotAccess(features.some((feature) => feature.feature_name === 'Ayesha Bot'));
+        const hasAccess = await featureAccessService.hasFeatureAccess('Ayesha Bot');
+        setHasAyeshaBotAccess(hasAccess);
       } catch (error) {
-        console.error('Error fetching permitted features:', error);
+        console.error('Error checking feature access:', error);
         setHasAyeshaBotAccess(false);
       }
     };
 
-    checkPermittedFeatures();
+    checkAccess();
   }, []);
 
   const toggleCompleteProfileModal = () => {
@@ -116,7 +110,7 @@ const CreateProjectButton = () => {
             </Button>
           )}
           {hasAyeshaBotAccess && (
-            <Button color="primary" onClick={() => navigate('/chat-interface')} className="me-1">
+            <Button color="primary" className="me-1" onClick={() => navigate('/chat-interface')}>
               Generate Project
             </Button>
           )}
