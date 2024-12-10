@@ -66,10 +66,6 @@ export default function LegalDocCard(props: LegalDocCardProps) {
     });
   };
 
-  useEffect(() => {
-    console.log('projectDetails', projectDetails);
-  }, [projectDetails]);
-
   const [termsRead, setTermsRead] = useState(false);
 
   const talentSigneeData = legalDocDetails?.signatures?.map((signature: any) => {
