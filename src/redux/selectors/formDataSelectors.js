@@ -27,6 +27,11 @@ const resumeDataUploadedForEducation = createSelector(
 
 const resumeDataUploadedForSocial = createSelector(formDataSelector, (state) => state.resumeDataUploadedForSocial);
 
+const resumeDataUploadedForAdditional = createSelector(
+  formDataSelector,
+  (state) => state.resumeDataUploadedForAdditional,
+);
+
 export {
   formData,
   formDocuments,
@@ -39,4 +44,5 @@ export {
   resumeDataUploadedForPersonal,
   resumeDataUploadedForEducation,
   resumeDataUploadedForSocial,
+  resumeDataUploadedForAdditional,
 };
