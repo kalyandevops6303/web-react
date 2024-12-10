@@ -46,7 +46,7 @@ const LeftSideBarProjectDetails = () => {
   const { projectId, milestoneId } = params;
 
   const data = useProjectsStore((state) => state.projectDetails);
-  const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
+  // const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
   const setWithdrawProject = useProjectsStore((state) => state.setWithdrawProject);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
