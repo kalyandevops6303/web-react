@@ -48,7 +48,6 @@ import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector, selectAuthUserData } from '@/redux/selectors/authSelectors';
-import { userData } from '@/redux/selectors/dashboardSelectors';
 
 const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   const location = useLocation();
@@ -191,7 +190,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
             onError,
             postData: valuesOnly,
             searchText,
-            flexTern: flexTern,
+            flexTern,
           }),
         );
       } else {
@@ -209,7 +208,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
             onError,
             postData: valuesOnly,
             searchText,
-            flexTern: flexTern,
+            flexTern,
           }),
         );
       }
@@ -414,7 +413,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
           onError,
           postData: valuesOnly,
           searchText,
-          flexTern: flexTern,
+          flexTern,
         }),
       );
     } else {
@@ -432,7 +431,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
           onError,
           postData: valuesOnly,
           searchText,
-          flexTern: flexTern,
+          flexTern,
         }),
       );
     }
