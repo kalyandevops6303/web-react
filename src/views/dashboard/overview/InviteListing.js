@@ -41,6 +41,7 @@ import ProjectInvitaionCard from './ProjectInvitationCard';
 import TeamInviteCard from './TeamInviteCard';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -148,8 +149,10 @@ const InviteListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-    dispatch(getTeamInvitation());
-    dispatch(getProjectInvitation());
+    if (!isFlexternshipApp) {
+      dispatch(getTeamInvitation());
+      dispatch(getProjectInvitation());
+    }
   }, []);
 
   const settings = {
