@@ -267,7 +267,11 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
           if (submitButton) {
             submitButtonRef.current = submitButton;
 
-            if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+            const requiredQuestions = (_survey as any)?.jsonObj?.elements?.filter(
+              (question: any) => question.isRequired,
+            );
+
+            if (answeredQuestions.length < requiredQuestions?.length) {
               submitButtonRef.current.disabled = true;
             } else {
               submitButtonRef.current.disabled = false;
@@ -304,7 +308,10 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
           if (submitButton) {
             submitButtonRef.current = submitButton;
-            if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+            const requiredQuestions = (_survey as any)?.jsonObj?.elements?.filter(
+              (question: any) => question.isRequired,
+            );
+            if (answeredQuestions.length < requiredQuestions?.length) {
               submitButtonRef.current.disabled = true;
             } else {
               submitButtonRef.current.disabled = false;
@@ -358,7 +365,9 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
     if (submitButton) {
       submitButtonRef.current = submitButton;
-      if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+      const requiredQuestions = (_survey as any)?.jsonObj?.elements?.filter((question: any) => question.isRequired);
+
+      if (answeredQuestions.length < requiredQuestions?.length) {
         submitButtonRef.current.disabled = true;
       } else {
         submitButtonRef.current.disabled = false;

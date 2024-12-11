@@ -1,9 +1,7 @@
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
-import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -20,19 +18,10 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   const currentUserType = useFlexternUserStore((state) => state.userDetails?.userType);
   const currentUserId = useFlexternUserStore((state) => state.userDetails?.id);
 
-  const getFeedbackResponse = useFeedbackStore((state) => state.getFeedbackResponse);
-  const feedbackResponse = useFeedbackStore((state) => state.feedbackResponse);
-
   const teamDetails = useProjectsStore((state) => state.teamDetails);
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
 
-  const [currentOpened, setCurrentOpened] = useState<any>(null);
   const [filteredPerformanceDetails, setFilteredPerformanceDetails] = useState<any>([]);
-
-  const handleAccordionToggle = (peerFeedback: any) => {
-    if (peerFeedback._id === currentOpened?._id) setCurrentOpened(null);
-    else setCurrentOpened(peerFeedback);
-  };
 
   useEffect(() => {
     getPerformanceDetails(params?.projectId as string, feedbackType);
@@ -40,16 +29,8 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   }, []);
 
   useEffect(() => {
-    if (currentOpened && teamDetails && currentOpened?.feedback_id) {
-      const receiverId = currentUserType === UserType.CLIENT ? teamDetails[0].id : currentUserId;
-      const feedbackType = currentUserType === UserType.CLIENT ? FeedbackTypesAPI.TEAM : FeedbackTypesAPI.SELF;
-      const milestoneId = currentOpened?.milestone_id;
+    const receiverId = currentUserType === UserType.CLIENT ? teamDetails[0]?.id : currentUserId;
 
-      getFeedbackResponse(receiverId, milestoneId, feedbackType);
-    }
-  }, [currentOpened]);
-
-  useEffect(() => {
     if (milestoneId && performanceDetails) {
       setFilteredPerformanceDetails(
         performanceDetails
@@ -57,6 +38,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
             return {
               ...feedback,
               index,
+              user_id: receiverId,
             };
           })
           .filter((feedback: any) => feedback?.milestone_id === milestoneId),
@@ -67,11 +49,12 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
           return {
             ...feedback,
             index,
+            user_id: receiverId,
           };
         }),
       );
     }
-  }, [performanceDetails, milestoneId]);
+  }, [performanceDetails, milestoneId, teamDetails]);
 
   const getHeaderContent = (peerFeedback: any) => {
     const { score } = peerFeedback;
@@ -96,33 +79,35 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
     );
   };
 
+  if (isPerformanceDetailsLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48 w-full">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {isPerformanceDetailsLoading ? (
-        <div className="flex flex-col items-center justify-center min-h-48">
-          <div className="h-8 w-8">
-            <Spinner />
-          </div>
-        </div>
-      ) : (
+      {filteredPerformanceDetails?.map((peerFeedback: any) => (
         <div>
-          {filteredPerformanceDetails?.map((peerFeedback: any) => (
-            <>
-              {peerFeedback?.feedback_id && (
-                <CollapsableCard
-                  white
-                  className="my-5 bg-white rounded-[10px]"
-                  headerContent={getHeaderContent(peerFeedback)}
-                  isOpen={peerFeedback?._id === currentOpened?._id}
-                  onToggle={() => handleAccordionToggle(peerFeedback)}
-                >
-                  <IndividualFeedbackResponse response={feedbackResponse} />
-                </CollapsableCard>
-              )}
-            </>
-          ))}
+          {peerFeedback?.feedback_id && (
+            <CollapsableCard
+              white
+              className="my-5 bg-white rounded-[10px]"
+              headerContent={getHeaderContent(peerFeedback)}
+            >
+              <IndividualFeedbackResponse
+                feedbackOverview={peerFeedback}
+                milestoneId={peerFeedback?.milestone_id}
+                feedbackType={feedbackType}
+              />
+            </CollapsableCard>
+          )}
         </div>
-      )}
+      ))}
     </div>
   );
 }

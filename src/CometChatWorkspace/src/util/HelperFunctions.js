@@ -99,22 +99,24 @@ export const generateAvatar = (generator, data) => {
   canvas.height = 200;
 
   // Draw background
-  context.fillStyle = stringToColour(generator);
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  if (generator) {
+    context.fillStyle = stringToColour(generator);
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw text
-  context.font = "bold 100px 'Inter', sans-serif";
-  context.fillStyle = 'white'; //foregroundColor;
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-  context.fillText(data, canvas.width / 2, canvas.height / 2);
+    // Draw text
+    context.font = "bold 100px 'Inter', sans-serif";
+    context.fillStyle = 'white'; //foregroundColor;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(data, canvas.width / 2, canvas.height / 2);
+  }
 
   return canvas.toDataURL('image/png');
 };
 
 const stringToColour = function (str) {
   let hash = 0;
-  for (let i = 0; i < str.length; i++) {
+  for (let i = 0; i < str?.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
 

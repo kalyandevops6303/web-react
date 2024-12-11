@@ -9,6 +9,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { ArrowLeft } from 'react-feather';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -31,6 +32,7 @@ export default function TeamFeedback() {
 
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const submitFeedback = useFeedbackStore((state) => state.submitFeedbackForm);
 
@@ -53,6 +55,7 @@ export default function TeamFeedback() {
 
     submitFeedback(submitFeedbackData, () => {
       navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+      populateUserDetails();
     });
   };
 

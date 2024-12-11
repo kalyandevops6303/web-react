@@ -32,7 +32,7 @@ export default UploadResumeModal;
 UploadResumeModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  uploadButton: Proptypes.func.isRequired,
+  uploadButton: Proptypes.node.isRequired,
 };
 
 UploadResumeModal.defaultProps = {

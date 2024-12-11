@@ -121,8 +121,9 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                         ? data?.image_uri
                         : generateAvatar(
                             data?.user_id,
-                            (data?.first_name?.charAt(0) || '') + (data?.last_name?.charAt(0) || ''),
-                          )
+                            (data?.first_name?.charAt(0)?.toUpperCase() || '') +
+                              (data?.last_name?.charAt(0)?.toUpperCase() || ''),
+                          ) ?? defaultAvatar
                     }
                     imgHeight="40"
                     imgWidth="40"
