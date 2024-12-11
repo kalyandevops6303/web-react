@@ -1,4 +1,4 @@
-import { EmotionJSX } from '@emotion/react/dist/declarations/src/jsx-namespace';
+import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { Check } from 'react-feather';
 
 export default function VerticalTimeline(props: VerticalTimelineProps) {
