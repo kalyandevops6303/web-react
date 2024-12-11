@@ -85,6 +85,7 @@ export default function IndividualFeedback() {
 
     submitFeedback(submitFeedbackData, () => {
       getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
+      populateUserDetails();
     });
   };
 
