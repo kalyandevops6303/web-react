@@ -59,7 +59,7 @@ import { truncateSentence } from '../../../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
 import { FlexternUserAppRole } from '@/flexternships/constraints/enums/core-enums';
 import { isFlexternshipApp } from '@/configs/api/env';
-
+import { removeCookiesItem } from '@/utility/cookiesControl';
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
   const isLoading = useSelector((state) => state.auth.userDataLoading);
@@ -132,6 +132,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
       // eslint-disable-next-line no-undef
       window.localStorage.clear();
       window.sessionStorage.clear();
+      removeCookiesItem('access_token');
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
       }

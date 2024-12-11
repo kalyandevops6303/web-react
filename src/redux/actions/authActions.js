@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
+import { logout as logoutZustand } from '@flexternships/utils/core-utils';
 import errorHandler from '../../utility/errorHandler';
 
 import {
@@ -88,7 +89,7 @@ import {
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
-import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
@@ -103,7 +104,7 @@ import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
-import { logout as logoutZustand } from '@flexternships/utils/core-utils';
+import { setCookiesItem } from '@/utility/cookiesControl';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -129,8 +130,8 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     const res = await loginService({ email: username, password });
     if (!isEmpty(res?.data?.data)) {
       dispatch(setUserTypeSuccess(res?.data?.data?.user_type));
-      setItem('access_token', res.data.data.access_token);
       setItem('access_token_expires', res.data.data.access_token_expires);
+      setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
       setItem('refresh_token', res.data.data.refresh_token);
       setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       setItem('user_id', res.data.data.user_id);
@@ -235,7 +236,7 @@ const verifyEmail = (data) => async (dispatch) => {
   dispatch(verifyEmailRequest());
   try {
     const res = await verifyEmailService(data);
-    setItem('access_token', res.data.data.access_token);
+    setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
     setItem('access_token_expires', res.data.data.access_token_expires);
     setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
@@ -255,7 +256,7 @@ const verifyEmailForFlextern =
     try {
       const res = await verifyEmailForFlexternService(data, invitation_token);
       if (!isEmpty(res?.data?.data)) {
-        setItem('access_token', res.data.data.access_token);
+        setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
         setItem('access_token_expires', res.data.data.access_token_expires);
         setItem('refresh_token', res.data.data.refresh_token);
         setItem('refresh_token_expires', res.data.data.refresh_token_expires);
@@ -330,7 +331,7 @@ const verifyOtp = (email, otp) => async (dispatch) => {
   try {
     const res = await verifyOtpService(email, otp);
     dispatch(verifyOtpSuccess());
-    setItem('access_token', res.data.data.token);
+    setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
   } catch (error) {
     errorHandler(error, verifyOtpFailure);
   }
