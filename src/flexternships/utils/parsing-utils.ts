@@ -92,6 +92,7 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
 };
 export const parseClientPublicDetails = (data: Record<string, any>): FlexternClientPublicProfileDetails => {
   return {
+    userId: data.user_id,
     firstname: data.first_name,
     lastname: data.last_name,
     imageUri: data.image_uri,

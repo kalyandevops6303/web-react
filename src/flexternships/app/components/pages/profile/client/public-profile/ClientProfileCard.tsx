@@ -1,18 +1,28 @@
 // External dependencies
 import { Link2, Twitter, Users } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 // Assets
 import linkedinIcon from '@flexternships/assets/icons/brands/linkedin.svg';
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 
 // Components
-import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
+import PrimaryIconText from '@flexternships/app/components/core/buttons/PrimaryIconText';
+import SecondaryButton from '@flexternships/app/components/core/buttons/SecondaryButton';
 
 // Types
 import { FlexternClientPublicProfileDetails } from '@/flexternships/constraints/types/user-profile-types';
 
+// Stores
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+
 export default function ClientProfileCard(props: ClientProfileCardProps) {
   const { clientDetails, isDelegatesInView, scrollToDelegates } = props;
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
+  const navigate = useNavigate();
+
   const getLinkIcon = (link: string) => {
     switch (link) {
       case 'linkedin':
@@ -23,6 +33,11 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
         return <Link2 size={18} />;
     }
   };
+
+  const goToEditProfile = () => {
+    navigate(`/client-profile-edit/account-details`);
+  };
+
   return (
     <div className="flex flex-col gap-y-6 bg-white rounded-md shadow-card p-5">
       <div className="flex flex-col items-center gap-y-3">
@@ -103,11 +118,13 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
           </div>
         </div>
       </div>
-      {/* <div className="flex flex-row justify-center">
-              <SecondaryButton className="m-0" onClick={() => { }}>
-                Message
-              </SecondaryButton>
-            </div> */}
+      {clientDetails.userId === userDetails.id && (
+        <div className="flex flex-row justify-center">
+          <SecondaryButton className="m-0" onClick={goToEditProfile}>
+            Edit
+          </SecondaryButton>
+        </div>
+      )}
     </div>
   );
 }

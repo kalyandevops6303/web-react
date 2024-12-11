@@ -66,6 +66,7 @@ export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserPro
 
 // Public Profile Types
 export type FlexternClientPublicProfileDetails = {
+  userId: string;
   firstname: string;
   lastname: string;
   imageUri?: string;
