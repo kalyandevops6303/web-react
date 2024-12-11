@@ -1,4 +1,4 @@
-'use client';
+// 'use client'; // For NextJS App
 
 // External dependencies
 import { Check, ChevronLeft, Database } from 'react-feather';
