@@ -46,12 +46,11 @@ const LeftSideBarProjectDetails = () => {
   const { projectId, milestoneId } = params;
 
   const data = useProjectsStore((state) => state.projectDetails);
-  const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
+  // const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
   const setWithdrawProject = useProjectsStore((state) => state.setWithdrawProject);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
-
   const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
   const [showRelistModal, setShowRelistModal] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
@@ -68,10 +67,10 @@ const LeftSideBarProjectDetails = () => {
   const handleRelist = () => {
     setShowRelistModal(true);
   };
-  const handleTerminateProject = async () => {
-    await setTerminateProject(data?.id);
-    navigate(`/project-details/${data?.id}/team`);
-  };
+  // const handleTerminateProject = async () => {
+  //   await setTerminateProject(data?.id);
+  //   navigate(`/project-details/${data?.id}/team`);
+  // };
   const handleWithdrawProject = async () => {
     await setWithdrawProject(data?.id);
     navigate(`/project-details/${data?.id}/team`);
@@ -252,7 +251,7 @@ const LeftSideBarProjectDetails = () => {
               Withdraw
             </PrimaryButton>
           )}
-          {userDetails.userType === UserType.CLIENT &&
+          {/* {userDetails.userType === UserType.CLIENT &&
             (data?.status === ProjectPrimaryStatus.ACTIVE ||
               data?.status === ProjectPrimaryStatus.ON_GOING ||
               data?.status === ProjectPrimaryStatus.BLOCKED) && (
@@ -263,7 +262,7 @@ const LeftSideBarProjectDetails = () => {
               >
                 Terminate
               </PrimaryButton>
-            )}
+            )} */}
           {((userDetails.userType === UserType.CLIENT &&
             (data?.status === ProjectPrimaryStatus.ACTIVE ||
               data?.status === ProjectPrimaryStatus.ON_GOING ||

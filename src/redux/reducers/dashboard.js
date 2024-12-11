@@ -50,6 +50,7 @@ const initialState = {
   upcomingPaymentsDataLoading: false,
   downloadUrl: null,
   downloadUrlLoading: false,
+  downloadUrlForResume: null,
   error: null,
 };
 
@@ -489,6 +490,22 @@ const dashboardSlice = createSlice({
       downloadUrlLoading: false,
     }),
 
+    downloadUrlForResumeRequest: (state) => ({
+      ...state,
+      downloadUrlForResumeLoading: true,
+      error: null,
+    }),
+    downloadUrlForResumeSuccess: (state, action) => ({
+      ...state,
+      downloadUrlForResume: action.payload,
+      downloadUrlForResumeLoading: false,
+    }),
+    downloadUrlForResumeFailure: (state, action) => ({
+      ...state,
+      error: action.payload,
+      downloadUrlForResumeLoading: false,
+    }),
+
     updateCardStatusRequest: (state) => ({
       ...state,
       updateCardStatusLoading: true,
@@ -612,6 +629,9 @@ export const {
   downloadUrlRequest,
   downloadUrlSuccess,
   downloadUrlFailure,
+  downloadUrlForResumeRequest,
+  downloadUrlForResumeSuccess,
+  downloadUrlForResumeFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

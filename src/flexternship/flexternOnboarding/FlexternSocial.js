@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
@@ -73,6 +73,7 @@ import {
   setResumeDataUploadedForEducation,
   setResumeDataUploadedForPersonal,
   setResumeParsed,
+  setResumeDataUploadedForAdditional,
 } from '../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService, resumeUploadService } from '../../services/talentOnboardingServices';
@@ -216,7 +217,9 @@ const FlexternSocial = () => {
         dispatch(setResumeDataUploadedForEducation(false));
         dispatch(setResumeDataUploadedForPersonal(false));
         dispatch(setResumeDataUploadedForSocial(false));
+        dispatch(setResumeDataUploadedForAdditional(false));
         setFiles([...filtered]);
+        setParsedUploaded(false);
       }),
     );
     setValue('resume', null, { shouldValidate: true });
@@ -605,7 +608,21 @@ const FlexternSocial = () => {
       lastModified: Date.now(),
       isUploaded: false,
     };
-    dispatch(setFormDocuments([fileWithUrl]));
+    dispatch(
+      setFormDocuments([
+        {
+          id: fileWithUrl?.id,
+          file: {
+            name: file?.name,
+            size: file?.size,
+          },
+          uploadData: fileWithUrl?.uploadData,
+          lastModified: fileWithUrl?.lastModified,
+          isUploaded: fileWithUrl?.isUploaded,
+        },
+      ]),
+    );
+    // dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
@@ -638,20 +655,6 @@ const FlexternSocial = () => {
       e.target.value = '';
     }
   };
-
-  const filesRef = useRef();
-  useEffect(() => {
-    const fileReRender = async () => {
-      if (savedFormDocuments != null) {
-        filesRef.current = files;
-        setFiles(savedFormDocuments);
-        dispatch(setFormDocuments(savedFormDocuments));
-      } else {
-        setFiles([]);
-      }
-    };
-    fileReRender();
-  }, [savedFormDocuments]);
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -717,30 +720,6 @@ const FlexternSocial = () => {
                 {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
               </Button>
             </div>
-            {/* <Row className="mt-2">
-              <Row>
-                <Col>{uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}</Col>
-                <Col>{getFileSize(file.file.size)}</Col>
-              </Row>
-              <Row className="d-flex align-items-center">
-                <Col>{requiredFormattedDate}</Col>
-                <Col>
-                  <Button
-                    color="flat-danger"
-                    className="btn-left-margin"
-                    disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
-                    onClick={() => {
-                      handleRemoveFile(file);
-                      setParseResume(false);
-                      dispatch(resumeParsedDetailsSuccess(null));
-                      dispatch(setResumeParsed(false));
-                    }}
-                  >
-                    {isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
-                  </Button>
-                </Col>
-              </Row>
-            </Row> */}
           </Row>
         ))}
       </Card>
@@ -797,7 +776,7 @@ const FlexternSocial = () => {
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
-  }, [parseResume, parsedResumeData]);
+  }, [parseResume, parsedResumeData, parsedUploaded]);
 
   return (
     <ProfileFormContainer>
@@ -1072,7 +1051,6 @@ const FlexternSocial = () => {
                                   render={({ field }) => (
                                     <Input
                                       {...field}
-                                      ref={filesRef}
                                       id="resume"
                                       type="file"
                                       max={1}

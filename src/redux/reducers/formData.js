@@ -12,6 +12,7 @@ const initialState = {
   resumeDataUploadedForPersonal: false,
   resumeDataUploadedForEducation: false,
   resumeDataUploadedForSocial: false,
+  resumeDataUploadedForAdditional: false,
 };
 
 const formData = createSlice({
@@ -69,6 +70,10 @@ const formData = createSlice({
       ...state,
       resumeDataUploadedForSocial: action.payload,
     }),
+    setResumeDataUploadedForAdditional: (state, action) => ({
+      ...state,
+      resumeDataUploadedForAdditional: action.payload,
+    }),
   },
 });
 
@@ -85,6 +90,7 @@ export const {
   setResumeDataUploadedForPersonal,
   setResumeDataUploadedForEducation,
   setResumeDataUploadedForSocial,
+  setResumeDataUploadedForAdditional,
 } = formData.actions;
 
 export default formData.reducer;
