@@ -87,6 +87,7 @@ export default function PeerFeedback() {
 
     submitFeedback(submitFeedbackData, () => {
       getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
+      populateUserDetails();
     });
   };
 

@@ -5,7 +5,9 @@ const FunFacts = () => {
       content: (
         <>
           <span className="text-[#C99A24] font-semibold">63% of Gen Z</span> said that they want to hear more timely,
-          constructive performance feedback throughout
+          constructive performance feedback at work
+          <br />
+          <p className="mt-1">(source: EY Study)</p>
         </>
       ),
     },

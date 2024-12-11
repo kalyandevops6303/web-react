@@ -41,6 +41,7 @@ export default function SelfFeedback() {
 
     submitFeedback(submitFeedbackData, () => {
       navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+      populateUserDetails();
     });
   };
 
