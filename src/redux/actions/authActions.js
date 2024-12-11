@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
-import { logout as logoutZustand } from '@flexternships/utils/core-utils';
+import { logout as logoutZustand, showToastMessage } from '@flexternships/utils/core-utils';
 import errorHandler from '../../utility/errorHandler';
 
 import {
@@ -22,6 +22,7 @@ import {
   checkRequestValidation,
   getFlexternVariablesService,
   getAppPermissionService,
+  logoutUserService,
 } from '../../services/authServices';
 
 import {
@@ -86,6 +87,8 @@ import {
   setTalentBooleansFlextern,
   setTalentBooleanIsFlextern,
   setUserLoginAttemptNo,
+  logoutRequest,
+  logoutFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -105,6 +108,9 @@ import { getItemFromSession, removeItemFromSession, setItemFromSession } from '.
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
 import { setCookiesItem } from '@/utility/cookiesControl';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import uuidv4 from '@/lib/uuidv4';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -377,15 +383,37 @@ const logoutAction =
     if (fcmToken) {
       dispatch(fcmUnsubscribeNotification(fcmToken));
     }
+
     // Zustand Logout
-    logoutZustand();
-    dispatch(logOut());
-    dispatch(clearTeams());
-    dispatch(clearTeamCardData());
-    dispatch(clearProjectCardData());
-    dispatch(clearMarketplaceCardData());
-    dispatch(clearNotificationsData());
-    onSuccess();
+    dispatch(logoutRequest());
+    const toastId = uuidv4();
+
+    try {
+      const res = await logoutUserService();
+
+      logoutZustand();
+      dispatch(logOut());
+      dispatch(clearTeams());
+      dispatch(clearTeamCardData());
+      dispatch(clearProjectCardData());
+      dispatch(clearMarketplaceCardData());
+      dispatch(clearNotificationsData());
+      onSuccess();
+      showToastMessage(
+        ToastType.ERROR,
+        <Toast type={ToastType.SUCCESS} toastId={toastId} description={res?.data?.data?.message} />,
+        toastId,
+      );
+    } catch (error) {
+      if (error?.response?.data?.errorData?.errorCode === 403) {
+        showToastMessage(
+          ToastType.ERROR,
+          <Toast type={ToastType.ERROR} toastId={toastId} description={error?.response?.data?.errorData?.message} />,
+          toastId,
+        );
+      }
+      errorHandler(error, logoutFailure);
+    }
   };
 
 const setUserType = (type) => async (dispatch) => {
