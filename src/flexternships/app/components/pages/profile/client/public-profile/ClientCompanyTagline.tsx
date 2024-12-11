@@ -1,5 +1,5 @@
+// Components
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
-import React from 'react';
 
 export default function ClientCompanyTagline(props: ClientCompanyTaglineProps) {
   const { tagline } = props;

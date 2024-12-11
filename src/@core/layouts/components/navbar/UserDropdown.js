@@ -311,7 +311,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
             </div>
           )}
           {!isDelegate && (
-            <TextWrapper onClick={handleEdit} className="w-100 edit-accordion p-4">
+            <TextWrapper onClick={handleEdit} className="w-100 edit-accordion cursor-pointer p-4">
               Public Profile
             </TextWrapper>
           )}

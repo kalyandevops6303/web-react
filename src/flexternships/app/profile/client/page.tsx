@@ -1,18 +1,28 @@
 'use client';
 
+// External dependencies
 import { Check, ChevronLeft, Database } from 'react-feather';
-import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
 import { useEffect, useRef, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
+// Assets
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
+
+// Types
 import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '@/flexternships/constraints/types/user-profile-types';
+
+// Services
 import { getClientCompletedProjects, getClientPublicDetails } from '@/flexternships/services/dashboard-service';
-import { useParams, useNavigate } from 'react-router-dom';
-import Spinner from '../../components/core/Spinner';
+
+// Static content
 import { clientDelegateRoleText } from '@/flexternships/static/profile-content';
+
+// Components
+import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
+import Spinner from '../../components/core/Spinner';
 import CustomBreadCrumbs from '../../components/core/CustomBreadCrumbs';
 import ClientRecentProjects from '../../components/pages/profile/client/public-profile/ClientRecentProjects';
 import ClientProfileCard from '../../components/pages/profile/client/public-profile/ClientProfileCard';
@@ -103,10 +113,6 @@ export default function ClientPublicProfile() {
     delegatesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const viewProject = (projectId: string) => {
-    navigate(`/project-details/${projectId}`);
-  };
-
   /**
    * Handles navigation when user clicks back
    * If there is browser history, goes back one page
@@ -132,7 +138,6 @@ export default function ClientPublicProfile() {
 
   return (
     <div className="flexternships-page">
-      {/* TODO: Add Breadcrumbs */}
       <div className="mb-6">
         <CustomBreadCrumbs
           items={[
@@ -218,7 +223,7 @@ export default function ClientPublicProfile() {
           <ClientRecentProjects
             clientProjectDetails={clientProjectDetails}
             isProjectsLoading={isProjectsLoading}
-            viewProject={viewProject}
+            clientDepartmentName={clientDetails?.department || 'Unknown Department'}
           />
         </div>
       </div>

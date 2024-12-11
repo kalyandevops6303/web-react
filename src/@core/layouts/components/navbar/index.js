@@ -204,7 +204,7 @@ const ThemeNavbar = (props) => {
             <div
               className={
                 (location?.pathname?.split('/')?.[1] === 'dashboard' ? 'is-active' : '') +
-                ' menu-item nav-menu-main menu-toggle hidden-xs'
+                ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
               }
               onClick={() => {
                 handleWorkInProgress('/dashboard');
@@ -250,7 +250,7 @@ const ThemeNavbar = (props) => {
                   location?.state?.from?.primary === 'Marketplace' ||
                   activeTab === 'marketplace'
                     ? 'is-active'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                 }
               >
                 Marketplace
@@ -266,7 +266,7 @@ const ThemeNavbar = (props) => {
                   location?.state?.from?.primary === 'projects' ||
                   activeTab === 'projects'
                     ? 'is-active'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                 }
                 onClick={() => {
                   handleWorkInProgress('/projects');

@@ -1,8 +1,14 @@
-import React from 'react';
+// External dependencies
 import { Link2, Twitter, Users } from 'react-feather';
+
+// Assets
 import linkedinIcon from '@flexternships/assets/icons/brands/linkedin.svg';
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
+
+// Components
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
+
+// Types
 import { FlexternClientPublicProfileDetails } from '@/flexternships/constraints/types/user-profile-types';
 
 export default function ClientProfileCard(props: ClientProfileCardProps) {
@@ -63,9 +69,7 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
         <div className="flex flex-col gap-y-5 pt-4">
           <div className="flex flex-row gap-x-2">
             <span className="text-sm text-grey font-semibold">Department:</span>
-            <span className="text-sm text-grey font-normal">
-              {clientDetails?.companyDetails?.companyName || 'Unknown Company'}
-            </span>
+            <span className="text-sm text-grey font-normal">{clientDetails?.department || 'Unknown Department'}</span>
           </div>
           <div className="flex flex-row w-[350px] gap-x-2">
             <span className="text-sm text-grey font-semibold">Location:</span>

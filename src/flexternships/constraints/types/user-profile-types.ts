@@ -1,5 +1,6 @@
 import { ClientDelegateRole } from '../enums/profile-enums';
 import { City, CompanyIndustry, Country, State, Timezone } from './core-types';
+import { ProjectCreationFormData } from './project-creation-types';
 
 export type FlexternClientAccountDetails = {
   firstname: string;
@@ -69,6 +70,7 @@ export type FlexternClientPublicProfileDetails = {
   lastname: string;
   imageUri?: string;
   title: string;
+  department: string;
   completedProjectsCount: number;
   openListingsCount: number;
   companyDetails: {
@@ -103,10 +105,11 @@ export type FlexternClientProjectDetails = {
     totalRecords: number;
     hasNextPage: boolean;
   };
-  projects: Array<{
-    id: string;
-    name: string;
-    description: string;
-    roles: string[];
-  }>;
+  projects: Array<
+    Partial<ProjectCreationFormData> & {
+      id: string;
+      isTeamMember?: boolean;
+      isStakeholder?: boolean;
+    }
+  >;
 };

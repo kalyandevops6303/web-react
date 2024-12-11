@@ -96,6 +96,7 @@ export const parseClientPublicDetails = (data: Record<string, any>): FlexternCli
     lastname: data.last_name,
     imageUri: data.image_uri,
     title: data.title,
+    department: data.department,
     completedProjectsCount: data.completed_projects_count,
     openListingsCount: data.open_listing_count,
     companyDetails: {
@@ -132,9 +133,38 @@ export const parseClientCompletedProjects = (data: Record<string, any>): Flexter
     projects:
       data.data?.map((project: Record<string, any>) => ({
         id: project._id,
-        name: project.details?.name,
-        description: project.details?.description,
-        roles: project.roles.role_id.map((role: Record<string, any>) => role.name),
+        requirements: {
+          projectName: project.details?.name,
+          projectDescription: project.details?.description,
+          estimatedStartDate: project.details?.expected_start_date,
+          estimatedDuration: project.details?.expected_duration?.duration,
+          estimatedWeeklyHours: project.details?.expected_duration?.hours_per_week,
+          totalProjectHoursEach:
+            (project.details?.expected_duration?.duration || 0) *
+            (project.details?.expected_duration?.hours_per_week || 0),
+          documents: project.details?.documents?.map((document: Record<string, string | number>) => ({
+            fileName: document.file_name,
+            fileKey: document.file_key,
+            size: document.size,
+            createdAt: document.created_at,
+          })),
+        },
+        roles:
+          project.roles?.map((projectRole: Record<string, any>) => ({
+            role: projectRole.role,
+            count: projectRole.count,
+            skills: projectRole.proficiency?.skills,
+            tools: projectRole.proficiency?.tools,
+          })) || [],
+        milestones:
+          project.milestones?.map((milestone: Record<string, any>) => ({
+            title: milestone.name,
+            duration: milestone.estimated_duration?.duration,
+            description: milestone.description,
+            deliverables: milestone.deliverables,
+          })) || [],
+        isTeamMember: project.is_team_member,
+        isStakeholder: project.is_stakeholder,
       })) || [],
   };
 };

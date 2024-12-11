@@ -106,7 +106,34 @@ export const FlexternshipRoutes = [
   },
   {
     path: '/profile/client/:userId',
-    element: <ClientPublicProfile />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/talent-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <ClientPublicProfile />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: '/profile/:userType/:userId',
