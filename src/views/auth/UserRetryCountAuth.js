@@ -60,7 +60,7 @@ const UserRetryCountAuth = () => {
 
   return (
     <div className="flex justify-content-between items-center mb-1 text-xs">
-      <p className="text-error">Invalid entry</p>
+      <p className="text-error">Invalid Password</p>
       <p>{maxCount - userLoginAttemptNo} attempts left</p>
     </div>
   );

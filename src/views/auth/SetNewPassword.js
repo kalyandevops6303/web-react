@@ -66,12 +66,12 @@ const SetNewPassword = () => {
     <OnBoardWrap>
       <div className="card-onboard">
         <LogoComp />
-        <CardTitle tag="h1" className="card-title-onboard">
-          Set New Password! 🔐
+        <CardTitle tag="h1" className="card-title-onboard pb-1">
+          Forgot Password! 🔐
         </CardTitle>
 
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-2">
+          <div className="mb-2 pb-1">
             <Label className="form-label d-flex justify-content-between" for="login-email">
               New Password
               <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
@@ -96,7 +96,7 @@ const SetNewPassword = () => {
                   value={field.value || ''} // Set a default value for the input
                   className="input-group-merge create-password mb-75"
                   id="newPassword"
-                  placeholder="Enter your new password"
+                  placeholder="Enter new password"
                 />
               )}
             />
@@ -104,7 +104,7 @@ const SetNewPassword = () => {
 
             {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
           </div>
-          <div className="mb-3">
+          <div className="mb-3 pb-1">
             <Label className="form-label" for="login-email">
               Confirm new Password
             </Label>

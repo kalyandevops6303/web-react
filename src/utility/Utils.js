@@ -126,7 +126,7 @@ export const validations = {
       /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
       'Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one special case character.',
     ),
-  confirmPassword: Yup.string().oneOf([Yup.ref('newPassword'), null], 'Password does not match'),
+  confirmPassword: Yup.string().oneOf([Yup.ref('newPassword'), null], 'Passwords Do not match'),
   mobile: Yup.string()
     .trim()
     .matches(/^[0-9]/, 'Min. 10 characters required'),

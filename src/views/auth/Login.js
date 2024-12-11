@@ -157,7 +157,7 @@ const Login = () => {
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-1">
             <Label className="form-label" for="login-email">
-              Email
+              Email or Mobile number
             </Label>
             <Controller
               type="email"
@@ -193,7 +193,7 @@ const Login = () => {
                   value={field.value || ''} // Set a default value for the input
                   className="input-group-merge"
                   id="password"
-                  placeholder="Enter your password"
+                  placeholder="Enter password"
                   onCopy={(e) => {
                     // disable copy from password field
                     e.preventDefault();
