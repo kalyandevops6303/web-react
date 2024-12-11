@@ -93,7 +93,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
     const talentOrClientProfile =
       userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
     navigate(
-      `/profile/${talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type}/${
+      `/profile/${(talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type).toLowerCase()}/${
         userDetailsData?._id
       }`,
     );

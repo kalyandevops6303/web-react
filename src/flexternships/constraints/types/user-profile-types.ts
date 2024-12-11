@@ -81,7 +81,7 @@ export type FlexternClientPublicProfileDetails = {
     state: string;
     city: string;
     streetAddress: string;
-    houseNumber: string;
+    buildingNumber: string;
     zipCode: string;
   };
   socialLinks: Array<{

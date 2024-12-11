@@ -1,11 +1,12 @@
 'use client';
 
-import { Check, ChevronLeft, Database, Heart, Link2, Users } from 'react-feather';
+import { Check, ChevronLeft, Database, Heart, Link2, Twitter, Linkedin, Users } from 'react-feather';
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
 import ExpandableText from '../../components/core/ExpandableText';
 import { useEffect, useRef, useState } from 'react';
 
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
+import linkedinIcon from '@flexternships/assets/icons/brands/linkedin.svg';
 import SecondaryButton from '../../components/core/buttons/SecondaryButton';
 import {
   FlexternClientProjectDetails,
@@ -18,6 +19,7 @@ import { clientDelegateRoleText } from '@/flexternships/static/profile-content';
 import { isEmpty } from 'lodash';
 import SimpleElevatedCard from '../../components/core/cards/SimpleElevatedCard';
 import emptyProjectsGif from '@flexternships/assets/gifs/search-placeholder.gif';
+import CustomBreadCrumbs from '../../components/core/CustomBreadCrumbs';
 
 export default function ClientPublicProfile() {
   const [clientDetails, setClientDetails] = useState<FlexternClientPublicProfileDetails>();
@@ -85,7 +87,7 @@ export default function ClientPublicProfile() {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [isLoading]);
 
   const fetchMoreProjects = async () => {
     if (!userId) {
@@ -100,12 +102,36 @@ export default function ClientPublicProfile() {
     setIsProjectsLoading(false);
   };
 
+  const getLinkIcon = (link: string) => {
+    switch (link) {
+      case 'linkedin':
+        return <img src={linkedinIcon} className="size-[18px]" />;
+      case 'twitter':
+        return <Twitter size={18} />;
+      default:
+        return <Link2 size={18} />;
+    }
+  };
+
   const scrollToDelegates = () => {
     delegatesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const viewProject = (projectId: string) => {
     navigate(`/project-details/${projectId}`);
+  };
+
+  /**
+   * Handles navigation when user clicks back
+   * If there is browser history, goes back one page
+   * Otherwise redirects to dashboard as fallback
+   */
+  const goBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1); // Go back one page in history
+    } else {
+      navigate('/dashboard'); // Fallback to dashboard if no history
+    }
   };
 
   if (isLoading) {
@@ -121,6 +147,14 @@ export default function ClientPublicProfile() {
   return (
     <div className="flexternships-page">
       {/* TODO: Add Breadcrumbs */}
+      <div className="mb-6">
+        <CustomBreadCrumbs
+          items={[
+            { label: 'Dashboard', href: '/dashboard' },
+            { label: `${clientDetails?.firstname || ''} ${clientDetails?.lastname || ''}` },
+          ]}
+        />
+      </div>
       <div className="flex flex-row gap-x-5">
         <div className="flex flex-col gap-y-6 min-w-[350px]">
           <div className="flex flex-col gap-y-6 bg-white rounded-md shadow-card p-5">
@@ -175,12 +209,12 @@ export default function ClientPublicProfile() {
                     {clientDetails?.companyDetails?.companyName || 'Unknown Company'}
                   </span>
                 </div>
-                <div className="flex flex-row gap-x-2">
+                <div className="flex flex-row w-[350px] gap-x-2">
                   <span className="text-sm text-grey font-semibold">Location:</span>
                   <span className="text-sm text-grey font-normal">
                     {[
+                      `B. No. ${clientDetails?.officeAddress?.buildingNumber}`,
                       clientDetails?.officeAddress?.streetAddress,
-                      clientDetails?.officeAddress?.houseNumber,
                       clientDetails?.officeAddress?.city,
                       clientDetails?.officeAddress?.state,
                       clientDetails?.officeAddress?.country,
@@ -193,9 +227,16 @@ export default function ClientPublicProfile() {
                 <div className="flex flex-col gap-y-3">
                   <div className="text-sm text-grey font-semibold">Social Links</div>
                   <div className="flex flex-row flex-wrap gap-x-2">
-                    <span className="cursor-pointer p-2 rounded-full bg-trublue-light">
-                      <Link2 size={18} className="text-trublue-secondary-500" />
-                    </span>
+                    {clientDetails?.socialLinks?.map((link, index) => (
+                      <a
+                        key={index}
+                        href={link.url}
+                        target="_blank"
+                        className="cursor-pointer p-2.5 rounded-full text-trublue bg-trublue-light"
+                      >
+                        {getLinkIcon(link.platform)}
+                      </a>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -243,7 +284,7 @@ export default function ClientPublicProfile() {
             <PrimaryIconText
               icon={<ChevronLeft size={18} className="text-trublue-secondary-500" />}
               text="Back"
-              onClick={() => {}}
+              onClick={goBack}
             />
           </div>
           <div className="flex flex-row gap-x-6">
@@ -308,7 +349,7 @@ export default function ClientPublicProfile() {
                             </div>
                           </div>
                         </div>
-                        <div className="text-sm text-grey font-normal leading-5.5 grow">
+                        <div className="text-sm text-grey font-normal leading-5.5 break-words grow">
                           <ExpandableText charLimit={300}>{project.description}</ExpandableText>
                         </div>
                       </div>
