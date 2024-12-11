@@ -149,7 +149,7 @@ const Additional = () => {
   const flexternBoolean = useSelector(selectFlexternBoolean);
   const trumioTalent = useSelector(selectTrumioTalent);
   const isIdentityFileLoading = useSelector(identityFileLoading);
-  const talentOnboardingData = useSelector(userDetails);
+  const userData = useSelector(userDetails);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -295,7 +295,6 @@ const Additional = () => {
   //   fileReRender();
   // }, [savedFormDocuments]);
 
-  const userDetailsData = useSelector(userData);
   const isFileValid = (file) => {
     if (file.size > maxFileSize) {
       ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
@@ -689,6 +688,38 @@ const Additional = () => {
           },
           { shouldValidate: true },
         );
+      } else if (userData?.additional_info?.country_info) {
+        setValue(
+          'country',
+          {
+            label: userData?.additional_info?.country_info?.name,
+            value: userData?.additional_info?.country_info?._id,
+          },
+          { shouldValidate: true },
+        );
+      }
+
+      if (
+        userData?.additional_info?.identity_verification &&
+        Object.keys(userData?.additional_info?.identity_verification).length > 0
+      ) {
+        const file = {
+          id: uuidv4(),
+          file: {
+            name: userData?.additional_info?.identity_verification?.file_name,
+            size: userData?.additional_info?.identity_verification?.size,
+            lastModified: userData?.additional_info?.identity_verification?.created_at,
+          },
+          uploadData: {
+            upload_url: userData?.additional_info?.identity_verification?.upload_url,
+            file_key: userData?.additional_info?.identity_verification?.file_key,
+          },
+          isUploaded: true,
+        };
+        setFiles([file]);
+      }
+      if (userData?.additional_info?.gender) {
+        setValue('gender', userData?.additional_info?.gender, { shouldValidate: true });
       }
       if (savedFormDocuments) {
         setResumeFiles([
@@ -818,6 +849,7 @@ const Additional = () => {
       if (parsedUploaded) {
         dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData != null) {
+        // dispatch(getUserDetails(() => {}));
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
         if (savedFormDocuments) {
@@ -838,6 +870,7 @@ const Additional = () => {
         }
         dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData === null) {
+        // dispatch(getUserDetails(() => {}));
         dispatch(
           getResumeParsedDetails(
             setResumeParsedDetails,
