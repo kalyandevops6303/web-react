@@ -1,13 +1,10 @@
 'use client';
 
-import { Check, ChevronLeft, Database, Heart, Link2, Twitter, Linkedin, Users } from 'react-feather';
+import { Check, ChevronLeft, Database } from 'react-feather';
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
-import ExpandableText from '../../components/core/ExpandableText';
 import { useEffect, useRef, useState } from 'react';
 
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
-import linkedinIcon from '@flexternships/assets/icons/brands/linkedin.svg';
-import SecondaryButton from '../../components/core/buttons/SecondaryButton';
 import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
@@ -16,10 +13,10 @@ import { getClientCompletedProjects, getClientPublicDetails } from '@/flexternsh
 import { useParams, useNavigate } from 'react-router-dom';
 import Spinner from '../../components/core/Spinner';
 import { clientDelegateRoleText } from '@/flexternships/static/profile-content';
-import { isEmpty } from 'lodash';
-import SimpleElevatedCard from '../../components/core/cards/SimpleElevatedCard';
-import emptyProjectsGif from '@flexternships/assets/gifs/search-placeholder.gif';
 import CustomBreadCrumbs from '../../components/core/CustomBreadCrumbs';
+import ClientRecentProjects from '../../components/pages/profile/client/public-profile/ClientRecentProjects';
+import ClientProfileCard from '../../components/pages/profile/client/public-profile/ClientProfileCard';
+import ClientCompanyTagline from '../../components/pages/profile/client/public-profile/ClientCompanyTagline';
 
 export default function ClientPublicProfile() {
   const [clientDetails, setClientDetails] = useState<FlexternClientPublicProfileDetails>();
@@ -102,17 +99,6 @@ export default function ClientPublicProfile() {
     setIsProjectsLoading(false);
   };
 
-  const getLinkIcon = (link: string) => {
-    switch (link) {
-      case 'linkedin':
-        return <img src={linkedinIcon} className="size-[18px]" />;
-      case 'twitter':
-        return <Twitter size={18} />;
-      default:
-        return <Link2 size={18} />;
-    }
-  };
-
   const scrollToDelegates = () => {
     delegatesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -157,96 +143,13 @@ export default function ClientPublicProfile() {
       </div>
       <div className="flex flex-row gap-x-5">
         <div className="flex flex-col gap-y-6 min-w-[350px]">
-          <div className="flex flex-col gap-y-6 bg-white rounded-md shadow-card p-5">
-            <div className="flex flex-col items-center gap-y-3">
-              {/* Commented out for now - may need it add later */}
-              {/* <div className="flex flex-row self-stretch justify-end">
-                <span className="cursor-pointer">
-                  <Heart size={24} className="text-error" />
-                </span>
-              </div> */}
-              <div className="size-[120px]">
-                <img
-                  className="w-full h-full object-contain"
-                  src={clientDetails?.companyDetails?.companyLogo || defaultAvatar}
-                />
-              </div>
-              <div className="text-lg text-grey-heading font-medium">
-                {clientDetails?.companyDetails?.companyName || 'Unknown Company'}
-              </div>
-              <div className="flex flex-row gap-x-2.5">
-                <div className="size-11">
-                  <img
-                    className="w-full h-full object-contain rounded-full"
-                    src={clientDetails?.imageUri || defaultAvatar}
-                  />
-                </div>
-                <div>
-                  <div className="text-grey-500 text-lg font-semibold leading-7">
-                    {clientDetails?.firstname || ''} {clientDetails?.lastname || ''}
-                  </div>
-                  <div className="text-sm text-grey-heading font-normal leading-5">
-                    {clientDetails?.title || 'Unknown Title'}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {!isDelegatesInView && clientDetails?.delegates && clientDetails.delegates.length > 0 && (
-              <div>
-                <PrimaryIconText
-                  icon={<Users size={18} className="text-trublue-secondary-500" />}
-                  text="View All Delegates"
-                  onClick={scrollToDelegates}
-                />
-              </div>
-            )}
-            <div>
-              <div className="pb-2 text-lg font-medium text-grey-heading border-b-1 border-grey-border">Details</div>
-              <div className="flex flex-col gap-y-5 pt-4">
-                <div className="flex flex-row gap-x-2">
-                  <span className="text-sm text-grey font-semibold">Department:</span>
-                  <span className="text-sm text-grey font-normal">
-                    {clientDetails?.companyDetails?.companyName || 'Unknown Company'}
-                  </span>
-                </div>
-                <div className="flex flex-row w-[350px] gap-x-2">
-                  <span className="text-sm text-grey font-semibold">Location:</span>
-                  <span className="text-sm text-grey font-normal">
-                    {[
-                      `B. No. ${clientDetails?.officeAddress?.buildingNumber}`,
-                      clientDetails?.officeAddress?.streetAddress,
-                      clientDetails?.officeAddress?.city,
-                      clientDetails?.officeAddress?.state,
-                      clientDetails?.officeAddress?.country,
-                      clientDetails?.officeAddress?.zipCode,
-                    ]
-                      .filter(Boolean)
-                      .join(', ')}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-y-3">
-                  <div className="text-sm text-grey font-semibold">Social Links</div>
-                  <div className="flex flex-row flex-wrap gap-x-2">
-                    {clientDetails?.socialLinks?.map((link, index) => (
-                      <a
-                        key={index}
-                        href={link.url}
-                        target="_blank"
-                        className="cursor-pointer p-2.5 rounded-full text-trublue bg-trublue-light"
-                      >
-                        {getLinkIcon(link.platform)}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* <div className="flex flex-row justify-center">
-              <SecondaryButton className="m-0" onClick={() => { }}>
-                Message
-              </SecondaryButton>
-            </div> */}
-          </div>
+          {clientDetails && (
+            <ClientProfileCard
+              clientDetails={clientDetails}
+              isDelegatesInView={isDelegatesInView}
+              scrollToDelegates={scrollToDelegates}
+            />
+          )}
           {clientDetails?.delegates && clientDetails?.delegates.length > 0 && (
             <div ref={delegatesRef} className="flex flex-col gap-y-6 p-6 pt-4 bg-white rounded-md shadow-card">
               <div className="flex flex-row items-center gap-x-3">
@@ -311,79 +214,12 @@ export default function ClientPublicProfile() {
               </div>
             )}
           </div>
-          <div className="bg-white rounded-md shadow-card p-6">
-            <div className="text-base font-semibold text-grey-heading mb-4">Company Tagline</div>
-            <div className="text-grey text-sm font-light">
-              <ExpandableText charLimit={200}>
-                {clientDetails?.companyDetails?.companyTagline || 'Unknown Tagline'}
-              </ExpandableText>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-4 bg-white rounded-md shadow-card p-6">
-            <div className="text-lg font-semibold text-grey-heading">Recent Projects</div>
-            <div className="flex flex-row flex-wrap gap-6">
-              {!isEmpty(clientProjectDetails) &&
-                clientProjectDetails.projects.length > 0 &&
-                clientProjectDetails.projects.map(
-                  (project: { id: string; name: string; description: string; roles: string[] }, index: number) => (
-                    <div
-                      key={index}
-                      className="w-[471px] flex flex-col gap-y-2 bg-white shadow-card rounded-md p-5 overflow-hidden"
-                    >
-                      <div className="flex flex-col gap-y-4 grow">
-                        <div className="flex flex-col gap-y-3">
-                          <div className="self-start text-grey-heading text-lg font-semibold leading-[26px] line-clamp-4">
-                            {project.name}
-                          </div>
-                          <div className="flex flex-row items-center gap-x-2">
-                            <div className="text-grey text-sm font-normal leading-[21px]">Roles</div>
-                            <div className="flex flex-row flex-wrap gap-1">
-                              {project.roles.map((role: string, index: number) => (
-                                <span
-                                  key={index}
-                                  className="px-4 py-1 text-[#005EFF] text-sm font-normal leading-4.5 border-1 border-[#005EFF] rounded-[4px]"
-                                >
-                                  {role}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-sm text-grey font-normal leading-5.5 break-words grow">
-                          <ExpandableText charLimit={300}>{project.description}</ExpandableText>
-                        </div>
-                      </div>
-                      <div className="flex flex-row justify-center">
-                        <span
-                          onClick={() => viewProject(project.id)}
-                          className="underline text-trublue-secondary-500 text-sm font-normal tracking-wide cursor-pointer"
-                        >
-                          View Project
-                        </span>
-                      </div>
-                    </div>
-                  ),
-                )}
-              {isProjectsLoading ? (
-                <div className="flex flex-row justify-center items-center w-full">
-                  <div className="size-10">
-                    <Spinner />
-                  </div>
-                </div>
-              ) : (
-                isEmpty(clientProjectDetails.projects) && (
-                  <SimpleElevatedCard className="pt-4 pb-5 w-full">
-                    <div className="flex flex-col justify-center items-center">
-                      <img className="h-[150px] w-[171px] object-cover" src={emptyProjectsGif} alt="No Projects" />
-                      <span className="text-grey-300 text-sm font-medium tracking-wide -mt-2.5">
-                        No Recent Projects Found
-                      </span>
-                    </div>
-                  </SimpleElevatedCard>
-                )
-              )}
-            </div>
-          </div>
+          <ClientCompanyTagline tagline={clientDetails?.companyDetails?.companyTagline || 'Unknown Tagline'} />
+          <ClientRecentProjects
+            clientProjectDetails={clientProjectDetails}
+            isProjectsLoading={isProjectsLoading}
+            viewProject={viewProject}
+          />
         </div>
       </div>
     </div>
