@@ -330,7 +330,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
   return (
     <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
-      <h2 className="text-lg font-normal not-italic text-grey-heading">Saved Drafts</h2>
+      <h2 className="text-lg font-medium not-italic text-grey-heading">Saved Drafts</h2>
 
       {!isEmpty(fields) && (
         <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
@@ -380,6 +380,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
       </div>
       <div className={`flex flex-row justify-end gap-x-4 mt-3`}>
         <SecondaryButton
+          className="m-0"
           onClick={saveAsDraft}
           loading={saveDraftLoading}
           disabled={isDisabled || (isEmpty(fields) && isEmpty(removedArtifactIds))}
@@ -387,6 +388,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           Save as Draft
         </SecondaryButton>
         <PrimaryButton
+          className="m-0"
           onClick={openConfirmArtifactsSubmissionModal}
           loading={submitDraftLoading}
           disabled={isDisabled || !isValid || (isEmpty(fields) && isEmpty(removedArtifactIds))}
@@ -435,9 +437,8 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           }
           onClose={activeModal === MilestoneDetailsModalType.ARTIFACT_REMOVED ? closeWithRemove : closeModal}
           onConfirm={handleDeleteClick}
-          artifact={modalMetadata}
+          artifact={watch(`draftArtifacts.${modalMetadata.index}`)}
           title={getMilestoneDetailsModalTitle(activeModal)}
-          description={getMilestoneDetailsModalDescription(activeModal)}
           cancelCtaText={getMilestoneDetailsModalCancelCtaText(activeModal)}
           confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
         />
