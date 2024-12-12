@@ -581,6 +581,55 @@ const FlexternSocial = () => {
         } else {
           setValue('otherSocialLinks', [defaultLink]);
         }
+      } else {
+        if (userData?.talent_info?.social_links?.find((link) => link.platform === 'linkedIn')) {
+          setValue(
+            'linkedInLink',
+            userData?.talent_info?.social_links?.find((link) => link.platform === 'linkedIn')?.url ||
+              savedFormData?.linkedInLink,
+            {
+              shouldValidate: true,
+            },
+          );
+        }
+        if (userData?.talent_info?.social_links?.find((link) => link.platform === 'twitter')) {
+          setValue(
+            'twitterLink',
+            userData?.talent_info?.social_links?.find((link) => link.platform === 'twitter')?.url ||
+              savedFormData?.twitterLink,
+            {
+              shouldValidate: true,
+            },
+          );
+        }
+        if (userData?.talent_info?.social_links?.find((link) => link.platform === 'github')) {
+          setValue(
+            'githubLink',
+            userData?.talent_info?.social_links?.find((link) => link.platform === 'github')?.url ||
+              savedFormData?.githubLink,
+            {
+              shouldValidate: true,
+            },
+          );
+        }
+        if (
+          userData?.talent_info?.social_links.filter(
+            (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+          ).length > 0
+        ) {
+          setValue(
+            'otherSocialLinks',
+            userData?.talent_info?.social_links
+              ?.filter(
+                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+              )
+              .map((link) => ({
+                linkName: link.platform,
+                link: link.url,
+              })),
+            { shouldValidate: true },
+          );
+        }
       }
       if (savedFormDocuments) {
         setFiles([
