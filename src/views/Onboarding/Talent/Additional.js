@@ -70,7 +70,6 @@ import {
   fileKey,
   resumeParsed,
   resumeDataUploadedForAdditional,
-  resume,
 } from '../../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
