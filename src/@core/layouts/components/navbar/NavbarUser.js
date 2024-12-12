@@ -47,6 +47,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
       openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/notifications' });
       return;
     }
+    navigate('/notifications');
     isNotificationCount && dispatch(notificationCount(false));
   };
 
