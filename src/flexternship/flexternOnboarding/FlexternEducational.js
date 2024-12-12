@@ -897,6 +897,16 @@ const FlexternEducational = () => {
           })),
           { shouldValidate: true },
         );
+      } else {
+        setValue(
+          'tools',
+          savedFormData?.tools ||
+            userData?.talent_info?.expertise?.tools?.map((tool) => ({
+              label: tool.name,
+              value: tool._id,
+            })),
+          { shouldValidate: true },
+        );
       }
 
       // Handle certificates
@@ -919,6 +929,16 @@ const FlexternEducational = () => {
             label: skill.name,
             value: skill._id,
           })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'skills',
+          savedFormData?.skills ||
+            userData?.talent_info?.expertise?.skills?.map((skill) => ({
+              label: skill.name,
+              value: skill._id,
+            })),
           { shouldValidate: true },
         );
       }

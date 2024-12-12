@@ -12,6 +12,7 @@ import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { useNavigate } from 'react-router-dom';
 
 const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -22,9 +23,11 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
+  const navigate = useNavigate();
+
   const viewProject = () => {
-    // navigate(`/project-details/${data._id}/bid`);
-    setShowModal(true);
+    console.log('data', data);
+    navigate(`/project-details/${data._id}/team`);
   };
 
   const updateCard = () => {

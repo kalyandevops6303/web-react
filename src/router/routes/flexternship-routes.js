@@ -52,6 +52,7 @@ import ProjectsTab from '@/flexternships/app/project-details/tabs/projects/page'
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 import FlexternshipsContractView from '@/flexternships/app/project-details/sign-documents/page';
 import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
+import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 
 // ** Default Route
@@ -102,6 +103,37 @@ export const FlexternshipRoutes = [
   {
     path: '/search',
     element: <Search />,
+  },
+  {
+    path: '/profile/client/:userId',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/talent-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <ClientPublicProfile />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: '/profile/:userType/:userId',

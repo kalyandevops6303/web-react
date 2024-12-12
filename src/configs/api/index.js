@@ -25,6 +25,7 @@ const API = {
     checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
     validateFlexTernEmail: `${apiAuthEndpoint}/api/v1/flextern/email/check`,
     flexternValues: `${apiAuthEndpoint}/api/v1/flextern/values`,
+    logout: `${apiAuthEndpoint}/api/v1/user/logout`,
   },
   static: {
     talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,
