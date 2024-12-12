@@ -12,7 +12,7 @@ import Toast from '../../Toasts/Toast';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
-  const { onClose, isOpen, onConfirm, title, description, confirmCtaText, artifact, cancelCtaText } = props;
+  const { onClose, isOpen, onConfirm, title, confirmCtaText, artifact, cancelCtaText } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
   const handleConfirm = async () => {
@@ -42,7 +42,7 @@ export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
         <div className="flex flex-col justify-center items-center">
           <img className="w-36 h-36" src={DangerGif} alt="confirm-action" />
         </div>
-        <div className="flex flex-col gap-y-9">
+        <div className="flex flex-col grow gap-y-9">
           <div className="flex flex-col gap-y-4 max-w-[382px]">
             <h1 className="text-2xl font-medium leading-[38px] text-grey-heading">{title}</h1>
             <div className="flex flex-row items-center gap-x-3">
@@ -57,7 +57,9 @@ export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
                   : artifact.metadata?.url || 'Empty Url'}
               </span>
             </div>
-            {description && <div className="text-sm font-medium leading-[23px] text-grey-heading">{description}</div>}
+            {artifact.description && (
+              <div className="text-sm font-medium leading-[23px] text-grey-heading">{artifact.description}</div>
+            )}
           </div>
           <div className="flex flex-row justify-end gap-x-5">
             {cancelCtaText && (
@@ -84,6 +86,5 @@ type RemoveArtifactModalProps = {
   cancelCtaText?: string;
   isOpen?: boolean;
   title: string;
-  description?: string;
   artifact: Partial<MilestoneDraftArtifact>;
 };

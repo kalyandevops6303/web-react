@@ -22,8 +22,8 @@ export default function CelebrationModal(props: CelebrationModalProps) {
                 </div>
                 {projectName && (
                   <div className="flex flex-row gap-x-4">
-                    <span className="text-grey-heading font-medium">Project Name:</span>
-                    <span>{projectName}</span>
+                    <span className="text-grey-heading font-medium whitespace-nowrap">Project Name:</span>
+                    <span className="truncate">{projectName}</span>
                   </div>
                 )}
               </div>
