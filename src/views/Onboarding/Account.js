@@ -487,7 +487,7 @@ const Account = () => {
                     <div className="d-flex flex-column align-items-start">
                       <p className="m-0">Allowed file types:</p>
                       <p className="m-0">png, jpg, jpeg.</p>
-                      <p className="m-0">Max file size: 5MB</p>
+                      {/* <p className="m-0">Max file size: 5MB</p> */}
                     </div>
                   </UncontrolledTooltip>
                 </div>
@@ -502,7 +502,7 @@ const Account = () => {
                       name="firstName"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Enter first name" invalid={errors.firstName && true} />
+                        <Input {...field} placeholder="Enter your first name" invalid={errors.firstName && true} />
                       )}
                     />
                     {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
@@ -516,7 +516,7 @@ const Account = () => {
                       name="lastName"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Enter last name" invalid={errors.lastName && true} />
+                        <Input {...field} placeholder="Enter your last name" invalid={errors.lastName && true} />
                       )}
                     />
                     {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
@@ -560,7 +560,7 @@ const Account = () => {
                   </Col>
                   <Col sm="12" md="12" lg="6">
                     <Label className="form-label" for="email">
-                      Email Address
+                      Email
                     </Label>
                     <Controller
                       id="email"
@@ -587,6 +587,12 @@ const Account = () => {
                   {isDelegate ? 'Change Password' : 'Reset Password'}
                 </Button>
               )}
+              {!location.pathname.includes('profile-edit') && userDetailsData?.oauth_type !== 'google' && (
+                <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
+                  Change Password
+                </Button>
+              )}
+
               <Button
                 color="primary"
                 type="submit"

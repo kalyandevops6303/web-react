@@ -954,7 +954,7 @@ const FlexternPersonal = () => {
                         render={({ field }) => (
                           <Input
                             {...field}
-                            placeholder="Enter your tagline in 60 characters or less"
+                            placeholder="Enter your tagline in 60 character."
                             invalid={errors.tagline && true}
                           />
                         )}
@@ -974,7 +974,7 @@ const FlexternPersonal = () => {
                           <AsyncPaginate
                             loadOptions={loadTalentRolesOptions}
                             classNamePrefix="select"
-                            placeholder="Select your role"
+                            placeholder="Enter your role"
                             theme={selectThemeColors}
                             className={classNames('react-select', {
                               'is-invalid': errors && errors.role,
@@ -996,11 +996,11 @@ const FlexternPersonal = () => {
                         name="professionalIntroduction"
                         control={control}
                         render={({ field }) => (
-                          <TextEditor
-                            name={field.name}
-                            onChange={field.onChange}
-                            value={field.value}
-                            placeholder="Describe in 500 characters."
+                          <Input
+                            {...field}
+                            type="textarea"
+                            invalid={errors.professionalIntroduction && true}
+                            placeholder="Share a summary of your interests and skills (minimum 200 char)"
                           />
                         )}
                       />
@@ -1010,7 +1010,7 @@ const FlexternPersonal = () => {
                     </Col>
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="role">
-                        Prefered working time zone<span className="label-asterisk">*</span>
+                        Preferred Time Zone<span className="label-asterisk">*</span>
                       </Label>
                       <Controller
                         id="role"
@@ -1021,7 +1021,7 @@ const FlexternPersonal = () => {
                           <AsyncPaginate
                             loadOptions={loadPreferedWorkingTimezoneOptions}
                             classNamePrefix="select"
-                            placeholder="Select prefered working time zone"
+                            placeholder="Select preferred time zone"
                             theme={selectThemeColors}
                             className={classNames('react-select', {
                               'is-invalid': errors && errors.workingTimeZone,
@@ -1039,7 +1039,7 @@ const FlexternPersonal = () => {
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="speakLanguages">
-                        Language - I can speak well (Top 5)
+                        Language - I can speak well <span className="italic"> (Top 5) </span>
                       </Label>
                       <Controller
                         id="speakLanguages"
@@ -1048,7 +1048,7 @@ const FlexternPersonal = () => {
                         invalid={errors.speakLanguages && true}
                         render={({ field }) => (
                           <AsyncPaginate
-                            isDisabled
+                            // isDisabled
                             isMulti
                             loadOptions={loadLanguagesOptions}
                             classNamePrefix="select"
@@ -1066,7 +1066,7 @@ const FlexternPersonal = () => {
 
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="writeLanguages">
-                        Language - I can write well (Top 5)
+                        Language - I can write well <span className="italic"> (Top 5) </span>
                       </Label>
                       <Controller
                         id="writeLanguages"
@@ -1075,7 +1075,7 @@ const FlexternPersonal = () => {
                         invalid={errors.writeLanguages && true}
                         render={({ field }) => (
                           <AsyncPaginate
-                            isDisabled
+                            // isDisabled
                             isMulti
                             loadOptions={loadLanguagesOptions}
                             classNamePrefix="select"
@@ -1101,7 +1101,7 @@ const FlexternPersonal = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div className="d-flex justify-content-end">
-                  <Button
+                  {/* <Button
                     color="primary"
                     outline
                     className="d-flex align-items-center justify-content-between me-2"
@@ -1109,7 +1109,7 @@ const FlexternPersonal = () => {
                   >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button>
+                  </Button> */}
                   <Button
                     color="primary"
                     type="submit"
@@ -1140,8 +1140,10 @@ const FlexternPersonal = () => {
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
-                        background: parseResume ? '#0185E426' : theme.greyedOutBackground,
-                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                        // background: parseResume ? '#0185E426' : theme.greyedOutBackground,
+                        background: '#0185E426',
+                        // padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                        padding: '16px',
                       }}
                     >
                       <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
@@ -1153,9 +1155,15 @@ const FlexternPersonal = () => {
                             style={{ color: '#004280' }}
                             className="d-flex w-100  justify-content-between align-items-center"
                           >
-                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
-                              Auto Fill {files && files?.length > 0 && 'Profile'}
-                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            <Col lg="10" style={{ color: '#004280' }} className="font-semibold mr-2">
+                              {files && files?.length > 0 && 'Auto Fill Profile'}
+                              {files && files.length === 0 && (
+                                <span className="font-normal">
+                                  <span className="font-semibold">Go Faster</span> - Upload your resume to auto fill
+                                  your profile.
+                                  <span className="label-asterisk me-50">*</span>
+                                </span>
+                              )}
                             </Col>
                             {resumeParsedLoading ? (
                               <Spinner size="sm" />
@@ -1221,7 +1229,7 @@ const FlexternPersonal = () => {
                 </CardHeader>
 
                 <CardBody>
-                  <hr className="m-0 card-header-border" />
+                  {/* <hr className="m-0 card-header-border" /> */}
 
                   {isTrumioTalent && (
                     <div className="d-flex gap-1 mt-1">
@@ -1258,37 +1266,25 @@ const FlexternPersonal = () => {
                   )}
 
                   {isFlextern && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox2"
-                          className="custom-checkbox-input"
-                          checked={isFlexternReady}
-                        />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                      </div>
+                    <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer d-flex align-items-center "
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
-                                ?.path || '/dashboard',
-                            )
-                          }
-                        >
-                          {isFlexternReady
-                            ? 'Explore Flexternships'
-                            : `${
+                        <CardText className="m-0">
+                          <a
+                            href="#"
+                            className="text-primary cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(
                                 returnCompleteProfileDetailsCta(
                                   userTypes.talent,
                                   profileCompletionFlexternMissingValues,
-                                )?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
+                                )?.path || '/dashboard',
+                              );
+                            }}
+                          >
+                            Add More
+                          </a>
+                        </CardText>
                       </div>
                     </div>
                   )}

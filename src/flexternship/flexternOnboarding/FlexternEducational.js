@@ -1422,7 +1422,7 @@ const FlexternEducational = () => {
                   <Row className="flex justify-between mb-5 mt-4">
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="institution">
-                        Education Institution<span className="label-asterisk me-50">*</span>
+                        Institution<span className="label-asterisk me-50">*</span>
                       </Label>
                       <Controller
                         id="institution"
@@ -1451,7 +1451,7 @@ const FlexternEducational = () => {
 
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="degree">
-                        Education<span className="label-asterisk me-50">*</span>
+                        Degree<span className="label-asterisk me-50">*</span>
                       </Label>
                       <Controller
                         id="education"
@@ -1461,7 +1461,7 @@ const FlexternEducational = () => {
                           <AsyncPaginate
                             loadOptions={loadEducationsOptions}
                             classNamePrefix="select"
-                            placeholder="Select your degree"
+                            placeholder="Enter your degree"
                             theme={selectThemeColors}
                             className={classNames('react-select', {
                               'is-invalid': errors && errors.degree,
@@ -1586,7 +1586,7 @@ const FlexternEducational = () => {
                             menuPosition="fixed"
                             minMenuHeight={200}
                             classNamePrefix="select"
-                            placeholder="Select up to 5 tools"
+                            placeholder="Select top 5 tools"
                             theme={selectThemeColors}
                             className={classNames('react-select', {
                               'is-invalid': errors && errors.tools,
@@ -1615,7 +1615,7 @@ const FlexternEducational = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div className="d-flex justify-content-end">
-                  <Button
+                  {/* <Button
                     color="primary"
                     outline
                     className="d-flex align-items-center justify-content-between me-2"
@@ -1623,7 +1623,7 @@ const FlexternEducational = () => {
                   >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button>
+                  </Button> */}
                   <Button
                     color="primary"
                     type="submit"
@@ -1654,8 +1654,10 @@ const FlexternEducational = () => {
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
-                        background: parseResume ? '#0185E426' : theme.greyedOutBackground,
-                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                        // background: parseResume ? '#0185E426' : theme.greyedOutBackground,
+                        background: '#0185E426',
+                        // padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                        padding: '16px',
                       }}
                     >
                       <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
@@ -1667,9 +1669,15 @@ const FlexternEducational = () => {
                             style={{ color: '#004280' }}
                             className="d-flex w-100  justify-content-between align-items-center"
                           >
-                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
-                              Auto Fill {files && files?.length > 0 && 'Profile'}
-                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            <Col lg="10" style={{ color: '#004280' }} className="font-semibold mr-2">
+                              {files && files?.length > 0 && 'Auto Fill Profile'}
+                              {files && files.length === 0 && (
+                                <span className="font-normal">
+                                  <span className="font-semibold">Go Faster</span> - Upload your resume to auto fill
+                                  your profile.
+                                  <span className="label-asterisk">*</span>
+                                </span>
+                              )}
                             </Col>
                             {resumeParsedLoading ? (
                               <Spinner size="sm" />
@@ -1735,39 +1743,26 @@ const FlexternEducational = () => {
                 </CardHeader>
 
                 <CardBody>
-                  <hr className="m-0 card-header-border" />
                   {isFlextern && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox2"
-                          className="custom-checkbox-input"
-                          checked={isFlexternReady}
-                        />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                      </div>
+                    <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer d-flex align-items-center"
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
-                                ?.path || '/dashboard',
-                            )
-                          }
-                        >
-                          {isFlexternReady
-                            ? 'Explore Flexternships'
-                            : `${
+                        <CardText className="m-0">
+                          <a
+                            href="#"
+                            className="text-primary cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(
                                 returnCompleteProfileDetailsCta(
                                   userTypes.talent,
                                   profileCompletionFlexternMissingValues,
-                                )?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
+                                )?.path || '/dashboard',
+                              );
+                            }}
+                          >
+                            Add More
+                          </a>
+                        </CardText>
                       </div>
                     </div>
                   )}

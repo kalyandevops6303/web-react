@@ -100,7 +100,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
     supportDetails: yup
       .string()
       .min(50, 'Description must be at least 50 characters')
-      .max(500, 'You have exeeded char limit of 500')
+      .max(500, 'You have exeeded the limit of 500 characters')
       .required('Description is required'),
   });
 
@@ -204,7 +204,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
     <Modal isOpen={modal} contentClassName="custom-modal-style " className="modal-dialog trumio">
       <ModalHeader toggle={isLoading ? null : toggleModal} />
       <ModalBody className="pt-0 px-10">
-        <h2 className="font-large-1 text-center mb-7 text-[28px]">Email Customer Support</h2>
+        <h2 className="font-large-1 text-center mb-7 text-[28px]">Contact Support</h2>
         <SupportModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-1">
@@ -287,7 +287,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="tool">
-                    Tool
+                    Missing Skill
                     <span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
@@ -308,7 +308,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                   {errors.tool && <FormFeedback>{errors.tool.message}</FormFeedback>}
                 </Col>
               )}
-              {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute && (
+              {/* {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="institute">
                     Institute
@@ -332,7 +332,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                   />
                   {errors.institute && <FormFeedback>{errors.institute.message}</FormFeedback>}
                 </Col>
-              )}
+              )} */}
               {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_assessment && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="assessment">
@@ -363,7 +363,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               <Col sm="12" md="12" lg="12">
                 <Label className="form-label text-grey font-normal text-sm" for="skill">
                   Tell us in detail how we can help you?
-                  <span className="label-asterisk me-50">*</span>
+                  {/* <span className="label-asterisk me-50">*</span> */}
                 </Label>
                 <Controller
                   id="supportDetails"
