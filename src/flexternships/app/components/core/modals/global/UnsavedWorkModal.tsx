@@ -29,7 +29,6 @@ export default function UnsavedWorkModal() {
   };
 
   const handleCancel = () => {
-    console.log('modalContent.metadata.nextPath', modalContent.metadata);
     if (modalContent?.metadata?.nextPath !== undefined) {
       navigate(modalContent.metadata.nextPath);
     }
