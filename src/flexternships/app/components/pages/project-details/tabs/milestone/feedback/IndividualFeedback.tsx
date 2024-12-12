@@ -127,8 +127,24 @@ export default function IndividualFeedback() {
             />
           )}
         </div>
-        <FunFacts />
+        <div className="max-h-screen">
+          <FunFacts />
+        </div>
       </div>
+      {/* <div className="flex h-screen">
+        <div className="w-48 bg-gray-200 p-4">Left</div>
+        <div className="flex-1 overflow-x-auto whitespace-nowrap bg-gray-300 p-4">
+          {individualFeedbackForm && (
+            <MilestoneFeedbackSurvey
+              surveyJson={individualFeedbackForm?.feedback}
+              userDetails={keysToCamelCase(activeTeamMember)}
+              onComplete={handleSurveyComplete}
+              estimatedTime={1}
+            />
+          )}
+        </div>
+        <div className="w-48 bg-gray-200 p-4">Right</div>
+      </div> */}
     </>
   );
 }
