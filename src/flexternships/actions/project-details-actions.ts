@@ -1,3 +1,4 @@
+import { ProjectSecondaryStatus } from '../constraints/enums/core-enums';
 import { ProjectDetailsState, TeamMemberDetails } from '../constraints/types/project-details-types';
 import {
   fetchTeamDetails,
@@ -32,10 +33,17 @@ export const populateTeamDetails = async (set: any, projectId: string): Promise<
   }));
 };
 
-export const getProjectDetails = async (projectId: string, set: any) => {
+export const getProjectDetails = async (
+  projectId: string,
+  set: any,
+  onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
+) => {
   set({ isProjectsLoading: true });
   const res: any = await getProjectDetailsById(projectId);
   set({ projectDetails: res, isProjectsLoading: false });
+  if (onSuccessBySecondaryStatus && res?.secondaryStatus?.next) {
+    onSuccessBySecondaryStatus(res.secondaryStatus.next);
+  }
 };
 
 export const getProjectInvitationDetails = async (projectId: string, set: any) => {

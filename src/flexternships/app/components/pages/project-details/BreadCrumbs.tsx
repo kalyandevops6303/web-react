@@ -1,3 +1,4 @@
+import React from 'react';
 import { BreadCrumbType } from '@/flexternships/constraints/types/project-details-types';
 import {
   Breadcrumb,
@@ -21,15 +22,16 @@ const BreadCrumbs = ({ steps }: { steps: BreadCrumbType[] }) => {
           const isLastStep = index === steps.length - 1;
           const isSecondLastStep = index === steps.length - 2 && !steps[steps.length - 1]?.title;
           return (
-            <BreadcrumbItem>
-              {index === steps.length - 1 ? (
-                <BreadcrumbPage>{step?.title}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink href={step?.link}>{step?.title}</BreadcrumbLink>
-              )}
-
+            <React.Fragment key={index}>
+              <BreadcrumbItem>
+                {index === steps.length - 1 ? (
+                  <BreadcrumbPage>{step?.title}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink href={step?.link}>{step?.title}</BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
               {!isLastStep && !isSecondLastStep && <BreadcrumbSeparator />}
-            </BreadcrumbItem>
+            </React.Fragment>
           );
         })}
       </BreadcrumbList>

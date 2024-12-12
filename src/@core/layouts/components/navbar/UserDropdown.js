@@ -97,9 +97,10 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const handleEdit = () => {
     const talentOrClientProfile =
       userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
-    const nextPath = `/profile/${(talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type).toLowerCase()}/${
-      userDetailsData?._id
-    }`;
+    const nextPath = `/profile/${(talentOrClientProfile
+      ? userDetailsData?.user_type
+      : userDetailsData?.team_type
+    ).toLowerCase()}/${userDetailsData?._id}`;
     handleWorkInProgress(nextPath);
     if (isWorkInProgress) return;
     navigate(nextPath);
