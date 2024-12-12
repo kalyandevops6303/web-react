@@ -159,7 +159,7 @@ const ThemeNavbar = (props) => {
 
   const handleWorkInProgress = (nextPath) => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
     }
   };
   return (

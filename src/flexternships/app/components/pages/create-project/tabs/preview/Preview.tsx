@@ -69,7 +69,6 @@ export default function Preview() {
     try {
       const createdProjectId = await createFlexternProject(formData, projectId);
       setCreatedProjectId(createdProjectId);
-      console.log('createdProjectId', createdProjectId);
       setRecallTimeLeft(5);
       openModal(ModalType.PROJECT_CREATED);
     } catch (error: unknown) {

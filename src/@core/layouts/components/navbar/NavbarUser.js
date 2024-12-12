@@ -44,7 +44,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
 
   const handleNotificaionClick = () => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/notifications' });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/notifications' });
       return;
     }
     isNotificationCount && dispatch(notificationCount(false));
@@ -52,7 +52,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
 
   const handleChatNavigate = () => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/chat' });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/chat' });
       return;
     }
     if (cometAuthToken) {

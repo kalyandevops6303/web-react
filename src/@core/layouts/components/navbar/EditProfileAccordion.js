@@ -23,6 +23,8 @@ import { setItemFromSession } from '../../../../utility/sessesionStorageControl'
 import { getItem } from '../../../../utility/localStorageControl';
 import PermissionWrapper from '@/PermissionWrapper';
 import { TextWrapper } from './style';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -33,10 +35,28 @@ const EditProfileAccordion = () => {
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const isDelegate = getItem('isDelegate');
 
+  // ** Flexternships Stores
+  const isWorkInProgress = useAppStore((state) => state.isWip);
+  const openModal = useAppStore((state) => state.openModal);
+
   const [open, setOpen] = useState('');
-  const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
+  const toggle = useCallback((id) => (open === id ? setOpen('') : setOpen(id)), [open]);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleToggle = (id) => {
+    if (isWorkInProgress) {
+      handleWorkInProgress();
+    } else {
+      toggle(id);
+    }
+  };
+
+  const handleWorkInProgress = (nextPath) => {
+    if (isWorkInProgress) {
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
+    }
+  };
 
   const handleEditProfileForTeam = () => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
@@ -245,7 +265,7 @@ const EditProfileAccordion = () => {
 
   return (
     <div className="edit-accordion">
-      <Accordion open={open} toggle={toggle}>
+      <Accordion open={open} toggle={handleToggle}>
         <AccordionItem>
           <AccordionHeader className={open === '1' ? 'isActive' : ''} targetId="1">
             <TextWrapper>Edit Profile</TextWrapper>
