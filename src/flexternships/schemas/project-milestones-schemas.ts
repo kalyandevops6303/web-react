@@ -49,7 +49,11 @@ export const MilestoneArtifactSchema = yup.object().shape({
             otherwise: yup.object().shape({
               url: yup
                 .string()
-                .matches(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, 'Must be a valid URL')
+                // .matches(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, 'Must be a valid URL')
+                .matches(
+                  /^(https?:\/\/)?([a-zA-Z0-9\.-]+)\.([a-zA-Z\.]{2,})(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?$/,
+                  'Must be a valid URL',
+                )
                 .required('URL is required'),
             }),
           })

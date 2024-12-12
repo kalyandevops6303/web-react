@@ -122,12 +122,12 @@ const NavbarUser = ({ setNavBarLoading }) => {
             </div>
           ) : (
             <NotificationIconContainer onClick={handleNotificaionClick} className="d-flex align-items-center">
-              <Link to="/notifications">
+              <div className="cursor-pointer">
                 {(isNotificationCount || notificationsPollingData?.unread_notifications_count > 0) && (
                   <span className="notification-dot" />
                 )}
                 <Bell size={20} color={isNotificationView ? theme.activeColor : theme.bodyColor} />
-              </Link>
+              </div>
               {isNotificationView && (
                 <LineWrapper>
                   <div className="line"></div>

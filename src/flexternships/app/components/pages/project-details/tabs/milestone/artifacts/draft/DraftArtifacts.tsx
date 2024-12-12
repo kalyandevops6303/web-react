@@ -55,9 +55,11 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
+  const getCurrentNextPath = useAppStore((state) => state.getCurrentNextPath);
 
-  const [saveDraftLoading, setSaveDraftLoading] = useState(false);
-  const [submitDraftLoading, setSubmitDraftLoading] = useState(false);
+  const [saveDraftLoading, setSaveDraftLoading] = useState<boolean>(false);
+  const [submitDraftLoading, setSubmitDraftLoading] = useState<boolean>(false);
+  const [onSaveNextPath, setOnSaveNextPath] = useState<string | undefined>(undefined);
 
   const {
     control,
@@ -91,6 +93,9 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
     setWip(saveForLaterModalContent, {
       onConfirm: async () => {
+        if (getCurrentNextPath()) {
+          setOnSaveNextPath(getCurrentNextPath());
+        }
         await saveAsDraft();
         closeGlobalModal();
       },
@@ -419,6 +424,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           description={getMilestoneDetailsModalDescription(MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED)}
           note={draftSavedModalNote}
           highlightText={draftSavedModalHighlightText}
+          nextPath={onSaveNextPath}
         />
       )}
       {activeModal && !isEmpty(modalMetadata) && (
