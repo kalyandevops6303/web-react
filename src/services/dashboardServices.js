@@ -8,9 +8,9 @@ const userDataService = () => DataService.get(API.dashboard.userData);
 const totalReferralAmountService = () => DataService.get(API.dashboard.totalReferralAmount);
 
 const recommendedProjectsService = () =>
-  isFlexternshipApp
+  (isFlexternshipApp
     ? DataService.get(API.dashboard.recommendedProjectsFlextern)
-    : DataService.get(API.dashboard.recommendedProjects);
+    : DataService.get(API.dashboard.recommendedProjects));
 
 const profilePercentageService = () => DataService.get(API.dashboard.profilePercentage);
 
@@ -47,14 +47,14 @@ const teamProfilePercentageService = () => DataService.get(API.dashboard.teamPro
 const alertService = () => DataService.get(`${API.notifications.alerts}?page=1&page_size=4`);
 
 const activeProjectsForClientService = () =>
-  isFlexternshipApp
+  (isFlexternshipApp
     ? DataService.get(API.dashboard.activeProjectsForClientFlextern)
-    : DataService.get(API.dashboard.activeProjectsForClient);
+    : DataService.get(API.dashboard.activeProjectsForClient));
 
 const upcomingProjectsForClientService = () =>
-  isFlexternshipApp
+  (isFlexternshipApp
     ? DataService.get(API.dashboard.upcomingProjectsForClientFlextern)
-    : DataService.get(API.dashboard.upcomingProjectsForClient);
+    : DataService.get(API.dashboard.upcomingProjectsForClient));
 
 const projectsBidsForClientService = () => DataService.get(API.dashboard.projectsBidsForClient);
 
@@ -66,14 +66,14 @@ const checkBidsAcceptedService = () =>
   });
 
 const activeProjectsForTalentService = () =>
-  isFlexternshipApp
+  (isFlexternshipApp
     ? DataService.get(API.dashboard.activeProjectsForTalentFlextern)
-    : DataService.get(API.dashboard.activeProjectsForTalent);
+    : DataService.get(API.dashboard.activeProjectsForTalent));
 
 const upcomingProjectsForTalentService = () =>
-  isFlexternshipApp
+  (isFlexternshipApp
     ? DataService.get(API.dashboard.upcomingProjectsForTalentFlextern)
-    : DataService.get(API.dashboard.upcomingProjectsForTalent);
+    : DataService.get(API.dashboard.upcomingProjectsForTalent));
 
 const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeProjectsForTeam);
 

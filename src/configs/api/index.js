@@ -84,7 +84,7 @@ const API = {
     report: `${apiAuthEndpoint}/api/v1/user/report`,
     publicTeamMembers: `${apiOnboardingEndpoint}/api/v1/team-members`,
 
-    //v2
+    // v2
     talentFlextern: `${apiOnboardingEndpoint}/api/v2/talent/details`,
     talentProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/talent/get-recommanded-projects`,
     clientFlextern: `${apiOnboardingEndpoint}/api/v2/client/details`,
@@ -134,7 +134,7 @@ const API = {
     // files
     downloadUrl: `${apiCreateProjectEndpoint}/api/v1/download/url`,
 
-    //v2
+    // v2
     activeProjectsForTalentFlextern: `${apiOnboardingEndpoint}/api/v2/talent/active-projects`,
     upcomingProjectsForTalentFlextern: `${apiOnboardingEndpoint}/api/v2/talent/upcoming-projects`,
     upcomingProjectsForClientFlextern: `${apiOnboardingEndpoint}/api/v2/client/upcoming-projects`,
@@ -259,7 +259,7 @@ const API = {
     listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
     listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
 
-    //v2
+    // v2
     cardInfoFlextern: `${apiOnboardingEndpoint}/api/v2/marketplace/cards-info`,
     listProjectFlextern: `${apiOnboardingEndpoint}/api/v2/marketplace/list-projects`,
     listTalentsFlextern: `${apiOnboardingEndpoint}/api/v2/marketplace/list-talents`,
@@ -342,7 +342,7 @@ const API = {
     clientName: `${apiOnboardingEndpoint}/api/v1/projects/client-names`,
     teamName: `${apiOnboardingEndpoint}/api/v1/projects/team-names`,
 
-    //v2 projects-list
+    // v2 projects-list
     allProjectsFlextern: `${apiOnboardingEndpoint}/api/v2/projects`,
     departmentName: `${apiOnboardingEndpoint}/api/v2/static/departments/all`,
     secondaryStatuses: `${apiOnboardingEndpoint}/api/v2/static/secondary-status/all`,

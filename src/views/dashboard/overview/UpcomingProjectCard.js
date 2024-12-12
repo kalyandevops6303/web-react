@@ -5,6 +5,7 @@ import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Card, CardBody, Spinner } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { ProjectWrapper } from './style';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -12,7 +13,6 @@ import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { useNavigate } from 'react-router-dom';
 
 const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -26,7 +26,6 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
 
   const viewProject = () => {
-    console.log('data', data);
     navigate(`/project-details/${data._id}/team`);
   };
 
@@ -47,20 +46,26 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
       <Card className="card-app-design new-tag-relative-card">
         {!data?.is_read && <NewTag />}
         <CardBody>
-          <p className="active-project-name truncate-2 mt-50" style={{ height: '40px' }}>
+          <p className="active-project-name truncate-2 mt-50" style={{ height: '60px' }}>
             {data?.name}
           </p>
-          <div className="team-badge px-1">
+          {data?.worker_details.length > 0 && <div className="team-badge px-1">
             <p className="mb-25">Team</p>
-          </div>
+          </div>}
           <p className="active-project-team-name">
-            {data?.bid_by
-              ? 'name' in data.bid_by
-                ? data.bid_by.name
-                : `${data.bid_by.first_name} ${data.bid_by.last_name}`
-              : ''}
+            {(() => {
+              if (data?.bid_by) {
+                if ('name' in data.bid_by) {
+                  return data.bid_by.name;
+                } 
+                  return `${data.bid_by.first_name} ${data.bid_by.last_name}`;
+                
+              } 
+                return '';
+              
+            })()}
           </p>
-          <div className="mb-1">
+          <div className="mb-1 mt-6">
             {data?.worker_details.length > 3 ? (
               <span className="d-flex avatars">
                 <AvatarGroup
