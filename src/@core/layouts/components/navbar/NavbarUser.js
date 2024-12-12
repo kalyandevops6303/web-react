@@ -44,7 +44,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
 
   const handleNotificaionClick = () => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/notifications' });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/notifications' });
       return;
     }
     isNotificationCount && dispatch(notificationCount(false));
@@ -52,7 +52,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
 
   const handleChatNavigate = () => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath: '/chat' });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/chat' });
       return;
     }
     if (cometAuthToken) {
@@ -122,12 +122,12 @@ const NavbarUser = ({ setNavBarLoading }) => {
             </div>
           ) : (
             <NotificationIconContainer onClick={handleNotificaionClick} className="d-flex align-items-center">
-              <Link to="/notifications">
+              <div className="cursor-pointer">
                 {(isNotificationCount || notificationsPollingData?.unread_notifications_count > 0) && (
                   <span className="notification-dot" />
                 )}
                 <Bell size={20} color={isNotificationView ? theme.activeColor : theme.bodyColor} />
-              </Link>
+              </div>
               {isNotificationView && (
                 <LineWrapper>
                   <div className="line"></div>

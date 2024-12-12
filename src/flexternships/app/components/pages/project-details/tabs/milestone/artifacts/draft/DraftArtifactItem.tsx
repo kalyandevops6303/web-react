@@ -94,7 +94,7 @@ export default function DraftArtifactItem(props: Props) {
                 label=""
                 value={field.value ?? ''}
                 onChange={field.onChange}
-                placeholder="Enter name"
+                placeholder="Enter link"
                 className="w-[175px]"
               />
             )}

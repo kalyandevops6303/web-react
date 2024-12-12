@@ -159,7 +159,7 @@ const ThemeNavbar = (props) => {
 
   const handleWorkInProgress = (nextPath) => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
     }
   };
   return (
@@ -270,7 +270,7 @@ const ThemeNavbar = (props) => {
                     : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                 }
                 onClick={() => {
-                  handleWorkInProgress('/projects');
+                  handleWorkInProgress('/projects/ongoing');
                   if (isWorkInProgress) return;
                   if (draftTeamPath) {
                     dispatch(setConfirmSaveForLater(true));

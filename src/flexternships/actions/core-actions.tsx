@@ -69,7 +69,7 @@ export const openModal = (
   set: any,
   modalActions?: GlobalModalActions,
   modalContent?: Partial<GlobalModalContent>,
-  metadata?: Record<string, string>,
+  metadata?: { nextPath?: string } & Record<string, string>,
 ) => {
   set((state: AppState) => ({
     ...state,

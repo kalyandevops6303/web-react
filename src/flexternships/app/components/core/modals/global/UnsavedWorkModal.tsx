@@ -29,6 +29,7 @@ export default function UnsavedWorkModal() {
   };
 
   const handleCancel = () => {
+    console.log('modalContent.metadata.nextPath', modalContent.metadata);
     if (modalContent?.metadata?.nextPath !== undefined) {
       navigate(modalContent.metadata.nextPath);
     }
@@ -49,7 +50,7 @@ export default function UnsavedWorkModal() {
             )}
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <SecondaryButton className="m-0" onClick={handleCancel} cancel>
+            <SecondaryButton className="m-0 outline-none" onClick={handleCancel} cancel>
               {modalContent.cancelButtonText}
             </SecondaryButton>
             <PrimaryButton className="m-0" onClick={handleConfirm} loading={isConfirmLoading}>

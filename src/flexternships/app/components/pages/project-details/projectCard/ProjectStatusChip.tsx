@@ -44,9 +44,9 @@ const ProjectStatusChip = ({
     [ProjectSecondaryStatus.SIGN_DOCUMENTS]: `/project-details/${projectId}/projects`,
     [ProjectSecondaryStatus.SIGN_CONTRACT]: `/project-details/${projectId}/doc/contract`,
     [ProjectSecondaryStatus.MILESTONE]:
-      lastInProgressMilestone !== undefined
+      lastInProgressMilestone !== undefined && projectMilestones[lastInProgressMilestone - 1]?.id
         ? `/project-details/${projectId}/milestone/${projectMilestones[lastInProgressMilestone - 1]?.id}`
-        : '/project-details/${projectId}/milestone',
+        : `/project-details/${projectId}/milestone`,
     [ProjectSecondaryStatus.SIGN_NDA]: `/project-details/${projectId}/doc/nda`,
     [ProjectSecondaryStatus.SIGN_REQUESTED]: `/project-details/${projectId}/projects`,
     [ProjectSecondaryStatus.COMPLETED]: 'bg-[#00C8531F] text-[#00C853]',

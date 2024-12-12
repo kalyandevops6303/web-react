@@ -180,7 +180,10 @@ export type ProjectDetailsState = {
 };
 
 export type ProjectDetailsActions = {
-  getProjectDetails: (projectId: string) => Promise<void>;
+  getProjectDetails: (
+    projectId: string,
+    onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
+  ) => Promise<void>;
   populateTeamDetails: (projectId?: string) => Promise<void>;
   resetStore: () => void;
   getProjectInvitationDetails: (projectId: string) => Promise<void>;

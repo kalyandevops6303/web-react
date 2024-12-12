@@ -91,7 +91,7 @@ export default function LegalDocCard(props: LegalDocCardProps) {
   }, [isSignDocumentLoading]);
 
   return (
-    <SimpleElevatedCard className="w-full w-full max-w-[1021px] p-5 ">
+    <SimpleElevatedCard className="w-full max-w-[1021px] p-5 ">
       <div className={Styles.contentHeader}>Standard {docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'}</div>
       {isLegalDetailsLoading ? (
         <div className="d-flex justify-center">
@@ -124,8 +124,8 @@ export default function LegalDocCard(props: LegalDocCardProps) {
           <div className="text-[#6E6B7B] font-semibold font-montserrat text-base leading-[21px] mb-3">
             Team Member Name
           </div>
-          {talentSigneeData?.map((item: any) => (
-            <div className="my-5">
+          {talentSigneeData?.map((item: any, index: number) => (
+            <div className="my-5" key={index}>
               <LegalDocSignee {...item} key={item?.name} />
             </div>
           ))}

@@ -12,7 +12,7 @@ import { useProjectCreationStore } from '@flexternships/stores/project-creation-
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { allowedFormats, ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
-import { getTodayDate } from '@flexternships/utils/date-utils';
+import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
@@ -98,7 +98,7 @@ export default function Requirements() {
   };
 
   useEffect(() => {
-    if (new Date().getTime() > watch('estimatedStartDate')) {
+    if (dateToEpoch(getTodayDate(getUserTimezone())) > watch('estimatedStartDate')) {
       errors.estimatedStartDate = { type: 'manual', message: 'Please enter a valid start date' };
     }
   }, [watch('estimatedStartDate')]);
