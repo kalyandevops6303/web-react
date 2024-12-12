@@ -1,8 +1,13 @@
+import { ClientDelegateRole } from '../constraints/enums/profile-enums';
 import {
   MilestoneArtifact,
   MilestoneDetails,
   MilestoneDraftArtifact,
 } from '../constraints/types/project-milestones-types';
+import {
+  FlexternClientProjectDetails,
+  FlexternClientPublicProfileDetails,
+} from '../constraints/types/user-profile-types';
 
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
@@ -84,4 +89,83 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
   return separateArtifacts
     ? { milestoneDetails: formattedMilestoneDetails, artifactDetails: formattedArtifactDetails }
     : { ...formattedMilestoneDetails, ...formattedArtifactDetails };
+};
+export const parseClientPublicDetails = (data: Record<string, any>): FlexternClientPublicProfileDetails => {
+  return {
+    userId: data.user_id,
+    firstname: data.first_name,
+    lastname: data.last_name,
+    imageUri: data.image_uri,
+    title: data.title,
+    department: data.department,
+    completedProjectsCount: data.completed_projects_count,
+    openListingsCount: data.open_listing_count,
+    companyDetails: {
+      companyLogo: data.organization.company_logo,
+      companyName: data.organization.company_name,
+      companyTagline: data.organization.company_tagline,
+    },
+    officeAddress: {
+      country: data.organization.office_address?.[0]?.country?.name,
+      state: data.organization.office_address?.[0]?.state?.name,
+      city: data.organization.office_address?.[0]?.city?.name,
+      streetAddress: data.organization.office_address?.[0]?.street_address,
+      buildingNumber: data.organization.office_address?.[0]?.building_number,
+      zipCode: data.organization.office_address?.[0]?.zip_code,
+    },
+    socialLinks: (data.social_links || []).filter((link: { url: string }) => link.url && link.url.trim() !== ''),
+    delegates: data?.client_delegate?.map((delegate: Record<string, string | undefined>) => ({
+      firstname: delegate.first_name,
+      lastname: delegate.last_name,
+      imageUri: delegate.image_uri,
+      delegateType: delegate.delegate_type || ClientDelegateRole.FULL_ACCESS,
+    })),
+  };
+};
+
+export const parseClientCompletedProjects = (data: Record<string, any>): FlexternClientProjectDetails => {
+  return {
+    metadata: {
+      currentPage: data.metadata?.current_page,
+      pageSize: data.metadata?.page_size,
+      totalRecords: data.metadata?.total_records,
+      hasNextPage: data.metadata?.has_next_page,
+    },
+    projects:
+      data.data?.map((project: Record<string, any>) => ({
+        id: project._id,
+        requirements: {
+          projectName: project.details?.name,
+          projectDescription: project.details?.description,
+          estimatedStartDate: project.details?.expected_start_date,
+          estimatedDuration: project.details?.expected_duration?.duration,
+          estimatedWeeklyHours: project.details?.expected_duration?.hours_per_week,
+          totalProjectHoursEach:
+            (project.details?.expected_duration?.duration || 0) *
+            (project.details?.expected_duration?.hours_per_week || 0),
+          documents: project.details?.documents?.map((document: Record<string, string | number>) => ({
+            fileName: document.file_name,
+            fileKey: document.file_key,
+            size: document.size,
+            createdAt: document.created_at,
+          })),
+        },
+        roles:
+          project.roles?.map((projectRole: Record<string, any>) => ({
+            role: projectRole.role,
+            count: projectRole.count,
+            skills: projectRole.proficiency?.skills,
+            tools: projectRole.proficiency?.tools,
+          })) || [],
+        milestones:
+          project.milestones?.map((milestone: Record<string, any>) => ({
+            title: milestone.name,
+            duration: milestone.estimated_duration?.duration,
+            description: milestone.description,
+            deliverables: milestone.deliverables,
+          })) || [],
+        isTeamMember: project.is_team_member,
+        isStakeholder: project.is_stakeholder,
+      })) || [],
+  };
 };

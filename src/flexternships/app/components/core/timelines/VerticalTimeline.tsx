@@ -1,4 +1,3 @@
-import { EmotionJSX } from '@emotion/react/dist/declarations/src/jsx-namespace';
 import { Check } from 'react-feather';
 
 export default function VerticalTimeline(props: VerticalTimelineProps) {
@@ -31,7 +30,7 @@ export default function VerticalTimeline(props: VerticalTimelineProps) {
 
 type VerticalTimelineProps = {
   timelineItems?: Array<{
-    component: EmotionJSX.Element;
+    component: React.ReactNode;
     color: string;
   }>;
   checked?: boolean;
