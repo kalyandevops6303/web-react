@@ -10,6 +10,7 @@ import { ArrowLeft } from 'react-feather';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -29,17 +30,20 @@ export default function TeamFeedback() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
+  const milestones = useProjectMilestonesStore((state) => state.projectMilestones);
 
   const getTeamFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const teamFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const submitFeedback = useFeedbackStore((state) => state.submitFeedbackForm);
+  const getMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
 
   useEffect(() => {
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
     populateTeamDetails(params?.projectId);
     getProjectDetails(params?.projectId as string);
+    getMilestones(params?.projectId as string);
   }, []);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
@@ -89,6 +93,7 @@ export default function TeamFeedback() {
               onComplete={handleSurveyComplete}
               estimatedTime={1}
               projectName={projectDetails?.details?.name}
+              milestoneNumber={milestones.findIndex((milestone) => milestone.id === params?.milestoneId) + 1}
             />
           )}
         </div>

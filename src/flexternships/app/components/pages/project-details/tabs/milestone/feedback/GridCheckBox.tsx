@@ -119,7 +119,10 @@ export class GridCheckbox extends SurveyQuestionElementBase {
 
     return (
       <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 flex-wrap gap-1 mt-2">
+        <div className="flex justify-start text-[#515759] font-[Montserrat] text-[14px] font-medium leading-[22px] mb-[16px]">
+          Selected {this.state.selectedValues.size}/{choices.length}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 flex-wrap gap-[20px] mt-2">
           {choices.length > 0 ? (
             choices.map((choice: any) => {
               const value = typeof choice === 'string' ? choice : choice.value;
@@ -129,11 +132,12 @@ export class GridCheckbox extends SurveyQuestionElementBase {
               const isSelected = this.state.selectedValues.has(value);
 
               return (
-                <button
-                  key={value._id}
-                  type="button"
-                  onClick={() => this.handleChoiceSelect(value)}
-                  className={`
+                <>
+                  <button
+                    key={value._id}
+                    type="button"
+                    onClick={() => this.handleChoiceSelect(value)}
+                    className={`
                     relative flex items-start p-2 rounded-lg transition-none shadow-[0px_8px_12px_0px_rgba(0,0,0,0.08)]
                     ${
                       isSelected
@@ -141,44 +145,45 @@ export class GridCheckbox extends SurveyQuestionElementBase {
                         : 'border-gray-200 hover:border-gray-300 text-gray-700'
                     }
                   `}
-                  aria-checked={isSelected}
-                  role="checkbox"
-                >
-                  <div
-                    className={`
+                    aria-checked={isSelected}
+                    role="checkbox"
+                  >
+                    <div
+                      className={`
                       absolute top-2 right-2 w-5 h-5 flex-shrink-0 rounded-full border-2 
                       ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-none'}
                       flex items-center justify-center
                     `}
-                  >
-                    {isSelected && (
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
-                  <span className="text-left text-[14px] font-semibold leading-[22px] font-montserrat text-[#6E6B7B]">
-                    <div>
-                      <div className="flex gap-1 items-center mt-1">
-                        <Avatar className="w-7 h-7">
-                          <AvatarImage src={imageUri} className="w-full h-full rounded-full" />
-                          <AvatarFallback className="w-full h-full">
-                            <User color="#6E6B7B" />
-                          </AvatarFallback>
-                        </Avatar>
+                    >
+                      {isSelected && (
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="text-left text-[14px] font-semibold leading-[22px] font-montserrat text-[#6E6B7B]">
+                      <div>
+                        <div className="flex gap-2 items-center mt-1">
+                          <Avatar className="w-7 h-7">
+                            <AvatarImage src={imageUri} className="w-full h-full rounded-full" />
+                            <AvatarFallback className="w-full h-full">
+                              <User color="#6E6B7B" />
+                            </AvatarFallback>
+                          </Avatar>
 
-                        <div className="flex flex-col">
-                          <div className="flex flex-nowrap w-[120px] whitespace-nowrap overflow-hidden text-ellipsis font-montserrat">
-                            {text}
-                          </div>
-                          <div className="text-[12px] font-normal leading-[20px] font-montserrat text-[#6E6B7B] font-montserrat">
-                            {role}
+                          <div className="flex flex-col">
+                            <div className="flex flex-nowrap w-[120px] whitespace-nowrap overflow-hidden text-ellipsis font-montserrat">
+                              {text}
+                            </div>
+                            <div className="text-[12px] font-normal leading-[20px] font-montserrat text-[#6E6B7B] font-montserrat">
+                              {role}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </span>
-                </button>
+                    </span>
+                  </button>
+                </>
               );
             })
           ) : (

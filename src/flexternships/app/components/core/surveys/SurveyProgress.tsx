@@ -49,7 +49,7 @@ export default function SurveyProgress() {
   };
 
   return (
-    <div className="w-full flex flex-col max-w-4xl mx-auto p-6 bg-white">
+    <div className="w-full flex flex-col max-w-4xl mx-auto bg-white">
       {!isEmpty(steps) && (
         <div className="flex items-center justify-between relative">
           <div className="absolute top-[10px] left-0 right-0 flex -translate-y-1/2">

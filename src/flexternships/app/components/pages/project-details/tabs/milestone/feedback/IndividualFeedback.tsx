@@ -127,7 +127,9 @@ export default function IndividualFeedback() {
             />
           )}
         </div>
-        <FunFacts />
+        <div className="max-h-screen">
+          <FunFacts />
+        </div>
       </div>
     </>
   );
