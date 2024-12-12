@@ -93,7 +93,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
     const talentOrClientProfile =
       userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
     navigate(
-      `/profile/${talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type}/${
+      `/profile/${(talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type).toLowerCase()}/${
         userDetailsData?._id
       }`,
     );
@@ -312,7 +312,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
             </div>
           )}
           {!isDelegate && (
-            <TextWrapper onClick={handleEdit} className="w-100 edit-accordion p-4">
+            <TextWrapper onClick={handleEdit} className="w-100 edit-accordion cursor-pointer p-4">
               Public Profile
             </TextWrapper>
           )}
