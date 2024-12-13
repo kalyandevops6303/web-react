@@ -181,7 +181,7 @@ export default function IndividualFeedbackResponse(props: any) {
   }
 
   return (
-    <div className="px-8">
+    <div className="px-8 mt-5">
       <VerticalTimeline timelineItems={timelineItems} checked />
     </div>
   );

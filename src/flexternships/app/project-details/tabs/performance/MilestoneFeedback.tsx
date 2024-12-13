@@ -64,7 +64,9 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
         <div className="flex items-center gap-2">
           <div className="flex flex-col text-left">
             <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">
-              Milestone #{peerFeedback?.index + 1}
+              <span className="text-[#5E5873] font-[Montserrat] text-[15px] font-medium leading-[24px]">
+                Milestone #{peerFeedback?.index + 1}
+              </span>
             </div>
           </div>
         </div>
@@ -91,13 +93,14 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
 
   return (
     <div>
-      {filteredPerformanceDetails?.map((peerFeedback: any) => (
+      {filteredPerformanceDetails?.map((peerFeedback: any, index: number) => (
         <div>
           {peerFeedback?.feedback_id && (
             <CollapsableCard
               white
               className="my-5 bg-white rounded-[10px]"
               headerContent={getHeaderContent(peerFeedback)}
+              isOpen={index === 0}
             >
               <IndividualFeedbackResponse
                 feedbackOverview={peerFeedback}
