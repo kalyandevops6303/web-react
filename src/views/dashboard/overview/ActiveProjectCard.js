@@ -58,7 +58,6 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
       dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForClient' }));
     }
   };
-
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
@@ -85,7 +84,7 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
                   size="sm"
                   className="mr-4"
                   data={[
-                    ...data?.worker_details[0]?.slice(0, 3)?.map((worker) => ({
+                    ...data?.worker_details?.slice(0, 3)?.map((worker) => ({
                       user_id: worker?.user_id,
                       user_type: userTypes.talent,
                       title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
