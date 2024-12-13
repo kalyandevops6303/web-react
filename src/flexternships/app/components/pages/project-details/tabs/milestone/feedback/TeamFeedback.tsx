@@ -1,6 +1,6 @@
 import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
@@ -11,6 +11,7 @@ import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
+import SucessModal from './modals/SucessModal';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -39,6 +40,8 @@ export default function TeamFeedback() {
   const submitFeedback = useFeedbackStore((state) => state.submitFeedbackForm);
   const getMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   useEffect(() => {
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
     populateTeamDetails(params?.projectId);
@@ -58,9 +61,14 @@ export default function TeamFeedback() {
     };
 
     submitFeedback(submitFeedbackData, () => {
-      navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
-      populateUserDetails();
+      setShowSuccessModal(true);
     });
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+    populateUserDetails();
   };
 
   if (isFeedbackFormLoading) {
@@ -99,6 +107,8 @@ export default function TeamFeedback() {
         </div>
         <FunFacts />
       </div>
+
+      {showSuccessModal && <SucessModal isOpen={showSuccessModal} onClose={handleCloseSuccessModal} />}
     </div>
   );
 }
