@@ -34,6 +34,7 @@ import { getCookiesItem } from '@/utility/cookiesControl';
 const HeadWrapper = styled.div`
   display: flex;
   width: 100%;
+  z-index: 0;
   justify-content: space-between;
   .navbar-brand {
     margin: auto 0;
