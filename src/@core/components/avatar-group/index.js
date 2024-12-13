@@ -14,6 +14,7 @@ import { CardText, UncontrolledTooltip } from 'reactstrap';
 
 // ** Custom Components Imports
 import Avatar from '@components/avatar';
+import { counts } from '@/utility/constants/Constant';
 
 const AvatarGroup = (props) => {
   // ** Props
@@ -75,7 +76,9 @@ const AvatarGroup = (props) => {
         })}
       >
         {renderData()}
-        {totalCount > 3 && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
+        {totalCount > counts.AVATAR_MAX_COUNT && (
+          <CardText className="d-flex align-items-center ps-50"> + {totalCount - counts.AVATAR_MAX_COUNT}</CardText>
+        )}
       </Tag>
     );
   }
