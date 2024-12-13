@@ -12,6 +12,7 @@ import PerformanceTab from './tabs/performance/page';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import Spinner from '../components/core/Spinner';
 import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { isEmpty } from 'lodash';
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
@@ -23,6 +24,7 @@ export default function FlexternshipProjectDetails() {
   const navigate = useNavigate();
 
   const redirectUserAsPerSecondaryStatus = (status: ProjectSecondaryStatus) => {
+    if (!isEmpty(params.milestoneId)) return;
     if (!params?.projectId) throw new Error('Project ID is mandatory to view the project details');
     switch (status) {
       case ProjectSecondaryStatus.MILESTONE:
