@@ -16,7 +16,6 @@ import { CardText, UncontrolledTooltip } from 'reactstrap';
 import Avatar from '@components/avatar';
 
 const AvatarGroup = (props) => {
-
   // ** Props
   const { tag, className, size, totalCount, data } = props;
   // ** Conditional Tag
@@ -76,7 +75,7 @@ const AvatarGroup = (props) => {
         })}
       >
         {renderData()}
-        {totalCount > 3 && <CardText className="d-flex align-items-center ps-50"> + {(totalCount - 3)}</CardText>}
+        {totalCount > 3 && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
       </Tag>
     );
   }

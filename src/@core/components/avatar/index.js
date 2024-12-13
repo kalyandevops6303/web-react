@@ -49,7 +49,7 @@ const Avatar = forwardRef((props, ref) => {
       ref={ref}
       {...rest}
     >
-      {(img === '' || img === undefined) ? (
+      {img === '' || img === undefined ? (
         <span
           className={classnames('avatar-content', {
             'position-relative': badgeUp,

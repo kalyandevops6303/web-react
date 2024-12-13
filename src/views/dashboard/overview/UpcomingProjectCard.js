@@ -49,20 +49,20 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
           <p className="active-project-name truncate-2 mt-50" style={{ height: '60px' }}>
             {data?.name}
           </p>
-          {data?.worker_details.length > 0 && <div className="team-badge px-1">
-            <p className="mb-25">Team</p>
-          </div>}
+          {data?.worker_details.length > 0 && (
+            <div className="team-badge px-1">
+              <p className="mb-25">Team</p>
+            </div>
+          )}
           <p className="active-project-team-name">
             {(() => {
               if (data?.bid_by) {
                 if ('name' in data.bid_by) {
                   return data.bid_by.name;
-                } 
-                  return `${data.bid_by.first_name} ${data.bid_by.last_name}`;
-                
-              } 
-                return '';
-              
+                }
+                return `${data.bid_by.first_name} ${data.bid_by.last_name}`;
+              }
+              return '';
             })()}
           </p>
           <div className="mb-1 mt-6">

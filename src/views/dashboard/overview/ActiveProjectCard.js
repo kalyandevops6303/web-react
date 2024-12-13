@@ -72,9 +72,11 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
           <p className="active-project-name mt-1 truncate-2" style={{ height: '60px' }}>
             {getBidByName(data?.bid_by) || data?.name}
           </p>
-          {data?.worker_details.length > 0 && <div className="team-badge px-1">
-            <p className="mb-25">Team</p>
-          </div>}
+          {data?.worker_details.length > 0 && (
+            <div className="team-badge px-1">
+              <p className="mb-25">Team</p>
+            </div>
+          )}
           <div className="mb-1 mt-6">
             {data?.worker_details.length > 0 ? (
               <span className="d-flex avatars">
@@ -122,26 +124,28 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
           </div>
           <p className="active-project-simple-heading">Project</p>
           <DurationSegment start_date={data?.start_date} end_date={data?.end_date} />
-        {data?.current_milestone?.length > 0 &&  <>
-          <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <p className="mb-25 details-box-title">Due Date</p>
-                <p className="mb-0 details-box">
-                  {`${
-                    convertUnixTimestampToDate(
-                      data?.current_milestone?.due_date,
-                      savedUserData?.availability?.timezone?.name,
-                    ) || '-'
-                  }`}
-                </p>
+          {data?.current_milestone?.length > 0 && (
+            <>
+              <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
+              <div className="bottom-detail d-flex mt-1">
+                <div className="design-planning-wrapper">
+                  <div className="design-planning">
+                    <p className="mb-25 details-box-title">Due Date</p>
+                    <p className="mb-0 details-box">
+                      {`${
+                        convertUnixTimestampToDate(
+                          data?.current_milestone?.due_date,
+                          savedUserData?.availability?.timezone?.name,
+                        ) || '-'
+                      }`}
+                    </p>
+                  </div>
+                  <h4 className="active-project-milestone-name">{data?.current_milestone?.name}</h4>
+                </div>
               </div>
-              <h4 className="active-project-milestone-name">{data?.current_milestone?.name}</h4>
-            </div>
-          </div>
-          </>}
-       
+            </>
+          )}
+
           <div
             onClick={viewProject}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
