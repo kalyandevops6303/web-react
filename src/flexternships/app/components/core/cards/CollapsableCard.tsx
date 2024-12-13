@@ -19,7 +19,8 @@ export default function CollapsableCard(props: CollapsableCardProps) {
       type="single"
       collapsible={isCollapsible || true}
       className={`w-full hover:no-underline ${
-        bordered && 'rounded-[6px] border border-[#0578FB] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]'
+        bordered &&
+        'rounded-[6px] border border-[#0578FB] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)] bg-red-500'
       } ${className}`}
     >
       <AccordionItem value="item-1">
@@ -29,7 +30,9 @@ export default function CollapsableCard(props: CollapsableCardProps) {
         >
           {headerContent}
         </AccordionTrigger>
-        <AccordionContent data-state={isOpen}>{children}</AccordionContent>
+        <AccordionContent data-state={isOpen} className="border-b-none">
+          {children}
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   );
