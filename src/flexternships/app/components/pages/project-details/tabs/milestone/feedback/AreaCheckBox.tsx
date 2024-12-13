@@ -119,10 +119,10 @@ export class AreaCheckbox extends SurveyQuestionElementBase {
                   type="button"
                   onClick={() => this.handleChoiceSelect(value)}
                   className={`
-                                        flex items-center gap-3 p-3 rounded-lg border-2 transition-all
+                                        flex items-center gap-3 p-3 rounded-lg border transition-all
                                         ${
                                           isSelected
-                                            ? 'border-blue-500 bg-blue-50 text-blue-700'
+                                            ? 'border-trublue-secondary-500 bg-trublue-secondary-500 text-blue-700 bg-opacity-5'
                                             : 'border-gray-200 hover:border-gray-300 text-gray-700'
                                         }
                                     `}
@@ -132,7 +132,11 @@ export class AreaCheckbox extends SurveyQuestionElementBase {
                   <div
                     className={`
                                         w-5 h-5 flex-shrink-0 rounded border-2 
-                                        ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300'}
+                                        ${
+                                          isSelected
+                                            ? 'border-trublue-secondary-500  bg-trublue-secondary-500 shadow-custom-blue  '
+                                            : 'border-gray-300'
+                                        }
                                         flex items-center justify-center
                                     `}
                   >

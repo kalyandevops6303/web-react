@@ -7,7 +7,7 @@ import ChecklistGif from '@flexternships/assets/images/checklist.gif';
 import { useNavigate } from 'react-router-dom';
 
 export default function SuccessfulCreation(props: Props) {
-  const { onRecall, onConfirm, recallTimeLeft } = props;
+  const { onRecall, onConfirm, recallTimeLeft, isRecalling } = props;
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
   const curModal = useProjectCreationStore((state) => state.curModal);
   const closeModal = useProjectCreationStore((state) => state.closeModal);
@@ -38,9 +38,9 @@ export default function SuccessfulCreation(props: Props) {
               Your project listing will go live on your selected start date. Build your talent pool next.
             </p>
             <div className="mt-11 flex justify-end">
-              {recallTimeLeft > 0 && (
-                <button onClick={onRecall} className="text-error mr-6">
-                  Oops Recall ({recallTimeLeft})
+              {(recallTimeLeft > 0 || isRecalling) && (
+                <button disabled={isRecalling} onClick={onRecall} className="text-error mr-6">
+                  {isRecalling ? 'Recalling...' : `Oops Recall (${recallTimeLeft})`}
                 </button>
               )}
               <PrimaryButton onClick={onConfirm}>Close</PrimaryButton>
@@ -55,5 +55,6 @@ export default function SuccessfulCreation(props: Props) {
 type Props = {
   onRecall: () => void;
   recallTimeLeft: number;
+  isRecalling: boolean;
   onConfirm: () => void;
 };

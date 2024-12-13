@@ -57,9 +57,10 @@ import AddDelegateModal from '../../../../views/modals/AddDelegateModal';
 import DelegateModeModal from '../../../../views/modals/DelegateModeModal';
 import { truncateSentence } from '../../../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
-import { FlexternUserAppRole } from '@/flexternships/constraints/enums/core-enums';
+import { FlexternUserAppRole, GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { removeCookiesItem } from '@/utility/cookiesControl';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
   const isLoading = useSelector((state) => state.auth.userDataLoading);
@@ -82,6 +83,10 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
   const isDelegateProfileCreated = getItem('isDelegateProfileCreated');
 
+  // ** Flexternships Stores
+  const isWorkInProgress = useAppStore((state) => state.isWip);
+  const openModal = useAppStore((state) => state.openModal);
+
   const toggleAddDelegate = () => {
     setDelegateEmail('');
     dispatch(toggleAddDelegateModal(!isInviteDelegateModalVisible));
@@ -92,11 +97,13 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const handleEdit = () => {
     const talentOrClientProfile =
       userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
-    navigate(
-      `/profile/${(talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type).toLowerCase()}/${
-        userDetailsData?._id
-      }`,
-    );
+    const nextPath = `/profile/${(talentOrClientProfile
+      ? userDetailsData?.user_type
+      : userDetailsData?.team_type
+    ).toLowerCase()}/${userDetailsData?._id}`;
+    handleWorkInProgress(nextPath);
+    if (isWorkInProgress) return;
+    navigate(nextPath);
   };
 
   const handleLogout = async () => {
@@ -183,6 +190,12 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
   const toggleFeedbackSupportModal = () => {
     setFeedbackSupportModal(!feedbackSupportModal);
+  };
+
+  const handleWorkInProgress = (nextPath) => {
+    if (isWorkInProgress) {
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
+    }
   };
 
   // get app permissions
@@ -421,7 +434,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               <span className="align-middle ">Contact support</span>
             </TextWrapper>
           )}
-          <TextWrapper onClick={handleLogout} className="w-100 logout">
+          <TextWrapper onClick={handleLogout} className="w-100 logout cursor-pointer">
             <span className="align-middle ">Logout</span>
           </TextWrapper>
         </DropdownMenu>

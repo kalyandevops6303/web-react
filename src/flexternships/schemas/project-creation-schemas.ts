@@ -18,7 +18,10 @@ export const ProjectDetailsSchema = yup.object().shape({
   estimatedStartDate: yup
     .number()
     .required('Estimated start date is required')
-    .min(dateToEpoch(getTodayDate(getUserTimezone())), 'Estimated start date cannot be in the past'), // Allow today
+    .test('not-in-past', 'Estimated start date cannot be in the past', function (value) {
+      if (!value) return true; // Skip validation if no value
+      return value >= dateToEpoch(getTodayDate(getUserTimezone()));
+    }),
   estimatedDuration: yup
     .number()
     .max(53, 'Estimated duration cannot exceed 53 weeks')

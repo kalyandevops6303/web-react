@@ -10,6 +10,7 @@ import { Download, ExternalLink, Link } from 'react-feather';
 import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 import { v4 as uuidv4 } from 'uuid';
+import { convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
 
 export default function SubmittedArtifactItem(props: Props) {
   const { last = false, data } = props;
@@ -46,7 +47,7 @@ export default function SubmittedArtifactItem(props: Props) {
     if (data.type !== 'LINKS' || !data.metadata.url) {
       return;
     }
-    window.open(data.metadata.url, '_blank');
+    window.open(convertToClickableUrl(data.metadata.url), '_blank');
   };
 
   const handleMainActionClick = () => {

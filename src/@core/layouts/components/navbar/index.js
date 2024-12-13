@@ -160,7 +160,7 @@ const ThemeNavbar = (props) => {
 
   const handleWorkInProgress = (nextPath) => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
     }
   };
   return (
@@ -169,7 +169,10 @@ const ThemeNavbar = (props) => {
         <div className="d-flex align-items-center">
           <ul className="navbar-nav d-xl-none">
             <NavItem className="mobile-menu me-auto">
-              <RsNavLink className="nav-menu-main menu-toggle hidden-xs" onClick={() => setMenuVisibility(true)}>
+              <RsNavLink
+                className="nav-menu-main menu-toggle hidden-xs ssss"
+                onClick={() => setMenuVisibility((prev) => !prev)}
+              >
                 <Menu className="ficon" />
               </RsNavLink>
             </NavItem>
@@ -271,7 +274,7 @@ const ThemeNavbar = (props) => {
                     : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                 }
                 onClick={() => {
-                  handleWorkInProgress('/projects');
+                  handleWorkInProgress('/projects/ongoing');
                   if (isWorkInProgress) return;
                   if (draftTeamPath) {
                     dispatch(setConfirmSaveForLater(true));

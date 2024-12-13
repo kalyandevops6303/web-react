@@ -22,7 +22,6 @@ export default function ClientRecentProjects(props: ClientRecentProjectsProps) {
   const [activeProject, setActiveProject] = useState<string | null>(null);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  console.log(userDetails);
 
   const navigate = useNavigate();
 

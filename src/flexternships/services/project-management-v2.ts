@@ -116,7 +116,7 @@ export const createFlexternProject: (
 
   try {
     const response = await axios?.post(routes?.projectManagementV2?.project?.create, formattedProjectData, config);
-    return response?.data?.project_id || undefined;
+    return response?.data?.data?.project_id || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while creating the Flextern project');
   }
@@ -259,6 +259,28 @@ export const getFlexternProjectDraft: (projectId: string) => Promise<ProjectCrea
     return formattedDraftData;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while retrieving the Flextern project draft');
+  }
+};
+
+/**
+ * Recalls a project by project ID.
+ * @param projectId - The ID of the project to recall.
+ * @returns A Promise that resolves when recall is successful.
+ * @throws {Error} If the project recall fails.
+ */
+export const recallProjectById = async (projectId: string): Promise<void> => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      project_id: projectId,
+    },
+  };
+
+  try {
+    await axios.put(routes.projectManagementV2.project.recallProjectById, null, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while recalling the Flextern project');
   }
 };
 
