@@ -12,6 +12,7 @@ export default function UnsavedWorkModal() {
   const modal = useAppStore((state) => state.modal);
   const modalContent = useAppStore((state) => state.modalContent);
   const modalActions = useAppStore((state) => state.modalActions);
+  const unsetWip = useAppStore((state) => state.unsetWip);
 
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
@@ -23,6 +24,7 @@ export default function UnsavedWorkModal() {
     setIsConfirmLoading(true);
     try {
       await modalActions.onConfirm();
+      unsetWip();
     } finally {
       setIsConfirmLoading(false);
     }

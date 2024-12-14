@@ -29,7 +29,9 @@ export default function CollapsableCard(props: CollapsableCardProps) {
         >
           {headerContent}
         </AccordionTrigger>
-        <AccordionContent data-state={isOpen}>{children}</AccordionContent>
+        <AccordionContent data-state={isOpen} className="border-b-none">
+          {children}
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   );

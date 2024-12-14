@@ -271,7 +271,7 @@ export default function MilestoneDetails() {
               <AccordionTrigger className="hover:no-underline p-0">
                 <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
               </AccordionTrigger>
-              <AccordionContent className="">
+              <AccordionContent className="overflow-x-auto">
                 {isEmpty(submittedArtifacts) ? (
                   <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7">
                     <img

@@ -144,6 +144,9 @@ export default function Preview() {
       onCancel: unsetWip,
       onClose: closeGlobalModal,
     });
+    return () => {
+      unsetWip();
+    };
   }, []);
 
   return (

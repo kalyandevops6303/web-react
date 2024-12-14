@@ -12,6 +12,7 @@ import { ArrowLeft } from 'react-feather';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { keysToCamelCase } from '@/flexternships/utils/core-utils';
+import SucessModal from './modals/SucessModal';
 
 export default function PeerFeedback() {
   const params = useParams();
@@ -30,6 +31,7 @@ export default function PeerFeedback() {
   const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
 
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     getPeerFeedbackForm(params?.projectId, FeedbackTypesAPI.PEER);
@@ -66,6 +68,7 @@ export default function PeerFeedback() {
             lastMessageTime: '3 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
+            isDocumentsSigned: person?.is_documents_signed,
           };
         }),
       );
@@ -86,9 +89,14 @@ export default function PeerFeedback() {
     };
 
     submitFeedback(submitFeedbackData, () => {
-      getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
-      populateUserDetails();
+      setShowSuccessModal(true);
     });
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    populateUserDetails();
+    getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
   };
 
   const handleActiveMemberChange = (userId: any) => {
@@ -131,6 +139,8 @@ export default function PeerFeedback() {
         </div>
         <FunFacts />
       </div>
+
+      {showSuccessModal && <SucessModal isOpen={showSuccessModal} onClose={handleCloseSuccessModal} />}
     </>
   );
 }

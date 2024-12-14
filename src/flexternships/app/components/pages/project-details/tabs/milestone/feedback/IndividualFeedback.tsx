@@ -12,6 +12,7 @@ import { ArrowLeft } from 'react-feather';
 import { keysToCamelCase } from '@/flexternships/utils/core-utils';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
+import SucessModal from './modals/SucessModal';
 
 export default function IndividualFeedback() {
   const params = useParams();
@@ -30,6 +31,7 @@ export default function IndividualFeedback() {
   const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
 
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     getIndividualFeedbackForm(params?.projectId, FeedbackTypesAPI.INDIVIDUAL);
@@ -64,6 +66,7 @@ export default function IndividualFeedback() {
             lastMessageTime: '1 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
+            isDocumentsSigned: person?.is_documents_signed,
           };
         }),
       );
@@ -84,9 +87,14 @@ export default function IndividualFeedback() {
     };
 
     submitFeedback(submitFeedbackData, () => {
-      getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
-      populateUserDetails();
+      setShowSuccessModal(true);
     });
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
+    populateUserDetails();
   };
 
   const handleActiveMemberChange = (userId: any) => {
@@ -131,6 +139,8 @@ export default function IndividualFeedback() {
           <FunFacts />
         </div>
       </div>
+
+      {showSuccessModal && <SucessModal isOpen={showSuccessModal} onClose={handleCloseSuccessModal} />}
     </>
   );
 }

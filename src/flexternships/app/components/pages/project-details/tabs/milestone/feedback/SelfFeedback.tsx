@@ -1,6 +1,6 @@
 import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
@@ -9,6 +9,7 @@ import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import FunFacts from './FunFacts';
+import SucessModal from './modals/SucessModal';
 
 export default function SelfFeedback() {
   const params = useParams();
@@ -22,6 +23,8 @@ export default function SelfFeedback() {
   const isFeedbackFormLoading = useFeedbackStore((state) => state.isFeedbackFormLoading);
 
   const submitFeedback = useFeedbackStore((state) => state.submitFeedbackForm);
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     populateUserDetails();
@@ -40,9 +43,14 @@ export default function SelfFeedback() {
     };
 
     submitFeedback(submitFeedbackData, () => {
-      navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
-      populateUserDetails();
+      setShowSuccessModal(true);
     });
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+    populateUserDetails();
   };
 
   if (isFeedbackFormLoading) {
@@ -80,6 +88,8 @@ export default function SelfFeedback() {
         </div>
         <FunFacts />
       </div>
+
+      {showSuccessModal && <SucessModal isOpen={showSuccessModal} onClose={handleCloseSuccessModal} />}
     </div>
   );
 }
