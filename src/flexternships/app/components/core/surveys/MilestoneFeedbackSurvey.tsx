@@ -396,7 +396,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     }
   });
 
-  survey.completeText = 'Thank you for completing the feedback!';
+  survey.completedHtml = '<h3>Thank you for completing the feedback!</h3>';
 
   // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later
   const customStyles = `
