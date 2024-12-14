@@ -103,18 +103,18 @@ const getProjectPanelDate1Values = (data: {
 };
 
 const getProjectPanelDate2Values = (data: {
-  details?: { expectedStartDate?: number };
+  details?: { expectedStartDate?: number, expectedEndDate?: number };
   listingDetails?: { startDateEpoch?: number; endDateEpoch?: number };
   updatedAt?: number;
 }): { [key in keyof typeof ProjectPrimaryStatus]?: number } => {
   return {
     OPEN: data?.details?.expectedStartDate,
     ACTIVE: data?.details?.expectedStartDate,
-    ON_GOING: data?.listingDetails?.endDateEpoch,
+    ON_GOING: data?.details?.expectedEndDate,
     TERMINATED: data?.updatedAt,
-    COMPLETED: data?.listingDetails?.endDateEpoch,
+    COMPLETED: data?.details?.expectedEndDate,
     WITHDRAWN: data?.updatedAt,
-    BLOCKED: data?.listingDetails?.endDateEpoch,
+    BLOCKED: data?.details?.expectedEndDate,
   };
 };
 
