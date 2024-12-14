@@ -27,6 +27,7 @@ export const populateTeamDetails = async (set: any, projectId: string): Promise<
         designation: member?.role_name || '',
         averageRating: member?.averageRating,
         appreciationScore: member?.appreciation_score,
+        isDocumentsSigned: member?.is_documents_signed,
       }),
     ),
     isTeamDetailsLoading: false,

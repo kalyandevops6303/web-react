@@ -52,6 +52,11 @@ export default function MilestoneDetails() {
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
 
+  const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
+  const teamDetails = useProjectsStore((state) => state.teamDetails);
+
+  const [allowRecognition, setAllowRecognition] = useState(false);
+
   const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
 
   const isWorkInProgress = useAppStore((state) => state.isWip);
@@ -61,6 +66,18 @@ export default function MilestoneDetails() {
 
   const navigate = useNavigate();
   const { milestoneId } = useParams();
+  const { projectId } = useParams();
+
+  useEffect(() => {
+    populateTeamDetails(projectId);
+  }, [projectId]);
+
+  useEffect(() => {
+    setAllowRecognition(
+      teamDetails.filter((member) => member.id !== userDetails.id).some((member) => member.isDocumentsSigned),
+    );
+    console.log(teamDetails.filter((member) => member.id !== userDetails.id));
+  }, [teamDetails]);
 
   useEffect(() => {
     const fetchMilestoneDetails = async () => {
@@ -265,15 +282,15 @@ export default function MilestoneDetails() {
         {userDetails.userType === UserType.TALENT && <DraftArtifacts isDisabled={areArtifactsDisabledForTalent} />}
       </SimpleElevatedCard>
       {!(userDetails.userType === UserType.TALENT && areArtifactsDisabledForTalent) && (
-        <SimpleElevatedCard className="overflow-hidden">
-          <Accordion type="single" collapsible defaultValue="submission-history" className="w-full">
+        <SimpleElevatedCard className="">
+          <Accordion type="single" collapsible defaultValue="submission-history" className="w-full max-w-full">
             <AccordionItem value="submission-history" className="border-none bg-white-fa py-6 px-8">
               <AccordionTrigger className="hover:no-underline p-0">
                 <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
               </AccordionTrigger>
-              <AccordionContent className="overflow-x-auto">
+              <AccordionContent className="!max-w-full overflow-hidden">
                 {isEmpty(submittedArtifacts) ? (
-                  <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7">
+                  <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7 w-full overflow-hidden">
                     <img
                       src={noSubmissionsFoundGif}
                       alt="no-submissions-found"
@@ -284,20 +301,22 @@ export default function MilestoneDetails() {
                     </div>
                   </div>
                 ) : (
-                  <SubmittedArtifacts />
+                  <div className="w-full overflow-x-auto">
+                    <SubmittedArtifacts />
+                  </div>
                 )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
         </SimpleElevatedCard>
       )}
-      {
+      {allowRecognition && (
         <RecognitionCard
           isDisabled={!allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
           projectId={milestoneDetails.projectDetails.projectId}
           milestoneId={milestoneDetails.id}
         />
-      }
+      )}
       {!isEmpty(milestoneDetails) &&
         allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status) &&
         milestoneDetails.milestoneFeedbackDetails.map((feedback, index) => (
