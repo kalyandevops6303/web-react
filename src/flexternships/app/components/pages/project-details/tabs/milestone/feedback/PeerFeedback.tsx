@@ -68,6 +68,7 @@ export default function PeerFeedback() {
             lastMessageTime: '3 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
+            isDocumentsSigned: person?.is_documents_signed,
           };
         }),
       );

@@ -66,6 +66,7 @@ export default function IndividualFeedback() {
             lastMessageTime: '1 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
+            isDocumentsSigned: person?.is_documents_signed,
           };
         }),
       );
