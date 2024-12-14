@@ -174,6 +174,9 @@ export default function Milestones() {
       onCancel: unsetWip,
       onClose: closeGlobalModal,
     });
+    return () => {
+      unsetWip();
+    };
   }, []);
 
   return (

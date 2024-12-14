@@ -102,6 +102,9 @@ export default function Roles() {
       onCancel: unsetWip,
       onClose: closeGlobalModal,
     });
+    return () => {
+      unsetWip();
+    };
   }, []);
 
   return (

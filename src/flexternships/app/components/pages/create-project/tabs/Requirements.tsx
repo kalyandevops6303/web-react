@@ -12,7 +12,7 @@ import { useProjectCreationStore } from '@flexternships/stores/project-creation-
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ProjectDetails } from '@flexternships/types/project-creation-types';
 import { allowedFormats, ProjectDetailsSchema } from '@flexternships/schemas/project-creation-schemas';
-import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
+import { getTodayDate } from '@flexternships/utils/date-utils';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
 import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
@@ -97,12 +97,6 @@ export default function Requirements() {
     }
   };
 
-  useEffect(() => {
-    if (dateToEpoch(getTodayDate(getUserTimezone())) > watch('estimatedStartDate')) {
-      errors.estimatedStartDate = { type: 'manual', message: 'Please enter a valid start date' };
-    }
-  }, [watch('estimatedStartDate')]);
-
   // Watch for changes in estimatedDuration and estimatedWeeklyHours to autofill totalHours
   const estimatedDuration = watch('estimatedDuration');
   const estimatedWeeklyHours = watch('estimatedWeeklyHours');
@@ -119,7 +113,6 @@ export default function Requirements() {
     if (!isEmpty(requirementsData)) {
       reset({
         projectName: requirementsData.projectName,
-        estimatedStartDate: requirementsData.estimatedStartDate,
         estimatedDuration: requirementsData.estimatedDuration === 0 ? undefined : requirementsData.estimatedDuration,
         estimatedWeeklyHours:
           requirementsData.estimatedWeeklyHours === 0 ? undefined : requirementsData.estimatedWeeklyHours,
@@ -127,6 +120,9 @@ export default function Requirements() {
         projectDescription: requirementsData.projectDescription,
         documents: requirementsData.documents,
       });
+      if (requirementsData.estimatedStartDate) {
+        setValue('estimatedStartDate', requirementsData.estimatedStartDate, { shouldValidate: true });
+      }
     }
   }, [requirementsData, reset]);
 
@@ -139,6 +135,9 @@ export default function Requirements() {
       onCancel: unsetWip,
       onClose: closeGlobalModal,
     });
+    return () => {
+      unsetWip();
+    };
   }, []);
 
   return (
