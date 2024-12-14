@@ -18,8 +18,7 @@ const almaMaterTalentsService = (searchText, page, pageSize) =>
 const inviteTalentsService = (data) => DataService.post(`${API.inviteTeamMember.sendInvitaion}`, data);
 
 const inviteRequestService = (data) => DataService.post(`${API.inviteTeamMember.requests}`, data);
-const validateUrlService = ({ token }) =>
-  DataService.get(`${API.inviteTeamMember.validateRequest}?request_token=${token}`);
+const validateUrlService = ({ token }) => DataService.post(`${API.auth.requestValidation}`, token);
 
 const getTeamMeberforInviteService = (searchText, page, pageSize, projectId) =>
   DataService.get(
