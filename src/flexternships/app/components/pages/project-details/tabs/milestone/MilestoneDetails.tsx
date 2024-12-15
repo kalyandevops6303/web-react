@@ -8,7 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/flexternships/app/components/ui/accordion';
-import { GlobalModalType, MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import {
+  GlobalModalType,
+  MilestoneFeedbackStatus,
+  MilestoneFeedbackType,
+  MilestoneStatus,
+  ToastType,
+  UserType,
+} from '@/flexternships/constraints/enums/core-enums';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { getMilestoneStatusTextByUserType, getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
@@ -39,6 +46,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
 import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 import { v4 as uuidv4 } from 'uuid';
+import { MilestoneFeedback } from '@/flexternships/constraints/types/project-milestones-types';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -184,6 +192,14 @@ export default function MilestoneDetails() {
       </div>
     );
   }
+
+  const isFeedbackDisabled = (feedback: MilestoneFeedback) => {
+    return (
+      feedback.feedbackType === MilestoneFeedbackType.PEER_FEEDBACK &&
+      feedback.feedbackStatus === MilestoneFeedbackStatus.PENDING &&
+      teamDetails.filter((member) => member.id !== userDetails.id).every((member) => !member.isDocumentsSigned)
+    );
+  };
 
   const referenceDateForFeedback =
     userDetails.userType === UserType.CLIENT ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
@@ -333,6 +349,7 @@ export default function MilestoneDetails() {
                 ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, milestoneDetails.maxFeedbackDueDays))
                 : undefined
             }
+            disabled={isFeedbackDisabled(feedback)}
           />
         ))}
       {activeModal && (

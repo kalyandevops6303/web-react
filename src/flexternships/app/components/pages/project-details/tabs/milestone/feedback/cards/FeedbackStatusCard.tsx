@@ -4,7 +4,14 @@ import FeedbackCompletedCard from './FeedbackCompletedCard';
 import FeedbackPendingCard from './FeedbackPendingCard';
 
 export default function FeedbackStatusCard(props: FeedbackStatusCardProps) {
-  const { feedbackStatus } = props;
+  const { feedbackStatus, disabled } = props;
+
+  if (disabled && feedbackStatus === MilestoneFeedbackStatus.PENDING)
+    return (
+      <div className="opacity-50 cursor-not-allowed pointer-events-none">
+        <FeedbackPendingCard {...props} />
+      </div>
+    );
 
   return feedbackStatus === MilestoneFeedbackStatus.COMPLETED ? (
     <FeedbackCompletedCard {...props} />
@@ -22,4 +29,5 @@ type FeedbackStatusCardProps = {
   milestoneId: string;
   daysLeft?: number;
   tiny?: boolean;
+  disabled?: boolean;
 };

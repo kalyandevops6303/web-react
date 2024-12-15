@@ -63,6 +63,8 @@ export default function LegalDocCard(props: LegalDocCardProps) {
         />,
         toastId,
       );
+
+      getProjectDetails(params?.projectId as string);
     });
   };
 
