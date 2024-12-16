@@ -84,7 +84,6 @@ export default function MilestoneDetails() {
     setAllowRecognition(
       teamDetails.filter((member) => member.id !== userDetails.id).some((member) => member.isDocumentsSigned),
     );
-    console.log(teamDetails.filter((member) => member.id !== userDetails.id));
   }, [teamDetails]);
 
   useEffect(() => {
