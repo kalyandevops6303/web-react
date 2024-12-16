@@ -2,6 +2,7 @@ import { ProjectTabType } from '@/flexternships/constraints/types/project-detail
 import NavigationTab from './NavigationTab';
 import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import React from 'react';
 
 export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTabType[] }) {
   const param = useParams();
@@ -13,7 +14,9 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
       <div className=" bg-white w-fit flex flex-row items-start justify-start gap-1 max-w-5xl">
         {tabs.map((tab, index) => isEmpty(milestoneId) && <NavigationTab key={index} tab={tab} index={index} />)}
       </div>
-      <div>{tabs.map((tab) => tab.id === projectStep && tab.component)}</div>
+      <div>
+        {tabs.map((tab) => tab.id === projectStep && <React.Fragment key={tab.id}>{tab.component}</React.Fragment>)}
+      </div>
     </div>
   );
 }

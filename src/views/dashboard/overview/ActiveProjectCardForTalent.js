@@ -14,6 +14,7 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
 import { convertUnixTimestampToDate } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { useNavigate } from 'react-router-dom';
 
 const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
   const dispatch = useDispatch();
@@ -32,9 +33,10 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
     LISTING_EXPIRED: 'Listing Expired',
   };
 
+  const navigate = useNavigate();
+
   const viewProject = () => {
-    // navigate(`/project-details/${data._id}/milestone`);
-    setShowModal(true);
+    navigate(`/project-details/${data._id}/milestone`);
   };
 
   const updateCard = ({ switch_team_id }) => {

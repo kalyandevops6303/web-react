@@ -3,6 +3,10 @@ import { Box, Check, Watch } from 'react-feather';
 
 const SUPPORT_EMAIL = 'support@trumio.ai';
 
+const counts = {
+  AVATAR_MAX_COUNT: 3,
+};
+
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -328,4 +332,5 @@ export {
   PayTypeOptions,
   studyYears,
   graduationYears,
+  counts,
 };

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
 import { CometChat } from '@cometchat-pro/chat';
-import ShowToastMessage from '../@core/components/toast';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
 import { removeTeamFromList } from '../redux/reducers/team';
@@ -11,6 +11,8 @@ import { ERROR } from './constants/ToastTypes';
 import { getItem, setItem } from './localStorageControl';
 import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
 import { messaging } from '../configs/api/firebase';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { getCookiesItem } from './cookiesControl';
 
 const { dispatch } = store;
 
@@ -21,7 +23,7 @@ let lastErrorTime = 0; // Timestamp of the last error notification
 const showErrorNotification = (errorMessage) => {
   const currentTime = Date.now();
   if (currentTime - lastErrorTime >= MIN_ERROR_INTERVAL_MS) {
-    ShowToastMessage(ERROR, errorMessage);
+    showToastMessage(ToastType.ERROR, errorMessage);
     lastErrorTime = currentTime;
   }
 };
@@ -36,7 +38,7 @@ const handleError = (err, callBack) => {
 const handleErrorCode = async (err, callBack) => {
   const cometChatToken = getItem('cometChatToken');
   const fcmToken = getItem('fcmToken');
-  const accessToken = getItem('access_token');
+  const accessToken = getCookiesItem('access_token');
   const expiredError = getItem('expiredError');
   if (err?.response?.status === 401) {
     if (!expiredError) {
@@ -101,7 +103,7 @@ const errorHandler = (err, callBack) => {
       err?.message === 'Network Error' ||
       err?.message === 'CORS error'
     ) {
-      ShowToastMessage(ERROR, 'Unable to process request');
+      showToastMessage(ToastType.ERROR, 'Unable to process request');
       if (callBack) {
         dispatch(callBack(err));
       }

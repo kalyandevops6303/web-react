@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import Spinner from '../../core/Spinner';
-import Toast from '../../core/Toasts/Toast';
 
 export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
   const currentTabIndex = useProjectCreationStore((state) => state.currentTabIndex);
@@ -42,13 +41,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
         try {
           await populateDraftProject(projectId);
         } catch (error) {
-          showToastMessage(
-            ToastType.ERROR,
-            <Toast
-              type={ToastType.ERROR}
-              description="An unexpected error occurred while loading the draft project data"
-            />,
-          );
+          showToastMessage(ToastType.ERROR, 'An unexpected error occurred while loading the draft project data');
           navigate('/create-project');
         } finally {
           setIsDraftLoading(false);

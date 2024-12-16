@@ -13,6 +13,7 @@ export type TeamMemberDetails = {
   ratingText?: string;
   ratingColor?: string;
   appreciationScore?: number;
+  isDocumentsSigned?: boolean;
 };
 
 export type BadgeType = {
@@ -66,6 +67,7 @@ export type ProjectDetails = {
     description: string;
     expectedDuration: ExpectedDuration;
     expectedStartDate: number;
+    expectedEndDate: number;
     documents: Document[];
   };
   roles: ProjectRole[];
@@ -180,7 +182,10 @@ export type ProjectDetailsState = {
 };
 
 export type ProjectDetailsActions = {
-  getProjectDetails: (projectId: string) => Promise<void>;
+  getProjectDetails: (
+    projectId: string,
+    onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
+  ) => Promise<void>;
   populateTeamDetails: (projectId?: string) => Promise<void>;
   resetStore: () => void;
   getProjectInvitationDetails: (projectId: string) => Promise<void>;

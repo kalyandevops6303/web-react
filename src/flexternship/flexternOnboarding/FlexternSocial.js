@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
@@ -70,7 +70,10 @@ import {
   setFormData,
   setFormDocuments,
   setResumeDataUploadedForSocial,
+  setResumeDataUploadedForEducation,
+  setResumeDataUploadedForPersonal,
   setResumeParsed,
+  setResumeDataUploadedForAdditional,
 } from '../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService, resumeUploadService } from '../../services/talentOnboardingServices';
@@ -113,9 +116,7 @@ const FlexternSocial = () => {
   const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
   const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  const [parsedUploaded, setParsedUploaded] = useState(
-    isResumeDataUploadedForSocial || isResumeDataUploadedForEducation || isResumeDataUploadedForPersonal || false,
-  );
+  const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForSocial || false);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [files, setFiles] = useState(savedFormDocuments || []);
@@ -213,7 +214,12 @@ const FlexternSocial = () => {
       deleteResume(() => {
         const filtered = uploadedFiles.filter((i) => i.id !== file.id);
         dispatch(setFormDocuments(null));
+        dispatch(setResumeDataUploadedForEducation(false));
+        dispatch(setResumeDataUploadedForPersonal(false));
+        dispatch(setResumeDataUploadedForSocial(false));
+        dispatch(setResumeDataUploadedForAdditional(false));
         setFiles([...filtered]);
+        setParsedUploaded(false);
       }),
     );
     setValue('resume', null, { shouldValidate: true });
@@ -448,12 +454,44 @@ const FlexternSocial = () => {
                 : res?.talent_info?.resume?.created_at
               : res?.talent_info?.resume?.created_at,
         };
-        setValue('resume', {
-          file_name: fileUrl?.file?.name,
-          file_key: fileUrl?.uploadData?.file_key,
-        });
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
         setFiles([fileUrl]);
         dispatch(setFileKey(res?.talent_info?.resume?.file_key ?? savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(setFormDocuments([fileUrl]));
+      }
+    }
+  };
+  const onGetUserResumeDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+        const fileUrl = {
+          file: {
+            name: res?.talent_info?.resume?.file_name,
+            size: res?.talent_info?.resume?.size,
+          },
+          uploadData: {
+            file_key: res?.talent_info?.resume?.file_key,
+          },
+          isUploaded: true,
+          lastModified: res?.talent_info?.resume?.created_at,
+        };
+        dispatch(setFileKey(res?.talent_info?.resume?.file_key));
+        setValue(
+          'resume',
+          {
+            file_name: fileUrl?.file?.name,
+            file_key: fileUrl?.uploadData?.file_key,
+          },
+          { shouldValidate: true },
+        );
+        setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
       }
     }
@@ -543,6 +581,55 @@ const FlexternSocial = () => {
         } else {
           setValue('otherSocialLinks', [defaultLink]);
         }
+      } else {
+        if (userData?.talent_info?.social_links?.find((link) => link.platform === 'linkedIn')) {
+          setValue(
+            'linkedInLink',
+            userData?.talent_info?.social_links?.find((link) => link.platform === 'linkedIn')?.url ||
+              savedFormData?.linkedInLink,
+            {
+              shouldValidate: true,
+            },
+          );
+        }
+        if (userData?.talent_info?.social_links?.find((link) => link.platform === 'twitter')) {
+          setValue(
+            'twitterLink',
+            userData?.talent_info?.social_links?.find((link) => link.platform === 'twitter')?.url ||
+              savedFormData?.twitterLink,
+            {
+              shouldValidate: true,
+            },
+          );
+        }
+        if (userData?.talent_info?.social_links?.find((link) => link.platform === 'github')) {
+          setValue(
+            'githubLink',
+            userData?.talent_info?.social_links?.find((link) => link.platform === 'github')?.url ||
+              savedFormData?.githubLink,
+            {
+              shouldValidate: true,
+            },
+          );
+        }
+        if (
+          userData?.talent_info?.social_links.filter(
+            (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+          ).length > 0
+        ) {
+          setValue(
+            'otherSocialLinks',
+            userData?.talent_info?.social_links
+              ?.filter(
+                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+              )
+              .map((link) => ({
+                linkName: link.platform,
+                link: link.url,
+              })),
+            { shouldValidate: true },
+          );
+        }
       }
       if (savedFormDocuments) {
         setFiles([
@@ -567,10 +654,24 @@ const FlexternSocial = () => {
       id: uuidv4(),
       file,
       uploadData: response?.data?.data,
-      lastModified: file.lastModified,
+      lastModified: Date.now(),
       isUploaded: false,
     };
-    dispatch(setFormDocuments([fileWithUrl]));
+    dispatch(
+      setFormDocuments([
+        {
+          id: fileWithUrl?.id,
+          file: {
+            name: file?.name,
+            size: file?.size,
+          },
+          uploadData: fileWithUrl?.uploadData,
+          lastModified: fileWithUrl?.lastModified,
+          isUploaded: fileWithUrl?.isUploaded,
+        },
+      ]),
+    );
+    // dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
     await handleUploadFile(fileWithUrl);
     dispatch(setFileKey(response?.data?.data?.file_key));
@@ -603,20 +704,6 @@ const FlexternSocial = () => {
       e.target.value = '';
     }
   };
-
-  const filesRef = useRef();
-  useEffect(() => {
-    const fileReRender = async () => {
-      if (savedFormDocuments != null) {
-        filesRef.current = files;
-        setFiles(savedFormDocuments);
-        dispatch(setFormDocuments(savedFormDocuments));
-      } else {
-        setFiles([]);
-      }
-    };
-    fileReRender();
-  }, [savedFormDocuments]);
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
@@ -682,30 +769,6 @@ const FlexternSocial = () => {
                 {uploadingFiles.includes(file) || isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
               </Button>
             </div>
-            {/* <Row className="mt-2">
-              <Row>
-                <Col>{uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}</Col>
-                <Col>{getFileSize(file.file.size)}</Col>
-              </Row>
-              <Row className="d-flex align-items-center">
-                <Col>{requiredFormattedDate}</Col>
-                <Col>
-                  <Button
-                    color="flat-danger"
-                    className="btn-left-margin"
-                    disabled={uploadingFiles.includes(file) || isDeleteResumeLoading}
-                    onClick={() => {
-                      handleRemoveFile(file);
-                      setParseResume(false);
-                      dispatch(resumeParsedDetailsSuccess(null));
-                      dispatch(setResumeParsed(false));
-                    }}
-                  >
-                    {isDeleteResumeLoading ? <Spinner size="sm" /> : 'Remove'}
-                  </Button>
-                </Col>
-              </Row>
-            </Row> */}
           </Row>
         ))}
       </Card>
@@ -734,6 +797,7 @@ const FlexternSocial = () => {
           ]);
           dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
         }
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData === null) {
         dispatch(
           getResumeParsedDetails(
@@ -756,11 +820,12 @@ const FlexternSocial = () => {
           },
         ]);
         dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
-  }, [parseResume, parsedResumeData]);
+  }, [parseResume, parsedResumeData, parsedUploaded]);
 
   return (
     <ProfileFormContainer>
@@ -1035,7 +1100,6 @@ const FlexternSocial = () => {
                                   render={({ field }) => (
                                     <Input
                                       {...field}
-                                      ref={filesRef}
                                       id="resume"
                                       type="file"
                                       max={1}

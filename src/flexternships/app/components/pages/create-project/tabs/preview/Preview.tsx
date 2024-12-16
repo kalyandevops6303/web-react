@@ -8,7 +8,11 @@ import SuccessfulCreation from '@flexternships/app/components/core/modals/Succes
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import Styles from '@flexternships/styles/pages/create-project/tabs.module.css';
 import { ModalType } from '@flexternships/types/project-creation-types';
-import { createFlexternProject, getFileDownloadUrl } from '@flexternships/services/project-management-v2';
+import {
+  createFlexternProject,
+  getFileDownloadUrl,
+  recallProjectById,
+} from '@flexternships/services/project-management-v2';
 import { formatEpochToHumanReadable } from '@flexternships/utils/date-utils';
 import { formatFileSize } from '@flexternships/utils/file-utils';
 import MilestoneItem from './MilestoneItem';
@@ -20,7 +24,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);
@@ -36,55 +39,70 @@ export default function Preview() {
   const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const [recallTimeLeft, setRecallTimeLeft] = useState<number>(-1);
+  const [createdProjectId, setCreatedProjectId] = useState<string | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isRecalling, setIsRecalling] = useState<boolean>(false);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const { projectId } = useParams();
   const navigate = useNavigate();
 
+  // Scroll to top when component mounts
   useEffect(() => {
-    const postProject = async () => {
-      try {
-        await createFlexternProject(formData, projectId);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          closeModal();
-          showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
-        } else {
-          showToastMessage(
-            ToastType.ERROR,
-            <Toast type={ToastType.ERROR} description="Failed to create project. Please try again." />,
-          );
-        }
-      }
-    };
+    window.scrollTo(0, 0);
+  }, []);
 
+  useEffect(() => {
     if (recallTimeLeft > 0) {
-      const timer = setTimeout(() => setRecallTimeLeft((cur) => cur - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (recallTimeLeft === 0) {
-      postProject();
+      const timer = setInterval(() => {
+        setRecallTimeLeft((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
     }
   }, [recallTimeLeft, formData]);
 
-  const handlePost = () => {
-    setRecallTimeLeft(5);
-    openModal(ModalType.PROJECT_CREATED);
+  const handlePost = async () => {
+    setIsSubmitting(true);
+    try {
+      const createdProjectId = await createFlexternProject(formData, projectId);
+      setCreatedProjectId(createdProjectId);
+      setRecallTimeLeft(5);
+      openModal(ModalType.PROJECT_CREATED);
+    } catch (error: unknown) {
+      closeModal();
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'An unexpected error occurred while creating the Flextern project',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleRecall = () => {
-    setRecallTimeLeft(-1);
-    closeModal();
+  const handleRecall = async () => {
+    if (!createdProjectId) throw new Error('Project ID not found');
+    setIsRecalling(true);
+    try {
+      await recallProjectById(createdProjectId);
+      setRecallTimeLeft(-1);
+      closeModal();
+      navigate(`/create-project/${createdProjectId}`);
+    } catch (error) {
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'An unexpected error occurred while recalling the Flextern project',
+      );
+    } finally {
+      setIsRecalling(false);
+    }
   };
 
   const onSaveDraft = async () => {
     try {
       await saveAsDraft(projectId);
     } catch (error) {
-      showToastMessage(
-        ToastType.ERROR,
-        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
-      );
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
   };
 
@@ -103,6 +121,9 @@ export default function Preview() {
       onCancel: unsetWip,
       onClose: closeGlobalModal,
     });
+    return () => {
+      unsetWip();
+    };
   }, []);
 
   return (
@@ -228,13 +249,18 @@ export default function Preview() {
           <SecondaryButton className="mr-6" onClick={onSaveDraft} loading={isSaveDraftLoading}>
             Save as Draft
           </SecondaryButton>
-          <PrimaryButton onClick={handlePost}>
+          <PrimaryButton onClick={handlePost} loading={isSubmitting}>
             <span className="mr-2">Post</span>
             <ChevronRight size={18} />
           </PrimaryButton>
         </div>
       </div>
-      <SuccessfulCreation recallTimeLeft={recallTimeLeft} onRecall={handleRecall} onConfirm={closeSuccessfulCreation} />
+      <SuccessfulCreation
+        recallTimeLeft={recallTimeLeft}
+        onRecall={handleRecall}
+        isRecalling={isRecalling}
+        onConfirm={closeSuccessfulCreation}
+      />
     </div>
   );
 }

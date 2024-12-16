@@ -14,7 +14,6 @@ import { Progress } from '@/flexternships/app/components/ui/progress';
 import { isEmpty } from 'lodash';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
 import { convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 export default function DraftArtifactItem(props: Props) {
   const { last = false, data, index, control, errors, handleFileUpload } = props;
@@ -32,7 +31,7 @@ export default function DraftArtifactItem(props: Props) {
       const downloadResponse = await getFileDownloadUrl(data.metadata?.fileKey ?? '');
       window.open(downloadResponse.data, '_blank');
     } catch (error) {
-      showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description="Failed to download file" />);
+      showToastMessage(ToastType.ERROR, 'Failed to download file');
     } finally {
       setMainActionLoading(false);
     }
@@ -88,7 +87,7 @@ export default function DraftArtifactItem(props: Props) {
                 label=""
                 value={field.value ?? ''}
                 onChange={field.onChange}
-                placeholder="Enter name"
+                placeholder="Enter link"
                 className="w-[175px]"
               />
             )}

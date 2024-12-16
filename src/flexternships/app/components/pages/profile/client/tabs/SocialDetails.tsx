@@ -4,7 +4,6 @@ import SecondaryButton from '@/flexternships/app/components/core/buttons/Seconda
 import TextInput from '@/flexternships/app/components/core/form/TextInput';
 import ClientOnboardingSuccessModal from '@/flexternships/app/components/core/modals/ClientOnboardingSuccessModal';
 import Spinner from '@/flexternships/app/components/core/Spinner';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { FlexternClientSocialDetails } from '@/flexternships/constraints/types/user-profile-types';
 import { FlexternClientSocialDetailsSchema } from '@/flexternships/schemas/user-profile-schemas';
@@ -85,10 +84,7 @@ export default function SocialDetails() {
       await updateClientSocialInfo(data);
       handleNext();
     } catch (error) {
-      showToastMessage(
-        ToastType.ERROR,
-        <Toast type={ToastType.ERROR} description="Failed to save draft. Please try again." />,
-      );
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
     setIsSaveLoading(false);
   };

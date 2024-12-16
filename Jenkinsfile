@@ -15,7 +15,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'tru-dev', 'tru-qa'], description: 'Select deployment environment')
+        choice(name: 'ENVIRONMENT', choices: ['qa', 'dev', 'tru-dev', 'tru-qa'], description: 'Select deployment environment')
 	//gitParameter(name: 'BRANCH', type: 'PT_BRANCH', description: 'Select Git branch for deployment')
     }
 

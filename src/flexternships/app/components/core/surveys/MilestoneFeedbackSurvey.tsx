@@ -48,10 +48,11 @@ import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { User } from 'react-feather';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import '@flexternships/styles/pages/survey/survey.css';
 import SurveyProgress from './SurveyProgress';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 interface SurveyFormProps {
   surveyJson: SurveyJson;
   onComplete: (survey: SurveyModel) => void;
@@ -59,15 +60,35 @@ interface SurveyFormProps {
   estimatedTime?: number;
   projectName?: string;
   enableSubmit?: boolean;
+  milestoneNumber?: number;
 }
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
-  const { surveyJson, userDetails, onComplete, estimatedTime, projectName } = props;
+  const { surveyJson, userDetails, onComplete, estimatedTime, projectName, milestoneNumber } = props;
   const survey = new Model(surveyJson);
   survey.onComplete.add(onComplete);
 
   const setSurveyProgress = useFeedbackStore((state) => state.setSurveyProgress);
   const submitButtonRef = useRef<HTMLInputElement | undefined | null>(undefined);
+  const scrollDivRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleScroll = (e: WheelEvent) => {
+      if (scrollDivRef.current) {
+        const scrollDiv = scrollDivRef.current;
+        scrollDiv.scrollTop += e.deltaY; // Scroll the target div based on wheel movement
+        e.preventDefault(); // Prevent default scroll behavior
+      }
+    };
+
+    // Add event listener for scroll
+    window.addEventListener('wheel', handleScroll, { passive: false });
+
+    // Cleanup the event listener
+    return () => {
+      window.removeEventListener('wheel', handleScroll);
+    };
+  }, []);
 
   survey.applyTheme({
     themeName: 'default',
@@ -267,7 +288,11 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
           if (submitButton) {
             submitButtonRef.current = submitButton;
 
-            if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+            const requiredQuestions = (_survey as any)?.jsonObj?.elements?.filter(
+              (question: any) => question.isRequired,
+            );
+
+            if (answeredQuestions.length < requiredQuestions?.length) {
               submitButtonRef.current.disabled = true;
             } else {
               submitButtonRef.current.disabled = false;
@@ -304,7 +329,10 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
           if (submitButton) {
             submitButtonRef.current = submitButton;
-            if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+            const requiredQuestions = (_survey as any)?.jsonObj?.elements?.filter(
+              (question: any) => question.isRequired,
+            );
+            if (answeredQuestions.length < requiredQuestions?.length) {
               submitButtonRef.current.disabled = true;
             } else {
               submitButtonRef.current.disabled = false;
@@ -358,13 +386,17 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
     if (submitButton) {
       submitButtonRef.current = submitButton;
-      if (answeredQuestions.length !== (_survey as any)?.jsonObj?.elements?.length) {
+      const requiredQuestions = (_survey as any)?.jsonObj?.elements?.filter((question: any) => question.isRequired);
+
+      if (answeredQuestions.length < requiredQuestions?.length) {
         submitButtonRef.current.disabled = true;
       } else {
         submitButtonRef.current.disabled = false;
       }
     }
   });
+
+  survey.completedHtml = '<h3>Thank you for completing the feedback!</h3>';
 
   // TODO: Had to add custom css to override progress bar, stars alignment and titles. Revisit them later
   const customStyles = `
@@ -429,7 +461,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     }
 
     .sd-page, .sd-body, .sd-action-bar {
-      padding: 7px !important;
+      padding: 0px !important;
       margin: 0px !important;
       margin-top: 20px;
       width: 100%;
@@ -509,12 +541,12 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   survey.css = cssClasses;
 
   return (
-    <div className="w-[650px] overflow-y-scroll rounded-md">
-      <div className="bg-white flex items-center justify-between px-5 pt-3">
+    <div className="w-[650px] overflow-y-scroll rounded-md p-[24px] bg-white">
+      <div className="bg-white flex items-start justify-between mb-[28px]">
         {userDetails ? (
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={userDetails?.imageUri} />
+              <AvatarImage src={userDetails?.imageUri || defaultAvatar} />
               <AvatarFallback>
                 <User color="#6E6B7B" />
               </AvatarFallback>
@@ -529,8 +561,13 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
             </div>
           </div>
         ) : (
-          <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px]">
+          <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-montserrat text-sm font-semibold leading-[22px] w-1/3 text-wrap">
             {projectName ?? ''}
+          </div>
+        )}
+        {milestoneNumber && (
+          <div className="text-[#5E5873] font-[Montserrat] text-[15px] font-medium leading-[24px]">
+            Milestone #{milestoneNumber}
           </div>
         )}
         <div className="flex flex-col items-end">
@@ -542,8 +579,10 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
           </div>
         </div>
       </div>
-      <SurveyProgress />
-      <div className="overflow-y-scroll h-[400px] scrollbar-hide">
+      <div className="mb-[28px]">
+        <SurveyProgress />
+      </div>
+      <div className="overflow-y-scroll scrollbar-hide max-h-[400px] overflow-y-auto w-full" ref={scrollDivRef}>
         <Survey model={survey} />
       </div>
     </div>

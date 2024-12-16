@@ -10,7 +10,6 @@ import SecondaryButton from '../buttons/SecondaryButton';
 import { changePasswordWithCurrentPassword } from '@/flexternships/services/user-management';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 
 interface ClientOnboardingSuccessProps {
   isOpen: boolean;
@@ -47,9 +46,9 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
       onClose();
     } catch (error) {
       if (error instanceof Error) {
-        showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description={error.message} />);
+        showToastMessage(ToastType.ERROR, error.message);
       } else {
-        showToastMessage(ToastType.ERROR, <Toast type={ToastType.ERROR} description="An unexpected error occurred" />);
+        showToastMessage(ToastType.ERROR, 'An unexpected error occurred');
       }
     } finally {
       setIsLoading(false);

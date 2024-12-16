@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { getCookiesItem } from '@/utility/cookiesControl';
 import { handleError } from '@flexternships/utils/error-utils';
 import { Feature } from '../constraints/types/core-types';
 
 export const featureAccessService = {
   async getPermittedFeatures(): Promise<Feature[]> {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = getCookiesItem('access_token');
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };

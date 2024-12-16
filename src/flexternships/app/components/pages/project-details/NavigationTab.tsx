@@ -20,12 +20,12 @@ const NavigationTab = ({ tab, index }: { tab: ProjectTabType; index: number }) =
       key={index}
       className={`${isActive ? activeTabClass : inactiveTabClass} group ${
         !(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible) && 'hidden'
-      } duration-200 hover:cursor-pointer hover:text-trublue-secondary-500 first:rounded-tl last:rounded-tr flex flex-row w-fit p-3 items-start justify-start gap-2`}
+      } duration-200 ease-in-out hover:cursor-pointer hover:text-trublue-secondary-500 first:rounded-tl last:rounded-tr flex flex-row w-fit p-3 items-start justify-start gap-2`}
     >
       <div
         className={`h-[38px] w-[38px] flex flex-col justify-center items-center  ${
           isActive ? activeIconClass : inactiveIconClass
-        } border rounded-[5px] group-hover:bg-white group-hover:text-trublue-secondary-500`}
+        } border rounded-[5px] group-hover:bg-white group-hover:text-trublue-secondary-500 transition-all ease-in-out`}
       >
         {tab.icon}
       </div>

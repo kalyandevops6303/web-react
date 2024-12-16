@@ -29,10 +29,12 @@ import { confirmSaveForLater } from '../../../../redux/selectors/formDataSelecto
 import PermissionWrapper from '@/PermissionWrapper';
 import { useAppStore } from '@flexternships/stores/core-stores';
 import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
+import { getCookiesItem } from '@/utility/cookiesControl';
 
 const HeadWrapper = styled.div`
   display: flex;
   width: 100%;
+  z-index: 0;
   justify-content: space-between;
   .navbar-brand {
     margin: auto 0;
@@ -103,7 +105,7 @@ const ThemeNavbar = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const token = getItem('access_token');
+  const token = getCookiesItem('access_token');
 
   useEffect(() => {
     if (token) {
@@ -158,7 +160,7 @@ const ThemeNavbar = (props) => {
 
   const handleWorkInProgress = (nextPath) => {
     if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, { nextPath });
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
     }
   };
   return (
@@ -167,7 +169,10 @@ const ThemeNavbar = (props) => {
         <div className="d-flex align-items-center">
           <ul className="navbar-nav d-xl-none">
             <NavItem className="mobile-menu me-auto">
-              <RsNavLink className="nav-menu-main menu-toggle hidden-xs" onClick={() => setMenuVisibility(true)}>
+              <RsNavLink
+                className="nav-menu-main menu-toggle hidden-xs ssss"
+                onClick={() => setMenuVisibility((prev) => !prev)}
+              >
                 <Menu className="ficon" />
               </RsNavLink>
             </NavItem>
@@ -204,7 +209,7 @@ const ThemeNavbar = (props) => {
             <div
               className={
                 (location?.pathname?.split('/')?.[1] === 'dashboard' ? 'is-active' : '') +
-                ' menu-item nav-menu-main menu-toggle hidden-xs'
+                ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
               }
               onClick={() => {
                 handleWorkInProgress('/dashboard');
@@ -250,7 +255,7 @@ const ThemeNavbar = (props) => {
                   location?.state?.from?.primary === 'Marketplace' ||
                   activeTab === 'marketplace'
                     ? 'is-active'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                 }
               >
                 Marketplace
@@ -266,10 +271,10 @@ const ThemeNavbar = (props) => {
                   location?.state?.from?.primary === 'projects' ||
                   activeTab === 'projects'
                     ? 'is-active'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                 }
                 onClick={() => {
-                  handleWorkInProgress('/projects');
+                  handleWorkInProgress('/projects/ongoing');
                   if (isWorkInProgress) return;
                   if (draftTeamPath) {
                     dispatch(setConfirmSaveForLater(true));

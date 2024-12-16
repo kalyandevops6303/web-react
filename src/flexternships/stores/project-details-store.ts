@@ -16,6 +16,7 @@ import {
   setRelistProject,
   setInvitationAsRead,
 } from '../actions/project-details-actions';
+import { ProjectSecondaryStatus } from '../constraints/enums/core-enums';
 
 const defaultInitState: ProjectDetailsState = {
   isProjectsLoading: false,
@@ -31,7 +32,10 @@ const defaultInitState: ProjectDetailsState = {
 
 export const useProjectsStore = create<ProjectStore>((set) => ({
   ...defaultInitState,
-  getProjectDetails: async (projectId: string) => getProjectDetails(projectId, set),
+  getProjectDetails: async (
+    projectId: string,
+    onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
+  ) => getProjectDetails(projectId, set, onSuccessBySecondaryStatus),
   populateTeamDetails: (projectId: string = '') => populateTeamDetails(set, projectId),
   resetStore: () => set({ ...defaultInitState }),
   getProjectInvitationDetails: async (projectId: string) => getProjectInvitationDetails(projectId, set),

@@ -2,15 +2,40 @@ import SteppedProgress from '@/flexternships/app/components/core/progress/Steppe
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import VerticalTimeline from '@/flexternships/app/components/core/timelines/VerticalTimeline';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
+import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useEffect, useState } from 'react';
 import { User } from 'react-feather';
 
 export default function IndividualFeedbackResponse(props: any) {
-  const { response } = props;
+  const { feedbackOverview, milestoneId, feedbackType } = props;
 
-  const isFeedbackResponseLoading = useFeedbackStore((state) => state.isFeedbackResponseLoading);
+  const getFeedbackResponse = useFeedbackStore((state) => state.getFeedbackResponse);
+  const feedbackResponse = useFeedbackStore((state) => state.feedbackResponse);
+
+  const [response, setResponse] = useState<any>([]);
   const [formattedFeedbackResponse, setFormattedFeedbackResponse] = useState<any>([]);
+  const [isFeedbackResponseLoading, setIsFeedbackResponseLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (feedbackOverview && feedbackOverview?.feedback_id) {
+      getFeedbackResponse(feedbackOverview?.user_id, milestoneId, feedbackType, () => {
+        setIsFeedbackResponseLoading(false);
+      });
+    }
+  }, [feedbackOverview, milestoneId, feedbackType]);
+
+  useEffect(() => {
+    if (feedbackType === FeedbackTypesAPI.INDIVIDUAL || feedbackType === FeedbackTypesAPI.PEER) {
+      if (feedbackResponse && feedbackResponse[feedbackOverview?.user_id]) {
+        setResponse(feedbackResponse[feedbackOverview?.user_id]);
+      }
+    } else {
+      if (feedbackResponse && feedbackResponse[milestoneId]) {
+        setResponse(feedbackResponse[milestoneId]);
+      }
+    }
+  }, [feedbackResponse]);
 
   const convertToAnsweredQuestions = (
     input: Record<string, any>,
@@ -123,7 +148,7 @@ export default function IndividualFeedbackResponse(props: any) {
           {(data?.type === 'kudosgroup' || data?.type === 'wowgroup') && (
             <div className="mb-5 rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
               <div className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
-                {data?.answer?.value}
+                {data?.answer?.value == 'na' ? 'Not Applicable' : data?.answer?.value}
               </div>
             </div>
           )}
@@ -156,7 +181,7 @@ export default function IndividualFeedbackResponse(props: any) {
   }
 
   return (
-    <div className="px-8">
+    <div className="px-8 mt-5">
       <VerticalTimeline timelineItems={timelineItems} checked />
     </div>
   );

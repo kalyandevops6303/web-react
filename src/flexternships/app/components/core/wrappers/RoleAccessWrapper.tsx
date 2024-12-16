@@ -11,6 +11,7 @@ import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
 import { GlobalModalActions } from '@/flexternships/constraints/types/core-types';
 import { projectsBlockedModalContent } from '@/flexternships/static/core-content';
+import { getCookiesItem } from '@/utility/cookiesControl';
 import { featureAccessService } from '@/flexternships/services/feature-access-service';
 
 
@@ -34,7 +35,10 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    populateUserDetails();
+    const token = getCookiesItem('access_token');
+    if (token) {
+      populateUserDetails();
+    }
   }, [populateUserDetails]);
 
   useEffect(() => {

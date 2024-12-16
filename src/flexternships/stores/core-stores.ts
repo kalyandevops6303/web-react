@@ -30,17 +30,18 @@ const defaultAppState: AppState = {
   modalActions: undefined,
 };
 
-export const useAppStore = create<AppStore>((set, _get) => ({
+export const useAppStore = create<AppStore>((set, get) => ({
   ...defaultAppState,
   openModal: (
     modalType: GlobalModalType,
     modalActions?: GlobalModalActions,
     modalContent?: Partial<GlobalModalContent>,
-    metadata?: Record<string, string>,
+    metadata?: { nextPath?: string } & Record<string, string>,
   ) => openModal(modalType, set, modalActions, modalContent, metadata),
   closeModal: () => closeModal(set),
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) =>
     setWip(modalContent, modalActions, set),
   unsetWip: () => unsetWip(set),
+  getCurrentNextPath: () => get().modalContent?.metadata?.nextPath,
   resetStore: () => set({ ...defaultAppState }),
 }));

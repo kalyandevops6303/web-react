@@ -100,11 +100,11 @@ export class numberRating extends SurveyQuestionElementBase {
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
-                className={`border rounded-lg pt-[5px] pr-[8px] pb-[5px] pl-[8px] justify-center flex items-center text-sm font-semibold       gap-2 font-sans
+                className={`border rounded-lg w-[44px] h-[32px] justify-center flex items-center text-center !font-[Montserrat] text-[14px] font-medium leading-[22px] gap-2 font-sans
  ${
    selectedValue === choice.value
      ? 'border-trublue-secondary-500 bg-trublue-secondary-500  text-white'
-     : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
+     : 'border-[#0185E41F] bg-gray-100 bg-opacity-5'
  }`}
               >
                 {choice.text}

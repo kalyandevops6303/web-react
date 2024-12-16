@@ -24,7 +24,7 @@ export const routes = {
       getProjectInvitationDetails: `${serviceUrls.projectManagementV2}/project/invitation-details`,
       getSelfOrTeamPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/overview`,
       getPeerOrIndividualPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/individual/overview`,
-
+      recallProjectById: `${serviceUrls.projectManagementV2}/project/recall`,
       terminateProject: `${serviceUrls.projectManagementV2}/project/terminate`,
       withdrawProject: `${serviceUrls.projectManagementV2}/project/withdraw`,
       relistProject: `${serviceUrls.projectManagementV2}/project/relist-date`,
@@ -98,6 +98,12 @@ export const routes = {
     // features: {
     //   permittedFeatures: `${serviceUrls.userManagement}/user/api/v1/features/permitted-features`,
     // }, (Base url is not pointing to the correct url so hardcoded the url in feature-access-service.ts)
+  },
+  dashboardV2: {
+    clientDetails: {
+      getClientPublicDetails: `${serviceUrls.dashboardV2}/client/details`,
+      getClientCompletedProjects: `${serviceUrls.dashboardV2}/users/completed-projects`,
+    },
   },
 };
 

@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import {
   delegateInvitationStatusService,
   delegateSignUpService,
@@ -16,7 +17,7 @@ import {
 import { setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
 import { setItemFromSession } from '../../utility/sessesionStorageControl';
-import { isEmpty } from 'lodash';
+import { setCookiesItem } from '@/utility/cookiesControl';
 
 const signUpDelegate =
   ({ email, newPassword, invitationToken, onSuccess }) =>
@@ -25,8 +26,9 @@ const signUpDelegate =
     try {
       const res = await delegateSignUpService({ data: { email, password: newPassword }, invitationToken });
       if (!isEmpty(res.data.data)) {
-        setItem('access_token', res?.data?.data.access_token);
+        setCookiesItem('access_token', res.data.data?.data.access_token, res?.data?.data.access_token_expires);
         setItem('access_token_expires', res?.data?.data.access_token_expires);
+        setCookiesItem('access_token', res?.data?.data.access_token, res?.data?.data.access_token_expires);
         setItem('refresh_token', res?.data?.data.refresh_token);
         setItem('refresh_token_expires', res?.data?.data.refresh_token_expires);
         setItem('user_id', res?.data?.data.user_id);

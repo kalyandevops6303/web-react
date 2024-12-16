@@ -104,22 +104,30 @@ export class Wow extends SurveyQuestionElementBase {
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
-                className={`py-[10px] px-[20px] gap-[8px] min-w-[64px] ${
-                  choice.text === 'NA' ? 'w-[125px]' : ''
-                } border rounded-lg justify-center flex items-center text-xs font-semibold ${
+                className={`py-[10px] px-[20px] gap-[8px] min-w-[64px] !font-[Montserrat] text-center text-[14px] font-semibold ${
+                  choice.text === 'NA' ? 'min-w-[125px]' : ''
+                } border rounded-md justify-center flex items-center text-xs font-semibold transition-all duration-200 ease-in-out ${
                   selectedValue === choice.value
-                    ? 'border-skyblue bg-skyblue bg-opacity-5 text-grey-600'
-                    : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
+                    ? 'border-trublue-secondary-500 bg-trublue-secondary-500 bg-opacity-5 text-grey-600'
+                    : 'border-gray-300 bg-gray-100 bg-opacity-5 text-[#838889]'
                 }`}
                 type="button"
               >
                 {choice.text === 'NA' && choice.text !== 'wow' ? (
                   <div></div>
                 ) : (
-                  <Award className={`${selectedValue === choice.value ? 'text-skyblue' : 'text-gray-400'} text-xs`} />
+                  <Award
+                    className={`${
+                      selectedValue === choice.value ? 'text-trublue-secondary-500' : 'text-gray-400'
+                    } text-xs`}
+                  />
                 )}
-                <span className={`font-semibold text-sm ${selectedValue === choice.value ? 'text-skyblue' : ''}`}>
-                  {choice.text}
+                <span
+                  className={`font-semibold text-sm ${
+                    selectedValue === choice.value ? 'text-trublue-secondary-500' : ''
+                  }`}
+                >
+                  {choice.text === 'NA' ? 'Not Applicable' : choice.text}
                 </span>
               </button>
             ))
