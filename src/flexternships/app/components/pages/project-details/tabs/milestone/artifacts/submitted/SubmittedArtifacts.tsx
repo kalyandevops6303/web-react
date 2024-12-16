@@ -5,7 +5,7 @@ export default function SubmittedArtifacts() {
   const submittedArtifacts = useMilestoneArtifactsStore((state) => state.submittedArtifacts);
 
   return (
-    <div className="shadow-table mt-6 border-1 border-solid border-grey-border bg-white rounded-md w-[976px]">
+    <div className="shadow-table mt-6 border-1 border-solid border-grey-border bg-white rounded-md !max-w-1/2 overflow-x-auto">
       <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
         <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[212px]">
           File Name

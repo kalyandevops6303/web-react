@@ -19,6 +19,7 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
   const [isTeamMembersLoading, setIsTeamMembersLoading] = useState(false);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [teamMembers, setTeamMembers] = useState<Array<TeamMemberDetails & { selected?: boolean }>>([]);
+  const [filteredTeamMembers, setFilteredTeamMembers] = useState<Array<TeamMemberDetails & { selected?: boolean }>>([]);
   const [selectedCount, setSelectedCount] = useState(0); // to keep track of the selected team members
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -35,6 +36,7 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
             name: `${member.first_name} ${member.last_name}`,
             profileImage: member.image_uri,
             selected: false,
+            isDocumentsSigned: member.is_documents_signed,
           }))
           .filter((member: any) => member.id !== userDetails.id);
         setTeamMembers(formattedData);
@@ -48,19 +50,23 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
   }, [projectId]);
 
   useEffect(() => {
-    setSelectedCount(teamMembers.filter((member) => member.selected).length);
+    setFilteredTeamMembers(teamMembers?.filter((member) => member?.isDocumentsSigned));
   }, [teamMembers]);
+
+  useEffect(() => {
+    setSelectedCount(filteredTeamMembers.filter((member) => member.selected).length);
+  }, [filteredTeamMembers]);
 
   // Reset selections when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setTeamMembers((members) => members.map((member) => ({ ...member, selected: false })));
+      setFilteredTeamMembers((members) => members.map((member) => ({ ...member, selected: false })));
     }
   }, [isOpen]);
 
   const toggleSelect = (index: number) => {
     if (isSubmitLoading) return;
-    setTeamMembers((cur) =>
+    setFilteredTeamMembers((cur) =>
       cur.map((member, i) => ({ ...member, selected: i === index ? !member.selected : member.selected })),
     );
   };
@@ -68,7 +74,7 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
   const handleSubmit = async () => {
     //get all selected team members
     setIsSubmitLoading(true);
-    const selectedTeamMembers = teamMembers.filter((member) => member.selected);
+    const selectedTeamMembers = filteredTeamMembers.filter((member) => member.selected);
     const selectedTeamMemberIds = selectedTeamMembers.map((member) => member.id);
     try {
       await submitKudosOrWow(milestoneId, selectedTeamMemberIds);
@@ -106,10 +112,10 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
             {recognitionType === RecognitionType.WOW ? RecognitionSubHeading.WOW : RecognitionSubHeading.KUDOS}
           </p>
           <p className="mt-[1.63rem] text-grey-heading text-lg font-medium">
-            Selected {selectedCount}/{teamMembers.length}
+            Selected {selectedCount}/{filteredTeamMembers.length}
           </p>
           <div className="mt-4 flex items-center flex-wrap gap-7">
-            {teamMembers?.map((teamMember, index) => (
+            {filteredTeamMembers?.map((teamMember, index) => (
               <div
                 key={index}
                 onClick={() => toggleSelect(index)}

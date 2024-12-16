@@ -365,7 +365,7 @@ const FlexternPersonal = () => {
           },
         );
       }
-      if (res?.role) {
+      if (res?.role && Object.keys(res?.role).length > 0) {
         setValue(
           'role',
           {
@@ -374,7 +374,7 @@ const FlexternPersonal = () => {
           },
           { shouldValidate: true },
         );
-      } else if (userData?.talent_info?.role) {
+      } else if (userData?.talent_info?.role && Object.keys(userData?.talent_info?.role).length > 0) {
         setValue(
           'role',
           {

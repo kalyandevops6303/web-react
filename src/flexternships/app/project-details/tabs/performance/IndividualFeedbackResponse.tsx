@@ -148,7 +148,7 @@ export default function IndividualFeedbackResponse(props: any) {
           {(data?.type === 'kudosgroup' || data?.type === 'wowgroup') && (
             <div className="mb-5 rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
               <div className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
-                {data?.answer?.value}
+                {data?.answer?.value == 'na' ? 'Not Applicable' : data?.answer?.value}
               </div>
             </div>
           )}

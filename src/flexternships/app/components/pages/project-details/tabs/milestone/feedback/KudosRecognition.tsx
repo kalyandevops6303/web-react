@@ -130,9 +130,7 @@ export class Kudos extends SurveyQuestionElementBase {
               <button
                 key={index}
                 onClick={() => this.handleChoiceSelect(choice.value)}
-                className={`py-[10px] px-[20px] gap-[8px] min-w-[64px] ${
-                  choice.text === 'NA' ? 'w-[125px]' : ''
-                } border rounded-lg justify-center flex items-center text-xs font-semibold ${
+                className={`py-[10px] px-[20px] gap-[8px] min-w-[64px] border rounded-lg justify-center flex items-center text-xs font-semibold ${
                   selectedValue === choice.value
                     ? 'border-skyblue bg-skyblue bg-opacity-5 text-grey-600'
                     : 'border-gray-300 bg-gray-100 bg-opacity-5 text-grey-500'
@@ -147,7 +145,7 @@ export class Kudos extends SurveyQuestionElementBase {
                   />
                 )}
                 <span className={`font-semibold text-sm ${selectedValue === choice.value ? 'text-skyblue' : ''}`}>
-                  {choice.text}
+                  {choice.text === 'NA' ? 'Not Applicable' : choice.text}
                 </span>
               </button>
             ))

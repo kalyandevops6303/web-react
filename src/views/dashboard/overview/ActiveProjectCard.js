@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { useNavigate } from 'react-router-dom';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import ProjectModalViews from './ProjectModalViews';
@@ -14,7 +15,12 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
 import { convertUnixTimestampToDate } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { useNavigate } from 'react-router-dom';
+
+const getBidByName = (bidBy) => {
+  if (!bidBy) return '';
+  if ('name' in bidBy) return bidBy.name;
+  return `${bidBy.first_name} ${bidBy.last_name}`;
+};
 
 const ActiveProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -52,7 +58,6 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
       dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForClient' }));
     }
   };
-
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
@@ -63,24 +68,19 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="active-project-name mt-1 truncate-2" style={{ height: '40px' }}>
-            {data?.name}
+          <p className="active-project-name mt-1 truncate-2" style={{ height: '60px' }}>
+            {getBidByName(data?.bid_by) || data?.name}
           </p>
-          <div className="team-badge px-1 mb-75">
-            <p className="mb-0">Team</p>
-          </div>
-          <p className="active-project-team-name mb-50">
-            {data?.bid_by
-              ? 'name' in data?.bid_by
-                ? data?.bid_by?.name
-                : `${data?.bid_by?.first_name} ${data?.bid_by?.last_name}`
-              : ''}
-          </p>
-          <div className="mb-1">
-            {data?.worker_details.length > 3 ? (
+          {data?.worker_details.length > 0 && (
+            <div className="team-badge px-1">
+              <p className="mb-25">Team</p>
+            </div>
+          )}
+          <div className="mb-1 mt-6">
+            {data?.worker_details.length > 0 ? (
               <span className="d-flex avatars">
                 <AvatarGroup
-                  totalCount={data?.team_members_count || data?.workers_count}
+                  totalCount={data?.team_members_count || data?.workers_count || data?.worker_details.length}
                   size="sm"
                   className="mr-4"
                   data={[
@@ -123,23 +123,28 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
           </div>
           <p className="active-project-simple-heading">Project</p>
           <DurationSegment start_date={data?.start_date} end_date={data?.end_date} />
-          <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <p className="mb-25 details-box-title">Due Date</p>
-                <p className="mb-0 details-box">
-                  {`${
-                    convertUnixTimestampToDate(
-                      data?.current_milestone?.due_date,
-                      savedUserData?.availability?.timezone?.name,
-                    ) || '-'
-                  }`}
-                </p>
+          {data?.current_milestone && (
+            <>
+              <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
+              <div className="bottom-detail d-flex mt-1">
+                <div className="design-planning-wrapper">
+                  <div className="design-planning">
+                    <p className="mb-25 details-box-title">Due Date</p>
+                    <p className="mb-0 details-box">
+                      {`${
+                        convertUnixTimestampToDate(
+                          data?.current_milestone?.due_date,
+                          savedUserData?.availability?.timezone?.name,
+                        ) || '-'
+                      }`}
+                    </p>
+                  </div>
+                  <h4 className="active-project-milestone-name">{data?.current_milestone?.name}</h4>
+                </div>
               </div>
-              <h4 className="active-project-milestone-name">{data?.current_milestone?.name}</h4>
-            </div>
-          </div>
+            </>
+          )}
+
           <div
             onClick={viewProject}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"

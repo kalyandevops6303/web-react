@@ -1,10 +1,8 @@
-import { ToastType } from '../constraints/enums/core-enums';
 import {
   getFeedbackResponseService,
   getMilestoneFeedbackInfoService,
   submitFeedbackService,
 } from '../services/feedback-service';
-import { showToastMessage } from '../utils/core-utils';
 import { FeedbackTypesAPI } from '../constraints/enums/feedback-enums';
 
 export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: string, set: any) => {
@@ -25,8 +23,6 @@ export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, s
     feedbackFormSubmission: data,
   }));
   set({ isSubmitFeedbackLoading: false });
-
-  showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
   onSuccess();
 };
 

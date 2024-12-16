@@ -13,6 +13,7 @@ export type TeamMemberDetails = {
   ratingText?: string;
   ratingColor?: string;
   appreciationScore?: number;
+  isDocumentsSigned?: boolean;
 };
 
 export type BadgeType = {
@@ -66,6 +67,7 @@ export type ProjectDetails = {
     description: string;
     expectedDuration: ExpectedDuration;
     expectedStartDate: number;
+    expectedEndDate: number;
     documents: Document[];
   };
   roles: ProjectRole[];

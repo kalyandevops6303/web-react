@@ -317,6 +317,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
           hoursPerWeek: data?.details?.expected_duration?.hours_per_week,
         },
         expectedStartDate: data?.details?.expected_start_date,
+        expectedEndDate: data?.details?.expected_end_date,
         documents:
           data?.details?.documents?.map((document: any) => ({
             fileName: document?.file_name,

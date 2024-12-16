@@ -9,8 +9,10 @@ import {
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { useAppStore, useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
-import Toast from '../app/components/core/toasts/CustomToast';
+import CustomToast from '../app/components/core/toasts/CustomToast';
 import { v4 as uuidv4 } from 'uuid';
+import { useProjectMilestonesStore } from '../stores/project-milestones-store';
+import { useProjectsStore } from '../stores/project-details-store';
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
@@ -26,7 +28,7 @@ export const showToastMessage = (type: ToastType, message: string) => {
     id: toastId,
   };
 
-  toast.custom(<Toast type={type} toastId={toastId} description={message} />, { ...options, icon: null });
+  toast.custom(<CustomToast type={type} toastId={toastId} description={message} />, { ...options, icon: null });
 };
 export const getUserTimezone = () => {
   return useFlexternUserStore.getState().userDetails?.timezone?.name || 'Asia/Kolkata';
@@ -40,6 +42,8 @@ export const logout = () => {
   useFlexternUserStore.getState().resetStore();
   useFlexternUserProfileStore.getState().resetStore();
   useProjectCreationStore.getState().resetStore();
+  useProjectMilestonesStore.getState().resetStore();
+  useProjectsStore.getState().resetStore();
   useAppStore.getState().resetStore();
 };
 
