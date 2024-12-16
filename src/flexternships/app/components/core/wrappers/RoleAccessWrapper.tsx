@@ -14,7 +14,6 @@ import { projectsBlockedModalContent } from '@/flexternships/static/core-content
 import { getCookiesItem } from '@/utility/cookiesControl';
 import { featureAccessService } from '@/flexternships/services/feature-access-service';
 
-
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
 export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
