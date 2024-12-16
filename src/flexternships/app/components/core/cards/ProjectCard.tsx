@@ -9,8 +9,8 @@ interface Role {
   role_id: string;
   name?: string;
   proficiency: {
-    skills?: string[];
-    tools?: string[];
+    skills: string[];
+    tools: string[];
   };
   count: number;
 }
@@ -127,11 +127,11 @@ const ProjectCard = ({
                           {role.count} needed
                         </span>
                       </div>
-                      {role.proficiency.skills.length > 0 && (
+                      {role.proficiency.skills?.length > 0 && (
                         <div className="mb-2">
                           <h5 className="text-sm font-medium text-gray-700 mb-1">Required Skills</h5>
                           <div className="flex flex-wrap gap-2">
-                            {role.proficiency.skills.map((skill, skillIndex) => (
+                            {role.proficiency.skills?.map((skill, skillIndex) => (
                               <span key={skillIndex} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
                                 {skill}
                               </span>
@@ -139,11 +139,11 @@ const ProjectCard = ({
                           </div>
                         </div>
                       )}
-                      {role.proficiency.tools.length > 0 && (
+                      {role.proficiency.tools?.length > 0 && (
                         <div>
                           <h5 className="text-sm font-medium text-gray-700 mb-1">Required Tools</h5>
                           <div className="flex flex-wrap gap-2">
-                            {role.proficiency.tools.map((tool, toolIndex) => (
+                            {role.proficiency.tools?.map((tool, toolIndex) => (
                               <span key={toolIndex} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
                                 {tool}
                               </span>

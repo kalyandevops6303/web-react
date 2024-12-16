@@ -1,4 +1,3 @@
-'use client';
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
