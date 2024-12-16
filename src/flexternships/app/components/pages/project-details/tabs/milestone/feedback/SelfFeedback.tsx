@@ -5,11 +5,14 @@ import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import FunFacts from './FunFacts';
 import SucessModal from './modals/SucessModal';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function SelfFeedback() {
   const params = useParams();
@@ -51,6 +54,13 @@ export default function SelfFeedback() {
     setShowSuccessModal(false);
     navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
     populateUserDetails();
+
+    const toastId = uuidv4();
+    showToastMessage(
+      ToastType.SUCCESS,
+      <Toast type={ToastType.SUCCESS} toastId={toastId} description="Feedback has been submitted successfully" />,
+      toastId,
+    );
   };
 
   if (isFeedbackFormLoading) {

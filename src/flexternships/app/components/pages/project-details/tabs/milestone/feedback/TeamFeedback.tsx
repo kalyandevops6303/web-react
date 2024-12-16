@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
-import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { ArrowLeft } from 'react-feather';
 import FunFacts from './FunFacts';
@@ -12,6 +12,10 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import SucessModal from './modals/SucessModal';
+
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -69,6 +73,13 @@ export default function TeamFeedback() {
     setShowSuccessModal(false);
     navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
     populateUserDetails();
+
+    const toastId = uuidv4();
+    showToastMessage(
+      ToastType.SUCCESS,
+      <Toast type={ToastType.SUCCESS} toastId={toastId} description="Feedback has been submitted successfully" />,
+      toastId,
+    );
   };
 
   if (isFeedbackFormLoading) {

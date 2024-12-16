@@ -13,6 +13,7 @@ export type TeamMemberDetails = {
   ratingText?: string;
   ratingColor?: string;
   appreciationScore?: number;
+  isDocumentsSigned?: boolean;
 };
 
 export type BadgeType = {

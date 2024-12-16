@@ -3,7 +3,7 @@
 }
 
 .tabContentHeader {
-  @apply px-6 pb-4 mb-1 border-b-1 border-grey-border text-grey-heading text-lg not-italic font-medium;
+  @apply px-6 pb-4 mb-5 border-b-1 border-grey-border text-grey-heading text-lg not-italic font-medium;
 }
 
 .tabContentBody {

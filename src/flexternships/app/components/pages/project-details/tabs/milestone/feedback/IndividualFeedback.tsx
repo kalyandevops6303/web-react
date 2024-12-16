@@ -7,12 +7,15 @@ import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enu
 import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
 import { keysToCamelCase } from '@/flexternships/utils/core-utils';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import SucessModal from './modals/SucessModal';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import Toast from '@/flexternships/app/components/core/Toasts/Toast';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function IndividualFeedback() {
   const params = useParams();
@@ -32,6 +35,11 @@ export default function IndividualFeedback() {
 
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [filteredTeam, setFilteredTeam] = useState(team);
+
+  useEffect(() => {
+    setFilteredTeam(team?.filter((member: any) => member.isDocumentsSigned));
+  }, [team]);
 
   useEffect(() => {
     getIndividualFeedbackForm(params?.projectId, FeedbackTypesAPI.INDIVIDUAL);
@@ -40,8 +48,8 @@ export default function IndividualFeedback() {
   }, []);
 
   useEffect(() => {
-    if (team) {
-      const firstMemberWithoutFeedback = team.find(
+    if (filteredTeam) {
+      const firstMemberWithoutFeedback = filteredTeam.find(
         (member: { feedback_id: undefined }) => member.feedback_id === undefined,
       );
       if (!firstMemberWithoutFeedback) {
@@ -52,12 +60,12 @@ export default function IndividualFeedback() {
         setActiveTeamMember(firstMemberWithoutFeedback);
       }
     }
-  }, [team]);
+  }, [filteredTeam]);
 
   useEffect(() => {
     if (activeTeamMember) {
       setFormattedTeamInfo(
-        team?.map((person: any) => {
+        filteredTeam?.map((person: any) => {
           return {
             image: person?.image_uri,
             name: `${person?.first_name} ${person?.last_name}`,
@@ -66,7 +74,7 @@ export default function IndividualFeedback() {
             lastMessageTime: '1 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
-            isDocumentsSigned: person?.is_documents_signed,
+            isDocumentsSigned: person?.is_document_signed,
           };
         }),
       );
@@ -93,12 +101,20 @@ export default function IndividualFeedback() {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
+
+    const toastId = uuidv4();
+    showToastMessage(
+      ToastType.SUCCESS,
+      <Toast type={ToastType.SUCCESS} toastId={toastId} description="Feedback has been submitted successfully" />,
+      toastId,
+    );
+
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
     populateUserDetails();
   };
 
   const handleActiveMemberChange = (userId: any) => {
-    const activeMember = team?.find((member: any) => member.user_id === userId);
+    const activeMember = filteredTeam?.find((member: any) => member.user_id === userId);
     setActiveTeamMember(activeMember);
   };
 
