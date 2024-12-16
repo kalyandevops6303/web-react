@@ -35,7 +35,7 @@ const RegisterFlexternForm = React.memo(
     <Form className="auth-login-form mt-2" onSubmit={onSubmit}>
       <div className="mb-2">
         <Label className="form-label" for="email">
-          Email ID <span style={{ color: `${theme.red}` }}>*</span>
+          Email <span style={{ color: `${theme.red}` }}>*</span>
         </Label>
 
         <Controller
@@ -49,7 +49,7 @@ const RegisterFlexternForm = React.memo(
             <Input
               {...field}
               value={field.value || emailData || ''}
-              placeholder="Enter email ID"
+              placeholder="abc@company.com"
               className="filled-form-text-field"
               invalid={errors.email && true}
               disabled
@@ -61,7 +61,7 @@ const RegisterFlexternForm = React.memo(
       <div className="form-check mb-1">
         <div className="d-flex justify-content-between align-items-center checkbox-custom-label">
           <Label className="form-check-label" for="remember-me">
-            <small>
+            <small style={{ color: 'var(--Secondary-500---Main, #0185E4)' }}>
               <Controller
                 type="checkbox"
                 id="remember-me"
@@ -87,23 +87,19 @@ const RegisterFlexternForm = React.memo(
           </Label>
 
           <Label color={theme.primary} className="mb-0 ">
-            <small className="privacy-terms-label">
-              <u className="cursor-pointer" onClick={() => setPrivacyPolicyModal(true)}>
-                Privacy Policy
-              </u>
+            <small className="privacy-terms-label cursor-pointer" onClick={() => setPrivacyPolicyModal(true)}>
+              Privacy Policy
             </small>
-            <small>&</small>
-            <small className="privacy-terms-label">
-              <u className="cursor-pointer" onClick={() => setTermsModal(true)}>
-                Terms
-              </u>
+            <small style={{ color: 'var(--Secondary-500---Main, #0185E4)' }}> & </small>
+            <small className="privacy-terms-label cursor-pointer" onClick={() => setTermsModal(true)}>
+              Terms
             </small>
           </Label>
         </div>
         {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
       </div>
-      <Button color="primary" block type="submit" disabled={isLoading || !agreeTerms}>
-        {isLoading ? <Spinner size="sm" /> : 'Mobile Verification'}
+      <Button color="primary" block type="submit" disabled={isLoading || !agreeTerms || !emailData}>
+        {isLoading ? <Spinner size="sm" /> : 'Continue'}
       </Button>
     </Form>
   ),
@@ -139,7 +135,7 @@ const RegisterFlextern = () => {
       title: 'Client Sign up 🔐',
     },
     FLEXTERN_TALENT: {
-      title: 'Flextern Sign up 🔐',
+      title: 'Flextern - Sign up! 🔐',
     },
   };
 
@@ -242,14 +238,14 @@ const RegisterFlextern = () => {
 
         {/* <SigninWithGoogle title="Sign Up" /> */}
 
-        <div className="d-flex justify-content-center sign-info">
+        {/* <div className="d-flex justify-content-center sign-info">
           <Label>
             <small>Already have a trumio account?</small>
           </Label>
           <Label onClick={() => dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
-        </div>
+        </div> */}
       </div>
     </OnBoardWrap>
   );
