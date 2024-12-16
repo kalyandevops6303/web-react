@@ -11,8 +11,6 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import Spinner from '../Spinner';
 import { submitKudosOrWow } from '@/flexternships/services/project-management-v2';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import Toast from '../Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 import GenericModal from './GenericModal';
 
 function KudosAndWowModal(props: KudosAndWowModalProps) {
@@ -41,16 +39,7 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
           .filter((member: any) => member.id !== userDetails.id);
         setTeamMembers(formattedData);
       } catch (error) {
-        const toastId = uuidv4();
-        showToastMessage(
-          ToastType.ERROR,
-          <Toast
-            type={ToastType.ERROR}
-            description={error instanceof Error ? error.message : 'Error fetching team details'}
-            toastId={toastId}
-          />,
-          toastId,
-        );
+        showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching team details');
       } finally {
         setIsTeamMembersLoading(false);
       }
@@ -84,28 +73,14 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
     try {
       await submitKudosOrWow(milestoneId, selectedTeamMemberIds);
       closeModal();
-      const toastId = uuidv4();
       showToastMessage(
         ToastType.SUCCESS,
-        <Toast
-          type={ToastType.SUCCESS}
-          toastId={toastId}
-          description={`${recognitionType === RecognitionType.WOW ? 'WoW' : 'Kudos'} submitted successfully`}
-        />,
-        toastId,
+        `${recognitionType === RecognitionType.WOW ? 'WoW' : 'Kudos'} submitted successfully`,
       );
     } catch (error) {
-      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast
-          type={ToastType.ERROR}
-          toastId={toastId}
-          description={
-            error instanceof Error ? error.message : 'An unexpected error occurred while submitting kudos or wow'
-          }
-        />,
-        toastId,
+        error instanceof Error ? error.message : 'An unexpected error occurred while submitting kudos or wow',
       );
     } finally {
       setIsSubmitLoading(false);

@@ -8,8 +8,6 @@ import { MilestoneArtifactType, ToastType } from '@/flexternships/constraints/en
 import { Link } from 'react-feather';
 import { useState } from 'react';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import Toast from '../../Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
   const { onClose, isOpen, onConfirm, title, confirmCtaText, artifact, cancelCtaText } = props;
@@ -20,17 +18,9 @@ export default function RemoveArtifactModal(props: RemoveArtifactModalProps) {
     try {
       await onConfirm();
     } catch (error) {
-      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast
-          type={ToastType.ERROR}
-          toastId={toastId}
-          description={
-            error instanceof Error ? error.message : 'An unexpected error occurred while deleting milestone artifact'
-          }
-        />,
-        toastId,
+        error instanceof Error ? error.message : 'An unexpected error occurred while deleting milestone artifact',
       );
     } finally {
       setIsConfirmLoading(false);

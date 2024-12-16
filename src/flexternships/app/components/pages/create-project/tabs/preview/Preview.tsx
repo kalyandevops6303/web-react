@@ -24,8 +24,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);
@@ -73,17 +71,9 @@ export default function Preview() {
       openModal(ModalType.PROJECT_CREATED);
     } catch (error: unknown) {
       closeModal();
-      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast
-          type={ToastType.ERROR}
-          toastId={toastId}
-          description={
-            error instanceof Error ? error.message : 'An unexpected error occurred while creating the Flextern project'
-          }
-        />,
-        toastId,
+        error instanceof Error ? error.message : 'An unexpected error occurred while creating the Flextern project',
       );
     } finally {
       setIsSubmitting(false);
@@ -99,17 +89,9 @@ export default function Preview() {
       closeModal();
       navigate(`/create-project/${createdProjectId}`);
     } catch (error) {
-      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast
-          type={ToastType.ERROR}
-          toastId={toastId}
-          description={
-            error instanceof Error ? error.message : 'An unexpected error occurred while recalling the Flextern project'
-          }
-        />,
-        toastId,
+        error instanceof Error ? error.message : 'An unexpected error occurred while recalling the Flextern project',
       );
     } finally {
       setIsRecalling(false);
@@ -120,12 +102,7 @@ export default function Preview() {
     try {
       await saveAsDraft(projectId);
     } catch (error) {
-      const toastId = uuidv4();
-      showToastMessage(
-        ToastType.ERROR,
-        <Toast type={ToastType.ERROR} toastId={toastId} description="Failed to save draft. Please try again." />,
-        toastId,
-      );
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
   };
 

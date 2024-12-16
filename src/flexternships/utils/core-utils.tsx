@@ -1,4 +1,3 @@
-import React from 'react';
 import { toast, ToastOptions } from 'react-hot-toast';
 import {
   MilestoneStatus,
@@ -10,31 +9,24 @@ import {
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { useAppStore, useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
+import Toast from '../app/components/core/toasts/CustomToast';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
  * @param type - The type of toast message (ERROR, SUCCESS, or default).
  * @param message - The content of the toast message.
  */
-export const showToastMessage = (type: ToastType, message: React.ReactNode, toastId?: string) => {
+export const showToastMessage = (type: ToastType, message: string) => {
+  const toastId = uuidv4();
+
   const options: ToastOptions = {
-    position: 'top-left',
+    position: 'top-center',
     duration: 6000,
     id: toastId,
-    // className: 'flex w-[1393px] p-4 items-start gap-6 flex gap-x-2 p-2 text-xs',
   };
 
-  switch (type) {
-    case ToastType.ERROR:
-      toast.error(<>{message}</>, { ...options, icon: null });
-      break;
-    case ToastType.SUCCESS:
-      toast.success(<>{message}</>, { ...options, icon: null });
-      break;
-    default:
-      toast(<>{message}</>, { ...options, icon: null });
-      break;
-  }
+  toast.custom(<Toast type={type} toastId={toastId} description={message} />, { ...options, icon: null });
 };
 export const getUserTimezone = () => {
   return useFlexternUserStore.getState().userDetails?.timezone?.name || 'Asia/Kolkata';
