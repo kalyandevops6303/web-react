@@ -106,6 +106,7 @@ export type ProjectMilestonesActions = {
   acceptMilestone: (milestoneId: string) => Promise<void>;
   closeModal: () => void;
   openModal: (modal: MilestoneDetailsModalType, metadata?: Record<string, any>) => void;
+  resetStore: () => void;
 };
 
 export type ProjectMilestonesStore = ProjectMilestonesState & ProjectMilestonesActions;
@@ -122,6 +123,7 @@ export type MilestoneArtifactsActions = {
   updateSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => void;
   appendToRemovedArtifactIds: (artifactId: string) => void;
   resetDraftArtifacts: () => void;
+  resetStore: () => void;
 };
 
 export type MilestoneArtifactsStore = MilestoneArtifactsState & MilestoneArtifactsActions;

@@ -10,6 +10,8 @@ import {
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { useAppStore, useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
+import { useProjectMilestonesStore } from '../stores/project-milestones-store';
+import { useProjectsStore } from '../stores/project-details-store';
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
@@ -48,6 +50,8 @@ export const logout = () => {
   useFlexternUserStore.getState().resetStore();
   useFlexternUserProfileStore.getState().resetStore();
   useProjectCreationStore.getState().resetStore();
+  useProjectMilestonesStore.getState().resetStore();
+  useProjectsStore.getState().resetStore();
   useAppStore.getState().resetStore();
 };
 
