@@ -13,6 +13,7 @@ import { GlobalModalActions } from '@/flexternships/constraints/types/core-types
 import { projectsBlockedModalContent } from '@/flexternships/static/core-content';
 import { featureAccessService } from '@/flexternships/services/feature-access-service';
 
+
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
 export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {

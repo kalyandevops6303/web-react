@@ -95,5 +95,5 @@ export enum MessageType {
   CLARIFICATION = 'clarification',
   NUMBER_REQUEST = 'number_request',
   ERROR = 'error',
-  PROJECTS = 'projects'
+  PROJECTS = 'projects',
 }
