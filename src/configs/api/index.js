@@ -21,11 +21,12 @@ const API = {
     verifyOtp: `${apiAuthEndpoint}/api/v1/user/forgot-password/verify`,
     setNewPassword: `${apiAuthEndpoint}/api/v1/user/forgot-password/change`,
     resetPassword: `${apiAuthEndpoint}/api/v1/user/reset-password`,
-    requestValidation: `${apiAuthEndpoint}/api/v1/requests/validation`,
     checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
     validateFlexTernEmail: `${apiAuthEndpoint}/api/v1/flextern/email/check`,
     flexternValues: `${apiAuthEndpoint}/api/v1/flextern/values`,
     logout: `${apiAuthEndpoint}/api/v1/user/logout`,
+    // v2
+    requestValidation: `${apiAuthEndpoint}/api/v2/requests/validation`,
   },
   static: {
     talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,
@@ -233,7 +234,6 @@ const API = {
 
     // Updated API to invite talent/team and for client
     requests: `${apiAuthEndpoint}/api/v1/requests`,
-    validateRequest: `${apiAuthEndpoint}/api/v1/requests/validation`,
 
     // get status requests
     status: `${apiOnboardingEndpoint}/api/v1/request/get`,
