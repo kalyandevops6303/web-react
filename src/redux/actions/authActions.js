@@ -91,7 +91,6 @@ import {
   logoutFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
-import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
@@ -108,8 +107,6 @@ import { getItemFromSession, removeItemFromSession, setItemFromSession } from '.
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
 import { setCookiesItem } from '@/utility/cookiesControl';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import uuidv4 from '@/lib/uuidv4';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
@@ -171,7 +168,6 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     if (error?.response?.data?.errorData?.errorCode === 403) {
       const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
       dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
-      // ShowToastMessage(ERROR,error?.response?.data?.errorData?.message.match(/'([^']+)'/)[1])
       dispatch(loginFailure());
     } else {
       errorHandler(error, loginFailure);
@@ -371,7 +367,7 @@ const setNewPassword = (newPassword) => async (dispatch) => {
   try {
     await setNewPasswordService(newPassword);
     dispatch(setNewPasswordSuccess());
-    ShowToastMessage(SUCCESS, 'Password has been updated');
+    showToastMessage(ToastType.SUCCESS, 'Password has been updated');
   } catch (error) {
     errorHandler(error, setNewPasswordFailure);
   }
@@ -386,7 +382,6 @@ const logoutAction =
 
     // Zustand Logout
     dispatch(logoutRequest());
-    const toastId = uuidv4();
 
     try {
       const res = await logoutUserService();
@@ -399,18 +394,10 @@ const logoutAction =
       dispatch(clearMarketplaceCardData());
       dispatch(clearNotificationsData());
       onSuccess();
-      showToastMessage(
-        ToastType.ERROR,
-        <Toast type={ToastType.SUCCESS} toastId={toastId} description={res?.data?.data?.message} />,
-        toastId,
-      );
+      showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
     } catch (error) {
       if (error?.response?.data?.errorData?.errorCode === 403) {
-        showToastMessage(
-          ToastType.ERROR,
-          <Toast type={ToastType.ERROR} toastId={toastId} description={error?.response?.data?.errorData?.message} />,
-          toastId,
-        );
+        showToastMessage(ToastType.ERROR, error?.response?.data?.errorData?.message);
       }
       errorHandler(error, logoutFailure);
     }
@@ -426,7 +413,7 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
     await resetPasswordService(data);
     dispatch(resetPasswordSuccess());
     onSuccess();
-    ShowToastMessage(SUCCESS, 'Password has been updated');
+    showToastMessage(ToastType.SUCCESS, 'Password has been updated');
   } catch (error) {
     errorHandler(error, resetPasswordFailure);
   }

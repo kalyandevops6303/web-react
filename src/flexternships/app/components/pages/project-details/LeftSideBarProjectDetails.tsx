@@ -38,8 +38,6 @@ import {
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
 import RelistModal from '../../core/modals/RelistModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import Toast from '../../core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -188,12 +186,7 @@ const LeftSideBarProjectDetails = () => {
               if (data?.details?.documents?.length > 0) {
                 setDocumentsModal(true);
               } else {
-                const toastId = uuidv4();
-                showToastMessage(
-                  ToastType.ERROR,
-                  <Toast type={ToastType.ERROR} toastId={toastId} description="No documents found" />,
-                  toastId,
-                );
+                showToastMessage(ToastType.ERROR, 'No documents found');
               }
             }}
             className="flex flex-row items-center gap-1 cursor-pointer"

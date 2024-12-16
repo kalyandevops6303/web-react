@@ -10,8 +10,6 @@ import SecondaryButton from '../buttons/SecondaryButton';
 import { changePasswordWithCurrentPassword } from '@/flexternships/services/user-management';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 interface ClientOnboardingSuccessProps {
   isOpen: boolean;
@@ -44,28 +42,13 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
     setIsLoading(true);
     try {
       await changePasswordWithCurrentPassword(data.oldPassword, data.newPassword);
-      const toastId = uuidv4();
-      showToastMessage(
-        ToastType.SUCCESS,
-        <Toast type={ToastType.SUCCESS} toastId={toastId} description="Password changed successfully!" />,
-        toastId,
-      );
+      showToastMessage(ToastType.SUCCESS, 'Password changed successfully!');
       onClose();
     } catch (error) {
       if (error instanceof Error) {
-        const toastId = uuidv4();
-        showToastMessage(
-          ToastType.ERROR,
-          <Toast type={ToastType.ERROR} toastId={toastId} description={error.message} />,
-          toastId,
-        );
+        showToastMessage(ToastType.ERROR, error.message);
       } else {
-        const toastId = uuidv4();
-        showToastMessage(
-          ToastType.ERROR,
-          <Toast type={ToastType.ERROR} toastId={toastId} description="An unexpected error occurred" />,
-          toastId,
-        );
+        showToastMessage(ToastType.ERROR, 'An unexpected error occurred');
       }
     } finally {
       setIsLoading(false);

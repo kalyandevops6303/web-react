@@ -44,8 +44,6 @@ import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/mis
 import CelebrationModal from '@/flexternships/app/components/core/modals/milestone/CelebrationModal';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 import { MilestoneFeedback } from '@/flexternships/constraints/types/project-milestones-types';
 
 export default function MilestoneDetails() {
@@ -92,16 +90,7 @@ export default function MilestoneDetails() {
       try {
         await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
-        const toastId = uuidv4();
-        showToastMessage(
-          ToastType.ERROR,
-          <Toast
-            type={ToastType.ERROR}
-            toastId={toastId}
-            description={error instanceof Error ? error.message : 'Error fetching milestone details'}
-          />,
-          toastId,
-        );
+        showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching milestone details');
       }
     };
     fetchMilestoneDetails();
@@ -159,23 +148,15 @@ export default function MilestoneDetails() {
       openCelebrationModal();
       await populateMilestoneDetails(milestoneId);
     } catch (error: unknown) {
-      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast
-          type={ToastType.ERROR}
-          toastId={toastId}
-          description={
-            error instanceof Error
-              ? error.message
-              : `Unexpected error while ${
-                  userDetails.userType === UserType.CLIENT
-                    ? 'accepting the milestone'
-                    : 'marking the milestone as completed'
-                }`
-          }
-        />,
-        toastId,
+        error instanceof Error
+          ? error.message
+          : `Unexpected error while ${
+              userDetails.userType === UserType.CLIENT
+                ? 'accepting the milestone'
+                : 'marking the milestone as completed'
+            }`,
       );
     } finally {
       setPrimaryActionLoading(false);

@@ -1,7 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
 import { CometChat } from '@cometchat-pro/chat';
-import { v4 as uuidv4 } from 'uuid';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
@@ -12,7 +11,6 @@ import { ERROR } from './constants/ToastTypes';
 import { getItem, setItem } from './localStorageControl';
 import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
 import { messaging } from '../configs/api/firebase';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { getCookiesItem } from './cookiesControl';
 
@@ -25,8 +23,7 @@ let lastErrorTime = 0; // Timestamp of the last error notification
 const showErrorNotification = (errorMessage) => {
   const currentTime = Date.now();
   if (currentTime - lastErrorTime >= MIN_ERROR_INTERVAL_MS) {
-    const toastId = uuidv4();
-    showToastMessage(ERROR, <Toast type={ToastType.ERROR} toastId={toastId} description={errorMessage} />, toastId);
+    showToastMessage(ToastType.ERROR, errorMessage);
     lastErrorTime = currentTime;
   }
 };
@@ -106,12 +103,7 @@ const errorHandler = (err, callBack) => {
       err?.message === 'Network Error' ||
       err?.message === 'CORS error'
     ) {
-      const toastId = uuidv4();
-      showToastMessage(
-        ERROR,
-        <Toast type={ToastType.ERROR} toastId={toastId} description="Unable to process request" />,
-        toastId,
-      );
+      showToastMessage(ToastType.ERROR, 'Unable to process request');
       if (callBack) {
         dispatch(callBack(err));
       }
