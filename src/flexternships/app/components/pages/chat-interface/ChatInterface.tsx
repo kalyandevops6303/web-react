@@ -7,26 +7,26 @@ import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleE
 import Spinner from '@flexternships/app/components/core/Spinner';
 import Styles from '@flexternships/styles/pages/chat-interface/chat-interface.module.css';
 import ProjectCard from '@flexternships/app/components/core/cards/ProjectCard';
-import { MessageRole } from '@flexternships/enums/core-enums';
+import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import { wsEndpoints } from '@flexternships/utils/api';
 import { ChatMessage, WebSocketMessage } from '@flexternships/types/core-types';
 
 const formatWebSocketMessage = (data: WebSocketMessage): ChatMessage => {
   switch (data.message_type) {
-    case 'initial':
-    case 'clarification':
-    case 'number_request':
-    case 'error':
-      return { role: 'assistant' as MessageRole, content: data.content };
-    case 'projects':
+    case MessageType.INITIAL:
+    case MessageType.CLARIFICATION:
+    case MessageType.NUMBER_REQUEST:
+    case MessageType.ERROR:
+      return { role: MessageRole.ASSISTANT, content: data.content };
+    case MessageType.PROJECTS:
       return {
-        role: 'assistant' as const,
+        role: MessageRole.ASSISTANT,
         content: data.content,
         projects: data.content.projects,
         domain: data.content.domain,
       } as ChatMessage;
     default:
-      return { role: 'assistant' as MessageRole, content: 'Unsupported message type' };
+      return { role: MessageRole.ASSISTANT, content: 'Unsupported message type' };
   }
 };
 
@@ -62,7 +62,7 @@ export default function ChatInterface() {
   }, [navigate]);
 
   const handleWebSocketMessage = (data: WebSocketMessage) => {
-    if (data.message_type === 'projects') {
+    if (data.message_type === MessageType.PROJECTS) {
       setProjects(data.content.projects);
     }
 

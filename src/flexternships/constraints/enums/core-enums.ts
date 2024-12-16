@@ -89,3 +89,11 @@ export enum MessageRole {
   USER = 'user',
   ASSISTANT = 'assistant',
 }
+
+export enum MessageType {
+  INITIAL = 'initial',
+  CLARIFICATION = 'clarification',
+  NUMBER_REQUEST = 'number_request',
+  ERROR = 'error',
+  PROJECTS = 'projects'
+}

@@ -9,8 +9,8 @@ interface Role {
   role_id: string;
   name?: string;
   proficiency: {
-    skills: string[];
-    tools: string[];
+    skills?: string[];
+    tools?: string[];
   };
   count: number;
 }
