@@ -61,7 +61,6 @@ function KudosAndWowModal(props: KudosAndWowModalProps) {
   }, [projectId]);
 
   useEffect(() => {
-    console.log(teamMembers);
     setFilteredTeamMembers(teamMembers?.filter((member) => member?.isDocumentsSigned));
   }, [teamMembers]);
 

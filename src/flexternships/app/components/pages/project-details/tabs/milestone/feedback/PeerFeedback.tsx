@@ -38,7 +38,7 @@ export default function PeerFeedback() {
   const [filteredTeam, setFilteredTeam] = useState(team);
 
   useEffect(() => {
-    setFilteredTeam(team?.filter((member: any) => member.isDocumentsSigned));
+    setFilteredTeam(team?.filter((member: any) => member.is_document_signed));
   }, [team]);
 
   useEffect(() => {
