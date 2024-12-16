@@ -47,9 +47,12 @@ export default function LegalDocCard(props: LegalDocCardProps) {
 
   const handleConfirmAgreement = () => {
     signDocument(params?.projectId, toUpper(docType), () => {
-      showToastMessage(ToastType.SUCCESS, `'${projectDetails?.details?.name}' ${
-            docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'
-          } signed by project member`);
+      showToastMessage(
+        ToastType.SUCCESS,
+        `'${projectDetails?.details?.name}' ${
+          docType === toLower(DocTypes.NDA) ? 'NDA' : 'Contract'
+        } signed by project member`,
+      );
       getProjectDetails(params?.projectId as string);
     });
   };
