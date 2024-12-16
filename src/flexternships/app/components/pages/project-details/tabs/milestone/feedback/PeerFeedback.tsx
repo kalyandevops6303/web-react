@@ -11,11 +11,8 @@ import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enum
 import { ArrowLeft } from 'react-feather';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
-import { keysToCamelCase } from '@/flexternships/utils/core-utils';
+import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-utils';
 import SucessModal from './modals/SucessModal';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function PeerFeedback() {
   const params = useParams();
@@ -105,12 +102,7 @@ export default function PeerFeedback() {
     setShowSuccessModal(false);
     populateUserDetails();
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
-    const toastId = uuidv4();
-    showToastMessage(
-      ToastType.SUCCESS,
-      <Toast type={ToastType.SUCCESS} toastId={toastId} description="Feedback has been submitted successfully" />,
-      toastId,
-    );
+    showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
   };
 
   const handleActiveMemberChange = (userId: any) => {

@@ -9,13 +9,10 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
-import { keysToCamelCase } from '@/flexternships/utils/core-utils';
+import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-utils';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import SucessModal from './modals/SucessModal';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function IndividualFeedback() {
   const params = useParams();
@@ -101,14 +98,7 @@ export default function IndividualFeedback() {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-
-    const toastId = uuidv4();
-    showToastMessage(
-      ToastType.SUCCESS,
-      <Toast type={ToastType.SUCCESS} toastId={toastId} description="Feedback has been submitted successfully" />,
-      toastId,
-    );
-
+    showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
     populateUserDetails();
   };

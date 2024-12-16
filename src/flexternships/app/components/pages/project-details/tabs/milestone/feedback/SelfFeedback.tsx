@@ -11,8 +11,6 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import FunFacts from './FunFacts';
 import SucessModal from './modals/SucessModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function SelfFeedback() {
   const params = useParams();
@@ -55,12 +53,7 @@ export default function SelfFeedback() {
     navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
     populateUserDetails();
 
-    const toastId = uuidv4();
-    showToastMessage(
-      ToastType.SUCCESS,
-      <Toast type={ToastType.SUCCESS} toastId={toastId} description="Feedback has been submitted successfully" />,
-      toastId,
-    );
+    showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
   };
 
   if (isFeedbackFormLoading) {
