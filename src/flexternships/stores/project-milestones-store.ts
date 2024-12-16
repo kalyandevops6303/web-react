@@ -37,6 +37,7 @@ export const useProjectMilestonesStore = create<ProjectMilestonesStore>((set) =>
   acceptMilestone: async (milestoneId: string) => acceptMilestone(milestoneId),
   closeModal: () => closeModal(set),
   openModal: (modal: MilestoneDetailsModalType, metadata?: Record<string, any>) => openModal(modal, set, metadata),
+  resetStore: () => set({ ...defaultProjectMilestonesInitState }),
 }));
 
 const defaultMilestoneArtifactsInitState: MilestoneArtifactsState = {
@@ -55,4 +56,5 @@ export const useMilestoneArtifactsStore = create<MilestoneArtifactsStore>((set, 
   updateSubmittedArtifacts: (artifacts: MilestoneArtifact[]) => set({ submittedArtifacts: artifacts }),
   appendToRemovedArtifactIds: (artifactId: string) => appendToRemovedArtifactIds(artifactId, get, set),
   resetDraftArtifacts: () => set({ ...defaultMilestoneArtifactsInitState }),
+  resetStore: () => set({ ...defaultMilestoneArtifactsInitState }),
 }));
