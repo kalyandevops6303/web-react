@@ -13,7 +13,12 @@ export const featureAccessService = {
 
     try {
       const response = await axios.get('https://tru-dev-api.trumio.ai/user/api/v1/features/permitted-features', config);
-      return response.data?.data || [];
+      return (
+        response.data?.data.map((feature: { feature_id: string; feature_name: string }) => ({
+          featureId: feature.feature_id,
+          featureName: feature.feature_name,
+        })) || []
+      );
     } catch (error) {
       handleError(error as Error, 'An unexpected error occurred while fetching permitted features');
       return [];
@@ -23,7 +28,7 @@ export const featureAccessService = {
   async hasFeatureAccess(featureName: string): Promise<boolean> {
     try {
       const features = await this.getPermittedFeatures();
-      return features.some((feature) => feature.feature_name === featureName);
+      return features.some((feature) => feature.featureName === featureName);
     } catch (error) {
       handleError(error as Error, 'An unexpected error occurred while checking feature access');
       return false;
