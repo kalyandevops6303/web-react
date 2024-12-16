@@ -67,6 +67,7 @@ export type ProjectDetails = {
     description: string;
     expectedDuration: ExpectedDuration;
     expectedStartDate: number;
+    expectedEndDate: number;
     documents: Document[];
   };
   roles: ProjectRole[];
