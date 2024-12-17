@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Upload } from 'react-feather';
 import { useFieldArray, UseFormTrigger } from 'react-hook-form';
 import { getFileDownloadUrl, getFileUploadUrl } from '@flexternships/services/project-management-v2';
@@ -14,7 +14,6 @@ export default function FileUpload(props: InputProps) {
   const {
     name,
     control,
-    error,
     tooltip,
     trigger,
     watch,
