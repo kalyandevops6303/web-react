@@ -4,6 +4,7 @@ import {
   submitFeedbackService,
 } from '../services/feedback-service';
 import { FeedbackTypesAPI } from '../constraints/enums/feedback-enums';
+import { useFlexternUserStore } from '../stores/core-stores';
 
 export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: string, set: any) => {
   set({ isFeedbackFormLoading: true });
@@ -17,12 +18,14 @@ export const getMilestoneFeedbackInfo = async (projectId: string, feedbackType: 
 
 export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, set: any) => {
   set({ isSubmitFeedbackLoading: true });
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const data: any = await submitFeedbackService(formData);
   set((state: any) => ({
     ...state,
     feedbackFormSubmission: data,
   }));
   set({ isSubmitFeedbackLoading: false });
+  populateUserDetails(true); // passing true to force refresh the user details even though it's already populated
   onSuccess();
 };
 

@@ -19,7 +19,7 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
   const { data, isOpen, onClose, ctas } = props;
 
   return (
-    <GenericModal onClose={onClose} className="max-w-[1240px]" isOpen={isOpen}>
+    <GenericModal onClose={onClose} className="max-w-[1240px] flex flex-col" isOpen={isOpen}>
       <div
         className={`flex flex-col gap-y-6 py-8 px-6 bg-white-fa rounded-md max-h-[80vh] overflow-y-scroll overflow-x-hidden ${TabStyles.previewTab}`}
       >
@@ -98,7 +98,10 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
               </AccordionTrigger>
               <AccordionContent className="p-0 m-0">
                 <div className={Styles.projectDetailsCardBody}>
-                  <ExpandableText className="text-base text-grey-heading font-normal leading-6" charLimit={350}>
+                  <ExpandableText
+                    className="text-base text-grey-heading font-normal leading-6 max-w-full break-words"
+                    charLimit={350}
+                  >
                     {data?.requirements?.projectDescription || '(Add description)'}
                   </ExpandableText>
                 </div>
