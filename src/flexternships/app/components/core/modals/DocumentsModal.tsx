@@ -1,5 +1,4 @@
 'use client';
-import CloseModalButton from '../buttons/CloseModalButton';
 import { downloadFile, getFileIcon, getFileSize } from '@/flexternships/utils/file-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import GenericModal from './GenericModal';
