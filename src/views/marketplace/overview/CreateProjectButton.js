@@ -5,7 +5,7 @@ import { Button, Spinner } from 'reactstrap';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { DashboardHeaderWrapper } from '../../dashboard/overview/style';
-import { userTypes } from '../../../utility/constants/Constant';
+import { userTypes, FEATURE_NAMES } from '../../../utility/constants/Constant';
 import { draftProjectsCheck } from '../../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
@@ -29,7 +29,7 @@ const CreateProjectButton = () => {
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        const hasAccess = await featureAccessService.hasFeatureAccess('Ayesha Bot');
+        const hasAccess = await featureAccessService.hasFeatureAccess(FEATURE_NAMES.AYESHA_BOT);
         setHasAyeshaBotAccess(hasAccess);
       } catch (error) {
         console.error('Error checking feature access:', error);
