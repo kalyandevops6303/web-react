@@ -34,7 +34,8 @@ const resetPasswordService = (data) => DataService.post(API.auth.resetPassword, 
 
 const checkAdminService = (teamId) => DataService.get(`${API.auth.checkAdmin}?team_id=${teamId}`);
 
-const checkRequestValidation = (requestToken) => DataService.post(`${API.auth.requestValidation}`, requestToken);
+const checkRequestValidation = (requestToken) =>
+  DataService.post(`${API.auth.requestValidation}`, { request_token: requestToken });
 
 const getFlexternVariablesService = () => DataService.get(API.auth.flexternValues);
 const getAppPermissionService = () => DataService.get(`${API.permissions.appPermissions}`);
