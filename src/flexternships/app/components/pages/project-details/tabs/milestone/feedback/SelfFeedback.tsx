@@ -49,10 +49,9 @@ export default function SelfFeedback() {
   };
 
   const handleCloseSuccessModal = () => {
+    populateUserDetails(true);
     setShowSuccessModal(false);
     navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
-    populateUserDetails();
-
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
   };
 
