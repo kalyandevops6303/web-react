@@ -11,25 +11,7 @@ import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import { wsEndpoints } from '@flexternships/utils/api';
 import { ChatMessage, WebSocketMessage } from '@flexternships/types/core-types';
 import { getCookiesItem } from '@/utility/cookiesControl';
-
-const formatWebSocketMessage = (data: WebSocketMessage): ChatMessage => {
-  switch (data.message_type) {
-    case MessageType.INITIAL:
-    case MessageType.CLARIFICATION:
-    case MessageType.NUMBER_REQUEST:
-    case MessageType.ERROR:
-      return { role: MessageRole.ASSISTANT, content: data.content };
-    case MessageType.PROJECTS:
-      return {
-        role: MessageRole.ASSISTANT,
-        content: data.content,
-        projects: data.content.projects,
-        domain: data.content.domain,
-      } as ChatMessage;
-    default:
-      return { role: MessageRole.ASSISTANT, content: 'Unsupported message type' };
-  }
-};
+import { formatWebSocketMessage } from '@/utility/Utils';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
