@@ -50,7 +50,7 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data, disabled }) => {
   return (
     <div className={`flex flex-col ${disabled ? styles.disabled : ''}`}>
       <div
-        className="flex flex-row gap-x-6 bg-white rounded-md py-3 px-6 items-center cursor-pointer z-10"
+        className="flex flex-row gap-x-6 bg-white rounded-md py-3 px-6 items-center cursor-pointer"
         onClick={clickHandler}
       >
         <div className="flex flex-row items-start text-base font-medium text-grey-heading leading-6 grow">

@@ -15,8 +15,8 @@ export default function DocumentsModal(props: DocumentsModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-      <div className="relative w-full min-w-[40rem] max-w-sm rounded-lg bg-white pt-13 pr-8 pb-8 pl-6 shadow-lg z-[100]">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-[100]">
+      <div className="relative w-full min-w-[40rem] max-w-sm rounded-lg bg-white pt-13 pr-8 pb-8 pl-6 shadow-lg">
         <CloseModalButton onClick={handleClose} />
         <div className="flex flex-col items-start gap-5 text-grey-heading  text-xl font-medium leading-[28px]">
           <h1>Project Requirements Documents</h1>
