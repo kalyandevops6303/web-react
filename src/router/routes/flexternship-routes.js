@@ -55,6 +55,7 @@ import HandleFeedbacks from '@/flexternships/app/components/pages/project-detail
 import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
+import { FEATURE_NAMES } from '@/utility/constants/Constant';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -518,7 +519,7 @@ export const FlexternshipRoutes = [
             ],
           },
         ]}
-        featureName="Ayesha Bot"
+        featureName={FEATURE_NAMES.AYESHA_BOT}
         fallbackRoute="/dashboard"
       >
         <ChatInterface />
