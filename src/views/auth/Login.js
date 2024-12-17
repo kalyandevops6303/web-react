@@ -37,6 +37,8 @@ const Login = () => {
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const location = useLocation();
+  const accountCreated = location.state?.createdAccount;
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -44,14 +46,6 @@ const Login = () => {
   });
 
   const urlSearchParams = new URLSearchParams(window.location.search);
-
-  const accountCreated = urlSearchParams.get('accountCreated');
-  console.log('accountCreated', accountCreated);
-  // useEffect(() => {
-  //   if (accountCreated) {
-  //     localStorage.removeItem('accountCreated');
-  //   }
-  // }, []);
   const dataParam = urlSearchParams.get('data');
 
   const onValidUrlSuccess = (res) => {
@@ -119,8 +113,8 @@ const Login = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: savedFormData?.email || '',
-      password: savedFormData?.password || '',
+      email: accountCreated ? '' : savedFormData?.email || '',
+      password: accountCreated ? '' : savedFormData?.password || '',
     },
   });
   const localFormData = useWatch({ control });

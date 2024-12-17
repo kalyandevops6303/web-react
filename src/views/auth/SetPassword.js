@@ -26,6 +26,7 @@ import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { create } from 'lodash';
 
 const SetPassword = () => {
   const dispatch = useDispatch();
@@ -38,10 +39,8 @@ const SetPassword = () => {
   useEffect(() => {
     if (isFlextern && isPasswordSet) {
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
-      // localStorage.setItem('fromSetPassword', 'true'); //Added
-      // console.log('fromSetPassword', localStorage.getItem('fromSetPassword'));
       setTimeout(() => {
-        navigate('/auth/login?accountCreated=true');
+        navigate('/auth/login', { state: { createdAccount: true } });
       }, 6000);
     } else if (isPasswordSet && !isFlextern) {
       navigate('/auth/register-phone');
