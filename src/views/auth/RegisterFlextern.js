@@ -230,22 +230,6 @@ const RegisterFlextern = () => {
           isLoading={isLoading}
           emailData={emailData}
         />
-        {/* <div className="my-2 custom-divider">
-          <span className="custom-line" />
-          <p className="custom-divider-text m-0 px-1">Or</p>
-          <span className="custom-line" />
-        </div> */}
-
-        {/* <SigninWithGoogle title="Sign Up" /> */}
-
-        {/* <div className="d-flex justify-content-center sign-info">
-          <Label>
-            <small>Already have a trumio account?</small>
-          </Label>
-          <Label onClick={() => dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
-            <small>Sign in</small>
-          </Label>
-        </div> */}
       </div>
     </OnBoardWrap>
   );
