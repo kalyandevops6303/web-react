@@ -67,6 +67,7 @@ import { ProgressBarWrapper } from '../create-bid/style';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
+import { isFlexternshipApp } from '@/configs/api/env';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
@@ -487,7 +488,7 @@ const Account = () => {
                     <div className="d-flex flex-column align-items-start">
                       <p className="m-0">Allowed file types:</p>
                       <p className="m-0">png, jpg, jpeg.</p>
-                      {/* <p className="m-0">Max file size: 5MB</p> */}
+                      {isFlexternshipApp === false && <p className="m-0">Max file size: 5MB</p>}
                     </div>
                   </UncontrolledTooltip>
                 </div>
