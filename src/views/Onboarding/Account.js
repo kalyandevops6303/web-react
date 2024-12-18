@@ -389,9 +389,10 @@ const Account = () => {
 
   const uploadImage = async (uploadUrl) => {
     try {
+      console.log('uploadUrl', selectedImage);
       const res = await profileImageUploadToAzureService(uploadUrl, selectedImage, {
         'x-ms-blob-type': 'BlockBlob',
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': selectedImage.type,
       });
 
       if (res) {
