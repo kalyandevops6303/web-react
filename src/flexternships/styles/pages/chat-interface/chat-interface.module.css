@@ -1,60 +1,47 @@
 .chatContainer {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 150px);
+  @apply flex flex-col h-[calc(100vh-150px)];
 }
 
 .messagesArea {
-  flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
+  @apply flex-1 p-4 overflow-y-auto;
 }
 
 .messageWrapper {
-  margin-bottom: 1rem;
+  @apply mb-4;
 }
 
 .messageContent {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  max-width: 80%;
+  @apply inline-block p-2 rounded-lg max-w-[80%];
 }
 
 .userMessage {
-  text-align: right;
+  @apply text-right;
 }
 
 .userMessage .messageContent {
-  background-color: var(--trublue-secondary-500);
-  color: white;
+  @apply bg-trublue-secondary-500 text-white;
 }
 
 .assistantMessage {
-  text-align: left;
+  @apply text-left;
 }
 
 .assistantMessage .messageContent {
-  background-color: var(--grey-100);
+  @apply bg-grey-light;
 }
 
 .inputArea {
-  border-top: 1px solid var(--grey-200);
-  padding: 1rem;
+  @apply border-t p-4;
 }
 
 .inputWrapper {
-  display: flex;
-  gap: 0.5rem;
+  @apply flex gap-2;
 }
 
 .input {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid var(--grey-200);
-  border-radius: 0.375rem;
+  @apply flex-1 p-2 border border-grey-200 rounded-md;
 }
 
 .sendButton {
-  min-width: 80px;
+  @apply min-w-[80px];
 }
