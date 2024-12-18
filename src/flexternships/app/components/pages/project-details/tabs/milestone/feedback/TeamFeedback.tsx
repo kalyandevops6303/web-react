@@ -68,6 +68,7 @@ export default function TeamFeedback() {
 
   const handleCloseSuccessModal = () => {
     populateUserDetails(true);
+    getProjectDetails(params?.projectId as string);
     setShowSuccessModal(false);
     navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
