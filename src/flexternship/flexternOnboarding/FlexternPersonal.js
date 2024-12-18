@@ -1160,8 +1160,7 @@ const FlexternPersonal = () => {
                               {files && files.length === 0 && (
                                 <span className="font-normal">
                                   <span className="font-semibold">Go Faster</span> - Upload your resume to auto fill
-                                  your profile.
-                                  <span className="label-asterisk me-50">*</span>
+                                  your profile.<span className="label-asterisk me-50">*</span>
                                 </span>
                               )}
                             </Col>

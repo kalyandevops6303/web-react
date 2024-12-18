@@ -235,6 +235,9 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               <Col sm="12" md="12" lg="7">
                 <Label className="form-label text-grey font-normal text-sm" for="issueType">
                   Issue Type
+                  {issueType?.value !== CUSTOMER_SUPPORT_TYPES.missing_institute && (
+                    <span className="label-asterisk me-50">*</span>
+                  )}
                 </Label>
                 <Controller
                   id="issueType"
@@ -263,7 +266,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_skill && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="skill">
-                    Skill
+                    Missing Skill
                     <span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
@@ -287,7 +290,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="tool">
-                    Missing Skill
+                    Missing Tool
                     <span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller

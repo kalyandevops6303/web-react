@@ -916,7 +916,7 @@ const FlexternSocial = () => {
                           render={({ field }) => (
                             <Input
                               {...field}
-                              placeholder="Enter description"
+                              placeholder="Website"
                               invalid={
                                 errors &&
                                 errors.otherSocialLinks &&
@@ -960,7 +960,7 @@ const FlexternSocial = () => {
                               render={({ field }) => (
                                 <Input
                                   {...field}
-                                  placeholder="Enter URL"
+                                  placeholder="Enter link"
                                   invalid={
                                     errors &&
                                     errors.otherSocialLinks &&
@@ -982,9 +982,9 @@ const FlexternSocial = () => {
                                 </FormFeedback>
                               )}
                           </div>
-                          <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
+                          {/* <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
                             Remove
-                          </Button>
+                          </Button> */}
                         </div>
                       </Col>
                     </Row>
@@ -1016,7 +1016,7 @@ const FlexternSocial = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div className="d-flex justify-content-end">
-                  <Button
+                  {/* <Button
                     color="primary"
                     outline
                     className="d-flex align-items-center justify-content-between me-2"
@@ -1024,7 +1024,7 @@ const FlexternSocial = () => {
                   >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button>
+                  </Button> */}
 
                   <Button
                     color="primary"
@@ -1045,7 +1045,7 @@ const FlexternSocial = () => {
             </Col>
 
             <Col xs="12" sm="12" lg="4">
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
                     Resume <span className="label-asterisk">*</span>
@@ -1053,7 +1053,7 @@ const FlexternSocial = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
-                  {/* IsresumeParsed ? resumeParsedLoading :  */}
+                  IsresumeParsed ? resumeParsedLoading : 
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
@@ -1121,7 +1121,7 @@ const FlexternSocial = () => {
                     <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
                   </div>
                 </CardBody>
-              </Card>
+              </Card> */}
 
               <Card>
                 <CardHeader>

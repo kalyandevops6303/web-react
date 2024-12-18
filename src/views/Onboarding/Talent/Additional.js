@@ -33,7 +33,7 @@ import {
   isFileValid,
   removeEmptyKeys,
   renderFilePreview,
-  renderFormattedListingDate,
+  renderListingDate,
   returnFilteredDropdownOptions,
   selectThemeColors,
   giveProgressBarColorClassName,
@@ -117,7 +117,7 @@ const Additional = () => {
   const AdditionalInformationSchema = yup.object().shape({
     gender: yup
       .string()
-      .oneOf(['MALE', 'FEMALE', 'OTHER'], 'Please select a valid gender')
+      .oneOf(['MALE', 'FEMALE', 'NON_BINARY', 'OTHER'], 'Please select a valid gender')
       .required('Gender is required'),
     country: yup
       .object()
@@ -521,7 +521,7 @@ const Additional = () => {
               </Col>
               <Col>
                 <h5 className="text-sm text-grey font-normal text-center">
-                  {renderFormattedListingDate(new Date(file.file.lastModified))}
+                  {renderListingDate(new Date(file.file.lastModified))}
                 </h5>
               </Col>
               <Button
@@ -958,6 +958,21 @@ const Additional = () => {
                               <Input
                                 type="radio"
                                 {...field}
+                                id="non-binary"
+                                value="NON_BINARY"
+                                checked={field.value === 'NON_BINARY'}
+                              />
+                              <Label htmlFor="female" className="form-check-label">
+                                Non-Binary
+                              </Label>
+                            </div>
+                            <div
+                              style={{ maxWidth: '350px' }}
+                              className="form-check form-check-inline checkbox-custom-margin"
+                            >
+                              <Input
+                                type="radio"
+                                {...field}
                                 id="other"
                                 value="OTHER"
                                 checked={field.value === 'OTHER'}
@@ -1075,7 +1090,7 @@ const Additional = () => {
                 </div>
                 <div className="d-flex justify-content-end">
                   {/* {flexternBoolean && trumioTalent ? ( */}
-                  <Button
+                  {/* <Button
                     color="primary"
                     outline
                     className="d-flex align-items-center justify-content-between me-2"
@@ -1083,7 +1098,7 @@ const Additional = () => {
                   >
                     <span className="me-50">Skip</span>
                     <ChevronRight size={14} />
-                  </Button>
+                  </Button> */}
                   {/* ) : null} */}
                   <Button
                     className="d-flex align-items-center justify-content-between"
@@ -1103,7 +1118,7 @@ const Additional = () => {
               </div>
             </Col>
             <Col xs="12" sm="12" lg="4">
-              <Card>
+              {/*<Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
                     Resume <span className="label-asterisk">*</span>
@@ -1111,7 +1126,7 @@ const Additional = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody style={{ paddingBottom: resumeFiles.length === 0 ? '0px' : '11px' }}>
-                  {/* IsresumeParsed ? resumeParsedLoading :  */}
+                  {/* IsresumeParsed ? resumeParsedLoading :  
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
@@ -1179,7 +1194,7 @@ const Additional = () => {
                     <Row>{resumeFiles && resumeFiles.length > 0 && <div>{fileResumeList()}</div>}</Row>
                   </div>
                 </CardBody>
-              </Card>
+              </Card></Form>*/}
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>
