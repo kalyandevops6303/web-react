@@ -28,8 +28,9 @@ export default function PeerFeedback() {
 
   const getTeam = useProjectsStore((state) => state.getPeerOrIndividualPerformanceDetails);
   const team = useProjectsStore((state) => state.performanceDetails);
-  const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
 
+  const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+  const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [filteredTeam, setFilteredTeam] = useState(team);
@@ -100,6 +101,7 @@ export default function PeerFeedback() {
 
   const handleCloseSuccessModal = () => {
     populateUserDetails(true);
+    getProjectDetails(params?.projectId as string);
     setShowSuccessModal(false);
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');

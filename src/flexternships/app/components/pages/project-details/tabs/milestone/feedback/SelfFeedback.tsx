@@ -11,6 +11,7 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import FunFacts from './FunFacts';
 import SucessModal from './modals/SucessModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
 export default function SelfFeedback() {
   const params = useParams();
@@ -18,6 +19,7 @@ export default function SelfFeedback() {
 
   const currentUserDetails = useFlexternUserStore((state) => state.userDetails);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
+  const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
   const getSelfFeedbackForm = useFeedbackStore((state) => state.getMilestoneFeedbackForm);
   const selfFeedbackForm = useFeedbackStore((state) => state.feedbackForm);
@@ -50,6 +52,7 @@ export default function SelfFeedback() {
 
   const handleCloseSuccessModal = () => {
     populateUserDetails(true);
+    getProjectDetails(params?.projectId as string);
     setShowSuccessModal(false);
     navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
