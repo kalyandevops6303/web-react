@@ -99,8 +99,8 @@ export default function PeerFeedback() {
   };
 
   const handleCloseSuccessModal = () => {
+    populateUserDetails(true);
     setShowSuccessModal(false);
-    populateUserDetails();
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
   };

@@ -100,7 +100,7 @@ export default function IndividualFeedback() {
     setShowSuccessModal(false);
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
-    populateUserDetails();
+    populateUserDetails(true);
   };
 
   const handleActiveMemberChange = (userId: any) => {
