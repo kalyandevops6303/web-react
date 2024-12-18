@@ -7,7 +7,12 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 import { Paperclip, User } from 'react-feather';
-import { ProjectPrimaryStatus, ProjectSecondaryStatus, UserType } from '@/flexternships/constraints/enums/core-enums';
+import {
+  ProjectPrimaryStatus,
+  ProjectSecondaryStatus,
+  ToastType,
+  UserType,
+} from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
 import {
   ProjectPanelCaptionDate1,
@@ -17,7 +22,6 @@ import {
   ProjectPanelIcon2Classnames,
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
-import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
@@ -31,9 +35,9 @@ import {
   getProjectPanelDate2Icon,
   getProjectPanelDate2Values,
 } from './leftSidebarProjectPanel/ProjectData';
-import toast from 'react-hot-toast';
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
 import RelistModal from '../../core/modals/RelistModal';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -43,19 +47,16 @@ enum UserTypeChipClassnames {
 const LeftSideBarProjectDetails = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const { projectId, milestoneId } = params;
+  const { projectId } = params;
 
   const data = useProjectsStore((state) => state.projectDetails);
   // const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
   const setWithdrawProject = useProjectsStore((state) => state.setWithdrawProject);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
-  const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
   const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
   const [showRelistModal, setShowRelistModal] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
-  const [isBlocked, setIsBlocked] = useState(true);
 
   const handleToggle = () => {
     setShowMore((prev) => !prev);
@@ -90,16 +91,8 @@ const LeftSideBarProjectDetails = () => {
       setTagsData(tags);
       setSecondaryStatus(() => data?.secondaryStatus?.next);
     }
-
-    if (projectId && isEmpty(milestoneId)) {
-      populateProjectMilestones(projectId);
-    }
   }, [data]);
 
-  useEffect(() => {
-    // TODO: Incorrect usage of projectMilestones here. Use blocked status of project instead.
-    setIsBlocked(projectMilestones?.reduce((acc, milestone) => acc || milestone.isBlocked, false));
-  }, [projectMilestones]);
   return (
     <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 md:w-[350px] h-fit rounded-xl w-[400px]">
       <div className="flex flex-row items-center w-full justify-between">
@@ -193,10 +186,10 @@ const LeftSideBarProjectDetails = () => {
               if (data?.details?.documents?.length > 0) {
                 setDocumentsModal(true);
               } else {
-                toast.error('No documents available for this project');
+                showToastMessage(ToastType.ERROR, 'No documents found');
               }
             }}
-            className="flex flex-row items-center gap-1"
+            className="flex flex-row items-center gap-1 cursor-pointer"
           >
             <Paperclip size={14} />
             <h1 className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
@@ -244,7 +237,6 @@ const LeftSideBarProjectDetails = () => {
         <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
-              disabled={isBlocked}
               onClick={handleWithdrawProject}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
             >
@@ -256,7 +248,7 @@ const LeftSideBarProjectDetails = () => {
               data?.status === ProjectPrimaryStatus.ON_GOING ||
               data?.status === ProjectPrimaryStatus.BLOCKED) && (
               <PrimaryButton
-                disabled={isBlocked}
+                disabled={data?.status === ProjectPrimaryStatus.BLOCKED)}
                 onClick={handleTerminateProject}
                 className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
               >
@@ -279,7 +271,6 @@ const LeftSideBarProjectDetails = () => {
           )}
           {/* {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
             <PrimaryButton
-              disabled={isBlocked}
               onClick={() => {}}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
             >
@@ -288,7 +279,6 @@ const LeftSideBarProjectDetails = () => {
           )} */}
           {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.WITHDRAWN && (
             <PrimaryButton
-              disabled={isBlocked}
               onClick={handleRelist}
               className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
             >

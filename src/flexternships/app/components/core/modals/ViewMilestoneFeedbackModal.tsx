@@ -3,6 +3,7 @@ import MilestoneFeedback from '@/flexternships/app/project-details/tabs/performa
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
 import { X } from 'react-feather';
+import SecondaryButton from '../buttons/SecondaryButton';
 
 export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackModalProps) {
   const { feedbackType, milestoneId, isOpen, closeModal } = props;
@@ -13,7 +14,7 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-10 w-[1038px] relative">
+      <div className="bg-[#FAFAFA] rounded-lg p-10 w-[1038px] relative">
         <div
           className="absolute -top-2 -right-2 bg-white rounded-md p-2 shadow-table cursor-pointer"
           onClick={closeModal}
@@ -30,6 +31,11 @@ export default function ViewMilestoneFeedbackModal(props: ViewMilestoneFeedbackM
           ) : (
             <IndividualFeedback feedbackType={feedbackType} milestoneId={milestoneId} />
           )}
+        </div>
+        <div className="flex justify-end  w-full h-full mt-10">
+          <SecondaryButton className="w-[100px]" onClick={closeModal}>
+            Close
+          </SecondaryButton>
         </div>
       </div>
     </div>

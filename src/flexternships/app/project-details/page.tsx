@@ -4,27 +4,56 @@ import LeftSideBarProjectDetails from '../components/pages/project-details/LeftS
 import { useEffect } from 'react';
 import MilestoneTab from '../components/pages/project-details/tabs/milestone';
 import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
-import { Params, useParams } from 'react-router-dom';
+import { Params, useNavigate, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ProjectsTab from './tabs/projects/page';
 import TeamTab from '../components/pages/project-details/tabs/team';
 import PerformanceTab from './tabs/performance/page';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import Spinner from '../components/core/Spinner';
-
+import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { isEmpty } from 'lodash';
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectLoading = useProjectsStore((state) => state.isProjectsLoading);
+
   const params: Readonly<Params<string>> = useParams();
+  const navigate = useNavigate();
+
+  const redirectUserAsPerSecondaryStatus = (status: ProjectSecondaryStatus) => {
+    if (!isEmpty(params.milestoneId)) return;
+    if (!params?.projectId) throw new Error('Project ID is mandatory to view the project details');
+    switch (status) {
+      case ProjectSecondaryStatus.MILESTONE:
+        navigate(`/project-details/${params.projectId}/milestone`);
+        break;
+      case ProjectSecondaryStatus.SIGN_CONTRACT:
+        navigate(`/project-details/${params.projectId}/doc/contract`);
+        break;
+      case ProjectSecondaryStatus.SIGN_NDA:
+        navigate(`/project-details/${params.projectId}/doc/nda`);
+        break;
+      case ProjectSecondaryStatus.SIGN_DOCUMENTS:
+        navigate(`/project-details/${params.projectId}/projects`);
+        break;
+      default:
+        navigate(`/project-details/${params.projectId}/team`);
+        break;
+    }
+  };
 
   useEffect(() => {
-    if (params?.projectId) {
-      getProjectDetails(params?.projectId);
-    }
-  }, [params?.projectId]);
+    const populateProjectDetails = async () => {
+      if (!params.projectId) throw new Error('Project ID is mandatory to view the project details');
+      if (projectDetails.id !== params.projectId) {
+        await getProjectDetails(params.projectId, redirectUserAsPerSecondaryStatus);
+      }
+    };
+    populateProjectDetails();
+  }, [params.projectId, projectDetails.id]);
 
   const tabs = [
     {
@@ -103,9 +132,9 @@ export default function FlexternshipProjectDetails() {
           <Spinner />
         </div>
       ) : (
-        <div className=" w-full mt-5 flex flex-row items-start justify-start gap-5">
+        <div className="w-full mt-5 flex flex-row items-start justify-start gap-5">
           {!projectLoading ? <LeftSideBarProjectDetails /> : <div className="w-full md:w-[350px] h-fit"></div>}
-          <div className="flex flex-col flex-grow items-start gap-5">
+          <div className="flex flex-col w-[calc(100%-370px)] items-start gap-5">
             <ProjectDetailsTabNavigation tabs={tabs} />
           </div>
         </div>

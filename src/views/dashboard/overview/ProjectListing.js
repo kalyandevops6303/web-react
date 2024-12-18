@@ -253,7 +253,6 @@ const ProjectListing = () => {
       dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
     }
   }, [userDetailsData?.user_type]);
-
   const onViewAllClick = (e, path) => {
     e.stopPropagation();
     navigate(path);

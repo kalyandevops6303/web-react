@@ -720,7 +720,7 @@ const FlexternEducational = () => {
   const setResumeParsedDetails = (res) => {
     if (res) {
       // Handle educational institutes from resume parsing
-      if (res?.educational_institute?.length > 0) {
+      if (res?.educational_institute?.length > 0 && res?.educational_institute) {
         // Set primary education (first entry)
         if (userData?.talent_info?.educational_institute?.start_year) {
           setValue(
@@ -821,27 +821,26 @@ const FlexternEducational = () => {
           );
         }
       } else if (res?.educational_institute?.length === 0) {
-        setValue(
-          'institution',
-          userData?.talent_info?.educational_institute?.institution
-            ? {
-                label: userData?.talent_info?.educational_institute?.institution?.name,
-                value: userData?.talent_info?.educational_institute?.institution?._id,
-              }
-            : null,
-          { shouldValidate: true },
-        );
-
-        setValue(
-          'education',
-          userData?.talent_info?.educational_institute?.education
-            ? {
-                label: userData?.talent_info?.educational_institute?.education?.name,
-                value: userData?.talent_info?.educational_institute?.education?._id,
-              }
-            : null,
-          { shouldValidate: true },
-        );
+        if (userData?.talent_info?.educational_institute?.institution) {
+          setValue(
+            'institution',
+            {
+              label: userData?.talent_info?.educational_institute?.institution?.name,
+              value: userData?.talent_info?.educational_institute?.institution?._id,
+            },
+            { shouldValidate: true },
+          );
+        }
+        if (userData?.talent_info?.educational_institute?.education) {
+          setValue(
+            'education',
+            {
+              label: userData?.talent_info?.educational_institute?.education?.name,
+              value: userData?.talent_info?.educational_institute?.education?._id,
+            },
+            { shouldValidate: true },
+          );
+        }
 
         setValue(
           'institutionEmail',
@@ -849,17 +848,18 @@ const FlexternEducational = () => {
             ? userData?.talent_info?.educational_institute?.institute_email
             : null,
         );
-
-        setValue(
-          'startYear',
-          userData?.talent_info?.educational_institute?.start_year
-            ? {
-                label: userData?.talent_info?.educational_institute?.start_year,
-                value: userData?.talent_info?.educational_institute?.start_year,
-              }
-            : null,
-          { shouldValidate: true },
-        );
+        if (userData?.talent_info?.educational_institute?.start_year > 0) {
+          setValue(
+            'startYear',
+            userData?.talent_info?.educational_institute?.start_year
+              ? {
+                  label: userData?.talent_info?.educational_institute?.start_year,
+                  value: userData?.talent_info?.educational_institute?.start_year,
+                }
+              : null,
+            { shouldValidate: true },
+          );
+        }
 
         setValue(
           'graduationYear',
@@ -871,20 +871,24 @@ const FlexternEducational = () => {
             : null,
           { shouldValidate: true },
         );
-
-        setValue(
-          'otherEducationDetails',
-          userData?.talent_info?.other_educational_institutes
-            ? userData?.talent_info?.other_educational_institutes?.map((detail) => ({
-                educationInstitution: {
-                  label: detail.institution.name,
-                  value: detail.institution._id,
-                },
-                education: { label: detail.education.name, value: detail.education._id },
-              }))
-            : null,
-          { shouldValidate: true },
-        );
+        if (
+          userData?.talent_info?.other_educational_institutes &&
+          userData?.talent_info?.other_educational_institutes?.length > 0
+        ) {
+          setValue(
+            'otherEducationDetails',
+            userData?.talent_info?.other_educational_institutes
+              ? userData?.talent_info?.other_educational_institutes?.map((detail) => ({
+                  educationInstitution: {
+                    label: detail.institution.name,
+                    value: detail.institution._id,
+                  },
+                  education: { label: detail.education.name, value: detail.education._id },
+                }))
+              : null,
+            { shouldValidate: true },
+          );
+        }
       }
 
       // Handle tools
@@ -895,6 +899,16 @@ const FlexternEducational = () => {
             label: tool.name,
             value: tool._id,
           })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'tools',
+          savedFormData?.tools ||
+            userData?.talent_info?.expertise?.tools?.map((tool) => ({
+              label: tool.name,
+              value: tool._id,
+            })),
           { shouldValidate: true },
         );
       }
@@ -919,6 +933,16 @@ const FlexternEducational = () => {
             label: skill.name,
             value: skill._id,
           })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue(
+          'skills',
+          savedFormData?.skills ||
+            userData?.talent_info?.expertise?.skills?.map((skill) => ({
+              label: skill.name,
+              value: skill._id,
+            })),
           { shouldValidate: true },
         );
       }

@@ -3,8 +3,6 @@ import { getUserDetails } from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
 import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
 import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 // Flextern User Actions
 export const populateUserDetails = async (force: boolean, get: any, set: any) => {
@@ -49,16 +47,7 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
       },
     });
   } catch (error) {
-    const toastId = uuidv4();
-    showToastMessage(
-      ToastType.ERROR,
-      <Toast
-        type={ToastType.ERROR}
-        toastId={toastId}
-        description="An unexpected error occurred while fetching user details"
-      />,
-      toastId,
-    );
+    showToastMessage(ToastType.ERROR, 'An unexpected error occurred while fetching user details');
   }
   set({ isUserDetailsLoading: false });
 };
@@ -69,7 +58,7 @@ export const openModal = (
   set: any,
   modalActions?: GlobalModalActions,
   modalContent?: Partial<GlobalModalContent>,
-  metadata?: Record<string, string>,
+  metadata?: { nextPath?: string } & Record<string, string>,
 ) => {
   set((state: AppState) => ({
     ...state,

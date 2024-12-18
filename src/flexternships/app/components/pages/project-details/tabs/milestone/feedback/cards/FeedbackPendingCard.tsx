@@ -17,7 +17,16 @@ const css = {
 };
 
 export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
-  const { feedbackType, daysLeft, numberOfQuestions, timeToComplete, projectId, milestoneId, tiny = false } = props;
+  const {
+    feedbackType,
+    daysLeft,
+    numberOfQuestions,
+    timeToComplete,
+    projectId,
+    milestoneId,
+    tiny = false,
+    className,
+  } = props;
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
@@ -29,7 +38,7 @@ export default function FeedbackPendingCard(props: FeedbackPendingCardProps) {
 
   return (
     <div
-      className={`${
+      className={` ${className ?? ''} ${
         tiny ? 'px-4 py-3 -mt-4 pt-7' : 'p-4'
       } flex flex-row items-center justify-between bg-opacity-[0.12] rounded-lg ${tiny && 'w-6/12'} ${
         css.theme[feedbackType]
@@ -87,4 +96,5 @@ type FeedbackPendingCardProps = {
   milestoneId: string;
   daysLeft?: number;
   tiny?: boolean;
+  className?: string;
 };

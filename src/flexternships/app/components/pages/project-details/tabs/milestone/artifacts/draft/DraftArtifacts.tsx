@@ -38,8 +38,6 @@ import DraftSavedModal from '@/flexternships/app/components/core/modals/mileston
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
@@ -55,9 +53,11 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
+  const getCurrentNextPath = useAppStore((state) => state.getCurrentNextPath);
 
-  const [saveDraftLoading, setSaveDraftLoading] = useState(false);
-  const [submitDraftLoading, setSubmitDraftLoading] = useState(false);
+  const [saveDraftLoading, setSaveDraftLoading] = useState<boolean>(false);
+  const [submitDraftLoading, setSubmitDraftLoading] = useState<boolean>(false);
+  const [onSaveNextPath, setOnSaveNextPath] = useState<string | undefined>(undefined);
 
   const {
     control,
@@ -91,6 +91,9 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
     setWip(saveForLaterModalContent, {
       onConfirm: async () => {
+        if (getCurrentNextPath()) {
+          setOnSaveNextPath(getCurrentNextPath());
+        }
         await saveAsDraft();
         closeGlobalModal();
       },
@@ -149,19 +152,9 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
         await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          const toastId = uuidv4();
-          showToastMessage(
-            ToastType.ERROR,
-            <Toast type={ToastType.ERROR} toastId={toastId} description={error.message} />,
-            toastId,
-          );
+          showToastMessage(ToastType.ERROR, error.message);
         } else {
-          const toastId = uuidv4();
-          showToastMessage(
-            ToastType.ERROR,
-            <Toast type={ToastType.ERROR} toastId={toastId} description="An unexpected error occurred" />,
-            toastId,
-          );
+          showToastMessage(ToastType.ERROR, 'An unexpected error occurred');
         }
       } finally {
         setSaveDraftLoading(false);
@@ -179,19 +172,9 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
         openModal(MilestoneDetailsModalType.ARTIFCATS_SUBMITTED);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          const toastId = uuidv4();
-          showToastMessage(
-            ToastType.ERROR,
-            <Toast type={ToastType.ERROR} toastId={toastId} description={error.message} />,
-            toastId,
-          );
+          showToastMessage(ToastType.ERROR, error.message);
         } else {
-          const toastId = uuidv4();
-          showToastMessage(
-            ToastType.ERROR,
-            <Toast type={ToastType.ERROR} toastId={toastId} description="An unexpected error occurred" />,
-            toastId,
-          );
+          showToastMessage(ToastType.ERROR, 'An unexpected error occurred');
         }
       } finally {
         setSubmitDraftLoading(false);
@@ -325,41 +308,43 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
 
   return (
     <div className="flex flex-col gap-y-4 border-t-[1px] border-solid border-grey-border pt-7">
-      <h2 className="text-lg font-normal not-italic text-grey-heading">Saved Drafts</h2>
+      <h2 className="text-lg font-medium not-italic text-grey-heading">Saved Drafts</h2>
 
       {!isEmpty(fields) && (
-        <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
-          <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
-              File Name
+        <div className="overflow-x-auto">
+          <div className="shadow-table border-1 border-solid border-grey-border bg-white rounded-md w-[976px]">
+            <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
+                File Name
+              </div>
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
+                Description
+              </div>
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
+                Uploaded On
+              </div>
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
+                Action
+              </div>
             </div>
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
-              Description
+            <div className="text-sm font-normal not-italic leading-5.5 text-grey">
+              {fields.map((field, index) => (
+                <DraftArtifactItem
+                  data={field}
+                  index={index}
+                  key={field.id}
+                  control={control}
+                  last={index === fields.length - 1}
+                  remove={remove}
+                  errors={errors.draftArtifacts?.[index] as FieldError}
+                  handleFileUpload={handleFileUpload}
+                  activeModal={activeModal}
+                  openRemoveArtifactModal={openRemoveArtifactModal}
+                  openArtifactRemovedModal={openArtifactRemovedModal}
+                  closeModal={closeModal}
+                />
+              ))}
             </div>
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
-              Uploaded On
-            </div>
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
-              Action
-            </div>
-          </div>
-          <div className="text-sm font-normal not-italic leading-5.5 text-grey">
-            {fields.map((field, index) => (
-              <DraftArtifactItem
-                data={field}
-                index={index}
-                key={field.id}
-                control={control}
-                last={index === fields.length - 1}
-                remove={remove}
-                errors={errors.draftArtifacts?.[index] as FieldError}
-                handleFileUpload={handleFileUpload}
-                activeModal={activeModal}
-                openRemoveArtifactModal={openRemoveArtifactModal}
-                openArtifactRemovedModal={openArtifactRemovedModal}
-                closeModal={closeModal}
-              />
-            ))}
           </div>
         </div>
       )}
@@ -375,6 +360,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
       </div>
       <div className={`flex flex-row justify-end gap-x-4 mt-3`}>
         <SecondaryButton
+          className="m-0"
           onClick={saveAsDraft}
           loading={saveDraftLoading}
           disabled={isDisabled || (isEmpty(fields) && isEmpty(removedArtifactIds))}
@@ -382,6 +368,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           Save as Draft
         </SecondaryButton>
         <PrimaryButton
+          className="m-0"
           onClick={openConfirmArtifactsSubmissionModal}
           loading={submitDraftLoading}
           disabled={isDisabled || !isValid || (isEmpty(fields) && isEmpty(removedArtifactIds))}
@@ -419,6 +406,7 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           description={getMilestoneDetailsModalDescription(MilestoneDetailsModalType.ARTIFACTS_DRAFT_SAVED)}
           note={draftSavedModalNote}
           highlightText={draftSavedModalHighlightText}
+          nextPath={onSaveNextPath}
         />
       )}
       {activeModal && !isEmpty(modalMetadata) && (
@@ -429,9 +417,8 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
           }
           onClose={activeModal === MilestoneDetailsModalType.ARTIFACT_REMOVED ? closeWithRemove : closeModal}
           onConfirm={handleDeleteClick}
-          artifact={modalMetadata}
+          artifact={watch(`draftArtifacts.${modalMetadata.index}`)}
           title={getMilestoneDetailsModalTitle(activeModal)}
-          description={getMilestoneDetailsModalDescription(activeModal)}
           cancelCtaText={getMilestoneDetailsModalCancelCtaText(activeModal)}
           confirmCtaText={getMilestoneDetailsModalConfirmCtaText(activeModal)}
         />

@@ -349,11 +349,23 @@ const FlexternPersonal = () => {
     if (res) {
       if (res?.tagline && res?.tagline.length > 0) {
         setValue('tagline', res?.tagline, { shouldValidate: true });
+      } else {
+        setValue('tagline', savedFormData?.tagline ? savedFormData.tagline : userData?.talent_info?.tagline, {
+          shouldValidate: true,
+        });
       }
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
+      } else {
+        setValue(
+          'professionalIntroduction',
+          savedFormData?.professionalIntroduction || userData?.talent_info?.professional_intro,
+          {
+            shouldValidate: true,
+          },
+        );
       }
-      if (res?.role) {
+      if (res?.role && Object.keys(res?.role).length > 0) {
         setValue(
           'role',
           {
@@ -362,7 +374,7 @@ const FlexternPersonal = () => {
           },
           { shouldValidate: true },
         );
-      } else if (userData?.talent_info?.role) {
+      } else if (userData?.talent_info?.role && Object.keys(userData?.talent_info?.role).length > 0) {
         setValue(
           'role',
           {

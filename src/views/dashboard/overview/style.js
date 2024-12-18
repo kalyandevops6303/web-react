@@ -360,6 +360,7 @@ const ProjectWrapper = styled.div`
     font-size: 18px;
     font-weight: 400;
     height: 40px;
+    margin-top: 0.5rem;
   }
 
   .team-badge {
@@ -385,7 +386,7 @@ const ProjectWrapper = styled.div`
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
-    margin-bottom: -10px;
+    margin-bottom: 10px;
   }
 
   .active-project-milestone-name {

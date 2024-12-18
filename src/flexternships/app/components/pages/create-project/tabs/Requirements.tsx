@@ -22,8 +22,6 @@ import { verifyProjectName } from '@/flexternships/services/project-management-v
 import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 import { useAppStore } from '@/flexternships/stores/core-stores';
-import Toast from '../../../core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -88,20 +86,9 @@ export default function Requirements() {
     try {
       await saveAsDraft(projectId);
     } catch (error) {
-      const toastId = uuidv4();
-      showToastMessage(
-        ToastType.ERROR,
-        <Toast type={ToastType.ERROR} toastId={toastId} description="Failed to save draft. Please try again." />,
-        toastId,
-      );
+      showToastMessage(ToastType.ERROR, 'Failed to save draft. Please try again.');
     }
   };
-
-  useEffect(() => {
-    if (new Date().getTime() > watch('estimatedStartDate')) {
-      errors.estimatedStartDate = { type: 'manual', message: 'Please enter a valid start date' };
-    }
-  }, [watch('estimatedStartDate')]);
 
   // Watch for changes in estimatedDuration and estimatedWeeklyHours to autofill totalHours
   const estimatedDuration = watch('estimatedDuration');
@@ -119,7 +106,6 @@ export default function Requirements() {
     if (!isEmpty(requirementsData)) {
       reset({
         projectName: requirementsData.projectName,
-        estimatedStartDate: requirementsData.estimatedStartDate,
         estimatedDuration: requirementsData.estimatedDuration === 0 ? undefined : requirementsData.estimatedDuration,
         estimatedWeeklyHours:
           requirementsData.estimatedWeeklyHours === 0 ? undefined : requirementsData.estimatedWeeklyHours,
@@ -127,6 +113,9 @@ export default function Requirements() {
         projectDescription: requirementsData.projectDescription,
         documents: requirementsData.documents,
       });
+      if (requirementsData.estimatedStartDate) {
+        setValue('estimatedStartDate', requirementsData.estimatedStartDate, { shouldValidate: true });
+      }
     }
   }, [requirementsData, reset]);
 
@@ -139,6 +128,9 @@ export default function Requirements() {
       onCancel: unsetWip,
       onClose: closeGlobalModal,
     });
+    return () => {
+      unsetWip();
+    };
   }, []);
 
   return (

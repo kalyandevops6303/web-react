@@ -7,11 +7,12 @@ import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enu
 import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { ArrowLeft } from 'react-feather';
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
-import { keysToCamelCase } from '@/flexternships/utils/core-utils';
+import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-utils';
+import SucessModal from './modals/SucessModal';
 
 export default function PeerFeedback() {
   const params = useParams();
@@ -30,6 +31,12 @@ export default function PeerFeedback() {
   const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
 
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [filteredTeam, setFilteredTeam] = useState(team);
+
+  useEffect(() => {
+    setFilteredTeam(team?.filter((member: any) => member.is_document_signed));
+  }, [team]);
 
   useEffect(() => {
     getPeerFeedbackForm(params?.projectId, FeedbackTypesAPI.PEER);
@@ -38,9 +45,9 @@ export default function PeerFeedback() {
   }, [params]);
 
   useEffect(() => {
-    if (team) {
+    if (filteredTeam) {
       // Check for the first member without feedback
-      const firstMemberWithoutFeedback = team.find(
+      const firstMemberWithoutFeedback = filteredTeam.find(
         (member: { feedback_id: string | undefined }) => member.feedback_id === undefined,
       );
 
@@ -52,12 +59,12 @@ export default function PeerFeedback() {
         setActiveTeamMember(firstMemberWithoutFeedback);
       }
     }
-  }, [team, params, setActiveTeamMember, navigate]);
+  }, [filteredTeam, params, setActiveTeamMember, navigate]);
 
   useEffect(() => {
     if (activeTeamMember) {
       setFormattedTeamInfo(
-        team?.map((person: any) => {
+        filteredTeam?.map((person: any) => {
           return {
             image: person?.image_uri,
             name: `${person?.first_name} ${person?.last_name}`,
@@ -66,6 +73,7 @@ export default function PeerFeedback() {
             lastMessageTime: '3 min',
             isActive: activeTeamMember?.user_id == person?.user_id,
             userId: person?.user_id,
+            isDocumentsSigned: person?.is_document_signed,
           };
         }),
       );
@@ -86,13 +94,19 @@ export default function PeerFeedback() {
     };
 
     submitFeedback(submitFeedbackData, () => {
-      getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
-      populateUserDetails();
+      setShowSuccessModal(true);
     });
   };
 
+  const handleCloseSuccessModal = () => {
+    populateUserDetails(true);
+    setShowSuccessModal(false);
+    getTeam(params?.milestoneId as string, FeedbackTypesAPI.PEER);
+    showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
+  };
+
   const handleActiveMemberChange = (userId: any) => {
-    const activeMember = team?.find((member: any) => member.user_id === userId);
+    const activeMember = filteredTeam?.find((member: any) => member.user_id === userId);
     setActiveTeamMember(activeMember);
   };
 
@@ -131,6 +145,8 @@ export default function PeerFeedback() {
         </div>
         <FunFacts />
       </div>
+
+      {showSuccessModal && <SucessModal isOpen={showSuccessModal} onClose={handleCloseSuccessModal} />}
     </>
   );
 }

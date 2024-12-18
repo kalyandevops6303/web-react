@@ -2,6 +2,7 @@ import * as yup from 'yup';
 import { dateToEpoch, getTodayDate } from '@flexternships/utils/date-utils';
 import { MAX_FILE_SIZE_ERROR, MAX_FILE_SIZE_LIMIT } from '../lib/constants';
 import { getUserTimezone } from '../utils/core-utils';
+import { isEmpty } from 'lodash';
 
 export const allowedFormats = [
   'application/pdf',
@@ -18,7 +19,10 @@ export const ProjectDetailsSchema = yup.object().shape({
   estimatedStartDate: yup
     .number()
     .required('Estimated start date is required')
-    .min(dateToEpoch(getTodayDate(getUserTimezone())), 'Estimated start date cannot be in the past'), // Allow today
+    .test('not-in-past', 'Estimated start date cannot be in the past', function (value) {
+      if (!value) return true; // Skip validation if no value
+      return value >= dateToEpoch(getTodayDate(getUserTimezone()));
+    }),
   estimatedDuration: yup
     .number()
     .max(53, 'Estimated duration cannot exceed 53 weeks')
@@ -55,8 +59,11 @@ export const ProjectDetailsSchema = yup.object().shape({
         createdAt: yup.number().required('createdAt is required').integer('createdAt must be an integer'),
       }),
     )
-    .required(), // Validate each document as a URL
-  // .min(1, 'At least one document is required'), // Optional: ensure at least one document is provided
+    .required()
+    .test('no-in-progress-docs', 'File upload is still in progress', function (value) {
+      if (isEmpty(value) || !value) return true;
+      return !value.some((doc) => doc.fileKey === 'temp');
+    }), // Not to allow going forward if file upload is still in progress
 });
 
 // Form Schema for ProjectRoles

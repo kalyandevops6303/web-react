@@ -2,7 +2,7 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { Info, X } from 'react-feather';
 import toast from 'react-hot-toast';
 
-export default function Toast(props: ToastProps) {
+export default function CustomToast(props: ToastProps) {
   const { type, title, description, toastId } = props;
 
   const styles = {
@@ -12,7 +12,7 @@ export default function Toast(props: ToastProps) {
 
   return (
     <div
-      className={`rounded-[6px] border-l-[4px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.08)] flex w-[1393px] max-w-full p-4 items-center justify-between gap-6 flex gap-x-2 p-2 text-xs ${styles[type]}`}
+      className={`rounded-md border-l-4 shadow-[0px_2px_12px_0px_rgba(0,0,0,0.08)] w-[97vw] flex p-4 items-center justify-between gap-6 text-xs ${styles[type]}`}
     >
       <div className="flex items-center gap-2">
         <Info size={16} color={type === ToastType.SUCCESS ? '#004280' : '#FF0000'} />

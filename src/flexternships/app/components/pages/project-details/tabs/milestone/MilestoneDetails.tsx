@@ -8,7 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/flexternships/app/components/ui/accordion';
-import { GlobalModalType, MilestoneStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import {
+  GlobalModalType,
+  MilestoneFeedbackStatus,
+  MilestoneFeedbackType,
+  MilestoneStatus,
+  ToastType,
+  UserType,
+} from '@/flexternships/constraints/enums/core-enums';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useMilestoneArtifactsStore, useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { getMilestoneStatusTextByUserType, getUserTimezone, showToastMessage } from '@/flexternships/utils/core-utils';
@@ -37,8 +44,7 @@ import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/mis
 import CelebrationModal from '@/flexternships/app/components/core/modals/milestone/CelebrationModal';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
-import Toast from '@/flexternships/app/components/core/Toasts/Toast';
-import { v4 as uuidv4 } from 'uuid';
+import { MilestoneFeedback } from '@/flexternships/constraints/types/project-milestones-types';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -52,6 +58,11 @@ export default function MilestoneDetails() {
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
 
+  const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
+  const teamDetails = useProjectsStore((state) => state.teamDetails);
+
+  const [allowRecognition, setAllowRecognition] = useState(false);
+
   const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
 
   const isWorkInProgress = useAppStore((state) => state.isWip);
@@ -61,6 +72,17 @@ export default function MilestoneDetails() {
 
   const navigate = useNavigate();
   const { milestoneId } = useParams();
+  const { projectId } = useParams();
+
+  useEffect(() => {
+    populateTeamDetails(projectId);
+  }, [projectId]);
+
+  useEffect(() => {
+    setAllowRecognition(
+      teamDetails.filter((member) => member.id !== userDetails.id).some((member) => member.isDocumentsSigned),
+    );
+  }, [teamDetails]);
 
   useEffect(() => {
     const fetchMilestoneDetails = async () => {
@@ -68,16 +90,7 @@ export default function MilestoneDetails() {
       try {
         await populateMilestoneDetails(milestoneId);
       } catch (error: unknown) {
-        const toastId = uuidv4();
-        showToastMessage(
-          ToastType.ERROR,
-          <Toast
-            type={ToastType.ERROR}
-            toastId={toastId}
-            description={error instanceof Error ? error.message : 'Error fetching milestone details'}
-          />,
-          toastId,
-        );
+        showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Error fetching milestone details');
       }
     };
     fetchMilestoneDetails();
@@ -135,23 +148,15 @@ export default function MilestoneDetails() {
       openCelebrationModal();
       await populateMilestoneDetails(milestoneId);
     } catch (error: unknown) {
-      const toastId = uuidv4();
       showToastMessage(
         ToastType.ERROR,
-        <Toast
-          type={ToastType.ERROR}
-          toastId={toastId}
-          description={
-            error instanceof Error
-              ? error.message
-              : `Unexpected error while ${
-                  userDetails.userType === UserType.CLIENT
-                    ? 'accepting the milestone'
-                    : 'marking the milestone as completed'
-                }`
-          }
-        />,
-        toastId,
+        error instanceof Error
+          ? error.message
+          : `Unexpected error while ${
+              userDetails.userType === UserType.CLIENT
+                ? 'accepting the milestone'
+                : 'marking the milestone as completed'
+            }`,
       );
     } finally {
       setPrimaryActionLoading(false);
@@ -167,6 +172,14 @@ export default function MilestoneDetails() {
       </div>
     );
   }
+
+  const isFeedbackDisabled = (feedback: MilestoneFeedback) => {
+    return (
+      feedback.feedbackType === MilestoneFeedbackType.PEER_FEEDBACK &&
+      feedback.feedbackStatus === MilestoneFeedbackStatus.PENDING &&
+      teamDetails.filter((member) => member.id !== userDetails.id).every((member) => !member.isDocumentsSigned)
+    );
+  };
 
   const referenceDateForFeedback =
     userDetails.userType === UserType.CLIENT ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
@@ -265,15 +278,15 @@ export default function MilestoneDetails() {
         {userDetails.userType === UserType.TALENT && <DraftArtifacts isDisabled={areArtifactsDisabledForTalent} />}
       </SimpleElevatedCard>
       {!(userDetails.userType === UserType.TALENT && areArtifactsDisabledForTalent) && (
-        <SimpleElevatedCard className="overflow-hidden">
-          <Accordion type="single" collapsible defaultValue="submission-history" className="w-full">
+        <SimpleElevatedCard>
+          <Accordion type="single" collapsible defaultValue="submission-history">
             <AccordionItem value="submission-history" className="border-none bg-white-fa py-6 px-8">
               <AccordionTrigger className="hover:no-underline p-0">
                 <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
               </AccordionTrigger>
-              <AccordionContent className="">
+              <AccordionContent>
                 {isEmpty(submittedArtifacts) ? (
-                  <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7">
+                  <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7 w-full overflow-hidden">
                     <img
                       src={noSubmissionsFoundGif}
                       alt="no-submissions-found"
@@ -284,20 +297,22 @@ export default function MilestoneDetails() {
                     </div>
                   </div>
                 ) : (
-                  <SubmittedArtifacts />
+                  <div className="w-full overflow-x-auto">
+                    <SubmittedArtifacts />
+                  </div>
                 )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
         </SimpleElevatedCard>
       )}
-      {
+      {allowRecognition && (
         <RecognitionCard
           isDisabled={!allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
           projectId={milestoneDetails.projectDetails.projectId}
           milestoneId={milestoneDetails.id}
         />
-      }
+      )}
       {!isEmpty(milestoneDetails) &&
         allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status) &&
         milestoneDetails.milestoneFeedbackDetails.map((feedback, index) => (
@@ -314,6 +329,7 @@ export default function MilestoneDetails() {
                 ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, milestoneDetails.maxFeedbackDueDays))
                 : undefined
             }
+            disabled={isFeedbackDisabled(feedback)}
           />
         ))}
       {activeModal && (

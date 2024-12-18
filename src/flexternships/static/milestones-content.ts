@@ -85,10 +85,6 @@ export function getMilestoneDetailsModalDescription(type: MilestoneDetailsModalT
       return 'You have successfully accepted the milestone.';
     case MilestoneDetailsModalType.MILESTONE_SUBMITTED:
       return 'You have successfully completed the milestone.';
-    case MilestoneDetailsModalType.CONFIRM_REMOVE_ARTIFACT:
-      return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-    case MilestoneDetailsModalType.ARTIFACT_REMOVED:
-      return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
     case MilestoneDetailsModalType.CONFIRM_ARTIFACTS_SUBMISSION:
       return 'Only after submission client will receive these files.';
     case MilestoneDetailsModalType.ARTIFCATS_SUBMITTED:

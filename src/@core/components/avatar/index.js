@@ -39,7 +39,6 @@ const Avatar = forwardRef((props, ref) => {
     });
     return results.join('');
   };
-
   return (
     <Tag
       className={classnames('avatar', {
@@ -50,7 +49,7 @@ const Avatar = forwardRef((props, ref) => {
       ref={ref}
       {...rest}
     >
-      {img === false || img === undefined ? (
+      {!img ? (
         <span
           className={classnames('avatar-content', {
             'position-relative': badgeUp,

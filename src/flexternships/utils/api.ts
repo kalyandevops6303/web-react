@@ -24,7 +24,7 @@ export const routes = {
       getProjectInvitationDetails: `${serviceUrls.projectManagementV2}/project/invitation-details`,
       getSelfOrTeamPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/overview`,
       getPeerOrIndividualPerformanceDetails: `${serviceUrls.projectManagementV2}/feedback/team/individual/overview`,
-
+      recallProjectById: `${serviceUrls.projectManagementV2}/project/recall`,
       terminateProject: `${serviceUrls.projectManagementV2}/project/terminate`,
       withdrawProject: `${serviceUrls.projectManagementV2}/project/withdraw`,
       relistProject: `${serviceUrls.projectManagementV2}/project/relist-date`,
@@ -94,6 +94,12 @@ export const routes = {
     },
     password: {
       changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
+    },
+  },
+  dashboardV2: {
+    clientDetails: {
+      getClientPublicDetails: `${serviceUrls.dashboardV2}/client/details`,
+      getClientCompletedProjects: `${serviceUrls.dashboardV2}/users/completed-projects`,
     },
   },
 };

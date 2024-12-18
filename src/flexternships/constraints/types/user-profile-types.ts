@@ -1,4 +1,6 @@
+import { ClientDelegateRole } from '../enums/profile-enums';
 import { City, CompanyIndustry, Country, State, Timezone } from './core-types';
+import { ProjectCreationFormData } from './project-creation-types';
 
 export type FlexternClientAccountDetails = {
   firstname: string;
@@ -61,3 +63,54 @@ export type FlexternUserProfileFormActions = {
 };
 
 export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserProfileFormActions;
+
+// Public Profile Types
+export type FlexternClientPublicProfileDetails = {
+  userId: string;
+  firstname: string;
+  lastname: string;
+  imageUri?: string;
+  title: string;
+  department: string;
+  completedProjectsCount: number;
+  openListingsCount: number;
+  companyDetails: {
+    companyLogo: string;
+    companyName: string;
+    companyTagline: string;
+  };
+  officeAddress: {
+    country: string;
+    state: string;
+    city: string;
+    streetAddress: string;
+    buildingNumber: string;
+    zipCode: string;
+  };
+  socialLinks: Array<{
+    platform: string;
+    url: string;
+  }>;
+  delegates: Array<{
+    firstname: string;
+    lastname: string;
+    imageUri: string;
+    delegateType: ClientDelegateRole | undefined;
+  }>;
+};
+
+export type FlexternClientProjectDetails = {
+  metadata: {
+    currentPage: number;
+    pageSize: number;
+    totalRecords: number;
+    hasNextPage: boolean;
+  };
+  projects: Array<
+    Partial<ProjectCreationFormData> & {
+      id: string;
+      isTeamMember?: boolean;
+      isStakeholder?: boolean;
+    }
+  >;
+};

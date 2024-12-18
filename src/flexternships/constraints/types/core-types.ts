@@ -112,7 +112,7 @@ export type GlobalModalContent = {
   description: string;
   confirmButtonText: string;
   cancelButtonText: string;
-  metadata?: Record<string, string>;
+  metadata?: { nextPath?: string } & Record<string, string>;
 };
 
 export type AppState = {
@@ -127,11 +127,12 @@ export type AppActions = {
     modalType: GlobalModalType,
     modalActions?: GlobalModalActions,
     modalContent?: Partial<GlobalModalContent>,
-    metadata?: Record<string, string>,
+    metadata?: { nextPath?: string } & Record<string, string>,
   ) => void;
   closeModal: () => void;
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
   unsetWip: () => void;
+  getCurrentNextPath: () => string | undefined;
   resetStore: () => void;
 };
 

@@ -21,7 +21,7 @@
   min-height: $navbar-height;
   font-family: $font-family-monospace;
   transition: 500ms ease all, background 0s;
-  z-index: 997;
+  z-index: 50;
 
   &.fixed-top,
   &.floating-nav {

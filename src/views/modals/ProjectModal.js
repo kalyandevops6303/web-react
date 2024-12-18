@@ -122,7 +122,6 @@ const ProjectModal = ({
   const location = useLocation();
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
   const milestoneDetails = useProjectMilestonesStore((state) => state.projectMilestones);
-  console.log('milestoneDetails', milestoneDetails);
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);

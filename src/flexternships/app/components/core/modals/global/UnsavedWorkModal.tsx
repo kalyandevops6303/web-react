@@ -12,6 +12,7 @@ export default function UnsavedWorkModal() {
   const modal = useAppStore((state) => state.modal);
   const modalContent = useAppStore((state) => state.modalContent);
   const modalActions = useAppStore((state) => state.modalActions);
+  const unsetWip = useAppStore((state) => state.unsetWip);
 
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
@@ -23,6 +24,7 @@ export default function UnsavedWorkModal() {
     setIsConfirmLoading(true);
     try {
       await modalActions.onConfirm();
+      unsetWip();
     } finally {
       setIsConfirmLoading(false);
     }
@@ -49,7 +51,7 @@ export default function UnsavedWorkModal() {
             )}
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <SecondaryButton className="m-0" onClick={handleCancel} cancel>
+            <SecondaryButton className="m-0 outline-none" onClick={handleCancel} cancel>
               {modalContent.cancelButtonText}
             </SecondaryButton>
             <PrimaryButton className="m-0" onClick={handleConfirm} loading={isConfirmLoading}>

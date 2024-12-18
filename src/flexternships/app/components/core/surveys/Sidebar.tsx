@@ -1,11 +1,18 @@
 import { Check, User } from 'react-feather';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { useEffect, useState } from 'react';
 
 const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => void }) => {
+  const [filteredData, setFilteredData] = useState(data);
+
+  useEffect(() => {
+    setFilteredData(data.filter((item: any) => item?.isDocumentsSigned));
+  }, [data]);
+
   return (
     <div className="flex flex-col items-center gap-4 justify-center">
-      {data.map((item: any, index: number) => {
+      {filteredData.map((item: any, index: number) => {
         return (
           <div
             key={index}

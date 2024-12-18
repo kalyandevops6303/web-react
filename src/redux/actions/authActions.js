@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
-import { logout as logoutZustand } from '@flexternships/utils/core-utils';
+import { logout as logoutZustand, showToastMessage } from '@flexternships/utils/core-utils';
 import errorHandler from '../../utility/errorHandler';
 
 import {
@@ -22,6 +22,7 @@ import {
   checkRequestValidation,
   getFlexternVariablesService,
   getAppPermissionService,
+  logoutUserService,
 } from '../../services/authServices';
 
 import {
@@ -86,9 +87,10 @@ import {
   setTalentBooleansFlextern,
   setTalentBooleanIsFlextern,
   setUserLoginAttemptNo,
+  logoutRequest,
+  logoutFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
-import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
@@ -105,6 +107,7 @@ import { getItemFromSession, removeItemFromSession, setItemFromSession } from '.
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
 import { setCookiesItem } from '@/utility/cookiesControl';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -165,7 +168,6 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     if (error?.response?.data?.errorData?.errorCode === 403) {
       const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
       dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
-      // ShowToastMessage(ERROR,error?.response?.data?.errorData?.message.match(/'([^']+)'/)[1])
       dispatch(loginFailure());
     } else {
       errorHandler(error, loginFailure);
@@ -365,7 +367,7 @@ const setNewPassword = (newPassword) => async (dispatch) => {
   try {
     await setNewPasswordService(newPassword);
     dispatch(setNewPasswordSuccess());
-    ShowToastMessage(SUCCESS, 'Password has been updated');
+    showToastMessage(ToastType.SUCCESS, 'Password has been updated');
   } catch (error) {
     errorHandler(error, setNewPasswordFailure);
   }
@@ -377,15 +379,28 @@ const logoutAction =
     if (fcmToken) {
       dispatch(fcmUnsubscribeNotification(fcmToken));
     }
+
     // Zustand Logout
-    logoutZustand();
-    dispatch(logOut());
-    dispatch(clearTeams());
-    dispatch(clearTeamCardData());
-    dispatch(clearProjectCardData());
-    dispatch(clearMarketplaceCardData());
-    dispatch(clearNotificationsData());
-    onSuccess();
+    dispatch(logoutRequest());
+
+    try {
+      const res = await logoutUserService();
+
+      logoutZustand();
+      dispatch(logOut());
+      dispatch(clearTeams());
+      dispatch(clearTeamCardData());
+      dispatch(clearProjectCardData());
+      dispatch(clearMarketplaceCardData());
+      dispatch(clearNotificationsData());
+      onSuccess();
+      showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+    } catch (error) {
+      if (error?.response?.data?.errorData?.errorCode === 403) {
+        showToastMessage(ToastType.ERROR, error?.response?.data?.errorData?.message);
+      }
+      errorHandler(error, logoutFailure);
+    }
   };
 
 const setUserType = (type) => async (dispatch) => {
@@ -398,7 +413,7 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
     await resetPasswordService(data);
     dispatch(resetPasswordSuccess());
     onSuccess();
-    ShowToastMessage(SUCCESS, 'Password has been updated');
+    showToastMessage(ToastType.SUCCESS, 'Password has been updated');
   } catch (error) {
     errorHandler(error, resetPasswordFailure);
   }

@@ -316,7 +316,6 @@ const Account = () => {
         // }
         // commmenting this out for now if it's required for future implementation
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
-        dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else {
         dispatch(saveClientAccountDetails(reqData, onSuccess));
       }

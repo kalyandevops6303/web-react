@@ -60,6 +60,21 @@ const authSlice = createSlice({
       authData: null,
     }),
 
+    logoutRequest: (state) => ({
+      ...state,
+      loading: true,
+      error: null,
+    }),
+    logoutSuccess: (state) => ({
+      ...state,
+      loading: false,
+      error: false,
+    }),
+    logoutFailure: (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.payload,
+    }),
     // resend otp
     resendRequest: (state) => ({
       ...state,
@@ -504,6 +519,9 @@ export const {
   setFlexternshipInviteType,
   setUserLoginAttemptNo,
   clearPhoneData,
+  logoutRequest,
+  logoutSuccess,
+  logoutFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;
