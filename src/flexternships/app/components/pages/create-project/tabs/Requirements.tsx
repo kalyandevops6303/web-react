@@ -21,7 +21,7 @@ import { useParams } from 'react-router-dom';
 import { verifyProjectName } from '@/flexternships/services/project-management-v2';
 import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
-import { useAppStore } from '@/flexternships/stores/core-stores';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function Requirements() {
   const requirementsData = useProjectCreationStore((state) => state.data.requirements);
@@ -29,6 +29,8 @@ export default function Requirements() {
   const updateRequirementsData = useProjectCreationStore((state) => state.updateRequirementsData);
   const nextTab = useProjectCreationStore((state) => state.nextTab);
   const saveAsDraft = useProjectCreationStore((state) => state.saveDraft);
+
+  const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
 
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
@@ -120,6 +122,8 @@ export default function Requirements() {
   }, [requirementsData, reset]);
 
   useEffect(() => {
+    // Don't set wip if user is blocked
+    if (isUserBlocked) return;
     setWip(saveForLaterModalContent, {
       onConfirm: async () => {
         await onSaveDraft();
