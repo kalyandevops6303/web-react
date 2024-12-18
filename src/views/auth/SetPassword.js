@@ -26,7 +26,6 @@ import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
-import { create } from 'lodash';
 
 const SetPassword = () => {
   const dispatch = useDispatch();
