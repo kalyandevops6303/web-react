@@ -165,7 +165,14 @@ const RegisterFlextern = () => {
     const queryParams = new URLSearchParams(location.search);
     const requestToken = queryParams.get('invitation_token');
     if (requestToken) {
-      dispatch(validateRequestFlexTernToken({ requestToken }));
+      dispatch(
+        validateRequestFlexTernToken({
+          requestToken,
+          onRegisetered: () => {
+            navigate('/auth/login');
+          },
+        }),
+      );
     }
   }, [emailData]);
 

@@ -502,13 +502,19 @@ const checkIsAdmin = (teamId) => async (dispatch) => {
 };
 
 const validateRequestFlexTernToken =
-  ({ requestToken }) =>
+  ({ requestToken, onRegisetered }) =>
   async (dispatch) => {
     dispatch(verifyRequestInvitationFlexternToken());
     try {
       const res = await checkRequestValidation(requestToken);
       dispatch(verifyRequestInvitationFlexternTokenSuccess(res.data?.data?.email_invited));
       dispatch(setFlexternshipInviteType(res.data?.data?.user_type));
+
+      if (res.data?.data?.user_status === 'REGISTERED') {
+        if (onRegisetered) {
+          onRegisetered();
+        }
+      }
     } catch (error) {
       errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
     }
