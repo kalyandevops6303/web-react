@@ -168,7 +168,7 @@ const RegisterFlextern = () => {
       dispatch(
         validateRequestFlexTernToken({
           requestToken,
-          onRegisetered: () => {
+          onRegistered: () => {
             navigate('/auth/login');
           },
         }),
