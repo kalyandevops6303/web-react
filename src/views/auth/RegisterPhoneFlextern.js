@@ -159,12 +159,12 @@ const RegisterPhoneFlextern = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          {isDelegate ? 'Delegate sign up' : 'Sign up! 🔐'}
+          {isDelegate ? 'Delegate sign up' : 'Verify Your Mobile 🔐'}
         </CardTitle>
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
             <Label className="form-label" for="login-email">
-              Mobile number
+              Mobile number<span style={{ color: `${theme.red}` }}>*</span>
             </Label>
             <div className="d-flex">
               <div>
@@ -242,14 +242,14 @@ const RegisterPhoneFlextern = () => {
             </>
           )}
         </Form>
-        <div className="d-flex justify-content-center sign-info">
+        {/* <div className="d-flex justify-content-center sign-info">
           <Label>
             <small>Already have an account?</small>
           </Label>
           <Label tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
-        </div>
+        </div> */}
       </div>
     </OnBoardWrap>
   );
