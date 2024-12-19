@@ -8,6 +8,8 @@ export type TeamMemberDetails = {
   id: string;
   name?: string;
   profileImage?: string;
+  email?: string;
+  invitedOn?: number;
   designation?: string;
   averageRating?: number;
   ratingText?: string;
@@ -186,7 +188,7 @@ export type ProjectDetailsActions = {
     projectId: string,
     onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
   ) => Promise<void>;
-  populateTeamDetails: (projectId?: string) => Promise<void>;
+  populateTeamDetails: (projectId: string) => Promise<void>;
   resetStore: () => void;
   getProjectInvitationDetails: (projectId: string) => Promise<void>;
   getSelfOrTeamPerformanceDetails: (projectId: string, feedbackType: string) => Promise<void>;
