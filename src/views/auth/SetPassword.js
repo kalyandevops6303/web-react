@@ -39,7 +39,7 @@ const SetPassword = () => {
     if (isFlextern && isPasswordSet) {
       ShowToastMessage(SUCCESS, 'Account created successfully. Please login again to start onboarding process.');
       setTimeout(() => {
-        navigate('/auth/login');
+        navigate('/auth/login', { state: { createdAccount: true } });
       }, 6000);
     } else if (isPasswordSet && !isFlextern) {
       navigate('/auth/register-phone');
@@ -103,14 +103,14 @@ const SetPassword = () => {
           <div className="mb-2">
             <Label className="form-label d-flex justify-content-between" for="login-email">
               Password
-              <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
+              {/* <Info size={16} color={theme.infoIcon} id="info" className="ms-25" /> */}
             </Label>
-            <UncontrolledTooltip placement="right" target="info">
+            {/* <UncontrolledTooltip placement="right" target="info">
               <p className="m-0 text-start">
                 Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one
                 special case character
               </p>
-            </UncontrolledTooltip>
+            </UncontrolledTooltip> */}
             <Controller
               className="input-group-merge"
               id="newPassword"
@@ -156,24 +156,33 @@ const SetPassword = () => {
               )}
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
-            <p className="text-success text-xs mt-2">
-              {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
+            <p className={`text-xs mt-2 ${cnfPassword === newPassword ? 'text-success' : 'text-danger'}`}>
+              {cnfPassword && newPassword
+                ? cnfPassword === newPassword
+                  ? 'Passwords Match'
+                  : 'Passwords Do Not Match'
+                : ''}
             </p>
           </div>
 
-          <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
+          <Button
+            color="primary"
+            block
+            type="submit"
+            disabled={!newPassword || !cnfPassword || isLoading || newPassword !== cnfPassword}
+          >
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
           </Button>
         </Form>
 
-        <div className="d-flex justify-content-center sign-info">
+        {/* <div className="d-flex justify-content-center sign-info">
           <Label>
             <small>Already have an account?</small>
           </Label>
           <Label tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
-        </div>
+        </div> */}
       </div>
     </OnBoardWrap>
   );

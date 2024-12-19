@@ -8,7 +8,7 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner } from 'reactstrap';
+import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner, CardBody } from 'reactstrap';
 
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
@@ -30,12 +30,15 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import UserRetryCountAuth from './UserRetryCountAuth';
 import { isFlexternshipApp } from '@/configs/api/env';
+import { useLocation } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const location = useLocation();
+  const accountCreated = location.state?.createdAccount;
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -110,8 +113,8 @@ const Login = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: savedFormData?.email || '',
-      password: savedFormData?.password || '',
+      email: accountCreated ? '' : savedFormData?.email || '',
+      password: accountCreated ? '' : savedFormData?.password || '',
     },
   });
   const localFormData = useWatch({ control });
@@ -152,8 +155,11 @@ const Login = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Welcome Back! 👋🏻
+          {accountCreated ? <p>Account Created!</p> : <p>Welcome Back! 👋🏻</p>}
         </CardTitle>
+        <CardBody>
+          {accountCreated ? <p>We are excited to have you onboard. For your security, please sign in.</p> : ''}
+        </CardBody>
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-1">
             <Label className="form-label" for="login-email">
@@ -169,7 +175,7 @@ const Login = () => {
                 <Input
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  placeholder="john@example.com"
+                  placeholder="Enter email"
                   invalid={errors.email && true}
                 />
               )}
