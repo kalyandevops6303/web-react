@@ -27,11 +27,14 @@ import { selectAuthLoading } from '../../redux/selectors/authSelectors';
 import PasswordStrengthMeter from '../auth/components/PasswordStrengthMeter';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { setFormData } from '../../redux/reducers/formData';
+import useLogout from '@/utility/hooks/useLogout';
 
 const ResetPasswordModal = ({ modal, toggleModal }) => {
   const dispatch = useDispatch();
   const savedFormData = useSelector(formData);
   const isLoading = useSelector(selectAuthLoading);
+
+  const { handleLogout } = useLogout();
 
   const schema = yup.object().shape({
     oldPassword: yup.string().required('Old Password is required'),
@@ -80,7 +83,12 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
 
   const onSubmit = (data) => {
     const { oldPassword, newPassword } = data;
-    dispatch(resetPassword({ current_password: oldPassword, new_password: newPassword }, onSuccess));
+
+    dispatch(resetPassword({ current_password: oldPassword, new_password: newPassword }, onSuccess)).then((res) => {
+      if (res?.data?.status === 'SUCCESS') {
+        handleLogout();
+      }
+    });
   };
 
   const oldPassword = watch('oldPassword');
@@ -126,10 +134,12 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
             </Row>
             <Row className="mb-1">
               <Col sm="12" md="12" lg="12">
-                <Label className="form-label" for="firstName">
-                  New Password
-                </Label>
-                <Info size={16} color={theme.infoIcon} id="password-info" className="ms-25" />
+                <div className="flex items-center">
+                  <Label className="form-label" for="firstName">
+                    New Password
+                  </Label>
+                  <Info size={16} color={theme.infoIcon} id="password-info" className="ms-25 form-label" />
+                </div>
                 <UncontrolledTooltip placement="right" target="password-info">
                   <p className="m-0 text-start">
                     Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one

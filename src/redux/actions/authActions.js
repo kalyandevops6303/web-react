@@ -410,13 +410,16 @@ const setUserType = (type) => async (dispatch) => {
 const resetPassword = (data, onSuccess) => async (dispatch) => {
   dispatch(resetPasswordRequest());
   try {
-    await resetPasswordService(data);
+    const res = await resetPasswordService(data);
     dispatch(resetPasswordSuccess());
     onSuccess();
     showToastMessage(ToastType.SUCCESS, 'Password has been updated');
+
+    return res;
   } catch (error) {
     errorHandler(error, resetPasswordFailure);
   }
+  return null;
 };
 const switchProfile =
   ({ data, onSuccess, selected }) =>
