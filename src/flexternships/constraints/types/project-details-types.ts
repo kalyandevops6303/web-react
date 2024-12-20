@@ -90,6 +90,7 @@ export type ProjectDetails = {
       };
     };
   };
+  isDocumentsNeeded: boolean;
 };
 
 type ProjectRole = {

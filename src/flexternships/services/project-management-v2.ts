@@ -419,6 +419,8 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
           },
         },
       },
+      // TODO: remove this after backend is updated
+      isDocumentsNeeded: false,
     };
 
     return projectDetailsData;
