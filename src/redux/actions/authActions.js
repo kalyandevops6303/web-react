@@ -106,7 +106,6 @@ import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 import { isEmpty } from '../../utility/Utils';
-import { setCookiesItem } from '@/utility/cookiesControl';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
@@ -134,8 +133,6 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     if (!isEmpty(res?.data?.data)) {
       dispatch(setUserTypeSuccess(res?.data?.data?.user_type));
       setItem('access_token_expires', res.data.data.access_token_expires);
-      setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
-      setItem('refresh_token', res.data.data.refresh_token);
       setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       setItem('user_id', res.data.data.user_id);
       if (res.data.data.is_delegate) {
@@ -200,9 +197,7 @@ const loginUserWithGoogle =
         res = await loginServiceGoogle({ id_token });
       }
 
-      setItem('access_token', res.data.data.access_token);
       setItem('access_token_expires', res.data.data.access_token_expires);
-      setItem('refresh_token', res.data.data.refresh_token);
       setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       setItem('user_id', res.data.data.user_id);
       window.dataLayer.push({ user_id: res.data.data.user_id });
@@ -238,9 +233,7 @@ const verifyEmail = (data) => async (dispatch) => {
   dispatch(verifyEmailRequest());
   try {
     const res = await verifyEmailService(data);
-    setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
     setItem('access_token_expires', res.data.data.access_token_expires);
-    setItem('refresh_token', res.data.data.refresh_token);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     dispatch(setTalentBooleanIsFlextern(false)); // making sure for normal talent onboarding or client onboarding the checkpoints are properly navigated
     dispatch(verifyEmailSuccess());
@@ -258,9 +251,7 @@ const verifyEmailForFlextern =
     try {
       const res = await verifyEmailForFlexternService(data, invitation_token);
       if (!isEmpty(res?.data?.data)) {
-        setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
         setItem('access_token_expires', res.data.data.access_token_expires);
-        setItem('refresh_token', res.data.data.refresh_token);
         setItem('refresh_token_expires', res.data.data.refresh_token_expires);
         window.dataLayer.push({ user_id: res.data.data.user_id });
         dispatch(setTalentBooleanIsFlextern(true));
@@ -331,9 +322,8 @@ const forgotPassword =
 const verifyOtp = (email, otp) => async (dispatch) => {
   dispatch(verifyOtpRequest());
   try {
-    const res = await verifyOtpService(email, otp);
+    await verifyOtpService(email, otp);
     dispatch(verifyOtpSuccess());
-    setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
   } catch (error) {
     errorHandler(error, verifyOtpFailure);
   }
