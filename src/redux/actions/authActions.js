@@ -92,7 +92,7 @@ import {
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
-import { checkPoints, userTypes } from '../../utility/constants/Constant';
+import { checkPoints, userTypes, invitationUserStatus } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
 import { clearTeams } from '../reducers/team';
@@ -502,13 +502,17 @@ const checkIsAdmin = (teamId) => async (dispatch) => {
 };
 
 const validateRequestFlexTernToken =
-  ({ requestToken }) =>
+  ({ requestToken, onRegistered }) =>
   async (dispatch) => {
     dispatch(verifyRequestInvitationFlexternToken());
     try {
       const res = await checkRequestValidation(requestToken);
       dispatch(verifyRequestInvitationFlexternTokenSuccess(res.data?.data?.email_invited));
       dispatch(setFlexternshipInviteType(res.data?.data?.user_type));
+
+      if (res.data?.data?.user_status === invitationUserStatus.REGISTERED) {
+        onRegistered && onRegistered();
+      }
     } catch (error) {
       errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
     }
