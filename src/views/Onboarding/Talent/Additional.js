@@ -308,6 +308,7 @@ const Additional = () => {
       await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
         'x-ms-blob-type': 'BlockBlob',
         'Content-Type': 'multipart/form-data',
+        'Content-File-Type': file.file.type,
       });
     } catch (error) {
       dispatch(resumeParsedDetailsSuccess(null));
@@ -366,6 +367,7 @@ const Additional = () => {
       await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
         'x-ms-blob-type': 'BlockBlob',
         'Content-Type': 'multipart/form-data',
+        'Content-File-Type': file.file.type,
       });
     } catch (error) {
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
