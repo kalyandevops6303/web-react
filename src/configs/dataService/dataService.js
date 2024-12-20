@@ -55,6 +55,7 @@ class DataService {
       url: team_id ? fullUrl : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
+      withCredentials: true,
     });
   }
 
@@ -69,6 +70,7 @@ class DataService {
       url: team_id ? fullUrl : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
+      withCredentials: true,
     });
   }
 
@@ -83,6 +85,7 @@ class DataService {
       url: team_id ? fullUrl : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
+      withCredentials: true,
     });
   }
 
@@ -106,6 +109,7 @@ class DataService {
       url: team_id ? fullUrl : path,
       data: JSON.stringify(data),
       headers: { ...authHeader() },
+      withCredentials: true,
     });
   }
 }
