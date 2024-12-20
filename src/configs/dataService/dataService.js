@@ -5,7 +5,7 @@ import getTeamId from '../../utility/commonUtils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
 import { apiAuthEndpoint } from '../api';
-import { getCookiesItem, setCookiesItem } from '@/utility/cookiesControl';
+import { getCookiesItem } from '@/utility/cookiesControl';
 
 const authHeader = () => ({
   Authorization: `Bearer ${getCookiesItem('access_token')}`,
@@ -40,6 +40,7 @@ class DataService {
       method: 'GET',
       url: team_id ? fullUrl : path,
       headers: { ...authHeader() },
+      withCredentials: true,
     });
   }
 
@@ -138,8 +139,6 @@ client.interceptors.request.use(async (req) => {
     if (refreshTokenExpiry > new Date().valueOf()) {
       if (accessTokenExpiry < new Date().valueOf()) {
         await getRefreshToken().then((res) => {
-          setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
-
           setItem('access_token_expires', res.data.data.access_token_expiry);
           req.headers.Authorization = `Bearer ${res.data.data.access_token}`;
         });
