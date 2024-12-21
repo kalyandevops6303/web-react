@@ -41,7 +41,7 @@ export const getImageUploadUrl = async (filename: string) => {
  */
 export const changePasswordWithCurrentPassword = async (currentPassword: string, newPassword: string) => {
   const headers = appendAuthToken({});
-  const config = { headers, withCredentials: true };
+  const config = { headers: headers, withCredentials: true };
 
   try {
     const response = await axios.post(
@@ -69,8 +69,8 @@ export const getUserDetails = async () => {
   };
   try {
     const response = await axios.get(routes.userManagement.user.getUserDetails, config);
-    console.log("response : "+ response);
-    
+    console.log('response : ' + response);
+
     return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching user details');
