@@ -131,10 +131,11 @@
     "lint:fix": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "typecheck": "tsc --noEmit",
     "commit": "git-cz",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
-    "*.css": "stylelint --fix"
+    "*.css": "stylelint --fix",
+    "*.ts": ["tsc --noEmit", "pretty-quick --staged"]
   },
   "config": {
     "commitizen": {
@@ -213,9 +214,10 @@
     "eslint-plugin-react": "^7.36.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "esm": "3.2.25",
-    "husky": "8.0.3",
+    "husky": "9.1.7",
     "lint-staged": "13.2.0",
-    "prettier": "2.8.4",
+    "prettier": "3.4.2",
+    "pretty-quick": "4.0.0",
     "react-app-rewire-hot-loader": "2.0.1",
     "react-app-rewired": "2.2.1",
     "react-hot-loader": "4.13.1",
