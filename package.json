@@ -134,8 +134,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.css": "stylelint --fix",
-    "*.{ts,js,jsx,tsx}": ["tsc --noEmit", "pretty-quick --staged"]
+    "*.{ts,tsx}": [
+      "tsc --noEmit",
+      "pretty-quick --staged"
+    ],
+    "*.{js,jsx,json,css,scss,md}": "pretty-quick --staged"
   },
   "config": {
     "commitizen": {
