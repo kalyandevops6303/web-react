@@ -13,7 +13,6 @@ import { useProjectMilestonesStore } from '@/flexternships/stores/project-milest
 import Spinner from '../components/core/Spinner';
 import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
-
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
@@ -98,7 +97,6 @@ export default function FlexternshipProjectDetails() {
       clientVisible: true,
     },
   ];
-
   return (
     <div className="flexternships-page">
       {projectLoading ? (
