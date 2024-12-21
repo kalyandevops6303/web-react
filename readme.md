@@ -3,7 +3,7 @@
 
 ## Project Overview
 
-This is a React-based web application designed for Trumio.
+This is a React-based web application designed for Trumio Flexternships.
 
 ## Folder Structure
 
@@ -12,30 +12,46 @@ Here's an overview of the project's folder structure:
 ```
 /trumio-web-react/
 │
-├── .dockerignore               # Files to be ignored by Docker
-├── .env                        # Environment variables
-├── .env.production.local       # Production environment variables
-├── .env.qa.local               # QA environment variables
-├── .env.test.local             # Test environment variables
-├── .env.uat.local              # UAT environment variables
-├── .eslintignore               # Files to be ignored by ESLint
-├── .eslintrc                   # ESLint configuration
-├── .gitignore                  # Git ignore rules
-├── .prettierrc.json            # Prettier configuration
+├── .dockerignore                              # Files to be ignored by Docker
+├── .env.tru-production.local                  # Flexternships Production environment variables
+├── .env.truqa.local                           # Flexternships QA environment variables
+├── .env.trudev.local                          # Flexternships Test environment variables
+├── .env.tru-uat.local                         # Flexternships UAT environment variables
+├── .eslintignore                              # Files to be ignored by ESLint
+├── .eslintrc                                  # ESLint configuration - currently not used
+├── .gitignore                                 # Git ignore rules
+├── .prettierrc.json                           # Prettier configuration
 │
-├── /src/                       # Source code files
-│   ├── @core/                  # Core functionalities and assets
-│   ├── assets/                 # Static assets like images and icons
-│   ├── CometChatWorkspace/     # Integration with CometChat for real-time chat
-│   ├── configs/                # Configuration files for various environments
-│   ├── layouts/                # Layout components for pages
-│   ├── lib/                    # Custom and third-party libraries
-│   ├── navigation/             # Routing and navigation logic
-│   ├── redux/                  # Redux state management
-│   ├── router/                 # Application routes
-│   ├── services/               # API service files
-│   ├── utility/                # Utility functions
-│   ├── views/                  # Page-level components representing different views
+├── /src/                                      # Source code files
+│   ├── @flexternships/                        # Flexternships Application Source Code
+│   │   ├── actions/                           # Redux actions and action creators
+│   │   ├── app/                               # Main application components
+│   │   │   └── components/                    # Reusable UI components
+│   │   │       ├── core/                      # Core design system components
+│   │   │       ├── pages/                     # Page specific components
+│   │   │       └── ui/                        # Shadcn components
+│   │   ├── assets/                            # Static assets specific to flexternships
+│   │   ├── constraints/                       # Type definitions and enums
+│   │   │   ├── types/                         # TypeScript type definitions
+│   │   │   └── enums/                         # Enumerated values
+│   │   ├── lib/                               # Helper functions and utilities
+│   │   ├── schemas/                           # Data validation schemas
+│   │   ├── services/                          # API service integrations
+│   │   ├── stores/                            # State management stores
+│   │   ├── styles/                            # Styling and theme files
+│   │   └── utils/                             # Utility functions
+│   ├── @core/                                 # Core functionalities and assets
+│   ├── assets/                                # Static assets like images and icons
+│   ├── CometChatWorkspace/                    # Integration with CometChat for real-time chat
+│   ├── configs/                               # Configuration files for various environments
+│   ├── layouts/                               # Layout components for pages
+│   ├── lib/                                   # Custom and third-party libraries
+│   ├── navigation/                            # Routing and navigation logic
+│   ├── redux/                                 # Redux state management
+│   ├── router/                                # Application routes
+│   ├── services/                              # API service files
+│   ├── utility/                               # Utility functions
+│   ├── views/                                 # Page-level components representing different views
 │   ├── App.css                  
 │   ├── App.js                
 │   ├── App.test.js     
@@ -44,10 +60,10 @@ Here's an overview of the project's folder structure:
 │   ├── index.css                    
 │   └── serviceWorker.js             
 │   
-├── /public/                    # Public static files
+├── /public/                                   # Public static files
 │
-├── package.json                # Node.js dependencies and scripts
-└── README.md                   # Project documentation 
+├── package.json                               # Node.js dependencies and scripts
+└── README.md                                  # Project documentation 
 ```
 
 ## Detailed Functionality
