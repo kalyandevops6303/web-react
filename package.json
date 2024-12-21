@@ -135,7 +135,7 @@
   },
   "lint-staged": {
     "*.css": "stylelint --fix",
-    "*.ts": ["tsc --noEmit", "pretty-quick --staged"]
+    "*.{ts,js,jsx,tsx}": ["tsc --noEmit", "pretty-quick --staged"]
   },
   "config": {
     "commitizen": {
