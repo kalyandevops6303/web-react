@@ -1,3 +1,2 @@
-npm run typecheck
 npm run pretty-quick:staged
-npx lint-staged
+npm run typecheck

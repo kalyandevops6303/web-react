@@ -134,9 +134,6 @@
     "commit": "git-cz",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,css,scss,md}": "pretty-quick --staged"
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
