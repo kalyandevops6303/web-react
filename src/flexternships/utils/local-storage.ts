@@ -9,6 +9,7 @@ export const appendAuthToken = (dict: any) => {
   const token = getCookiesItem('access_token');
   if (token === null) {
     throw new Error('Access token not found');
+    console.log();
   }
 
   // Append the token to the dictionary
