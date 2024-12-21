@@ -97,6 +97,7 @@ export default function FlexternshipProjectDetails() {
       clientVisible: true,
     },
   ];
+
   return (
     <div className="flexternships-page">
       {projectLoading ? (
