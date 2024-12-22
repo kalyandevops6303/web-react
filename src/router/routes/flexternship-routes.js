@@ -54,6 +54,7 @@ import FlexternshipsContractView from '@/flexternships/app/project-details/sign-
 import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
 import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
+import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -504,5 +505,10 @@ export const FlexternshipRoutes = [
   {
     path: '*',
     element: <NotFound />,
+  },
+  {
+    path: '/analytics/individual/:userId',
+    element: <IndividualAnalytics />,
+    layout: 'blank',
   },
 ];
