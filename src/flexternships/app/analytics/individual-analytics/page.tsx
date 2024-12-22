@@ -1,185 +1,60 @@
+import { useParams } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@flexternships/app/components/ui/select';
 import IndividualOverview from './individual-overview';
 import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart';
-import { ChartConfig } from '../../components/ui/chart';
 import { TooltipProps } from 'recharts';
 import { ChevronRight, ThumbsUp } from 'react-feather';
 import achievementIcon from '@flexternships/assets/svgs/analytics/achieve.svg';
+import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
+import { useEffect, useState } from 'react';
+import { isEmpty } from 'lodash';
+import Spinner from '../../components/core/Spinner';
 
 export default function IndividualAnalytics() {
-  const projects = [
-    {
-      id: 1,
-      name: 'Project 1',
-    },
-    {
-      id: 2,
-      name: 'Project 2',
-    },
-  ];
+  const params = useParams();
+  const { userId } = params;
 
-  const individualOverviewDetails = {
-    userId: '123',
-    firstName: 'John',
-    lastName: 'Doe',
-    role: 'Software Engineer',
-    imageUri: 'https://github.com/shadcn.png',
-    education: {
-      name: 'Bachelor of Technology',
-      startYear: '2020',
-      endYear: '2024',
-      institution: 'IIT Bombay',
-    },
-    flexternshipStartDate: 1734688019281,
-    flexternshipEndDate: 1742464019281,
-    wowCount: 10,
-    kudosCount: 20,
-    trumioAttractivenessScore: 82,
-    hardSkillsPre: 8,
-    hardSkillsPost: 10,
-    managerFeedback: {
-      score: 8,
-      total: 10,
-    },
-    peerFeedback: {
-      score: 5,
-      total: 10,
-    },
-    overallComments: 42,
-  };
+  const projects = useAnalyticsStore((state) => state.projectsList);
+  const recognitionChartData = useAnalyticsStore((state) => state.recognitionChartData);
+  const individualOverviewDetails = useAnalyticsStore((state) => state.individualOverview);
+  const performanceChartData = useAnalyticsStore((state) => state.performanceChartData);
+  const aiSummary = useAnalyticsStore((state) => state.aiSummary);
 
-  const recognitionChartData = {
-    chartData: [
-      {
-        milestone: '',
-        trumioAttractivenessScore: 0,
-        wowCount: 0,
-        kudosCount: 0,
-      },
-      {
-        milestone: 'Milestone 1',
-        trumioAttractivenessScore: 40,
-        wowCount: 4,
-        kudosCount: 8,
-      },
-      {
-        milestone: 'Milestone 2',
-        trumioAttractivenessScore: 60,
-        wowCount: 3,
-        kudosCount: 7,
-      },
-      {
-        milestone: 'Milestone 3',
-        trumioAttractivenessScore: 88,
-        wowCount: 7,
-        kudosCount: 5,
-      },
-      {
-        milestone: 'Milestone 4',
-        trumioAttractivenessScore: 90,
-        wowCount: 2,
-        kudosCount: 8,
-      },
-      {
-        milestone: 'Milestone 5',
-        trumioAttractivenessScore: 92,
-        wowCount: 1,
-        kudosCount: 4,
-      },
-    ],
-    chartConfig: {
-      trumioAttractivenessScore: {
-        label: 'Attractiveness',
-        color: '#0185E4',
-      },
-    },
-    maxYAxis: 100,
-  };
+  const getProjectsList = useAnalyticsStore((state) => state.getProjectsList);
+  const getRecognitionChartData = useAnalyticsStore((state) => state.getRecognitionChartData);
+  const getPerformanceChartData = useAnalyticsStore((state) => state.getPerformanceChartData);
+  const getAiSummary = useAnalyticsStore((state) => state.getAiSummary);
+  const getIndividualOverview = useAnalyticsStore((state) => state.getIndividualOverview);
 
-  const performanceChartData = {
-    chartData: [
-      {
-        milestone: '',
-        collaboration: 0,
-        communication: 0,
-        leadership: 0,
-        effectiveness: 0,
-        problemSolving: 0,
-        innovation: 0,
-      },
-      {
-        milestone: 'Milestone 1',
-        collaboration: 7,
-        communication: 3,
-        leadership: 4,
-        effectiveness: 6,
-        problemSolving: 5,
-        innovation: 2,
-      },
-      {
-        milestone: 'Milestone 2',
-        collaboration: 4,
-        communication: 8,
-        leadership: 5,
-        effectiveness: 3,
-        problemSolving: 7,
-        innovation: 6,
-      },
-      {
-        milestone: 'Milestone 3',
-        collaboration: 9,
-        communication: 5,
-        leadership: 7,
-        effectiveness: 8,
-        problemSolving: 4,
-        innovation: 3,
-      },
-      {
-        milestone: 'Milestone 4',
-        collaboration: 3,
-        communication: 7,
-        leadership: 8,
-        effectiveness: 5,
-        problemSolving: 9,
-        innovation: 4,
-      },
-      {
-        milestone: 'Milestone 5',
-        collaboration: 8,
-        communication: 6,
-        leadership: 3,
-        effectiveness: 7,
-        problemSolving: 5,
-        innovation: 8,
-      },
-    ],
-    chartConfig: {
-      collaboration: {
-        label: 'Collaboration',
-        color: '#0185E4',
-      },
-      communication: {
-        label: 'Communication',
-        color: '#EA5455',
-      },
-      leadership: {
-        label: 'Leadership',
-        color: '#FBC02D',
-      },
-      effectiveness: {
-        label: 'Effectiveness',
-        color: '#28C76F',
-      },
-      problemSolving: {
-        label: 'Problem Solving',
-        color: '#7167F0',
-      },
-      innovation: {
-        label: 'Innovation',
-        color: '#00CFE8',
-      },
-    } satisfies ChartConfig,
-  };
+  const isIndividualOverviewLoading = useAnalyticsStore((state) => state.isIndividualOverviewLoading);
+  const isRecognitionChartDataLoading = useAnalyticsStore((state) => state.isRecognitionChartLoading);
+  const isPerformanceChartDataLoading = useAnalyticsStore((state) => state.isPerformanceChartLoading);
+  const isAiSummaryLoading = useAnalyticsStore((state) => state.isAiSummaryLoading);
+
+  const [selectedProject, setSelectedProject] = useState(projects ? projects[0] : null);
+
+  useEffect(() => {
+    getProjectsList();
+  }, [params]);
+
+  useEffect(() => {
+    if (!isEmpty(projects)) {
+      setSelectedProject(projects[0]);
+    }
+  }, [projects]);
+
+  useEffect(() => {
+    if (selectedProject) {
+      getIndividualOverview(userId);
+      getAiSummary(selectedProject?.id, userId);
+      getRecognitionChartData(selectedProject?.id);
+      getPerformanceChartData(selectedProject?.id);
+    }
+  }, [selectedProject]);
+
+  useEffect(() => {
+    console.log(aiSummary);
+  }, [aiSummary]);
 
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
@@ -195,13 +70,13 @@ export default function IndividualAnalytics() {
           const dataKey = entry.dataKey as keyof typeof recognitionChartData.chartConfig;
           const wowCount = entry?.payload?.wowCount;
           const kudosCount = entry?.payload?.kudosCount;
-
           return (
-            <div key={dataKey}>
+            <div key={dataKey.toString()}>
               <div className="flex justify-between items-center">
                 <span className="font-montserrat text-[12px] font-normal leading-[20px] text-[#394042] flex items-center gap-2">
                   <div
-                    className={`flex w-[12px] h-[12px] rounded-[2px] bg-[${recognitionChartData?.chartConfig[dataKey].color}]`}
+                    className={`flex w-[12px] h-[12px] rounded-[2px]`}
+                    style={{ backgroundColor: recognitionChartData?.chartConfig[dataKey].color }}
                   ></div>
                   <div>{recognitionChartData?.chartConfig[dataKey].label}</div>
                 </span>
@@ -244,13 +119,28 @@ export default function IndividualAnalytics() {
     );
   };
 
+  if (
+    isIndividualOverviewLoading ||
+    isRecognitionChartDataLoading ||
+    isPerformanceChartDataLoading ||
+    isAiSummaryLoading
+  ) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-48">
+        <div className="h-8 w-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-[24px] px-[16px] md:px-0">
       <div className="flex gap-[12px] items-center w-full">
         <div className="text-[#394042] font-montserrat text-[16px] font-medium leading-[24px]">
           Select project to view analytics:
         </div>
-        <Select defaultValue={projects[0].id.toString()}>
+        <Select value={selectedProject} onValueChange={(value) => setSelectedProject(value)}>
           <SelectTrigger className="h-[42px] min-h-[38px] px-[12px] py-[7px] w-[480px] focus:ring-0 bg-white rounded-[6px] border border-[#E6E7E7]">
             <SelectValue
               placeholder="Select Project"
@@ -258,16 +148,16 @@ export default function IndividualAnalytics() {
             />
           </SelectTrigger>
           <SelectContent className="bg-white w-[480px]">
-            {projects.map((project) => (
-              <SelectItem key={project.id} value={project.id.toString()}>
-                {project.name}
+            {projects.map((project: any) => (
+              <SelectItem key={project?.id} value={project}>
+                {project?.name}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      <IndividualOverview {...individualOverviewDetails} />
+      <IndividualOverview {...individualOverviewDetails} aiGeneratedSummary={aiSummary?.summary} />
 
       <div className="flex flex-row gap-[12px] w-full bg-white rounded-t-[10px] border-b border-b-[#E6E7E7]">
         <div className="w-1/2 flex flex-col items-center justify-center gap-[2px] border-r border-r-[#E6E7E7] p-[12px_24px]">

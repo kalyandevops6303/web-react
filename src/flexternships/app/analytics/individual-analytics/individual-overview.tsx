@@ -21,6 +21,7 @@ type IndividualOverviewProps = {
   trumioAttractivenessScore: number;
   hardSkillsPre: number;
   hardSkillsPost: number;
+  aiGeneratedSummary: string;
 };
 
 export default function IndividualOverview(props: IndividualOverviewProps) {
@@ -38,6 +39,7 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
     trumioAttractivenessScore,
     hardSkillsPre,
     hardSkillsPost,
+    aiGeneratedSummary,
   } = props;
 
   const formatDate = (epoch: number) => {
@@ -45,9 +47,6 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
     const formattedDate = new Date(epoch).toLocaleDateString('en-US', options);
     return formattedDate;
   };
-
-  const aiGeneratedSummary =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 
   return (
     <>
@@ -74,14 +73,14 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
 
           <div className="border-l border-[#E6E7E7] pl-[20px]">
             <div className="text-[#394042] font-montserrat text-[16px] font-semibold leading-[24px]">
-              {education.name}
+              {education?.name}
             </div>
             <div className="flex gap-[8px] items-center">
               <div className="text-grey-500 font-montserrat text-[12px] font-medium leading-[20px]">
-                {education.startYear} - {education.endYear}
+                {education?.startYear} - {education?.endYear}
               </div>
               <div className="text-[#6A7071] font-montserrat text-[12px] font-normal leading-[20px]">
-                {education.institution}
+                {education?.institution}
               </div>
             </div>
           </div>

@@ -102,4 +102,11 @@ export const routes = {
       getClientCompletedProjects: `${serviceUrls.dashboardV2}/users/completed-projects`,
     },
   },
+  analytics: {
+    individualOverview: `${serviceUrls.dashboardV2}/analytics/individual/overview`,
+    aiSummary: `${serviceUrls.dashboardV2}/analytics/individual/ai-summary`,
+    recognitionChart: `${serviceUrls.dashboardV2}/analytics/individual/recognition-chart`,
+    performanceChart: `${serviceUrls.dashboardV2}/analytics/individual/performance-chart`,
+    projectsList: `${serviceUrls.dashboardV2}/analytics/individual/projects-list`,
+  },
 };
