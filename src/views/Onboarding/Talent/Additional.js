@@ -1090,15 +1090,17 @@ const Additional = () => {
                 </div>
                 <div className="d-flex justify-content-end">
                   {/* {flexternBoolean && trumioTalent ? ( */}
-                  {/* <Button
-                    color="primary"
-                    outline
-                    className="d-flex align-items-center justify-content-between me-2"
-                    onClick={onSkipClick}
-                  >
-                    <span className="me-50">Skip</span>
-                    <ChevronRight size={14} />
-                  </Button> */}
+                  {location?.pathname.includes('profile-edit') && (
+                    <Button
+                      color="primary"
+                      outline
+                      className="d-flex align-items-center justify-content-between me-2"
+                      onClick={onSkipClick}
+                    >
+                      <span className="me-50">Skip</span>
+                      <ChevronRight size={14} />
+                    </Button>
+                  )}
                   {/* ) : null} */}
                   <Button
                     className="d-flex align-items-center justify-content-between"
@@ -1118,6 +1120,84 @@ const Additional = () => {
               </div>
             </Col>
             <Col xs="12" sm="12" lg="4">
+              <Card>
+                <CardHeader>
+                  <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
+                    Resume <span className="label-asterisk">*</span>
+                  </h4>
+                </CardHeader>
+                <hr className="m-0 card-header-border" />
+                <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
+                  IsresumeParsed ? resumeParsedLoading :
+                  <div className="d-flex flex-column gap-7">
+                    <div
+                      style={{
+                        background: parseResume ? '#0185E426' : theme.greyedOutBackground,
+                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                      }}
+                    >
+                      <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
+                        <Col lg="fit">
+                          <Info className="font-medium-3 me-50" color="#004280" />
+                        </Col>
+                        <Col className="w-100 ">
+                          <div
+                            style={{ color: '#004280' }}
+                            className="d-flex w-100  justify-content-between align-items-center"
+                          >
+                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
+                              Auto Fill {files && files?.length > 0 && 'Profile'}
+                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            </Col>
+                            {resumeParsedLoading ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              !uploadingFiles.includes(files[0]) &&
+                              !isEmpty(files) && (
+                                <FormGroup switch className="p-0">
+                                  <Input type="switch" checked={parseResume} onClick={handleParseResumeToggle} />
+                                </FormGroup>
+                              )
+                            )}
+                          </div>
+                          {files?.length == 0 && (
+                            <div className=" px-0 py-0">
+                              <>
+                                <Label
+                                  for="resume"
+                                  className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
+                                >
+                                  <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
+                                </Label>
+                                <Controller
+                                  id="resume"
+                                  name="resume"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <Input
+                                      {...field}
+                                      id="resume"
+                                      type="file"
+                                      max={1}
+                                      accept="application/pdf"
+                                      className="d-none"
+                                      onChange={(e) => {
+                                        handleFileChange(e);
+                                      }}
+                                    />
+                                  )}
+                                />
+                              </>
+                            </div>
+                          )}
+                        </Col>
+                      </div>
+                    </div>
+                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
+                  </div>
+                </CardBody>
+              </Card>
+
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>

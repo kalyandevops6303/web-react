@@ -1016,15 +1016,17 @@ const FlexternSocial = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div className="d-flex justify-content-end">
-                  {/* <Button
-                    color="primary"
-                    outline
-                    className="d-flex align-items-center justify-content-between me-2"
-                    onClick={onSkipClick}
-                  >
-                    <span className="me-50">Skip</span>
-                    <ChevronRight size={14} />
-                  </Button> */}
+                  {location?.pathname.includes('profile-edit') && (
+                    <Button
+                      color="primary"
+                      outline
+                      className="d-flex align-items-center justify-content-between me-2"
+                      onClick={onSkipClick}
+                    >
+                      <span className="me-50">Skip</span>
+                      <ChevronRight size={14} />
+                    </Button>
+                  )}
 
                   <Button
                     color="primary"
@@ -1045,7 +1047,7 @@ const FlexternSocial = () => {
             </Col>
 
             <Col xs="12" sm="12" lg="4">
-              {/* <Card>
+              <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
                     Resume <span className="label-asterisk">*</span>
@@ -1053,7 +1055,7 @@ const FlexternSocial = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
-                  IsresumeParsed ? resumeParsedLoading : 
+                  IsresumeParsed ? resumeParsedLoading :
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
@@ -1121,7 +1123,7 @@ const FlexternSocial = () => {
                     <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
                   </div>
                 </CardBody>
-              </Card> */}
+              </Card>
 
               <Card>
                 <CardHeader>
