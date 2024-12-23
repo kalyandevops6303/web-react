@@ -6,7 +6,6 @@ import getTeamId from '../../utility/commonUtils';
 import errorHandler from '../../utility/errorHandler';
 import { apiAuthEndpoint } from '../api';
 
-
 const client = axios.create({
   baseURL: '',
   headers: {
