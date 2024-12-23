@@ -25,6 +25,8 @@ export const populateTeamDetails = async (set: any, projectId: string): Promise<
         name: member?.first_name + ' ' + member?.last_name || '',
         profileImage: member?.image_uri || '',
         designation: member?.role_name || '',
+        email: member?.user_email,
+        invitedOn: member?.invited_on,
         averageRating: member?.averageRating,
         appreciationScore: member?.appreciation_score,
         isDocumentsSigned: member?.is_documents_signed,
