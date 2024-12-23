@@ -1127,16 +1127,16 @@ const Additional = () => {
                   </h4>
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
-                <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
-                  IsresumeParsed ? resumeParsedLoading :
+                <CardBody style={{ paddingBottom: resumeFiles.length === 0 ? '0px' : '11px' }}>
+                  {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
                         background: parseResume ? '#0185E426' : theme.greyedOutBackground,
-                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                        padding: resumeFiles.length === 0 ? '12px 20px 12px 20px' : '16px',
                       }}
                     >
-                      <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
+                      <div className={`d-flex ${resumeFiles?.length > 0 ? 'align-items-center' : ''}`}>
                         <Col lg="fit">
                           <Info className="font-medium-3 me-50" color="#004280" />
                         </Col>
@@ -1146,21 +1146,21 @@ const Additional = () => {
                             className="d-flex w-100  justify-content-between align-items-center"
                           >
                             <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
-                              Auto Fill {files && files?.length > 0 && 'Profile'}
-                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                              Auto Fill {resumeFiles && resumeFiles?.length > 0 && 'Profile'}
+                              {resumeFiles && resumeFiles.length === 0 && <span> - Upload your resume</span>}
                             </Col>
                             {resumeParsedLoading ? (
                               <Spinner size="sm" />
                             ) : (
-                              !uploadingFiles.includes(files[0]) &&
-                              !isEmpty(files) && (
+                              !resumeUploadingFiles.includes(resumeFiles[0]) &&
+                              !isEmpty(resumeFiles) && (
                                 <FormGroup switch className="p-0">
                                   <Input type="switch" checked={parseResume} onClick={handleParseResumeToggle} />
                                 </FormGroup>
                               )
                             )}
                           </div>
-                          {files?.length == 0 && (
+                          {resumeFiles?.length == 0 && (
                             <div className=" px-0 py-0">
                               <>
                                 <Label
@@ -1182,7 +1182,7 @@ const Additional = () => {
                                       accept="application/pdf"
                                       className="d-none"
                                       onChange={(e) => {
-                                        handleFileChange(e);
+                                        handleResumeFileChange(e);
                                       }}
                                     />
                                   )}
@@ -1193,11 +1193,10 @@ const Additional = () => {
                         </Col>
                       </div>
                     </div>
-                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
+                    <Row>{resumeFiles && resumeFiles.length > 0 && <div>{fileResumeList()}</div>}</Row>
                   </div>
                 </CardBody>
               </Card>
-
               <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg font-medium">Profile Completion</h4>

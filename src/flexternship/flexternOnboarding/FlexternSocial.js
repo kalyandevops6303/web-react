@@ -87,7 +87,11 @@ import uuidv4 from '../../lib/uuidv4';
 
 const FlexternSocial = () => {
   const SocialSchema = yup.object().shape({
-    linkedInLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
+    linkedInLink: yup
+      .string()
+      .test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol)
+      .nullable()
+      .required('LinkedIn is required'),
     twitterLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
     githubLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
     otherSocialLinks: yup.array().of(
@@ -850,7 +854,7 @@ const FlexternSocial = () => {
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="linkedInLink">
-                        LinkedIn
+                        LinkedIn<span className="label-asterisk me-50">*</span>
                       </Label>
                       <Controller
                         id="linkedInLink"
