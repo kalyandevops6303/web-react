@@ -21,6 +21,7 @@ export const getFileUploadUrl = async (filename: string) => {
     params: {
       filename: filename,
     },
+    withCredentials: true,
   };
   try {
     const response = await axios?.get(routes?.projectManagementV2?.files?.getUploadUrl, config);
@@ -43,6 +44,7 @@ export const getFileDownloadUrl = async (fileKey: string) => {
     params: {
       file_key: fileKey,
     },
+    withCredentials: true,
   };
   try {
     const response = await axios?.get(routes?.projectManagementV2?.files?.getDownloadUrl, config);
@@ -69,6 +71,7 @@ export const createFlexternProject: (
     params: {
       project_id: draftProjectId,
     },
+    withCredentials: true,
   };
   const formattedProjectData = {
     details: {
@@ -136,6 +139,7 @@ export const createFlexternProjectDraft: (
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   let formattedProjectData = {
     details: {
@@ -208,6 +212,7 @@ export const getFlexternProjectDraft: (projectId: string) => Promise<ProjectCrea
     params: {
       project_id: projectId,
     },
+    withCredentials: true,
   };
   try {
     const response = await axios.get(routes.projectManagementV2.project.getDraft, config);
@@ -275,6 +280,7 @@ export const recallProjectById = async (projectId: string): Promise<void> => {
     params: {
       project_id: projectId,
     },
+    withCredentials: true,
   };
 
   try {
@@ -297,6 +303,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
     params: {
       project_id: projectId,
     },
+    withCredentials: true,
   };
 
   try {
@@ -440,6 +447,7 @@ export const getMilestonesByProjectId = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
 
   try {
@@ -464,6 +472,7 @@ export const getMilestoneDetailsById = async (milestoneId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
 
   try {
@@ -492,6 +501,7 @@ export const verifyProjectName: (projectName: string) => Promise<void> = async (
     params: {
       name: projectName,
     },
+    withCredentials: true,
   };
 
   try {
@@ -523,6 +533,7 @@ export const putArtifactsByMilestoneId = async (
       milestone_id: milestoneId,
       artifact_status: targetArtifactStatus,
     },
+    withCredentials: true,
   };
 
   const formattedData: Record<string, any> = {
@@ -567,7 +578,7 @@ export const putArtifactsByMilestoneId = async (
  */
 export const deleteMilestoneArtifactById = async (milestoneArtifactId: string) => {
   const headers = appendAuthToken({});
-  const config = { headers: headers, params: { milestone_artifact_id: milestoneArtifactId } };
+  const config = { headers: headers, params: { milestone_artifact_id: milestoneArtifactId }, withCredentials: true };
 
   try {
     await axios.delete(routes.projectManagementV2.milestone.deleteMilestoneArtifactById, config);
@@ -587,6 +598,7 @@ export const updateMilestoneStatus = async (milestoneId: string, targetStatus: M
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   let formattedPayload = {
     milestone_id: milestoneId,
@@ -607,7 +619,7 @@ export const updateMilestoneStatus = async (milestoneId: string, targetStatus: M
  */
 export const markMilestoneArtifactAsRead = async (milestoneId: string) => {
   const headers = appendAuthToken({});
-  const config = { headers: headers, params: { milestone_id: milestoneId } };
+  const config = { headers: headers, params: { milestone_id: milestoneId }, withCredentials: true };
 
   try {
     await axios.post(routes.projectManagementV2.notification.markMilestoneArtifactAsRead, {}, config);
@@ -625,7 +637,7 @@ export const markMilestoneArtifactAsRead = async (milestoneId: string) => {
  */
 export const submitKudosOrWow = async (milestoneId: string, teamMemberIds: string[]) => {
   const headers = appendAuthToken({});
-  const config = { headers: headers, params: { milestone_id: milestoneId } };
+  const config = { headers: headers, params: { milestone_id: milestoneId }, withCredentials: true };
 
   try {
     await axios.post(routes.projectManagementV2.feedback.submitKudosWow, teamMemberIds, config);
@@ -636,7 +648,7 @@ export const submitKudosOrWow = async (milestoneId: string, teamMemberIds: strin
 
 export const terminateProject = async (projectId: string) => {
   const headers = appendAuthToken({});
-  const config = { headers: headers, params: { project_id: projectId } };
+  const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
 
   try {
     await axios.put(routes.projectManagementV2.project.terminateProject, {}, config);
@@ -647,7 +659,7 @@ export const terminateProject = async (projectId: string) => {
 
 export const withdrawProject = async (projectId: string) => {
   const headers = appendAuthToken({});
-  const config = { headers: headers, params: { project_id: projectId } };
+  const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
 
   try {
     await axios.put(routes.projectManagementV2.project.withdrawProject, {}, config);
@@ -658,7 +670,11 @@ export const withdrawProject = async (projectId: string) => {
 
 export const relistProject = async (projectId: string, startDate: number, endDate: number) => {
   const headers = appendAuthToken({});
-  const config = { headers: headers, params: { project_id: projectId, start_date: startDate, end_date: endDate } };
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, start_date: startDate, end_date: endDate },
+    withCredentials: true,
+  };
 
   try {
     await axios.put(routes.projectManagementV2.project.relistProject, {}, config);

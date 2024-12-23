@@ -18,6 +18,7 @@ export const getImageUploadUrl = async (filename: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
     params: {
       filename: filename,
     },
@@ -40,7 +41,7 @@ export const getImageUploadUrl = async (filename: string) => {
  */
 export const changePasswordWithCurrentPassword = async (currentPassword: string, newPassword: string) => {
   const headers = appendAuthToken({});
-  const config = { headers };
+  const config = { headers: headers, withCredentials: true };
 
   try {
     const response = await axios.post(
@@ -64,9 +65,12 @@ export const getUserDetails = async () => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   try {
     const response = await axios.get(routes.userManagement.user.getUserDetails, config);
+    console.log('response : ' + response);
+
     return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching user details');
@@ -83,6 +87,7 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   const formattedData: Record<string, any> = {};
   if (!isEmpty(data.firstname)) {
@@ -115,6 +120,7 @@ export const updateFlexternClientInfo = async (data: Partial<FlexternClientProfi
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   const formattedData: Record<string, any> = {};
 
@@ -174,6 +180,7 @@ export const getFlexternClientOrgInfo = async () => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   try {
     const response = await axios.get(routes.userManagement.user.v2.getOrganisationDetails, config);
