@@ -12,7 +12,8 @@ export const uploadFileToUrl = async (url: string, file: any, setUploadProgress?
   const uploadResponse = await axios.put(url, file, {
     headers: {
       'x-ms-blob-type': 'BlockBlob',
-      'Content-Type': file.type,
+      'Content-Type': 'multipart/form-data',
+      'Content-File-Type': file.type,
     },
     onUploadProgress: (progressEvent) => {
       const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total!);

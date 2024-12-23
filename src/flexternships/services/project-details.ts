@@ -11,7 +11,7 @@ import API from '@/configs/api';
  */
 export const fetchTeamDetails = async (projectId: string) => {
   const headers = appendAuthToken({});
-  const config = { headers };
+  const config = { headers: headers, withCredentials: true };
   try {
     const response = await axios.get(
       `${routes.projectManagementV2.project.getProjectTeamDetails}?project_id=${projectId}`,
@@ -25,7 +25,7 @@ export const fetchTeamDetails = async (projectId: string) => {
 
 export const getProjectInvitationDetailsService = async (projectId: string) => {
   const headers = appendAuthToken({});
-  const config = { headers };
+  const config = { headers: headers, withCredentials: true };
 
   try {
     const response = await axios.get(
@@ -40,7 +40,7 @@ export const getProjectInvitationDetailsService = async (projectId: string) => {
 
 export const markInvitationAsRead = async (projectId: string) => {
   const headers = appendAuthToken({});
-  const config = { headers };
+  const config = { headers: headers, withCredentials: true };
   const data = { project_id: projectId, type: 'PROJECT_INVITATION' };
 
   try {
@@ -52,7 +52,7 @@ export const markInvitationAsRead = async (projectId: string) => {
 
 export const getSelfOrTeamPerformanceDetailsService = async (projectId: string, feedbackType: string) => {
   const headers = appendAuthToken({});
-  const config = { headers };
+  const config = { headers: headers, withCredentials: true };
 
   try {
     const response = await axios.get(
@@ -67,7 +67,7 @@ export const getSelfOrTeamPerformanceDetailsService = async (projectId: string, 
 
 export const getPeerOrIndividualPerformanceDetailsService = async (milestoneId: string, feedbackType: string) => {
   const headers = appendAuthToken({});
-  const config = { headers };
+  const config = { headers: headers, withCredentials: true };
 
   try {
     const response = await axios.get(
