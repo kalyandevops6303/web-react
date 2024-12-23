@@ -75,8 +75,9 @@ export default function MilestoneDetails() {
   const { projectId } = useParams();
 
   useEffect(() => {
+    if (!projectId) throw new Error('Project ID is required to fetch team details');
     populateTeamDetails(projectId);
-  }, [projectId]);
+  }, [projectId, populateTeamDetails]);
 
   useEffect(() => {
     setAllowRecognition(
