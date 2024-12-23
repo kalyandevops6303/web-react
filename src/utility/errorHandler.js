@@ -6,13 +6,11 @@ import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
 import { removeTeamFromList } from '../redux/reducers/team';
 import { store } from '../redux/store';
-import { ERROR_CODES } from './constants/Constant';
-import { ERROR } from './constants/ToastTypes';
-import { getItem, setItem } from './localStorageControl';
+import { ERROR_CODES } from './constants/Constant';import { getItem, setItem } from './localStorageControl';
 import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
 import { messaging } from '../configs/api/firebase';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { getCookiesItem } from './cookiesControl';
+import { isUserLoggedIn } from './commonUtils';
 
 const { dispatch } = store;
 
@@ -38,12 +36,11 @@ const handleError = (err, callBack) => {
 const handleErrorCode = async (err, callBack) => {
   const cometChatToken = getItem('cometChatToken');
   const fcmToken = getItem('fcmToken');
-  const accessToken = getCookiesItem('access_token');
   const expiredError = getItem('expiredError');
   if (err?.response?.status === 401) {
     if (!expiredError) {
       setItem('expiredError', true);
-      if (accessToken) {
+      if (isUserLoggedIn()) {
         showErrorNotification('Session expired!');
       }
       if (fcmToken) {
