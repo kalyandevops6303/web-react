@@ -15,6 +15,7 @@ export const getClientPublicDetails = async (clientUserId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
 
   try {
@@ -45,6 +46,7 @@ export const getClientCompletedProjects = async (clientUserId: string, page: num
       page,
       page_size: pageSize,
     },
+    withCredentials: true,
   };
 
   try {
