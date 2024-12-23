@@ -23,7 +23,7 @@ export const submitFeedbackInfo = async (formData: any, onSuccess: () => void, s
     feedbackFormSubmission: data,
   }));
   set({ isSubmitFeedbackLoading: false });
-  onSuccess();
+  onSuccess && onSuccess();
 };
 
 export const getFeedbackResponseInfo = async (

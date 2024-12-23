@@ -24,9 +24,10 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   const [filteredPerformanceDetails, setFilteredPerformanceDetails] = useState<any>([]);
 
   useEffect(() => {
-    getPerformanceDetails(params?.projectId as string, feedbackType);
+    if (!params?.projectId) throw new Error('Project ID is required to fetch performance details');
+    getPerformanceDetails(params?.projectId, feedbackType);
     populateTeamDetails(params?.projectId);
-  }, []);
+  }, [params?.projectId, getPerformanceDetails, populateTeamDetails]);
 
   useEffect(() => {
     const receiverId = currentUserType === UserType.CLIENT ? teamDetails[0]?.id : currentUserId;

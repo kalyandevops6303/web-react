@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Upload } from 'react-feather';
 import { useFieldArray, UseFormTrigger } from 'react-hook-form';
 import { getFileDownloadUrl, getFileUploadUrl } from '@flexternships/services/project-management-v2';
@@ -8,12 +8,12 @@ import { formatFileSize } from '@flexternships/utils/file-utils';
 import HorizontalFileCard from '../files/HorizontalFileCard';
 import { uploadFileToUrl } from '@/flexternships/services/core-service';
 import Tooltip from '../Tooltip';
+import { MAX_FILE_SIZE_ERROR, MAX_FILE_SIZE_LIMIT } from '@/flexternships/lib/constants';
 
 export default function FileUpload(props: InputProps) {
   const {
     name,
     control,
-    error,
     tooltip,
     trigger,
     watch,
@@ -30,22 +30,15 @@ export default function FileUpload(props: InputProps) {
     name: name,
   });
 
-  // Update the error message in the field state
-  useEffect(() => {
-    if (error) {
-      fields.forEach((field, index) => {
-        if (error && error[index]) {
-          let errorMessage = '';
-          Object.values(error[index]).map((e: any) => (errorMessage += e.message + '. '));
-          update(index, { ...field, error: errorMessage });
-        }
-      });
-    }
-  }, [error]);
+  // Track files being uploaded to allow cancellation
+  const uploadingFiles = useRef<{ [key: number]: boolean }>({});
 
   const getUploadProgress = (progress: number, index: number) => {
-    const fieldState = watch(name); // Get the current field state
-    update(index, { ...fieldState[index], uploadProgress: progress });
+    // Only update progress if file hasn't been removed
+    if (uploadingFiles.current[index]) {
+      const fieldState = watch(name);
+      update(index, { ...fieldState[index], uploadProgress: progress });
+    }
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null); // Create a ref for the file input
@@ -54,20 +47,28 @@ export default function FileUpload(props: InputProps) {
     try {
       const fieldState = watch(name); // Get the current field state
       if (!fieldState[index].error) {
-        // If no error, upload the file
+        uploadingFiles.current[index] = true;
         const uploadRequirements = await getFileUploadUrl(file.name);
         await uploadFileToUrl(uploadRequirements.data.upload_url, file, getUploadProgress, index);
-        const fileKey = uploadRequirements.data.file_key;
-        update(index, { ...fieldState[index], fileKey: fileKey, loading: false, uploadSuccess: true });
+        // Check if file was removed during upload
+        if (uploadingFiles.current[index]) {
+          const fileKey = uploadRequirements.data.file_key;
+          update(index, { ...fieldState[index], fileKey: fileKey, loading: false, uploadSuccess: true });
+        }
       }
     } catch (error: any) {
-      const fieldState = watch(name); // Get the current field state
-      update(index, {
-        ...fieldState[index],
-        error: 'Upload failed. Please check your connection.',
-        uploadProgress: 0,
-        uploadError: true,
-      });
+      // Only update error state if file hasn't been removed
+      if (uploadingFiles.current[index]) {
+        const fieldState = watch(name);
+        update(index, {
+          ...fieldState[index],
+          error: 'Upload failed. Please check your connection.',
+          uploadProgress: 0,
+          uploadError: true,
+        });
+      }
+    } finally {
+      delete uploadingFiles.current[index];
     }
   };
 
@@ -85,9 +86,14 @@ export default function FileUpload(props: InputProps) {
       loading: true,
       createdAt: dateToEpoch(new Date()),
     };
+
     if (!acceptedFormats?.includes(file.type)) {
       Object.assign(newField, { error: 'Invalid file format.' });
     }
+    if (file.size > MAX_FILE_SIZE_LIMIT) {
+      Object.assign(newField, { error: MAX_FILE_SIZE_ERROR });
+    }
+
     append(newField);
     await trigger(name); // Trigger validation on new field
     const fieldState = watch(name); // Get the current field state
@@ -100,6 +106,8 @@ export default function FileUpload(props: InputProps) {
   };
 
   const handleRemove = (index: number) => {
+    // Mark file as removed to stop upload
+    delete uploadingFiles.current[index];
     remove(index);
 
     // Clear the file input value on removal if desired
@@ -132,7 +140,7 @@ export default function FileUpload(props: InputProps) {
         <div className={`flex flex-col w-full ${fields.length !== 0 ? 'mt-1' : ''}`}>
           {fields.map((item: any, index: number) => (
             <HorizontalFileCard
-              key={index}
+              key={item.id}
               fileName={item.fileName}
               error={item.error}
               loading={item.loading}

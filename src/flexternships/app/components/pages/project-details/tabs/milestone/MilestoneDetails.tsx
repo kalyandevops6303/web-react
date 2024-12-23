@@ -75,8 +75,9 @@ export default function MilestoneDetails() {
   const { projectId } = useParams();
 
   useEffect(() => {
+    if (!projectId) throw new Error('Project ID is required to fetch team details');
     populateTeamDetails(projectId);
-  }, [projectId]);
+  }, [projectId, populateTeamDetails]);
 
   useEffect(() => {
     setAllowRecognition(
@@ -278,13 +279,13 @@ export default function MilestoneDetails() {
         {userDetails.userType === UserType.TALENT && <DraftArtifacts isDisabled={areArtifactsDisabledForTalent} />}
       </SimpleElevatedCard>
       {!(userDetails.userType === UserType.TALENT && areArtifactsDisabledForTalent) && (
-        <SimpleElevatedCard className="">
-          <Accordion type="single" collapsible defaultValue="submission-history" className="w-full max-w-full">
+        <SimpleElevatedCard>
+          <Accordion type="single" collapsible defaultValue="submission-history">
             <AccordionItem value="submission-history" className="border-none bg-white-fa py-6 px-8">
               <AccordionTrigger className="hover:no-underline p-0">
                 <div className="text-lg font-medium not-italic text-grey-heading">Submission History</div>
               </AccordionTrigger>
-              <AccordionContent className="!max-w-full overflow-hidden">
+              <AccordionContent>
                 {isEmpty(submittedArtifacts) ? (
                   <div className="bg-white mt-5 flex flex-col items-center justify-center px-6 pb-7 w-full overflow-hidden">
                     <img

@@ -44,11 +44,12 @@ export default function TeamFeedback() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
+    if (!params?.projectId) throw new Error('Project ID is required to fetch team feedback form');
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
     populateTeamDetails(params?.projectId);
-    getProjectDetails(params?.projectId as string);
-    getMilestones(params?.projectId as string);
-  }, []);
+    getProjectDetails(params?.projectId);
+    getMilestones(params?.projectId);
+  }, [params?.projectId, getTeamFeedbackForm, populateTeamDetails, getProjectDetails, getMilestones]);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
     const submitFeedbackData: any = {
@@ -67,9 +68,11 @@ export default function TeamFeedback() {
   };
 
   const handleCloseSuccessModal = () => {
+    if (!params?.projectId) throw new Error('Project ID is required to submit feedback');
+    populateUserDetails(true);
+    getProjectDetails(params?.projectId);
     setShowSuccessModal(false);
     navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
-    populateUserDetails();
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
   };
 

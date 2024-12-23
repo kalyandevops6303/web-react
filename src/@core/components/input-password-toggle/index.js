@@ -30,13 +30,11 @@ const InputPasswordToggle = forwardRef((props, ref) => {
 
   // ** Renders Icon Based On Visibility
   const renderIcon = () => {
-    const size = iconSize ? iconSize : 18;
+    const size = iconSize || 18;
 
-    if (inputVisibility === false) {
-      return hideIcon ? hideIcon : <Eye color="#E3E6EF" size={size} />;
-    } else {
-      return showIcon ? showIcon : <EyeOff color="#E3E6EF" size={size} />;
-    }
+    return inputVisibility === false
+      ? hideIcon || <Eye color="#E3E6EF" size={size} />
+      : showIcon || <EyeOff color="#E3E6EF" size={size} />;
   };
 
   return (
@@ -56,7 +54,7 @@ const InputPasswordToggle = forwardRef((props, ref) => {
           ref={ref}
           invalid={invalid}
           type={inputVisibility === false ? 'password' : 'text'}
-          placeholder={placeholder ? placeholder : '············'}
+          placeholder={placeholder ? placeholder : '⚉⚉⚉⚉⚉⚉⚉⚉⚉⚉⚉⚉'}
           className={classnames({
             [inputClassName]: inputClassName,
           })}

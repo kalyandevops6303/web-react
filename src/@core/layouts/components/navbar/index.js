@@ -29,7 +29,7 @@ import { confirmSaveForLater } from '../../../../redux/selectors/formDataSelecto
 import PermissionWrapper from '@/PermissionWrapper';
 import { useAppStore } from '@flexternships/stores/core-stores';
 import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
-import { getCookiesItem } from '@/utility/cookiesControl';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const HeadWrapper = styled.div`
   display: flex;
@@ -105,10 +105,8 @@ const ThemeNavbar = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const token = getCookiesItem('access_token');
-
   useEffect(() => {
-    if (token) {
+    if (isUserLoggedIn()) {
       dispatch(getUserData());
     }
   }, []);

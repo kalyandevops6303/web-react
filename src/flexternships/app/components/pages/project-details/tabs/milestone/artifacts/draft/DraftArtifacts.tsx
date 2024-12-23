@@ -35,26 +35,35 @@ import {
 } from '@/flexternships/static/milestones-content';
 import { getMilestoneDetailsModalDescription } from '@/flexternships/static/milestones-content';
 import DraftSavedModal from '@/flexternships/app/components/core/modals/milestone/DraftSavedModal';
-import { useAppStore } from '@/flexternships/stores/core-stores';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/core-content';
 import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {
+  // Milestone artifacts store hooks
   const draftArtifacts = useMilestoneArtifactsStore((state) => state.draftArtifacts);
   const removedArtifactIds = useMilestoneArtifactsStore((state) => state.removedArtifactIds);
   const updateDraftArtifacts = useMilestoneArtifactsStore((state) => state.updateDraftArtifacts);
   const saveDraftArtifacts = useMilestoneArtifactsStore((state) => state.saveDraftArtifacts);
   const submitDraftArtifacts = useMilestoneArtifactsStore((state) => state.submitDraftArtifacts);
+
+  // Project milestones store hooks
   const populateMilestoneDetails = useProjectMilestonesStore((state) => state.populateMilestoneDetails);
   const activeModal = useProjectMilestonesStore((state) => state.activeModal);
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
   const modalMetadata = useProjectMilestonesStore((state) => state.modalMetadata);
+
+  // Flextern user store hooks
+  const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
+
+  // Application store hooks
   const setWip = useAppStore((state) => state.setWip);
   const unsetWip = useAppStore((state) => state.unsetWip);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
   const getCurrentNextPath = useAppStore((state) => state.getCurrentNextPath);
 
+  // Component state variables
   const [saveDraftLoading, setSaveDraftLoading] = useState<boolean>(false);
   const [submitDraftLoading, setSubmitDraftLoading] = useState<boolean>(false);
   const [onSaveNextPath, setOnSaveNextPath] = useState<string | undefined>(undefined);
@@ -85,6 +94,8 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   }, [draftArtifacts]);
 
   useEffect(() => {
+    // Don't set wip if user is blocked
+    if (isUserBlocked) return;
     // Set Work in progress flag when this component mounts - accordingly navigation is stopped on the clicked component
     const fieldsLength = watch('draftArtifacts').length;
     if (fieldsLength === 0) return unsetWip();
@@ -311,38 +322,40 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
       <h2 className="text-lg font-medium not-italic text-grey-heading">Saved Drafts</h2>
 
       {!isEmpty(fields) && (
-        <div className="shadow-table w-full border-1 border-solid border-grey-border bg-white rounded-md overflow-hidden">
-          <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
-              File Name
+        <div className="overflow-x-auto">
+          <div className="shadow-table border-1 border-solid border-grey-border bg-white rounded-md w-[976px]">
+            <div className="flex flex-row items-center border-b-1 border-solid border-grey-border bg-grey-background min-h-10 px-1.5">
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[231px]">
+                File Name
+              </div>
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
+                Description
+              </div>
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
+                Uploaded On
+              </div>
+              <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
+                Action
+              </div>
             </div>
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[420px]">
-              Description
+            <div className="text-sm font-normal not-italic leading-5.5 text-grey">
+              {fields.map((field, index) => (
+                <DraftArtifactItem
+                  data={field}
+                  index={index}
+                  key={field.id}
+                  control={control}
+                  last={index === fields.length - 1}
+                  remove={remove}
+                  errors={errors.draftArtifacts?.[index] as FieldError}
+                  handleFileUpload={handleFileUpload}
+                  activeModal={activeModal}
+                  openRemoveArtifactModal={openRemoveArtifactModal}
+                  openArtifactRemovedModal={openArtifactRemovedModal}
+                  closeModal={closeModal}
+                />
+              ))}
             </div>
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[194px]">
-              Uploaded On
-            </div>
-            <div className="px-2.5 text-grey-heading text-xs not-italic font-semibold tracking-wide uppercase w-[116px]">
-              Action
-            </div>
-          </div>
-          <div className="text-sm font-normal not-italic leading-5.5 text-grey">
-            {fields.map((field, index) => (
-              <DraftArtifactItem
-                data={field}
-                index={index}
-                key={field.id}
-                control={control}
-                last={index === fields.length - 1}
-                remove={remove}
-                errors={errors.draftArtifacts?.[index] as FieldError}
-                handleFileUpload={handleFileUpload}
-                activeModal={activeModal}
-                openRemoveArtifactModal={openRemoveArtifactModal}
-                openArtifactRemovedModal={openArtifactRemovedModal}
-                closeModal={closeModal}
-              />
-            ))}
           </div>
         </div>
       )}

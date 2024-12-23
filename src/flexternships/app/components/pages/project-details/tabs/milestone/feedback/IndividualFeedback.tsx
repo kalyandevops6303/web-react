@@ -28,8 +28,9 @@ export default function IndividualFeedback() {
 
   const getTeam = useProjectsStore((state) => state.getPeerOrIndividualPerformanceDetails);
   const team = useProjectsStore((state) => state.performanceDetails);
-  const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
 
+  const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+  const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [filteredTeam, setFilteredTeam] = useState(team);
@@ -100,7 +101,8 @@ export default function IndividualFeedback() {
     setShowSuccessModal(false);
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
     getTeam(params?.milestoneId as string, FeedbackTypesAPI.INDIVIDUAL);
-    populateUserDetails();
+    populateUserDetails(true);
+    getProjectDetails(params?.projectId as string);
   };
 
   const handleActiveMemberChange = (userId: any) => {
