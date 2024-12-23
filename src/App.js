@@ -18,7 +18,7 @@ import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/re
 import './App.css';
 import { checkPoints } from './utility/constants/Constant';
 import { COMETCHAT_CONSTANTS, HOTJAR_ANALYTICS_CONSTANTS } from './constants';
-import { getCookiesItem } from './utility/cookiesControl';
+import { isUserLoggedIn } from './utility/commonUtils';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -83,13 +83,10 @@ const App = () => {
 
   // Fetch AccessToken and refreshToken from localstorage and check on init
   useEffect(() => {
-    const accessToken = getCookiesItem('access_token');
-    const refreshToken = getItem('refresh_token');
     const refreshTokenExpires = getItem('refresh_token_expires');
 
     // check that refreshToken is not expired
-    const isUserStillLoggedIn =
-      accessToken && refreshToken && refreshTokenExpires && new Date(refreshTokenExpires) >= new Date();
+    const isUserStillLoggedIn = isUserLoggedIn() && refreshTokenExpires && new Date(refreshTokenExpires) >= new Date();
 
     if (
       isUserStillLoggedIn &&
