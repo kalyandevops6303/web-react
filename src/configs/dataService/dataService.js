@@ -62,7 +62,7 @@ class DataService {
       method: 'PATCH',
       url: team_id ? fullUrl : path,
       data,
-      headers: {  ...optionalHeader },
+      headers: { ...optionalHeader },
       withCredentials: true,
     });
   }
