@@ -61,6 +61,8 @@ import { FlexternUserAppRole, GlobalModalType } from '@/flexternships/constraint
 import { isFlexternshipApp } from '@/configs/api/env';
 import { removeCookiesItem } from '@/utility/cookiesControl';
 import { useAppStore } from '@/flexternships/stores/core-stores';
+import useLogout from '@/utility/hooks/useLogout';
+
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
   const isLoading = useSelector((state) => state.auth.userDataLoading);
@@ -70,7 +72,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const isInviteDelegateModalVisible = useSelector(checkIsInviteDelegateModalVisible);
   const appPermissions = useSelector(appPermissionsSelector);
   const isLoggedIn = useSelector(selectIsLoggedIn);
-
+  const { handleLogout } = useLogout();
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -104,50 +106,6 @@ const UserDropdown = ({ setNavBarLoading }) => {
     handleWorkInProgress(nextPath);
     if (isWorkInProgress) return;
     navigate(nextPath);
-  };
-
-  const handleLogout = async () => {
-    const onSuccess = async () => {
-      window.history.pushState(null, '', '/auth/login');
-      window.addEventListener('popstate', function (event) {
-        history.pushState(null, '', '/auth/login');
-      });
-
-      navigate('/auth/login');
-
-      // Fcm unsubscribe
-      if (fcmToken) {
-        try {
-          await messaging?.deleteToken();
-        } catch (error) {
-          console.error(error);
-        }
-      }
-      // CometChat logout
-      const cometChatToken = getItem('cometChatToken');
-      if (cometChatToken) {
-        try {
-          CometChat.disconnect();
-          await CometChat.logout();
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
-      const keyToPreserve = 'isUserVisited';
-      const preservedValue = getItem(keyToPreserve);
-      // eslint-disable-next-line no-undef
-      window.localStorage.clear();
-      window.sessionStorage.clear();
-      removeCookiesItem('access_token');
-      if (preservedValue) {
-        setItem(keyToPreserve, preservedValue);
-      }
-      dispatch(clearAllFormData());
-      dispatch(setFormDocuments(null));
-    };
-
-    dispatch(logoutAction({ fcmToken, onSuccess }));
   };
 
   const LineWrapper = styled.div`

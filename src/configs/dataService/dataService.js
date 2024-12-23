@@ -5,16 +5,10 @@ import getTeamId from '../../utility/commonUtils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
 import { apiAuthEndpoint } from '../api';
-import { getCookiesItem, setCookiesItem } from '@/utility/cookiesControl';
-
-const authHeader = () => ({
-  Authorization: `Bearer ${getCookiesItem('access_token')}`,
-});
 
 const client = axios.create({
   baseURL: '',
   headers: {
-    Authorization: `Bearer ${getCookiesItem('access_token')}`,
     'Content-Type': 'application/json',
   },
 });
@@ -39,7 +33,7 @@ class DataService {
     return client({
       method: 'GET',
       url: team_id ? fullUrl : path,
-      headers: { ...authHeader() },
+      withCredentials: true,
     });
   }
 
@@ -53,7 +47,8 @@ class DataService {
       method: 'POST',
       url: team_id ? fullUrl : path,
       data,
-      headers: { ...authHeader(), ...optionalHeader },
+      headers: { ...optionalHeader },
+      withCredentials: true,
     });
   }
 
@@ -67,7 +62,8 @@ class DataService {
       method: 'PATCH',
       url: team_id ? fullUrl : path,
       data,
-      headers: { ...authHeader(), ...optionalHeader },
+      headers: { ...optionalHeader },
+      withCredentials: true,
     });
   }
 
@@ -81,7 +77,8 @@ class DataService {
       method: 'PUT',
       url: team_id ? fullUrl : path,
       data,
-      headers: { ...authHeader(), ...optionalHeader },
+      headers: { ...optionalHeader },
+      withCredentials: true,
     });
   }
 
@@ -104,7 +101,7 @@ class DataService {
       method: 'DELETE',
       url: team_id ? fullUrl : path,
       data: JSON.stringify(data),
-      headers: { ...authHeader() },
+      withCredentials: true,
     });
   }
 }
@@ -138,8 +135,6 @@ client.interceptors.request.use(async (req) => {
     if (refreshTokenExpiry > new Date().valueOf()) {
       if (accessTokenExpiry < new Date().valueOf()) {
         await getRefreshToken().then((res) => {
-          setCookiesItem('access_token', res.data.data.access_token, res.data.data.access_token_expires);
-
           setItem('access_token_expires', res.data.data.access_token_expiry);
           req.headers.Authorization = `Bearer ${res.data.data.access_token}`;
         });

@@ -14,6 +14,7 @@ export const getMilestoneFeedbackInfoService: (projectId: string, feedbackType: 
       project_id: projectId,
       feedback_type: feedbackType,
     },
+    withCredentials: true,
   };
 
   try {
@@ -48,6 +49,7 @@ export const getFeedbackResponseService: (
       milestone_id: milestoneId,
       feedback_type: feedbackType,
     },
+    withCredentials: true,
   };
 
   try {

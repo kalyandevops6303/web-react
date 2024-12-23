@@ -237,7 +237,8 @@ const FlexternSocial = () => {
 
       await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
         'x-ms-blob-type': 'BlockBlob',
-        'Content-Type': file.file.type,
+        'Content-Type': 'multipart/form-data',
+        'Content-File-Type': file.file.type,
       });
     } catch (error) {
       dispatch(resumeParsedDetailsSuccess(null));
