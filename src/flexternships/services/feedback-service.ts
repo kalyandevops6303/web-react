@@ -28,7 +28,10 @@ export const getMilestoneFeedbackInfoService: (projectId: string, feedbackType: 
 export const submitFeedbackService = async (formData: any): Promise<any> => {
   try {
     const headers = appendAuthToken({}) || {};
-    const response = await axios.post(`${routes.projectManagementV2.feedback.submitFeedback}`, formData, { headers });
+    const response = await axios.post(`${routes.projectManagementV2.feedback.submitFeedback}`, formData, {
+      headers,
+      withCredentials: true,
+    });
     return response.data?.data || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while submitting feedback');
