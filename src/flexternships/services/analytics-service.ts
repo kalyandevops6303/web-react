@@ -230,6 +230,7 @@ export const getPerformanceChartDataService: (projectId: string) => Promise<any>
           color: '#00CFE8',
         },
       } satisfies ChartConfig,
+      maxYAxis: 10,
     };
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching performance chart data');

@@ -199,7 +199,7 @@ export default function IndividualAnalytics() {
       <MultipleLinesChart
         chartData={performanceChartData?.chartData}
         chartConfig={performanceChartData?.chartConfig}
-        maxYAxis={10}
+        maxYAxis={performanceChartData?.maxYAxis}
         showFilters={true}
         XAxisDataKey="milestone"
       />
