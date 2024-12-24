@@ -9,11 +9,12 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryButton';
 import { useState } from 'react';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { ProjectSecondaryStatus, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { acceptProject } from '@/flexternships/services/project-management-v2';
 
 export default function ProjectsTab() {
   const isDocumentsNeededForThisProject = useProjectsStore((state) => state.projectDetails.isDocumentsNeeded);
+  const secondaryStatusOfThisProject = useProjectsStore((state) => state.projectDetails.secondaryStatus.next);
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
   const [isAcceptingProject, setIsAcceptingProject] = useState(false);
@@ -77,13 +78,19 @@ export default function ProjectsTab() {
     }
   };
 
+  const isProjectAcceptancePending = [
+    ProjectSecondaryStatus.SIGN_CONTRACT,
+    ProjectSecondaryStatus.SIGN_NDA,
+    ProjectSecondaryStatus.SIGN_DOCUMENTS,
+  ].includes(secondaryStatusOfThisProject);
+
   return (
     <div className="py-6 max-w-5xl">
       <SimpleElevatedCard className={Styles.tabContent}>
         <div className={Styles.tabContentHeader}>Project Invitation</div>
         <div className={`${Styles.tabContentBody} ${!isDocumentsNeededForThisProject ? 'gap-y-5' : ''}`}>
           <VerticalTimeline timelineItems={timelineItems} hideLine={!isDocumentsNeededForThisProject} />
-          {!isDocumentsNeededForThisProject && (
+          {!isDocumentsNeededForThisProject && isProjectAcceptancePending && (
             <div className="w-full flex justify-end">
               <PrimaryButton className="my-0" onClick={handleAcceptProject} loading={isAcceptingProject}>
                 Accept Project
