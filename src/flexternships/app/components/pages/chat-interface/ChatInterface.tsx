@@ -10,8 +10,8 @@ import ProjectCard from '@flexternships/app/components/core/cards/ProjectCard';
 import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import { wsEndpoints } from '@flexternships/utils/api';
 import { ChatMessage, WebSocketMessage } from '@flexternships/types/core-types';
-import { getCookiesItem } from '@/utility/cookiesControl';
 import { formatWebSocketMessage } from '@/utility/Utils';
+import { getCookiesItem } from '@/utility/cookiesControl';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);

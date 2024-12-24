@@ -1,15 +1,10 @@
 import axios from 'axios';
-import { getCookiesItem } from '@/utility/cookiesControl';
 import { handleError } from '@flexternships/utils/error-utils';
 import { Feature } from '../constraints/types/core-types';
 
 export const featureAccessService = {
   async getPermittedFeatures(): Promise<Feature[]> {
-    const accessToken = getCookiesItem('access_token');
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const config = { headers };
+    const config = { withCredentials: true };
 
     try {
       const response = await axios.get('https://tru-dev-api.trumio.ai/user/api/v1/features/permitted-features', config);

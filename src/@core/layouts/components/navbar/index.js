@@ -17,7 +17,7 @@ import theme from '../../../../configs/themeVariables';
 import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
-import { getItem, setItem } from '../../../../utility/localStorageControl';
+import { setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { appPermissionsSelector, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus, userTypes } from '../../../../utility/constants/Constant';

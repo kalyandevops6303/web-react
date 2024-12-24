@@ -89,6 +89,7 @@ import {
   setResumeDataUploadedForPersonal,
   setResumeParsed,
 } from '../../../redux/reducers/formData';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const customDropdownStyles = {
   menuList: (provided) => ({
@@ -1099,7 +1100,7 @@ const Personal = () => {
         ]);
         dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
       }
-    } else {
+    } else if (isUserLoggedIn()) {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getLanguages());

@@ -56,6 +56,7 @@ import {
 } from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -328,10 +329,6 @@ const Social = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(files);
-  }, [files]);
-
   const setResumeParsedDetails = (res) => {
     if (res) {
       if (res?.social_links.length > 0) {
@@ -416,7 +413,7 @@ const Social = () => {
   };
   useEffect(() => {
     if (parseResume) {
-      if (parsedUploaded) {
+      if (parsedUploaded && isUserLoggedIn()) {
         dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
@@ -430,7 +427,7 @@ const Social = () => {
           ),
         );
       }
-    } else {
+    } else if (isUserLoggedIn()) {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
   }, [parseResume, parsedResumeData]);
