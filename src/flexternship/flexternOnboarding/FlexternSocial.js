@@ -861,7 +861,11 @@ const FlexternSocial = () => {
                         name="linkedInLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter public URL" invalid={errors.linkedInLink && true} />
+                          <Input
+                            {...field}
+                            placeholder="Enter your profile URL"
+                            invalid={errors.linkedInLink && true}
+                          />
                         )}
                       />
                       {errors.linkedInLink && <FormFeedback>{errors.linkedInLink.message}</FormFeedback>}
@@ -875,7 +879,7 @@ const FlexternSocial = () => {
                         name="twitterLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter URL" invalid={errors.twitterLink && true} />
+                          <Input {...field} placeholder="Enter X handle" invalid={errors.twitterLink && true} />
                         )}
                       />
                       {errors.twitterLink && <FormFeedback>{errors.twitterLink.message}</FormFeedback>}
@@ -891,7 +895,7 @@ const FlexternSocial = () => {
                         name="githubLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter URL" invalid={errors.githubLink && true} />
+                          <Input {...field} placeholder="Enter Github handle" invalid={errors.githubLink && true} />
                         )}
                       />
                       {errors.githubLink && <FormFeedback>{errors.githubLink.message}</FormFeedback>}
