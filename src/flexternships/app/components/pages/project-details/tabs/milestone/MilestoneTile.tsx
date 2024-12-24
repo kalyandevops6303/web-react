@@ -1,7 +1,12 @@
 import React from 'react';
 import { ChevronRight, Info } from 'react-feather';
 import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
-import { MilestoneStatus, UserType } from '@flexternships/enums/core-enums';
+import {
+  MilestoneFeedbackType,
+  MilestoneStatus,
+  UserType,
+  MilestoneFeedbackStatus,
+} from '@flexternships/enums/core-enums';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MilestoneDetails } from '@/flexternships/constraints/types/project-milestones-types';
 import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
@@ -42,6 +47,12 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data, disabled }) => {
   };
 
   const referenceDateForFeedback = userDetails.userType === UserType.CLIENT ? acceptedAt : submittedAt;
+
+  const disablePeerFeedback = milestoneFeedbackDetails.some(
+    (feedback) =>
+      feedback.feedbackType === MilestoneFeedbackType.SELF_FEEDBACK &&
+      feedback.feedbackStatus === MilestoneFeedbackStatus.PENDING,
+  );
 
   const styles = {
     disabled: 'opacity-50 cursor-not-allowed pointer-events-none',
@@ -87,14 +98,13 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data, disabled }) => {
           milestoneFeedbackDetails.map((feedback, index) => (
             <FeedbackStatusCard
               key={index}
-              feedbackType={feedback.feedbackType}
-              feedbackStatus={feedback.feedbackStatus}
-              numberOfQuestions={feedback.numberOfQuestions}
-              timeToComplete={feedback.timeToComplete}
+              {...feedback}
               projectId={projectDetails.projectId}
               milestoneId={id}
               daysLeft={
-                referenceDateForFeedback
+                disablePeerFeedback && feedback.feedbackType === MilestoneFeedbackType.PEER_FEEDBACK
+                  ? undefined
+                  : referenceDateForFeedback
                   ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, maxFeedbackDueDays))
                   : undefined
               }
