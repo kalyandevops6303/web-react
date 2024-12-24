@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Correct import for navigation
 import { CometChat } from '@cometchat-pro/chat';
-import { removeCookiesItem } from '../cookiesControl';
 import { getItem, setItem } from '../localStorageControl';
 import { clearAllFormData, setFormDocuments } from '@/redux/reducers/formData';
 import { logoutAction } from '@/redux/actions/authActions';
@@ -13,6 +12,7 @@ const useLogout = () => {
   const fcmToken = useSelector((state) => state.auth.fcmToken);
 
   const handleLogout = async () => {
+    getItem('userLoggedIn', false);
     const onSuccess = async () => {
       window.localStorage.clear();
       window.sessionStorage.clear();
@@ -45,7 +45,6 @@ const useLogout = () => {
 
       const keyToPreserve = 'isUserVisited';
       const preservedValue = getItem(keyToPreserve);
-      removeCookiesItem('access_token');
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
       }

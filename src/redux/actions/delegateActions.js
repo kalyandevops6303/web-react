@@ -25,6 +25,7 @@ const signUpDelegate =
     try {
       const res = await delegateSignUpService({ data: { email, password: newPassword }, invitationToken });
       if (!isEmpty(res.data.data)) {
+        setItem('userLoggedIn', true);
         setItem('access_token_expires', res?.data?.data.access_token_expires);
         setItem('refresh_token_expires', res?.data?.data.refresh_token_expires);
         setItem('user_id', res?.data?.data.user_id);

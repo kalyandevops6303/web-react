@@ -10,8 +10,8 @@ import ProjectCard from '@flexternships/app/components/core/cards/ProjectCard';
 import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import { wsEndpoints } from '@flexternships/utils/api';
 import { ChatMessage, WebSocketMessage } from '@flexternships/types/core-types';
-import { getCookiesItem } from '@/utility/cookiesControl';
 import { formatWebSocketMessage } from '@/utility/Utils';
+import { getItem } from '@/utility/localStorageControl';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -23,7 +23,7 @@ export default function ChatInterface() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = getCookiesItem('access_token');
+    const token = getItem('userLoggedIn');
     if (!token) {
       navigate('/login');
       return;

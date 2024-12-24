@@ -11,8 +11,8 @@ import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
 import { GlobalModalActions } from '@/flexternships/constraints/types/core-types';
 import { projectsBlockedModalContent } from '@/flexternships/static/core-content';
+import { getItem } from '@/utility/localStorageControl';
 import { featureAccessService } from '@/flexternships/services/feature-access-service';
-import { isUserLoggedIn } from '@/utility/commonUtils';
 
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
@@ -34,7 +34,9 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isUserLoggedIn()) {
+    const userLoggedIn = getItem('userLoggedIn');
+    const token = getItem('access_token_expires');
+    if (token && userLoggedIn) {
       populateUserDetails();
     }
   }, [populateUserDetails]);

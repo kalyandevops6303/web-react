@@ -113,12 +113,9 @@ const resetRefreshTokenRequest = () => {
   refreshTokenRequest = null;
 };
 const makeActualAuthenticationRequest = () => {
-  const refreshToken = getItem('refresh_token');
   const response = axios.post(
     `${apiAuthEndpoint}/api/v1/auth/refresh`,
-    {
-      refresh_token: refreshToken,
-    },
+
     { withCredentials: true },
   );
   return response;
@@ -132,7 +129,7 @@ const getRefreshToken = () => {
 };
 
 client.interceptors.request.use(async (req) => {
-  const accessToken = getItem('access_token');
+  const accessToken = getItem('userLoggedIn');
   const accessTokenExpiry = getItem('access_token_expires');
   const refreshTokenExpiry = getItem('refresh_token_expires');
 

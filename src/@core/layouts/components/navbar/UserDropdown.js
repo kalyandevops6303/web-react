@@ -29,7 +29,7 @@ import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
 import { clubStatus, delegateTypes, userTypes } from '../../../../utility/constants/Constant';
-import { getItem, setItem } from '../../../../utility/localStorageControl';
+import { getItem } from '../../../../utility/localStorageControl';
 import {
   selectSavedUserData,
   selectIsTeamLoggedIn,
@@ -59,7 +59,6 @@ import { truncateSentence } from '../../../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
 import { FlexternUserAppRole, GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import { isFlexternshipApp } from '@/configs/api/env';
-import { removeCookiesItem } from '@/utility/cookiesControl';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import useLogout from '@/utility/hooks/useLogout';
 

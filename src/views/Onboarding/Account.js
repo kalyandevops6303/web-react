@@ -108,6 +108,7 @@ const Account = () => {
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
   const userType = useSelector((state) => state.auth?.userType);
+  const userLoggedIn = getItem('userLoggedIn');
 
   const {
     control,
@@ -334,7 +335,9 @@ const Account = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
+    if (userLoggedIn) {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
   }, []);
 
   const isFileValid = (file) => {

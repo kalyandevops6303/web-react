@@ -131,6 +131,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     const res = await loginService({ email: username, password });
     if (!isEmpty(res?.data?.data)) {
       dispatch(setUserTypeSuccess(res?.data?.data?.user_type));
+      setItem('userLoggedIn', true);
       setItem('access_token_expires', res.data.data.access_token_expires);
       setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       setItem('user_id', res.data.data.user_id);
@@ -195,7 +196,7 @@ const loginUserWithGoogle =
       } else {
         res = await loginServiceGoogle({ id_token });
       }
-
+      setItem('userLoggedIn', true);
       setItem('access_token_expires', res.data.data.access_token_expires);
       setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       setItem('user_id', res.data.data.user_id);
@@ -232,6 +233,7 @@ const verifyEmail = (data) => async (dispatch) => {
   dispatch(verifyEmailRequest());
   try {
     const res = await verifyEmailService(data);
+    setItem('userLoggedIn', true);
     setItem('access_token_expires', res.data.data.access_token_expires);
     setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     dispatch(setTalentBooleanIsFlextern(false)); // making sure for normal talent onboarding or client onboarding the checkpoints are properly navigated
@@ -250,6 +252,7 @@ const verifyEmailForFlextern =
     try {
       const res = await verifyEmailForFlexternService(data, invitation_token);
       if (!isEmpty(res?.data?.data)) {
+        setItem('userLoggedIn', true);
         setItem('access_token_expires', res.data.data.access_token_expires);
         setItem('refresh_token_expires', res.data.data.refresh_token_expires);
         window.dataLayer.push({ user_id: res.data.data.user_id });
