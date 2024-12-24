@@ -13,8 +13,9 @@ import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
-import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
 const getBidByName = (bidBy) => {
   if (!bidBy) return '';
@@ -68,9 +69,9 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="active-project-name mt-1 truncate-2" style={{ height: '60px' }}>
-            {getBidByName(data?.bid_by) || data?.name}
-          </p>
+          <h4 className="active-project-name mt-1 truncate-2">
+            {truncateSentence({ sentence: getBidByName(data?.bid_by) || data?.name, maxCharacters: 30 })}
+          </h4>
           {data?.worker_details.length > 0 && (
             <div className="team-badge px-1">
               <p className="mb-25">Team</p>
@@ -88,7 +89,14 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
                       user_id: worker?.user_id,
                       user_type: userTypes.talent,
                       title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                      img: worker.image_uri || defaultAvatar,
+                      img:
+                        (worker.image_uri?.length > 0
+                          ? worker.image_uri
+                          : generateAvatar(
+                              worker?.user_id,
+                              (worker?.first_name?.charAt(0)?.toUpperCase() || '') +
+                                (worker?.last_name?.charAt(0)?.toUpperCase() || ''),
+                            )) || defaultAvatar,
                       placement: 'bottom',
                       imgHeight: 33,
                       imgWidth: 33,

@@ -107,6 +107,11 @@ const PrivateDashboard = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
+  const handleCreateNewProject = () => {
+    resetProjectCreationStore();
+    navigate('/create-project');
+  };
+
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
@@ -180,11 +185,6 @@ const PrivateDashboard = () => {
 
   const handleRaiseDispute = () => {
     setRaisedDisputeModal(true);
-  };
-
-  const handleCreateNewProject = () => {
-    resetProjectCreationStore();
-    navigate('/create-project');
   };
 
   return (
@@ -337,7 +337,7 @@ const PrivateDashboard = () => {
               'DASHBOARD.PROJECTS.RECOMMENDED_PROJECTS',
             ]}
           >
-            <section className="mb-2 ">
+            <section className="mb-2 mt-4">
               <Header className="mb-1">Projects</Header>
               <ProjectListing />
             </section>
@@ -384,7 +384,7 @@ const PrivateDashboard = () => {
             </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.talent && (
-            <section className="mb-2">
+            <section className="mb-2 mt-4">
               <Header className="mb-1">Invites</Header>
               <InviteListing />
             </section>

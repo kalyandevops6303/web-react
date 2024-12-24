@@ -128,7 +128,7 @@ const AlertCardWrapper = styled(CardWrapper)`
   .additional-text {
     color: ${theme.lightBlueColor};
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     margin: auto;
   }
   .w-65 {
@@ -351,15 +351,16 @@ const ProjectWrapper = styled.div`
   .additional-text {
     color: ${theme.lightBlueColor};
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     margin: auto;
   }
 
   .active-project-name {
+    padding: 8px 0px;
+    min-height: 60px;
     color: #5e5873;
     font-size: 18px;
     font-weight: 400;
-    height: 40px;
     margin-top: 0.5rem;
   }
 
@@ -390,9 +391,11 @@ const ProjectWrapper = styled.div`
   }
 
   .active-project-milestone-name {
+    width: 50%;
     color: #5e5873;
     font-size: 14px;
     font-weight: 500;
+    padding-left: 10px;
   }
 
   .bids-count-wrapper {
@@ -513,10 +516,13 @@ const DashboardHeaderWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1rem;
-  margin-top: -4rem;
+  margin-top: -3.4rem;
 
   @media (max-width: 767px) {
-    margin-top: -2rem;
+    margin-top: -3.3rem;
+  }
+  @media (max-width: 640px) {
+    margin-top: 0rem;
   }
 `;
 
@@ -565,7 +571,7 @@ const TagsWrap = styled.div`
   .additional-text {
     color: ${theme.lightBlueColor};
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     margin: 0 0 0 10px;
   }
 `;

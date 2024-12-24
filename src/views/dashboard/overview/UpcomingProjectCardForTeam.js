@@ -10,7 +10,7 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
-import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
@@ -43,8 +43,8 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
       <Card className="card-app-design new-tag-relative-card">
         {!data?.is_read && <NewTag />}
         <CardBody>
-          <p className="active-project-name truncate-2 mt-50" style={{ height: '40px' }}>
-            {data?.name}
+          <p className="active-project-name truncate-2 mt-50">
+            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
           </p>
           <div className="d-flex justify-content-between">
             <div className="">

@@ -10,7 +10,7 @@ import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
-import { selectFlexternBoolean, selectUserData, selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
@@ -49,10 +49,7 @@ const Alerts = () => {
       dispatch(getTeamProfilePercentage());
     } else if (isFlexternshipApp) {
       dispatch(getProfileCompletionFlextern());
-    } else {
-      if (isFlexternshipApp) dispatch(getProfileCompletionFlextern());
-      else dispatch(getProfilePercentage());
-    }
+    } else dispatch(getProfilePercentage());
   }, [userDetailsData?.user_type]);
 
   useEffect(() => {
@@ -64,7 +61,6 @@ const Alerts = () => {
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-    console.log(path);
     navigate(path);
   };
 
@@ -126,14 +122,16 @@ const Alerts = () => {
     <AlertCardWrapper>
       <Card>
         <CardHeader className="earning-head">
-          <CardTitle tag="h4">Alerts</CardTitle>
+          <CardTitle tag="h5" style={{ fontSize: '18px' }}>
+            Alerts
+          </CardTitle>
           {isDisabled ? (
-            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
+            <CardText className="text-decoration-underline view-all-cta card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
               View All
             </CardText>
           ) : (
             <Link to="/notifications">
-              <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+              <CardText className="text-decoration-underline view-all-cta card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
                 View All
               </CardText>
             </Link>
@@ -244,7 +242,7 @@ const Alerts = () => {
           </Card>
 
           {notificationsData &&
-            notificationsData?.data.map((item) => (
+            notificationsData?.data?.slice(0, 3).map((item) => (
               <Card
                 onClick={() => handleAlertClick(item?.path, item?.status === 'UNREAD' ? item?._id : null)}
                 key={item?._id}

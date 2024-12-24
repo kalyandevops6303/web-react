@@ -13,7 +13,8 @@ import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
+import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
 const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -61,7 +62,7 @@ const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
             </Badge>
           </CustomBadge>
           <p className="active-project-name mt-1 truncate-2" style={{ height: '40px' }}>
-            {data?.name}
+            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
           </p>
           <div className="d-flex">
             <div className="me-3">
@@ -112,7 +113,14 @@ const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
                           user_type: userTypes.talent,
                           user_id: worker?.user_id,
                           title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                          img: worker.image_uri || defaultAvatar,
+                          img:
+                            (worker.image_uri?.length > 0
+                              ? worker.image_uri
+                              : generateAvatar(
+                                  worker?.user_id,
+                                  (worker?.first_name?.charAt(0)?.toUpperCase() || '') +
+                                    (worker?.last_name?.charAt(0)?.toUpperCase() || ''),
+                                )) || defaultAvatar,
                           placement: 'bottom',
                           imgHeight: 33,
                           imgWidth: 33,
@@ -132,7 +140,14 @@ const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
                         user_type: userTypes.talent,
                         user_id: worker?.user_id,
                         title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                        img: worker.image_uri || defaultAvatar,
+                        img:
+                          (worker.image_uri?.length > 0
+                            ? worker.image_uri
+                            : generateAvatar(
+                                worker?.user_id,
+                                (worker?.first_name?.charAt(0)?.toUpperCase() || '') +
+                                  (worker?.last_name?.charAt(0)?.toUpperCase() || ''),
+                              )) || defaultAvatar,
                         placement: 'bottom',
                         imgHeight: 33,
                         imgWidth: 33,

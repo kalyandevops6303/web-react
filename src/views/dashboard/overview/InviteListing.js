@@ -131,7 +131,7 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
-    font-size: 0.875rem;
+    font-size: 14px;
     color: ${theme.activeColor};
     text-decoration: underline;
     margin-right: 1rem;
