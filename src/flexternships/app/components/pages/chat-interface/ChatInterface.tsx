@@ -11,7 +11,7 @@ import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import { wsEndpoints } from '@flexternships/utils/api';
 import { ChatMessage, WebSocketMessage } from '@flexternships/types/core-types';
 import { formatWebSocketMessage } from '@/utility/Utils';
-import { isUserLoggedIn } from '@/utility/commonUtils';
+import { getCookiesItem } from '@/utility/cookiesControl';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -23,7 +23,7 @@ export default function ChatInterface() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = isUserLoggedIn();
+    const token = getCookiesItem('access_token');
     if (!token) {
       navigate('/login');
       return;

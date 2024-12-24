@@ -5,7 +5,6 @@ import getTeamId from '../../utility/commonUtils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
 import { apiAuthEndpoint } from '../api';
-import { isUserLoggedIn } from '@/utility/Utils';
 
 const client = axios.create({
   baseURL: '',
@@ -133,7 +132,7 @@ const getRefreshToken = () => {
 };
 
 client.interceptors.request.use(async (req) => {
-  const accessToken = isUserLoggedIn();
+  const accessToken = getItem('access_token');
   const accessTokenExpiry = getItem('access_token_expires');
   const refreshTokenExpiry = getItem('refresh_token_expires');
 
