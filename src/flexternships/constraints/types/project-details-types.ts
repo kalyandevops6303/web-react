@@ -187,7 +187,7 @@ export type ProjectDetailsState = {
 export type ProjectDetailsActions = {
   getProjectDetails: (
     projectId: string,
-    onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
+    onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => void,
   ) => Promise<void>;
   populateTeamDetails: (projectId: string) => Promise<void>;
   resetStore: () => void;

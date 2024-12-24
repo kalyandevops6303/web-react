@@ -19,6 +19,12 @@ export default function FlexternshipsContractView() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!projectDetails.isDocumentsNeeded) {
+      throw new Error('Documents are not needed for this project');
+    }
+  }, [projectDetails.isDocumentsNeeded]);
+
+  useEffect(() => {
     getLegalDocDetails(params?.projectId, toUpper(params?.docType));
     getProjectDetails(params?.projectId as string);
   }, [getLegalDocDetails]);

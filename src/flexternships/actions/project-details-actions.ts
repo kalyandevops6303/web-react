@@ -39,13 +39,13 @@ export const populateTeamDetails = async (set: any, projectId: string): Promise<
 export const getProjectDetails = async (
   projectId: string,
   set: any,
-  onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
+  onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => void,
 ) => {
   set({ isProjectsLoading: true });
   const res: any = await getProjectDetailsById(projectId);
   set({ projectDetails: res, isProjectsLoading: false });
   if (onSuccessBySecondaryStatus && res?.secondaryStatus?.next) {
-    onSuccessBySecondaryStatus(res.secondaryStatus.next);
+    onSuccessBySecondaryStatus(res.secondaryStatus.next, res.isDocumentsNeeded ?? false);
   }
 };
 

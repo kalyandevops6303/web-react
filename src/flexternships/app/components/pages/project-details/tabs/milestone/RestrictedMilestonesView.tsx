@@ -7,10 +7,14 @@ import {
   AccordionTrigger,
 } from '@/flexternships/app/components/ui/accordion';
 import { MilestoneDetails } from '@/flexternships/constraints/types/project-milestones-types';
-import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { ProjectSecondaryStatus, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryButton';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { acceptProject } from '@/flexternships/services/project-management-v2';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
 type RestrictedMilestonesViewProps = {
   projectDetails: {
@@ -20,6 +24,7 @@ type RestrictedMilestonesViewProps = {
     role: string;
     estimatedDuration: number;
     hoursPerWeek: number;
+    isDocumentsNeeded: boolean;
   };
   milestones: MilestoneDetails[];
 };
@@ -27,9 +32,31 @@ type RestrictedMilestonesViewProps = {
 export default function RestrictedMilestonesView(props: RestrictedMilestonesViewProps) {
   const { projectDetails, milestones } = props;
 
+  const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+
+  const [isNextLoading, setIsNextLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
+    // If documents are not needed, accept the project
+    if (!projectDetails.isDocumentsNeeded) {
+      setIsNextLoading(true);
+      try {
+        // Accept the project
+        await acceptProject(projectDetails.projectId);
+        // Refresh project details to get the updated status
+        await getProjectDetails(projectDetails.projectId);
+      } catch (error: unknown) {
+        showToastMessage(
+          ToastType.ERROR,
+          error instanceof Error ? error.message : 'An unexpected error occurred while accepting project',
+        );
+      } finally {
+        setIsNextLoading(false);
+      }
+      return;
+    }
     if (projectDetails.nextStep === ProjectSecondaryStatus.SIGN_CONTRACT) {
       navigate(`/project-details/${projectDetails.projectId}/doc/contract`);
     } else {
@@ -103,8 +130,12 @@ export default function RestrictedMilestonesView(props: RestrictedMilestonesView
         ))}
       </Accordion>
       <div className="flex flex-row justify-end">
-        <PrimaryButton className="m-0" onClick={handleNextStep}>
-          {projectDetails.nextStep === ProjectSecondaryStatus.SIGN_CONTRACT ? 'Sign Contract' : 'Sign NDA'}
+        <PrimaryButton className="m-0" onClick={handleNextStep} loading={isNextLoading}>
+          {projectDetails.isDocumentsNeeded
+            ? projectDetails.nextStep === ProjectSecondaryStatus.SIGN_CONTRACT
+              ? 'Sign Contract'
+              : 'Sign NDA'
+            : 'Accept Project'}
         </PrimaryButton>
       </div>
     </div>

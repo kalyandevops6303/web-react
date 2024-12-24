@@ -438,6 +438,28 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
 };
 
 /**
+ * Accepts a project by project ID.
+ * @param projectId - The ID of the project to accept.
+ * @returns A Promise that resolves when acceptance is successful.
+ * @throws {Error} If the project acceptance fails.
+ */
+export const acceptProject = async (projectId: string): Promise<any> => {
+  const config = {
+    params: {
+      project_id: projectId,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.post(`${routes.projectManagementV2.project.acceptProject}`, {}, config);
+    return response;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while accepting project');
+  }
+};
+
+/**
  * Retrieves all milestones for a given project.
  * @param projectId - The ID of the project to retrieve milestones for.
  * @returns A Promise that resolves to the project milestones data.

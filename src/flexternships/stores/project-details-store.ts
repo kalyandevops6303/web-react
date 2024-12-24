@@ -34,7 +34,7 @@ export const useProjectsStore = create<ProjectStore>((set) => ({
   ...defaultInitState,
   getProjectDetails: async (
     projectId: string,
-    onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus) => void,
+    onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => void,
   ) => getProjectDetails(projectId, set, onSuccessBySecondaryStatus),
   populateTeamDetails: (projectId: string) => populateTeamDetails(set, projectId),
   resetStore: () => set({ ...defaultInitState }),
