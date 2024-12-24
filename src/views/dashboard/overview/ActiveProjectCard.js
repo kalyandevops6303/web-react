@@ -41,11 +41,16 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
     LISTING_EXPIRED: 'Listing Expired',
   };
 
-  const navigate = useNavigate();
-
-  const viewProject = () => {
-    navigate(`/project-details/${data._id}/milestone`);
+  const secondaryStatusEnum = {
+    SIGN_CONTRACT: 'Sign Contract',
+    SIGN_NDA: 'Sign NDA',
+    COMPLETED: 'Completed',
+    SIGN_REQUESTED: 'Sign Requested',
+    SIGN_DOCUMENTS: 'Sign Documents',
+    MILESTONE: 'Milestone',
   };
+
+  const navigate = useNavigate();
 
   const updateCard = () => {
     const postData = {
@@ -59,6 +64,10 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
       dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForClient' }));
     }
   };
+  const viewProject = () => {
+    updateCard();
+    navigate(`/project-details/${data._id}/milestone`);
+  };
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
@@ -66,7 +75,9 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
-              {statusEnum[data?.status]}
+              {(data?.secondary_status === 'MILESTONE'
+                ? `${secondaryStatusEnum[data?.secondary_status]} ${data?.current_milestone?.seq}`
+                : secondaryStatusEnum[data?.secondary_status]) || statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
           <h4 className="active-project-name mt-1 truncate-2">

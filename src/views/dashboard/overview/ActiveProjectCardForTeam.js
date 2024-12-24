@@ -34,11 +34,6 @@ const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
     LISTING_EXPIRED: 'Listing Expired',
   };
 
-  const viewProject = () => {
-    // navigate(`/project-details/${data._id}/milestone`);
-    setShowModal(true);
-  };
-
   const updateCard = () => {
     const postData = {
       metadata: {
@@ -49,6 +44,11 @@ const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
     if (data?.is_read === false) {
       dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTeam' }));
     }
+  };
+  const viewProject = () => {
+    // navigate(`/project-details/${data._id}/milestone`);
+    updateCard();
+    setShowModal(true);
   };
 
   return (

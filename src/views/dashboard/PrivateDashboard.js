@@ -243,7 +243,7 @@ const PrivateDashboard = () => {
           toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
         />
       )}
-      <span className="mb-2">
+      <span className="mb-4">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       </span>
       {userDetailsData?.user_type === userTypes.client && (
@@ -337,7 +337,7 @@ const PrivateDashboard = () => {
               'DASHBOARD.PROJECTS.RECOMMENDED_PROJECTS',
             ]}
           >
-            <section className="mb-2 mt-4">
+            <section className="mb-2">
               <Header className="mb-1">Projects</Header>
               <ProjectListing />
             </section>

@@ -26,10 +26,6 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
 
   const navigate = useNavigate();
 
-  const viewProject = () => {
-    navigate(`/project-details/${data._id}/team`);
-  };
-
   const updateCard = () => {
     const postData = {
       metadata: {
@@ -42,6 +38,10 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
     }
   };
 
+  const viewProject = () => {
+    updateCard();
+    navigate(`/project-details/${data._id}/team`);
+  };
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">

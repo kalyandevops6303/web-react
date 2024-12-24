@@ -37,6 +37,7 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
 
   const viewProject = () => {
+    updateCard();
     navigate(`/project-details/${data._id}/team`);
   };
   const savedUserData = useSelector(selectSavedUserData);
