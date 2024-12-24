@@ -46,6 +46,7 @@ import CustomerSupportModal from '../../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbackModal';
 import NoteComponent from '../NoteComponent';
 import CustomerSupportCTA from '../CustomerSupportCTA';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -354,8 +355,10 @@ const Educational = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
-    dispatch(getCustomerSupportCount());
+    if (isUserLoggedIn()) {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+      dispatch(getCustomerSupportCount());
+    }
   }, []);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);

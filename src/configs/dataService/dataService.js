@@ -114,9 +114,12 @@ const resetRefreshTokenRequest = () => {
   refreshTokenRequest = null;
 };
 const makeActualAuthenticationRequest = () => {
+  const refreshToken = getItem('refresh_token');
   const response = axios.post(
     `${apiAuthEndpoint}/api/v1/auth/refresh`,
-
+    {
+      refresh_token: refreshToken,
+    },
     { withCredentials: true },
   );
   return response;

@@ -21,6 +21,7 @@ import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSel
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -255,7 +256,10 @@ const Social = () => {
   };
 
   useEffect(() => {
+    if (isUserLoggedIn()) {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
+      
+    }
   }, []);
 
   return (

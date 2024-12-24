@@ -70,6 +70,7 @@ import {
   setFileKey,
 } from '../../../redux/reducers/formData';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -490,7 +491,7 @@ const Educational = () => {
 
   useEffect(() => {
     if (parseResume) {
-      if (parsedUploaded) {
+      if (parsedUploaded && isUserLoggedIn()) {
         dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
@@ -504,10 +505,10 @@ const Educational = () => {
           ),
         );
       }
-    } else {
+    } else if (isUserLoggedIn()) {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
+      dispatch(getCustomerSupportCount());
     }
-    dispatch(getCustomerSupportCount());
   }, [parseResume, parsedResumeData, parsedUploaded]);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);

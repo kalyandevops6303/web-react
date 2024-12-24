@@ -172,7 +172,6 @@ const Account = () => {
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
   const fileInputRef = useRef(null);
-  const token = isUserLoggedIn();
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
   };
@@ -335,7 +334,7 @@ const Account = () => {
   };
 
   useEffect(() => {
-    if (token) {
+    if (isUserLoggedIn()) {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
   }, []);
