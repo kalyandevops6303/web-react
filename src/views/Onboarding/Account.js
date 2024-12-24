@@ -67,6 +67,7 @@ import { ProgressBarWrapper } from '../create-bid/style';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const Account = () => {
@@ -108,7 +109,6 @@ const Account = () => {
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
   const userType = useSelector((state) => state.auth?.userType);
-  const userLoggedIn = getItem('userLoggedIn');
 
   const {
     control,
@@ -172,7 +172,7 @@ const Account = () => {
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
   const fileInputRef = useRef(null);
-
+  const token = isUserLoggedIn();
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
   };
@@ -335,7 +335,7 @@ const Account = () => {
   };
 
   useEffect(() => {
-    if (userLoggedIn) {
+    if (token) {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
   }, []);

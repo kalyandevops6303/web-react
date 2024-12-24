@@ -11,7 +11,7 @@ import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import { wsEndpoints } from '@flexternships/utils/api';
 import { ChatMessage, WebSocketMessage } from '@flexternships/types/core-types';
 import { formatWebSocketMessage } from '@/utility/Utils';
-import { getItem } from '@/utility/localStorageControl';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -23,7 +23,7 @@ export default function ChatInterface() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = getItem('userLoggedIn');
+    const token = isUserLoggedIn();
     if (!token) {
       navigate('/login');
       return;

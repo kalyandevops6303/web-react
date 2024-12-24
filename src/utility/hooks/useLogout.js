@@ -12,7 +12,6 @@ const useLogout = () => {
   const fcmToken = useSelector((state) => state.auth.fcmToken);
 
   const handleLogout = async () => {
-    getItem('userLoggedIn', false);
     const onSuccess = async () => {
       window.localStorage.clear();
       window.sessionStorage.clear();
