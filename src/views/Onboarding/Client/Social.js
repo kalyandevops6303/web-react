@@ -257,8 +257,7 @@ const Social = () => {
 
   useEffect(() => {
     if (isUserLoggedIn()) {
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
-      
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
   }, []);
 
