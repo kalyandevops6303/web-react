@@ -211,7 +211,7 @@ export type PaginatedData = {
  */
 export const fetchAllRoles = async () => {
   try {
-    const response = await axios.get(routes.userManagement.static.roles.fetchAll);
+    const response = await axios.get(routes.userManagement.static.roles.fetchAll, { withCredentials: true });
     return response?.data || [];
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching roles');
@@ -225,7 +225,7 @@ export const fetchAllRoles = async () => {
  */
 export const fetchAllSkills = async () => {
   try {
-    const response = await axios.get(routes.userManagement.static.skills.fetchAll);
+    const response = await axios.get(routes.userManagement.static.skills.fetchAll, { withCredentials: true });
     return response?.data?.data || [];
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching skills');
@@ -239,7 +239,7 @@ export const fetchAllSkills = async () => {
  */
 export const fetchAllTools = async () => {
   try {
-    const response = await axios.get(routes.userManagement.static.tools.fetchAll);
+    const response = await axios.get(routes.userManagement.static.tools.fetchAll, { withCredentials: true });
     return response?.data?.data || [];
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching tools');
@@ -270,6 +270,7 @@ export const fetchRolesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.roles.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -295,6 +296,7 @@ export const fetchTimezonesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.timezone.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -328,6 +330,7 @@ export const fetchSkillsPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.skills.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -361,6 +364,7 @@ export const fetchToolsPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.tools.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -394,6 +398,7 @@ export const fetchCompanyIndustriesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.companyIndustry.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -427,6 +432,7 @@ export const fetchCountriesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.country.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -462,6 +468,7 @@ export const fetchStatesPaginatedByCountry = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.state.fetchPaginatedByCountry}/${country_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -497,6 +504,7 @@ export const fetchCitiesPaginatedByState = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.city.fetchPaginatedByState}/${state_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {

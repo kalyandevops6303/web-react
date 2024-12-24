@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Spinner } from 'reactstrap';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { DashboardHeaderWrapper } from '../../dashboard/overview/style';
-import { userTypes } from '../../../utility/constants/Constant';
+import { userTypes, FEATURE_NAMES } from '../../../utility/constants/Constant';
 import { draftProjectsCheck } from '../../../redux/actions/createProjectActions';
 import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjectSelectors';
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
 import { getItem } from '../../../utility/localStorageControl';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
+import { featureAccessService } from '@flexternships/services/feature-access-service';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
@@ -23,6 +24,21 @@ const CreateProjectButton = () => {
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
+  const [hasAyeshaBotAccess, setHasAyeshaBotAccess] = useState(false);
+
+  useEffect(() => {
+    const checkAccess = async () => {
+      try {
+        const hasAccess = await featureAccessService.hasFeatureAccess(FEATURE_NAMES.AYESHA_BOT);
+        setHasAyeshaBotAccess(hasAccess);
+      } catch (error) {
+        console.error('Error checking feature access:', error);
+        setHasAyeshaBotAccess(false);
+      }
+    };
+
+    checkAccess();
+  }, []);
 
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
@@ -91,6 +107,11 @@ const CreateProjectButton = () => {
               }
             >
               View Draft
+            </Button>
+          )}
+          {hasAyeshaBotAccess && (
+            <Button color="primary" className="me-1" onClick={() => navigate('/chat-interface')}>
+              Generate Project
             </Button>
           )}
           <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>

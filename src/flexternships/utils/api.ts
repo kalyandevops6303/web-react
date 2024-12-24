@@ -104,3 +104,10 @@ export const routes = {
     },
   },
 };
+
+export const wsEndpoints = {
+  bulkGeneration: `ws${baseUrl.startsWith('https') ? 's' : ''}://${baseUrl.replace(
+    /^https?:\/\//,
+    '',
+  )}/ai-assist/api/v1/ws-bulk-generation`,
+};

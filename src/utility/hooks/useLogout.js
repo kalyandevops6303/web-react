@@ -14,6 +14,8 @@ const useLogout = () => {
 
   const handleLogout = async () => {
     const onSuccess = async () => {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
       window.history.pushState(null, '', '/auth/login');
       window.addEventListener('popstate', () => {
         window.history.pushState(null, '', '/auth/login');
@@ -43,8 +45,6 @@ const useLogout = () => {
 
       const keyToPreserve = 'isUserVisited';
       const preservedValue = getItem(keyToPreserve);
-      window.localStorage.clear();
-      window.sessionStorage.clear();
       removeCookiesItem('access_token');
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
