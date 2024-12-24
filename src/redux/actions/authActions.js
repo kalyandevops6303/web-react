@@ -91,7 +91,6 @@ import {
   logoutFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
-import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes, invitationUserStatus } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';

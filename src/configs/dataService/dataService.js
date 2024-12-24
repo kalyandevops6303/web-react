@@ -11,6 +11,7 @@ const client = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // This enables sending cookies with requests
 });
 
 function constructUrlWithParams(baseUrl, params) {
@@ -113,9 +114,13 @@ const resetRefreshTokenRequest = () => {
 };
 const makeActualAuthenticationRequest = () => {
   const refreshToken = getItem('refresh_token');
-  const response = axios.post(`${apiAuthEndpoint}/api/v1/auth/refresh`, {
-    refresh_token: refreshToken,
-  });
+  const response = axios.post(
+    `${apiAuthEndpoint}/api/v1/auth/refresh`,
+    {
+      refresh_token: refreshToken,
+    },
+    { withCredentials: true },
+  );
   return response;
 };
 const getRefreshToken = () => {
