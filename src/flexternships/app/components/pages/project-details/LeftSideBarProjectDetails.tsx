@@ -23,7 +23,6 @@ import {
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';

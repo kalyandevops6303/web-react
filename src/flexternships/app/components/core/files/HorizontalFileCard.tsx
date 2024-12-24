@@ -31,7 +31,6 @@ export default function HorizontalFileCard(props: Props) {
       } h-[3.875rem]`}
     >
       <div className={`${Styles.fileContainer} cursor-pointer`} onClick={handleClick}>
-        {/* TODO: Image */}
         <div className={Styles.fileIconContainer}>
           <img className="h-6 w-5" src={getFileIcon(fileName)} />
         </div>
