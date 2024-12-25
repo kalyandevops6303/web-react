@@ -65,11 +65,9 @@ export const changePasswordWithCurrentPassword = async (currentPassword: string,
  */
 export const validateRequestToken = async (requestToken: string): Promise<ValidatedRequestToken | undefined> => {
   try {
-    const response = await axios.post(
-      routes.userManagement.requests.v2.validateRequestToken,
-      { request_token: requestToken },
-      { withCredentials: true },
-    );
+    const response = await axios.post(routes.userManagement.requests.v2.validateRequestToken, {
+      request_token: requestToken,
+    });
 
     return {
       invitationByUserId: response.data.data.invitation_by_user_id,
@@ -96,7 +94,7 @@ export const validateUserRequestByToken = async (requestToken: string): Promise<
       { request_token: requestToken },
       { withCredentials: true },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while validating the user request');
   }
