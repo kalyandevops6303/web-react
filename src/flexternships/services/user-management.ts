@@ -6,6 +6,7 @@ import axios from 'axios';
 import { FlexternClientAccountDetails, FlexternClientProfileDetails } from '../constraints/types/user-profile-types';
 import { isEmpty } from 'lodash';
 import { handleError } from '../utils/error-utils';
+import { ValidatedRequestToken } from '../constraints/types/core-types';
 
 /// File Endpoints
 /**
@@ -56,6 +57,51 @@ export const changePasswordWithCurrentPassword = async (currentPassword: string,
 };
 
 /// User Endpoints
+/**
+ * Validates a request token.
+ * @param requestToken - The token to validate.
+ * @returns A Promise that resolves to the validation response data.
+ * @throws {Error} If the validation fails or an unexpected error occurs.
+ */
+export const validateRequestToken = async (requestToken: string): Promise<ValidatedRequestToken | undefined> => {
+  try {
+    const response = await axios.post(
+      routes.userManagement.requests.v2.validateRequestToken,
+      { request_token: requestToken },
+      { withCredentials: true },
+    );
+
+    return {
+      invitationByUserId: response.data.data.invitation_by_user_id,
+      emailInvited: response.data.data.email_invited,
+      projectId: response.data.data.project_id,
+      invitationType: response.data.data.invitation_type,
+      userStatus: response.data.data.user_status,
+    };
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while validating the request token');
+  }
+};
+
+/**
+ * Validates a user request.
+ * @param requestToken - The token to validate the user request.
+ * @returns A Promise that resolves to the validation response data.
+ * @throws {Error} If the validation fails or an unexpected error occurs.
+ */
+export const validateUserRequestByToken = async (requestToken: string): Promise<boolean | undefined> => {
+  try {
+    const response = await axios.post(
+      routes.userManagement.requests.v2.checkUser,
+      { request_token: requestToken },
+      { withCredentials: true },
+    );
+    return response.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while validating the user request');
+  }
+};
+
 /**
  * Fetches user details including app roles.
  * @returns A Promise that resolves to the user details.
