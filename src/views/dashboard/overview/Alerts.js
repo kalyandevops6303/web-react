@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
+import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
 import { AlertCardWrapper } from './style';
@@ -29,7 +30,6 @@ const Alerts = () => {
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const notificationsData = useSelector(notifications);
-
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const profileCompletionFlexternMissingValues = useSelector(
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
@@ -241,7 +241,7 @@ const Alerts = () => {
             </CardBody>
           </Card>
 
-          {notificationsData &&
+          {notificationsData && notificationsData?.data?.length > 0 ? (
             notificationsData?.data?.slice(0, 3).map((item) => (
               <Card
                 onClick={() => handleAlertClick(item?.path, item?.status === 'UNREAD' ? item?._id : null)}
@@ -249,11 +249,11 @@ const Alerts = () => {
                 className="cursor-pointer card-inside"
               >
                 <Elevate key={item?._id}>
-                  <CardHeader className="d-flex">
-                    <CardTitle className="w-65" tag="h4">
+                  <CardHeader className="d-flex align-items-center justify-content-between">
+                    <CardTitle className="w-60" tag="h4">
                       {getStatusShortName(item?.title)}
                     </CardTitle>
-                    <p className="relative-time font-small-2 fw-light m-0 ms-50">
+                    <p className="relative-time fw-light m-0 ms-50">
                       {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : ''}
                     </p>
                   </CardHeader>
@@ -267,8 +267,14 @@ const Alerts = () => {
                   </CardBody>
                 </Elevate>
               </Card>
-            ))}
-          {notificationsData?.metadata?.total_records > 4 && (
+            ))
+          ) : (
+            <div className="empty-alerts">
+              <img src={UpcomingProjectsEmptyGif} className="empty-alert-gif" alt="empty-gif" />
+              <h2>No Alerts Found</h2>
+            </div>
+          )}
+          {notificationsData?.metadata?.total_records > 3 && (
             <span onClick={handleRedirection} className="cursor-pointer mb-1 additional-text text-center d-block">
               +{notificationsData.metadata.total_records - 4} more
             </span>

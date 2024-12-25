@@ -108,6 +108,28 @@ const AlertCardWrapper = styled(CardWrapper)`
     }
   }
 
+  .empty-alerts {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem 2.5rem 2rem;
+
+    .empty-alert-gif {
+      height: 13rem;
+      @media (max-width: 768px) {
+        height: 13rem;
+      }
+    }
+    .empty-alert-text {
+      font-size: 14px;
+      line-height: normal;
+      color: #9c9fa1;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
   .add-det {
     font-weight: 400;
     font-size: 16px;
@@ -122,7 +144,8 @@ const AlertCardWrapper = styled(CardWrapper)`
     height: 10vw;
   }
   .relative-time {
-    width: 30%;
+    font-size: 12px;
+    width: fit-content;
     text-align: end;
   }
   .additional-text {
@@ -291,7 +314,7 @@ const ProjectWrapper = styled.div`
     margin-bottom: 1rem;
     padding-bottom:1rem;
     margin-top: 1rem;
-    width: fit-content;
+    width: 100%;
   }
 
   .empty {

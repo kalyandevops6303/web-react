@@ -241,11 +241,11 @@ export const returnFilteredDropdownOptions = (search, options) =>
       option.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-export const convertUnixTimestampToDate = (timestamp, timeZone) => {
+export const convertUnixTimestampToDate = (timestamp, timeZone, isFlextern = false) => {
   // Create a new Date object adjusted to UTC from the timestamp
   let timezoneToUse = timeZone;
   if (!timeZone) {
-    timezoneToUse = 'America/Los_Angeles';
+    timezoneToUse = isFlextern ? 'Asia/Kolkata' : 'America/Los_Angeles';
   }
   if (!timestamp) {
     return '';
