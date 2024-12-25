@@ -58,7 +58,7 @@ export default function VerifyInvitation() {
       // Validate if logged in user has access to the invitation
       const isLoggedInUserValidated = await validateUserRequestByToken(invitationToken);
       if (!isLoggedInUserValidated) {
-        handleLogout();
+        await handleLogout({ preventRedirect: true, suppressToast: true });
         return navigate(redirectPath);
       }
 
