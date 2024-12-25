@@ -67,6 +67,7 @@ import { ProgressBarWrapper } from '../create-bid/style';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const Account = () => {
@@ -171,7 +172,6 @@ const Account = () => {
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
   const fileInputRef = useRef(null);
-
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
   };
@@ -334,7 +334,9 @@ const Account = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
+    if (isUserLoggedIn()) {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
   }, []);
 
   const isFileValid = (file) => {

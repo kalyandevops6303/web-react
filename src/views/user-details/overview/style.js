@@ -122,6 +122,7 @@ const LeftSidebarProfileWrapper = styled.div`
   }
   .user-image {
     display: flex;
+    padding-top: 50px;
     img {
       height: 7.5rem;
       margin: 3rem auto 1.5rem auto;
@@ -354,10 +355,10 @@ const DetailsWrap = styled.div`
   .top-head {
     position: relative;
     .fixed-header {
-      top: 4rem;
+      top: 3.4rem;
       left: 0;
       position: fixed;
-      z-index: 20;
+      z-index: 10;
       background-color: ${theme.bodyBgColor};
       width: 100%;
       padding: 1.8rem 2rem 0.8rem 2rem;

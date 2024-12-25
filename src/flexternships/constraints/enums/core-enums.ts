@@ -84,3 +84,16 @@ export enum GlobalModalType {
   UNSAVED_WORK = 'UNSAVED_WORK',
   PROJECTS_BLOCKED = 'PROJECTS_BLOCKED',
 }
+
+export enum MessageRole {
+  USER = 'user',
+  ASSISTANT = 'assistant',
+}
+
+export enum MessageType {
+  INITIAL = 'initial',
+  CLARIFICATION = 'clarification',
+  NUMBER_REQUEST = 'number_request',
+  ERROR = 'error',
+  PROJECTS = 'projects',
+}

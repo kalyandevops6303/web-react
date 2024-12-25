@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner, CardBody } from 'reactstrap';
@@ -15,6 +15,7 @@ import InputPasswordToggle from '@components/input-password-toggle';
 
 // ** Illustrations Imports
 // ** Styles
+
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { checkPointRedirection, filteredFormSchema, validations } from '../../utility/Utils';
@@ -30,7 +31,6 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import UserRetryCountAuth from './UserRetryCountAuth';
 import { isFlexternshipApp } from '@/configs/api/env';
-import { useLocation } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();

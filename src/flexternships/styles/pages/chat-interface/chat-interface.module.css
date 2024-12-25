@@ -1,0 +1,47 @@
+.chatContainer {
+  @apply flex flex-col h-[calc(100vh-150px)];
+}
+
+.messagesArea {
+  @apply flex-1 p-4 overflow-y-auto;
+}
+
+.messageWrapper {
+  @apply mb-4;
+}
+
+.messageContent {
+  @apply inline-block p-2 rounded-lg max-w-[80%];
+}
+
+.userMessage {
+  @apply text-right;
+}
+
+.userMessage .messageContent {
+  @apply bg-trublue-secondary-500 text-white;
+}
+
+.assistantMessage {
+  @apply text-left;
+}
+
+.assistantMessage .messageContent {
+  @apply bg-grey-light;
+}
+
+.inputArea {
+  @apply border-t p-4;
+}
+
+.inputWrapper {
+  @apply flex gap-2;
+}
+
+.input {
+  @apply flex-1 p-2 border border-grey-200 rounded-md;
+}
+
+.sendButton {
+  @apply min-w-[80px];
+}

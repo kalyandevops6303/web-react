@@ -91,7 +91,6 @@ import {
   logoutFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
-import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes, invitationUserStatus } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
@@ -196,7 +195,6 @@ const loginUserWithGoogle =
       } else {
         res = await loginServiceGoogle({ id_token });
       }
-
       setItem('access_token_expires', res.data.data.access_token_expires);
       setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       setItem('user_id', res.data.data.user_id);

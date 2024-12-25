@@ -196,6 +196,12 @@ export default function MilestoneDetails() {
     disableArtifactsIfMilestoneStatus.includes(milestoneDetails.status) &&
     (isNextUpcomingMilestone === undefined || !isNextUpcomingMilestone);
 
+  const disablePeerFeedback = milestoneDetails.milestoneFeedbackDetails.some(
+    (feedback) =>
+      feedback.feedbackType === MilestoneFeedbackType.SELF_FEEDBACK &&
+      feedback.feedbackStatus === MilestoneFeedbackStatus.PENDING,
+  );
+
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
       <div className="flex flex-row justify-between">
@@ -326,7 +332,9 @@ export default function MilestoneDetails() {
             projectId={milestoneDetails.projectDetails.projectId}
             milestoneId={milestoneDetails.id}
             daysLeft={
-              referenceDateForFeedback
+              disablePeerFeedback && feedback.feedbackType === MilestoneFeedbackType.PEER_FEEDBACK
+                ? undefined
+                : referenceDateForFeedback
                 ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, milestoneDetails.maxFeedbackDueDays))
                 : undefined
             }
