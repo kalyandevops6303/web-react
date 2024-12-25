@@ -285,6 +285,10 @@ const generateYearArrays = () => {
 };
 const { studyYears, graduationYears } = generateYearArrays();
 
+const FEATURE_NAMES = {
+  AYESHA_BOT: 'Ayesha Bot',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -333,4 +337,5 @@ export {
   studyYears,
   graduationYears,
   counts,
+  FEATURE_NAMES,
 };

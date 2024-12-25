@@ -75,8 +75,9 @@ export default function MilestoneDetails() {
   const { projectId } = useParams();
 
   useEffect(() => {
+    if (!projectId) throw new Error('Project ID is required to fetch team details');
     populateTeamDetails(projectId);
-  }, [projectId]);
+  }, [projectId, populateTeamDetails]);
 
   useEffect(() => {
     setAllowRecognition(
@@ -194,6 +195,12 @@ export default function MilestoneDetails() {
   const areArtifactsDisabledForTalent =
     disableArtifactsIfMilestoneStatus.includes(milestoneDetails.status) &&
     (isNextUpcomingMilestone === undefined || !isNextUpcomingMilestone);
+
+  const disablePeerFeedback = milestoneDetails.milestoneFeedbackDetails.some(
+    (feedback) =>
+      feedback.feedbackType === MilestoneFeedbackType.SELF_FEEDBACK &&
+      feedback.feedbackStatus === MilestoneFeedbackStatus.PENDING,
+  );
 
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
@@ -325,7 +332,9 @@ export default function MilestoneDetails() {
             projectId={milestoneDetails.projectDetails.projectId}
             milestoneId={milestoneDetails.id}
             daysLeft={
-              referenceDateForFeedback
+              disablePeerFeedback && feedback.feedbackType === MilestoneFeedbackType.PEER_FEEDBACK
+                ? undefined
+                : referenceDateForFeedback
                 ? getDaysLeft(Date.now(), addDaysToEpoch(referenceDateForFeedback, milestoneDetails.maxFeedbackDueDays))
                 : undefined
             }

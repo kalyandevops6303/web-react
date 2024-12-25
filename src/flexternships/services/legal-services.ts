@@ -11,6 +11,7 @@ export const getLegalDocDetails: (projectId: string, docType: string) => Promise
       project_id: projectId,
       doc_type: docType,
     },
+    withCredentials: true,
   };
 
   try {
@@ -29,6 +30,7 @@ export const signLegalDocument: (projectId: string, docType: string) => Promise<
       project_id: projectId,
       doc_type: docType,
     },
+    withCredentials: true,
   };
 
   try {
@@ -50,6 +52,7 @@ export const getLegalDocSignedStatus: (projectId: string, docType: string) => Pr
       project_id: projectId,
       doc_type: docType,
     },
+    withCredentials: true,
   };
 
   try {

@@ -19,6 +19,7 @@ export const uploadFileToUrl = async (url: string, file: any, setUploadProgress?
       const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
       setUploadProgress && setUploadProgress(progress, index);
     },
+    withCredentials: true,
   });
   return uploadResponse;
 };

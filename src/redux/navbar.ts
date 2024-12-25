@@ -3,7 +3,7 @@ import { Bookmark, NavbarLayoutState } from '@src/types';
 import axios from 'axios';
 
 export const getBookmarks = createAsyncThunk('layout/getBookmarks', async () => {
-  const response = await axios.get('/api/bookmarks/data');
+  const response = await axios.get('/api/bookmarks/data', { withCredentials: true });
   return {
     data: response.data.suggestions,
     bookmarks: response.data.bookmarks,
@@ -11,7 +11,7 @@ export const getBookmarks = createAsyncThunk('layout/getBookmarks', async () => 
 });
 
 export const updateBookmarked = createAsyncThunk<string, string>('layout/updateBookmarked', async (id) => {
-  await axios.post('/api/bookmarks/update', { id });
+  await axios.post('/api/bookmarks/update', { id }, { withCredentials: true });
   return id;
 });
 

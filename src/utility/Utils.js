@@ -27,6 +27,7 @@ import JPGIcon from '../assets/images/JPG.svg';
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
 import { isFlexternshipApp } from '@/configs/api/env';
+import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -283,6 +284,15 @@ export const renderFormattedListingDate = (date) => {
     .split(' ');
 
   return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
+};
+
+export const renderListingDate = (date) => {
+  const formattedDate = date
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+
+  return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 };
 
 export const returnRelativeTime = (time, timeZone) => {
@@ -960,4 +970,23 @@ export const formatDateWithTime = (date) => {
     })
     .replace(',', '')
     .replace(/\s+/g, ' ');
+};
+
+export const formatWebSocketMessage = (data) => {
+  switch (data.message_type) {
+    case MessageType.INITIAL:
+    case MessageType.CLARIFICATION:
+    case MessageType.NUMBER_REQUEST:
+    case MessageType.ERROR:
+      return { role: MessageRole.ASSISTANT, content: data.content };
+    case MessageType.PROJECTS:
+      return {
+        role: MessageRole.ASSISTANT,
+        content: data.content,
+        projects: data.content.projects,
+        domain: data.content.domain,
+      };
+    default:
+      return { role: MessageRole.ASSISTANT, content: 'Unsupported message type' };
+  }
 };

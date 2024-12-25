@@ -46,6 +46,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import RemoveUploadedPicture from '../../../@core/components/remove-uploaded-picture';
 import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -512,7 +513,9 @@ const Personal = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
+    if (isUserLoggedIn()) {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
   }, []);
 
   return (

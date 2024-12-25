@@ -56,6 +56,7 @@ import {
 } from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -328,10 +329,6 @@ const Social = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(files);
-  }, [files]);
-
   const setResumeParsedDetails = (res) => {
     if (res) {
       if (res?.social_links.length > 0) {
@@ -416,7 +413,7 @@ const Social = () => {
   };
   useEffect(() => {
     if (parseResume) {
-      if (parsedUploaded) {
+      if (parsedUploaded && isUserLoggedIn()) {
         dispatch(getUserDetails(onGetUserDetailsSuccess));
       } else if (!parsedUploaded && parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
@@ -430,7 +427,7 @@ const Social = () => {
           ),
         );
       }
-    } else {
+    } else if (isUserLoggedIn()) {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
   }, [parseResume, parsedResumeData]);
@@ -464,21 +461,25 @@ const Social = () => {
                         name="linkedInLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter public URL" invalid={errors.linkedInLink && true} />
+                          <Input
+                            {...field}
+                            placeholder="Enter your profile URL"
+                            invalid={errors.linkedInLink && true}
+                          />
                         )}
                       />
                       {errors.linkedInLink && <FormFeedback>{errors.linkedInLink.message}</FormFeedback>}
                     </Col>
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="twitterLink">
-                        Twitter
+                        X (Formerly Twitter)
                       </Label>
                       <Controller
                         id="twitterLink"
                         name="twitterLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter URL" invalid={errors.twitterLink && true} />
+                          <Input {...field} placeholder="Enter X handle" invalid={errors.twitterLink && true} />
                         )}
                       />
                       {errors.twitterLink && <FormFeedback>{errors.twitterLink.message}</FormFeedback>}
@@ -494,7 +495,7 @@ const Social = () => {
                         name="githubLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter URL" invalid={errors.githubLink && true} />
+                          <Input {...field} placeholder="Enter Github handle" invalid={errors.githubLink && true} />
                         )}
                       />
                       {errors.githubLink && <FormFeedback>{errors.githubLink.message}</FormFeedback>}
