@@ -17,9 +17,9 @@ const UploadResumeModal = ({ modal, uploadButton, toggleModal }) => (
         <img src={uploadResumeImage} alt="complete-profile" width={160} height={160} />
         <div className="pe-1 ms-3">
           <h2 className="fw-bold modal-heading">
-            <b>Auto - Fill Profile!</b>
+            <b>Go Faster!</b>
           </h2>
-          <p className="fw-normal modal-body-text mt-1">Upload your resume to auto fill your profile</p>
+          <p className="fw-normal modal-body-text mt-1">Upload your resume to auto fill your profile.</p>
         </div>
       </div>
       <div className="d-flex align-items-center justify-content-end pb-2 pe-2">{uploadButton}</div>

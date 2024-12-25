@@ -286,6 +286,15 @@ export const renderFormattedListingDate = (date) => {
   return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
 };
 
+export const renderListingDate = (date) => {
+  const formattedDate = date
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+
+  return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+};
+
 export const returnRelativeTime = (time, timeZone) => {
   const givenDate = new Date(time);
 
