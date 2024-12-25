@@ -192,7 +192,6 @@ export default function Preview() {
           </div>
         </div>
       </div>
-      {/* TODO: Project File */}
       {formData.requirements.documents.map((item, index) => (
         <HorizontalFileCard
           key={index}

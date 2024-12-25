@@ -31,7 +31,6 @@ export default function MilestoneItem(props: Props) {
         </div>
         <div>
           <div className={Styles.milestoneSubInfoHeading}>Deliverables</div>
-          {/* TODO: Add deliverables list */}
           <ul className={`${Styles.milestoneSubInfoContent} ${Styles.milestoneDeliverablesList}`}>
             {data.deliverables.map((deliverable, index) => (
               <li key={index} className={Styles.listItem}>

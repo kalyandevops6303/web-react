@@ -23,7 +23,7 @@ export default function FlexternshipProjectDetails() {
   const params: Readonly<Params<string>> = useParams();
   const navigate = useNavigate();
 
-  const redirectUserAsPerSecondaryStatus = (status: ProjectSecondaryStatus) => {
+  const redirectUserAsPerSecondaryStatus = (status: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => {
     if (!isEmpty(params.milestoneId)) return;
     if (!params?.projectId) throw new Error('Project ID is mandatory to view the project details');
     switch (status) {
@@ -31,9 +31,11 @@ export default function FlexternshipProjectDetails() {
         navigate(`/project-details/${params.projectId}/milestone`);
         break;
       case ProjectSecondaryStatus.SIGN_CONTRACT:
+        if (!isDocumentsNeeded) return;
         navigate(`/project-details/${params.projectId}/doc/contract`);
         break;
       case ProjectSecondaryStatus.SIGN_NDA:
+        if (!isDocumentsNeeded) return;
         navigate(`/project-details/${params.projectId}/doc/nda`);
         break;
       case ProjectSecondaryStatus.SIGN_DOCUMENTS:
