@@ -11,8 +11,9 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
-import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
 const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -24,10 +25,6 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
   const navigate = useNavigate();
-
-  const viewProject = () => {
-    navigate(`/project-details/${data._id}/team`);
-  };
 
   const updateCard = () => {
     const postData = {
@@ -41,13 +38,17 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
     }
   };
 
+  const viewProject = () => {
+    updateCard();
+    navigate(`/project-details/${data._id}/team`);
+  };
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
         {!data?.is_read && <NewTag />}
         <CardBody>
-          <p className="active-project-name truncate-2 mt-50" style={{ height: '60px' }}>
-            {data?.name}
+          <p className="active-project-name truncate-2 mt-50">
+            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
           </p>
           {data?.worker_details.length > 0 && (
             <div className="team-badge px-1">
@@ -77,7 +78,14 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
                       user_type: userTypes.talent,
                       user_id: worker?.user_id,
                       title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                      img: worker.image_uri || defaultAvatar,
+                      img:
+                        (worker.image_uri?.length > 0
+                          ? worker.image_uri
+                          : generateAvatar(
+                              worker?.user_id,
+                              (worker?.first_name?.charAt(0)?.toUpperCase() || '') +
+                                (worker?.last_name?.charAt(0)?.toUpperCase() || ''),
+                            )) || defaultAvatar,
                       placement: 'bottom',
                       imgHeight: 33,
                       imgWidth: 33,
@@ -97,7 +105,14 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
                     user_type: userTypes.talent,
                     user_id: worker?.user_id,
                     title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                    img: worker.image_uri || defaultAvatar,
+                    img:
+                      (worker.image_uri?.length > 0
+                        ? worker.image_uri
+                        : generateAvatar(
+                            worker?.user_id,
+                            (worker?.first_name?.charAt(0)?.toUpperCase() || '') +
+                              (worker?.last_name?.charAt(0)?.toUpperCase() || ''),
+                          )) || defaultAvatar,
                     placement: 'bottom',
                     imgHeight: 33,
                     imgWidth: 33,
@@ -120,10 +135,10 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
                   }`}
                 </p>
               </div>
-              <div className="design-planning">
+              {/* <div className="design-planning">
                 <p className="mb-25 details-box-title">Amount</p>
                 <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
-              </div>
+              </div> */}
             </div>
           </div>
           <div

@@ -36,6 +36,7 @@ const HeadWrapper = styled.div`
   width: 100%;
   z-index: 0;
   justify-content: space-between;
+  align-items: center;
   .navbar-brand {
     margin: auto 0;
     .brand-logo {
@@ -59,6 +60,7 @@ const HeadWrapper = styled.div`
     }
   }
   .is-active {
+    margin-bottom: -12px;
     font-weight: 600;
     border-bottom: 3px solid ${theme.activeColor};
     color: ${theme.activeColor};

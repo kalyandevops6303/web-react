@@ -46,6 +46,10 @@ const CreateProjectButton = () => {
 
   const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
 
+  const handleCreateNewProject = () => {
+    resetProjectCreationStore();
+    navigate('/create-project');
+  };
   const onDraftProjectsCheckSuccess = (res) => {
     if (res?.has_draft_project) {
       setSavedDraftsAvailableModal(true);
@@ -58,11 +62,6 @@ const CreateProjectButton = () => {
 
   const onCreateProjectClick = () => {
     dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
-  };
-
-  const handleCreateNewProject = () => {
-    resetProjectCreationStore();
-    navigate('/create-project');
   };
 
   return (
