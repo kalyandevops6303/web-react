@@ -2,12 +2,13 @@ import { ChartConfig } from '@/flexternships/app/components/ui/chart';
 
 export interface IChartLayoutProps {
   title: string;
-  selectOptions: { label: string; value: string }[];
+  selectOptions?: { label: string; value: string }[];
   defaultSelectedValue?: string;
-  handleSelect: (value: string) => void;
+  handleSelect?: (value: string) => void;
   children: React.ReactNode;
   isDownloadIconVisible?: boolean;
   isDonutChart?: boolean;
+  info?: boolean;
 }
 
 export interface IChartTabsType {
@@ -56,4 +57,39 @@ export interface IBaseChartProps {
   showPercentageInTab?: boolean;
   handleSelect: (value: string | number) => void;
   handleTabChange?: (value: string) => void;
+}
+
+export interface CustomPieChartProps extends IChartLayoutProps {
+  chartData: Array<{
+    name: string;
+    value: number;
+    percentage: string;
+    color: string;
+  }>;
+  chartTitle?: string;
+  isDonutChart?: boolean;
+  info?: boolean;
+}
+
+type PayloadItem = {
+  payload: {
+    name: string;
+    value: number | string;
+    percentage: number | string;
+    color: string;
+  };
+};
+
+export type CustomTooltipProps = {
+  active?: boolean;
+  payload?: PayloadItem[];
+};
+
+export interface ChartLabelProps {
+  cx?: number;
+  cy?: number;
+  midAngle: number;
+  innerRadius?: number;
+  outerRadius?: number;
+  index?: number;
 }

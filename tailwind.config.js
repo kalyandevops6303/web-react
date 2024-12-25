@@ -62,11 +62,15 @@ module.exports = {
           secondary: {
             500: '#0185E4',
           },
+
           disabled: '#99C1E6',
           light: '#E0F0FB',
           a1: '#0065C1',
           a3: '#00B2FF',
           a4: '#23DFEB',
+        },
+        text: {
+          dark: '#071013',
         },
       },
       width: {
@@ -112,6 +116,7 @@ module.exports = {
         'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
         'primary-button': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
         'custom-blue': '0px 2px 4px 0px rgba(1, 133, 228, 0.40)',
+        custom: '0px 2px 8px 0px rgba(0, 0, 0, 0.16)',
       },
       keyframes: {
         'accordion-down': {

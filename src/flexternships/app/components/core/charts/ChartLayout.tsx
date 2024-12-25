@@ -3,6 +3,7 @@ import React from 'react';
 import DynamicSelect from '../dynamic-select/DynamicSelect';
 import downloadIcon from '../../../../assets/icons/core/downloadIcon.svg';
 import { IChartLayoutProps } from '@/flexternships/constraints/types/chart-types';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
 
 const ChartLayout: React.FC<IChartLayoutProps> = ({
   title,
@@ -12,16 +13,26 @@ const ChartLayout: React.FC<IChartLayoutProps> = ({
   children,
   isDonutChart = false,
   isDownloadIconVisible = true,
+  info = true,
 }) => (
   <ChartLayoutWrapper className={`${isDonutChart ? 'w-[350px]' : 'w-[770px]'}`}>
     <ChartLayoutHeader>
-      <div className={`w-full flex items-center ${isDownloadIconVisible ? 'gap-3' : 'justify-between'}`}>
+      <div className={`w-full flex items-center ${isDownloadIconVisible || info ? 'gap-3' : 'justify-between'}`}>
         <ChartLayoutTitle>{title}</ChartLayoutTitle>
-        <DynamicSelect
-          onChange={handleSelect}
-          selectOptions={selectOptions}
-          defaultSelectedValue={defaultSelectedValue}
-        />
+        {info && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-600">
+              <InfoCircledIcon />
+            </span>
+          </div>
+        )}
+        {handleSelect && selectOptions && (
+          <DynamicSelect
+            onChange={handleSelect}
+            selectOptions={selectOptions}
+            defaultSelectedValue={defaultSelectedValue}
+          />
+        )}
       </div>
       {isDownloadIconVisible && (
         <div className="flex items-center space-x-2">
