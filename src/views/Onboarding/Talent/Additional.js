@@ -1212,74 +1212,26 @@ const Additional = () => {
                 </CardHeader>
 
                 <CardBody>
-                  <hr className="m-0 card-header-border" />
-
-                  {isTrumioTalent && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox"
-                          className="custom-checkbox-input"
-                          checked={isProjectReady}
-                        />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                      </div>
-                      <div>
-                        <CardText className="m-0">Client Projects Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer"
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                ?.path || '/marketplace',
-                            )
-                          }
-                        >
-                          {isProjectReady
-                            ? 'Explore Projects'
-                            : `${
-                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                  ?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
-                      </div>
-                    </div>
-                  )}
-
                   {isFlextern && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox2"
-                          className="custom-checkbox-input"
-                          checked={isFlexternReady}
-                        />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                      </div>
+                    <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer d-flex align-items-center"
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
-                                ?.path || '/dashboard',
-                            )
-                          }
-                        >
-                          {isFlexternReady
-                            ? 'Explore Flexternships'
-                            : `${
+                        <CardText className="m-0">
+                          <a
+                            href="#"
+                            className="text-primary cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(
                                 returnCompleteProfileDetailsCta(
                                   userTypes.talent,
                                   profileCompletionFlexternMissingValues,
-                                )?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
+                                )?.path || '/dashboard',
+                              );
+                            }}
+                          >
+                            Add More
+                          </a>
+                        </CardText>
                       </div>
                     </div>
                   )}
