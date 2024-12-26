@@ -1147,29 +1147,51 @@ const FlexternSocial = () => {
                 </CardHeader>
 
                 <CardBody>
-                  {isFlextern && (
-                    <div className="d-flex gap-1 mt-1 justify-content-center">
-                      <div>
-                        <CardText className="m-0">
-                          <a
-                            href="#"
-                            className="text-primary cursor-pointer"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              navigate(
-                                returnCompleteProfileDetailsCta(
-                                  userTypes.talent,
-                                  profileCompletionFlexternMissingValues,
-                                )?.path || '/dashboard',
-                              );
-                            }}
+                  {isFlextern &&
+                    (isFlexternReady ? (
+                      <div className="d-flex gap-1 mt-1">
+                        <div className="custom-checkbox-wrapper">
+                          <Input
+                            type="checkbox"
+                            id="customCheckbox2"
+                            className="custom-checkbox-input"
+                            checked={isFlexternReady}
+                          />
+                          <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
+                        </div>
+                        <div>
+                          <CardText className="m-0">Flexternship Ready</CardText>
+                          <b
+                            className="d-flex align-items-center text-primary cursor-pointer"
+                            onClick={() => navigate('/dashboard')}
                           >
-                            Add More
-                          </a>
-                        </CardText>
+                            Explore Flexternships
+                          </b>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="d-flex gap-1 mt-1 justify-content-center">
+                        <div>
+                          <CardText className="m-0">
+                            <a
+                              href="#"
+                              className="text-primary cursor-pointer"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigate(
+                                  returnCompleteProfileDetailsCta(
+                                    userTypes.talent,
+                                    profileCompletionFlexternMissingValues,
+                                  )?.path || '/dashboard',
+                                );
+                              }}
+                            >
+                              Add More
+                            </a>
+                          </CardText>
+                        </div>
+                      </div>
+                    ))}
                 </CardBody>
               </Card>
             </Col>
