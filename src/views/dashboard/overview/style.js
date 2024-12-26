@@ -198,6 +198,7 @@ const EarningAmount = styled.div`
 
 const ProjectWrapper = styled.div`
   position: relative;
+  min-width: 24.2rem;
   @media (max-width: 768px) {
     min-width: 20rem;
   }

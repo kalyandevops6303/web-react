@@ -479,7 +479,7 @@ const ProjectListing = () => {
               </AccordionBody>
             </AccordionItem>
           </PermissionWrapper>
-          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.OPEN_PROJECTS']}>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.ACTIVE_PROJECTS']}>
             <AccordionItem>
               <AccordionHeader targetId="3">
                 <AccordionHeadStyle>
