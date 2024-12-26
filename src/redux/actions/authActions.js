@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
-import { logout as logoutZustand, showToastMessage } from '@flexternships/utils/core-utils';
+import { showToastMessage } from '@flexternships/utils/core-utils';
 import errorHandler from '../../utility/errorHandler';
 
 import {
@@ -362,29 +362,21 @@ const setNewPassword = (newPassword) => async (dispatch) => {
 };
 
 const logoutAction =
-  ({ fcmToken, onSuccess }) =>
+  ({ fcmToken, onSuccess, suppressToast }) =>
   async (dispatch) => {
     if (fcmToken) {
       dispatch(fcmUnsubscribeNotification(fcmToken));
     }
 
-    // Zustand Logout
     dispatch(logoutRequest());
 
     try {
       const res = await logoutUserService();
 
-      logoutZustand();
-      dispatch(logOut());
-      dispatch(clearTeams());
-      dispatch(clearTeamCardData());
-      dispatch(clearProjectCardData());
-      dispatch(clearMarketplaceCardData());
-      dispatch(clearNotificationsData());
       onSuccess();
-      showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+      !suppressToast && showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
     } catch (error) {
-      if (error?.response?.data?.errorData?.errorCode === 403) {
+      if (error?.response?.data?.errorData?.errorCode === 403 && !suppressToast) {
         showToastMessage(ToastType.ERROR, error?.response?.data?.errorData?.message);
       }
       errorHandler(error, logoutFailure);

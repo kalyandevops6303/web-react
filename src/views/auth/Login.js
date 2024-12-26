@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner, CardBody } from 'reactstrap';
@@ -48,6 +48,9 @@ const Login = () => {
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
 
+  const [searchParams] = useSearchParams();
+  const nextPath = searchParams.get('next_path');
+
   const onValidUrlSuccess = (res) => {
     if (res.user_status === 'UNREGISTERED') {
       removeItem('isUserVisited');
@@ -55,7 +58,7 @@ const Login = () => {
 
       navigate('/auth');
     } else if (isLoggedIn) {
-      navigate('/dashboard');
+      navigate(nextPath || '/dashboard');
     }
   };
 
@@ -84,7 +87,7 @@ const Login = () => {
         navigate(redirectToLocation);
         removeItemFromSession('redirect_to_location');
       } else if (!isDelegate) {
-        navigate('/dashboard');
+        navigate(nextPath || '/dashboard');
       }
     }
   }, [isLoggedIn]);
@@ -138,7 +141,7 @@ const Login = () => {
   const onSuccess = (response) => {
     dispatch(clearAllFormData());
     dispatch(getAppPermissions());
-    checkPointRedirection({ response, navigate });
+    checkPointRedirection({ response, navigate, nextPath });
   };
 
   const onSubmit = (values) => {

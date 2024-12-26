@@ -4,6 +4,8 @@ import {
   GlobalModalType,
   UserType,
   MessageRole,
+  UserStatus,
+  UserInvitationType,
 } from '../enums/core-enums';
 
 // Static Data Types
@@ -148,6 +150,14 @@ export type AppActions = {
 };
 
 export type AppStore = AppState & AppActions;
+
+export type ValidatedRequestToken = {
+  invitationByUserId: string;
+  emailInvited: string;
+  projectId: string;
+  invitationType: UserInvitationType;
+  userStatus: UserStatus;
+};
 
 export type Feature = {
   featureId: string;
