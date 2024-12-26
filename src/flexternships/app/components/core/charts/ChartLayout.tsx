@@ -12,14 +12,14 @@ const ChartLayout: React.FC<IChartLayoutProps> = ({
   handleSelect,
   children,
   isDonutChart = false,
-  isDownloadIconVisible = true,
-  info = true,
+  showDownloadIcon = true,
+  showInfoIcon,
 }) => (
   <ChartLayoutWrapper className={`${isDonutChart ? 'w-[350px]' : 'w-[770px]'}`}>
     <ChartLayoutHeader>
-      <div className={`w-full flex items-center ${isDownloadIconVisible || info ? 'gap-3' : 'justify-between'}`}>
+      <div className={`w-full flex items-center ${showDownloadIcon || showInfoIcon ? 'gap-3' : 'justify-between'}`}>
         <ChartLayoutTitle>{title}</ChartLayoutTitle>
-        {info && (
+        {showInfoIcon && (
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-gray-600">
               <InfoCircledIcon />
@@ -34,7 +34,7 @@ const ChartLayout: React.FC<IChartLayoutProps> = ({
           />
         )}
       </div>
-      {isDownloadIconVisible && (
+      {showDownloadIcon && (
         <div className="flex items-center space-x-2">
           <button className="text-gray-500 hover:text-gray-800">
             <img src={downloadIcon} alt="download icon" />

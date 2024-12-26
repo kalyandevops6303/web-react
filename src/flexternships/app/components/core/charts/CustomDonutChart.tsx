@@ -20,7 +20,7 @@ const CustomDonutChart: React.FC<IDonutChartProps> = ({
   handleTabChange = () => {},
   chartTitle = 'Donut Chart',
   showPercentageInTab = false,
-  isDownloadIconVisible = false,
+  showDownloadIcon = false,
 }) => {
   const radialBars = useMemo(() => {
     return Object.keys(chartConfig).map((chartKey) => ({
@@ -34,7 +34,7 @@ const CustomDonutChart: React.FC<IDonutChartProps> = ({
       title={chartTitle}
       selectOptions={selectOptions}
       handleSelect={handleSelect}
-      isDownloadIconVisible={isDownloadIconVisible}
+      showDownloadIcon={showDownloadIcon}
       isDonutChart={isDonutChart}
     >
       <div className="w-full">

@@ -8,10 +8,10 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
   chartData = [],
   chartTitle = 'Pie Chart',
   isDonutChart = false,
-  info = true,
-  isDownloadIconVisible = false,
+  showInfoIcon,
+  showDownloadIcon = false,
 }) => {
-  const [_, setActiveIndex] = useState<number | null>(null);
+  const [_activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const normalizedData = useMemo(
     () =>
@@ -25,7 +25,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
   const renderCustomLabel = useMemo(
     () =>
       ({ cx = 0, cy = 0, midAngle, innerRadius = 0, outerRadius = 0, index }: ChartLabelProps): JSX.Element | null => {
-        if (index === undefined || index < 0 || index >= normalizedData.length) return null;
+        if (!index || index < 0 || index >= normalizedData.length) return null;
 
         const RADIAN = Math.PI / 180;
         const radius = innerRadius + (outerRadius - innerRadius) / 2;
@@ -92,7 +92,10 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
           <div key={`legend-${index}`} className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-2 flex-[1_0_0]">
               <div className="flex gap-2">
-                <div className={`w-1 rounded align-self-stretch `} style={{ backgroundColor: entry.color }}></div>
+                <div
+                  className={`w-1 rounded align-self-stretch bg-[${entry.color}]`}
+                  // style={{ backgroundColor: entry.color }}
+                ></div>
                 <span className="text-sm font-medium text-grey-700">{entry.name}</span>
               </div>
               <div className="flex gap-2">
@@ -113,8 +116,8 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
     <ChartLayout
       title={chartTitle}
       isDonutChart={isDonutChart}
-      isDownloadIconVisible={isDownloadIconVisible}
-      info={info}
+      showDownloadIcon={showDownloadIcon}
+      showInfoIcon={showInfoIcon}
     >
       <div className="flex items-center justify-between gap-4 flex-col md:flex-row">
         <ResponsiveContainer width={360} height={326}>
@@ -131,7 +134,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
               endAngle={520}
               label={renderCustomLabel}
               activeShape={renderActiveShape}
-              onMouseEnter={(_, index) => setActiveIndex(index)}
+              onMouseEnter={(_event, index) => setActiveIndex(index)}
               onMouseLeave={() => setActiveIndex(null)}
             >
               {normalizedData.map((entry, index) => (

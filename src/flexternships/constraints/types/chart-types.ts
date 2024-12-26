@@ -6,9 +6,9 @@ export interface IChartLayoutProps {
   defaultSelectedValue?: string;
   handleSelect?: (value: string) => void;
   children: React.ReactNode;
-  isDownloadIconVisible?: boolean;
+  showDownloadIcon?: boolean;
   isDonutChart?: boolean;
-  info?: boolean;
+  showInfoIcon?: boolean;
 }
 
 export interface IChartTabsType {
@@ -36,7 +36,7 @@ export interface IDonutChartProps extends IBaseChartProps {
   statsData: IStatsProps[];
   totalRadialData: number;
   isDonutChart: boolean;
-  isDownloadIconVisible: boolean;
+  showDownloadIcon: boolean;
   radialDataText: string;
 }
 
@@ -68,7 +68,7 @@ export interface CustomPieChartProps extends IChartLayoutProps {
   }>;
   chartTitle?: string;
   isDonutChart?: boolean;
-  info?: boolean;
+  showInfoIcon?: boolean;
 }
 
 type PayloadItem = {
