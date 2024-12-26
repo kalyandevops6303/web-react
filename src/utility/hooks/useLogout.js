@@ -24,6 +24,13 @@ const useLogout = () => {
     const onSuccess = async () => {
       window.localStorage.clear();
       window.sessionStorage.clear();
+      logoutZustand();
+      dispatch(logOut());
+      dispatch(clearTeams());
+      dispatch(clearTeamCardData());
+      dispatch(clearProjectCardData());
+      dispatch(clearMarketplaceCardData());
+      dispatch(clearNotificationsData());
       window.history.pushState(null, '', '/auth/login');
       window.addEventListener('popstate', () => {
         window.history.pushState(null, '', '/auth/login');
@@ -58,16 +65,6 @@ const useLogout = () => {
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
       }
-
-      // Zustand Logout
-      logoutZustand();
-
-      dispatch(logOut());
-      dispatch(clearTeams());
-      dispatch(clearTeamCardData());
-      dispatch(clearProjectCardData());
-      dispatch(clearMarketplaceCardData());
-      dispatch(clearNotificationsData());
 
       dispatch(clearAllFormData());
       dispatch(setFormDocuments(null));
