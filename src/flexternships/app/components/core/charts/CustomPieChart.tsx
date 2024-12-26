@@ -25,7 +25,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
   const renderCustomLabel = useMemo(
     () =>
       ({ cx = 0, cy = 0, midAngle, innerRadius = 0, outerRadius = 0, index }: ChartLabelProps): JSX.Element | null => {
-        if (!index || index < 0 || index >= normalizedData.length) return null;
+        if (index === undefined || index < 0 || index >= normalizedData.length) return null;
 
         const RADIAN = Math.PI / 180;
         const radius = innerRadius + (outerRadius - innerRadius) / 2;
@@ -92,15 +92,12 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
           <div key={`legend-${index}`} className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-2 flex-[1_0_0]">
               <div className="flex gap-2">
-                <div
-                  className={`w-1 rounded align-self-stretch bg-[${entry.color}]`}
-                  // style={{ backgroundColor: entry.color }}
-                ></div>
+                <div className={`w-1 rounded align-self-stretch`} style={{ backgroundColor: entry.color }}></div>
                 <span className="text-sm font-medium text-grey-700">{entry.name}</span>
               </div>
               <div className="flex gap-2">
                 <span className="text-sm font-semibold text-center text-text-dark">{entry.value}</span>
-                <div className="w-[1px] h-5 rounded-[10px] bg-grey-50"></div>
+                <div className="w-[1px] h-5 rounded-10 bg-grey-50"></div>
                 <span className="text-sm font-semibold text-center text-text-dark">{entry.percentage}</span>
               </div>
             </div>

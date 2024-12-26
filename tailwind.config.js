@@ -105,6 +105,7 @@ module.exports = {
       borderRadius: {
         5: '5px',
         7: '7px',
+        10:"10px",
         52: '52px',
       },
       borderWidth: {
@@ -116,7 +117,7 @@ module.exports = {
         'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
         'primary-button': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
         'custom-blue': '0px 2px 4px 0px rgba(1, 133, 228, 0.40)',
-        custom: '0px 2px 8px 0px rgba(0, 0, 0, 0.16)',
+        'custom-pieChart-shadow': '0px 2px 8px 0px rgba(0, 0, 0, 0.16)',
       },
       keyframes: {
         'accordion-down': {

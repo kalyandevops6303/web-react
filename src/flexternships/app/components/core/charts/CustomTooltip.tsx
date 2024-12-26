@@ -6,14 +6,14 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
   const { name, value, percentage, color } = payload[0].payload;
 
   return (
-    <div className="bg-[var(--Grey-0,#FFF)] flex flex-col items-start gap-1 py-2 px-3 rounded-5 shadow-custom">
+    <div className="bg-[var(--Grey-0,#FFF)] flex flex-col items-start gap-1 py-2 px-3 rounded-5 shadow-custom-pieChart-shadow">
       <div className="flex items-center gap-1">
-        <div className={`w-3 h-3 rounded-[2px] gap-[6px] bg-[${color}]`}></div>
-        <p className="text-grey-700 font-[Montserrat] text-[12px] font-normal leading-[20px]">{name}</p>
+        <div className={`w-3 h-3 rounded-sm gap-[6px]`} style={{ backgroundColor: color }}></div>
+        <p className="text-grey-700 font-[Montserrat] text-xs  font-normal leading-5">{name}</p>
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-[14px] font-semibold leading-[22px] text-center text-text-dark">{value}</span>
-        <div className="w-[1px] h-5 rounded-[10px] bg-grey-50"></div>
+        <span className="text-sm font-semibold  text-center text-text-dark leading-5.5">{value}</span>
+        <div className="w-[1px] h-5 rounded-10 bg-grey-50"></div>
         <p className="text-sm font-semibold text-center text-text-dark">{percentage}</p>
       </div>
     </div>
