@@ -29,6 +29,10 @@ import {
   activeProjectsForTalentLoading,
   activeProjectsForTeam,
   activeProjectsForTeamLoading,
+  openProjectsForClient,
+  openProjectsForClientLoading,
+  openProjectsForTalent,
+  openProjectsForTalentLoading,
   profilePercentage,
   recommendedProjects,
   recommendedProjectsLoading,
@@ -39,18 +43,26 @@ import {
   upcomingProjectsForTeam,
   upcomingProjectsForTeamLoading,
   userData,
+  withdrawnProjectsForClient,
+  withdrawnProjectsForClientLoading,
+  withdrawnProjectsForTalent,
+  withdrawnProjectsForTalentLoading,
 } from '../../../redux/selectors/dashboardSelectors';
 import {
   getActiveProjectsForClient,
   getActiveProjectsForTalent,
   getActiveProjectsForTeam,
+  getOpenProjectsForClient,
+  getOpenProjectsForTalent,
   getRecommendedProjects,
   getUpcomingProjectsForClient,
   getUpcomingProjectsForTalent,
   getUpcomingProjectsForTeam,
+  getWithdrawnProjectsForClient,
+  getWithdrawnProjectsForTalent,
 } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
-import { clubStatus, userTypes } from '../../../utility/constants/Constant';
+import { appRoles, clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { appPermissionsSelector, selectUserData } from '../../../redux/selectors/authSelectors';
 import ActiveProjectCard from './ActiveProjectCard';
 import UpcomingProjectCard from './UpcomingProjectCard';
@@ -64,6 +76,10 @@ import ViewAllCard from './ExtraCardWithCount';
 import { AccordionName } from './DashboardConstant';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import PermissionWrapper from '@/PermissionWrapper';
+import OpenProjectCardForTalent from './OpenProjectCardForTalent';
+import OpenProjectCardForClient from './OpenProjectCardForClient';
+import WithdrawnProjectCardForClient from './WithdrawnProjectCardForClient';
+import WithdrawnProjectCardForTalent from './WithdrawnProjectCardForTalent';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -199,12 +215,24 @@ const ProjectListing = () => {
   const upcomingProjectsForClientData = useSelector(upcomingProjectsForClient);
   const upcomingProjectsForClientIsLoading = useSelector(upcomingProjectsForClientLoading);
 
+  const openProjectsForClientData = useSelector(openProjectsForClient);
+  const openProjectsForClientIsLoading = useSelector(openProjectsForClientLoading);
+
+  const withdrawnProjectsForClientData = useSelector(withdrawnProjectsForClient);
+  const withdrawnProjectsForClientIsLoading = useSelector(withdrawnProjectsForClientLoading);
+
   const activeProjectsForTalentData = useSelector(activeProjectsForTalent);
+
   const activeProjectsForTalentIsLoading = useSelector(activeProjectsForTalentLoading);
 
   const upcomingProjectsForTalentData = useSelector(upcomingProjectsForTalent);
   const upcomingProjectsForTalentIsLoading = useSelector(upcomingProjectsForTalentLoading);
 
+  const openProjectsForTalentData = useSelector(openProjectsForTalent);
+  const openProjectsForTalentIsLoading = useSelector(openProjectsForTalentLoading);
+
+  const withdrawnProjectsForTalentData = useSelector(withdrawnProjectsForTalent);
+  const withdrawnProjectsForTalentIsLoading = useSelector(withdrawnProjectsForTalentLoading);
   const activeProjectsForTeamData = useSelector(activeProjectsForTeam);
   const activeProjectsForTeamIsLoading = useSelector(activeProjectsForTeamLoading);
 
@@ -223,6 +251,16 @@ const ProjectListing = () => {
       setIsSliderLoading(false);
     }, 150);
   }, [open]);
+
+  useEffect(() => {
+    if (userDetailsData?.app_roles.includes(appRoles.flexternClient)) {
+      dispatch(getOpenProjectsForClient());
+      dispatch(getWithdrawnProjectsForClient());
+    } else if (userDetailsData?.app_roles.includes(appRoles.flexternTalent)) {
+      dispatch(getOpenProjectsForTalent());
+      dispatch(getWithdrawnProjectsForTalent());
+    }
+  }, [userDetailsData]);
 
   useEffect(() => {
     if (userDetailsData?.user_type === userTypes.client) {
@@ -441,6 +479,180 @@ const ProjectListing = () => {
               </AccordionBody>
             </AccordionItem>
           </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.OPEN_PROJECTS']}>
+            <AccordionItem>
+              <AccordionHeader targetId="3">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center heading-text">
+                    Open Projects
+                    <Tag
+                      hasNew={
+                        openProjectsForClientData?.unreadCount > 0 ? openProjectsForClientData?.unreadCount : false
+                      }
+                      count={openProjectsForClientData?.metadata?.total_records}
+                    />
+                  </span>
+                  {openProjectsForClientData?.data?.length > 0 && (
+                    <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_listings')} className="view-all-cta">
+                      View All
+                    </CardText>
+                  )}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="3">
+                {isSliderLoading || openProjectsForClientIsLoading ? (
+                  <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {openProjectsForClientData?.data?.length > 0 && isTab ? (
+                      openProjectsForClientData?.data?.map((project) => (
+                        <OpenProjectCardForClient
+                          accordionName={AccordionName.openProjects}
+                          key={project._id}
+                          data={project}
+                        />
+                      ))
+                    ) : openProjectsForClientData?.data?.length > 0 ? (
+                      <>
+                        {openProjectsForClientData?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {openProjectsForClientData?.data?.map((project, index) => (
+                              <OpenProjectCardForClient
+                                accordionName={AccordionName.openProjects}
+                                className={`slide-${index}`}
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+
+                            {openProjectsForClientData?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.openProjects}
+                                height={420}
+                                onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                                count={calculateRemainingBidsCount(openProjectsForClientData)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {openProjectsForClientData?.data?.map((project) => (
+                              <OpenProjectCardForClient
+                                accordionName={AccordionName.openProjects}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        recommended
+                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </AccordionItem>
+          </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.WITHDRAWN_PROJECTS']}>
+            <AccordionItem>
+              <AccordionHeader targetId="4">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center heading-text">
+                    Withdrawn Projects
+                    <Tag
+                      hasNew={
+                        withdrawnProjectsForClientData?.unreadCount > 0 ? withdrawnProjectsForClientData?.unreadCount : false
+                      }
+                      count={withdrawnProjectsForClientData?.metadata?.total_records}
+                    />
+                  </span>
+                  {withdrawnProjectsForClientData?.data?.length > 0 && (
+                    <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_listings')} className="view-all-cta">
+                      View All
+                    </CardText>
+                  )}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="4">
+                {isSliderLoading || withdrawnProjectsForClientIsLoading ? (
+                  <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {withdrawnProjectsForClientData?.data?.length > 0 && isTab ? (
+                      withdrawnProjectsForClientData?.data?.map((project) => (
+                        <WithdrawnProjectCardForClient
+                          key={project._id}
+                          data={project}
+                        />
+                      ))
+                    ) : withdrawnProjectsForClientData?.data?.length > 0 ? (
+                      <>
+                        {withdrawnProjectsForClientData?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {withdrawnProjectsForClientData?.data?.map((project, index) => (
+                              <WithdrawnProjectCardForClient
+                                className={`slide-${index}`}
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+
+                            {withdrawnProjectsForClientData?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.withdrawnProjects}
+                                height={420}
+                                onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                                count={calculateRemainingBidsCount(withdrawnProjectsForClientData)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {withdrawnProjectsForClientData?.data?.map((project) => (
+                              <WithdrawnProjectCardForClient
+                                accordionName={AccordionName.withdrawnProjects}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        recommended
+                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </AccordionItem>
+          </PermissionWrapper>
         </>
       )}
       {userDetailsData?.user_type === userTypes.talent && (
@@ -599,6 +811,184 @@ const ProjectListing = () => {
                             {upcomingProjectsForTalentData?.data?.map((project) => (
                               <UpcomingProjectCardForTalent
                                 accordionName={AccordionName.upcomingProjects}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        recommended
+                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </AccordionItem>
+          </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.OPEN_PROJECTS']}>
+            <AccordionItem>
+              <AccordionHeader targetId="3">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center">
+                    Open Projects
+                    <Tag
+                      hasNew={
+                        openProjectsForTalentData?.unreadCount > 0 ? openProjectsForTalentData?.unreadCount : false
+                      }
+                      count={openProjectsForTalentData?.metadata?.total_records}
+                    />
+                  </span>
+                  {openProjectsForTalentData?.data?.length > 0 && (
+                    <CardText onClick={(e) => onViewAllClick(e, '/marketplace/all_listings')} className="view-all-cta">
+                      View All
+                    </CardText>
+                  )}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="3">
+                {isSliderLoading || openProjectsForTalentIsLoading ? (
+                  <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
+                    <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {openProjectsForTalentData?.data?.length > 0 && isTab ? (
+                      openProjectsForTalentData?.data?.map((project) => (
+                        <OpenProjectCardForTalent
+                          accordionName={AccordionName.openProjects}
+                          key={project._id}
+                          data={project}
+                        />
+                      ))
+                    ) : openProjectsForTalentData?.data?.length > 0 ? (
+                      <>
+                        {openProjectsForTalentData?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {openProjectsForTalentData?.data?.map((project, index) => (
+                              <OpenProjectCardForTalent
+                                accordionName={AccordionName.openProjects}
+                                className={`slide-${index}`}
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+
+                            {openProjectsForTalentData?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.openProjects}
+                                height={333}
+                                onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                                count={calculateRemainingBidsCount(openProjectsForTalentData)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {openProjectsForTalentData?.data?.map((project) => (
+                              <OpenProjectCardForTalent
+                                accordionName={AccordionName.openProjects}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        recommended
+                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </AccordionItem>
+          </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.WITHDRAWN_PROJECTS']}>
+            <AccordionItem>
+              <AccordionHeader targetId="4">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center">
+                    Withdrawn Projects
+                    <Tag
+                      hasNew={
+                        withdrawnProjectsForTalentData?.unreadCount > 0
+                          ? withdrawnProjectsForTalentData?.unreadCount
+                          : false
+                      }
+                      count={withdrawnProjectsForTalentData?.metadata?.total_records}
+                    />
+                  </span>
+                  {withdrawnProjectsForTalentData?.data?.length > 0 && (
+                    <CardText onClick={(e) => onViewAllClick(e, '/projects/open')} className="view-all-cta">
+                      View All
+                    </CardText>
+                  )}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="4">
+                {isSliderLoading || withdrawnProjectsForTalentIsLoading ? (
+                  <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
+                    <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {withdrawnProjectsForTalentData?.data?.length > 0 && isTab ? (
+                      withdrawnProjectsForTalentData?.data?.map((project) => (
+                        <WithdrawnProjectCardForTalent
+                          accordionName={AccordionName.withdrawnProjects}
+                          key={project._id}
+                          data={project}
+                        />
+                      ))
+                    ) : withdrawnProjectsForTalentData?.data?.length > 0 ? (
+                      <>
+                        {withdrawnProjectsForTalentData?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {withdrawnProjectsForTalentData?.data?.map((project, index) => (
+                              <WithdrawnProjectCardForTalent
+                                accordionName={AccordionName.withdrawnProjects}
+                                className={`slide-${index}`}
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+
+                            {withdrawnProjectsForTalentData?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.withdrawnProjects}
+                                height={333}
+                                onViewAll={(e) => onViewAllClick(e, '/projects/withdrawn')}
+                                count={calculateRemainingBidsCount(withdrawnProjectsForTalentData)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {withdrawnProjectsForTalentData?.data?.map((project) => (
+                              <WithdrawnProjectCardForTalent
+                                accordionName={AccordionName.withdrawnProjects}
                                 className="custom-slider-project"
                                 key={project._id}
                                 data={project}

@@ -79,8 +79,7 @@ const getListProjects =
           searchText,
           metaData,
         });
-      } else {
-        if (flexTern) {
+      } else if (flexTern) {
           res = await getListProjectServiceFlextern({
             postData: {
               ...postData,
@@ -107,7 +106,6 @@ const getListProjects =
             metaData,
           });
         }
-      }
       await dispatch(getListProjectsSuccess(res.data.data));
       onSuccess();
     } catch (error) {
