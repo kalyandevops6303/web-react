@@ -338,34 +338,38 @@ const getActiveProjectsForClient = () => async (dispatch) => {
 
 const getOpenProjectsForClient = () => async (dispatch) => {
   dispatch(openProjectsForClientRequest());
-  try{
+  try {
     const postData = {
       statuses: ['OPEN'],
       is_my_listings: true,
     };
-    const res = await getListProjectServiceFlextern({postData, searchText: '', metaData: {page: 1, page_size: 50}});
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
     dispatch(
-      openProjectsForClientSuccess({ ...res.data.data, unreadCount: res.data.data.data?.map((data)=>data?.is_read === false)?.length || 0 }),
+      openProjectsForClientSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
     );
-
-  }catch(error){
+  } catch (error) {
     errorHandler(error, openProjectsForClientFailure);
   }
 };
 
 const getWithdrawnProjectsForClient = () => async (dispatch) => {
   dispatch(withdrawnProjectsForClientRequest());
-  try{
+  try {
     const postData = {
       statuses: ['WITHDRAWN'],
       is_my_listings: true,
     };
-    const res = await getListProjectServiceFlextern({postData, searchText: '', metaData: {page: 1, page_size: 50}});
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
     dispatch(
-      withdrawnProjectsForClientSuccess({ ...res.data.data, unreadCount: res.data.data.data?.map((data)=>data?.is_read === false)?.length || 0 }),
+      withdrawnProjectsForClientSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
     );
-
-  }catch(error){
+  } catch (error) {
     errorHandler(error, withdrawnProjectsForClientFailure);
   }
 };
@@ -456,32 +460,38 @@ const getUpcomingProjectsForTalent = () => async (dispatch) => {
 
 const getOpenProjectsForTalent = () => async (dispatch) => {
   dispatch(openProjectsForTalentRequest());
-  try{
+  try {
     const postData = {
       statuses: ['OPEN'],
       is_my_listings: false,
     };
-    const res = await getListProjectServiceFlextern({postData, searchText: '', metaData: {page: 1, page_size: 50}});
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
     dispatch(
-      openProjectsForTalentSuccess({ ...res.data.data, unreadCount: res.data.data.data?.map((data)=>data?.is_read === false)?.length || 0 }),
+      openProjectsForTalentSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
     );
-  }catch(error){
+  } catch (error) {
     errorHandler(error, openProjectsForTalentFailure);
   }
 };
 
 const getWithdrawnProjectsForTalent = () => async (dispatch) => {
   dispatch(withdrawnProjectsForTalentRequest());
-  try{
+  try {
     const postData = {
       statuses: ['WITHDRAWN'],
       is_my_listings: false,
     };
-    const res = await getListProjectServiceFlextern({postData, searchText: '', metaData: {page: 1, page_size: 50}});
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
     dispatch(
-      withdrawnProjectsForTalentSuccess({ ...res.data.data, unreadCount: res.data.data.data?.map((data)=>data?.is_read === false)?.length || 0 }),
+      withdrawnProjectsForTalentSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
     );
-  }catch(error){
+  } catch (error) {
     errorHandler(error, withdrawnProjectsForTalentFailure);
   }
 };

@@ -1,56 +1,39 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { Badge, Card, CardBody, Spinner } from 'reactstrap';
-import AvatarGroup from '@components/avatar-group';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { useDispatch, useSelector } from 'react-redux';
+import { Card, CardBody, Spinner } from 'reactstrap';
 import { ProjectWrapper } from './style';
-import { CustomBadge } from '../../styled';
-import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import DurationSegment from './DurationSegment';
-import { convertUnixTimestampToDate, getModifiedProjectResponse, truncateSentence } from '../../../utility/Utils';
-import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import ProjectModal from '@/views/modals/ProjectModal';
+import { truncateSentence } from '../../../utility/Utils';
+import RelistConfirmationModal from '@/views/modals/RelistConfirmationModal';
+import RelistListingDetailsModal from '@/views/modals/RelistListingDetailsModal';
+import RelistSuccessModal from '@/views/modals/RelistSuccessModal';
+import { getWithdrawnProjectsForClient } from '@/redux/actions/dashboardActions';
 
 const WithdrawnProjectCardForClient = ({ data, className }) => {
-  const [currentMilestoneData, setCurrentMilestoneData] = useState({});
-  const savedUserData = useSelector(selectSavedUserData);
+  const dispatch = useDispatch();
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
-  useEffect(()=>{
-    if(data?.milestones && data?.milestones.length>0){
-        const currentMilestone = data?.milestones?.map((milestone)=>milestone?.status === 'ACTIVE');
-      const requiredData = {
-        seq: currentMilestone?.seq,
-        due_date: currentMilestone?.end_date,
-        name: currentMilestone?.name,
-      };
-        setCurrentMilestoneData(requiredData);
-    }
-  },[data?.milestones]);
-  const statusEnum = {
-    OPEN: 'Open',
-    IN_REVIEW: 'In Review',
-    ON_GOING: 'On Going',
-    ACTIVE: 'Active',
-    TERMINATED: 'Terminated',
-    CLOSED: 'Closed',
-    WITHDRAWN: 'Withdrawn',
-    LISTING_EXPIRED: 'Listing Expired',
-  };
-  const [showModal, setShowModal] = useState(false);
-  
-  const handleToggle = () => {
-    setShowModal(!showModal);
-  };
-  const updateCard = () => {
-    setShowModal(true);
+  const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
+  const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
+  const [relistSuccessModal, setRelistSuccessModal] = useState(null);
+  const [projectRelistData, setProjectRelistData] = useState(null);
+
+  const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
+
+  const toggleRelistListingDetailsModal = () => setRelistListingDetailsModal(!relistListingDetailsModal);
+
+  const toggleRelistSuccessModal = () => {
+    dispatch(getWithdrawnProjectsForClient());
+    setRelistSuccessModal(!relistSuccessModal);
+    setRelistConfirmationModal(false);
+    setRelistListingDetailsModal(false);
   };
 
-  const viewProject = () => {
-    updateCard();
+  const handleToggle = () => {
+    setRelistConfirmationModal(true);
   };
 
   return (
@@ -58,19 +41,19 @@ const WithdrawnProjectCardForClient = ({ data, className }) => {
       <Card className="card-app-design new-tag-relative-card">
         {!data?.project?.is_read && <NewTag />}
         <CardBody>
-          <CustomBadge>
+          {/* <CustomBadge>
             <Badge className={`${data?.project?.status}`} color="badge">
               {statusEnum[data?.project?.status]}
             </Badge>
-          </CustomBadge>
+          </CustomBadge> */}
           <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
             {truncateSentence({ sentence: data?.project?.name, maxCharacters: 30 })}
           </p>
-          <div className="client-badge px-1 mb-75">
+          {/* <div className="client-badge px-1 mb-75">
             <p className="mb-0">Client</p>
-          </div>
-          <p className="active-project-team-name mb-50">{`${data?.client?.first_name} ${data?.client?.last_name}`}</p>
-          <div className="mb-1">
+          </div> 
+           <p className="active-project-team-name mb-50">{`${data?.client?.first_name} ${data?.client?.last_name}`}</p>  
+           <div className="mb-1">
             <span className="d-flex avatars">
               <AvatarGroup
                 size="sm"
@@ -92,47 +75,52 @@ const WithdrawnProjectCardForClient = ({ data, className }) => {
                 ]}
               />
             </span>
-          </div>
+          </div> */}
           <p className="active-project-simple-heading">Project</p>
-          <DurationSegment start_date={data?.project?.expected_start_date} end_date={data?.project?.listing_end_date} />
-          {
-            currentMilestoneData?.length > 0 && 
-<>
-<p className="active-project-simple-heading">Milestone {currentMilestoneData?.seq}</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <p className="mb-25 details-box-title">Due Date</p>
-                <p className="mb-0 details-box">
-                  {`${
-                    convertUnixTimestampToDate(
-                      currentMilestoneData?.due_date,
-                      savedUserData?.availability?.timezone?.name,
-                    ) || '-'
-                  }`}
-                </p>
-              </div>
-              <p className="active-project-milestone-name">{currentMilestoneData.name}</p>
-            </div>
-          </div>
-          </>}
+          <DurationSegment
+            start_date={data?.project?.expected_start_date}
+            end_date={data?.project?.listing_end_date}
+            showStartDate={false}
+            showEndDate={false}
+            showWithdrawnDate
+            withdrawnDate={data?.project?.updated_at}
+          />
 
           <div
-            onClick={viewProject}
+            onClick={handleToggle}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
           >
-            {isModalLoading && projectModalId === data?.project?._id ? <Spinner size="sm" /> : 'View Project'}
+            {isModalLoading && projectModalId === data?.project?._id ? <Spinner size="sm" /> : 'Relist'}
           </div>
         </CardBody>
       </Card>
-            {showModal && (
-              <ProjectModal
-                data={getModifiedProjectResponse({ data })}
-                modal={showModal}
-                toggleModal={handleToggle}
-                isMyTeam={false}
-              />
-            )}
+      {relistConfirmationModal && (
+        <RelistConfirmationModal
+          modal={relistConfirmationModal}
+          toggleModal={toggleRelistConfirmationModal}
+          setRelistListingDetailsModal={setRelistListingDetailsModal}
+        />
+      )}
+      {relistListingDetailsModal && (
+        <RelistListingDetailsModal
+          modal={relistListingDetailsModal}
+          toggleModal={toggleRelistListingDetailsModal}
+          setRelistConfirmationModal={setRelistConfirmationModal}
+          setRelistSuccessModal={setRelistSuccessModal}
+          projectRelistData={projectRelistData}
+          setProjectRelistData={setProjectRelistData}
+          projectId={data?.project?._id}
+        />
+      )}
+
+      {relistSuccessModal && (
+        <RelistSuccessModal
+          modal={relistSuccessModal}
+          toggleModal={toggleRelistSuccessModal}
+          projectRelistData={projectRelistData}
+          data={data?.project}
+        />
+      )}
     </ProjectWrapper>
   );
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import '../custom-styles.scss';
@@ -9,11 +8,10 @@ import { RelistModalWrapper } from './style';
 import { convertUnixTimestampToDate } from '../../utility/Utils';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 
-const RelistSuccessModal = ({ modal, toggleModal, projectRelistData }) => {
-  const navigate = useNavigate();
+const RelistSuccessModal = ({ modal, toggleModal, projectRelistData, data }) => {
   const savedUserData = useSelector(selectSavedUserData);
   const onDoneClick = () => {
-    navigate('/marketplace/my_listings');
+    toggleModal();
   };
 
   return (
@@ -29,7 +27,7 @@ const RelistSuccessModal = ({ modal, toggleModal, projectRelistData }) => {
               <h2 className="mb-1">Project Re-listed</h2>
               <p className="note-text font-medium-3 mt-75">Your project is now re-listed in the marketplace.</p>
               <p className="note-text font-medium-3 mt-75">
-                Project Name: <span className="fw-bolder">{projectRelistData?.name}</span>
+                Project Name: <span className="fw-bolder">{projectRelistData?.name || data?.name}</span>
               </p>
               <p className="note-text font-medium-3 mt-75">
                 Listing Duration:{' '}
@@ -67,10 +65,12 @@ RelistSuccessModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   projectRelistData: Proptypes.object,
+  data: Proptypes.object,
 };
 
 RelistSuccessModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   projectRelistData: {},
+  data: {},
 };

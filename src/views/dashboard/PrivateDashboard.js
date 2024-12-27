@@ -345,12 +345,12 @@ const PrivateDashboard = () => {
             </section>
           </PermissionWrapper>
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.OPEN_LISTINGS']}>
-          {userDetailsData?.user_type === userTypes.client && (
-            <section className="mb-2">
-              <Header className="mb-1">Open Listings</Header>
-              <OpenListing />
-            </section>
-          )}
+            {userDetailsData?.user_type === userTypes.client && (
+              <section className="mb-2">
+                <Header className="mb-1">Open Listings</Header>
+                <OpenListing />
+              </section>
+            )}
           </PermissionWrapper>
 
           {userDetailsData?.user_type === userTypes.client && (

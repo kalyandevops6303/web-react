@@ -1,4 +1,5 @@
 import {
+  baseUrl,
   apiAuthEndpoint,
   apiOnboardingEndpoint,
   apiCreateProjectEndpoint,
@@ -207,6 +208,9 @@ const API = {
     terminateInfra: `${apiProjectInfraEndpoint}/api/v1/infra/decommission`,
 
     getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
+
+    // projectv2
+    relistProjectByDateForFlextern: `${baseUrl}/projectv2/api/v1/project/relist-date`,
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,

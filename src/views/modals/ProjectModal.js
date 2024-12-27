@@ -305,7 +305,8 @@ const ProjectModal = ({
           onClick: handleRelistFlexternProject,
         },
       ];
-    } if (
+    }
+    if (
       data.is_invited ||
       location.pathname.split('/').includes('my_listings') ||
       [data.client.user_id, data.client._id].includes(userDetails.id)

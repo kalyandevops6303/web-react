@@ -21,18 +21,18 @@ const WithdrawnProjectCardForTalent = ({ accordionName, data, className }) => {
   const savedUserData = useSelector(selectSavedUserData);
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
-  
-  useEffect(()=>{
-    if(data?.milestones && data?.milestones.length>0){
-        const currentMilestone = data?.milestones?.map((milestone)=>milestone?.status === 'ACTIVE');
+
+  useEffect(() => {
+    if (data?.milestones && data?.milestones.length > 0) {
+      const currentMilestone = data?.milestones?.map((milestone) => milestone?.status === 'ACTIVE');
       const requiredData = {
         seq: currentMilestone?.seq,
         due_date: currentMilestone?.end_date,
         name: currentMilestone?.name,
       };
-        setCurrentMilestoneData(requiredData);
+      setCurrentMilestoneData(requiredData);
     }
-  },[data?.milestones]);
+  }, [data?.milestones]);
   const statusEnum = {
     OPEN: 'Open',
     IN_REVIEW: 'In Review',
@@ -43,7 +43,7 @@ const WithdrawnProjectCardForTalent = ({ accordionName, data, className }) => {
     LISTING_EXPIRED: 'Listing Expired',
   };
   const [showModal, setShowModal] = useState(false);
-  
+
   const handleToggle = () => {
     setShowModal(!showModal);
   };
@@ -55,7 +55,14 @@ const WithdrawnProjectCardForTalent = ({ accordionName, data, className }) => {
       type: accordionName,
     };
     if (data?.project?.is_read === false) {
-      dispatch(updateCardStatus({ switch_team_id: null, id: data?.project?._id, data: postData, type: 'withdrawnProjectsForTalent' }));
+      dispatch(
+        updateCardStatus({
+          switch_team_id: null,
+          id: data?.project?._id,
+          data: postData,
+          type: 'withdrawnProjectsForTalent',
+        }),
+      );
     }
     setShowModal(true);
   };
@@ -106,27 +113,27 @@ const WithdrawnProjectCardForTalent = ({ accordionName, data, className }) => {
           </div>
           <p className="active-project-simple-heading">Project</p>
           <DurationSegment start_date={data?.project?.expected_start_date} end_date={data?.project?.listing_end_date} />
-          {
-            currentMilestoneData?.length > 0 && 
-<>
-<p className="active-project-simple-heading">Milestone {currentMilestoneData?.seq}</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <p className="mb-25 details-box-title">Due Date</p>
-                <p className="mb-0 details-box">
-                  {`${
-                    convertUnixTimestampToDate(
-                      currentMilestoneData?.due_date,
-                      savedUserData?.availability?.timezone?.name,
-                    ) || '-'
-                  }`}
-                </p>
+          {currentMilestoneData?.length > 0 && (
+            <>
+              <p className="active-project-simple-heading">Milestone {currentMilestoneData?.seq}</p>
+              <div className="bottom-detail d-flex mt-1">
+                <div className="design-planning-wrapper">
+                  <div className="design-planning">
+                    <p className="mb-25 details-box-title">Due Date</p>
+                    <p className="mb-0 details-box">
+                      {`${
+                        convertUnixTimestampToDate(
+                          currentMilestoneData?.due_date,
+                          savedUserData?.availability?.timezone?.name,
+                        ) || '-'
+                      }`}
+                    </p>
+                  </div>
+                  <p className="active-project-milestone-name">{currentMilestoneData.name}</p>
+                </div>
               </div>
-              <p className="active-project-milestone-name">{currentMilestoneData.name}</p>
-            </div>
-          </div>
-          </>}
+            </>
+          )}
 
           <div
             onClick={viewProject}
@@ -136,14 +143,14 @@ const WithdrawnProjectCardForTalent = ({ accordionName, data, className }) => {
           </div>
         </CardBody>
       </Card>
-            {showModal && (
-              <ProjectModal
-                data={getModifiedProjectResponse({ data })}
-                modal={showModal}
-                toggleModal={handleToggle}
-                isMyTeam={false}
-              />
-            )}
+      {showModal && (
+        <ProjectModal
+          data={getModifiedProjectResponse({ data })}
+          modal={showModal}
+          toggleModal={handleToggle}
+          isMyTeam={false}
+        />
+      )}
     </ProjectWrapper>
   );
 };

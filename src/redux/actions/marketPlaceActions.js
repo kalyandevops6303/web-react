@@ -80,32 +80,32 @@ const getListProjects =
           metaData,
         });
       } else if (flexTern) {
-          res = await getListProjectServiceFlextern({
-            postData: {
-              ...postData,
-              is_my_listings: isMyListing,
-              is_recommended: isRecommanded,
-              is_favourite: isFavorite,
-              show_expired,
-              show_to_be_listed,
-            },
-            searchText,
-            metaData,
-          });
-        } else {
-          res = await getListProjectService({
-            postData: {
-              ...postData,
-              is_my_listings: isMyListing,
-              is_recommended: isRecommanded,
-              is_favourite: isFavorite,
-              show_expired,
-              show_to_be_listed,
-            },
-            searchText,
-            metaData,
-          });
-        }
+        res = await getListProjectServiceFlextern({
+          postData: {
+            ...postData,
+            is_my_listings: isMyListing,
+            is_recommended: isRecommanded,
+            is_favourite: isFavorite,
+            show_expired,
+            show_to_be_listed,
+          },
+          searchText,
+          metaData,
+        });
+      } else {
+        res = await getListProjectService({
+          postData: {
+            ...postData,
+            is_my_listings: isMyListing,
+            is_recommended: isRecommanded,
+            is_favourite: isFavorite,
+            show_expired,
+            show_to_be_listed,
+          },
+          searchText,
+          metaData,
+        });
+      }
       await dispatch(getListProjectsSuccess(res.data.data));
       onSuccess();
     } catch (error) {

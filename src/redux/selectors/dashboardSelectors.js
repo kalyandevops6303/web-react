@@ -67,10 +67,19 @@ const upcomingProjectsForClientLoading = createSelector(
 );
 
 const openProjectsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.openProjectsForClient);
-const openProjectsForClientLoading = createSelector(dashboardSelector, (dashboard) => dashboard.openProjectsForClientLoading);
+const openProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.openProjectsForClientLoading,
+);
 
-const withdrawnProjectsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.withdrawnProjectsForClient);
-const withdrawnProjectsForClientLoading = createSelector(dashboardSelector, (dashboard) => dashboard.withdrawnProjectsForClientLoading);
+const withdrawnProjectsForClient = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForClient,
+);
+const withdrawnProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForClientLoading,
+);
 
 const projectsBidsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.projectsBidsForClient);
 const projectsBidsForClientLoading = createSelector(
@@ -100,10 +109,19 @@ const upcomingProjectsForTalentLoading = createSelector(
 );
 
 const openProjectsForTalent = createSelector(dashboardSelector, (dashboard) => dashboard.openProjectsForTalent);
-const openProjectsForTalentLoading = createSelector(dashboardSelector, (dashboard) => dashboard.openProjectsForTalentLoading);
+const openProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.openProjectsForTalentLoading,
+);
 
-const withdrawnProjectsForTalent = createSelector(dashboardSelector, (dashboard) => dashboard.withdrawnProjectsForTalent);
-const withdrawnProjectsForTalentLoading = createSelector(dashboardSelector, (dashboard) => dashboard.withdrawnProjectsForTalentLoading);
+const withdrawnProjectsForTalent = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForTalent,
+);
+const withdrawnProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForTalentLoading,
+);
 
 const activeProjectsForTeam = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForTeam);
 const activeProjectsForTeamLoading = createSelector(
