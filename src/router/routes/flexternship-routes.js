@@ -57,6 +57,7 @@ import RedirectToTeamTab from '@/flexternships/app/components/pages/project-deta
 import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
 import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
+import FlexternProjectRecognition from '@/flexternships/app/recognition/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -533,6 +534,41 @@ export const FlexternshipRoutes = [
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: '/recognition/:projectId',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/talent-onboarding/account-details',
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: '/talent-onboarding/personal-details',
+              },
+            ],
+          },
+        ]}
+      >
+        <FlexternProjectRecognition />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: '*',

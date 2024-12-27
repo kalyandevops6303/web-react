@@ -21,6 +21,8 @@ module.exports = {
           secondary: {
             500: '#FBC02D',
           },
+          gold: '#F6C01C',
+          light: '#FFD966',
         },
         orange: {
           DEFAULT: '#FF9F43',
@@ -72,6 +74,22 @@ module.exports = {
         text: {
           dark: '#071013',
         },
+        cyan: {
+          DEFAULT: '#00CFE8',
+          light: '#00CFE81F',
+        },
+        purple: {
+          DEFAULT: '#7367F0',
+          light: '#7367F01F',
+        },
+        aqua: {
+          DEFAULT: '#0DA8B2',
+          light: '#0DA8B21F',
+        },
+        blue: {
+          DEFAULT: '#2196F3',
+          light: '#2196F31F',
+        },
       },
       width: {
         8.5: '2.125rem',
@@ -105,7 +123,7 @@ module.exports = {
       borderRadius: {
         5: '5px',
         7: '7px',
-        10:"10px",
+        10: '10px',
         52: '52px',
       },
       borderWidth: {

@@ -1,4 +1,5 @@
 import { GlobalModalContent } from '../constraints/types/core-types';
+import { Competency } from '../constraints/enums/miscellaneous-enums';
 
 export const saveForLaterModalContent: GlobalModalContent = {
   title: 'Save For Later',
@@ -12,4 +13,13 @@ export const projectsBlockedModalContent: GlobalModalContent = {
   description: `Your project(s) are temporarily blocked. Request you to completed the feedback forms in order to resume back to the project viewing`,
   confirmButtonText: 'View Blocked Projects',
   cancelButtonText: '',
+};
+
+export const competencyText = {
+  [Competency.COLLABORATION]: 'Collaboration',
+  [Competency.LEADERSHIP]: 'Leadership',
+  [Competency.COMMUNICATION]: 'Communication',
+  [Competency.INNOVATION]: 'Innovation',
+  [Competency.EFFECTIVENESS]: 'Effectiveness',
+  [Competency.PROBLEM_SOLVING]: 'Problem Solving',
 };
