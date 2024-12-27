@@ -110,25 +110,26 @@ export default function MultipleLinesChart(props: MultipleLinesChartProps) {
             <div className="font-montserrat text-[14px] font-medium leading-[22px] text-[#394042]">All</div>
           </div>
 
-          {Object.entries(chartConfig).map(([key, { label, color }]) => (
-            <div
-              onClick={() => toggleMetric(key)}
-              className={`flex flex-col justify-center items-start gap-1 p-3 flex-[1_0_0] rounded-lg border cursor-pointer ${
-                selectedMetrics.includes(key) ? 'border border-[#0185E4] bg-[#0185E41F]' : 'border-[#E6E7E7]'
-              }`}
-            >
-              <div>
-                <span className="font-montserrat text-[18px] font-semibold leading-[26px] text-[#071013] text-center">
-                  {getAverage(chartData, key)}
-                </span>
-                <span className="font-montserrat text-[14px] font-normal leading-[22px] text-[#838889] text-center">
-                  /{maxYAxis}
-                </span>
+          {chartConfig &&
+            Object.entries(chartConfig).map(([key, { label, color }]) => (
+              <div
+                onClick={() => toggleMetric(key)}
+                className={`flex flex-col justify-center items-start gap-1 p-3 flex-[1_0_0] rounded-lg border cursor-pointer ${
+                  selectedMetrics.includes(key) ? 'border border-[#0185E4] bg-[#0185E41F]' : 'border-[#E6E7E7]'
+                }`}
+              >
+                <div>
+                  <span className="font-montserrat text-[18px] font-semibold leading-[26px] text-[#071013] text-center">
+                    {getAverage(chartData, key)}
+                  </span>
+                  <span className="font-montserrat text-[14px] font-normal leading-[22px] text-[#838889] text-center">
+                    /{maxYAxis}
+                  </span>
+                </div>
+                <div className="font-montserrat text-[14px] font-medium leading-[22px] text-[#394042]">{label}</div>
+                {color && <div className={`flex w-full h-[4px] rounded-full bg-[${color}]`}></div>}
               </div>
-              <div className="font-montserrat text-[14px] font-medium leading-[22px] text-[#394042]">{label}</div>
-              <div className={`flex w-full h-[4px] rounded-full bg-[${color}]`}></div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
       <Card className="flex flex-col max-h-[300px] bg-white border-none shadow-none rounded-t-none">
