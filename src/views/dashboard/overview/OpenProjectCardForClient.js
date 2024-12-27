@@ -43,11 +43,6 @@ const OpenProjectCardForClient = ({ accordionName, data, className }) => {
       <Card className="card-app-design new-tag-relative-card">
         {!data.project?.is_read && <NewTag />}
         <CardBody>
-          {/* <CustomBadge>
-            <Badge className={`${data?.project?.status}`} color="badge">
-              {statusEnum[data?.project?.status]}
-            </Badge>
-          </CustomBadge> */}
           <h4 className="active-project-name mt-1 truncate-2">
             {truncateSentence({ sentence: data?.project?.name, maxCharacters: 30 })}
           </h4>

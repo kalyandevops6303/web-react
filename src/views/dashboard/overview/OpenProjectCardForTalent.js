@@ -7,11 +7,16 @@ import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
-import { userTypes } from '../../../utility/constants/Constant';
+import { statusEnum, userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
-import { convertUnixTimestampToDate, getModifiedProjectResponse, truncateSentence } from '../../../utility/Utils';
+import {
+  convertUnixTimestampToDate,
+  getModifiedProjectResponse,
+  isEmpty,
+  truncateSentence,
+} from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import ProjectModal from '@/views/modals/ProjectModal';
 
@@ -23,7 +28,7 @@ const OpenProjectCardForTalent = ({ accordionName, data, className }) => {
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
   useEffect(() => {
-    if (data?.project?.milestones && data?.project?.milestones.length > 0) {
+    if (!isEmpty(data?.project?.milestones)) {
       const currentMilestone = data?.milestones?.map((milestone) => milestone?.status === 'ACTIVE');
       const requiredData = {
         seq: currentMilestone?.seq,
@@ -33,15 +38,7 @@ const OpenProjectCardForTalent = ({ accordionName, data, className }) => {
       setCurrentMilestoneData(requiredData);
     }
   }, [data?.project?.milestones]);
-  const statusEnum = {
-    OPEN: 'Open',
-    IN_REVIEW: 'In Review',
-    ON_GOING: 'On Going',
-    ACTIVE: 'Active',
-    TERMINATED: 'Terminated',
-    CLOSED: 'Closed',
-    LISTING_EXPIRED: 'Listing Expired',
-  };
+
   const [showModal, setShowModal] = useState(false);
 
   const handleToggle = () => {
@@ -65,10 +62,6 @@ const OpenProjectCardForTalent = ({ accordionName, data, className }) => {
       );
     }
     setShowModal(true);
-  };
-
-  const viewProject = () => {
-    updateCard();
   };
 
   return (
@@ -136,7 +129,7 @@ const OpenProjectCardForTalent = ({ accordionName, data, className }) => {
           )}
 
           <div
-            onClick={viewProject}
+            onClick={updateCard}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
           >
             {isModalLoading && projectModalId === data?.project?._id ? <Spinner size="sm" /> : 'View Project'}

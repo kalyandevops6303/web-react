@@ -592,6 +592,7 @@ const ProjectListing = () => {
                         <WithdrawnProjectCardForClient key={project._id} data={project} />
                       ))
                     ) : withdrawnProjectsForClientData?.data?.length > 0 ? (
+                      // If more than 4 projects, show slider
                       <>
                         {withdrawnProjectsForClientData?.data?.length >= 4 ? (
                           <Slider {...settings}>

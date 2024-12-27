@@ -41,41 +41,9 @@ const WithdrawnProjectCardForClient = ({ data, className }) => {
       <Card className="card-app-design new-tag-relative-card">
         {!data?.project?.is_read && <NewTag />}
         <CardBody>
-          {/* <CustomBadge>
-            <Badge className={`${data?.project?.status}`} color="badge">
-              {statusEnum[data?.project?.status]}
-            </Badge>
-          </CustomBadge> */}
           <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
             {truncateSentence({ sentence: data?.project?.name, maxCharacters: 30 })}
           </p>
-          {/* <div className="client-badge px-1 mb-75">
-            <p className="mb-0">Client</p>
-          </div> 
-           <p className="active-project-team-name mb-50">{`${data?.client?.first_name} ${data?.client?.last_name}`}</p>  
-           <div className="mb-1">
-            <span className="d-flex avatars">
-              <AvatarGroup
-                size="sm"
-                className="mr-4"
-                data={[
-                  {
-                    user_type: userTypes.client,
-                    user_id: data?.client?._id,
-                    title: `${data?.client?.first_name} ${data?.client?.last_name} ` || 'user',
-                    img: data?.client?.image_uri || defaultAvatar,
-                    placement: 'bottom',
-                    imgHeight: 33,
-                    imgWidth: 33,
-                    tooltipId: `tooltip-${data?.client?.first_name?.replace(
-                      /\s+/g,
-                      '-',
-                    )}-${data?.client?.last_name?.replace(/\s+/g, '-')}`,
-                  },
-                ]}
-              />
-            </span>
-          </div> */}
           <p className="active-project-simple-heading">Project</p>
           <DurationSegment
             start_date={data?.project?.expected_start_date}
