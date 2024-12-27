@@ -1,7 +1,7 @@
 export const isFlexternshipApp: boolean = import.meta.env.VITE_IS_FLEXTERNSHIP_APP === 'true';
 
 // API ENDPOINTS
-export const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export const apiAuthEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}`;
 export const apiOnboardingEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}`;
 export const apiCreateProjectEndpoint: string = `${baseUrl}/${import.meta.env.VITE_API_CREATE_PROJECT_PATH}`;

@@ -1,5 +1,4 @@
 import {
-  baseUrl,
   apiAuthEndpoint,
   apiOnboardingEndpoint,
   apiCreateProjectEndpoint,
@@ -210,7 +209,7 @@ const API = {
     getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
 
     // projectv2
-    relistProjectByDateForFlextern: `${baseUrl}/projectv2/api/v1/project/relist-date`,
+    relistProjectByDateForFlextern: `${apiCreateProjectEndpoint}/api/v1/project/relist-date`,
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
