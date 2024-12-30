@@ -10,7 +10,7 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
-import { convertUnixTimestampToDate, roundOfAmount } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
@@ -21,10 +21,6 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
   const savedUserData = useSelector(selectSavedUserData);
-  const viewProject = () => {
-    // navigate(`/project-details/${data._id}/bid`);
-    setShowModal(true);
-  };
 
   const updateCard = () => {
     const postData = {
@@ -37,14 +33,19 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
       dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'upcomingProjectsForTeam' }));
     }
   };
+  const viewProject = () => {
+    updateCard();
+    // navigate(`/project-details/${data._id}/team`);
+    setShowModal(true);
+  };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
         {!data?.is_read && <NewTag />}
         <CardBody>
-          <p className="active-project-name truncate-2 mt-50" style={{ height: '40px' }}>
-            {data?.name}
+          <p className="active-project-name truncate-2 mt-50">
+            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
           </p>
           <div className="d-flex justify-content-between">
             <div className="">

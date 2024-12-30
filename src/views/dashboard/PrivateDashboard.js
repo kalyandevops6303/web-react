@@ -43,6 +43,7 @@ import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSe
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import PermissionWrapper from '../../PermissionWrapper';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
+import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -105,6 +106,11 @@ const PrivateDashboard = () => {
 
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const handleCreateNewProject = () => {
+    resetProjectCreationStore();
+    navigate('/create-project');
   };
 
   const onDraftProjectsCheckSuccess = (res) => {
@@ -182,11 +188,6 @@ const PrivateDashboard = () => {
     setRaisedDisputeModal(true);
   };
 
-  const handleCreateNewProject = () => {
-    resetProjectCreationStore();
-    navigate('/create-project');
-  };
-
   return (
     <div className={`trumio ${userDetailsData?.user_type === userTypes.talent ? 'flex flex-col gap-1.5' : ''}`}>
       {savedDraftsAvailableModal && (
@@ -243,16 +244,10 @@ const PrivateDashboard = () => {
           toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
         />
       )}
-      <span className="mb-2">
+      <span className="mb-4">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       </span>
-      {userDetailsData?.user_type === userTypes.client && (
-        <DashboardHeaderWrapper>
-          <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
-            {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
-          </Button>
-        </DashboardHeaderWrapper>
-      )}
+      {userDetailsData?.user_type === userTypes.client && <CreateProjectButton />}
       {userDetailsData?.team_type === userTypes.team && (
         <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onTeamInvite}>
@@ -337,7 +332,7 @@ const PrivateDashboard = () => {
               'DASHBOARD.PROJECTS.RECOMMENDED_PROJECTS',
             ]}
           >
-            <section className="mb-2 ">
+            <section className="mb-2">
               <Header className="mb-1">Projects</Header>
               <ProjectListing />
             </section>
@@ -384,7 +379,7 @@ const PrivateDashboard = () => {
             </PermissionWrapper>
           )}
           {userDetailsData?.user_type === userTypes.talent && (
-            <section className="mb-2">
+            <section className="mb-2 mt-4">
               <Header className="mb-1">Invites</Header>
               <InviteListing />
             </section>

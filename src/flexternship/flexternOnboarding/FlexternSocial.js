@@ -87,7 +87,11 @@ import uuidv4 from '../../lib/uuidv4';
 
 const FlexternSocial = () => {
   const SocialSchema = yup.object().shape({
-    linkedInLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
+    linkedInLink: yup
+      .string()
+      .test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol)
+      .nullable()
+      .required('LinkedIn is required'),
     twitterLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
     githubLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
     otherSocialLinks: yup.array().of(
@@ -850,14 +854,18 @@ const FlexternSocial = () => {
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
                       <Label className="form-label" for="linkedInLink">
-                        LinkedIn
+                        LinkedIn<span className="label-asterisk me-50">*</span>
                       </Label>
                       <Controller
                         id="linkedInLink"
                         name="linkedInLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter public URL" invalid={errors.linkedInLink && true} />
+                          <Input
+                            {...field}
+                            placeholder="Enter your profile URL"
+                            invalid={errors.linkedInLink && true}
+                          />
                         )}
                       />
                       {errors.linkedInLink && <FormFeedback>{errors.linkedInLink.message}</FormFeedback>}
@@ -871,7 +879,7 @@ const FlexternSocial = () => {
                         name="twitterLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter URL" invalid={errors.twitterLink && true} />
+                          <Input {...field} placeholder="Enter X handle" invalid={errors.twitterLink && true} />
                         )}
                       />
                       {errors.twitterLink && <FormFeedback>{errors.twitterLink.message}</FormFeedback>}
@@ -887,7 +895,7 @@ const FlexternSocial = () => {
                         name="githubLink"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Enter URL" invalid={errors.githubLink && true} />
+                          <Input {...field} placeholder="Enter Github handle" invalid={errors.githubLink && true} />
                         )}
                       />
                       {errors.githubLink && <FormFeedback>{errors.githubLink.message}</FormFeedback>}
@@ -916,7 +924,7 @@ const FlexternSocial = () => {
                           render={({ field }) => (
                             <Input
                               {...field}
-                              placeholder="Enter description"
+                              placeholder="Website"
                               invalid={
                                 errors &&
                                 errors.otherSocialLinks &&
@@ -960,7 +968,7 @@ const FlexternSocial = () => {
                               render={({ field }) => (
                                 <Input
                                   {...field}
-                                  placeholder="Enter URL"
+                                  placeholder="Enter link"
                                   invalid={
                                     errors &&
                                     errors.otherSocialLinks &&
@@ -982,9 +990,9 @@ const FlexternSocial = () => {
                                 </FormFeedback>
                               )}
                           </div>
-                          <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
+                          {/* <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
                             Remove
-                          </Button>
+                          </Button> */}
                         </div>
                       </Col>
                     </Row>
@@ -1016,15 +1024,17 @@ const FlexternSocial = () => {
                   <h5 className="fw-bold">Back</h5>
                 </div>
                 <div className="d-flex justify-content-end">
-                  <Button
-                    color="primary"
-                    outline
-                    className="d-flex align-items-center justify-content-between me-2"
-                    onClick={onSkipClick}
-                  >
-                    <span className="me-50">Skip</span>
-                    <ChevronRight size={14} />
-                  </Button>
+                  {location?.pathname.includes('profile-edit') && (
+                    <Button
+                      color="primary"
+                      outline
+                      className="d-flex align-items-center justify-content-between me-2"
+                      onClick={onSkipClick}
+                    >
+                      <span className="me-50">Skip</span>
+                      <ChevronRight size={14} />
+                    </Button>
+                  )}
 
                   <Button
                     color="primary"
@@ -1053,7 +1063,6 @@ const FlexternSocial = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
-                  {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
@@ -1138,74 +1147,26 @@ const FlexternSocial = () => {
                 </CardHeader>
 
                 <CardBody>
-                  <hr className="m-0 card-header-border" />
-
-                  {isTrumioTalent && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox"
-                          className="custom-checkbox-input"
-                          checked={isProjectReady}
-                        />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                      </div>
-                      <div>
-                        <CardText className="m-0">Client Projects Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer d-flex align-items-center justify-content-between"
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                ?.path || '/marketplace',
-                            )
-                          }
-                        >
-                          {isProjectReady
-                            ? 'Explore Projects'
-                            : `${
-                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                  ?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
-                      </div>
-                    </div>
-                  )}
-
                   {isFlextern && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox2"
-                          className="custom-checkbox-input"
-                          checked={isFlexternReady}
-                        />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                      </div>
+                    <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer d-flex align-items-center "
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
-                                ?.path || '/dashboard',
-                            )
-                          }
-                        >
-                          {isFlexternReady
-                            ? 'Explore Flexternships'
-                            : `${
+                        <CardText className="m-0">
+                          <a
+                            href="#"
+                            className="text-primary cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(
                                 returnCompleteProfileDetailsCta(
                                   userTypes.talent,
                                   profileCompletionFlexternMissingValues,
-                                )?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
+                                )?.path || '/dashboard',
+                              );
+                            }}
+                          >
+                            Add More
+                          </a>
+                        </CardText>
                       </div>
                     </div>
                   )}

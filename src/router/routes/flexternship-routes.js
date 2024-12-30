@@ -54,8 +54,10 @@ import FlexternshipsContractView from '@/flexternships/app/project-details/sign-
 import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
 import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
+import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
+import { FEATURE_NAMES } from '@/utility/constants/Constant';
+import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
 import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
-import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -504,17 +506,41 @@ export const FlexternshipRoutes = [
     element: <HandleFeedbacks />,
   },
   {
+    path: '/chat-interface',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+        ]}
+        featureName={FEATURE_NAMES.AYESHA_BOT}
+        fallbackRoute="/dashboard"
+      >
+        <ChatInterface />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
+    path: '/verify-invitation',
+    element: <VerifyInvitation />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
     path: '*',
     element: <NotFound />,
   },
   {
-    path: '/analytics/individual/:userId',
+    path: '/analytics/project/:projectId/individual/:userId',
     element: <IndividualAnalytics />,
-    layout: 'blank',
-  },
-  {
-    path: '/analytics/team/:teamId',
-    element: <TeamAnalytics />,
-    layout: 'blank',
   },
 ];

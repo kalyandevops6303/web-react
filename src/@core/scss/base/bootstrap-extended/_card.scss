@@ -387,29 +387,32 @@
     }
 
     .design-planning {
-      padding: 1rem 0.8rem;
+      padding: 0.6rem 1.0rem;
       margin-bottom: 0.7rem;
       text-align: center;
       background-color: $body-bg;
       border-radius: $border-radius;
-      min-width: 40%;
 
       &:not(:last-child) {
         margin-right: 0.7rem;
       }
     }
     .details-box-title {
-      color: '#B9B9C3';
+      color: #B9B9C3;
       font-size: 14px;
       text-align: center;
       line-height: 21px;
+      font-weight: 400;
+      font-style: normal;
     }
 
     .details-box {
-      color: black;
+      color: #5E5873;
       font-size: 14px;
       line-height: 23px;
       text-align: center;
+      font-weight: 400;
+      font-style: normal;
     }
   }
 }

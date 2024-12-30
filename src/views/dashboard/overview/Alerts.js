@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
+import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
 import { AlertCardWrapper } from './style';
@@ -10,7 +11,7 @@ import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
-import { selectFlexternBoolean, selectUserData, selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
@@ -29,7 +30,6 @@ const Alerts = () => {
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const notificationsData = useSelector(notifications);
-
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const profileCompletionFlexternMissingValues = useSelector(
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
@@ -49,10 +49,7 @@ const Alerts = () => {
       dispatch(getTeamProfilePercentage());
     } else if (isFlexternshipApp) {
       dispatch(getProfileCompletionFlextern());
-    } else {
-      if (isFlexternshipApp) dispatch(getProfileCompletionFlextern());
-      else dispatch(getProfilePercentage());
-    }
+    } else dispatch(getProfilePercentage());
   }, [userDetailsData?.user_type]);
 
   useEffect(() => {
@@ -64,7 +61,6 @@ const Alerts = () => {
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-    console.log(path);
     navigate(path);
   };
 
@@ -126,14 +122,16 @@ const Alerts = () => {
     <AlertCardWrapper>
       <Card>
         <CardHeader className="earning-head">
-          <CardTitle tag="h4">Alerts</CardTitle>
+          <CardTitle tag="h5" style={{ fontSize: '18px' }}>
+            Alerts
+          </CardTitle>
           {isDisabled ? (
-            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
+            <CardText className="text-decoration-underline view-all-cta card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
               View All
             </CardText>
           ) : (
             <Link to="/notifications">
-              <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+              <CardText className="text-decoration-underline view-all-cta card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
                 View All
               </CardText>
             </Link>
@@ -243,19 +241,19 @@ const Alerts = () => {
             </CardBody>
           </Card>
 
-          {notificationsData &&
-            notificationsData?.data.map((item) => (
+          {notificationsData && notificationsData?.data?.length > 0 ? (
+            notificationsData?.data?.slice(0, 3).map((item) => (
               <Card
                 onClick={() => handleAlertClick(item?.path, item?.status === 'UNREAD' ? item?._id : null)}
                 key={item?._id}
                 className="cursor-pointer card-inside"
               >
                 <Elevate key={item?._id}>
-                  <CardHeader className="d-flex">
-                    <CardTitle className="w-65" tag="h4">
+                  <CardHeader className="d-flex align-items-center justify-content-between">
+                    <CardTitle className="w-60" tag="h4">
                       {getStatusShortName(item?.title)}
                     </CardTitle>
-                    <p className="relative-time font-small-2 fw-light m-0 ms-50">
+                    <p className="relative-time fw-light m-0 ms-50">
                       {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : ''}
                     </p>
                   </CardHeader>
@@ -269,8 +267,14 @@ const Alerts = () => {
                   </CardBody>
                 </Elevate>
               </Card>
-            ))}
-          {notificationsData?.metadata?.total_records > 4 && (
+            ))
+          ) : (
+            <div className="empty-alerts">
+              <img src={UpcomingProjectsEmptyGif} className="empty-alert-gif" alt="empty-gif" />
+              <h2>No Alerts Found</h2>
+            </div>
+          )}
+          {notificationsData?.metadata?.total_records > 3 && (
             <span onClick={handleRedirection} className="cursor-pointer mb-1 additional-text text-center d-block">
               +{notificationsData.metadata.total_records - 4} more
             </span>

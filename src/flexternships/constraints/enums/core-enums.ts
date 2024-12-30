@@ -3,6 +3,15 @@ export enum UserType {
   TALENT = 'TALENT',
 }
 
+export enum UserInvitationType {
+  FLEXTERN_PROJECT = 'FLEXTERN_PROJECT',
+}
+
+export enum UserStatus {
+  REGISTERED = 'REGISTERED',
+  UNREGISTERED = 'UNREGISTERED',
+}
+
 export enum ProjectPrimaryStatus {
   DRAFT = 'DRAFT',
   ACTIVE = 'ACTIVE',
@@ -83,4 +92,17 @@ export enum ServerResponseStatus {
 export enum GlobalModalType {
   UNSAVED_WORK = 'UNSAVED_WORK',
   PROJECTS_BLOCKED = 'PROJECTS_BLOCKED',
+}
+
+export enum MessageRole {
+  USER = 'user',
+  ASSISTANT = 'assistant',
+}
+
+export enum MessageType {
+  INITIAL = 'initial',
+  CLARIFICATION = 'clarification',
+  NUMBER_REQUEST = 'number_request',
+  ERROR = 'error',
+  PROJECTS = 'projects',
 }

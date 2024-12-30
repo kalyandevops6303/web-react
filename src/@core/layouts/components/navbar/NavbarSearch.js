@@ -76,7 +76,7 @@ const NavbarSearch = () => {
         })}
       >
         <div className={`${isDisabled && 'cursor-not-allowed'} search-input-icon`}>
-          <Icon.Search color={theme.activeNavPillText} />
+          <Icon.Search size={20} color={theme.activeNavPillText} />
         </div>
         {query.isNavbarSearchBarOpen || query?.query ? (
           <Autocomplete
@@ -98,7 +98,12 @@ const NavbarSearch = () => {
           />
         ) : null}
         <div className="search-input-close">
-          <Icon.X color={theme.activeNavPillText} className="ficon" onClick={(e) => handleCloseSearchBar(e)} />
+          <Icon.X
+            color={theme.activeNavPillText}
+            size={20}
+            className="ficon"
+            onClick={(e) => handleCloseSearchBar(e)}
+          />
         </div>
       </div>
     </NavItem>

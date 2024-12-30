@@ -8,8 +8,8 @@ export const NotificationIconContainer = styled.div`
   padding-right: 16px;
   .notification-dot {
     position: absolute;
-    top: 0px;
-    left: 6px;
+    top: 5px;
+    right: 38%;
     display: block;
     margin: auto;
     border-radius: 50%;

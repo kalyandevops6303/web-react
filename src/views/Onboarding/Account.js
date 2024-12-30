@@ -67,6 +67,8 @@ import { ProgressBarWrapper } from '../create-bid/style';
 
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
+import { isFlexternshipApp } from '@/configs/api/env';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const Account = () => {
@@ -171,7 +173,6 @@ const Account = () => {
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
   const fileInputRef = useRef(null);
-
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
   };
@@ -334,7 +335,9 @@ const Account = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
+    if (isUserLoggedIn()) {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
   }, []);
 
   const isFileValid = (file) => {
@@ -485,7 +488,7 @@ const Account = () => {
                     <div className="d-flex flex-column align-items-start">
                       <p className="m-0">Allowed file types:</p>
                       <p className="m-0">png, jpg, jpeg.</p>
-                      <p className="m-0">Max file size: 5MB</p>
+                      {isFlexternshipApp === false && <p className="m-0">Max file size: 5MB</p>}
                     </div>
                   </UncontrolledTooltip>
                 </div>
@@ -500,7 +503,7 @@ const Account = () => {
                       name="firstName"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Enter first name" invalid={errors.firstName && true} />
+                        <Input {...field} placeholder="Enter your first name" invalid={errors.firstName && true} />
                       )}
                     />
                     {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
@@ -514,7 +517,7 @@ const Account = () => {
                       name="lastName"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Enter last name" invalid={errors.lastName && true} />
+                        <Input {...field} placeholder="Enter your last name" invalid={errors.lastName && true} />
                       )}
                     />
                     {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
@@ -558,7 +561,7 @@ const Account = () => {
                   </Col>
                   <Col sm="12" md="12" lg="6">
                     <Label className="form-label" for="email">
-                      Email Address
+                      Email
                     </Label>
                     <Controller
                       id="email"
@@ -585,6 +588,12 @@ const Account = () => {
                   {isDelegate ? 'Change Password' : 'Reset Password'}
                 </Button>
               )}
+              {!location.pathname.includes('profile-edit') && userDetailsData?.oauth_type !== 'google' && (
+                <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
+                  Change Password
+                </Button>
+              )}
+
               <Button
                 color="primary"
                 type="submit"
@@ -628,80 +637,26 @@ const Account = () => {
                 </CardHeader>
 
                 <CardBody>
-                  <hr className="m-0 card-header-border" />
-
-                  {isTrumioTalent && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox"
-                          className="custom-checkbox-input"
-                          checked={isProjectReady}
-                        />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                      </div>
+                  {isFlextern && (
+                    <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
-                        <CardText className="m-0">Client Projects Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer "
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                ?.path || '/marketplace',
-                            )
-                          }
-                        >
-                          {isProjectReady
-                            ? 'Explore Projects'
-                            : `${
-                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                  ?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
-                      </div>
-                    </div>
-                  )}
-
-                  {isFlexternInvited && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox2"
-                          className="custom-checkbox-input"
-                          checked={isFlexternReady}
-                        />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                      </div>
-                      <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b
-                          className="d-flex align-items-center text-primary cursor-pointer "
-                          onClick={() =>
-                            !userDetailsData?.talent_info
-                              ? navigate('/talent-onboarding/account-details')
-                              : navigate(
-                                  returnCompleteProfileDetailsCta(
-                                    userTypes.talent,
-                                    profileCompletionFlexternMissingValues,
-                                  )?.path || '/dashboard',
-                                )
-                          }
-                        >
-                          {isFlexternReady
-                            ? 'Explore Flexternships'
-                            : `${
-                                !userDetailsData?.talent_info
-                                  ? 'Add Account Details'
-                                  : returnCompleteProfileDetailsCta(
-                                      userTypes.talent,
-                                      profileCompletionFlexternMissingValues,
-                                    )?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
+                        <CardText className="m-0">
+                          <a
+                            href="#"
+                            className="text-primary cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(
+                                returnCompleteProfileDetailsCta(
+                                  userTypes.talent,
+                                  profileCompletionFlexternMissingValues,
+                                )?.path || '/dashboard',
+                              );
+                            }}
+                          >
+                            Add More
+                          </a>
+                        </CardText>
                       </div>
                     </div>
                   )}

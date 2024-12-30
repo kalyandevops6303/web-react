@@ -19,6 +19,7 @@ export const routes = {
       getDraft: `${serviceUrls.projectManagementV2}/project/draft/get`,
       getProjectDetailsById: `${serviceUrls.projectManagementV2}/project/detail`,
       getProjectTeamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
+      acceptProject: `${serviceUrls.projectManagementV2}/project/accept`,
       verifyProjectName: `${serviceUrls.projectManagementV2}/project/verify-name`,
       getProjectById: `${serviceUrls.projectManagementV2}/project/detail`,
       getProjectInvitationDetails: `${serviceUrls.projectManagementV2}/project/invitation-details`,
@@ -95,6 +96,12 @@ export const routes = {
     password: {
       changePasswordWithCurrentPassword: `${serviceUrls.userManagement}/user/reset-password`,
     },
+    requests: {
+      v2: {
+        validateRequestToken: `${serviceUrls.userManagementV2}/requests/validation`,
+        checkUser: `${serviceUrls.userManagementV2}/requests/user/check`,
+      },
+    },
   },
   dashboardV2: {
     clientDetails: {
@@ -109,4 +116,11 @@ export const routes = {
     performanceChart: `${serviceUrls.dashboardV2}/analytics/performance-rating`,
     projectsList: `${serviceUrls.dashboardV2}/analytics/individual/projects-list`,
   },
+};
+
+export const wsEndpoints = {
+  bulkGeneration: `ws${baseUrl.startsWith('https') ? 's' : ''}://${baseUrl.replace(
+    /^https?:\/\//,
+    '',
+  )}/ai-assist/api/v1/ws-bulk-generation`,
 };

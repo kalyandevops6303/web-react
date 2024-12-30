@@ -17,7 +17,7 @@ import theme from '../../../../configs/themeVariables';
 import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
-import { getItem, setItem } from '../../../../utility/localStorageControl';
+import { setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { appPermissionsSelector, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
@@ -36,6 +36,7 @@ const HeadWrapper = styled.div`
   width: 100%;
   z-index: 0;
   justify-content: space-between;
+  align-items: center;
   .navbar-brand {
     margin: auto 0;
     .brand-logo {
@@ -59,6 +60,7 @@ const HeadWrapper = styled.div`
     }
   }
   .is-active {
+    margin-bottom: -12px;
     font-weight: 600;
     border-bottom: 3px solid ${theme.activeColor};
     color: ${theme.activeColor};
