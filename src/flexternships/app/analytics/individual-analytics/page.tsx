@@ -52,10 +52,6 @@ export default function IndividualAnalytics() {
     }
   }, [selectedProject]);
 
-  useEffect(() => {
-    console.log(aiSummary);
-  }, [aiSummary]);
-
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
 
