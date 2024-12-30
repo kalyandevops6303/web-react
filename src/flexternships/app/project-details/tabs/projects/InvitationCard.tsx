@@ -10,7 +10,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-export default function InvitationCard() {
+export default function InvitationCard({ hideSubtitle = false }) {
   const params = useParams();
 
   const projectDetails = useProjectsStore((state) => state.projectDetails);
@@ -32,7 +32,9 @@ export default function InvitationCard() {
     headerContent: (
       <div className="flex w-full items-center mr-3 justify-between">
         <div className="flex flex-col text-left">
-          <div className="text-[#B9B9C3] font-sans text-[12px] font-semibold leading-[16px]">STEP 1</div>
+          {!hideSubtitle && (
+            <div className="text-[#B9B9C3] font-sans text-[12px] font-semibold leading-[16px]">STEP 1</div>
+          )}
           <div className="relative">
             {projectInvitationDetails?.is_read && (
               <div className="absolute top-0 -right-2 w-2 h-2 border bg-[#EA5455] rounded-full border-[#EA5455]"></div>
@@ -87,7 +89,14 @@ export default function InvitationCard() {
               <AvatarImage
                 src={invitationCardDetailsData?.image_uri ? invitationCardDetailsData?.image_uri : defaultAvatar}
               />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>
+                {invitationCardDetailsData?.company
+                  ?.split(' ')
+                  .slice(0, 2)
+                  .map((word) => word[0])
+                  .join('')
+                  .toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div>
               <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.company}</div>

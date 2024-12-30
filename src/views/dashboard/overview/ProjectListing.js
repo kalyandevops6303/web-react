@@ -267,7 +267,7 @@ const ProjectListing = () => {
             <AccordionItem>
               <AccordionHeader targetId="1">
                 <AccordionHeadStyle>
-                  <span className="d-flex align-items-center">
+                  <span className="d-flex align-items-center heading-text">
                     Active Projects
                     <Tag
                       hasNew={
@@ -355,7 +355,7 @@ const ProjectListing = () => {
             <AccordionItem>
               <AccordionHeader targetId="2">
                 <AccordionHeadStyle>
-                  <span className="d-flex align-items-center">
+                  <span className="d-flex align-items-center heading-text">
                     Upcoming Projects{' '}
                     <Tag
                       hasNew={

@@ -114,6 +114,9 @@ html {
   margin-top: -10px !important;
 }
 
+.heading-text {
+  font-size: 18px;
+}
 
 [dir] .select__control.select__control--is-disabled,
 [dir] .react-select__control.select__control--is-disabled {

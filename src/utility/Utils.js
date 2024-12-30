@@ -242,11 +242,11 @@ export const returnFilteredDropdownOptions = (search, options) =>
       option.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-export const convertUnixTimestampToDate = (timestamp, timeZone) => {
+export const convertUnixTimestampToDate = (timestamp, timeZone, isFlextern = false) => {
   // Create a new Date object adjusted to UTC from the timestamp
   let timezoneToUse = timeZone;
   if (!timeZone) {
-    timezoneToUse = 'America/Los_Angeles';
+    timezoneToUse = isFlextern ? 'Asia/Kolkata' : 'America/Los_Angeles';
   }
   if (!timestamp) {
     return '';
@@ -920,7 +920,7 @@ export const getMissingName = (type, values) => {
       return '';
   }
 };
-export const checkPointRedirection = ({ response, navigate }) => {
+export const checkPointRedirection = ({ response, navigate, nextPath }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
     if (response?.is_flextern) {
       navigate('/auth/register-phone-flexternship');
@@ -936,7 +936,7 @@ export const checkPointRedirection = ({ response, navigate }) => {
       navigate(`/${response.user_type.toLowerCase()}-onboarding`);
     } else navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
   } else if (response?.checkpoint === checkPoints.COMPLETE) {
-    navigate('/dashboard');
+    navigate(nextPath || '/dashboard');
   } else if (response?.checkpoint === checkPoints?.CREATE_PASSWORD) {
     navigate('/auth/set-password');
   }

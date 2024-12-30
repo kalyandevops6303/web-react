@@ -5,7 +5,7 @@ import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import parse from 'html-react-parser';
+import { AlertCircle } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate, ElevateWarning, WarningMessage } from '../styled';
@@ -27,7 +27,6 @@ import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import { deleteDraftBid } from '../../redux/actions/createBidActions';
 import { deleteDraftBidLoading } from '../../redux/selectors/createBidSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
-import { AlertCircle } from 'react-feather';
 
 const MarketPlaceCardWrapper = ({ children, daysGap }) => {
   const Wrapper = daysGap > 60 ? ElevateWarning : Elevate;
@@ -378,6 +377,11 @@ const MarketPlaceProjectCard = ({
       )}
     </ProjectCardWrap>
   );
+};
+
+MarketPlaceCardWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+  daysGap: PropTypes.number.isRequired,
 };
 
 MarketPlaceProjectCard.propTypes = {

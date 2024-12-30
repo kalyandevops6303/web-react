@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { useNavigate } from 'react-router-dom';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import ProjectModalViews from './ProjectModalViews';
@@ -12,9 +13,8 @@ import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
-import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { useNavigate } from 'react-router-dom';
 
 const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
   const dispatch = useDispatch();
@@ -35,10 +35,6 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
 
   const navigate = useNavigate();
 
-  const viewProject = () => {
-    navigate(`/project-details/${data._id}/milestone`);
-  };
-
   const updateCard = ({ switch_team_id }) => {
     const postData = {
       metadata: {
@@ -49,6 +45,11 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
     if (data?.is_read === false) {
       dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
     }
+  };
+
+  const viewProject = () => {
+    updateCard();
+    navigate(`/project-details/${data._id}/milestone`);
   };
 
   return (
@@ -62,7 +63,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
             </Badge>
           </CustomBadge>
           <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
-            {data?.name}
+            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
           </p>
           <div className="client-badge px-1 mb-75">
             <p className="mb-0">Client</p>
