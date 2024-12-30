@@ -36,9 +36,11 @@ export default function MultipleLinesChart(props: MultipleLinesChartProps) {
             <div key={dataKey} className="flex justify-between items-center">
               <span className="font-montserrat text-[12px] font-normal leading-[20px] text-[#394042] flex items-center gap-2">
                 <div
-                  className={`flex w-[12px] h-[12px] rounded-[2px] bg-[${chartConfig[dataKey].color}] ${
-                    !isSelected ? 'opacity-12' : ''
-                  }`}
+                  style={{
+                    backgroundColor: chartConfig[dataKey].color,
+                    opacity: !isSelected ? 0.12 : 1,
+                  }}
+                  className="flex w-[12px] h-[12px] rounded-[2px]"
                 ></div>
                 <div>{chartConfig[dataKey].label}</div>
               </span>
@@ -127,7 +129,7 @@ export default function MultipleLinesChart(props: MultipleLinesChartProps) {
                   </span>
                 </div>
                 <div className="font-montserrat text-[14px] font-medium leading-[22px] text-[#394042]">{label}</div>
-                {color && <div className={`flex w-full h-[4px] rounded-full bg-[${color}]`}></div>}
+                <div className="flex w-full h-[4px] rounded-full z-10" style={{ backgroundColor: color }}></div>
               </div>
             ))}
         </div>

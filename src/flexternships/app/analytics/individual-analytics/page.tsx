@@ -1,26 +1,22 @@
 import { useParams } from 'react-router-dom';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@flexternships/app/components/ui/select';
 import IndividualOverview from './individual-overview';
 import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart';
 import { TooltipProps } from 'recharts';
 import { ChevronRight, ThumbsUp } from 'react-feather';
 import achievementIcon from '@flexternships/assets/svgs/analytics/achieve.svg';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
-import { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { useEffect } from 'react';
 import Spinner from '../../components/core/Spinner';
 
 export default function IndividualAnalytics() {
   const params = useParams();
-  const { userId } = params;
+  const { projectId, userId } = useParams();
 
-  const projects = useAnalyticsStore((state) => state.projectsList);
   const recognitionChartData = useAnalyticsStore((state) => state.recognitionChartData);
   const individualOverviewDetails = useAnalyticsStore((state) => state.individualOverview);
   const performanceChartData = useAnalyticsStore((state) => state.performanceChartData);
   const aiSummary = useAnalyticsStore((state) => state.aiSummary);
 
-  const getProjectsList = useAnalyticsStore((state) => state.getProjectsList);
   const getRecognitionChartData = useAnalyticsStore((state) => state.getRecognitionChartData);
   const getPerformanceChartData = useAnalyticsStore((state) => state.getPerformanceChartData);
   const getAiSummary = useAnalyticsStore((state) => state.getAiSummary);
@@ -31,26 +27,14 @@ export default function IndividualAnalytics() {
   const isPerformanceChartDataLoading = useAnalyticsStore((state) => state.isPerformanceChartLoading);
   const isAiSummaryLoading = useAnalyticsStore((state) => state.isAiSummaryLoading);
 
-  const [selectedProject, setSelectedProject] = useState(projects ? projects[0] : null);
-
   useEffect(() => {
-    getProjectsList();
-  }, [params]);
-
-  useEffect(() => {
-    if (!isEmpty(projects)) {
-      setSelectedProject(projects[0]);
-    }
-  }, [projects]);
-
-  useEffect(() => {
-    if (selectedProject) {
+    if (projectId && userId) {
       getIndividualOverview(userId);
-      getAiSummary(selectedProject?.id, userId);
-      getRecognitionChartData(selectedProject?.id, userId);
-      getPerformanceChartData(selectedProject?.id, userId);
+      getAiSummary(projectId, userId);
+      getRecognitionChartData(projectId, userId);
+      getPerformanceChartData(projectId, userId);
     }
-  }, [selectedProject]);
+  }, [params]);
 
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
@@ -132,27 +116,6 @@ export default function IndividualAnalytics() {
 
   return (
     <div className="flex flex-col gap-[24px] px-[16px] md:px-0">
-      <div className="flex gap-[12px] items-center w-full">
-        <div className="text-[#394042] font-montserrat text-[16px] font-medium leading-[24px]">
-          Select project to view analytics:
-        </div>
-        <Select value={selectedProject} onValueChange={(value) => setSelectedProject(value)}>
-          <SelectTrigger className="h-[42px] min-h-[38px] px-[12px] py-[7px] w-[480px] focus:ring-0 bg-white rounded-[6px] border border-[#E6E7E7]">
-            <SelectValue
-              placeholder="Select Project"
-              className="text-[#394042] font-montserrat text-[16px] font-medium leading-[24px]"
-            />
-          </SelectTrigger>
-          <SelectContent className="bg-white w-[480px]">
-            {projects.map((project: any) => (
-              <SelectItem key={project?.id} value={project}>
-                {project?.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       <IndividualOverview {...individualOverviewDetails} aiGeneratedSummary={aiSummary?.summary} />
 
       <div className="flex flex-row gap-[12px] w-full bg-white rounded-t-[10px] border-b border-b-[#E6E7E7]">

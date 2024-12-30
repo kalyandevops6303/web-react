@@ -2,7 +2,6 @@ import axios from 'axios';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
-import { ChartConfig } from '../app/components/ui/chart';
 import { keysToCamelCase } from '../utils/core-utils';
 
 export const getIndividualOverviewService: (userId: string) => Promise<any> = async (userId) => {
