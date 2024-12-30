@@ -18,9 +18,9 @@ export const getProjectsList = async (set: any) => {
 };
 
 // Recognition Chart
-export const getRecognitionChartData = async (projectId: string, set: any) => {
+export const getRecognitionChartData = async (projectId: string, userId: string, set: any) => {
   set({ isRecognitionChartLoading: true });
-  const data: any = await getRecognitionChartDataService(projectId);
+  const data: any = await getRecognitionChartDataService(projectId, userId);
   set((state: any) => ({
     ...state,
     recognitionChartData: data,
@@ -29,9 +29,10 @@ export const getRecognitionChartData = async (projectId: string, set: any) => {
 };
 
 // Performance Chart
-export const getPerformanceChartData = async (projectId: string, set: any) => {
+export const getPerformanceChartData = async (projectId: string, userId: string, set: any) => {
+  console.log('getPerformanceChartData', projectId, userId);
   set({ isPerformanceChartLoading: true });
-  const data: any = await getPerformanceChartDataService(projectId);
+  const data: any = await getPerformanceChartDataService(projectId, userId);
   set((state: any) => ({
     ...state,
     performanceChartData: data,

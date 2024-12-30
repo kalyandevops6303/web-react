@@ -25,8 +25,8 @@ const defaultInitState = {
 export const useAnalyticsStore = create<any>((set) => ({
   ...defaultInitState,
   getProjectsList: async () => getProjectsList(set),
-  getRecognitionChartData: async (projectId: string) => getRecognitionChartData(projectId, set),
-  getPerformanceChartData: async (projectId: string) => getPerformanceChartData(projectId, set),
+  getRecognitionChartData: async (projectId: string, userId: string) => getRecognitionChartData(projectId, userId, set),
+  getPerformanceChartData: async (projectId: string, userId: string) => getPerformanceChartData(projectId, userId, set),
   getAiSummary: async (projectId: string, userId: string) => getAiSummary(projectId, userId, set),
   getIndividualOverview: async (userId: string) => getIndividualOverview(userId, set),
 }));

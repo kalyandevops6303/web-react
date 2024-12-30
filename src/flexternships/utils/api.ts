@@ -105,8 +105,8 @@ export const routes = {
   analytics: {
     individualOverview: `${serviceUrls.dashboardV2}/analytics/individual/overview`,
     aiSummary: `${serviceUrls.dashboardV2}/analytics/individual/ai-summary`,
-    recognitionChart: `${serviceUrls.dashboardV2}/analytics/individual/recognition-chart`,
-    performanceChart: `${serviceUrls.dashboardV2}/analytics/individual/performance-chart`,
+    recognitionChart: `${serviceUrls.dashboardV2}/analytics/tas-score`,
+    performanceChart: `${serviceUrls.dashboardV2}/analytics/performance-rating`,
     projectsList: `${serviceUrls.dashboardV2}/analytics/individual/projects-list`,
   },
 };

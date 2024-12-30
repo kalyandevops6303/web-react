@@ -47,8 +47,8 @@ export default function IndividualAnalytics() {
     if (selectedProject) {
       getIndividualOverview(userId);
       getAiSummary(selectedProject?.id, userId);
-      getRecognitionChartData(selectedProject?.id);
-      getPerformanceChartData(selectedProject?.id);
+      getRecognitionChartData(selectedProject?.id, userId);
+      getPerformanceChartData(selectedProject?.id, userId);
     }
   }, [selectedProject]);
 
