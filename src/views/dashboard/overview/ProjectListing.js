@@ -64,6 +64,7 @@ import ViewAllCard from './ExtraCardWithCount';
 import { AccordionName } from './DashboardConstant';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import PermissionWrapper from '@/PermissionWrapper';
+import { isFlexternshipApp } from '../../../configs/api/env';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -250,7 +251,9 @@ const ProjectListing = () => {
       userDetailsData?.team_type === userTypes.team ||
       userDetailsData?.team_type === userTypes.club
     ) {
-      dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
+      if (!isFlexternshipApp) {
+        dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
+      }
     }
   }, [userDetailsData?.user_type]);
   const onViewAllClick = (e, path) => {
