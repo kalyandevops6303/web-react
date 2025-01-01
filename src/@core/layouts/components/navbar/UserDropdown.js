@@ -385,9 +385,13 @@ const UserDropdown = ({ setNavBarLoading }) => {
               ))}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
+
+          {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? (
+            <DelegateAccordion setDelegateEmail={setDelegateEmail} />
+          ) : isDelegate ? null : (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           )}
+
           {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? null : (
             <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
               <span className="align-middle ">Contact support</span>
