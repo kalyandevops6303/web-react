@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
+import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
@@ -27,7 +28,6 @@ import JPGIcon from '../assets/images/JPG.svg';
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
 import { isFlexternshipApp } from '@/configs/api/env';
-import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;

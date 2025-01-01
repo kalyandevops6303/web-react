@@ -344,12 +344,15 @@ const PrivateDashboard = () => {
               <PaymentListing />
             </section>
           </PermissionWrapper>
-          {userDetailsData?.user_type === userTypes.client && (
-            <section className="mb-2">
-              <Header className="mb-1">Open Listings</Header>
-              <OpenListing />
-            </section>
-          )}
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.OPEN_LISTINGS']}>
+            {userDetailsData?.user_type === userTypes.client && (
+              <section className="mb-2">
+                <Header className="mb-1">Open Listings</Header>
+                <OpenListing />
+              </section>
+            )}
+          </PermissionWrapper>
+
           {userDetailsData?.user_type === userTypes.client && (
             <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.TEAMS.RECOMMENDED_TEAMS']}>
               <section className="mb-2">
