@@ -19,6 +19,7 @@ import './App.css';
 import { checkPoints } from './utility/constants/Constant';
 import { COMETCHAT_CONSTANTS, HOTJAR_ANALYTICS_CONSTANTS } from './constants';
 import { isUserLoggedIn } from './utility/commonUtils';
+import { getAppPermissions } from './redux/actions/authActions';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -36,6 +37,10 @@ const App = () => {
   const appId = COMETCHAT_CONSTANTS.APP_ID;
   const region = COMETCHAT_CONSTANTS.REGION;
   const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
+
+  useEffect(() => {
+    dispatch(getAppPermissions());
+  }, []);
 
   CometChat.init(appId, appSetting).then(
     () => {
