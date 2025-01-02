@@ -24,7 +24,7 @@ const Sidebar = (props) => {
     ? menuData.filter((menu) => menu.id !== 'clubs' && menu.id !== 'myteam')
     : menuData;
 
-  // ** State
+  // ** States
   const [groupOpen, setGroupOpen] = useState([]);
   const [groupActive, setGroupActive] = useState([]);
   const [currentActiveGroup, setCurrentActiveGroup] = useState([]);
