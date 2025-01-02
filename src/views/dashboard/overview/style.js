@@ -198,6 +198,7 @@ const EarningAmount = styled.div`
 
 const ProjectWrapper = styled.div`
   position: relative;
+  min-width: 33%;
   @media (max-width: 768px) {
     min-width: 20rem;
   }
@@ -306,8 +307,12 @@ const ProjectWrapper = styled.div`
     gap: 12px;
   }
   .project-cta {
-    font-weight: 400;
-    font-size: 16px;
+    color: #005eff;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: normal;
+    text-align: center;
+    letter-spacing: 0.4px;
   }
 
   .empty-card {
@@ -382,8 +387,9 @@ const ProjectWrapper = styled.div`
     padding: 8px 0px;
     min-height: 60px;
     color: #5e5873;
-    font-size: 18px;
-    font-weight: 400;
+    line-height: 24px;
+    font-size: 16px;
+    font-weight: 500;
     margin-top: 0.5rem;
   }
 

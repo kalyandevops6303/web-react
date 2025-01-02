@@ -1,3 +1,4 @@
+import { userTypes } from '@/utility/constants/Constant';
 import ShowToastMessage from '../../@core/components/toast';
 import { makeFavService, removeFavService } from '../../services/profileServices';
 import {
@@ -34,6 +35,7 @@ import {
   getAppConfigService,
   downloadCertificateService,
   withdrawProjectServices,
+  relistProjectByDateServiceForFlextern,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
@@ -610,28 +612,34 @@ const getBidMilestone =
     }
   };
 
-const relistProjectByDate = (projectId, startDate, endDate, onSuccess) => async (dispatch) => {
-  dispatch(relistProjectByDateRequest());
-  try {
-    const res = await relistProjectByDateService(projectId, startDate, endDate);
-    ShowToastMessage(SUCCESS, res.data.data);
-    dispatch(relistProjectByDateSuccess(res.data.data));
-    dispatch(
-      getListProjects({
-        metaData: { page: 1, page_size: 10 },
-        searchText: '',
-        is_my_listings: true,
-        is_recommended: false,
-        is_favourite: false,
-        show_expired: false,
-        show_to_be_listed: false,
-      }),
-    );
-    onSuccess();
-  } catch (error) {
-    errorHandler(error, relistProjectByDateFailure);
-  }
-};
+const relistProjectByDate =
+  (projectId, startDate, endDate, onSuccess, flexTern = false) =>
+  async (dispatch) => {
+    dispatch(relistProjectByDateRequest());
+    try {
+      const res = flexTern
+        ? await relistProjectByDateServiceForFlextern(projectId, startDate, endDate)
+        : await relistProjectByDateService(projectId, startDate, endDate);
+      ShowToastMessage(SUCCESS, res.data.data);
+      dispatch(relistProjectByDateSuccess(res.data.data));
+      dispatch(
+        getListProjects({
+          userType: userTypes?.client,
+          metaData: { page: 1, page_size: 10 },
+          searchText: '',
+          isMyListing: true,
+          is_recommended: false,
+          is_favourite: false,
+          show_expired: false,
+          show_to_be_listed: false,
+          flexTern,
+        }),
+      );
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, relistProjectByDateFailure);
+    }
+  };
 
 const downloadCertificate =
   ({ project_id, onSuccess }) =>
