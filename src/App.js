@@ -39,7 +39,9 @@ const App = () => {
   const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
 
   useEffect(() => {
-    dispatch(getAppPermissions());
+    if (isLoggedIn) {
+      dispatch(getAppPermissions());
+    }
   }, []);
 
   CometChat.init(appId, appSetting).then(
