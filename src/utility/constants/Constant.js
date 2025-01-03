@@ -137,6 +137,16 @@ const disputeStatusEnum = {
   RESOLVED: 'Resolved',
 };
 
+const statusEnum = {
+  OPEN: 'Open',
+  IN_REVIEW: 'In Review',
+  ON_GOING: 'On Going',
+  ACTIVE: 'Active',
+  TERMINATED: 'Terminated',
+  CLOSED: 'Closed',
+  LISTING_EXPIRED: 'Listing Expired',
+};
+
 const roleTypeOptions = [
   { label: 'Admin', value: 'ADMIN' },
   { label: 'Member', value: 'MEMBER' },
@@ -324,6 +334,7 @@ export {
   PAYMENT_TYPES,
   SUPPORT_EMAIL,
   projectStatusEnum,
+  statusEnum,
   delegateTypes,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,

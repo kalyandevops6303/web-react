@@ -4,6 +4,8 @@ const AccordionName = {
   teamInvitation: 'TEAM_INVITES',
   projectInvitation: 'PROJECT_INVITES',
   activeProjects: 'ACTIVE_PROJECTS',
+  openProjects: 'OPEN_PROJECTS',
+  withdrawnProjects: 'WITHDRAWN_PROJECTS',
   upcomingProjects: 'UPCOMING_PROJECTS',
   payments: 'UPCOMING_PAYMENTS',
   recommendedMembers: 'RECOMMENDED_MEMBERS',

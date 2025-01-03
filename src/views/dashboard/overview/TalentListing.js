@@ -40,6 +40,7 @@ import Tag from '../../../@core/components/tags';
 import { AccordionName } from './DashboardConstant';
 import ViewAllCard from './ExtraCardWithCount';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { isFlexternshipApp } from '../../../configs/api/env';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -182,7 +183,7 @@ const TalentListing = () => {
   };
 
   useEffect(() => {
-    if (userDetailsData?.user_type === userTypes.talent) {
+    if (userDetailsData?.user_type === userTypes.talent && !isFlexternshipApp) {
       dispatch(getRecommendedProjects());
     }
   }, [userDetailsData]);

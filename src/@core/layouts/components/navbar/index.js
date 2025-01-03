@@ -206,90 +206,94 @@ const ThemeNavbar = (props) => {
 
         {!isNavbarSearchBarOpen && (
           <>
-            <div
-              className={
-                (location?.pathname?.split('/')?.[1] === 'dashboard' ? 'is-active' : '') +
-                ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
-              }
-              onClick={() => {
-                handleWorkInProgress('/dashboard');
-                if (isWorkInProgress) return;
-                if (draftTeamPath) {
-                  dispatch(setConfirmSaveForLater(true));
-                  dispatch(setNavigatingRoute('/dashboard'));
-                } else {
-                  navigate('/dashboard');
-                  dispatch(setActiveNavTab('dashboard'));
-                }
-              }}
-            >
-              Dashboard
-            </div>
-            {isTabDisabled ? (
-              <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Marketplace</span>
-            ) : (
+            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.DASHBOARD']}>
               <div
+                className={
+                  (location?.pathname?.split('/')?.[1] === 'dashboard' ? 'is-active' : '') +
+                  ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
+                }
                 onClick={() => {
-                  handleWorkInProgress('/marketplace/all_listings');
+                  handleWorkInProgress('/dashboard');
                   if (isWorkInProgress) return;
                   if (draftTeamPath) {
                     dispatch(setConfirmSaveForLater(true));
-                    dispatch(
-                      setNavigatingRoute(
+                    dispatch(setNavigatingRoute('/dashboard'));
+                  } else {
+                    navigate('/dashboard');
+                    dispatch(setActiveNavTab('dashboard'));
+                  }
+                }}
+              >
+                Dashboard
+              </div>
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.MARKETPLACE']}>
+              {isTabDisabled ? (
+                <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Marketplace</span>
+              ) : (
+                <div
+                  onClick={() => {
+                    handleWorkInProgress('/marketplace/all_listings');
+                    if (isWorkInProgress) return;
+                    if (draftTeamPath) {
+                      dispatch(setConfirmSaveForLater(true));
+                      dispatch(
+                        setNavigatingRoute(
+                          `/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`,
+                        ),
+                      );
+                    } else {
+                      navigate(
                         `/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`,
-                      ),
-                    );
-                  } else {
-                    navigate(
-                      `/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`,
-                    );
-                    dispatch(setActiveNavTab('marketplace'));
-                    setItem(
-                      'selectedMarketplaceTab',
-                      userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
-                    );
+                      );
+                      dispatch(setActiveNavTab('marketplace'));
+                      setItem(
+                        'selectedMarketplaceTab',
+                        userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
+                      );
+                    }
+                  }}
+                  className={
+                    (location?.pathname?.split('/')?.[1] === 'marketplace' ||
+                    location?.state?.from?.primary === 'Marketplace' ||
+                    activeTab === 'marketplace'
+                      ? 'is-active'
+                      : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                   }
-                }}
-                className={
-                  (location?.pathname?.split('/')?.[1] === 'marketplace' ||
-                  location?.state?.from?.primary === 'Marketplace' ||
-                  activeTab === 'marketplace'
-                    ? 'is-active'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
-                }
-              >
-                Marketplace
-              </div>
-            )}
-
-            {isTabDisabled ? (
-              <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Project</span>
-            ) : (
-              <div
-                className={
-                  (location?.pathname?.split('/')?.[1] === 'projects' ||
-                  location?.state?.from?.primary === 'projects' ||
-                  activeTab === 'projects'
-                    ? 'is-active'
-                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
-                }
-                onClick={() => {
-                  handleWorkInProgress('/projects/ongoing');
-                  if (isWorkInProgress) return;
-                  if (draftTeamPath) {
-                    dispatch(setConfirmSaveForLater(true));
-                    dispatch(setNavigatingRoute('/projects/ongoing'));
-                  } else {
-                    navigate('/projects/ongoing');
-                    localStorage.removeItem('selectedProjectTab');
-                    dispatch(setActiveNavTab('projects'));
+                >
+                  Marketplace
+                </div>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.PROJECTS']}>
+              {isTabDisabled ? (
+                <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Project</span>
+              ) : (
+                <div
+                  className={
+                    (location?.pathname?.split('/')?.[1] === 'projects' ||
+                    location?.state?.from?.primary === 'projects' ||
+                    activeTab === 'projects'
+                      ? 'is-active'
+                      : '') + ' menu-item nav-menu-main menu-toggle hidden-xs cursor-pointer'
                   }
-                }}
-              >
-                Projects
-              </div>
-            )}
-
+                  onClick={() => {
+                    handleWorkInProgress('/projects/ongoing');
+                    if (isWorkInProgress) return;
+                    if (draftTeamPath) {
+                      dispatch(setConfirmSaveForLater(true));
+                      dispatch(setNavigatingRoute('/projects/ongoing'));
+                    } else {
+                      navigate('/projects/ongoing');
+                      localStorage.removeItem('selectedProjectTab');
+                      dispatch(setActiveNavTab('projects'));
+                    }
+                  }}
+                >
+                  Projects
+                </div>
+              )}
+            </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['NAVIGATIONS.MY_TEAM']}>
               {isTabDisabled ? (
                 <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>

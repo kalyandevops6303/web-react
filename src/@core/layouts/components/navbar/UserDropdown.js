@@ -197,61 +197,63 @@ const UserDropdown = ({ setNavBarLoading }) => {
           setDelegateEmail={setDelegateEmail}
         />
       )}
-      <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
-        <div
-          className={`user-nav d-sm-flex d-none 
+      {userDetailsData && (
+        <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
+          <div
+            className={`user-nav d-sm-flex d-none 
           ${isDelegate ? 'delegate-username' : ''}
           `}
-        >
-          <span className="user-name truncate-1 fw-bold" id="username">
-            {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
-          </span>
-          {userName?.length > 15 && (
-            <UncontrolledTooltip placement="right" target="username">
-              <div className="d-flex flex-column align-items-start">
-                <p className="m-0">{isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}</p>
-              </div>
-            </UncontrolledTooltip>
-          )}
-          {isDelegate ? (
-            <span className="user-name truncate-1" id="delegateUsername">
-              {truncateSentence({ sentence: `${userName} (${adminUsername})`, maxCharacters: 15 })}
+          >
+            <span className="user-name truncate-1 fw-bold" id="username">
+              {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
             </span>
-          ) : (
-            <span className="user-status">
-              {userDetailsData?.team_type
-                ? capitalize(userDetailsData?.team_type)
-                : capitalize(userDetailsData?.user_type) || 'Role'}
-            </span>
-          )}
-        </div>
+            {userName?.length > 15 && (
+              <UncontrolledTooltip placement="right" target="username">
+                <div className="d-flex flex-column align-items-start">
+                  <p className="m-0">{isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}</p>
+                </div>
+              </UncontrolledTooltip>
+            )}
+            {isDelegate ? (
+              <span className="user-name truncate-1" id="delegateUsername">
+                {truncateSentence({ sentence: `${userName} (${adminUsername})`, maxCharacters: 15 })}
+              </span>
+            ) : (
+              <span className="user-status">
+                {userDetailsData?.team_type
+                  ? capitalize(userDetailsData?.team_type)
+                  : capitalize(userDetailsData?.user_type) || 'Role'}
+              </span>
+            )}
+          </div>
 
-        {userDetailsData?.user_type === userTypes.talent && (
-          <Avatar
-            img={
-              userDetailsData?.talent_info?.image_uri.length > 0
-                ? userDetailsData?.talent_info?.image_uri
-                : defaultAvatar
-            }
-            imgHeight="40"
-            imgWidth="40"
-          />
-        )}
-        {userDetailsData?.user_type === userTypes.client && (
-          <Avatar
-            img={
-              userDetailsData?.client_info?.image_uri.length > 0
-                ? userDetailsData?.client_info?.image_uri
-                : defaultAvatar
-            }
-            imgHeight="40"
-            imgWidth="40"
-          />
-        )}
-        {userDetailsData?.user_type === userTypes.team && (
-          <Avatar img={userDetailsData?.team_logo || defaultAvatar} imgHeight="40" imgWidth="40" />
-        )}
-      </DropdownToggle>
+          {userDetailsData?.user_type === userTypes.talent && (
+            <Avatar
+              img={
+                userDetailsData?.talent_info?.image_uri.length > 0
+                  ? userDetailsData?.talent_info?.image_uri
+                  : defaultAvatar
+              }
+              imgHeight="40"
+              imgWidth="40"
+            />
+          )}
+          {userDetailsData?.user_type === userTypes.client && (
+            <Avatar
+              img={
+                userDetailsData?.client_info?.image_uri.length > 0
+                  ? userDetailsData?.client_info?.image_uri
+                  : defaultAvatar
+              }
+              imgHeight="40"
+              imgWidth="40"
+            />
+          )}
+          {userDetailsData?.user_type === userTypes.team && (
+            <Avatar img={userDetailsData?.team_logo || defaultAvatar} imgHeight="40" imgWidth="40" />
+          )}
+        </DropdownToggle>
+      )}
 
       {location?.pathname?.split?.('/')?.[3] === userDetailsData?._id && (
         <LineWrapper>
@@ -383,9 +385,13 @@ const UserDropdown = ({ setNavBarLoading }) => {
               ))}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
+
+          {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? (
+            <DelegateAccordion setDelegateEmail={setDelegateEmail} />
+          ) : isDelegate ? null : (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           )}
+
           {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? null : (
             <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
               <span className="align-middle ">Contact support</span>
