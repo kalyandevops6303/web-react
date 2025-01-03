@@ -27,7 +27,6 @@ type IndividualOverviewProps = {
 
 export default function IndividualOverview(props: IndividualOverviewProps) {
   const {
-    userId,
     firstName,
     lastName,
     role,

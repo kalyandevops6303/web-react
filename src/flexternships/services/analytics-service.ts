@@ -127,11 +127,8 @@ export const getAiSummaryService: (projectId: string, userId: string) => Promise
     withCredentials: true,
   };
   try {
-    // const response = await axios.get(`${routes.analytics.individualOverview}`, config);
-    // return response.data?.data || undefined;
-    return {
-      summary: 'This is a summary of the AI',
-    };
+    const response = await axios.get(`${routes.analytics.aiSummary}`, config);
+    return response.data?.data || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching AI summary');
   }

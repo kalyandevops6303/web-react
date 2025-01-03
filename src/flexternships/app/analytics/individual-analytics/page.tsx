@@ -43,6 +43,10 @@ export default function IndividualAnalytics() {
     }
   }, [params]);
 
+  useEffect(() => {
+    console.log(aiSummary);
+  }, [aiSummary]);
+
   const getManagerFeedbackScore = () => {
     return formattedIndividualOverviewDetails?.scores?.filter(
       (score: any) => score.feedbackTypes === 'MANAGER_TO_PEER',
@@ -181,7 +185,7 @@ export default function IndividualAnalytics() {
 
   return (
     <div className="flex flex-col gap-[24px] px-[16px] md:px-0">
-      <IndividualOverview {...formattedIndividualOverviewDetails} aiGeneratedSummary={aiSummary?.summary} />
+      <IndividualOverview {...formattedIndividualOverviewDetails} aiGeneratedSummary={aiSummary} />
 
       <div className="flex flex-row gap-[12px] w-full bg-white rounded-t-[10px] border-b border-b-[#E6E7E7]">
         <div className="w-1/2 flex flex-col items-center justify-center gap-[2px] border-r border-r-[#E6E7E7] p-[12px_24px]">
