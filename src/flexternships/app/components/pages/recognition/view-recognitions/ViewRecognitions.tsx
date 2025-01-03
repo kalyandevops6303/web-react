@@ -1,4 +1,7 @@
+// React and hooks
 import { useState } from 'react';
+
+// UI Components
 import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
 import SelectTalentCard from './SelectTalentCard';
 import ViewRecognitionManagerCard from './ViewRecognitionManagerCard';

@@ -1,12 +1,19 @@
-import TextInput from '../../../core/form/TextInput';
-import SelectCompetencyCard from './SelectCompetencyCard';
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+// React Hook Form
+import { Control, Controller, useController } from 'react-hook-form';
+
+// UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import Rating from '../../../core/feedback/Rating';
+import SelectCompetencyCard from './SelectCompetencyCard';
+import TextInput from '../../../core/form/TextInput';
+
+// Icons and assets
 import checkedIcon from '@flexternships/assets/icons/checkboxes/checked.svg';
 import uncheckedIcon from '@flexternships/assets/icons/checkboxes/unchecked.svg';
-import Rating from '../../../core/feedback/Rating';
-import { Control, Controller, useController } from 'react-hook-form';
+
+// Utils and data
 import { mockCompetencies } from '@/flexternships/mocks/recognition-data';
+import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 
 export default function GiveRecognitionTalentCard(props: GiveRecognitionTalentCardProps) {
   const { selected, talentInfo, onToggle, control } = props;

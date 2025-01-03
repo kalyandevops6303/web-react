@@ -1,6 +1,11 @@
+// Core enums and types
 import { Competency } from '@/flexternships/constraints/enums/miscellaneous-enums';
+
+// UI Components
 import CompetencyTag from '../../../core/tags/CompetencyTag';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+
+// Utils
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 
 export default function ViewRecognitionManagerCard() {

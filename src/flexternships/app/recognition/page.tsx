@@ -1,13 +1,18 @@
+// React and hooks
 import { useState } from 'react';
-import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
-import { ArrowLeft, Eye } from 'react-feather';
 import { useNavigate, useParams } from 'react-router-dom';
-import TopStatCard from '../components/core/cards/TopStatCard';
-import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
-import ViewRecognitions from '../components/pages/recognition/view-recognitions/ViewRecognitions';
-import GiveRecognition from '../components/pages/recognition/give-recognition/GiveRecognition';
 
-// Specific to recognition page
+// UI Components
+import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
+import TopStatCard from '../components/core/cards/TopStatCard';
+import GiveRecognition from '../components/pages/recognition/give-recognition/GiveRecognition';
+import ViewRecognitions from '../components/pages/recognition/view-recognitions/ViewRecognitions';
+
+// Icons and assets
+import { ArrowLeft, Eye } from 'react-feather';
+import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
+
+// Page-specific enums
 enum RecognitionAction {
   GIVE_RECOGNITION = 'give-recognition',
   VIEW_RECOGNITIONS = 'view-recognitions',

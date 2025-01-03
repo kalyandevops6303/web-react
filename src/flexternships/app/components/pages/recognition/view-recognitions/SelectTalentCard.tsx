@@ -1,9 +1,16 @@
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
-import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
-import defaultWowIcon from '@/flexternships/assets/icons/core/wow/wow-default.svg';
-import defaultKudosIcon from '@/flexternships/assets/icons/core/kudos/kudos-default.svg';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+// Core enums and types
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
+
+// UI Components
+import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+
+// Icons and assets
+import defaultKudosIcon from '@/flexternships/assets/icons/core/kudos/kudos-default.svg';
+import defaultWowIcon from '@/flexternships/assets/icons/core/wow/wow-default.svg';
+
+// Utils and stores
+import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function SelectTalentCard(props: SelectTalentCardProps) {
   const { selected, onClick } = props;

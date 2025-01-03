@@ -1,15 +1,24 @@
+// React and hooks
+import { useState } from 'react';
+import { Controller, useForm, useFieldArray } from 'react-hook-form';
+
+// Form validation
+import { yupResolver } from '@hookform/resolvers/yup';
+import { GiveRecognitionSchema } from '@/flexternships/schemas/recognition-schemas';
+
+// Types and enums
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
+
+// UI Components
 import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
 import GiveRecognitionTalentCard from './GiveRecognitionTalentCard';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
-import { Controller, useForm, useFieldArray } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
+
+// Utils and data
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { mockMilestones, mockUsers } from '@/flexternships/mocks/recognition-data';
-import { GiveRecognitionSchema } from '@/flexternships/schemas/recognition-schemas';
-import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
 
 export default function GiveRecognition() {
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
