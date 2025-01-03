@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
 import { ChevronRight, Info, User } from 'react-feather';
 import AIGeneratedIcon from '@flexternships/assets/icons/core/AIGenerated.svg';
+import { useEffect } from 'react';
 
 type IndividualOverviewProps = {
   userId: string;
@@ -14,8 +15,8 @@ type IndividualOverviewProps = {
     endYear: string;
     institution: string;
   };
-  flexternshipStartDate: number;
-  flexternshipEndDate: number;
+  flexternshipStartDate: string;
+  flexternshipEndDate: string;
   wowCount: number;
   kudosCount: number;
   trumioAttractivenessScore: number;
@@ -42,11 +43,15 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
     aiGeneratedSummary,
   } = props;
 
-  const formatDate = (epoch: number) => {
-    const options: Intl.DateTimeFormatOptions = { month: 'short', day: '2-digit', year: 'numeric' };
-    const formattedDate = new Date(epoch).toLocaleDateString('en-US', options);
-    return formattedDate;
-  };
+  // const formatDate = (epoch: number) => {
+  //   const options: Intl.DateTimeFormatOptions = { month: 'short', day: '2-digit', year: 'numeric' };
+  //   const formattedDate = new Date(epoch).toLocaleDateString('en-US', options);
+  //   return formattedDate;
+  // };
+
+  useEffect(() => {
+    console.log(props);
+  }, [props]);
 
   return (
     <>
@@ -88,7 +93,7 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
           <div className="flex gap-[12px] items-center border-l border-[#E6E7E7] pl-[20px]">
             <div>
               <div className="text-grey-700 font-montserrat text-[16px] font-semibold leading-[24px]">
-                {formatDate(flexternshipStartDate)}
+                {flexternshipStartDate}
               </div>
               <div className="text-[#6A7071] font-montserrat text-[12px] font-normal leading-[20px]">
                 Flexternship Start Date
@@ -99,7 +104,7 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
           <div className="flex gap-[12px] items-center border-l border-[#E6E7E7] pl-[20px]">
             <div>
               <div className="text-grey-700 font-montserrat text-[16px] font-semibold leading-[24px]">
-                {formatDate(flexternshipEndDate)}
+                {flexternshipEndDate}
               </div>
               <div className="text-[#6A7071] font-montserrat text-[12px] font-normal leading-[20px]">
                 Flexternship End Date (As of {new Date().toLocaleDateString()})

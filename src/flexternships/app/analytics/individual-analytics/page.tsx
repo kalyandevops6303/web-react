@@ -2,11 +2,12 @@ import { useParams } from 'react-router-dom';
 import IndividualOverview from './individual-overview';
 import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart';
 import { TooltipProps } from 'recharts';
-import { ChevronRight, ThumbsUp } from 'react-feather';
+import { ThumbsUp } from 'react-feather';
 import achievementIcon from '@flexternships/assets/svgs/analytics/achieve.svg';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Spinner from '../../components/core/Spinner';
+import Footer from './footer';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -16,25 +17,89 @@ export default function IndividualAnalytics() {
   const individualOverviewDetails = useAnalyticsStore((state) => state.individualOverview);
   const performanceChartData = useAnalyticsStore((state) => state.performanceChartData);
   const aiSummary = useAnalyticsStore((state) => state.aiSummary);
+  const thirdPartyAppsData = useAnalyticsStore((state) => state.thirdPartyAppsData);
 
   const getRecognitionChartData = useAnalyticsStore((state) => state.getRecognitionChartData);
   const getPerformanceChartData = useAnalyticsStore((state) => state.getPerformanceChartData);
   const getAiSummary = useAnalyticsStore((state) => state.getAiSummary);
   const getIndividualOverview = useAnalyticsStore((state) => state.getIndividualOverview);
+  const getThirdPartyAppsData = useAnalyticsStore((state) => state.getThirdPartyAppsData);
 
   const isIndividualOverviewLoading = useAnalyticsStore((state) => state.isIndividualOverviewLoading);
   const isRecognitionChartDataLoading = useAnalyticsStore((state) => state.isRecognitionChartLoading);
   const isPerformanceChartDataLoading = useAnalyticsStore((state) => state.isPerformanceChartLoading);
   const isAiSummaryLoading = useAnalyticsStore((state) => state.isAiSummaryLoading);
 
+  const [feedbackFooterData, setFeedbackFooterData] = useState<any>(null);
+  const [formattedIndividualOverviewDetails, setFormattedIndividualOverviewDetails] = useState<any>(null);
+
   useEffect(() => {
     if (projectId && userId) {
-      getIndividualOverview(userId);
+      getIndividualOverview(userId, projectId);
       getAiSummary(projectId, userId);
       getRecognitionChartData(projectId, userId);
       getPerformanceChartData(projectId, userId);
+      getThirdPartyAppsData(projectId, userId);
     }
   }, [params]);
+
+  const getManagerFeedbackScore = () => {
+    return formattedIndividualOverviewDetails?.scores?.filter(
+      (score: any) => score.feedbackTypes === 'MANAGER_TO_PEER',
+    )[0]?.avgScore;
+  };
+
+  const getPeerFeedbackScore = () => {
+    return formattedIndividualOverviewDetails?.scores?.filter((score: any) => score.feedbackTypes === 'PEER_TO_PEER')[0]
+      ?.avgScore;
+  };
+
+  useEffect(() => {
+    console.log(individualOverviewDetails);
+    if (individualOverviewDetails) {
+      setFormattedIndividualOverviewDetails({
+        firstName: individualOverviewDetails?.firstName,
+        lastName: individualOverviewDetails?.lastName,
+        role: individualOverviewDetails?.role?.name,
+        imageUri: individualOverviewDetails?.imageUri,
+        education: {
+          institution: individualOverviewDetails?.educationalInstitute?.institution?.name,
+          startYear: individualOverviewDetails?.educationalInstitute?.startYear,
+          endYear: individualOverviewDetails?.educationalInstitute?.gradYear,
+          name: individualOverviewDetails?.educationalInstitute?.education?.name,
+        },
+        flexternshipStartDate: individualOverviewDetails?.listingDetails?.startDate,
+        flexternshipEndDate: individualOverviewDetails?.listingDetails?.endDate,
+        wowCount: individualOverviewDetails?.wowCount,
+        kudosCount: individualOverviewDetails?.kudosCount,
+        trumioAttractivenessScore: individualOverviewDetails?.attractiveScore,
+        totalComments: individualOverviewDetails?.totalComments,
+        scores: individualOverviewDetails?.scores,
+      });
+    }
+  }, [individualOverviewDetails]);
+
+  useEffect(() => {
+    if (individualOverviewDetails) {
+      setFeedbackFooterData([
+        {
+          title: 'Manager Feedback',
+          score: getManagerFeedbackScore(),
+          total: '100',
+        },
+        {
+          title: 'Peer 360 Feedback',
+          score: getPeerFeedbackScore(),
+          total: '10',
+        },
+        {
+          title: 'Overall Comments',
+          score: formattedIndividualOverviewDetails?.totalComments,
+          href: '/analytics/individual-analytics/overall-comments',
+        },
+      ]);
+    }
+  }, [individualOverviewDetails]);
 
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
@@ -116,13 +181,13 @@ export default function IndividualAnalytics() {
 
   return (
     <div className="flex flex-col gap-[24px] px-[16px] md:px-0">
-      <IndividualOverview {...individualOverviewDetails} aiGeneratedSummary={aiSummary?.summary} />
+      <IndividualOverview {...formattedIndividualOverviewDetails} aiGeneratedSummary={aiSummary?.summary} />
 
       <div className="flex flex-row gap-[12px] w-full bg-white rounded-t-[10px] border-b border-b-[#E6E7E7]">
         <div className="w-1/2 flex flex-col items-center justify-center gap-[2px] border-r border-r-[#E6E7E7] p-[12px_24px]">
           <div>
             <span className="text-center text-[20px] font-semibold leading-[28px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.trumioAttractivenessScore}
+              {formattedIndividualOverviewDetails?.trumioAttractivenessScore}
             </span>
             <span className="text-center text-[14px] font-normal leading-[22px] text-[#838889] font-montserrat">
               /100
@@ -133,7 +198,7 @@ export default function IndividualAnalytics() {
         <div className="w-1/2 flex flex-col items-center justify-center gap-[2px] p-[12px_24px]">
           <div>
             <span className="text-center text-[20px] font-semibold leading-[28px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.kudosCount + individualOverviewDetails?.wowCount}
+              {formattedIndividualOverviewDetails?.kudosCount + formattedIndividualOverviewDetails?.wowCount}
             </span>
           </div>
           <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat">WOWs & Kudos</div>
@@ -163,89 +228,9 @@ export default function IndividualAnalytics() {
         XAxisDataKey="milestone"
       />
 
-      <div className="flex gap-[12px]">
-        <div className="flex w-full md:w-1/2 rounded-[10px] bg-white shadow-[0_4px_24px_0_rgba(0,0,0,0.06)] p-4 items-center gap-4 h-full">
-          <div className="w-1/3 text-center flex flex-col gap-[8px]">
-            <div>
-            <span className="text-center text-[22px] font-semibold leading-[26px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.managerFeedback?.score}
-            </span>
-            <span className="text-center text-[14px] font-normal leading-[22px] text-[#838889] font-montserrat">
-              /{individualOverviewDetails?.managerFeedback?.total}
-            </span>
-          </div>
-          <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat">Manager Feedback</div>
-        </div>
-
-        <div className="flex h-[24px] w-[1px] bg-[#E6E7E7]"></div>
-
-        <div className="w-1/3 text-center flex flex-col gap-[8px]">
-          <div>
-            <span className="text-center text-[22px] font-semibold leading-[26px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.peerFeedback?.score}
-            </span>
-            <span className="text-center text-[14px] font-normal leading-[22px] text-[#838889] font-montserrat">
-              /{individualOverviewDetails?.peerFeedback?.total}
-            </span>
-          </div>
-          <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat">Peer 360 Feedback</div>
-        </div>
-
-        <div className="flex h-[24px] w-[1px] bg-[#E6E7E7]"></div>
-
-        <div className="w-1/3 text-center flex flex-col gap-[8px]">
-          <div>
-            <span className="text-center text-[22px] font-semibold leading-[26px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.overallComments}
-            </span>
-          </div>
-          <div className="flex items-center justify-center gap-[4px] text-center text-[14px] font-medium leading-[22px] text-[#0185E4] font-montserrat">
-            <span>Overall Comments</span>
-            <ChevronRight size={18} color="#0185E4" />
-          </div>
-        </div>
-      </div>
-      <div className="flex w-full md:w-1/2 rounded-[10px] bg-white shadow-[0_4px_24px_0_rgba(0,0,0,0.06)] p-4 items-center gap-4 h-full">
-        <div className="w-1/3 text-center flex flex-col gap-[8px]">
-          <div>
-            <span className="text-center text-[22px] font-semibold leading-[26px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.managerFeedback?.score}
-            </span>
-            <span className="text-center text-[14px] font-normal leading-[22px] text-[#838889] font-montserrat">
-              /{individualOverviewDetails?.managerFeedback?.total}
-            </span>
-          </div>
-          <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat">Manager Feedback</div>
-        </div>
-
-        <div className="flex h-[24px] w-[1px] bg-[#E6E7E7]"></div>
-
-        <div className="w-1/3 text-center flex flex-col gap-[8px]">
-          <div>
-            <span className="text-center text-[22px] font-semibold leading-[26px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.peerFeedback?.score}
-            </span>
-            <span className="text-center text-[14px] font-normal leading-[22px] text-[#838889] font-montserrat">
-              /{individualOverviewDetails?.peerFeedback?.total}
-            </span>
-          </div>
-          <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat">Peer 360 Feedback</div>
-        </div>
-
-        <div className="flex h-[24px] w-[1px] bg-[#E6E7E7]"></div>
-
-        <div className="w-1/3 text-center flex flex-col gap-[8px]">
-          <div>
-            <span className="text-center text-[22px] font-semibold leading-[26px] text-[#071013] font-montserrat">
-              {individualOverviewDetails?.overallComments}
-            </span>
-          </div>
-          <div className="flex items-center justify-center gap-[4px] text-center text-[14px] font-medium leading-[22px] text-[#0185E4] font-montserrat">
-            <span>Overall Comments</span>
-            <ChevronRight size={18} color="#0185E4" />
-          </div>
-        </div>
-      </div>
+      <div className="flex flex-col md:flex-row gap-[12px]">
+        <Footer items={feedbackFooterData} />
+        <Footer items={thirdPartyAppsData} />
       </div>
     </div>
   );

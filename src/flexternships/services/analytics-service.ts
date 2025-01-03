@@ -4,47 +4,52 @@ import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
 
-export const getIndividualOverviewService: (userId: string) => Promise<any> = async (userId) => {
+export const getIndividualOverviewService: (userId: string, projectId: string) => Promise<any> = async (
+  userId,
+  projectId,
+) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
     params: {
       user_id: userId,
+      project_id: projectId,
     },
+    withCredentials: true,
   };
 
   try {
-    // const response = await axios.get(`${routes.analytics.individualOverview}`, config);
-    // return response.data?.data || undefined;
-    return {
-      userId: '123',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'Software Engineer',
-      imageUri: 'https://github.com/shadcn.png',
-      education: {
-        name: 'Bachelor of Technology',
-        startYear: '2020',
-        endYear: '2024',
-        institution: 'IIT Bombay',
-      },
-      flexternshipStartDate: 1734688019281,
-      flexternshipEndDate: 1742464019281,
-      wowCount: 10,
-      kudosCount: 20,
-      trumioAttractivenessScore: 82,
-      hardSkillsPre: 8,
-      hardSkillsPost: 10,
-      managerFeedback: {
-        score: 8,
-        total: 10,
-      },
-      peerFeedback: {
-        score: 5,
-        total: 10,
-      },
-      overallComments: 42,
-    };
+    const response = await axios.get(`${routes.analytics.individualOverview}`, config);
+    return keysToCamelCase(response.data?.data) || undefined;
+    // return {
+    //   userId: '123',
+    //   firstName: 'John',
+    //   lastName: 'Doe',
+    //   role: 'Software Engineer',
+    //   imageUri: 'https://github.com/shadcn.png',
+    //   education: {
+    //     name: 'Bachelor of Technology',
+    //     startYear: '2020',
+    //     endYear: '2024',
+    //     institution: 'IIT Bombay',
+    //   },
+    //   flexternshipStartDate: 1734688019281,
+    //   flexternshipEndDate: 1742464019281,
+    //   wowCount: 10,
+    //   kudosCount: 20,
+    //   trumioAttractivenessScore: 82,
+    //   hardSkillsPre: 8,
+    //   hardSkillsPost: 10,
+    //   managerFeedback: {
+    //     score: 8,
+    //     total: 10,
+    //   },
+    //   peerFeedback: {
+    //     score: 5,
+    //     total: 10,
+    //   },
+    //   overallComments: 42,
+    // };
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching individual overview');
   }
@@ -129,5 +134,43 @@ export const getAiSummaryService: (projectId: string, userId: string) => Promise
     };
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching AI summary');
+  }
+};
+
+export const getThirdPartyAppsDataService: (projectId: string, userId: string) => Promise<any> = async (
+  projectId,
+  userId,
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      project_id: projectId,
+      user_id: userId,
+    },
+    withCredentials: true,
+  };
+  try {
+    // const response = await axios.get(`${routes.analytics.thirdPartyAppsData}`, config);
+    // return keysToCamelCase(response.data?.data) || undefined;
+    return [
+      {
+        title: 'Conversation Participation',
+        score: '100%',
+        href: '/analytics/individual-analytics/conversation-participation',
+      },
+      {
+        title: 'Quality Passed',
+        score: '26%',
+        href: '/analytics/individual-analytics/quality-passed',
+      },
+      {
+        title: 'Commits',
+        score: '38',
+        href: '/analytics/individual-analytics/commits',
+      },
+    ];
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching third party apps data');
   }
 };

@@ -4,6 +4,7 @@ import {
   getPerformanceChartDataService,
   getProjectsListService,
   getRecognitionChartDataService,
+  getThirdPartyAppsDataService,
 } from '../services/analytics-service';
 
 // Projects List
@@ -52,12 +53,23 @@ export const getAiSummary = async (projectId: string, userId: string, set: any) 
 };
 
 // Individual Overview
-export const getIndividualOverview = async (userId: string, set: any) => {
+export const getIndividualOverview = async (userId: string, projectId: string, set: any) => {
   set({ isIndividualOverviewLoading: true });
-  const data: any = await getIndividualOverviewService(userId);
+  const data: any = await getIndividualOverviewService(userId, projectId);
   set((state: any) => ({
     ...state,
     individualOverview: data,
   }));
   set({ isIndividualOverviewLoading: false });
+};
+
+// Third Party Apps Data
+export const getThirdPartyAppsData = async (projectId: string, userId: string, set: any) => {
+  set({ isThirdPartyAppsDataLoading: true });
+  const data: any = await getThirdPartyAppsDataService(projectId, userId);
+  set((state: any) => ({
+    ...state,
+    thirdPartyAppsData: data,
+  }));
+  set({ isThirdPartyAppsDataLoading: false });
 };
