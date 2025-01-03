@@ -14,6 +14,7 @@ export const mockUsers = [
     profileImage: 'https://example.com/profiles/john.jpg',
     designation: 'Frontend Developer',
     averageRating: 4.5,
+    appreciationScore: 3,
   },
   {
     id: 'user_2',
@@ -26,6 +27,7 @@ export const mockUsers = [
     name: 'Michael Chen',
     profileImage: 'https://example.com/profiles/michael.jpg',
     designation: 'Backend Developer',
+    appreciationScore: 2,
   },
   {
     id: 'user_4',

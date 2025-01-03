@@ -98,13 +98,13 @@ export default function GiveRecognition() {
           Selected {selectedTalents.length}/{mockUsers.length}
         </div>
         <div className="flex flex-col gap-y-5">
-          {mockUsers.map((user) => (
+          {mockUsers.map((joinedTalent) => (
             <GiveRecognitionTalentCard
-              key={user.id}
-              selected={selectedTalents.some((talent) => talent.talentId === user.id)}
-              talentInfo={user}
+              key={joinedTalent.id}
+              selected={selectedTalents.some((selectedTalent) => selectedTalent.talentId === joinedTalent.id)}
+              talentInfo={joinedTalent}
               control={control}
-              onToggle={() => handleToggle(user.id)}
+              onToggle={() => handleToggle(joinedTalent.id)}
             />
           ))}
         </div>

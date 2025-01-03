@@ -13,11 +13,11 @@ import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function SelectTalentCard(props: SelectTalentCardProps) {
-  const { selected, onClick } = props;
+  const { selected, onClick, talentInfo } = props;
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   return (
     <div
-      className={`flex flex-row justify-between gap-x-6 rounded-md p-4 border-1 ${
+      className={`flex flex-row justify-between gap-x-6 rounded-md p-4 border-1 min-w-[330px] ${
         selected
           ? 'bg-trublue-light border-trublue-secondary-500'
           : 'bg-white shadow-card border-transparent cursor-pointer'
@@ -27,32 +27,34 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
       <div className="flex flex-row items-center gap-x-4">
         <div>
           <Avatar className="size-8">
-            <AvatarImage src={''} />
+            <AvatarImage src={talentInfo.profileImage} />
             <AvatarFallback
               className="p-2 font-semibold text-sm"
               style={{
-                color: stringToColour('Varun Yadav'),
-                backgroundColor: `${stringToColour('Varun Yadav', { opacity: 10 })}`,
+                color: stringToColour(talentInfo.name),
+                backgroundColor: `${stringToColour(talentInfo.name, { opacity: 10 })}`,
               }}
             >
-              {'Varun Yadav'.charAt(0).toUpperCase()}
+              {talentInfo.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </div>
         <div className="w-[174px]">
-          <div className="text-grey text-sm font-semibold leading-5.5">Bob</div>
-          <div className="text-sm leading-5.5 text-grey">Frontend Developer</div>
+          <div className="text-grey text-sm font-semibold leading-5.5">{talentInfo.name}</div>
+          <div className="text-sm leading-5.5 text-grey">{talentInfo.designation}</div>
         </div>
       </div>
-      <div className="flex flex-row items-center gap-x-2">
-        {/* TODO: Thumbs/Wows */}
-        <img
-          className="size-6"
-          src={userDetails.userType === UserType.CLIENT ? defaultWowIcon : defaultKudosIcon}
-          alt="Recognition"
-        />
-        <span className="text-base text-grey-700 font-medium">+3</span>
-      </div>
+      {talentInfo.appreciationScore && (
+        <div className="flex flex-row items-center gap-x-2">
+          {/* TODO: Thumbs/Wows */}
+          <img
+            className="size-6"
+            src={userDetails.userType === UserType.CLIENT ? defaultWowIcon : defaultKudosIcon}
+            alt="Recognition"
+          />
+          <span className="text-base text-grey-700 font-medium">+{talentInfo.appreciationScore}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -60,4 +62,11 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
 type SelectTalentCardProps = {
   selected?: boolean;
   onClick?: () => void;
+  talentInfo: {
+    id: string;
+    name: string;
+    profileImage?: string;
+    designation: string;
+    appreciationScore?: number;
+  };
 };

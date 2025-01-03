@@ -6,13 +6,21 @@ import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
 import SelectTalentCard from './SelectTalentCard';
 import ViewRecognitionManagerCard from './ViewRecognitionManagerCard';
 
+// Data
+import { mockUsers } from '@/flexternships/mocks/recognition-data';
+
 export default function ViewRecognitions() {
-  const [selectedTalent, setSelectedTalent] = useState<number>(1);
+  const [selectedTalentId, setSelectedTalentId] = useState<string | undefined>(undefined);
   return (
     <div className="flex flex-row gap-x-6">
       <div className="flex flex-col gap-y-3">
-        {[1, 2, 3, 4].map((item) => (
-          <SelectTalentCard onClick={() => setSelectedTalent(item)} key={item} selected={item === selectedTalent} />
+        {mockUsers.map((joinedTalent) => (
+          <SelectTalentCard
+            talentInfo={joinedTalent}
+            onClick={() => setSelectedTalentId(joinedTalent.id)}
+            key={joinedTalent.id}
+            selected={joinedTalent.id === selectedTalentId}
+          />
         ))}
       </div>
       <div className="grow">
