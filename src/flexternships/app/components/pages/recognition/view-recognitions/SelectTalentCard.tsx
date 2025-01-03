@@ -6,7 +6,7 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function SelectTalentCard(props: SelectTalentCardProps) {
-  const { selected } = props;
+  const { selected, onClick } = props;
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   return (
     <div
@@ -15,6 +15,7 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
           ? 'bg-trublue-light border-trublue-secondary-500'
           : 'bg-white shadow-card border-transparent cursor-pointer'
       }`}
+      onClick={onClick}
     >
       <div className="flex flex-row items-center gap-x-4">
         <div>
@@ -51,4 +52,5 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
 
 type SelectTalentCardProps = {
   selected?: boolean;
+  onClick?: () => void;
 };

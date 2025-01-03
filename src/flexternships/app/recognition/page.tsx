@@ -14,7 +14,7 @@ enum RecognitionAction {
 }
 
 export default function FlexternProjectRecognition() {
-  const [selectedAction, setSelectedAction] = useState<RecognitionAction>(RecognitionAction.VIEW_RECOGNITIONS);
+  const [selectedAction, setSelectedAction] = useState<RecognitionAction>(RecognitionAction.GIVE_RECOGNITION);
 
   const navigate = useNavigate();
   const { projectId } = useParams();

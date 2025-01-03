@@ -28,7 +28,6 @@ import SubmittedArtifacts from './artifacts/submitted/SubmittedArtifacts';
 import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
 import { isEmpty } from 'lodash';
 import noSubmissionsFoundGif from '@flexternships/assets/gifs/no-submissions-found.gif';
-import RecognitionCard from './feedback/cards/RecognitionCard';
 import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
 import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
 import {
@@ -45,6 +44,7 @@ import CelebrationModal from '@/flexternships/app/components/core/modals/milesto
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
 import { MilestoneFeedback } from '@/flexternships/constraints/types/project-milestones-types';
+import SecondaryButton from '@/flexternships/app/components/core/buttons/SecondaryButton';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -164,6 +164,10 @@ export default function MilestoneDetails() {
     }
   };
 
+  const handleGiveRecognition = () => {
+    navigate(`/recognition/${projectId}`);
+  };
+
   if (isMilestoneDetailsLoading && activeModal === undefined) {
     return (
       <div className="flex flex-col items-center justify-center min-h-48">
@@ -211,17 +215,27 @@ export default function MilestoneDetails() {
           onClick={goBackToAllMilestones}
           bgDark
         />
-        <PrimaryButton
-          onClick={openConfirmActionModal}
-          disabled={
-            milestoneDetails.status === MilestoneStatus.COMPLETED ||
-            milestoneDetails.status === MilestoneStatus.CREATED ||
-            (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) ||
-            (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT)
-          }
-        >
-          {userDetails.userType === UserType.CLIENT ? 'Accept' : 'Mark as Completed'}
-        </PrimaryButton>
+        <div className="flex flex-row gap-x-4">
+          <SecondaryButton
+            className="m-0"
+            onClick={handleGiveRecognition}
+            disabled={!allowRecognition || !allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
+          >
+            Give {userDetails.userType === UserType.CLIENT ? 'a WOW!' : 'Kudos'}
+          </SecondaryButton>
+          <PrimaryButton
+            className="m-0"
+            onClick={openConfirmActionModal}
+            disabled={
+              milestoneDetails.status === MilestoneStatus.COMPLETED ||
+              milestoneDetails.status === MilestoneStatus.CREATED ||
+              (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) ||
+              (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT)
+            }
+          >
+            {userDetails.userType === UserType.CLIENT ? 'Accept' : 'Mark as Completed'}
+          </PrimaryButton>
+        </div>
       </div>
       <SimpleElevatedCard className="flex flex-col px-8 pt-6 pb-10 gap-y-10 bg-white-fa overflow-hidden">
         <div className="flex flex-row gap-x-4 items-center">
@@ -313,13 +327,14 @@ export default function MilestoneDetails() {
           </Accordion>
         </SimpleElevatedCard>
       )}
-      {allowRecognition && (
+      {/* Hidden for now considering new wow/kudos flow */}
+      {/* {allowRecognition && (
         <RecognitionCard
           isDisabled={!allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
           projectId={milestoneDetails.projectDetails.projectId}
           milestoneId={milestoneDetails.id}
         />
-      )}
+      )} */}
       {!isEmpty(milestoneDetails) &&
         allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status) &&
         milestoneDetails.milestoneFeedbackDetails.map((feedback, index) => (

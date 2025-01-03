@@ -1,34 +1,107 @@
 import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
 import GiveRecognitionTalentCard from './GiveRecognitionTalentCard';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
+import { Controller, useForm, useFieldArray } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import SingleSelectInput from '../../../core/form/SingleSelectInput';
+import { mockMilestones, mockUsers } from '@/flexternships/mocks/recognition-data';
+import { GiveRecognitionSchema } from '@/flexternships/schemas/recognition-schemas';
+import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
 
 export default function GiveRecognition() {
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<GiveRecognitionForm>({
+    mode: 'onChange',
+    defaultValues: {
+      milestone: {
+        _id: '1',
+        name: 'Milestone 1',
+      },
+      selectedTalents: [],
+    },
+    resolver: yupResolver(GiveRecognitionSchema),
+  });
+
+  const { append, remove } = useFieldArray({
+    control,
+    name: 'selectedTalents',
+  });
+
+  const selectedTalents = watch('selectedTalents');
+
+  const handleToggle = (talentId: string) => {
+    const talentIndex = selectedTalents.findIndex((talent) => talent.talentId === talentId);
+    if (talentIndex === -1) {
+      append({ talentId, competencies: [], message: '' });
+    } else {
+      remove(talentIndex);
+    }
+  };
+
+  const onSubmit = async (data: GiveRecognitionForm) => {
+    setIsSubmitLoading(true);
+    try {
+      // TODO: Submit recognition
+      console.log(data);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        showToastMessage(ToastType.ERROR, error.message);
+      } else {
+        showToastMessage(ToastType.ERROR, 'Failed to submit recognition. Please try again.');
+      }
+    }
+    setIsSubmitLoading(false);
+  };
+
   return (
     <SimpleElevatedCard className="bg-white p-6 flex flex-col gap-y-5">
-      <div>
+      <div className="flex flex-col gap-y-2 items-start">
         <div className="text-base text-grey-600 font-medium leading-6">
           Do you see impressive work or contribution from team member(s)? Recognize with a WOW!
         </div>
-        <div>
-          {/* TODO: select a milestone */}
-          {/* <SingleSelectInput name="milestone" control={{}} label="Milestone" loadOptions={async () => ({metadata: {
-                current_page: 1,
-                page_size: 10,
-                total_records: 10,
-                has_next_page: false,
-            }, data: [{_id: '1', name: 'Milestone 1'}, {_id: '2', name: 'Milestone 2'}]})} /> */}
+        <div className="w-[540px]">
+          <Controller
+            name="milestone"
+            control={control}
+            render={() => (
+              <SingleSelectInput
+                name="milestone"
+                control={control}
+                label="Milestone"
+                error={errors.milestone?.message}
+                loadOptions={async () => mockMilestones}
+              />
+            )}
+          />
         </div>
       </div>
       <div className="flex flex-col gap-y-4">
-        <div className="text-grey-300 text-xs font-semibold leading-5 text-uppercase">Selected 2/7</div>
+        <div className="text-grey-300 text-xs font-semibold leading-5 text-uppercase">
+          Selected {selectedTalents.length}/{mockUsers.length}
+        </div>
         <div className="flex flex-col gap-y-5">
-          {/* TODO: select team members */}
-          <GiveRecognitionTalentCard selected />
-          <GiveRecognitionTalentCard />
+          {mockUsers.map((user) => (
+            <GiveRecognitionTalentCard
+              key={user.id}
+              selected={selectedTalents.some((talent) => talent.talentId === user.id)}
+              talentInfo={user}
+              control={control}
+              onToggle={() => handleToggle(user.id)}
+            />
+          ))}
         </div>
       </div>
       <div>
-        <PrimaryButton className="m-0" onClick={() => {}}>
+        <PrimaryButton className="m-0" onClick={handleSubmit(onSubmit)} loading={isSubmitLoading} disabled={!isValid}>
           Submit
         </PrimaryButton>
       </div>
