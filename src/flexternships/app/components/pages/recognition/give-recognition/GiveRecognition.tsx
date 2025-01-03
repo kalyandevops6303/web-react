@@ -21,7 +21,7 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { mockMilestones, mockUsers } from '@/flexternships/mocks/recognition-data';
 
 export default function GiveRecognition() {
-  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
 
   const {
     control,

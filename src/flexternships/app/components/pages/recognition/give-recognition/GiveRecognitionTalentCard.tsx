@@ -1,6 +1,9 @@
 // React Hook Form
 import { Control, Controller, useController } from 'react-hook-form';
 
+// Types and enums
+import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
+
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import Rating from '../../../core/feedback/Rating';
@@ -126,5 +129,5 @@ type GiveRecognitionTalentCardProps = {
     isDocumentsSigned?: boolean;
   };
   onToggle?: () => void;
-  control: Control<any>;
+  control: Control<GiveRecognitionForm>;
 };
