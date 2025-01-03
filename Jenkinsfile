@@ -15,12 +15,11 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['qa', 'dev', 'tru-dev', 'tru-qa'], description: 'Select deployment environment')
-	//gitParameter(name: 'BRANCH', type: 'PT_BRANCH', description: 'Select Git branch for deployment')
+        choice(name: 'ENVIRONMENT', choices: ['tru-dev', 'tru-qa', 'qa', 'dev'], description: 'Select deployment environment')
     }
 
     stages {
-        stage('Checkout') {
+        stage('Initializing branch') {
             steps {
                 script {
                     // Determine which branch to check out based on the environment
@@ -28,11 +27,24 @@ pipeline {
                     if (params.ENVIRONMENT == 'tru-qa') {
                         branchToCheckout = 'origin/tru-dev' // Override for tru-qa environment
                     }
-                    echo "Checking out branch: ${branchToCheckout} for environment: ${params.ENVIRONMENT}"
-                    checkout([$class: 'GitSCM', 
-                        branches: [[name: "${branchToCheckout}"]],
-                        // userRemoteConfigs: [[url: repoUrl, credentialsId: 'github_access']]
-                    ])
+                    echo "Branch selected: ${branchToCheckout}"
+                    env.SELECTED_BRANCH = branchToCheckout 
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                script {
+                    try {
+                        echo "Checking out branch: ${env.SELECTED_BRANCH} for environment: ${params.ENVIRONMENT}"
+                        checkout([$class: 'GitSCM', 
+                            branches: [[name: "${env.SELECTED_BRANCH}"]],
+                            userRemoteConfigs: [[url: 'git@github.com:trumio/trumio-web-react.git', credentialsId: 'github_access']]
+                        ])
+                    } catch (Exception e) {
+                        error "Failed to checkout branch ${env.SELECTED_BRANCH}. Error: ${e.message}"
+                    }
                 }
             }
         }
