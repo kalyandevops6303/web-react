@@ -23,7 +23,6 @@ import {
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
@@ -197,20 +196,29 @@ const LeftSideBarProjectDetails = () => {
             </h1>
           </div>
         </div>
-        {!isEmpty(secondaryStatus) && (
-          <div className="flex flex-row items-start gap-3">
-            <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
-              Status :
-            </div>{' '}
-            {secondaryStatus && (
-              <ProjectStatusChip
-                status={secondaryStatus}
-                statusType={StatusType?.SECONDARY}
-                rounded={true}
-                lastInProgressMilestone={data.lastInProgressMilestone}
-              />
-            )}
-          </div>
+        {secondaryStatus && (
+          <>
+            {userDetails.userType === UserType.CLIENT
+              ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
+              : userDetails.userType === UserType.TALENT &&
+                ![
+                  ProjectSecondaryStatus.SIGN_NDA,
+                  ProjectSecondaryStatus.SIGN_CONTRACT,
+                  ProjectSecondaryStatus.SIGN_DOCUMENTS,
+                ].includes(secondaryStatus) && (
+                  <div className="flex flex-row items-start gap-3">
+                    <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
+                      Status:
+                    </div>
+                    <ProjectStatusChip
+                      status={secondaryStatus}
+                      statusType={StatusType?.SECONDARY}
+                      rounded={true}
+                      lastInProgressMilestone={data.lastInProgressMilestone}
+                    />
+                  </div>
+                )}
+          </>
         )}
 
         {(data?.skillsData?.length! > 0 || data?.toolsData?.length! > 0) && (

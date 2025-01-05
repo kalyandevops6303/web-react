@@ -56,6 +56,7 @@ import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
+import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -525,6 +526,13 @@ export const FlexternshipRoutes = [
         <ChatInterface />
       </RoleAccessWrapper>
     ),
+  },
+  {
+    path: '/verify-invitation',
+    element: <VerifyInvitation />,
+    meta: {
+      layout: 'blank',
+    },
   },
   {
     path: '*',

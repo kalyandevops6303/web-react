@@ -96,7 +96,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
         ''
       ) : (
         <>
-          {isTabDisabled || !isCometChatLoggedIn ? (
+          {!isCometChatLoggedIn ? null : isTabDisabled ? (
             <MessageIconContainer className="d-flex align-items-center">
               <div className="text-muted cursor-not-allowed">
                 <MessageSquare size={20} color={theme.bodyColor} />
@@ -115,6 +115,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
               )}
             </MessageIconContainer>
           )}
+
           {isTabDisabled ? (
             <div className="text-muted cursor-not-allowed d-flex align-items-center">
               <NotificationIconContainer>

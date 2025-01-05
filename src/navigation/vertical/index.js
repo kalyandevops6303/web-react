@@ -12,7 +12,7 @@ export default [
   {
     id: 'projects',
     title: 'Projects',
-    navLink: '/projects',
+    navLink: '/projects/ongoing',
   },
   {
     id: 'myteam',

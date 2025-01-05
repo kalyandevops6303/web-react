@@ -3,6 +3,15 @@ export enum UserType {
   TALENT = 'TALENT',
 }
 
+export enum UserInvitationType {
+  FLEXTERN_PROJECT = 'FLEXTERN_PROJECT',
+}
+
+export enum UserStatus {
+  REGISTERED = 'REGISTERED',
+  UNREGISTERED = 'UNREGISTERED',
+}
+
 export enum ProjectPrimaryStatus {
   DRAFT = 'DRAFT',
   ACTIVE = 'ACTIVE',

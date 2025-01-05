@@ -12,7 +12,6 @@ Contains GitHub-action workflows to manage Tag releases, Build and Push.
 3. 📝 **Provide the required inputs (target branch and version type).**
 4. ✅ **Click "Run workflow" to start the tag dispatch & release, build & push process.**
 
-
 ***
 
 

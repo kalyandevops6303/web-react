@@ -50,13 +50,7 @@ export default function MilestoneTab() {
   }
 
   const allDocumentsSigned =
-    [
-      ProjectPrimaryStatus.ON_GOING,
-      ProjectPrimaryStatus.COMPLETED,
-      ProjectPrimaryStatus.TERMINATED,
-      ProjectPrimaryStatus.WITHDRAWN,
-      ProjectPrimaryStatus.BLOCKED,
-    ].includes(projectDetails.status) ||
+    ![ProjectPrimaryStatus.OPEN, ProjectPrimaryStatus.ACTIVE].includes(projectDetails.status) ||
     (projectDetails.status === ProjectPrimaryStatus.ACTIVE &&
       projectDetails.secondaryStatus.next === ProjectSecondaryStatus.MILESTONE);
 
@@ -67,6 +61,7 @@ export default function MilestoneTab() {
     role: projectDetails.invitationDetails.member.role.name,
     estimatedDuration: projectDetails.details.expectedDuration.duration,
     hoursPerWeek: projectDetails.details.expectedDuration.hoursPerWeek,
+    isDocumentsNeeded: projectDetails.isDocumentsNeeded,
   };
 
   return (
