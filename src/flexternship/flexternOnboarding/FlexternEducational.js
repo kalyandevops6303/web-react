@@ -431,11 +431,6 @@ const FlexternEducational = () => {
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
-  console.log(isFlextern, 'isFlextern');
-  console.log(isTrumioTalent, 'isTrumioTalent');
-  console.log(isFlexternReady, 'isFlexternReady');
-  console.log(isProjectReady, 'isProjectReady');
-
   const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
