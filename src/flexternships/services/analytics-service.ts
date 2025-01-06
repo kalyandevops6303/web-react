@@ -21,36 +21,7 @@ export const getIndividualOverviewService: (userId: string, projectId: string) =
   try {
     const response = await axios.get(`${routes.analytics.individualOverview}`, config);
     return keysToCamelCase(response.data?.data) || undefined;
-    // return {
-    //   userId: '123',
-    //   firstName: 'John',
-    //   lastName: 'Doe',
-    //   role: 'Software Engineer',
-    //   imageUri: 'https://github.com/shadcn.png',
-    //   education: {
-    //     name: 'Bachelor of Technology',
-    //     startYear: '2020',
-    //     endYear: '2024',
-    //     institution: 'IIT Bombay',
-    //   },
-    //   flexternshipStartDate: 1734688019281,
-    //   flexternshipEndDate: 1742464019281,
-    //   wowCount: 10,
-    //   kudosCount: 20,
-    //   trumioAttractivenessScore: 82,
-    //   hardSkillsPre: 8,
-    //   hardSkillsPost: 10,
-    //   managerFeedback: {
-    //     score: 8,
-    //     total: 10,
-    //   },
-    //   peerFeedback: {
-    //     score: 5,
-    //     total: 10,
-    //   },
-    //   overallComments: 42,
-    // };
-  } catch (error) {
+   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching individual overview');
   }
 };
@@ -61,8 +32,12 @@ export const getProjectsListService: () => Promise<any> = async () => {
     headers: headers,
   };
   try {
+    // TODO: Uncomment after API is implemented
     // const response = await axios.get(`${routes.dashboardV2.clientDetails.getClientCompletedProjects}`, config);
     // return response.data?.data || undefined;
+
+    // TODO: Remove after API is implemented
+    console.log(config);
     return [
       {
         id: '67716ee4125cc4d7138d6a73',
@@ -139,6 +114,7 @@ export const getThirdPartyAppsDataService: (projectId: string, userId: string) =
   userId,
 ) => {
   const headers = appendAuthToken({});
+  
   const config = {
     headers: headers,
     params: {
@@ -148,8 +124,13 @@ export const getThirdPartyAppsDataService: (projectId: string, userId: string) =
     withCredentials: true,
   };
   try {
+    // TODO: Uncomment after API is implemented
+
     // const response = await axios.get(`${routes.analytics.thirdPartyAppsData}`, config);
     // return keysToCamelCase(response.data?.data) || undefined;
+
+    // TODO: Remove after API is implemented
+    console.log(config);
     return [
       {
         title: 'Conversation Participation',
