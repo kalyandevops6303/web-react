@@ -16,6 +16,8 @@ const commentJson = [
     _id: '6776b27072eb065adf54fba9',
     comment:
       'Collab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V goodCollab V good',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -42,6 +44,8 @@ const commentJson = [
   {
     _id: '6776b27072eb065adf54fbaa',
     comment: 'V Good Communication',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -68,6 +72,8 @@ const commentJson = [
   {
     _id: '6776b27072eb065adf54fbab',
     comment: 'V good leadership',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -94,6 +100,8 @@ const commentJson = [
   {
     _id: '6776b27072eb065adf54fbac',
     comment: 'V good ownerhsip',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -120,6 +128,8 @@ const commentJson = [
   {
     _id: '6776b27072eb065adf54fbad',
     comment: 'V good analytical Thinking',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -146,6 +156,8 @@ const commentJson = [
   {
     _id: '6776b27072eb065adf54fbae',
     comment: 'V good innovative thinking',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -172,6 +184,8 @@ const commentJson = [
   {
     _id: '6776b27072eb065adf54fbaf',
     comment: 'v good improvement',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -195,6 +209,8 @@ const commentJson = [
   {
     _id: '6776b27072eb065adf54fbb0',
     comment: 'v good talent',
+    created_at: 1735832176673,
+    updated_at: 1735832176673,
     milestone_info: {
       name: 'Plan and Design',
       seq: 1,
@@ -261,6 +277,7 @@ const Comments = () => {
               comment={comment.comment}
               giverDetails={comment.giver_details}
               milestoneInfo={comment.milestone_info}
+              createdAt={comment.created_at}
             />
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { Card, CardText, Row } from 'reactstrap';
 import { useState } from 'react';
-
+import { convertUnixTimestampToDate } from '@/utility/Utils';
 interface CommentBoxProps {
   comment: string;
   giverDetails: {
@@ -16,11 +16,12 @@ interface CommentBoxProps {
     seq: number;
     _id: string;
   };
+  createdAt: number;
 }
 
-const CommentBox = ({ comment, giverDetails, milestoneInfo }: CommentBoxProps) => {
+const CommentBox = ({ comment, giverDetails, milestoneInfo, createdAt }: CommentBoxProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const Date = convertUnixTimestampToDate(createdAt);
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
@@ -78,11 +79,11 @@ const CommentBox = ({ comment, giverDetails, milestoneInfo }: CommentBoxProps) =
             </div>
           </Row>
         </div>
-        <div className="w-px bg-gray-300"></div>
+        <div className="w-[1px] bg-gray-300"></div>
         <div className="flex flex-col gap-2 w-full md:w-2/3">
           <Row>
             <div>
-              <p className="text-xs">Dec 04, 2024</p>
+              <p className="text-xs text-gray-300">{Date}</p>
             </div>
           </Row>
           <Row>
