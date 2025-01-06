@@ -17,13 +17,11 @@ export default function IndividualAnalytics() {
   const individualOverviewDetails = useAnalyticsStore((state) => state.individualOverview);
   const performanceChartData = useAnalyticsStore((state) => state.performanceChartData);
   const aiSummary = useAnalyticsStore((state) => state.aiSummary);
-  const thirdPartyAppsData = useAnalyticsStore((state) => state.thirdPartyAppsData);
 
   const getRecognitionChartData = useAnalyticsStore((state) => state.getRecognitionChartData);
   const getPerformanceChartData = useAnalyticsStore((state) => state.getPerformanceChartData);
   const getAiSummary = useAnalyticsStore((state) => state.getAiSummary);
   const getIndividualOverview = useAnalyticsStore((state) => state.getIndividualOverview);
-  const getThirdPartyAppsData = useAnalyticsStore((state) => state.getThirdPartyAppsData);
 
   const isIndividualOverviewLoading = useAnalyticsStore((state) => state.isIndividualOverviewLoading);
   const isRecognitionChartDataLoading = useAnalyticsStore((state) => state.isRecognitionChartLoading);
@@ -39,13 +37,8 @@ export default function IndividualAnalytics() {
       getAiSummary(projectId, userId);
       getRecognitionChartData(projectId, userId);
       getPerformanceChartData(projectId, userId);
-      getThirdPartyAppsData(projectId, userId);
     }
   }, [params]);
-
-  useEffect(() => {
-    console.log(aiSummary);
-  }, [aiSummary]);
 
   const getManagerFeedbackScore = () => {
     return formattedIndividualOverviewDetails?.scores?.filter(
@@ -59,7 +52,6 @@ export default function IndividualAnalytics() {
   };
 
   useEffect(() => {
-    console.log(individualOverviewDetails);
     if (individualOverviewDetails) {
       setFormattedIndividualOverviewDetails({
         firstName: individualOverviewDetails?.firstName,
@@ -107,8 +99,6 @@ export default function IndividualAnalytics() {
 
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
-
-    console.log(payload);
 
     return (
       <div className="bg-white w-[200px] max-w-1/2 p-[8px_12px] border rounded-[6px] shadow-lg">
@@ -234,7 +224,6 @@ export default function IndividualAnalytics() {
 
       <div className="flex flex-col md:flex-row gap-[12px]">
         <Footer items={feedbackFooterData} />
-        <Footer items={thirdPartyAppsData} />
       </div>
     </div>
   );

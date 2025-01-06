@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
 import { ChevronRight, Info, User } from 'react-feather';
 import AIGeneratedIcon from '@flexternships/assets/icons/core/AIGenerated.svg';
-import { useEffect } from 'react';
 
 type IndividualOverviewProps = {
   userId: string;
@@ -20,12 +19,10 @@ type IndividualOverviewProps = {
   wowCount: number;
   kudosCount: number;
   trumioAttractivenessScore: number;
-  hardSkillsPre: number;
-  hardSkillsPost: number;
   aiGeneratedSummary: string;
 };
 
-export default function IndividualOverview(props: IndividualOverviewProps) {
+export default function IndividualOverview(props: Readonly<IndividualOverviewProps>) {
   const {
     firstName,
     lastName,
@@ -37,20 +34,8 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
     wowCount,
     kudosCount,
     trumioAttractivenessScore,
-    hardSkillsPre,
-    hardSkillsPost,
     aiGeneratedSummary,
   } = props;
-
-  // const formatDate = (epoch: number) => {
-  //   const options: Intl.DateTimeFormatOptions = { month: 'short', day: '2-digit', year: 'numeric' };
-  //   const formattedDate = new Date(epoch).toLocaleDateString('en-US', options);
-  //   return formattedDate;
-  // };
-
-  useEffect(() => {
-    console.log(props);
-  }, [props]);
 
   return (
     <>
@@ -128,7 +113,7 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
             </div>
           </div>
 
-          <div className="flex gap-[16px] mb-[24px]">
+          <div className="flex gap-[16px]">
             <div className="flex w-1/2 flex-col items-center gap-[4px] p-[16px_24px_20px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
               <div>
                 <span className="text-[#071013] text-center font-montserrat text-[32px] font-semibold">{wowCount}</span>
@@ -150,42 +135,6 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
               </div>
             </div>
           </div>
-          <div className="flex gap-[16px]">
-            <div className="flex w-full items-center gap-[4px] p-[16px_24px_20px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
-              <div className="w-1/2 flex flex-col items-center gap-[4px]">
-                <div>
-                  <span className="text-[#071013] text-center font-montserrat text-[32px] font-semibold">
-                    {hardSkillsPre}
-                  </span>
-                </div>
-                <div className="flex items-center gap-[8px]">
-                  <div>Hard Skills (Pre)</div>
-                  <Info size={18} color="#838889" />
-                </div>
-              </div>
-              <div className="flex h-full w-[1px] bg-[#E6E7E7]"></div>
-              <div className="w-1/2 flex flex-col items-center gap-[4px]">
-                <div>
-                  <span className="text-[#071013] text-center font-montserrat text-[32px] font-semibold">
-                    {hardSkillsPost}
-                  </span>
-                </div>
-                <div className="flex items-center gap-[8px]">
-                  <div>Hard Skills (Post)</div>
-                  <Info size={18} color="#838889" />
-                </div>
-              </div>
-            </div>
-            {/* <div className="flex w-1/2 flex-col items-center gap-[4px] p-[16px_24px_20px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
-                            <div>
-                                <span className="text-[#071013] text-center font-montserrat text-[32px] font-semibold">{hardSkillsPost}</span>
-                            </div>
-                            <div className="flex items-center gap-[8px]">
-                                <div>Hard Skills (Post)</div>
-                                <Info size={18} color="#838889" />
-                            </div>
-                        </div> */}
-          </div>
         </div>
 
         <div className="w-full md:w-2/3 flex flex-col gap-[8px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
@@ -193,7 +142,7 @@ export default function IndividualOverview(props: IndividualOverviewProps) {
             <div className="flex md:items-center gap-[8px] flex-col md:flex-row">
               <div className="text-[#0185E4] font-montserrat text-[12px] font-semibold leading-[20px] flex p-[4px_8px] justify-center items-center gap-[4px] rounded-[16px] border border-[#0185E4]">
                 <img src={AIGeneratedIcon} alt="AIGenerated" />
-                AI Generated
+                <span>AI Generated</span>
               </div>
               <div className="text-[#394042] font-montserrat text-[14px] font-medium leading-[22px]">
                 Performance Summary

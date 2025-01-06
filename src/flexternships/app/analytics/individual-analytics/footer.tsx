@@ -10,7 +10,7 @@ interface FooterProps {
   }[];
 }
 
-export default function Footer(props: FooterProps) {
+export default function Footer(props: Readonly<FooterProps>) {
   const { items } = props;
 
   return (

@@ -1,7 +1,10 @@
 import { create } from 'zustand';
-import { getIndividualOverview, getProjectsList, getThirdPartyAppsData } from '../actions/analytics-actions';
-import { getPerformanceChartData, getRecognitionChartData } from '../actions/analytics-actions';
-import { getAiSummary } from '../actions/analytics-actions';
+import {
+  getIndividualOverview,
+  getPerformanceChartData,
+  getRecognitionChartData,
+  getAiSummary,
+} from '../actions/analytics-actions';
 
 const defaultInitState = {
   individualOverview: null,
@@ -26,10 +29,8 @@ const defaultInitState = {
 
 export const useAnalyticsStore = create<any>((set) => ({
   ...defaultInitState,
-  getProjectsList: async () => getProjectsList(set),
   getRecognitionChartData: async (projectId: string, userId: string) => getRecognitionChartData(projectId, userId, set),
   getPerformanceChartData: async (projectId: string, userId: string) => getPerformanceChartData(projectId, userId, set),
   getAiSummary: async (projectId: string, userId: string) => getAiSummary(projectId, userId, set),
   getIndividualOverview: async (userId: string, projectId: string) => getIndividualOverview(userId, projectId, set),
-  getThirdPartyAppsData: async (projectId: string, userId: string) => getThirdPartyAppsData(projectId, userId, set),
 }));
