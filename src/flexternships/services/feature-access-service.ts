@@ -3,6 +3,11 @@ import { handleError } from '@flexternships/utils/error-utils';
 import { Feature } from '../constraints/types/core-types';
 import { routes } from '@flexternships/utils/api';
 
+interface FeatureResponse {
+  feature_id: string;
+  feature_name: string;
+}
+
 export const featureAccessService = {
   async getPermittedFeatures(): Promise<Feature[]> {
     const config = { withCredentials: true };
@@ -10,9 +15,9 @@ export const featureAccessService = {
       const response = await axios.get(routes.userManagement.features.getPermittedFeatures, config);
 
       return (
-        response.data?.data.map((feature: Feature) => ({
-          feature_id: feature.feature_id,
-          feature_name: feature.feature_name,
+        response.data?.data.map((feature: FeatureResponse) => ({
+          featureId: feature.feature_id,
+          featureName: feature.feature_name,
         })) || []
       );
     } catch (error) {
@@ -26,7 +31,7 @@ export const featureAccessService = {
       const features = await this.getPermittedFeatures();
 
       const hasAccess = features.some((feature) => {
-        const matches = feature.feature_name === feature_name;
+        const matches = feature.featureName === feature_name;
         return matches;
       });
 
