@@ -11,7 +11,7 @@ import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjec
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
 import { getItem } from '../../../utility/localStorageControl';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
-import { featureAccessService } from '@flexternships/services/feature-access-service';
+import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
@@ -29,7 +29,7 @@ const CreateProjectButton = () => {
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        const hasAccess = await featureAccessService.hasFeatureAccess(FEATURE_NAMES.AYESHA_BOT);
+        const hasAccess = await hasFeatureAccess(FEATURE_NAMES.AYESHA_BOT);
         setHasAyeshaBotAccess(hasAccess);
       } catch (error) {
         console.error('Error checking feature access:', error);

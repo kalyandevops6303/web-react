@@ -8,37 +8,35 @@ interface FeatureResponse {
   feature_name: string;
 }
 
-export const featureAccessService = {
-  async getPermittedFeatures(): Promise<Feature[]> {
-    const config = { withCredentials: true };
-    try {
-      const response = await axios.get(routes.userManagement.features.getPermittedFeatures, config);
+export async function getPermittedFeatures(): Promise<Feature[]> {
+  const config = { withCredentials: true };
+  try {
+    const response = await axios.get(routes.userManagement.features.getPermittedFeatures, config);
 
-      return (
-        response.data?.data.map((feature: FeatureResponse) => ({
-          featureId: feature.feature_id,
-          featureName: feature.feature_name,
-        })) || []
-      );
-    } catch (error) {
-      handleError(error as Error, 'An unexpected error occurred while fetching permitted features');
-      return [];
-    }
-  },
+    return (
+      response.data?.data.map((feature: FeatureResponse) => ({
+        featureId: feature.feature_id,
+        featureName: feature.feature_name,
+      })) || []
+    );
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching permitted features');
+    return [];
+  }
+}
 
-  async hasFeatureAccess(feature_name: string): Promise<boolean> {
-    try {
-      const features = await this.getPermittedFeatures();
+export async function hasFeatureAccess(feature_name: string): Promise<boolean> {
+  try {
+    const features = await getPermittedFeatures();
 
-      const hasAccess = features.some((feature) => {
-        const matches = feature.featureName === feature_name;
-        return matches;
-      });
+    const hasAccess = features.some((feature) => {
+      const matches = feature.featureName === feature_name;
+      return matches;
+    });
 
-      return hasAccess;
-    } catch (error) {
-      handleError(error as Error, 'An unexpected error occurred while checking feature access');
-      return false;
-    }
-  },
-};
+    return hasAccess;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while checking feature access');
+    return false;
+  }
+}
