@@ -77,7 +77,6 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isDelegate = getItem('isDelegate');
-  console.log(isDelegate);
   
   const delegateType = getItem('delegateType');
 
