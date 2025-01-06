@@ -101,10 +101,8 @@ export default function IndividualAnalytics() {
     if (!active || !payload?.length) return null;
 
     return (
-      <div className="bg-white w-[200px] max-w-1/2 p-[8px_12px] border rounded-[6px] shadow-lg">
-        <p className="font-medium font-montserrat text-[10px] font-semibold leading-[16px] text-[#838889] uppercase">
-          {label}
-        </p>
+      <div className="bg-white w-[200px] max-w-1/2 p-2 px-3 border rounded-md shadow-lg">
+        <p className="font-medium font-montserrat text-xs font-semibold leading-4 text-dark-300 uppercase">{label}</p>
         {payload.map((entry) => {
           const dataKey = entry.dataKey as keyof typeof recognitionChartData.chartConfig;
           const wowCount = entry?.payload?.wowCount;
@@ -112,44 +110,36 @@ export default function IndividualAnalytics() {
           return (
             <div key={dataKey.toString()}>
               <div className="flex justify-between items-center">
-                <span className="font-montserrat text-[12px] font-normal leading-[20px] text-[#394042] flex items-center gap-2">
+                <span className="font-montserrat text-sm font-normal text-dark-100 flex items-center gap-2">
                   <div
-                    className={`flex w-[12px] h-[12px] rounded-[2px]`}
+                    className="flex w-3 h-3 rounded-sm"
                     style={{ backgroundColor: recognitionChartData?.chartConfig[dataKey].color }}
                   ></div>
                   <div>{recognitionChartData?.chartConfig[dataKey].label}</div>
                 </span>
-                <span className="font-montserrat text-[12px] font-semibold leading-[20px] text-[#394042]">
+                <span className="font-montserrat text-sm font-semibold text-dark-100">
                   {entry.value}/{recognitionChartData?.maxYAxis}
                 </span>
               </div>
 
-              <div>
-                <div className="flex justify-between items-center">
-                  <span className="font-montserrat text-[12px] font-normal leading-[20px] text-[#394042] flex items-center gap-2">
-                    <div>
-                      <img src={achievementIcon} alt="achievement" width={12} height={12} />
-                    </div>
-                    <div>Wows</div>
-                  </span>
-                  <span className="font-montserrat text-[12px] font-semibold leading-[20px] text-[#394042]">
-                    {wowCount}
-                  </span>
-                </div>
+              <div className="flex justify-between items-center">
+                <span className="font-montserrat text-sm font-normal text-dark-100 flex items-center gap-2">
+                  <div>
+                    <img src={achievementIcon} alt="achievement" width={12} height={12} />
+                  </div>
+                  <div>Wows</div>
+                </span>
+                <span className="font-montserrat text-sm font-semibold text-dark-100">{wowCount}</span>
               </div>
 
-              <div>
-                <div className="flex justify-between items-center">
-                  <span className="font-montserrat text-[12px] font-normal leading-[20px] text-[#394042] flex items-center gap-2">
-                    <div>
-                      <ThumbsUp size={12} color="#7367F0" />
-                    </div>
-                    <div>Kudos</div>
-                  </span>
-                  <span className="font-montserrat text-[12px] font-semibold leading-[20px] text-[#394042]">
-                    {kudosCount}
-                  </span>
-                </div>
+              <div className="flex justify-between items-center">
+                <span className="font-montserrat text-sm font-normal text-dark-100 flex items-center gap-2">
+                  <div>
+                    <ThumbsUp size={12} className="text-purple" />
+                  </div>
+                  <div>Kudos</div>
+                </span>
+                <span className="font-montserrat text-sm font-semibold text-dark-100">{kudosCount}</span>
               </div>
             </div>
           );
@@ -174,31 +164,30 @@ export default function IndividualAnalytics() {
   }
 
   return (
-    <div className="flex flex-col gap-[24px] px-[16px] md:px-0">
+    <div className="flex flex-col gap-6 px-4 md:px-0">
       <IndividualOverview {...formattedIndividualOverviewDetails} aiGeneratedSummary={aiSummary} />
 
-      <div className="flex flex-row gap-[12px] w-full bg-white rounded-t-[10px] border-b border-b-[#E6E7E7]">
-        <div className="w-1/2 flex flex-col items-center justify-center gap-[2px] border-r border-r-[#E6E7E7] p-[12px_24px]">
+      <div className="flex flex-row gap-3 w-full bg-white rounded-t-lg border-b border-border">
+        <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 border-r border-border p-3 px-6">
           <div>
-            <span className="text-center text-[20px] font-semibold leading-[28px] text-[#071013] font-montserrat">
+            <span className="text-center text-lg font-semibold text-dark font-montserrat">
               {formattedIndividualOverviewDetails?.trumioAttractivenessScore}
             </span>
-            <span className="text-center text-[14px] font-normal leading-[22px] text-[#838889] font-montserrat">
-              /100
-            </span>
+            <span className="text-center text-base font-normal text-dark-300 font-montserrat">/100</span>
           </div>
-          <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat">Attractiveness</div>
+          <div className="text-base font-medium text-dark-300 font-montserrat">Attractiveness</div>
         </div>
-        <div className="w-1/2 flex flex-col items-center justify-center gap-[2px] p-[12px_24px]">
+        <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 px-6">
           <div>
-            <span className="text-center text-[20px] font-semibold leading-[28px] text-[#071013] font-montserrat">
+            <span className="text-center text-lg font-semibold text-dark font-montserrat">
               {formattedIndividualOverviewDetails?.kudosCount + formattedIndividualOverviewDetails?.wowCount}
             </span>
           </div>
-          <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat">WOWs & Kudos</div>
+          <div className="text-base font-medium text-dark-300 font-montserrat">WOWs & Kudos</div>
         </div>
       </div>
-      <div className="-mt-[24px]">
+
+      <div className="-mt-6">
         <MultipleLinesChart
           chartData={recognitionChartData?.chartData}
           chartConfig={recognitionChartData?.chartConfig}
@@ -210,9 +199,7 @@ export default function IndividualAnalytics() {
         />
       </div>
 
-      <div className="text-[18px] font-medium leading-[26px] text-[#394042] font-montserrat -mb-[10px] mt-[24px]">
-        Performance
-      </div>
+      <div className="text-xl font-medium text-dark-100 font-montserrat -mb-2.5 mt-6">Performance</div>
 
       <MultipleLinesChart
         chartData={performanceChartData?.chartData}

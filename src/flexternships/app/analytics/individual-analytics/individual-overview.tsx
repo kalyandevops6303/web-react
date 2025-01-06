@@ -40,57 +40,47 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
   return (
     <>
       <div>
-        <div className="flex p-[20px] justify-between flex-wrap items-center gap-[20px] self-stretch rounded-[10px] bg-[#FFF] shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center gap-[12px] ">
+        <div className="flex p-5 justify-between flex-wrap items-center gap-5 self-stretch rounded-lg bg-white shadow-card">
+          <div className="flex items-center gap-3">
             <Avatar>
               <AvatarImage src={imageUri} />
               <AvatarFallback>
-                <User color="#6E6B7B" />
+                <User className="text-dark-200" />
               </AvatarFallback>
             </Avatar>
 
             <div>
-              <div className="flex gap-[8px] items-center overflow-hidden text-[#0185E4] text-ellipsis font-montserrat text-[16px] font-semibold leading-[24px]">
+              <div className="flex gap-2 items-center overflow-hidden text-primary text-ellipsis font-montserrat text-lg font-semibold">
                 <div>
                   {firstName} {lastName}
                 </div>
-                <ChevronRight size={18} color="#0185E4" />
+                <ChevronRight size={18} className="text-primary" />
               </div>
-              <div className="text-[#838889] font-montserrat text-[12px] font-normal leading-[20px]">{role}</div>
+              <div className="text-dark-300 font-montserrat text-sm font-normal">{role}</div>
             </div>
           </div>
 
-          <div className="border-l border-[#E6E7E7] pl-[20px]">
-            <div className="text-[#394042] font-montserrat text-[16px] font-semibold leading-[24px]">
-              {education?.name}
-            </div>
-            <div className="flex gap-[8px] items-center">
-              <div className="text-grey-500 font-montserrat text-[12px] font-medium leading-[20px]">
+          <div className="border-l border-border pl-5">
+            <div className="text-dark-100 font-montserrat text-lg font-semibold">{education?.name}</div>
+            <div className="flex gap-2 items-center">
+              <div className="text-grey-500 font-montserrat text-sm font-medium">
                 {education?.startYear} - {education?.endYear}
               </div>
-              <div className="text-[#6A7071] font-montserrat text-[12px] font-normal leading-[20px]">
-                {education?.institution}
-              </div>
+              <div className="text-dark-200 font-montserrat text-sm font-normal">{education?.institution}</div>
             </div>
           </div>
 
-          <div className="flex gap-[12px] items-center border-l border-[#E6E7E7] pl-[20px]">
+          <div className="flex gap-3 items-center border-l border-border pl-5">
             <div>
-              <div className="text-grey-700 font-montserrat text-[16px] font-semibold leading-[24px]">
-                {flexternshipStartDate}
-              </div>
-              <div className="text-[#6A7071] font-montserrat text-[12px] font-normal leading-[20px]">
-                Flexternship Start Date
-              </div>
+              <div className="text-grey-700 font-montserrat text-lg font-semibold">{flexternshipStartDate}</div>
+              <div className="text-dark-200 font-montserrat text-sm font-normal">Flexternship Start Date</div>
             </div>
           </div>
 
-          <div className="flex gap-[12px] items-center border-l border-[#E6E7E7] pl-[20px]">
+          <div className="flex gap-3 items-center border-l border-border pl-5">
             <div>
-              <div className="text-grey-700 font-montserrat text-[16px] font-semibold leading-[24px]">
-                {flexternshipEndDate}
-              </div>
-              <div className="text-[#6A7071] font-montserrat text-[12px] font-normal leading-[20px]">
+              <div className="text-grey-700 font-montserrat text-lg font-semibold">{flexternshipEndDate}</div>
+              <div className="text-dark-200 font-montserrat text-sm font-normal">
                 Flexternship End Date (As of {new Date().toLocaleDateString()})
               </div>
             </div>
@@ -98,64 +88,58 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-[16px]">
+      <div className="flex flex-col md:flex-row gap-4">
         <div className="w-full md:w-1/3">
-          <div className="flex flex-col items-center gap-[4px] mb-[16px] p-[16px_24px_20px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
+          <div className="flex flex-col items-center gap-1 mb-4 p-6 rounded-lg bg-white shadow-card">
             <div>
-              <span className="text-[#071013] text-center font-montserrat text-[32px] font-semibold">
+              <span className="text-dark text-center font-montserrat text-4xl font-semibold">
                 {trumioAttractivenessScore}
               </span>
-              <span className="text-[#838889] text-center font-montserrat text-[20px] font-normal ">/100</span>
+              <span className="text-dark-300 text-center font-montserrat text-2xl font-normal">/100</span>
             </div>
-            <div className="flex items-center gap-[8px]">
+            <div className="flex items-center gap-2">
               <div>Attractiveness Score</div>
-              <Info size={18} color="#838889" />
+              <Info size={18} className="text-dark-300" />
             </div>
           </div>
 
-          <div className="flex gap-[16px]">
-            <div className="flex w-1/2 flex-col items-center gap-[4px] p-[16px_24px_20px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
+          <div className="flex gap-4">
+            <div className="flex w-1/2 flex-col items-center gap-1 p-4 rounded-lg bg-white shadow-card">
               <div>
-                <span className="text-[#071013] text-center font-montserrat text-[32px] font-semibold">{wowCount}</span>
+                <span className="text-dark text-center font-montserrat text-4xl font-semibold">{wowCount}</span>
               </div>
-              <div className="flex items-center gap-[8px]">
+              <div className="flex items-center gap-2">
                 <div>Wows!</div>
-                <Info size={18} color="#838889" />
+                <Info size={18} className="text-dark-300" />
               </div>
             </div>
-            <div className="flex w-1/2 flex-col items-center gap-[4px] p-[16px_24px_20px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
+            <div className="flex w-1/2 flex-col items-center gap-1 p-4 rounded-lg bg-white shadow-card">
               <div>
-                <span className="text-[#071013] text-center font-montserrat text-[32px] font-semibold">
-                  {kudosCount}
-                </span>
+                <span className="text-dark text-center font-montserrat text-4xl font-semibold">{kudosCount}</span>
               </div>
-              <div className="flex items-center gap-[8px]">
+              <div className="flex items-center gap-2">
                 <div>Kudos!</div>
-                <Info size={18} color="#838889" />
+                <Info size={18} className="text-dark-300" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="w-full md:w-2/3 flex flex-col gap-[8px] rounded-[10px] bg-[#FFF] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
-          <div className="p-[16px_16px_0] flex  flex-col flex-grow gap-[8px]">
-            <div className="flex md:items-center gap-[8px] flex-col md:flex-row">
-              <div className="text-[#0185E4] font-montserrat text-[12px] font-semibold leading-[20px] flex p-[4px_8px] justify-center items-center gap-[4px] rounded-[16px] border border-[#0185E4]">
+        <div className="w-full md:w-2/3 flex flex-col gap-2 rounded-lg bg-white shadow-card">
+          <div className="p-4 flex flex-col flex-grow gap-2">
+            <div className="flex md:items-center gap-2 flex-col md:flex-row">
+              <div className="text-primary font-montserrat text-sm font-semibold flex p-1 px-2 justify-center items-center gap-1 rounded-2xl border border-primary">
                 <img src={AIGeneratedIcon} alt="AIGenerated" />
                 <span>AI Generated</span>
               </div>
-              <div className="text-[#394042] font-montserrat text-[14px] font-medium leading-[22px]">
-                Performance Summary
-              </div>
+              <div className="text-dark-100 font-montserrat text-base font-medium">Performance Summary</div>
             </div>
-            <div className="text-[#6A7071] font-montserrat text-[14px] font-normal leading-[22px]">
-              {aiGeneratedSummary}
-            </div>
+            <div className="text-dark-200 font-montserrat text-base font-normal">{aiGeneratedSummary}</div>
           </div>
 
-          <div className="bg-[#0185E41F] bottom-0 left-0 w-full p-[12px_16px] rounded-b-[10px]">
-            <span className="text-[#0185E4] font-montserrat text-[12px] font-medium leading-[16px]">Note: </span>
-            <span className="text-[#6A7071] font-montserrat text-[12px] font-normal leading-[16px]">
+          <div className="bg-primary-light w-full p-3 px-4 rounded-b-lg">
+            <span className="text-primary font-montserrat text-sm font-medium">Note: </span>
+            <span className="text-dark-200 font-montserrat text-sm font-normal">
               Generative AI may produce inaccurate or incomplete information. Verify critical details while reviewing
               the content.
             </span>

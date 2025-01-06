@@ -96,7 +96,7 @@ export default function MultipleLinesChart(props: MultipleLinesChartProps) {
       {showFilters && (
         <div className="flex flex-wrap gap-[20px] bg-white rounded-t-[10px] p-[24px]">
           <div
-            onClick={() => toggleAll()}
+            onClick={toggleAll}
             className={`flex flex-col justify-center items-start gap-1 p-3 flex-[1_0_0] rounded-lg border cursor-pointer ${
               showAll ? 'border border-[#0185E4] bg-[#0185E41F]' : 'border-[#E6E7E7]'
             }`}

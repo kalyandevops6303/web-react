@@ -14,35 +14,31 @@ export default function Footer(props: Readonly<FooterProps>) {
   const { items } = props;
 
   return (
-    <div className="flex flex-col md:flex-row w-full md:w-1/2 rounded-[10px] bg-white shadow-[0_4px_24px_0_rgba(0,0,0,0.06)] p-4 items-center gap-4 h-full">
+    <div className="flex flex-col md:flex-row w-full md:w-1/2 rounded-lg bg-white shadow-card p-4 items-center gap-4 h-full">
       {items?.map((item, index) => (
         <>
-          <div className="w-1/3 text-center flex flex-col gap-[8px]">
+          <div className="w-1/3 text-center flex flex-col gap-2">
             <div>
-              <span className="text-center text-[22px] font-semibold leading-[26px] text-[#071013] font-montserrat">
-                {item.score}
-              </span>
+              <span className="text-center text-3xl font-semibold text-dark font-montserrat">{item.score}</span>
               {item.total && (
-                <span className="text-center text-[14px] font-normal leading-[22px] text-[#838889] font-montserrat">
-                  /{item.total}
-                </span>
+                <span className="text-center text-base font-normal text-dark-300 font-montserrat">/{item.total}</span>
               )}
             </div>
             {item.href ? (
               <Link to={item.href}>
-                <div className="flex items-center gap-[4px] justify-center text-center text-[14px] font-medium text-[#0185E4] font-montserrat md:truncate cursor-pointer">
+                <div className="flex items-center gap-1 justify-center text-center text-base font-medium text-primary font-montserrat md:truncate cursor-pointer">
                   <span>{item.title}</span>
-                  <ChevronRight size={18} color="#0185E4" />
+                  <ChevronRight size={18} className="text-primary" />
                 </div>
               </Link>
             ) : (
-              <div className="text-[14px] font-medium leading-[22px] text-[#838889] font-montserrat truncate max-w-full">
+              <div className="text-base font-medium text-dark-300 font-montserrat truncate max-w-full">
                 {item.title}
               </div>
             )}
           </div>
 
-          {index !== items.length - 1 && <div className="flex h-[24px] w-[1px] bg-[#E6E7E7]"></div>}
+          {index !== items.length - 1 && <div className="flex h-6 w-px bg-border"></div>}
         </>
       ))}
     </div>
