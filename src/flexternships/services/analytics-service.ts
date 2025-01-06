@@ -21,7 +21,7 @@ export const getIndividualOverviewService: (userId: string, projectId: string) =
   try {
     const response = await axios.get(`${routes.analytics.individualOverview}`, config);
     return keysToCamelCase(response.data?.data) || undefined;
-   } catch (error) {
+  } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching individual overview');
   }
 };
@@ -114,7 +114,7 @@ export const getThirdPartyAppsDataService: (projectId: string, userId: string) =
   userId,
 ) => {
   const headers = appendAuthToken({});
-  
+
   const config = {
     headers: headers,
     params: {
