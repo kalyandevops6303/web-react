@@ -55,17 +55,22 @@ export enum MilestoneArtifactErrorType {
   UPLOAD_FAILED = 'UPLOAD_FAILED',
 }
 
-// Subject to changer as per BE
 export enum MilestoneFeedbackType {
   TEAM_FEEDBACK = 'MANAGER_TO_TEAM',
   INDIVIDUAL_FEEDBACK = 'MANAGER_TO_PEER',
   SELF_FEEDBACK = 'SELF',
   PEER_FEEDBACK = 'PEER_TO_PEER',
 }
-// Subject to changer as per BE
+
 export enum MilestoneFeedbackStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
+}
+
+// TODO: Subject to change as per BE
+export enum RecognitionSource {
+  QUICK_ACTIONS = 'QUICK_ACTIONS',
+  FEEDBACK = 'FEEDBACK',
 }
 
 export enum FlexternUserAppRole {

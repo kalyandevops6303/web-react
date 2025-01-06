@@ -14,10 +14,10 @@ export enum MilestoneDetailsModalType {
 }
 
 export enum Competency {
-  COLLABORATION = 'COLLABORATION',
-  LEADERSHIP = 'LEADERSHIP',
-  COMMUNICATION = 'COMMUNICATION',
-  INNOVATION = 'INNOVATION',
-  EFFECTIVENESS = 'EFFECTIVENESS',
-  PROBLEM_SOLVING = 'PROBLEM_SOLVING',
+  COLLABORATION = 'Collaboration',
+  LEADERSHIP = 'Leadership',
+  COMMUNICATION = 'Communication',
+  INNOVATION = 'Innovation',
+  EFFECTIVENESS = 'Effectiveness',
+  PROBLEM_SOLVING = 'Problem Solving',
 }

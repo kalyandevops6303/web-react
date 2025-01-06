@@ -18,14 +18,61 @@ import uncheckedIcon from '@flexternships/assets/icons/checkboxes/unchecked.svg'
 import { mockCompetencies } from '@/flexternships/mocks/recognition-data';
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 
-export default function GiveRecognitionTalentCard(props: GiveRecognitionTalentCardProps) {
-  const { selected, talentInfo, onToggle, control } = props;
+function UnselectedTalentCard({
+  talentInfo,
+  onToggle,
+  checkboxIcon = uncheckedIcon,
+  className = 'bg-white shadow-card',
+}: {
+  talentInfo: GiveRecognitionTalentCardProps['talentInfo'];
+  onToggle: () => void;
+  checkboxIcon?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`flex flex-row flex-wrap items-center gap-x-6 gap-y-2 py-3 px-6 rounded-lg ${className}`}
+      onClick={onToggle}
+    >
+      <div className="flex flex-row items-center gap-x-3">
+        <div>
+          <img src={checkboxIcon} alt="checkbox" />
+        </div>
+        <div className="flex flex-row items-center gap-x-4">
+          <Avatar className="size-8">
+            <AvatarImage src={''} />
+            <AvatarFallback
+              className="p-2 font-semibold text-sm"
+              style={{
+                color: stringToColour(talentInfo.name),
+                backgroundColor: `${stringToColour(talentInfo.name, { opacity: 10 })}`,
+              }}
+            >
+              {talentInfo.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="w-[400px] text-sm font-semibold leading-5.5 text-grey">{talentInfo.name}</div>
+        </div>
+      </div>
+      <div className="w-[200px] text-sm text-grey font-medium leading-5.5">{talentInfo.designation}</div>
+      <div>
+        {talentInfo.averageRating && <Rating rating={talentInfo.averageRating} ratingColor="#0185E4" showTotalScore />}
+      </div>
+    </div>
+  );
+}
 
-  const talentIndex = useController({
-    name: 'selectedTalents',
-    control,
-  }).field.value.findIndex((talent: { talentId: string }) => talent.talentId === talentInfo.id);
-
+function SelectedTalentCard({
+  talentInfo,
+  onToggle,
+  control,
+  talentIndex,
+}: {
+  talentInfo: GiveRecognitionTalentCardProps['talentInfo'];
+  onToggle: () => void;
+  control: Control<GiveRecognitionForm>;
+  talentIndex: number;
+}) {
   const {
     field: { value: selectedCompetencies = [], onChange: onCompetenciesChange },
   } = useController({
@@ -44,78 +91,69 @@ export default function GiveRecognitionTalentCard(props: GiveRecognitionTalentCa
   };
 
   return (
-    <div
-      className={`flex flex-col gap-y-4 py-3 px-6 rounded-lg ${selected ? 'bg-trublue-light' : 'bg-white shadow-card'}`}
-    >
-      <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-2" onClick={onToggle}>
-        <div className="flex flex-row items-center gap-x-3">
-          <div>
-            <img src={selected ? checkedIcon : uncheckedIcon} alt="checkbox" />
+    <div className="flex flex-col gap-y-4 rounded-lg bg-trublue-light">
+      <UnselectedTalentCard
+        talentInfo={talentInfo}
+        onToggle={onToggle}
+        checkboxIcon={checkedIcon}
+        className="bg-trublue-light"
+      />
+      <div className="flex flex-col gap-y-4 px-6 pb-3">
+        <div className="flex flex-col gap-y-2">
+          <div className="text-sm font-medium leading-5.5 text-grey-600">
+            Select applicable competencies <span className="text-error">*</span>
           </div>
-          <div className="flex flex-row items-center gap-x-4">
-            <Avatar className="size-8">
-              <AvatarImage src={''} />
-              <AvatarFallback
-                className="p-2 font-semibold text-sm"
-                style={{
-                  color: stringToColour(talentInfo.name),
-                  backgroundColor: `${stringToColour(talentInfo.name, { opacity: 10 })}`,
-                }}
-              >
-                {talentInfo.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="w-[400px] text-sm font-semibold leading-5.5 text-grey">{talentInfo.name}</div>
+          <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
+            {mockCompetencies.map((competency) => (
+              <SelectCompetencyCard
+                key={competency.id}
+                text={competency.name}
+                value={competency.id}
+                selected={selectedCompetencies.includes(competency.id)}
+                onClick={() => handleCompetencyToggle(competency.id)}
+              />
+            ))}
           </div>
         </div>
-        <div className="w-[200px] text-sm text-grey font-medium leading-5.5">{talentInfo.designation}</div>
         <div>
-          {talentInfo.averageRating && (
-            <Rating rating={talentInfo.averageRating} ratingColor="#0185E4" showTotalScore />
-          )}
+          <Controller
+            name={`selectedTalents.${talentIndex}.message`}
+            control={control}
+            defaultValue=""
+            render={({ field: { value, onChange }, fieldState: { error } }) => (
+              <TextInput
+                label="Your comment"
+                textarea
+                required
+                placeholder="Please enter your comment"
+                className="w-full"
+                value={value}
+                onChange={onChange}
+                error={error?.message}
+              />
+            )}
+          />
         </div>
       </div>
-      {selected && (
-        <div className="flex flex-col gap-y-4">
-          <div className="flex flex-col gap-y-2">
-            <div className="text-sm font-medium leading-5.5 text-grey-600">
-              Select applicable competencies <span className="text-error">*</span>
-            </div>
-            <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
-              {mockCompetencies.map((competency) => (
-                <SelectCompetencyCard
-                  key={competency.id}
-                  text={competency.name}
-                  value={competency.id}
-                  selected={selectedCompetencies.includes(competency.id)}
-                  onClick={() => handleCompetencyToggle(competency.id)}
-                />
-              ))}
-            </div>
-          </div>
-          <div>
-            <Controller
-              name={`selectedTalents.${talentIndex}.message`}
-              control={control}
-              defaultValue=""
-              render={({ field: { value, onChange }, fieldState: { error } }) => (
-                <TextInput
-                  label="Your comment"
-                  textarea
-                  required
-                  placeholder="Please enter your comment"
-                  className="w-full"
-                  value={value}
-                  onChange={onChange}
-                  error={error?.message}
-                />
-              )}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
+}
+
+export default function GiveRecognitionTalentCard(props: GiveRecognitionTalentCardProps) {
+  const { selected, talentInfo, onToggle, control } = props;
+
+  const talentIndex = useController({
+    name: 'selectedTalents',
+    control,
+  }).field.value.findIndex((talent: { talentId: string }) => talent.talentId === talentInfo.id);
+
+  if (selected) {
+    return (
+      <SelectedTalentCard talentInfo={talentInfo} onToggle={onToggle!} control={control} talentIndex={talentIndex} />
+    );
+  }
+
+  return <UnselectedTalentCard talentInfo={talentInfo} onToggle={onToggle!} />;
 }
 
 type GiveRecognitionTalentCardProps = {

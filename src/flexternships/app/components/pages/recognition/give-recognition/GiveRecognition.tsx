@@ -30,6 +30,7 @@ export default function GiveRecognition() {
     formState: { errors, isValid },
   } = useForm<GiveRecognitionForm>({
     mode: 'onChange',
+    // TODO: Get milestone from backend
     defaultValues: {
       milestone: {
         _id: '1',
@@ -77,7 +78,7 @@ export default function GiveRecognition() {
         <div className="text-base text-grey-600 font-medium leading-6">
           Do you see impressive work or contribution from team member(s)? Recognize with a WOW!
         </div>
-        <div className="w-[540px]">
+        <div className="w-full max-w-[540px]">
           <Controller
             name="milestone"
             control={control}
