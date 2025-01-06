@@ -65,7 +65,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
         <div className="flex items-center gap-2">
           <div className="flex flex-col text-left">
             <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">
-              <span className="text-[#5E5873] font-[Montserrat] text-[15px] font-medium leading-[24px]">
+              <span className="text-[#5E5873] font-[Montserrat] text-[16px] font-medium leading-[24px]">
                 Milestone #{peerFeedback?.index + 1}
               </span>
             </div>
