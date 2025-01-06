@@ -218,7 +218,7 @@ export default function IndividualAnalytics() {
         chartData={performanceChartData?.chartData}
         chartConfig={performanceChartData?.chartConfig}
         maxYAxis={performanceChartData?.maxYAxis}
-        showFilters={true}
+        showFilters
         XAxisDataKey="milestone"
       />
 
