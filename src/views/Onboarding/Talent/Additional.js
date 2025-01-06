@@ -1212,7 +1212,7 @@ const Additional = () => {
                 </CardHeader>
 
                 <CardBody>
-                  {isFlextern && (
+                  {isFlextern && !isFlexternReady && (
                     <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
                         <CardText className="m-0">

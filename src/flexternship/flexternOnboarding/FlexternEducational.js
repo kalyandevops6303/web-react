@@ -431,7 +431,6 @@ const FlexternEducational = () => {
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
-
   const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
@@ -1745,7 +1744,7 @@ const FlexternEducational = () => {
                 </CardHeader>
 
                 <CardBody>
-                  {isFlextern && (
+                  {isFlextern && !isFlexternReady && (
                     <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
                         <CardText className="m-0">
