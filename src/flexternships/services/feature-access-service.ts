@@ -6,7 +6,6 @@ import { routes } from '@flexternships/utils/api';
 export const featureAccessService = {
   async getPermittedFeatures(): Promise<Feature[]> {
     const config = { withCredentials: true };
-
     try {
       const response = await axios.get(routes.userManagement.features.getPermittedFeatures, config);
 
