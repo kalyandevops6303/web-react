@@ -160,8 +160,8 @@ export type ValidatedRequestToken = {
 };
 
 export type Feature = {
-  featureId: string;
-  featureName: string;
+  feature_id: string;
+  feature_name: string;
 };
 
 export type ChatMessage = {
