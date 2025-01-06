@@ -77,6 +77,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isDelegate = getItem('isDelegate');
+  
   const delegateType = getItem('delegateType');
 
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
@@ -388,9 +389,9 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
           {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
-          ) : isDelegate ? null : (
+          ) : isDelegate ? (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
-          )}
+          ) : null}
 
           {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? null : (
             <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
