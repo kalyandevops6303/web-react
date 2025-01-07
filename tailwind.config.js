@@ -148,8 +148,8 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       fontSize: {
-        2xs: ['10px', '12px']
-        3xs: ['8px', '8px']
+        '2xs': ['10px', '12px']
+        '3xs': ['8px', '8px']
       },
     },
   },
