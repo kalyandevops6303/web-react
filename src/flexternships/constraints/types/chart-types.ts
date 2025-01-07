@@ -93,3 +93,22 @@ export interface ChartLabelProps {
   outerRadius?: number;
   index?: number;
 }
+
+export type MatrixLegendItem = {
+  color: string;
+  rangeMin: number;
+  rangeMax: number;
+};
+
+export type MatrixConfig = {
+  legend?: MatrixLegendItem[];
+};
+export type MatrixDataItem = {
+  label: string; // shown as a row label
+  [key: string]: { score: number } | string; // column records with scores
+};
+
+export interface ColoredGridMatrixProps {
+  matrixConfig: MatrixConfig;
+  matrixData: MatrixDataItem[];
+}

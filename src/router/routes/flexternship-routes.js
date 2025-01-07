@@ -57,6 +57,7 @@ import RedirectToTeamTab from '@/flexternships/app/components/pages/project-deta
 import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
 import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
+import TeamPerformanceInsights from '@/flexternships/app/analytics/team-analytics/performance-insights/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -533,6 +534,10 @@ export const FlexternshipRoutes = [
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: '/analytics/project/:projectId/team/performance-insights',
+    element: <TeamPerformanceInsights />,
   },
   {
     path: '*',

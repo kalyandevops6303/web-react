@@ -11,18 +11,21 @@
   @apply text-white bg-trublue-disabled cursor-default;
 }
 
-button.secondaryEnabledButtonBlue {
+button.secondaryEnabledButtonBlue,
+button:focus.secondaryEnabledButtonBlue {
   @apply outline outline-1 outline-trublue-secondary-500 text-trublue-secondary-500 cursor-pointer;
   @apply transition-transform duration-100 ease-in-out transform active:scale-95;
   @apply transition-colors duration-200 hover:bg-trublue-secondary-500 hover:bg-opacity-10;
 }
-button.secondaryEnabledButtonRed {
+button.secondaryEnabledButtonRed,
+button:focus.secondaryEnabledButtonRed {
   @apply outline outline-1 outline-error text-error cursor-pointer;
   @apply transition-transform duration-100 ease-in-out transform active:scale-95;
   @apply transition-colors duration-200 hover:bg-error hover:bg-opacity-10;
 }
 
-button.secondaryDisabledButton {
+button.secondaryDisabledButton,
+button:focus.secondaryDisabledButton {
   @apply outline outline-1 outline-trublue-disabled text-trublue-disabled;
 }
 

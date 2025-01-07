@@ -48,6 +48,7 @@ module.exports = {
           600: '#515759',
           700: '#394042',
           800: '#757575',
+          900: '#071013',
           loadingText: '#9E9E9E',
         },
         skyblue: {
@@ -105,7 +106,7 @@ module.exports = {
       borderRadius: {
         5: '5px',
         7: '7px',
-        10:"10px",
+        10: '10px',
         52: '52px',
       },
       borderWidth: {

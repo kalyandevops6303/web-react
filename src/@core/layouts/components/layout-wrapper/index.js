@@ -13,7 +13,7 @@ import { handleContentWidth, handleMenuCollapsed, handleMenuHidden } from '@stor
 import themeConfig from '@configs/themeConfig';
 
 // ** Styles
-import 'animate.css/animate.css';
+// import 'animate.css/animate.css';
 
 const LayoutWrapper = (props) => {
   // ** Props
