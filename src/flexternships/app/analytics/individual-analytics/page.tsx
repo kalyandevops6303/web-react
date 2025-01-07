@@ -8,6 +8,7 @@ import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { useEffect, useState } from 'react';
 import Spinner from '../../components/core/Spinner';
 import Footer from './footer';
+import { FeedbackConfig } from '@/flexternships/constraints/enums/feedback-enums';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -81,17 +82,17 @@ export default function IndividualAnalytics() {
         {
           title: 'Manager Feedback',
           score: getManagerFeedbackScore(),
-          total: '100',
+          total: FeedbackConfig.FEEDBACK_TOTAL,
         },
         {
           title: 'Peer 360 Feedback',
           score: getPeerFeedbackScore(),
-          total: '10',
+          total: FeedbackConfig.FEEDBACK_TOTAL,
         },
         {
           title: 'Overall Comments',
           score: formattedIndividualOverviewDetails?.totalComments,
-          href: '/analytics/individual-analytics/overall-comments',
+          href: `${window.location.pathname}/comments`,
         },
       ]);
     }
