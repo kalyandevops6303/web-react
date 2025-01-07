@@ -102,6 +102,9 @@ export const routes = {
         checkUser: `${serviceUrls.userManagementV2}/requests/user/check`,
       },
     },
+    features: {
+      getPermittedFeatures: `${serviceUrls.userManagement}/features/permitted-features`,
+    },
   },
   dashboardV2: {
     clientDetails: {

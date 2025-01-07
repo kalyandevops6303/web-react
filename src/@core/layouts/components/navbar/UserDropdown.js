@@ -77,7 +77,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isDelegate = getItem('isDelegate');
-  
+
   const delegateType = getItem('delegateType');
 
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
