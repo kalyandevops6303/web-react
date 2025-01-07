@@ -21,6 +21,8 @@ export default function ProjectsTab() {
 
   const params = useParams();
 
+  console.log(isDocumentsNeededForThisProject);
+
   const ndaCardData = {
     title: 'NDA',
     subtitle: 'STEP 2',

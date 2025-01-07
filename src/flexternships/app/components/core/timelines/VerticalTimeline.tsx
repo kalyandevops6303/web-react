@@ -1,4 +1,5 @@
 import { Check } from 'react-feather';
+import classNames from 'classnames';
 
 export default function VerticalTimeline({
   timelineItems = [],
@@ -15,7 +16,11 @@ export default function VerticalTimeline({
 
           return (
             <li
-              className={!isLastItem ? `border-s border-l ${checked ? 'border-success' : 'border-grey-border'}` : ''}
+              className={classNames({
+                'border-s border-l': !isLastItem,
+                'border-success': !isLastItem && checked,
+                'border-grey-border': !isLastItem && !checked,
+              })}
               style={{
                 paddingLeft: hideLine ? undefined : spaceLeft,
                 paddingBottom: hideLine ? undefined : spaceBottom,
@@ -24,7 +29,12 @@ export default function VerticalTimeline({
             >
               <div>
                 {!hideLine && (
-                  <div className={`absolute rounded-full -left-2.5 ${checked ? 'bg-success' : 'bg-grey-border'}`}>
+                  <div
+                    className={classNames('absolute rounded-full -left-2.5', {
+                      'bg-success': checked,
+                      'bg-grey-border': !checked,
+                    })}
+                  >
                     {checked ? (
                       <div className="p-1">
                         <Check size={13} className="text-white" />
