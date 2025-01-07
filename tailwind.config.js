@@ -149,7 +149,9 @@ module.exports = {
       },
       fontSize: {
         '2xs': ['10px', '12px'],
-        '3xs': ['8px', '8px']
+        '3xs': ['8px', '8px'],
+        'xxl': ['22px', '26px'],
+        'sm': ['14px', '22px'],
       },
     },
   },
