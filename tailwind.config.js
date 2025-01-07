@@ -44,7 +44,7 @@ module.exports = {
           50: '#E6E7E7',
           200: '#B4B7B8',
           300: '#9C9FA1',
-          500: '#6A7071',
+          500: '#838889',
           600: '#515759',
           700: '#394042',
           800: '#757575',
@@ -72,6 +72,20 @@ module.exports = {
         text: {
           dark: '#071013',
         },
+        primary: '#0185E4',
+        'primary-light': '#0185E41F',
+        dark: {
+          DEFAULT: '#071013',
+          100: '#394042',
+          200: '#6A7071',
+          300: '#838889',
+        },
+        border: {
+          DEFAULT: '#E6E7E7',
+        },
+        purple: {
+          DEFAULT: '#7367F0',
+        }
       },
       width: {
         8.5: '2.125rem',
@@ -132,6 +146,16 @@ module.exports = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      fontSize: {
+        xs: ['10px', '16px'],     // Previously text-[10px] leading-[16px]
+        sm: ['12px', '20px'],     // Previously text-[12px] leading-[20px]
+        base: ['14px', '22px'],   // Previously text-[14px] leading-[22px]
+        lg: ['16px', '24px'],     // Previously text-[16px] leading-[24px]
+        xl: ['18px', '26px'],     // Previously text-[18px] leading-[26px]
+        '2xl': ['20px', '28px'],  // Previously text-[20px] leading-[28px]
+        '3xl': ['22px', '26px'],  // Previously text-[22px] leading-[26px]
+        '4xl': ['32px', '40px'],  // Previously text-[32px]
       },
     },
   },
