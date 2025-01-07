@@ -3,7 +3,7 @@ import LegalDocCard from '../../components/pages/project-details/sign-documents/
 import { Params, useNavigate, useParams } from 'react-router-dom';
 import { useLegalStore } from '@/flexternships/stores/legal-store';
 import { useEffect } from 'react';
-import { toUpper } from 'lodash';
+import { isEmpty, toUpper } from 'lodash';
 import { ArrowLeft } from 'react-feather';
 import { DocTypes } from '@/flexternships/constraints/enums/project-enums';
 import BreadCrumbs from '../../components/pages/project-details/BreadCrumbs';
@@ -19,7 +19,7 @@ export default function FlexternshipsContractView() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!projectDetails.isDocumentsNeeded) {
+    if (!isEmpty(projectDetails) && !projectDetails.isDocumentsNeeded) {
       throw new Error('Documents are not needed for this project');
     }
   }, [projectDetails.isDocumentsNeeded]);
