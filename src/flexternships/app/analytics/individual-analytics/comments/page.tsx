@@ -1,6 +1,6 @@
-import Statbox from '../../../components/pages/analytics/StatBox';
+import Statbox from '@/flexternships/app/components/pages/analytics/StatBox';
 import { useState, useEffect } from 'react';
-import CommentBox from '../../../components/pages/analytics/CommentBox';
+import CommentBox from '@/flexternships/app/components/pages/analytics/CommentBox';
 import { ArrowLeft } from 'react-feather';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFlexternComments, getFlexternCommentCount } from '@/flexternships/services/project-details';
@@ -83,7 +83,7 @@ const Comments = () => {
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
-      navigate('/dashboard');
+      navigate(`/analytics/project/${projectId}/individual/${userId}`);
     }
   };
 
@@ -93,9 +93,9 @@ const Comments = () => {
         <div>
           <CustomBreadCrumbs
             items={[
-              { label: 'Analytics', href: '/analytics' },
-              { label: 'Individual Analytics', href: '/individual/analytics' },
-              { label: 'Comments', href: `/analytics/${projectId}/comments` },
+              { label: 'Analytics', href: '/analytics/project/:projectId' },
+              { label: 'Individual Analytics', href: `/analytics/project/${projectId}/individual/${userId}` },
+              { label: 'Comments', href: `/analytics/${projectId}/individual/${userId}/comments` },
             ]}
             startWithHome={true}
           />
