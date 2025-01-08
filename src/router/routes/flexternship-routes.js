@@ -56,7 +56,7 @@ import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
-import Comments from '@/flexternships/app/analytics/individualAnalytics/comments/page';
+import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
 import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
 
 // ** Default Route
@@ -105,7 +105,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/analytics/comments',
+    path: '/analytics/project/:projectId/individual/:userId/comments',
     element: <Comments />,
   },
   {

@@ -8,6 +8,7 @@ import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
+import { FlexternComments } from '../constraints/types/project-details-types';
 
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
@@ -166,6 +167,42 @@ export const parseClientCompletedProjects = (data: Record<string, any>): Flexter
           })) || [],
         isTeamMember: project.is_team_member,
         isStakeholder: project.is_stakeholder,
+      })) || [],
+  };
+};
+
+export const parseFlexternComments = (data: Record<string, any>): FlexternComments => {
+  return {
+    metadata: {
+      currentPage: data.metadata?.current_page,
+      pageSize: data.metadata?.page_size,
+      totalRecords: data.metadata?.total_records,
+      hasNextPage: data.metadata?.has_next_page,
+    },
+    comments:
+      data.data?.map((comment: Record<string, any>) => ({
+        id: comment._id,
+        comment: comment.comment,
+        createdAt: comment.created_at,
+        updatedAt: comment.updated_at,
+        milestoneInfo: {
+          name: comment.milestone_info.name,
+          seq: comment.milestone_info.seq,
+          id: comment.milestone_info._id,
+        },
+        projectInfo: {
+          name: comment.project_info.name,
+          id: comment.project_info._id,
+        },
+        giverDetails: {
+          imageUri: comment.giver_details.image_uri,
+          firstName: comment.giver_details.first_name,
+          lastName: comment.giver_details.last_name,
+          userId: comment.giver_details.user_id,
+          appRole: comment.giver_details.app_role,
+          userType: comment.giver_details.user_type,
+        },
+        competencyInfo: comment.competency_info,
       })) || [],
   };
 };

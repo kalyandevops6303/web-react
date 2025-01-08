@@ -5,6 +5,11 @@ export enum UserTypeChipClassnames {
   CLIENT = 'text-blue-700 bg-blue-100',
 }
 
+export const enum CommenterType {
+  FLEXTERN_CLIENT = 'FLEXTERN_CLIENT',
+  FLEXTERN_CLIENT_DELEGATE = 'FLEXTERN_CLIENT_DELEGATE',
+}
+
 export enum ProjectStatusChipClassnames {
   OPEN = 'bg-skyblue-light text-skyblue border border-skyblue',
   IN_REVIEW = 'bg-yellow-100 text-yellow-600 border border-yellow-400',

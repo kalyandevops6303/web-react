@@ -200,4 +200,30 @@ export type ProjectDetailsActions = {
   setProjectInvitationRead: (projectId: string) => Promise<void>;
 };
 
+export type FlexternComments = {
+  metadata: {
+    currentPage: number;
+    pageSize: number;
+    totalRecords: number;
+    hasNextPage: boolean;
+  };
+  comments: Array<{
+    comment: string;
+    giverDetails: {
+      imageUri: string;
+      firstName: string;
+      lastName: string;
+      userId: string;
+      appRole: string;
+      userType: string;
+    };
+    milestoneInfo: {
+      name: string;
+      seq: number;
+      _id: string;
+    };
+    createdAt: number;
+  }>;
+};
+
 export type ProjectStore = ProjectDetailsState & ProjectDetailsActions;
