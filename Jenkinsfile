@@ -25,7 +25,7 @@ pipeline {
                     // Determine which branch to check out based on the environment
                     def branchToCheckout = params.BRANCH // Default to user-selected branch
                     if (params.ENVIRONMENT == 'tru-qa') {
-                        branchToCheckout = 'origin/tru-dev' // Override for tru-qa environment
+                        branchToCheckout = 'origin/tru-qa' // Override for tru-qa environment
                     }
                     echo "Branch selected: ${branchToCheckout}"
                     env.SELECTED_BRANCH = branchToCheckout 
