@@ -1,20 +1,21 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import IndividualOverview from './individual-overview';
 import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart.jsx';
 
 import { TooltipProps } from 'recharts';
-import { ThumbsUp } from 'react-feather';
+import { ArrowLeft, ThumbsUp } from 'react-feather';
 import achievementIcon from '@flexternships/assets/svgs/analytics/achieve.svg';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { useEffect, useState } from 'react';
 import Spinner from '../../components/core/Spinner';
 import Footer from './footer';
 import { FeedbackConfig } from '@/flexternships/constraints/enums/feedback-enums';
+import BreadCrumbs from '@flexternships/app/components/pages/project-details/BreadCrumbs';
 
 export default function IndividualAnalytics() {
   const params = useParams();
   const { projectId, userId } = useParams();
-
+  const navigate = useNavigate();
   const recognitionChartData = useAnalyticsStore((state) => state.recognitionChartData);
   const individualOverviewDetails = useAnalyticsStore((state) => state.individualOverview);
   const performanceChartData = useAnalyticsStore((state) => state.performanceChartData);
@@ -51,6 +52,10 @@ export default function IndividualAnalytics() {
   const getPeerFeedbackScore = () => {
     return formattedIndividualOverviewDetails?.scores?.filter((score: any) => score.feedbackTypes === 'PEER_TO_PEER')[0]
       ?.avgScore;
+  };
+
+  const handleBack = () => {
+    navigate(`/analytics/project/${projectId}/team`);
   };
 
   useEffect(() => {
@@ -103,8 +108,8 @@ export default function IndividualAnalytics() {
     if (!active || !payload?.length) return null;
 
     return (
-      <div className="bg-white w-[200px] max-w-1/2 p-2 px-3 border rounded-md shadow-lg">
-        <p className="font-medium font-montserrat text-xs font-semibold leading-4 text-dark-300 uppercase">{label}</p>
+      <div className="bg-white w-[200px] max-w-1/2 p-3 border rounded-5 shadow-lg">
+        <p className="font-montserrat text-2xs leading-4 font-semibold text-grey-500 uppercase">{label}</p>
         {payload.map((entry) => {
           const dataKey = entry.dataKey as keyof typeof recognitionChartData.chartConfig;
           const wowCount = entry?.payload?.wowCount;
@@ -112,36 +117,40 @@ export default function IndividualAnalytics() {
           return (
             <div key={dataKey.toString()}>
               <div className="flex justify-between items-center">
-                <span className="font-montserrat text-sm font-normal text-dark-100 flex items-center gap-2">
+                <span className="font-montserrat text-xs leading-5 font-normal text-dark-100 flex items-center gap-2">
                   <div
                     className="flex w-3 h-3 rounded-sm"
                     style={{ backgroundColor: recognitionChartData?.chartConfig[dataKey].color }}
                   ></div>
                   <div>{recognitionChartData?.chartConfig[dataKey].label}</div>
                 </span>
-                <span className="font-montserrat text-sm font-semibold text-dark-100">
+                <span className="font-montserrat text-xs leading-5 font-semibold text-dark-100">
                   {entry.value}/{recognitionChartData?.maxYAxis}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="font-montserrat text-sm font-normal text-dark-100 flex items-center gap-2">
-                  <div>
-                    <img src={achievementIcon} alt="achievement" width={12} height={12} />
-                  </div>
-                  <div>Wows</div>
-                </span>
-                <span className="font-montserrat text-sm font-semibold text-dark-100">{wowCount}</span>
+              <div>
+                <div className="flex justify-between items-center">
+                  <span className="font-montserrat text-xs leading-5 font-normal text-dark-100 flex items-center gap-2">
+                    <div>
+                      <img src={achievementIcon} alt="achievement" width={12} height={12} />
+                    </div>
+                    <div>Wows</div>
+                  </span>
+                  <span className="font-montserrat text-xs leading-5 font-semibold text-dark-100">{wowCount}</span>
+                </div>
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="font-montserrat text-sm font-normal text-dark-100 flex items-center gap-2">
-                  <div>
-                    <ThumbsUp size={12} className="text-purple" />
-                  </div>
-                  <div>Kudos</div>
-                </span>
-                <span className="font-montserrat text-sm font-semibold text-dark-100">{kudosCount}</span>
+              <div>
+                <div className="flex justify-between items-center">
+                  <span className="font-montserrat text-xs leading-5 font-normal text-dark-100 flex items-center gap-2">
+                    <div>
+                      <ThumbsUp size={12} color="#7367F0" />
+                    </div>
+                    <div>Kudos</div>
+                  </span>
+                  <span className="font-montserrat text-xs leading-5 font-semibold text-dark-100">{kudosCount}</span>
+                </div>
               </div>
             </div>
           );
@@ -167,28 +176,49 @@ export default function IndividualAnalytics() {
 
   return (
     <div className="flex flex-col gap-6 px-4 md:px-0">
+      <BreadCrumbs
+        steps={[
+          {
+            title: 'Projects',
+            link: '/projects/ongoing',
+          },
+          {
+            title: '...',
+            link: `/analytics/project/${projectId}/team`,
+          },
+          {
+            title: `${formattedIndividualOverviewDetails?.firstName} ${formattedIndividualOverviewDetails?.lastName}`,
+            link: window.location.href,
+          },
+        ]}
+      />
+      <button onClick={handleBack} className="flex items-center gap-2 my-2 cursor-pointer" type="button">
+        <div className="p-2 rounded-full bg-trublue-light">
+          <ArrowLeft size={18} className="text-trublue-secondary-500" />
+        </div>
+        <div className="text-[#0185E4] font-montserrat text-sm font-semibold leading-normal">Team Analytics</div>
+      </button>
       <IndividualOverview {...formattedIndividualOverviewDetails} aiGeneratedSummary={aiSummary} />
 
-      <div className="flex flex-row gap-3 w-full bg-white rounded-t-lg border-b border-border">
-        <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 border-r border-border p-3 px-6">
+      <div className="flex flex-row gap-3 w-full bg-white rounded-t-10 border-b border-grey-50">
+        <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 border-r border-grey-50 p-3 md:px-6">
           <div>
-            <span className="text-center text-lg font-semibold text-dark font-montserrat">
+            <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
               {formattedIndividualOverviewDetails?.trumioAttractivenessScore}
             </span>
-            <span className="text-center text-base font-normal text-dark-300 font-montserrat">/100</span>
+            <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
           </div>
-          <div className="text-base font-medium text-dark-300 font-montserrat">Attractiveness</div>
+          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Attractiveness</div>
         </div>
-        <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 px-6">
+        <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
           <div>
-            <span className="text-center text-lg font-semibold text-dark font-montserrat">
+            <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
               {formattedIndividualOverviewDetails?.kudosCount + formattedIndividualOverviewDetails?.wowCount}
             </span>
           </div>
-          <div className="text-base font-medium text-dark-300 font-montserrat">WOWs & Kudos</div>
+          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">WOWs & Kudos</div>
         </div>
       </div>
-
       <div className="-mt-6">
         <MultipleLinesChart
           chartData={recognitionChartData?.chartData}
@@ -201,7 +231,7 @@ export default function IndividualAnalytics() {
         />
       </div>
 
-      <div className="text-xl font-medium text-dark-100 font-montserrat -mb-2.5 mt-6">Performance</div>
+      <div className="text-lg leading-6.5 font-medium text-dark-100 font-montserrat -mb-2.5 mt-6">Performance</div>
 
       <MultipleLinesChart
         chartData={performanceChartData?.chartData}
@@ -211,7 +241,7 @@ export default function IndividualAnalytics() {
         XAxisDataKey="milestone"
       />
 
-      <div className="flex flex-col md:flex-row gap-[12px]">
+      <div className="flex flex-col md:flex-row gap-3">
         <Footer items={feedbackFooterData} />
       </div>
     </div>

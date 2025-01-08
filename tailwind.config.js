@@ -115,6 +115,8 @@ module.exports = {
       lineHeight: {
         4.5: '18px',
         5.5: '22px',
+        'sm-custom': '22px',
+        'xxl-custom': '26px',
       },
       borderRadius: {
         5: '5px',
@@ -148,8 +150,9 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       fontSize: {
-        '2xs': ['10px', '12px'],
-        '3xs': ['8px', '8px']
+        '2xs': '10px',
+        '3xs': '8px',
+        'xxl': '22px',
       },
     },
   },
