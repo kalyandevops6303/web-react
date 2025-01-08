@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import IndividualOverview from './individual-overview';
-import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart';
+import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart.jsx';
+
 import { TooltipProps } from 'recharts';
 import { ThumbsUp } from 'react-feather';
 import achievementIcon from '@flexternships/assets/svgs/analytics/achieve.svg';
