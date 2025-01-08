@@ -247,7 +247,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //   }),
     // );
     dispatch(
-      getProjectListing({
+      getProjectsListingFlextern({
         data: {
           ...filterData,
           search_query: searchText || '',
