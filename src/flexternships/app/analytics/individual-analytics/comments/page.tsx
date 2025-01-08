@@ -58,7 +58,6 @@ const Comments = () => {
     }
     setIsCommentsLoading(true);
     const data = await getFlexternComments(projectId, userId, flexternComments.metadata.currentPage + 1);
-    // console.log(data);
     setFlexternComments((cur: any) => ({
       metadata: data?.metadata || defaultMetadata,
       comments: [...cur.comments, ...(data?.comments || [])],
@@ -111,7 +110,6 @@ const Comments = () => {
             <Statbox title={overallCommentCount} desc="Overall Comments" />
             <Statbox title={managerCommentCount} desc="Manager Comments" />
             <Statbox title={mentorCommentCount} desc="Mentor Comments" />
-            {/* <Statbox title="80%" desc="Positive Comments" /> */}
           </div>
           <div className="flex flex-col items-start py-5 px-0 gap-7 self-stretch">
             <div>
