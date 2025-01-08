@@ -19,22 +19,24 @@ export default function Footer(props: Readonly<FooterProps>) {
         <>
           <div className="w-1/3 text-center flex flex-col gap-2">
             <div>
-              <span className="text-center text-xxl font-semibold text-dark font-montserrat">{item.score}</span>
+              <span className="text-center text-xxl leading-xxl-custom font-semibold text-dark font-montserrat">
+                {item.score}
+              </span>
               {item.total && (
-                <span className="text-center text-sm font-normal leading-5.5 text-grey-500 font-montserrat">
+                <span className="text-center text-sm leading-sm-custom font-normal text-grey-500 font-montserrat">
                   /{item.total}
                 </span>
               )}
             </div>
             {item.href ? (
               <Link to={item.href}>
-                <div className="flex items-center gap-1 justify-center text-center text-sm font-medium text-trublue-secondary-500 font-montserrat md:truncate cursor-pointer">
+                <div className="flex items-center gap-1 justify-center text-center text-sm leading-sm-custom font-medium text-trublue-secondary-500 font-montserrat md:truncate cursor-pointer">
                   <span>{item.title}</span>
-                  <ChevronRight size={18} color="#0185E4" />
+                  <ChevronRight size={18} className="text-trublue-secondary-500" />
                 </div>
               </Link>
             ) : (
-              <div className="text-sm font-medium leading-5.5 text-grey-500 font-montserrat truncate max-w-full">
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat truncate max-w-full">
                 {item.title}
               </div>
             )}
