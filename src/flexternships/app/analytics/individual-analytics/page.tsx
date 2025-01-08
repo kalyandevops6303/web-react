@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import IndividualOverview from './individual-overview';
-import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart.jsx';
+import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart.tsx';
 
 import { TooltipProps } from 'recharts';
 import { ArrowLeft, ThumbsUp } from 'react-feather';
