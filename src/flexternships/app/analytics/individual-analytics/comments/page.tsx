@@ -4,7 +4,7 @@ import CommentBox from '@/flexternships/app/components/pages/analytics/CommentBo
 import { ArrowLeft } from 'react-feather';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFlexternComments, getFlexternCommentCount } from '@/flexternships/services/project-details';
-import { FlexternComments } from '@/flexternships/constraints/types/project-details-types';
+import { FlexternComments } from '@/flexternships/constraints/types/analytics-types';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
 
@@ -24,6 +24,7 @@ const Comments = () => {
   const [overallCommentCount, setOverallCommentCount] = useState(0);
   const [mentorCommentCount, setMentorCommentCount] = useState(0);
   const [managerCommentCount, setManagerCommentCount] = useState(0);
+  const [projectName, setprojectName] = useState('');
 
   const { userId } = useParams();
   const { projectId } = useParams();
@@ -62,6 +63,7 @@ const Comments = () => {
       metadata: data?.metadata || defaultMetadata,
       comments: [...cur.comments, ...(data?.comments || [])],
     }));
+    setprojectName(data?.comments[0]?.projectInfo?.name || '');
     setIsCommentsLoading(false);
   };
 
@@ -85,7 +87,6 @@ const Comments = () => {
       navigate(`/analytics/project/${projectId}/individual/${userId}`);
     }
   };
-
   return (
     <div className="pt-[70px] xl:pt-0">
       <div className="flexternships-page flex flex-col items-start gap-4 p-7 xl:p-0">
@@ -96,14 +97,14 @@ const Comments = () => {
               { label: 'Individual Analytics', href: `/analytics/project/${projectId}/individual/${userId}` },
               { label: 'Comments', href: `/analytics/${projectId}/individual/${userId}/comments` },
             ]}
-            startWithHome={true}
+            startWithHome
           />
         </div>
         <div className="flex items-center gap-1 cursor-pointer mb-5" onClick={goBack}>
-          <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
+          <div className="p-1 bg-trublue-secondary-500 w-min text-white rounded-full">
             <ArrowLeft size="20px" />
           </div>
-          <div className="text-[#0185E4] font-montserrat text-base font-light leading-normal">Analytics</div>
+          <div className="text-trublue-secondary-500 text-sm font-semibold">Analytics</div>
         </div>
         <div className="flex flex-col items-start w-full">
           <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-lg">
@@ -114,7 +115,7 @@ const Comments = () => {
           <div className="flex flex-col items-start py-5 px-0 gap-7 self-stretch">
             <div>
               <h1 className="text-lg font-semibold">Detailed Comments</h1>
-              <p className="text-sm text-gray-500">Project: Usage Data Collection and Payment</p>
+              <p className="text-sm text-grey-DEFAULT">{projectName}</p>
             </div>
             <div className="gap-4 flex flex-col w-full">
               {flexternComments.comments.map((commentData) => (

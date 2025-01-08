@@ -8,7 +8,7 @@ import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
-import { FlexternComments } from '../constraints/types/project-details-types';
+import { FlexternComments } from '../constraints/types/analytics-types';
 
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
