@@ -58,6 +58,7 @@ import ChatInterface from '@/flexternships/app/components/pages/chat-interface/C
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
 import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
 import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
+import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -542,5 +543,9 @@ export const FlexternshipRoutes = [
   {
     path: '*',
     element: <NotFound />,
+  },
+  {
+    path: '/analytics/project/:projectId/individual/:userId',
+    element: <IndividualAnalytics />,
   },
 ];

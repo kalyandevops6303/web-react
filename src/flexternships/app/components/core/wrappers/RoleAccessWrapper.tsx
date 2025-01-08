@@ -11,7 +11,7 @@ import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
 import { GlobalModalActions } from '@/flexternships/constraints/types/core-types';
 import { projectsBlockedModalContent } from '@/flexternships/static/core-content';
-import { featureAccessService } from '@/flexternships/services/feature-access-service';
+import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 
 // Checks the user's access to the app based on the allowed roles
@@ -19,7 +19,7 @@ import { isUserLoggedIn } from '@/utility/commonUtils';
 export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const { children, allowedAppRoles, fallbackRoute, noPadding = false, allowBlockedUsers = false, featureName } = props;
 
-  const [hasFeatureAccess, setHasFeatureAccess] = useState<boolean>(true);
+  const [hasAccess, setHasAccess] = useState<boolean>(true);
   const [isFeatureLoading, setIsFeatureLoading] = useState<boolean>(false);
 
   const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
@@ -44,8 +44,8 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
       if (featureName) {
         setIsFeatureLoading(true);
         try {
-          const hasAccess = await featureAccessService.hasFeatureAccess(featureName);
-          setHasFeatureAccess(hasAccess);
+          const hasAccess = await hasFeatureAccess(featureName);
+          setHasAccess(hasAccess);
         } finally {
           setIsFeatureLoading(false);
         }
@@ -67,7 +67,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   }
 
   // Check if feature access is denied
-  if (featureName && !hasFeatureAccess) {
+  if (featureName && !hasAccess) {
     return fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />;
   }
 
@@ -76,7 +76,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     return fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />;
   }
 
-  const hasAccess = allowedAppRoles.some((allowedRole) => {
+  const hasRoleAccess = allowedAppRoles.some((allowedRole) => {
     const userHasRole = userAppRoles.includes(allowedRole.appRole);
     const isCheckpointAllowed = allowedRole.allowCheckpoints.includes(userCheckpoint);
     const isCheckpointBlocked = allowedRole.blockCheckpoints.some((bc) => bc.checkpoint === userCheckpoint);
@@ -84,7 +84,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     return userHasRole && isCheckpointAllowed && !isCheckpointBlocked;
   });
 
-  if (!hasAccess) {
+  if (!hasRoleAccess) {
     const redirectRoute = allowedAppRoles
       .find(
         (role) =>
