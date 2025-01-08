@@ -93,7 +93,7 @@ const Comments = () => {
         <div>
           <CustomBreadCrumbs
             items={[
-              { label: 'Analytics', href: '/analytics/project/:projectId' },
+              { label: 'Analytics', href: `/analytics/project/${projectId}` },
               { label: 'Individual Analytics', href: `/analytics/project/${projectId}/individual/${userId}` },
               { label: 'Comments', href: `/analytics/${projectId}/individual/${userId}/comments` },
             ]}
