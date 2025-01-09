@@ -393,11 +393,9 @@ const UserDropdown = ({ setNavBarLoading }) => {
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
           ) : null}
 
-          {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? null : (
-            <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
-              <span className="align-middle ">Contact support</span>
-            </TextWrapper>
-          )}
+          <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
+            <span className="align-middle ">Contact support</span>
+          </TextWrapper>
           <TextWrapper onClick={handleLogout} className="w-100 logout cursor-pointer">
             <span className="align-middle ">Logout</span>
           </TextWrapper>
