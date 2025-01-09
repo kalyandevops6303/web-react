@@ -54,6 +54,17 @@ export const resetProjectCreationStore = () => {
   useProjectCreationStore.getState().resetStore();
 };
 
+export const getProjectMetadataForTalentByStatus = (
+  primaryStatus: ProjectPrimaryStatus,
+  secondaryStatus: ProjectSecondaryStatus,
+) => {
+  const isProjectDocumentsSigned =
+    ![ProjectPrimaryStatus.OPEN, ProjectPrimaryStatus.ACTIVE].includes(primaryStatus) || // Primary status is not open or active
+    (primaryStatus === ProjectPrimaryStatus.ACTIVE && secondaryStatus === ProjectSecondaryStatus.MILESTONE); // Primary status is active but secondary status is on milestone
+  const isProjectObselete = [ProjectPrimaryStatus.TERMINATED, ProjectPrimaryStatus.WITHDRAWN].includes(primaryStatus);
+  return { isProjectDocumentsSigned, isProjectObselete };
+};
+
 export const getMilestoneStatusTextByUserType = (status: MilestoneStatus, _userType: UserType) => {
   switch (status) {
     case MilestoneStatus.CREATED:
