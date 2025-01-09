@@ -265,8 +265,8 @@ const UserDropdown = ({ setNavBarLoading }) => {
       <UserDropDownWrapper>
         <DropdownMenu style={{ width: '24rem' }} end>
           {isDelegate && (
-            <div className="mt-1">
-              <span className="px-1">
+            <div className="mt-4">
+              <span className="px-3">
                 {delegateType === delegateTypes.payment_delegate ? 'Payment Delegate for' : 'Delegate for'}:
               </span>
               <div className="mt-50 border-bottom border-grey-light">
@@ -289,16 +289,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               Public Profile
             </TextWrapper>
           )}
-          {!isDelegate || isDelegateProfileCreated ? (
-            <EditProfileAccordion />
-          ) : (
-            <TextWrapper
-              onClick={() => navigate('/client-onboarding/account-details')}
-              className="w-100 edit-accordion"
-            >
-              <span className="align-middle">Create My Profile</span>
-            </TextWrapper>
-          )}
+          <EditProfileAccordion />
           {!isDelegate && (
             <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
               {userDetailsData && (

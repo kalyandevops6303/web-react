@@ -107,7 +107,7 @@ const DelegateAccordion = ({ setDelegateEmail }) => {
                       <div>
                         {delegate.status === 'INVITED' ? (
                           <Badge
-                            className="rounded-pill px-50 py-10"
+                            className="rounded-pill py-1 px-2"
                             style={{ backgroundColor: theme.lightBlueBgColor, color: theme.darkBlueColor }}
                             color={theme.darkBlueColor}
                           >
