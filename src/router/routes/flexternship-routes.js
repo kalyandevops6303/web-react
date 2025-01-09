@@ -120,16 +120,6 @@ export const FlexternshipRoutes = [
               },
             ],
           },
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding/account-details',
-              },
-            ],
-          },
         ]}
       >
         <Comments />

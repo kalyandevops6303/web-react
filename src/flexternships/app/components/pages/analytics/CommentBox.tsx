@@ -21,7 +21,7 @@ interface CommentBoxProps {
 }
 
 const CommentBox = ({ comment, giverDetails, milestoneInfo, createdAt }: CommentBoxProps) => {
-  const FormattedDate = formatEpochToHumanReadable(createdAt, false, false, getUserTimezone());
+  const formattedDate = formatEpochToHumanReadable(createdAt, false, false, getUserTimezone());
   return (
     <div className="w-full p-4 flex m-0 bg-white">
       <div className="flex flex-col md:flex-row gap-5 w-full">
@@ -50,9 +50,11 @@ const CommentBox = ({ comment, giverDetails, milestoneInfo, createdAt }: Comment
         <div className="w-px bg-grey-border"></div>
         <div className="flex flex-col gap-2 w-full md:w-2/3">
           <div>
-            <p className="text-xs text-grey-muted">{FormattedDate}</p>
+            <p className="text-xs text-grey-muted">{formattedDate}</p>
           </div>
-          <ExpandableText children={comment} charLimit={250} className="text-sm text-grey-DEFAULT" />
+          <ExpandableText charLimit={250} className="text-sm text-grey-DEFAULT">
+            {comment}
+          </ExpandableText>
         </div>
       </div>
     </div>
