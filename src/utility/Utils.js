@@ -499,7 +499,7 @@ export const downloadFile = async ({ data, file_name }) => {
 
     // Create a blob URL for the file
     const blobUrl = URL.createObjectURL(blob);
-    
+
     // Create a hidden anchor element
     // eslint-disable-next-line no-undef
     const a = document.createElement('a');
