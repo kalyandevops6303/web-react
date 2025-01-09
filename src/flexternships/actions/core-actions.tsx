@@ -46,8 +46,11 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         isBlocked: data.is_blocked,
       },
     });
-  } catch (error) {
-    showToastMessage(ToastType.ERROR, 'An unexpected error occurred while fetching user details');
+  } catch (error: unknown) {
+    showToastMessage(
+      ToastType.ERROR,
+      error instanceof Error ? error.message : 'An unexpected error occurred while fetching user details',
+    );
   }
   set({ isUserDetailsLoading: false });
 };
