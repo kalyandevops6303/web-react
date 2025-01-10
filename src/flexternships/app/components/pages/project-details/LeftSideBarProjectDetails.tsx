@@ -266,17 +266,14 @@ const LeftSideBarProjectDetails = () => {
           </p>
         </div>
 
-        <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
+        <div className="w-full flex flex-row items-center justify-center gap-x-8">
           {secondaryAction && (
-            <PrimaryButton onClick={secondaryActionHandler} cancel>
+            <PrimaryButton className="m-0" onClick={secondaryActionHandler} cancel>
               {getTextByAction(secondaryAction)}
             </PrimaryButton>
           )}
           {primaryAction && (
-            <PrimaryButton
-              onClick={primaryActionHandler}
-              className="flex px-[22px] py-[10px] justify-center items-center gap-2 rounded-[5px] bg-[#0065C1]"
-            >
+            <PrimaryButton onClick={primaryActionHandler} className="m-0">
               {getTextByAction(primaryAction)}
             </PrimaryButton>
           )}
