@@ -7,14 +7,10 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 import { Paperclip, User } from 'react-feather';
-import {
-  ProjectPrimaryStatus,
-  ProjectSecondaryStatus,
-  ToastType,
-  UserType,
-} from '@/flexternships/constraints/enums/core-enums';
+import { ProjectSecondaryStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
 import {
+  ProjectLeftPanelAction,
   ProjectPanelCaptionDate1,
   ProjectPanelCaptionDate2,
   ProjectPanelDate2Classnames,
@@ -22,7 +18,7 @@ import {
   ProjectPanelIcon2Classnames,
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
@@ -35,27 +31,38 @@ import {
   getProjectPanelDate2Values,
 } from './leftSidebarProjectPanel/ProjectData';
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
-import RelistModal from '../../core/modals/RelistModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { getPrimaryAction, getSecondaryAction, getTextByAction } from '@/flexternships/static/project-details-content';
+import ProjectRelistFlow from '../../core/flows/ProjectRelistFlow';
+import ProjectTerminateFlow from '../../core/flows/ProjectTerminateFlow';
+import ProjectWithdrawFlow from '../../core/flows/ProjectWithdrawFlow';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
   CLIENT = 'flex h-[18px] p-[1px_9px] items-center gap-[3px] rounded-[17px] bg-[rgba(0,94,255,0.12)] text-[#005EFF] text-center font-semibold text-[12px] leading-[18px] font-montserrat',
 }
 
+enum ProjectFlowType {
+  WITHDRAW = 'WITHDRAW',
+  TERMINATE = 'TERMINATE',
+  RELIST = 'RELIST',
+}
+
 const LeftSideBarProjectDetails = () => {
-  const navigate = useNavigate();
   const params = useParams();
   const { projectId } = params;
 
   const data = useProjectsStore((state) => state.projectDetails);
   // const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
-  const setWithdrawProject = useProjectsStore((state) => state.setWithdrawProject);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
-  const [showRelistModal, setShowRelistModal] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
+
+  const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>(undefined);
+
+  const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });
+  const secondaryAction = getSecondaryAction({ status: data?.status, userType: userDetails.userType });
 
   const handleToggle = () => {
     setShowMore((prev) => !prev);
@@ -64,17 +71,7 @@ const LeftSideBarProjectDetails = () => {
   const handleMessageClick = () => {
     window.open(CHAT_ENTRY_POINT, '_blank');
   };
-  const handleRelist = () => {
-    setShowRelistModal(true);
-  };
-  // const handleTerminateProject = async () => {
-  //   await setTerminateProject(data?.id);
-  //   navigate(`/project-details/${data?.id}/team`);
-  // };
-  const handleWithdrawProject = async () => {
-    await setWithdrawProject(data?.id);
-    navigate(`/project-details/${data?.id}/team`);
-  };
+
   const handleCloseDescriptionModal = () => setShowMore(false);
 
   const daysLeft =
@@ -83,6 +80,33 @@ const LeftSideBarProjectDetails = () => {
       : 0;
 
   const [documentsModal, setDocumentsModal] = useState(false);
+
+  const primaryActionHandler = () => {
+    console.log('primaryActionHandler', primaryAction);
+    // TODO: Based on action, trigger the respective flow
+    switch (primaryAction) {
+      case ProjectLeftPanelAction.MESSAGE:
+        return handleMessageClick();
+      case ProjectLeftPanelAction.RELIST:
+        // TODO: Handle re-list action
+        return setCurrentProjectFlow(ProjectFlowType.RELIST);
+      default:
+        break;
+    }
+  };
+
+  const secondaryActionHandler = () => {
+    console.log('secondaryActionHandler', secondaryAction);
+    // TODO: Based on action, trigger the respective flow
+    switch (secondaryAction) {
+      case ProjectLeftPanelAction.TERMINATE:
+        return setCurrentProjectFlow(ProjectFlowType.TERMINATE);
+      case ProjectLeftPanelAction.WITHDRAW:
+        return setCurrentProjectFlow(ProjectFlowType.WITHDRAW);
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
     if (data) {
@@ -243,58 +267,22 @@ const LeftSideBarProjectDetails = () => {
         </div>
 
         <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
-          {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
-            <PrimaryButton
-              onClick={handleWithdrawProject}
-              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
-            >
-              Withdraw
+          {secondaryAction && (
+            <PrimaryButton onClick={secondaryActionHandler} cancel>
+              {getTextByAction(secondaryAction)}
             </PrimaryButton>
           )}
-          {/* {userDetails.userType === UserType.CLIENT &&
-            (data?.status === ProjectPrimaryStatus.ACTIVE ||
-              data?.status === ProjectPrimaryStatus.ON_GOING ||
-              data?.status === ProjectPrimaryStatus.BLOCKED) && (
-              <PrimaryButton
-                disabled={data?.status === ProjectPrimaryStatus.BLOCKED)}
-                onClick={handleTerminateProject}
-                className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
-              >
-                Terminate
-              </PrimaryButton>
-            )} */}
-          {((userDetails.userType === UserType.CLIENT &&
-            (data?.status === ProjectPrimaryStatus.ACTIVE ||
-              data?.status === ProjectPrimaryStatus.ON_GOING ||
-              data?.status === ProjectPrimaryStatus.BLOCKED)) ||
-            (userDetails.userType === UserType.TALENT &&
-              data?.status !== ProjectPrimaryStatus.TERMINATED &&
-              data?.status !== ProjectPrimaryStatus.COMPLETED)) && (
+          {primaryAction && (
             <PrimaryButton
-              onClick={handleMessageClick}
-              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
+              onClick={primaryActionHandler}
+              className="flex px-[22px] py-[10px] justify-center items-center gap-2 rounded-[5px] bg-[#0065C1]"
             >
-              <span>Message</span>
-            </PrimaryButton>
-          )}
-          {/* {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
-            <PrimaryButton
-              onClick={() => {}}
-              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
-            >
-              Invite
-            </PrimaryButton>
-          )} */}
-          {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.WITHDRAWN && (
-            <PrimaryButton
-              onClick={handleRelist}
-              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
-            >
-              Re-List
+              {getTextByAction(primaryAction)}
             </PrimaryButton>
           )}
         </div>
       </div>
+
       {showMore && (
         <ProjectDescriptionModal
           isOpen={showMore}
@@ -302,15 +290,13 @@ const LeftSideBarProjectDetails = () => {
           data={data?.details?.description}
         />
       )}
-      {showRelistModal && (
-        <RelistModal
-          isOpen={showRelistModal}
-          onClose={() => {
-            setShowRelistModal(false);
-          }}
-          projectId={projectId ?? ''}
-        />
-      )}
+      {projectId &&
+        currentProjectFlow &&
+        {
+          [ProjectFlowType.RELIST]: <ProjectRelistFlow projectId={projectId} />,
+          [ProjectFlowType.TERMINATE]: <ProjectTerminateFlow projectId={projectId} />,
+          [ProjectFlowType.WITHDRAW]: <ProjectWithdrawFlow projectId={projectId} />,
+        }[currentProjectFlow]}
     </div>
   );
 };
