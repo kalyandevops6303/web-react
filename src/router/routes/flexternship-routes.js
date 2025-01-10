@@ -56,6 +56,7 @@ import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
 import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
+import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
 import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
 import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
 
@@ -101,6 +102,27 @@ export const FlexternshipRoutes = [
         ]}
       >
         <PrivateDashboard />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
+    path: '/analytics/project/:projectId/individual/:userId/comments',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <Comments />
       </RoleAccessWrapper>
     ),
   },

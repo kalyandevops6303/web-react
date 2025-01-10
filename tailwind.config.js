@@ -85,7 +85,7 @@ module.exports = {
         },
         purple: {
           DEFAULT: '#7367F0',
-        }
+        },
       },
       width: {
         8.5: '2.125rem',
@@ -121,7 +121,7 @@ module.exports = {
       borderRadius: {
         5: '5px',
         7: '7px',
-        10:"10px",
+        10: '10px',
         52: '52px',
       },
       borderWidth: {
@@ -152,7 +152,7 @@ module.exports = {
       fontSize: {
         '2xs': '10px',
         '3xs': '8px',
-        'xxl': '22px',
+        xxl: '22px',
       },
     },
   },

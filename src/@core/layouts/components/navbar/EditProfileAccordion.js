@@ -203,13 +203,7 @@ const EditProfileAccordion = () => {
 
   const renderClientEditProfileTabs = () => {
     if (userDetailsData?.user_type === userTypes.client) {
-      if (isDelegate) {
-        return (
-          <DropdownItem onClick={() => handleEditProfileForClient('account')} className="w-100 edit-link ">
-            <span className="align-middle p-1">Account</span>
-          </DropdownItem>
-        );
-      } else if (userDetailsData?.app_roles[0] === userTypes.flexternClient) {
+      if (isDelegate || userDetailsData?.app_roles[0] === userTypes.flexternClient) {
         return (
           <>
             <PermissionWrapper permissions={appPermissions} permissionName={['ONBOARDING.ACCOUNT']}>
