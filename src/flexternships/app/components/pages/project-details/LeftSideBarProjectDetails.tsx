@@ -1,6 +1,6 @@
 import ProjectStatusChip from './projectCard/ProjectStatusChip';
 import BadgeGroup from './projectCard/BadgeGroup';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
@@ -56,7 +56,7 @@ const LeftSideBarProjectDetails = () => {
   const [showRelistModal, setShowRelistModal] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
-
+  const modalRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
@@ -75,7 +75,7 @@ const LeftSideBarProjectDetails = () => {
     await setWithdrawProject(data?.id);
     navigate(`/project-details/${data?.id}/team`);
   };
-  const handleCloseDescriptionModal = () => setShowMore(false);
+  const handleCloseDescriptionModal = () => setShowMore((prev) => !prev);
 
   const daysLeft =
     Date.now() < data?.details?.expectedStartDate
@@ -91,6 +91,22 @@ const LeftSideBarProjectDetails = () => {
       setSecondaryStatus(() => data?.secondaryStatus?.next);
     }
   }, [data]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        handleCloseDescriptionModal();
+      }
+    };
+
+    if (showMore) {
+      document.addEventListener('click', handleClickOutside, true);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }, [showMore]);
 
   return (
     <div className="bg-white flex flex-col items-start gap-4 px-5 py-5 md:w-[350px] h-fit rounded-xl w-[400px]">
@@ -297,6 +313,7 @@ const LeftSideBarProjectDetails = () => {
       </div>
       {showMore && (
         <ProjectDescriptionModal
+          modalRef={modalRef}
           isOpen={showMore}
           onClose={handleCloseDescriptionModal}
           data={data?.details?.description}
