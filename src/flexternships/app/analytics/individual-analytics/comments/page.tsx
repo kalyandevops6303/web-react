@@ -7,6 +7,8 @@ import { getFlexternComments, getFlexternCommentCount } from '@/flexternships/se
 import { FlexternComments } from '@/flexternships/constraints/types/analytics-types';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
+import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
+import AIGeneratedSummary from '@/flexternships/app/components/core/cards/AIGeneratedSummary';
 
 const Comments = () => {
   const defaultMetadata = {
@@ -30,10 +32,15 @@ const Comments = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
 
+  const getAiSummary = useAnalyticsStore((state) => state.getAiSummary);
+  const isAiSummaryLoading = useAnalyticsStore((state) => state.isAiSummaryLoading);
+  const aiSummary = useAnalyticsStore((state) => state.aiSummary);
+
   useEffect(() => {
     getFelxternCommentCount();
     fetchMoreComments();
-  }, [userId]);
+    getAiSummary(userId as string, projectId as string);
+  }, [userId, projectId]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,11 +114,15 @@ const Comments = () => {
           <div className="text-trublue-secondary-500 text-sm font-semibold">Analytics</div>
         </div>
         <div className="flex flex-col items-start w-full">
-          <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-lg">
+          <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-t-lg">
             <Statbox title={overallCommentCount} desc="Overall Comments" />
             <Statbox title={managerCommentCount} desc="Manager Comments" />
             <Statbox title={mentorCommentCount} desc="Mentor Comments" />
           </div>
+          <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-b-lg">
+            <AIGeneratedSummary aiGeneratedSummary={aiSummary} title="Overall Comments Summary" />
+          </div>
+
           <div className="flex flex-col items-start py-5 px-0 gap-7 self-stretch">
             <div>
               <h1 className="text-lg font-semibold">Detailed Comments</h1>
@@ -127,7 +138,7 @@ const Comments = () => {
                 />
               ))}
             </div>
-            {isCommentsLoading && (
+            {(isCommentsLoading || isAiSummaryLoading) && (
               <div className="w-full flex justify-center">
                 <Spinner />
               </div>
