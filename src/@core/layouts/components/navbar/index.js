@@ -169,10 +169,7 @@ const ThemeNavbar = (props) => {
         <div className="d-flex align-items-center">
           <ul className="navbar-nav d-xl-none">
             <NavItem className="mobile-menu me-auto">
-              <RsNavLink
-                className="nav-menu-main menu-toggle hidden-xs ssss"
-                onClick={() => setMenuVisibility((prev) => !prev)}
-              >
+              <RsNavLink className="nav-menu-main menu-toggle hidden-xs" onClick={() => setMenuVisibility(true)}>
                 <Menu className="ficon" />
               </RsNavLink>
             </NavItem>

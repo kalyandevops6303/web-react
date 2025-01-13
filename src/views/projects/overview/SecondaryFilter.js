@@ -213,14 +213,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   }, [secondFilterState, searchText, primaryFilter]);
 
   const fetchMore = () => {
-    const newMetaData = {
-      ...metaData,
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      page: selectProjectMetaData?.current_page + 1 || 1,
-    };
     const newFlexternMetaData = {
       ...metaDataFlextern,
+      // eslint-disable-next-line no-unsafe-optional-chaining
       page: selectProjectMetaData?.current_page + 1 || 1,
+      search_query: metaDataFlextern?.project_name || searchText || '',
+      department_name: metaDataFlextern?.department_name?.department_name || '',
+      status: metaDataFlextern?.status || '',
+      project_status: primaryFilter?.toUpperCase() || '',
+      talent_name: metaDataFlextern?.talent_name || '',
     };
 
     const filterData = {};
@@ -247,13 +248,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //   }),
     // );
     dispatch(
-      getProjectListing({
+      getProjectsListingFlextern({
         data: {
           ...filterData,
           search_query: searchText || '',
           project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
         },
-        metaData: newMetaData,
+        metaData: newFlexternMetaData,
         onSuccess,
         onError,
       }),

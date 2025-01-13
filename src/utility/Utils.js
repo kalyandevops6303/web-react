@@ -947,11 +947,12 @@ export function areObjectsEqual(obj1, obj2) {
 }
 
 export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
-  const filteredObj = Object.fromEntries(
-    Object.keys(savedData) // Get all keys from savedData
-      .filter((key) => key in formSchemaFields) // Keep only keys that are in form schema
-      .map((key) => [key, savedData[key]]), // Map the key-value pairs for the new object
-  );
+  const filteredObj = Object.keys(savedData) // Get all keys from savedData
+    .filter((key) => key in formSchemaFields) // Keep only keys that are in formSchemaFields
+    .reduce((acc, key) => {
+      acc[key] = savedData[key]; // Add the key-value pair to the accumulator
+      return acc;
+    }, {}); // Start with an empty object
 
   return filteredObj;
 };
