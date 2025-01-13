@@ -44,7 +44,7 @@ module.exports = {
           50: '#E6E7E7',
           200: '#B4B7B8',
           300: '#9C9FA1',
-          500: '#6A7071',
+          500: '#838889',
           600: '#515759',
           700: '#394042',
           800: '#757575',
@@ -71,6 +71,20 @@ module.exports = {
         },
         text: {
           dark: '#071013',
+        },
+        primary: '#0185E4',
+        'primary-light': '#0185E41F',
+        dark: {
+          DEFAULT: '#071013',
+          100: '#394042',
+          200: '#6A7071',
+          300: '#838889',
+        },
+        border: {
+          DEFAULT: '#E6E7E7',
+        },
+        purple: {
+          DEFAULT: '#7367F0',
         },
       },
       width: {
@@ -101,11 +115,13 @@ module.exports = {
       lineHeight: {
         4.5: '18px',
         5.5: '22px',
+        'sm-custom': '22px',
+        'xxl-custom': '26px',
       },
       borderRadius: {
         5: '5px',
         7: '7px',
-        10:"10px",
+        10: '10px',
         52: '52px',
       },
       borderWidth: {
@@ -132,6 +148,11 @@ module.exports = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      fontSize: {
+        '2xs': '10px',
+        '3xs': '8px',
+        xxl: '22px',
       },
     },
   },

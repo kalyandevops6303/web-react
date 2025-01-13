@@ -12,6 +12,8 @@ import '../custom-styles.scss';
 import { RequirementsFormContainer } from '../CreateProject/style';
 import { relistProjectByDate } from '../../redux/actions/projectDetailsAction';
 import { relistProjectByDateLoading } from '../../redux/selectors/projectDetailsSelectors';
+import { appRoles } from '@/utility/constants/Constant';
+import { selectUserData } from '@/redux/selectors/authSelectors';
 
 const RelistListingDetailsModal = ({
   modal,
@@ -20,6 +22,7 @@ const RelistListingDetailsModal = ({
   setRelistSuccessModal,
   projectRelistData,
   setProjectRelistData,
+  projectId,
 }) => {
   const ListingDetailsSchema = yup.object().shape({
     listingOption: yup.string().required('Select one'),
@@ -61,6 +64,7 @@ const RelistListingDetailsModal = ({
 
   const dispatch = useDispatch();
   const relistProjectByDateIsLoading = useSelector(relistProjectByDateLoading);
+  const userDetailsData = useSelector(selectUserData);
 
   const onSuccess = () => {
     toggleModal();
@@ -92,10 +96,11 @@ const RelistListingDetailsModal = ({
 
       dispatch(
         relistProjectByDate(
-          projectRelistData?.id,
+          projectRelistData?.id || projectId,
           Date.parse(requiredFormData?.startDate),
           Date.parse(requiredFormData?.endDate),
           onSuccess,
+          userDetailsData?.app_roles?.includes(appRoles?.flexternClient),
         ),
       );
       setProjectRelistData({
@@ -114,10 +119,11 @@ const RelistListingDetailsModal = ({
 
       dispatch(
         relistProjectByDate(
-          projectRelistData?.id,
+          projectRelistData?.id || projectId,
           Date.parse(newData?.startDate),
           Date.parse(newData?.endDate),
           onSuccess,
+          userDetailsData?.app_roles?.includes(appRoles?.flexternClient),
         ),
       );
       setProjectRelistData({
@@ -321,6 +327,7 @@ RelistListingDetailsModal.propTypes = {
   setRelistSuccessModal: Proptypes.func,
   projectRelistData: Proptypes.object,
   setProjectRelistData: Proptypes.func,
+  projectId: Proptypes.string,
 };
 
 RelistListingDetailsModal.defaultProps = {
@@ -330,4 +337,5 @@ RelistListingDetailsModal.defaultProps = {
   setRelistSuccessModal: () => {},
   projectRelistData: {},
   setProjectRelistData: () => {},
+  projectId: '',
 };

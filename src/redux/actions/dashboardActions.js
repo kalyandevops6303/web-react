@@ -113,12 +113,25 @@ import {
   downloadUrlForResumeSuccess,
   downloadUrlForResumeFailure,
   downloadUrlForResumeRequest,
+  openProjectsForClientRequest,
+  openProjectsForClientFailure,
+  openProjectsForClientSuccess,
+  withdrawnProjectsForClientRequest,
+  withdrawnProjectsForClientSuccess,
+  withdrawnProjectsForClientFailure,
+  openProjectsForTalentRequest,
+  openProjectsForTalentSuccess,
+  openProjectsForTalentFailure,
+  withdrawnProjectsForTalentRequest,
+  withdrawnProjectsForTalentSuccess,
+  withdrawnProjectsForTalentFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { updateInvitationService, validateUrlService } from '../../services/inviteTeamMemberService';
 import { userTypes } from '../../utility/constants/Constant';
 import { upcomingPaymentsService } from '../../services/paymentDetailService';
+import { getListProjectServiceFlextern } from '@/services/marketPlaceServices';
 
 const getRecommendedProjects =
   ({ user_type }) =>
@@ -323,6 +336,44 @@ const getActiveProjectsForClient = () => async (dispatch) => {
   }
 };
 
+const getOpenProjectsForClient = () => async (dispatch) => {
+  dispatch(openProjectsForClientRequest());
+  try {
+    const postData = {
+      statuses: ['OPEN'],
+      is_my_listings: true,
+    };
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
+    dispatch(
+      openProjectsForClientSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
+    );
+  } catch (error) {
+    errorHandler(error, openProjectsForClientFailure);
+  }
+};
+
+const getWithdrawnProjectsForClient = () => async (dispatch) => {
+  dispatch(withdrawnProjectsForClientRequest());
+  try {
+    const postData = {
+      statuses: ['WITHDRAWN'],
+      is_my_listings: true,
+    };
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
+    dispatch(
+      withdrawnProjectsForClientSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
+    );
+  } catch (error) {
+    errorHandler(error, withdrawnProjectsForClientFailure);
+  }
+};
+
 const getUpcomingProjectsForClient = () => async (dispatch) => {
   dispatch(upcomingProjectsForClientRequest());
   try {
@@ -404,6 +455,44 @@ const getUpcomingProjectsForTalent = () => async (dispatch) => {
     );
   } catch (error) {
     errorHandler(error, upcomingProjectsForTalentFailure);
+  }
+};
+
+const getOpenProjectsForTalent = () => async (dispatch) => {
+  dispatch(openProjectsForTalentRequest());
+  try {
+    const postData = {
+      statuses: ['OPEN'],
+      is_my_listings: false,
+    };
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
+    dispatch(
+      openProjectsForTalentSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
+    );
+  } catch (error) {
+    errorHandler(error, openProjectsForTalentFailure);
+  }
+};
+
+const getWithdrawnProjectsForTalent = () => async (dispatch) => {
+  dispatch(withdrawnProjectsForTalentRequest());
+  try {
+    const postData = {
+      statuses: ['WITHDRAWN'],
+      is_my_listings: false,
+    };
+    const res = await getListProjectServiceFlextern({ postData, searchText: '', metaData: { page: 1, page_size: 50 } });
+    dispatch(
+      withdrawnProjectsForTalentSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.map((data) => data?.is_read === false)?.length || 0,
+      }),
+    );
+  } catch (error) {
+    errorHandler(error, withdrawnProjectsForTalentFailure);
   }
 };
 
@@ -523,11 +612,15 @@ export {
   getTeamProfilePercentage,
   getActiveProjectsForClient,
   getUpcomingProjectsForClient,
+  getOpenProjectsForClient,
+  getWithdrawnProjectsForClient,
   getProjectsBidsForClient,
   getRecommendedTeamsForClient,
   getCheckBidsAccepted,
   getActiveProjectsForTalent,
   getUpcomingProjectsForTalent,
+  getOpenProjectsForTalent,
+  getWithdrawnProjectsForTalent,
   getActiveProjectsForTeam,
   getUpcomingProjectsForTeam,
   getTotalReferralAmount,

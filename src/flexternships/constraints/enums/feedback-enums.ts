@@ -11,3 +11,7 @@ export const enum FeedbackTypesAPI {
   TEAM = 'MANAGER_TO_TEAM',
   INDIVIDUAL = 'MANAGER_TO_PEER',
 }
+
+export const enum FeedbackConfig {
+  FEEDBACK_TOTAL = '10',
+}

@@ -27,6 +27,10 @@ const initialState = {
   activeProjectsForClientLoading: false,
   upcomingProjectsForClient: null,
   upcomingProjectsForClientLoading: false,
+  openProjectsForClient: null,
+  openProjectsForClientLoading: false,
+  withdrawnProjectsForClient: null,
+  withdrawnProjectsForClientLoading: false,
   projectsBidsForClient: null,
   projectsBidsForClientLoading: false,
   recommendedTeamsForClient: null,
@@ -37,6 +41,10 @@ const initialState = {
   activeProjectsForTalentLoading: false,
   upcomingProjectsForTalent: null,
   upcomingProjectsForTalentLoading: false,
+  openProjectsForTalent: null,
+  openProjectsForTalentLoading: false,
+  withdrawnProjectsForTalent: null,
+  withdrawnProjectsForTalentLoading: false,
   activeProjectsForTeam: null,
   activeProjectsForTeamLoading: false,
   upcomingProjectsForTeam: null,
@@ -311,6 +319,38 @@ const dashboardSlice = createSlice({
       error: action.payload,
     }),
 
+    openProjectsForClientRequest: (state) => ({
+      ...state,
+      openProjectsForClientLoading: true,
+      error: null,
+    }),
+    openProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      openProjectsForClient: action.payload,
+      openProjectsForClientLoading: false,
+    }),
+    openProjectsForClientFailure: (state, action) => ({
+      ...state,
+      openProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    withdrawnProjectsForClientRequest: (state) => ({
+      ...state,
+      withdrawnProjectsForClientLoading: true,
+      error: null,
+    }),
+    withdrawnProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      withdrawnProjectsForClient: action.payload,
+      withdrawnProjectsForClientLoading: false,
+    }),
+    withdrawnProjectsForClientFailure: (state, action) => ({
+      ...state,
+      withdrawnProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
     projectsBidsForClientRequest: (state) => ({
       ...state,
       projectsBidsForClientLoading: true,
@@ -388,6 +428,38 @@ const dashboardSlice = createSlice({
     upcomingProjectsForTalentFailure: (state, action) => ({
       ...state,
       upcomingProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    openProjectsForTalentRequest: (state) => ({
+      ...state,
+      openProjectsForTalentLoading: true,
+      error: null,
+    }),
+    openProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      openProjectsForTalent: action.payload,
+      openProjectsForTalentLoading: false,
+    }),
+    openProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      openProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    withdrawnProjectsForTalentRequest: (state) => ({
+      ...state,
+      withdrawnProjectsForTalentLoading: true,
+      error: null,
+    }),
+    withdrawnProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      withdrawnProjectsForTalent: action.payload,
+      withdrawnProjectsForTalentLoading: false,
+    }),
+    withdrawnProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      withdrawnProjectsForTalentLoading: false,
       error: action.payload,
     }),
 
@@ -593,6 +665,12 @@ export const {
   upcomingProjectsForClientRequest,
   upcomingProjectsForClientSuccess,
   upcomingProjectsForClientFailure,
+  openProjectsForClientRequest,
+  openProjectsForClientSuccess,
+  openProjectsForClientFailure,
+  withdrawnProjectsForClientRequest,
+  withdrawnProjectsForClientSuccess,
+  withdrawnProjectsForClientFailure,
   projectsBidsForClientRequest,
   projectsBidsForClientSuccess,
   projectsBidsForClientFailure,
@@ -608,6 +686,12 @@ export const {
   upcomingProjectsForTalentRequest,
   upcomingProjectsForTalentSuccess,
   upcomingProjectsForTalentFailure,
+  openProjectsForTalentRequest,
+  openProjectsForTalentSuccess,
+  openProjectsForTalentFailure,
+  withdrawnProjectsForTalentRequest,
+  withdrawnProjectsForTalentSuccess,
+  withdrawnProjectsForTalentFailure,
   activeProjectsForTeamRequest,
   activeProjectsForTeamSuccess,
   activeProjectsForTeamFailure,

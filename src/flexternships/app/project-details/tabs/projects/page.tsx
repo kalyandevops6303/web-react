@@ -8,12 +8,13 @@ import { useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryButton';
 import { useState } from 'react';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ProjectSecondaryStatus, ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { getProjectMetadataForTalentByStatus, showToastMessage } from '@/flexternships/utils/core-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { acceptProject } from '@/flexternships/services/project-management-v2';
 
 export default function ProjectsTab() {
   const isDocumentsNeededForThisProject = useProjectsStore((state) => state.projectDetails.isDocumentsNeeded);
+  const primaryStatusOfThisProject = useProjectsStore((state) => state.projectDetails.status);
   const secondaryStatusOfThisProject = useProjectsStore((state) => state.projectDetails.secondaryStatus.next);
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
@@ -78,11 +79,12 @@ export default function ProjectsTab() {
     }
   };
 
-  const isProjectAcceptancePending = [
-    ProjectSecondaryStatus.SIGN_CONTRACT,
-    ProjectSecondaryStatus.SIGN_NDA,
-    ProjectSecondaryStatus.SIGN_DOCUMENTS,
-  ].includes(secondaryStatusOfThisProject);
+  const { isProjectDocumentsSigned: isProjectAccepted, isProjectObselete } = getProjectMetadataForTalentByStatus(
+    primaryStatusOfThisProject,
+    secondaryStatusOfThisProject,
+  );
+
+  const showAcceptProjectButton = !isDocumentsNeededForThisProject && !isProjectAccepted && !isProjectObselete; // documents not needed, project not accepted yet and project is not obselete
 
   return (
     <div className="py-6 max-w-5xl">
@@ -90,7 +92,7 @@ export default function ProjectsTab() {
         <div className={Styles.tabContentHeader}>Project Invitation</div>
         <div className={`${Styles.tabContentBody} ${!isDocumentsNeededForThisProject ? 'gap-y-5' : ''}`}>
           <VerticalTimeline timelineItems={timelineItems} hideLine={!isDocumentsNeededForThisProject} />
-          {!isDocumentsNeededForThisProject && isProjectAcceptancePending && (
+          {showAcceptProjectButton && (
             <div className="w-full flex justify-end">
               <PrimaryButton className="my-0" onClick={handleAcceptProject} loading={isAcceptingProject}>
                 Accept Project

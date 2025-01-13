@@ -102,12 +102,27 @@ export const routes = {
         checkUser: `${serviceUrls.userManagementV2}/requests/user/check`,
       },
     },
+    features: {
+      getPermittedFeatures: `${serviceUrls.userManagement}/features/permitted-features`,
+    },
   },
   dashboardV2: {
     clientDetails: {
       getClientPublicDetails: `${serviceUrls.dashboardV2}/client/details`,
       getClientCompletedProjects: `${serviceUrls.dashboardV2}/users/completed-projects`,
     },
+    flexternComment: {
+      getFlexternComments: `${serviceUrls.dashboardV2}/comment`,
+      getFlexternCommentCount: `${serviceUrls.dashboardV2}/comment/count`,
+    },
+  },
+  analytics: {
+    individualOverview: `${serviceUrls.dashboardV2}/talent/header`,
+    aiSummary: `${serviceUrls.dashboardV2}/individual/analytics/overall-summary`,
+    recognitionChart: `${serviceUrls.dashboardV2}/analytics/tas-score`,
+    performanceChart: `${serviceUrls.dashboardV2}/analytics/performance-rating`,
+    projectsList: `${serviceUrls.dashboardV2}/analytics/individual/projects-list`,
+    thirdPartyAppsData: `${serviceUrls.dashboardV2}/analytics/third-party-apps-data`,
   },
 };
 

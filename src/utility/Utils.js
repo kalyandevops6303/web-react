@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
+import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
@@ -27,7 +28,6 @@ import JPGIcon from '../assets/images/JPG.svg';
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
 import { isFlexternshipApp } from '@/configs/api/env';
-import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -947,11 +947,12 @@ export function areObjectsEqual(obj1, obj2) {
 }
 
 export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
-  const filteredObj = Object.fromEntries(
-    Object.keys(savedData) // Get all keys from savedData
-      .filter((key) => key in formSchemaFields) // Keep only keys that are in form schema
-      .map((key) => [key, savedData[key]]), // Map the key-value pairs for the new object
-  );
+  const filteredObj = Object.keys(savedData) // Get all keys from savedData
+    .filter((key) => key in formSchemaFields) // Keep only keys that are in formSchemaFields
+    .reduce((acc, key) => {
+      acc[key] = savedData[key]; // Add the key-value pair to the accumulator
+      return acc;
+    }, {}); // Start with an empty object
 
   return filteredObj;
 };

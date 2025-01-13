@@ -7,8 +7,9 @@ import { useEffect } from 'react';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import DefaultMilestonesView from './DefaultMilestonesView';
 import RestrictedMilestonesView from './RestrictedMilestonesView';
-import { ProjectPrimaryStatus, ProjectSecondaryStatus, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { getProjectMetadataForTalentByStatus } from '@/flexternships/utils/core-utils';
 
 export default function MilestoneTab() {
   const isMilestonesLoading = useProjectMilestonesStore((state) => state.isMilestonesLoading);
@@ -49,10 +50,10 @@ export default function MilestoneTab() {
     );
   }
 
-  const allDocumentsSigned =
-    ![ProjectPrimaryStatus.OPEN, ProjectPrimaryStatus.ACTIVE].includes(projectDetails.status) ||
-    (projectDetails.status === ProjectPrimaryStatus.ACTIVE &&
-      projectDetails.secondaryStatus.next === ProjectSecondaryStatus.MILESTONE);
+  const { isProjectDocumentsSigned: allDocumentsSigned } = getProjectMetadataForTalentByStatus(
+    projectDetails.status,
+    projectDetails.secondaryStatus.next,
+  );
 
   const projectDetailsForRestrictedView = {
     projectId: projectDetails.id,
