@@ -7,6 +7,8 @@ import { FlexternClientAccountDetails, FlexternClientProfileDetails } from '../c
 import { isEmpty } from 'lodash';
 import { handleError } from '../utils/error-utils';
 import { ValidatedRequestToken } from '../constraints/types/core-types';
+import { logout as logoutZustand } from '../utils/core-utils';
+import errorHandler from '@/utility/errorHandler';
 
 /// File Endpoints
 /**
@@ -117,6 +119,11 @@ export const getUserDetails = async () => {
 
     return response.data.data;
   } catch (error) {
+    localStorage.clear();
+    sessionStorage.clear();
+    logoutZustand();
+    // To logout mother app from redux
+    errorHandler(error as Error);
     handleError(error as Error, 'An unexpected error occurred while fetching user details');
   }
 };
