@@ -41,7 +41,6 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const location = useLocation();
   const navigate = useNavigate();
   const pathname = location.pathname.split('/').pop();
-  console.log(data);
   const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
