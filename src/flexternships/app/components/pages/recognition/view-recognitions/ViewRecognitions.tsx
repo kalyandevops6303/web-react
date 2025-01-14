@@ -1,5 +1,5 @@
 // React and hooks
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 // UI Components
@@ -9,28 +9,103 @@ import ViewRecognitionManagerCard from './ViewRecognitionManagerCard';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
 
 // Data
-import { mockUsers, mockMilestones, mockRecognitions } from '@/flexternships/mocks/recognition-data';
+import { mockMilestones, mockRecognitions } from '@/flexternships/mocks/recognition-data';
 import VerticalTimeline from './RecognitionVerticalTimeline';
+import { useParams } from 'react-router-dom';
+import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
+import { fetchTeamDetails } from '@/flexternships/services/project-details';
+import { getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
+import Spinner from '../../../core/Spinner';
+import { RecognitionTimeline } from '@/flexternships/constraints/types/recognition-types';
+import { isEmpty } from 'lodash';
+import NoRecognitionFound from './NoRecognitionFound';
 
 export default function ViewRecognitions() {
-  const [selectedTalentId, setSelectedTalentId] = useState<string | undefined>(undefined);
+  const [talentsLoading, setTalentsLoading] = useState<boolean>(false);
+  const [recognitionTimelineLoading, setRecognitionTimelineLoading] = useState<boolean>(false);
 
-  const { control } = useForm({
+  const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
+  const [selectedTalentId, setSelectedTalentId] = useState<string | undefined>(undefined);
+  const [recognitionTimeline, setRecognitionTimeline] = useState<RecognitionTimeline>([]);
+
+  const { projectId } = useParams();
+
+  const { control, watch } = useForm({
     defaultValues: {
       // TODO: Get milestone from backend
       milestone: {
-        _id: 'all_milestones',
+        _id: '_all',
         name: 'All Milestones',
       },
     },
   });
 
+  useEffect(() => {
+    if (!projectId) throw new Error('Project ID is required');
+    const fetchTalents = async () => {
+      setTalentsLoading(true);
+      try {
+        const teamData = await fetchTeamDetails(projectId);
+        const formattedTeamDetails = parseTeamDetails(teamData, { includeOnlyJoined: true });
+
+        setTeamDetails(formattedTeamDetails);
+        if (!isEmpty(formattedTeamDetails)) setSelectedTalentId(formattedTeamDetails[0].id);
+      } catch (error: unknown) {
+        showToastMessage(
+          ToastType.ERROR,
+          error instanceof Error ? error.message : 'Failed to fetch team details. Please try again.',
+        );
+      } finally {
+        setTalentsLoading(false);
+      }
+    };
+    fetchTalents();
+  }, [projectId]);
+
+  useEffect(() => {
+    if (!projectId) throw new Error('Project ID is required');
+    if (!selectedTalentId) return;
+    const fetchRecognitionTimeline = async () => {
+      setRecognitionTimelineLoading(true);
+      try {
+        const recognitionTimeline = await getRecognitionTimeline(projectId, selectedTalentId, watch('milestone')._id);
+        setRecognitionTimeline(recognitionTimeline || []);
+      } catch (error: unknown) {
+        showToastMessage(
+          ToastType.ERROR,
+          error instanceof Error ? error.message : 'Failed to fetch recognition timeline. Please try again.',
+        );
+      } finally {
+        setRecognitionTimelineLoading(false);
+      }
+    };
+    fetchRecognitionTimeline();
+  }, [selectedTalentId, projectId, watch('milestone')]);
+
+  if (talentsLoading)
+    return (
+      <div className="py-10 flex justify-center items-center">
+        <div className="size-10">
+          <Spinner />
+        </div>
+      </div>
+    );
+
+  if (isEmpty(teamDetails)) return <NoRecognitionFound />;
+
   return (
     <div className="flex flex-row gap-x-6">
       <div className="flex flex-col gap-y-3">
-        {mockUsers.map((joinedTalent) => (
+        {teamDetails.map((joinedTalent) => (
           <SelectTalentCard
-            talentInfo={joinedTalent}
+            talentInfo={{
+              ...joinedTalent,
+              name: joinedTalent.name || 'Unknown Name',
+              designation: joinedTalent.designation || 'Unknown Designation',
+            }}
             onClick={() => setSelectedTalentId(joinedTalent.id)}
             key={joinedTalent.id}
             selected={joinedTalent.id === selectedTalentId}

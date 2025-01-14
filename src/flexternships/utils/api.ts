@@ -51,6 +51,11 @@ export const routes = {
     notification: {
       markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
     },
+    recognition: {
+      recognitionTimeline: `${serviceUrls.projectManagementV2}/recognition/timeline`,
+      submitRecognition: `${serviceUrls.projectManagementV2}/recognition`,
+      getRecognitionsCount: `${serviceUrls.projectManagementV2}/recognition/count`,
+    },
   },
   userManagement: {
     static: {

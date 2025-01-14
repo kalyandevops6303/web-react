@@ -9,7 +9,15 @@ import {
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
 import { FlexternComments } from '../constraints/types/analytics-types';
+import { RecognitionStats, RecognitionTimeline } from '../constraints/types/recognition-types';
+import { TeamMemberDetails } from '../constraints/types/project-details-types';
 
+/**
+ * Parses milestone details from raw data into a structured format
+ * @param data Raw milestone data from API
+ * @param separateArtifacts Whether to separate milestone details and artifacts into separate objects
+ * @returns Formatted milestone details with optional separate artifact details
+ */
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
     id: data._id,
@@ -91,6 +99,12 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
     ? { milestoneDetails: formattedMilestoneDetails, artifactDetails: formattedArtifactDetails }
     : { ...formattedMilestoneDetails, ...formattedArtifactDetails };
 };
+
+/**
+ * Parses client public profile details from raw data
+ * @param data Raw client profile data from API
+ * @returns Formatted client public profile details
+ */
 export const parseClientPublicDetails = (data: Record<string, any>): FlexternClientPublicProfileDetails => {
   return {
     userId: data.user_id,
@@ -124,6 +138,11 @@ export const parseClientPublicDetails = (data: Record<string, any>): FlexternCli
   };
 };
 
+/**
+ * Parses client completed projects from raw data
+ * @param data Raw project data from API
+ * @returns Formatted client project details
+ */
 export const parseClientCompletedProjects = (data: Record<string, any>): FlexternClientProjectDetails => {
   return {
     metadata: {
@@ -171,6 +190,11 @@ export const parseClientCompletedProjects = (data: Record<string, any>): Flexter
   };
 };
 
+/**
+ * Parses Flextern comments from raw data
+ * @param data Raw comments data from API
+ * @returns Formatted Flextern comments
+ */
 export const parseFlexternComments = (data: Record<string, any>): FlexternComments => {
   return {
     metadata: {
@@ -204,5 +228,39 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
         },
         competencyInfo: comment.competency_info,
       })) || [],
+  };
+};
+
+export const parseRecognitionTimeline = (data: Record<string, any>): RecognitionTimeline => {
+  return [];
+};
+
+export const parseTeamDetails = (
+  data: Record<string, any>,
+  options: { includeOnlyJoined: boolean } = { includeOnlyJoined: false },
+): TeamMemberDetails[] => {
+  let teamMembers = data.map((member: Record<string, any>) => ({
+    id: member._id,
+    name: member?.first_name + ' ' + member?.last_name || '',
+    profileImage: member?.image_uri || '',
+    designation: member?.role_name || '',
+    email: member?.user_email,
+    invitedOn: member?.invited_on,
+    averageRating: member?.averageRating,
+    appreciationScore: member?.appreciation_score,
+    isDocumentsSigned: member?.is_documents_signed,
+  }));
+
+  if (options.includeOnlyJoined) {
+    teamMembers = teamMembers.filter(
+      (member: Record<string, any>) => member.isDocumentsSigned === options.includeOnlyJoined,
+    );
+  }
+  return teamMembers;
+};
+export const parseRecognitionStats = (data: Record<string, any>): RecognitionStats => {
+  return {
+    teamMembers: data.team_members_count,
+    totalRecognitions: data.kudos_count || data.wows_count || 0,
   };
 };

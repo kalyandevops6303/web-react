@@ -48,8 +48,9 @@ export const mockMilestones = {
     has_next_page: false,
   },
   data: [
-    { _id: '1', name: 'Milestone 1' },
-    { _id: '2', name: 'Milestone 2' },
+    { _id: '_all', name: 'All Milestones' },
+    { _id: '678624c4c1710c836b863a07', name: 'Milestone 1' },
+    { _id: '678624c4c1710c836b863a08', name: 'Milestone 2' },
   ],
 };
 

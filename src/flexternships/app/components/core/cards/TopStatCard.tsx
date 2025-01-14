@@ -1,13 +1,14 @@
 import React from 'react';
 
 export default function TopStatCard(props: TopStatCardProps) {
-  const { title, value, icon, selected = false, onClick } = props;
+  const { title, value, icon, selected = false, onClick, disabled = false } = props;
   return (
     <div
       className={`flex flex-row justify-between p-5 rounded-md border-1 border-transparent ${
         selected ? 'border-trublue-secondary-500 bg-trublue-light' : 'bg-white'
-      } gap-x-4 shadow-card ${onClick && !selected ? 'cursor-pointer' : ''}`}
-      onClick={onClick}
+      } gap-x-4 shadow-card ${onClick && !selected && !disabled ? 'cursor-pointer' : ''}
+      ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+      onClick={disabled ? undefined : onClick}
     >
       <div className="flex flex-col gap-y-1">
         <div className="text-lg font-semibold text-grey-heading leading-[26px]">{title}</div>
@@ -26,4 +27,5 @@ type TopStatCardProps = {
   icon: React.ReactNode;
   selected?: boolean;
   onClick?: () => void;
+  disabled?: boolean;
 };

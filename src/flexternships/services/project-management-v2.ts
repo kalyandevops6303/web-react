@@ -6,7 +6,7 @@ import { handleError } from '@flexternships/utils/error-utils';
 import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
 import { MilestoneDraftArtifact } from '../constraints/types/project-milestones-types';
 import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
-import { parseMilestoneDetails } from '../utils/parsing-utils';
+import { parseMilestoneDetails, parseRecognitionStats, parseRecognitionTimeline } from '../utils/parsing-utils';
 
 /**
  * Retrieves a file upload URL for a given filename?.
@@ -427,6 +427,8 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         },
       },
       isDocumentsNeeded: data.is_document_needed,
+      viewRecognition: data.view_recognition,
+      giveRecognition: data.give_recognition,
     };
 
     return projectDetailsData;
@@ -701,5 +703,64 @@ export const relistProject = async (projectId: string, startDate: number, endDat
     await axios.put(routes.projectManagementV2.project.relistProject, {}, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while withdrawing the project');
+  }
+};
+
+export const getRecognitionTimeline = async (projectId: string, talentUserId: string, milestoneId?: string) => {
+  const config = {
+    params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.projectManagementV2.recognition.recognitionTimeline, config);
+    return parseRecognitionTimeline(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching recognition timeline');
+  }
+};
+
+export const submitRecognition = async (
+  projectId: string,
+  milestoneId: string,
+  selectedTalents: { competencies: string[]; comment: string; talentId: string }[],
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+  const payload = {
+    project_id: projectId,
+    milestone_id: milestoneId,
+    user_comptency_comments: selectedTalents.map((talent) => ({
+      user_id: talent.talentId,
+      competencies: talent.competencies.map((competency) => ({
+        competency_id: competency,
+      })),
+      comment: talent.comment,
+    })),
+  };
+
+  try {
+    const response = await axios.post(routes.projectManagementV2.recognition.submitRecognition, payload, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting recognition');
+  }
+};
+
+export const getRecognitionsCount = async (projectId: string, talentUserId?: string, milestoneId?: string) => {
+  const config = {
+    params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.projectManagementV2.recognition.getRecognitionsCount, config);
+    return parseRecognitionStats(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching recognition count');
   }
 };
