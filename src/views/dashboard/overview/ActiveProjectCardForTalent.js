@@ -35,7 +35,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
 
   const navigate = useNavigate();
 
-  const updateCard = ({ switch_team_id }) => {
+  const updateCard = () => {
     const postData = {
       metadata: {
         project_id: data._id,
@@ -43,7 +43,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
       type: accordionName,
     };
     if (data?.is_read === false) {
-      dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
+      dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
     }
   };
 
