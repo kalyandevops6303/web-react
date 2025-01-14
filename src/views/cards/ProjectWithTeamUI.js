@@ -41,7 +41,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const location = useLocation();
   const navigate = useNavigate();
   const pathname = location.pathname.split('/').pop();
-
+  console.log(data);
   const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
   const handleLike = (e) => {
     e.stopPropagation();
@@ -96,7 +96,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
     }
   };
 
-  const avatarGroup = data?.worker_details?.workers?.length
+  let avatarGroup = data?.worker_details?.workers?.length
     ? data?.worker_details?.workers?.map((worker) => ({
         user_type: userTypes.talent,
         user_id: worker?.user_id,
@@ -108,12 +108,25 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
       }))
     : [];
 
+  if (flexTern) {
+    avatarGroup = data?.team_details?.members?.length
+      ? data?.team_details?.members?.map((user) => ({
+          user_id: user?.user_id,
+          user_type: userTypes.talent,
+          title: `${user?.first_name} ${user?.last_name}`,
+          img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
+          placement: 'bottom',
+          imgHeight: 33,
+          imgWidth: 33,
+        }))
+      : [];
+  }
+
   const clientDetails = data?.client ?? data?.client_details;
   // eslint-disable-next-line no-unsafe-optional-chaining
   const clientSkills = (data?.proficiency?.skills || data?.skills_data) ?? [];
   const clientTools = (data?.proficiency?.tools || data?.tools_data) ?? [];
-
-  const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
+  let teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
     ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({
         user_id: user?.user_id,
         user_type: userTypes.talent,
@@ -125,6 +138,19 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
       }))
     : [];
 
+  if (flexTern) {
+    teamAvatar = data?.team_details?.members?.length
+      ? data?.team_details?.members?.map((user) => ({
+          user_id: user?.user_id,
+          user_type: userTypes.talent,
+          title: `${user?.first_name} ${user?.last_name}`,
+          img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
+          placement: 'bottom',
+          imgHeight: 33,
+          imgWidth: 33,
+        }))
+      : [];
+  }
   return (
     <div className="d-flex flex-column gap-1 mb-2">
       <div className="d-flex align-items-center justify-content-end pt-50">
@@ -333,6 +359,23 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 </div>
               ) : null}
               <div>
+                {flexTern && userData?.user_type === userTypes.client ? (
+                  <>
+                    <p className="font-semibold text-heading text-sm mb-2">Project Team</p>
+                    {avatarGroup?.length > 3 ? (
+                      <AvatarGroup
+                        totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
+                        size="sm"
+                        className="ms-25 mb-50"
+                        data={avatarGroup?.slice(0, 3)}
+                      />
+                    ) : (
+                      <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )}
                 {data?.worker_details?.user_type === userTypes.talent ? (
                   <div className={userData?.user_type === userTypes.talent ? 'd-none' : ''}>
                     <div className="d-flex w-100">
@@ -365,7 +408,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                       </div>
                     </div>
                   </div>
-                ) : (
+                ) : !flexTern && userData?.user_type === userTypes.team ? (
                   <div className={userData?.user_type === userTypes.team ? 'd-none' : ''}>
                     <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
                       <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
@@ -391,6 +434,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                       </CardText>
                     </div>
                   </div>
+                ) : (
+                  <></>
                 )}
               </div>
             </div>
