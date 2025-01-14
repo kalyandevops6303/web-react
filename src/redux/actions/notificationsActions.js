@@ -55,7 +55,8 @@ const getNotificationsPolling = () => async (dispatch) => {
     const res = await getNotificationsPollingService();
     dispatch(notificationsPollingSuccess(res.data.data));
   } catch (error) {
-    errorHandler(error, notificationsPollingFailure);
+    // Failing silently considering that this would also be called for user that doesn't exist
+    // errorHandler(error, notificationsPollingFailure);
   }
 };
 

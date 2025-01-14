@@ -36,6 +36,8 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   useEffect(() => {
     if (isUserLoggedIn()) {
       populateUserDetails();
+    } else {
+      navigate('/auth/login');
     }
   }, [populateUserDetails]);
 
