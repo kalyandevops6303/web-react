@@ -364,7 +364,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     <p className="font-semibold text-heading text-sm mb-2">Project Team</p>
                     {avatarGroup?.length > 3 ? (
                       <AvatarGroup
-                        totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
+                        totalCount={data?.team_details?.members?.length}
                         size="sm"
                         className="ms-25 mb-50"
                         data={avatarGroup?.slice(0, 3)}
