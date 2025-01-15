@@ -384,13 +384,11 @@ const ProjectWrapper = styled.div`
   }
 
   .active-project-name {
-    padding: 8px 0px;
-    min-height: 60px;
+    margin: 8px 0px;
     color: #5e5873;
     line-height: 24px;
     font-size: 16px;
     font-weight: 500;
-    margin-top: 0.5rem;
   }
 
   .team-badge {

@@ -31,12 +31,13 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import UserRetryCountAuth from './UserRetryCountAuth';
 import { isFlexternshipApp } from '@/configs/api/env';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = isUserLoggedIn();
   const location = useLocation();
   const accountCreated = location.state?.createdAccount;
 
