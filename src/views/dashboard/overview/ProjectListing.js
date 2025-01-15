@@ -671,7 +671,7 @@ const ProjectListing = () => {
               </AccordionHeader>
               <AccordionBody accordionId="1">
                 {isSliderLoading || activeProjectsForTalentIsLoading ? (
-                  <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
+                  <div style={{ height: '340px' }} className="d-flex justify-content-between gap-1">
                     <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
                     <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
                     <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
