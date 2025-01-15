@@ -4,7 +4,6 @@ interface StatboxProps {
   title: string | React.ReactNode;
   desc?: string;
   isSelected?: boolean;
-  disabled?: boolean;
 }
 
 const styles = {
@@ -12,7 +11,7 @@ const styles = {
   inactive: 'border-grey-200 border-1',
 };
 
-const Statbox: React.FC<StatboxProps> = ({ title, desc, isSelected, disabled }) => {
+const Statbox: React.FC<StatboxProps> = ({ title, desc, isSelected }) => {
   const [isActive, setIsActive] = useState(isSelected ?? false);
   const handleClick = () => {
     setIsActive(true);

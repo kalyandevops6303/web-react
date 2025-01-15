@@ -24,8 +24,6 @@ const Comments = () => {
 
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [overallCommentCount, setOverallCommentCount] = useState(0);
-  const [mentorCommentCount, setMentorCommentCount] = useState(0);
-  const [managerCommentCount, setManagerCommentCount] = useState(0);
   const [projectName, setprojectName] = useState('');
 
   const { userId } = useParams();
@@ -83,8 +81,6 @@ const Comments = () => {
     }
     const data = await getFlexternCommentCount(projectId, userId);
     setOverallCommentCount(data?.overall || 0);
-    setMentorCommentCount(data?.mentor || 0);
-    setManagerCommentCount(data?.manager || 0);
   };
 
   const goBack = () => {
