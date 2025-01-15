@@ -107,7 +107,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
               className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
               isMarketPlaceTab
               title={selectCardData?.talents ?? 0}
-              desc="Talents"
+              desc="Talent"
               icon={<User height={20} />}
               color="light-purple"
             />
