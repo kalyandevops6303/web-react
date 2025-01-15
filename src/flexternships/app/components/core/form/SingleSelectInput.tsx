@@ -18,6 +18,7 @@ export default function SingleSelectInput(props: InputProps) {
     error,
     maxMenuHeight,
     disabled = false,
+    ...restProps
   } = props;
 
   const loadHandler = async (
@@ -46,6 +47,7 @@ export default function SingleSelectInput(props: InputProps) {
         control={control}
         render={({ field: { value, onChange } }) => (
           <AsyncPaginate
+            {...restProps}
             value={
               !isEmpty(value) && !isEmpty(value.name) && !isEmpty(value._id)
                 ? { label: value.name, value: value._id }

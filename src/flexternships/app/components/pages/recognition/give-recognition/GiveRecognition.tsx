@@ -18,18 +18,28 @@ import SingleSelectInput from '../../../core/form/SingleSelectInput';
 
 // Utils and data
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { mockMilestones, mockUsers } from '@/flexternships/mocks/recognition-data';
 import Spinner from '../../../core/Spinner';
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
 import { useParams } from 'react-router-dom';
 import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
 import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
 import { isEmpty } from 'lodash';
+import { getMilestonesDropdown, submitRecognition } from '@/flexternships/services/project-management-v2';
+import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
 
-export default function GiveRecognition() {
+const defaultValues = {
+  milestone: undefined,
+  selectedTalents: [],
+};
+
+export default function GiveRecognition({ refreshStats }: { refreshStats?: () => void }) {
   const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
   const [talentsLoading, setTalentsLoading] = useState<boolean>(true);
   const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
+
+  const populateCompetencies = useCompetenciesStore((state) => state.populateCompetencies);
+  const isCompetenciesLoading = useCompetenciesStore((state) => state.isCompetenciesLoading);
 
   const { projectId } = useParams();
 
@@ -37,17 +47,11 @@ export default function GiveRecognition() {
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isValid },
   } = useForm<GiveRecognitionForm>({
     mode: 'onChange',
-    // TODO: Get milestone from backend
-    defaultValues: {
-      milestone: {
-        _id: '678624c4c1710c836b863a07',
-        name: 'Milestone 1',
-      },
-      selectedTalents: [],
-    },
+    defaultValues,
     resolver: yupResolver(GiveRecognitionSchema),
   });
 
@@ -61,17 +65,21 @@ export default function GiveRecognition() {
   const handleToggle = (talentId: string) => {
     const talentIndex = selectedTalents.findIndex((talent) => talent.talentId === talentId);
     if (talentIndex === -1) {
-      append({ talentId, competencies: [], message: '' });
+      append({ talentId, competencies: [], comment: '' });
     } else {
       remove(talentIndex);
     }
   };
 
   const onSubmit = async (data: GiveRecognitionForm) => {
+    if (!projectId) throw new Error('Project ID is required');
     setIsSubmitLoading(true);
     try {
-      // TODO: Submit recognition
-      console.log(data);
+      // TODO: Submit recognition and show a modal
+      const response = await submitRecognition(projectId, data.milestone._id, data.selectedTalents);
+      refreshStats?.();
+      showToastMessage(ToastType.SUCCESS, response.message);
+      reset(defaultValues);
     } catch (error: unknown) {
       if (error instanceof Error) {
         showToastMessage(ToastType.ERROR, error.message);
@@ -100,9 +108,10 @@ export default function GiveRecognition() {
       }
     };
     fetchTalents();
+    populateCompetencies();
   }, []);
 
-  if (talentsLoading)
+  if (talentsLoading || isCompetenciesLoading)
     return (
       <SimpleElevatedCard className="bg-white p-6 flex flex-col gap-y-5">
         <div className="py-10 flex justify-center items-center">
@@ -112,6 +121,8 @@ export default function GiveRecognition() {
         </div>
       </SimpleElevatedCard>
     );
+
+  if (!projectId) throw new Error('Project ID is required');
 
   return (
     <SimpleElevatedCard className="bg-white p-6 flex flex-col gap-y-5">
@@ -133,7 +144,7 @@ export default function GiveRecognition() {
                     control={control}
                     label="Milestone"
                     error={errors.milestone?.message}
-                    loadOptions={async () => mockMilestones}
+                    loadOptions={() => getMilestonesDropdown(projectId, MilestoneDropdownOptions.GIVE_RECOGNITION)}
                   />
                 )}
               />
@@ -141,14 +152,18 @@ export default function GiveRecognition() {
           </div>
           <div className="flex flex-col gap-y-4">
             <div className="text-grey-300 text-xs font-semibold leading-5 text-uppercase">
-              Selected {selectedTalents.length}/{mockUsers.length}
+              Selected {selectedTalents.length}/{teamDetails.length}
             </div>
             <div className="flex flex-col gap-y-5">
-              {mockUsers.map((joinedTalent) => (
+              {teamDetails.map((joinedTalent: TeamMemberDetails) => (
                 <GiveRecognitionTalentCard
                   key={joinedTalent.id}
                   selected={selectedTalents.some((selectedTalent) => selectedTalent.talentId === joinedTalent.id)}
-                  talentInfo={joinedTalent}
+                  talentInfo={{
+                    ...joinedTalent,
+                    name: joinedTalent.name || 'Unknown Name',
+                    designation: joinedTalent.designation || 'Unknown Designation',
+                  }}
                   control={control}
                   onToggle={() => handleToggle(joinedTalent.id)}
                 />

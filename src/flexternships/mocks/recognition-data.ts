@@ -1,5 +1,4 @@
 import { RecognitionSource } from '../constraints/enums/core-enums';
-import { Competency } from '../constraints/enums/miscellaneous-enums';
 
 export const mockCompetencies = [
   { id: 'comp_1', name: 'Communication' },
@@ -66,9 +65,9 @@ export const mockRecognitions = [
     milestoneNumber: 1,
     timestamp: Date.now() - 1000 * 60 * 60 * 24, // 1 day ago
     selectedCompetencies: [
-      { id: 'comp_1', name: Competency.COMMUNICATION },
-      { id: 'comp_3', name: Competency.LEADERSHIP },
-      { id: 'comp_5', name: Competency.COLLABORATION },
+      { id: 'comp_1', name: 'Communication' },
+      { id: 'comp_3', name: 'Leadership' },
+      { id: 'comp_5', name: 'Collaboration' },
     ],
     comment:
       'Excellent leadership shown in the recent project. Great communication with stakeholders and team collaboration.',
@@ -83,7 +82,7 @@ export const mockRecognitions = [
     type: RecognitionSource.FEEDBACK,
     milestoneNumber: 2,
     timestamp: Date.now() - 1000 * 60 * 60 * 24 * 2, // 2 days ago
-    selectedCompetencies: [{ id: 'comp_2', name: Competency.PROBLEM_SOLVING }],
+    selectedCompetencies: [{ id: 'comp_2', name: 'Problem Solving' }],
     comment: 'Demonstrated strong problem-solving skills and technical expertise in implementing complex features.',
   },
   {
@@ -97,8 +96,8 @@ export const mockRecognitions = [
     milestoneNumber: 1,
     timestamp: Date.now() - 1000 * 60 * 60 * 24 * 3, // 3 days ago
     selectedCompetencies: [
-      { id: 'comp_4', name: Competency.PROBLEM_SOLVING },
-      { id: 'comp_5', name: Competency.COLLABORATION },
+      { id: 'comp_4', name: 'Problem Solving' },
+      { id: 'comp_5', name: 'Collaboration' },
     ],
     comment: 'Shows great initiative in learning new technologies and collaborates well with the development team.',
   },

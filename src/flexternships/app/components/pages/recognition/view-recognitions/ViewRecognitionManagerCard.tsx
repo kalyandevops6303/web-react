@@ -1,5 +1,4 @@
 // Core enums and types
-import { Competency } from '@/flexternships/constraints/enums/miscellaneous-enums';
 import { RecognitionSource } from '@/flexternships/constraints/enums/core-enums';
 
 // UI Components
@@ -8,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 
 // Utils
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { Competency } from '@/flexternships/constraints/types/competency-types';
+import { getReadableTimeDifference } from '@/flexternships/utils/date-utils';
 
 interface ViewRecognitionManagerCardProps {
   clientInfo: {
@@ -19,7 +20,7 @@ interface ViewRecognitionManagerCardProps {
   type: RecognitionSource;
   milestoneNumber: number;
   timestamp: number;
-  selectedCompetencies: { name: Competency; id: string }[];
+  selectedCompetencies: Competency[];
   comment: string;
 }
 
@@ -31,13 +32,6 @@ export default function ViewRecognitionManagerCard({
   selectedCompetencies,
   comment,
 }: ViewRecognitionManagerCardProps) {
-  const getTimeDifference = (timestamp: number) => {
-    const now = new Date().getTime();
-    const diff = now - timestamp;
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    return `${days} Days ago`;
-  };
-
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex flex-row justify-between">
@@ -73,13 +67,13 @@ export default function ViewRecognitionManagerCard({
             <div className="text-grey text-sm font-normal leading-[21px]">Milestone</div>
           </div>
         </div>
-        <div className="text-grey-muted text-xs font-normal leading-4.5">{getTimeDifference(timestamp)}</div>
+        <div className="text-grey-muted text-xs font-normal leading-4.5">{getReadableTimeDifference(timestamp)}</div>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="text-grey text-xs font-normal leading-5">Competencies</div>
         <div className="flex flex-row flex-wrap gap-x-2 gap-y-1">
-          {selectedCompetencies.map(({ name }) => (
-            <CompetencyTag key={name} competency={name} />
+          {selectedCompetencies.map((competency) => (
+            <CompetencyTag key={competency.id} competency={competency} />
           ))}
         </div>
       </div>

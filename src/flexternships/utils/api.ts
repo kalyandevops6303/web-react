@@ -41,12 +41,14 @@ export const routes = {
       putArtifactsByMilestoneId: `${serviceUrls.projectManagementV2}/milestones/submission`,
       updateStatus: `${serviceUrls.projectManagementV2}/update-status/milestones`,
       deleteMilestoneArtifactById: `${serviceUrls.projectManagementV2}/milestones/artifacts`,
+      milestonesDropdown: `${serviceUrls.projectManagementV2}/milestones/dropdown`,
     },
     feedback: {
       submitKudosWow: `${serviceUrls.projectManagementV2}/feedback/kudos_wow`,
       milestoneFeedbackInfo: `${serviceUrls.projectManagementV2}/feedback`,
       submitFeedback: `${serviceUrls.projectManagementV2}/feedback/response`,
       feedbackResponse: `${serviceUrls.projectManagementV2}/feedback/response`,
+      getCompetencies: `${serviceUrls.projectManagementV2}/feedback/competency`,
     },
     notification: {
       markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,

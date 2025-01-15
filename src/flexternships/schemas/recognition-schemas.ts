@@ -10,7 +10,7 @@ export const GiveRecognitionSchema = yup.object().shape({
       yup.object().shape({
         talentId: yup.string().required(),
         competencies: yup.array().of(yup.string()).min(1, 'Please select at least one competency'),
-        message: yup.string().required('Please enter a comment'),
+        comment: yup.string().required('Please enter a comment'),
       }),
     )
     .min(1, 'Please select at least one talent'),

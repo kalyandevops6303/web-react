@@ -13,11 +13,7 @@ export enum MilestoneDetailsModalType {
   ARTIFACTS_DRAFT_SAVED = 'ARTIFACTS_DRAFT_SAVED',
 }
 
-export enum Competency {
-  COLLABORATION = 'Collaboration',
-  LEADERSHIP = 'Leadership',
-  COMMUNICATION = 'Communication',
-  INNOVATION = 'Innovation',
-  EFFECTIVENESS = 'Effectiveness',
-  PROBLEM_SOLVING = 'Problem Solving',
+export enum MilestoneDropdownOptions {
+  GIVE_RECOGNITION = 'GIVE_RECOGNITION',
+  VIEW_RECOGNITION = 'VIEW_RECOGNITION',
 }

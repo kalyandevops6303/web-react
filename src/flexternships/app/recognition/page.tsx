@@ -59,7 +59,7 @@ export default function FlexternProjectRecognition() {
   const getComponentBySelection = () => {
     switch (selectedAction) {
       case RecognitionAction.GIVE_RECOGNITION:
-        return <GiveRecognition />;
+        return <GiveRecognition refreshStats={fetchStats} />;
       case RecognitionAction.VIEW_RECOGNITIONS:
         return <ViewRecognitions />;
       default:
@@ -67,22 +67,23 @@ export default function FlexternProjectRecognition() {
     }
   };
 
-  useEffect(() => {
+  const fetchStats = async () => {
     if (!projectId) throw new Error('Project ID is required');
-    const fetchStats = async () => {
-      setIsStatsLoading(true);
-      try {
-        const stats = await getRecognitionsCount(projectId);
-        console.log(stats);
-        setStats(stats);
-        setIsStatsLoading(false);
-      } catch (error: unknown) {
-        showToastMessage(
-          ToastType.ERROR,
-          error instanceof Error ? error.message : 'An error occurred while fetching recognition stats',
-        );
-      }
-    };
+    setIsStatsLoading(true);
+    try {
+      const stats = await getRecognitionsCount(projectId);
+      console.log(stats);
+      setStats(stats);
+      setIsStatsLoading(false);
+    } catch (error: unknown) {
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'An error occurred while fetching recognition stats',
+      );
+    }
+  };
+
+  useEffect(() => {
     fetchStats();
   }, [projectId]);
 

@@ -15,8 +15,8 @@ import checkedIcon from '@flexternships/assets/icons/checkboxes/checked.svg';
 import uncheckedIcon from '@flexternships/assets/icons/checkboxes/unchecked.svg';
 
 // Utils and data
-import { mockCompetencies } from '@/flexternships/mocks/recognition-data';
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
 
 function UnselectedTalentCard({
   talentInfo,
@@ -73,6 +73,8 @@ function SelectedTalentCard({
   control: Control<GiveRecognitionForm>;
   talentIndex: number;
 }) {
+  const competencies = useCompetenciesStore((state) => state.competencies);
+
   const {
     field: { value: selectedCompetencies = [], onChange: onCompetenciesChange },
   } = useController({
@@ -104,7 +106,7 @@ function SelectedTalentCard({
             Select applicable competencies <span className="text-error">*</span>
           </div>
           <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
-            {mockCompetencies.map((competency) => (
+            {competencies.map((competency) => (
               <SelectCompetencyCard
                 key={competency.id}
                 text={competency.name}
@@ -117,7 +119,7 @@ function SelectedTalentCard({
         </div>
         <div>
           <Controller
-            name={`selectedTalents.${talentIndex}.message`}
+            name={`selectedTalents.${talentIndex}.comment`}
             control={control}
             defaultValue=""
             render={({ field: { value, onChange }, fieldState: { error } }) => (

@@ -1,6 +1,5 @@
-import { Competency } from '../enums/miscellaneous-enums';
-
 import { RecognitionSource } from '../enums/core-enums';
+import { Competency } from './competency-types';
 
 export type GiveRecognitionForm = {
   milestone: {
@@ -10,7 +9,7 @@ export type GiveRecognitionForm = {
   selectedTalents: Array<{
     talentId: string;
     competencies: string[];
-    message: string;
+    comment: string;
   }>;
 };
 
@@ -24,10 +23,7 @@ export type RecognitionTimelineItem = {
   type: RecognitionSource;
   milestoneNumber: number;
   timestamp: number;
-  selectedCompetencies: Array<{
-    id: string;
-    name: Competency;
-  }>;
+  selectedCompetencies: Array<Competency>;
   comment: string;
 };
 

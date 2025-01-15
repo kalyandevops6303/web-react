@@ -8,8 +8,6 @@ import SelectTalentCard from './SelectTalentCard';
 import ViewRecognitionManagerCard from './ViewRecognitionManagerCard';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
 
-// Data
-import { mockMilestones, mockRecognitions } from '@/flexternships/mocks/recognition-data';
 import VerticalTimeline from './RecognitionVerticalTimeline';
 import { useParams } from 'react-router-dom';
 import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
@@ -17,11 +15,12 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
-import { getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
+import { getMilestonesDropdown, getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
 import Spinner from '../../../core/Spinner';
 import { RecognitionTimeline } from '@/flexternships/constraints/types/recognition-types';
 import { isEmpty } from 'lodash';
 import NoRecognitionFound from './NoRecognitionFound';
+import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
 
 export default function ViewRecognitions() {
   const [talentsLoading, setTalentsLoading] = useState<boolean>(false);
@@ -96,6 +95,8 @@ export default function ViewRecognitions() {
 
   if (isEmpty(teamDetails)) return <NoRecognitionFound />;
 
+  if (!projectId) throw new Error('Project ID is required');
+
   return (
     <div className="flex flex-row gap-x-6">
       <div className="flex flex-col gap-y-3">
@@ -121,7 +122,7 @@ export default function ViewRecognitions() {
                 name="milestone"
                 control={control}
                 label="Milestone"
-                loadOptions={async () => mockMilestones}
+                loadOptions={() => getMilestonesDropdown(projectId, MilestoneDropdownOptions.VIEW_RECOGNITION)}
               />
             </div>
           </div>
@@ -137,14 +138,24 @@ export default function ViewRecognitions() {
               spaceLeft={26}
               spaceBottom={28}
             /> */}
-            <VerticalTimeline
-              timelineItems={mockRecognitions.map((recognition) => ({
-                component: <ViewRecognitionManagerCard {...recognition} />,
-                color: '#FF9F43',
-              }))}
-              spaceLeft={36}
-              spaceBottom={28}
-            />
+            {recognitionTimelineLoading ? (
+              <div className="py-10 flex justify-center items-center">
+                <div className="size-10">
+                  <Spinner />
+                </div>
+              </div>
+            ) : isEmpty(recognitionTimeline) ? (
+              <NoRecognitionFound />
+            ) : (
+              <VerticalTimeline
+                timelineItems={recognitionTimeline.map((recognition) => ({
+                  component: <ViewRecognitionManagerCard {...recognition} />,
+                  color: '#FF9F43',
+                }))}
+                spaceLeft={36}
+                spaceBottom={28}
+              />
+            )}
           </div>
         </SimpleElevatedCard>
       </div>

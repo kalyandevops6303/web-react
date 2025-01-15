@@ -11,6 +11,7 @@ import {
 import { FlexternComments } from '../constraints/types/analytics-types';
 import { RecognitionStats, RecognitionTimeline } from '../constraints/types/recognition-types';
 import { TeamMemberDetails } from '../constraints/types/project-details-types';
+import { Competency } from '../constraints/types/competency-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -230,9 +231,28 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
       })) || [],
   };
 };
-
 export const parseRecognitionTimeline = (data: Record<string, any>): RecognitionTimeline => {
-  return [];
+  return data.map((recognition: Record<string, any>) => ({
+    // TODO: Change this from receiver to giver
+    clientInfo: {
+      name: `${recognition.receiver.first_name} ${recognition.receiver.last_name}`,
+      profileImage: recognition.receiver.image_uri,
+      designation: recognition.receiver.project_role,
+      company: recognition.org_slug_id,
+    },
+    type: recognition.giver_location,
+    milestoneNumber: recognition.milestone.seq,
+    timestamp: recognition.created_at,
+    selectedCompetencies: recognition.competencies.map((competency: Record<string, any>) => ({
+      id: competency._id,
+      name: competency.name,
+      abbreviation: competency.abbreviation,
+      colorCode: competency.color_code,
+      createdAt: competency.created_at,
+      updatedAt: competency.updated_at,
+    })),
+    comment: recognition.comment,
+  }));
 };
 
 export const parseTeamDetails = (
@@ -263,4 +283,15 @@ export const parseRecognitionStats = (data: Record<string, any>): RecognitionSta
     teamMembers: data.team_members_count,
     totalRecognitions: data.kudos_count || data.wows_count || 0,
   };
+};
+
+export const parseCompetencies = (data: Record<string, any>): Competency[] => {
+  return data.map((competency: Record<string, any>) => ({
+    id: competency._id,
+    name: competency.name,
+    abbreviation: competency.abbreviation,
+    colorCode: competency.color_code,
+    createdAt: competency.created_at,
+    updatedAt: competency.updated_at,
+  }));
 };
