@@ -70,9 +70,9 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
   };
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design new-tag-relative-card">
+      <Card className="card-app-design new-tag-relative-card project-card-dashboard">
         {!data?.is_read && <NewTag />}
-        <CardBody>
+        <CardBody className="project-card-body">
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
               {(data?.secondary_status === 'MILESTONE'

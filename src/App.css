@@ -122,3 +122,18 @@ html {
 [dir] .react-select__control.select__control--is-disabled {
   padding: 8px;
 }
+
+.project-card-dashboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 600px;
+  overflow-y: auto;
+}
+
+.project-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
