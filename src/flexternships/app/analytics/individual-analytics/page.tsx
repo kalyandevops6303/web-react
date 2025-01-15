@@ -11,6 +11,15 @@ import Spinner from '../../components/core/Spinner';
 import Footer from './footer';
 import { FeedbackConfig } from '@/flexternships/constraints/enums/feedback-enums';
 import BreadCrumbs from '@flexternships/app/components/pages/project-details/BreadCrumbs';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/flexternships/app/components/ui/select';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -20,16 +29,19 @@ export default function IndividualAnalytics() {
   const individualOverviewDetails = useAnalyticsStore((state) => state.individualOverview);
   const performanceChartData = useAnalyticsStore((state) => state.performanceChartData);
   const aiSummary = useAnalyticsStore((state) => state.aiSummary);
+  const projectDetails = useProjectsStore((state) => state.projectDetails);
 
   const getRecognitionChartData = useAnalyticsStore((state) => state.getRecognitionChartData);
   const getPerformanceChartData = useAnalyticsStore((state) => state.getPerformanceChartData);
   const getAiSummary = useAnalyticsStore((state) => state.getAiSummary);
   const getIndividualOverview = useAnalyticsStore((state) => state.getIndividualOverview);
+  const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
   const isIndividualOverviewLoading = useAnalyticsStore((state) => state.isIndividualOverviewLoading);
   const isRecognitionChartDataLoading = useAnalyticsStore((state) => state.isRecognitionChartLoading);
   const isPerformanceChartDataLoading = useAnalyticsStore((state) => state.isPerformanceChartLoading);
   const isAiSummaryLoading = useAnalyticsStore((state) => state.isAiSummaryLoading);
+  const isProjectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
 
   const [feedbackFooterData, setFeedbackFooterData] = useState<any>(null);
   const [formattedIndividualOverviewDetails, setFormattedIndividualOverviewDetails] = useState<any>(null);
@@ -40,6 +52,7 @@ export default function IndividualAnalytics() {
       getAiSummary(projectId, userId);
       getRecognitionChartData(projectId, userId);
       getPerformanceChartData(projectId, userId);
+      getProjectDetails(projectId);
     }
   }, [params]);
 
@@ -71,11 +84,11 @@ export default function IndividualAnalytics() {
           endYear: individualOverviewDetails?.educationalInstitute?.gradYear,
           name: individualOverviewDetails?.educationalInstitute?.education?.name,
         },
-        flexternshipStartDate: individualOverviewDetails?.listingDetails?.startDate,
-        flexternshipEndDate: individualOverviewDetails?.listingDetails?.endDate,
+        flexternshipStartDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.startDateEpoch),
+        flexternshipEndDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.endDateEpoch),
         wowCount: individualOverviewDetails?.wowCount,
         kudosCount: individualOverviewDetails?.kudosCount,
-        trumioAttractivenessScore: individualOverviewDetails?.attractiveScore,
+        trumioAttractivenessScore: individualOverviewDetails?.attractivenessScore?.score,
         totalComments: individualOverviewDetails?.totalComments,
         scores: individualOverviewDetails?.scores,
       });
@@ -163,7 +176,8 @@ export default function IndividualAnalytics() {
     isIndividualOverviewLoading ||
     isRecognitionChartDataLoading ||
     isPerformanceChartDataLoading ||
-    isAiSummaryLoading
+    isAiSummaryLoading ||
+    isProjectDetailsLoading
   ) {
     return (
       <div className="flex flex-col items-center justify-center min-h-48">
@@ -198,6 +212,23 @@ export default function IndividualAnalytics() {
         </div>
         <div className="text-[#0185E4] font-montserrat text-sm font-semibold leading-normal">Team Analytics</div>
       </button>
+
+      <div className="flex gap-2 items-center">
+        <div className="w-auto text-[#394042] font-montserrat text-base font-medium leading-6">
+          Select project to view analytics:{' '}
+        </div>
+        <div className="w-[480px]">
+          <Select value={params?.projectId as string} disabled>
+            <SelectTrigger className="border border-[#E6E7E7] bg-white">
+              <SelectValue placeholder="Select project" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={params?.projectId as string}>{projectDetails?.details?.name}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <IndividualOverview {...formattedIndividualOverviewDetails} aiGeneratedSummary={aiSummary} />
 
       <div className="flex flex-row gap-3 w-full bg-white rounded-t-10 border-b border-grey-50">
