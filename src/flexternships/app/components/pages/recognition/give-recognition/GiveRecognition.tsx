@@ -6,7 +6,7 @@ import { Controller, useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Types and schemas
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
 import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
 import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
@@ -27,6 +27,8 @@ import GiveRecognitionTalentCard from './GiveRecognitionTalentCard';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
 import Spinner from '../../../core/Spinner';
+import RecognitionConfirmationModal from '../../../core/modals/RecognitionConfirmationModal';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 const defaultValues = {
   milestone: undefined,
@@ -37,6 +39,9 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
   const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
   const [talentsLoading, setTalentsLoading] = useState<boolean>(true);
   const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const populateCompetencies = useCompetenciesStore((state) => state.populateCompetencies);
   const isCompetenciesLoading = useCompetenciesStore((state) => state.isCompetenciesLoading);
@@ -62,6 +67,15 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
 
   const selectedTalents = watch('selectedTalents');
 
+  const closeConfirmationModal = () => {
+    reset(defaultValues);
+    setIsConfirmationModalOpen(false);
+  };
+
+  const openConfirmationModal = () => {
+    setIsConfirmationModalOpen(true);
+  };
+
   const handleToggle = (talentId: string) => {
     const talentIndex = selectedTalents.findIndex((talent) => talent.talentId === talentId);
     if (talentIndex === -1) {
@@ -76,10 +90,9 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
     setIsSubmitLoading(true);
     try {
       // TODO: Submit recognition and show a modal
-      const response = await submitRecognition(projectId, data.milestone._id, data.selectedTalents);
+      await submitRecognition(projectId, data.milestone._id, data.selectedTalents);
       refreshStats?.();
-      showToastMessage(ToastType.SUCCESS, response.message);
-      reset(defaultValues);
+      openConfirmationModal();
     } catch (error: unknown) {
       if (error instanceof Error) {
         showToastMessage(ToastType.ERROR, error.message);
@@ -185,6 +198,12 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
           </div>
         </>
       )}
+      <RecognitionConfirmationModal
+        isOpen={isConfirmationModalOpen}
+        onClose={closeConfirmationModal}
+        title="Great Job!"
+        description={`You have submitted the ${userDetails.userType === UserType.TALENT ? 'Kudos!' : 'WOWs'}!`}
+      />
     </SimpleElevatedCard>
   );
 }

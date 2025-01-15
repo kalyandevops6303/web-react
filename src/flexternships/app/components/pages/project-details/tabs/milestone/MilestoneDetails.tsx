@@ -60,8 +60,8 @@ export default function MilestoneDetails() {
 
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
   const teamDetails = useProjectsStore((state) => state.teamDetails);
-
-  const [allowRecognition, setAllowRecognition] = useState(false);
+  const projectDetails = useProjectsStore((state) => state.projectDetails);
+  const isProjectLoading = useProjectsStore((state) => state.isProjectsLoading);
 
   const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
 
@@ -78,12 +78,6 @@ export default function MilestoneDetails() {
     if (!projectId) throw new Error('Project ID is required to fetch team details');
     populateTeamDetails(projectId);
   }, [projectId, populateTeamDetails]);
-
-  useEffect(() => {
-    setAllowRecognition(
-      teamDetails.filter((member) => member.id !== userDetails.id).some((member) => member.isDocumentsSigned),
-    );
-  }, [teamDetails]);
 
   useEffect(() => {
     const fetchMilestoneDetails = async () => {
@@ -206,6 +200,12 @@ export default function MilestoneDetails() {
       feedback.feedbackStatus === MilestoneFeedbackStatus.PENDING,
   );
 
+  const disableMilestonePrimaryAction =
+    milestoneDetails.status === MilestoneStatus.COMPLETED || // 1. If milestone is already completed
+    milestoneDetails.status === MilestoneStatus.CREATED || // 2. If milestone is just created and not yet started
+    (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) || // 3. If current user is talent and the milestone is already in review
+    (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT); // 4. If current user is client and the milestone is still in progress
+
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
       <div className="flex flex-row justify-between">
@@ -215,24 +215,13 @@ export default function MilestoneDetails() {
           onClick={goBackToAllMilestones}
           bgDark
         />
-        <div className="flex flex-row gap-x-4">
-          <SecondaryButton
-            className="m-0"
-            onClick={handleGiveRecognition}
-            disabled={!allowRecognition || !allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
-          >
-            Give {userDetails.userType === UserType.CLIENT ? 'a WOW!' : 'Kudos'}
-          </SecondaryButton>
-          <PrimaryButton
-            className="m-0"
-            onClick={openConfirmActionModal}
-            disabled={
-              milestoneDetails.status === MilestoneStatus.COMPLETED ||
-              milestoneDetails.status === MilestoneStatus.CREATED ||
-              (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) ||
-              (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT)
-            }
-          >
+        <div className="flex flex-row items-center gap-x-4">
+          {!isProjectLoading && (
+            <SecondaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>
+              Give {userDetails.userType === UserType.CLIENT ? 'a WOW!' : 'Kudos'}
+            </SecondaryButton>
+          )}
+          <PrimaryButton className="m-0" onClick={openConfirmActionModal} disabled={disableMilestonePrimaryAction}>
             {userDetails.userType === UserType.CLIENT ? 'Accept' : 'Mark as Completed'}
           </PrimaryButton>
         </div>
@@ -327,7 +316,7 @@ export default function MilestoneDetails() {
           </Accordion>
         </SimpleElevatedCard>
       )}
-      {/* Hidden for now considering new wow/kudos flow */}
+      {/* Commented for now considering the revision in wow/kudos */}
       {/* {allowRecognition && (
         <RecognitionCard
           isDisabled={!allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
