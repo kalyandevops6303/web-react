@@ -3,6 +3,7 @@ import { appendAuthToken } from '../utils/local-storage';
 import { handleError } from '../utils/error-utils';
 import { routes } from '../utils/api';
 import API from '@/configs/api';
+import { parseFlexternComments } from '../utils/parsing-utils';
 
 /**
  * Fetches the team details for a project
@@ -77,5 +78,51 @@ export const getPeerOrIndividualPerformanceDetailsService = async (milestoneId: 
     return response?.data?.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occured while fetching Performance Details');
+  }
+};
+
+export const getFlexternComments = async (
+  projectId: string,
+  talentUserId: string,
+  page: number = 1,
+  pageSize: number = 5,
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      project_id: projectId,
+      talent_user_id: talentUserId,
+      page,
+      page_size: pageSize,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(`${routes.dashboardV2.flexternComment.getFlexternComments}`, config);
+    const data = response?.data?.data;
+    return parseFlexternComments(data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while retrieving comments');
+  }
+};
+
+export const getFlexternCommentCount = async (projectId: string, talentUserId: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      project_id: projectId,
+      talent_user_id: talentUserId,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(`${routes.dashboardV2.flexternComment.getFlexternCommentCount}`, config);
+    return response?.data?.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while retrieving comment count');
   }
 };

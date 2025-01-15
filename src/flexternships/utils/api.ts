@@ -111,6 +111,10 @@ export const routes = {
       getClientPublicDetails: `${serviceUrls.dashboardV2}/client/details`,
       getClientCompletedProjects: `${serviceUrls.dashboardV2}/users/completed-projects`,
     },
+    flexternComment: {
+      getFlexternComments: `${serviceUrls.dashboardV2}/comment`,
+      getFlexternCommentCount: `${serviceUrls.dashboardV2}/comment/count`,
+    },
   },
   analytics: {
     individualOverview: `${serviceUrls.dashboardV2}/talent/header`,

@@ -104,6 +104,7 @@ import { returnCompleteProfileDetailsCta } from '../../../utility/constants/Comp
 import '../../../App.css';
 import { resumeParsedDetailsSuccess } from '@/redux/reducers/talentOnboarding';
 import { saveDraftTeamError } from '@/redux/reducers/team';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 const customDropdownStyles = {
   menuList: (provided) => ({
@@ -114,6 +115,7 @@ const customDropdownStyles = {
 };
 
 const Additional = () => {
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const AdditionalInformationSchema = yup.object().shape({
     gender: yup
       .string()
@@ -572,7 +574,9 @@ const Additional = () => {
     // } else if (flexternBoolean && !trumioTalent) {
     //   navigate(`/dashboard`);
     // }
+
     dispatch(setResumeDataUploadedForAdditional(parseResume));
+    populateUserDetails(true);
     navigate('/marketplace/all_listings');
   };
 
@@ -597,8 +601,11 @@ const Additional = () => {
       },
     };
 
-    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    dispatch(saveCheckpointComplete(() => {}));
+    dispatch(
+      saveCheckpointComplete(() => {
+        dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      }),
+    );
   };
 
   const onGetUserDetailsSuccess = (res) => {

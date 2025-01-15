@@ -116,6 +116,8 @@ module.exports = {
       lineHeight: {
         4.5: '18px',
         5.5: '22px',
+        'sm-custom': '22px',
+        'xxl-custom': '26px',
       },
       borderRadius: {
         5: '5px',
@@ -149,14 +151,9 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       fontSize: {
-        xs: ['10px', '16px'], // Previously text-[10px] leading-[16px]
-        sm: ['12px', '20px'], // Previously text-[12px] leading-[20px]
-        base: ['14px', '22px'], // Previously text-[14px] leading-[22px]
-        lg: ['16px', '24px'], // Previously text-[16px] leading-[24px]
-        xl: ['18px', '26px'], // Previously text-[18px] leading-[26px]
-        '2xl': ['20px', '28px'], // Previously text-[20px] leading-[28px]
-        '3xl': ['22px', '26px'], // Previously text-[22px] leading-[26px]
-        '4xl': ['32px', '40px'], // Previously text-[32px]
+        '2xs': '10px',
+        '3xs': '8px',
+        xxl: '22px',
       },
     },
   },
