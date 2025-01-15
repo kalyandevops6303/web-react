@@ -18,6 +18,8 @@ export default function SingleSelectInput(props: InputProps) {
     error,
     maxMenuHeight,
     disabled = false,
+    defaultFirstOption = false,
+    allowSelectionOfEmptyValue = false,
     ...restProps
   } = props;
 
@@ -25,9 +27,13 @@ export default function SingleSelectInput(props: InputProps) {
     search: string,
     _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>,
     additional: { page: number } | undefined = { page: 1 },
+    onChange: (value: { _id: string; name: string }) => void,
   ) => {
     const page = additional.page;
     const data = await loadOptions(page, pageSize, search);
+    if (defaultFirstOption && data.data.length > 0) {
+      onChange({ _id: data.data[0]._id, name: data.data[0].name });
+    }
     return {
       options: data.data.map((choice) => ({ label: choice.name, value: choice._id })),
       hasMore: data.metadata.has_next_page,
@@ -48,12 +54,16 @@ export default function SingleSelectInput(props: InputProps) {
         render={({ field: { value, onChange } }) => (
           <AsyncPaginate
             {...restProps}
+            defaultOptions={defaultFirstOption}
             value={
-              !isEmpty(value) && !isEmpty(value.name) && !isEmpty(value._id)
+              (!isEmpty(value) && !isEmpty(value.name) && !isEmpty(value._id)) ||
+              (allowSelectionOfEmptyValue && !isEmpty(value) && value._id === '')
                 ? { label: value.name, value: value._id }
                 : null
             }
-            loadOptions={loadHandler}
+            loadOptions={(search, loadedOptions, additional: { page: number } | undefined) =>
+              loadHandler(search, loadedOptions, additional, onChange)
+            }
             onChange={(newValue) => {
               if (newValue) {
                 onChange({ _id: newValue.value, name: newValue.label });
@@ -105,6 +115,8 @@ type InputProps = {
   error?: string;
   maxMenuHeight?: number;
   disabled?: boolean;
+  defaultFirstOption?: boolean;
+  allowSelectionOfEmptyValue?: boolean;
 };
 
 type OptionType = {

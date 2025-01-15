@@ -1,32 +1,32 @@
-// React and hooks
+// External dependencies
+import { isEmpty } from 'lodash';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Controller, useForm, useFieldArray } from 'react-hook-form';
-
-// Form validation
 import { yupResolver } from '@hookform/resolvers/yup';
-import { GiveRecognitionSchema } from '@/flexternships/schemas/recognition-schemas';
 
-// Types and enums
+// Types and schemas
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
+import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
+import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import { GiveRecognitionSchema } from '@/flexternships/schemas/recognition-schemas';
 
-// UI Components
+// Services and stores
+import { fetchTeamDetails } from '@/flexternships/services/project-details';
+import { getMilestonesDropdown, submitRecognition } from '@/flexternships/services/project-management-v2';
+import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
+
+// Utils
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
+
+// Components
 import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
 import GiveRecognitionTalentCard from './GiveRecognitionTalentCard';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
-
-// Utils and data
-import { showToastMessage } from '@/flexternships/utils/core-utils';
 import Spinner from '../../../core/Spinner';
-import { fetchTeamDetails } from '@/flexternships/services/project-details';
-import { useParams } from 'react-router-dom';
-import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
-import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
-import { isEmpty } from 'lodash';
-import { getMilestonesDropdown, submitRecognition } from '@/flexternships/services/project-management-v2';
-import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
-import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
 
 const defaultValues = {
   milestone: undefined,
@@ -144,7 +144,10 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
                     control={control}
                     label="Milestone"
                     error={errors.milestone?.message}
-                    loadOptions={() => getMilestonesDropdown(projectId, MilestoneDropdownOptions.GIVE_RECOGNITION)}
+                    loadOptions={() =>
+                      getMilestonesDropdown(projectId, MilestoneDropdownOptions.GIVE_RECOGNITION, { useSequence: true })
+                    }
+                    defaultFirstOption
                   />
                 )}
               />

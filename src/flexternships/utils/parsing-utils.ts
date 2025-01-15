@@ -3,6 +3,7 @@ import {
   MilestoneArtifact,
   MilestoneDetails,
   MilestoneDraftArtifact,
+  MilestoneDropdown,
 } from '../constraints/types/project-milestones-types';
 import {
   FlexternClientProjectDetails,
@@ -231,6 +232,12 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
       })) || [],
   };
 };
+
+/**
+ * Parses recognition timeline data from raw API response
+ * @param data Raw recognition timeline data from API
+ * @returns Formatted recognition timeline array
+ */
 export const parseRecognitionTimeline = (data: Record<string, any>): RecognitionTimeline => {
   return data.map((recognition: Record<string, any>) => ({
     // TODO: Change this from receiver to giver
@@ -255,6 +262,12 @@ export const parseRecognitionTimeline = (data: Record<string, any>): Recognition
   }));
 };
 
+/**
+ * Parses team details from raw API response
+ * @param data Raw team details data from API
+ * @param options Options to filter team members (e.g. include only joined members)
+ * @returns Array of formatted team member details
+ */
 export const parseTeamDetails = (
   data: Record<string, any>,
   options: { includeOnlyJoined: boolean } = { includeOnlyJoined: false },
@@ -278,6 +291,12 @@ export const parseTeamDetails = (
   }
   return teamMembers;
 };
+
+/**
+ * Parses recognition statistics from raw API response
+ * @param data Raw recognition stats data from API
+ * @returns Formatted recognition statistics
+ */
 export const parseRecognitionStats = (data: Record<string, any>): RecognitionStats => {
   return {
     teamMembers: data.team_members_count,
@@ -285,6 +304,11 @@ export const parseRecognitionStats = (data: Record<string, any>): RecognitionSta
   };
 };
 
+/**
+ * Parses competencies data from raw API response
+ * @param data Raw competencies data from API
+ * @returns Array of formatted competencies
+ */
 export const parseCompetencies = (data: Record<string, any>): Competency[] => {
   return data.map((competency: Record<string, any>) => ({
     id: competency._id,
@@ -294,4 +318,30 @@ export const parseCompetencies = (data: Record<string, any>): Competency[] => {
     createdAt: competency.created_at,
     updatedAt: competency.updated_at,
   }));
+};
+
+/**
+ * Parses milestone dropdown data from raw API response
+ * @param data Raw milestone dropdown data from API
+ * @param parsingOptions Options for parsing (e.g. whether to use sequence numbers)
+ * @returns Formatted milestone dropdown data
+ */
+export const parseMilestoneDropdown = (
+  data: Record<string, any>,
+  parsingOptions: { useSequence?: boolean },
+): MilestoneDropdown => {
+  let parsedData = parsingOptions.useSequence
+    ? {
+        metadata: data.metadata,
+        data: data.data.map((milestone: Record<string, any>) => ({
+          ...milestone,
+          name: `Milestone ${milestone.seq}`,
+        })),
+      }
+    : {
+        metadata: data.metadata,
+        data: data.data,
+      };
+
+  return parsedData;
 };

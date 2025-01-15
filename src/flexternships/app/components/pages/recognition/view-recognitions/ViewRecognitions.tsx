@@ -1,26 +1,30 @@
-// React and hooks
+// External dependencies
+import { isEmpty } from 'lodash';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-// UI Components
+// Types and enums
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
+import { RecognitionTimeline } from '@/flexternships/constraints/types/recognition-types';
+import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
+
+// Services and utils
+import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { fetchTeamDetails } from '@/flexternships/services/project-details';
+import { getMilestonesDropdown, getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
+
+// Components
 import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
 import SelectTalentCard from './SelectTalentCard';
 import ViewRecognitionManagerCard from './ViewRecognitionManagerCard';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
-
 import VerticalTimeline from './RecognitionVerticalTimeline';
-import { useParams } from 'react-router-dom';
-import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
-import { fetchTeamDetails } from '@/flexternships/services/project-details';
-import { getMilestonesDropdown, getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
 import Spinner from '../../../core/Spinner';
-import { RecognitionTimeline } from '@/flexternships/constraints/types/recognition-types';
-import { isEmpty } from 'lodash';
 import NoRecognitionFound from './NoRecognitionFound';
-import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import { DEFAULT_ALL_MILESTONES_OPTION } from '@/flexternships/static/recognition-constants';
 
 export default function ViewRecognitions() {
   const [talentsLoading, setTalentsLoading] = useState<boolean>(false);
@@ -34,11 +38,7 @@ export default function ViewRecognitions() {
 
   const { control, watch } = useForm({
     defaultValues: {
-      // TODO: Get milestone from backend
-      milestone: {
-        _id: '_all',
-        name: 'All Milestones',
-      },
+      milestone: DEFAULT_ALL_MILESTONES_OPTION,
     },
   });
 
@@ -122,7 +122,11 @@ export default function ViewRecognitions() {
                 name="milestone"
                 control={control}
                 label="Milestone"
-                loadOptions={() => getMilestonesDropdown(projectId, MilestoneDropdownOptions.VIEW_RECOGNITION)}
+                loadOptions={() =>
+                  getMilestonesDropdown(projectId, MilestoneDropdownOptions.VIEW_RECOGNITION, { useSequence: true })
+                }
+                defaultFirstOption
+                allowSelectionOfEmptyValue
               />
             </div>
           </div>

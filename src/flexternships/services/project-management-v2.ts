@@ -14,11 +14,13 @@ import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from 
 import {
   parseCompetencies,
   parseMilestoneDetails,
+  parseMilestoneDropdown,
   parseRecognitionStats,
   parseRecognitionTimeline,
 } from '../utils/parsing-utils';
 import { PaginatedData } from './user-management';
 import { MilestoneDropdownOptions } from '../constraints/enums/miscellaneous-enums';
+import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/recognition-constants';
 
 /**
  * Retrieves a file upload URL for a given filename.
@@ -821,7 +823,6 @@ export const getRecognitionsCount = async (projectId: string, talentUserId?: str
     handleError(error as Error, 'An unexpected error occurred while fetching recognition count');
   }
 };
-
 /**
  * Gets a dropdown list of milestones for a project.
  * @param projectId - The ID of the project.
@@ -831,12 +832,20 @@ export const getRecognitionsCount = async (projectId: string, talentUserId?: str
  */
 export const getMilestonesDropdown = async (
   projectId: string,
-  options?: MilestoneDropdownOptions,
+  options: MilestoneDropdownOptions,
+  parsingOptions: { useSequence?: boolean } = { useSequence: false },
 ): Promise<PaginatedData<MilestoneDropdownItem>> => {
   const config = { params: { project_id: projectId, options: options }, withCredentials: true };
   try {
     const response = await axios.get(routes.projectManagementV2.milestone.milestonesDropdown, config);
-    return response.data.data;
+    const data = parseMilestoneDropdown(response.data.data, parsingOptions);
+
+    // Add "All Milestones" option if this is the first page and the view recognition option is selected
+    if (data.metadata.current_page === 1 && options === MilestoneDropdownOptions.VIEW_RECOGNITION) {
+      data.data.unshift(DEFAULT_ALL_MILESTONES_OPTION);
+    }
+
+    return data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching milestones dropdown');
   }
