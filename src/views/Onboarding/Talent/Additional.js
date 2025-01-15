@@ -601,8 +601,11 @@ const Additional = () => {
       },
     };
 
-    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    dispatch(saveCheckpointComplete(() => {}));
+    dispatch(
+      saveCheckpointComplete(() => {
+        dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      }),
+    );
   };
 
   const onGetUserDetailsSuccess = (res) => {

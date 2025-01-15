@@ -35,7 +35,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
 
   const navigate = useNavigate();
 
-  const updateCard = ({ switch_team_id }) => {
+  const updateCard = () => {
     const postData = {
       metadata: {
         project_id: data._id,
@@ -43,7 +43,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
       type: accordionName,
     };
     if (data?.is_read === false) {
-      dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
+      dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
     }
   };
 
@@ -62,9 +62,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
-            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
-          </p>
+          <p className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</p>
           <div className="client-badge px-1 mb-75">
             <p className="mb-0">Client</p>
           </div>
