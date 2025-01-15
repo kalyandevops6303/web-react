@@ -600,9 +600,11 @@ const Additional = () => {
         file_key: resumeFiles[0]?.uploadData?.file_key,
       },
     };
-
-    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    dispatch(saveCheckpointComplete(() => {}));
+    dispatch(
+      saveCheckpointComplete(() => {
+        dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      }),
+    );
   };
 
   const onGetUserDetailsSuccess = (res) => {
