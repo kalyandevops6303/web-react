@@ -18,6 +18,7 @@ import { getRecognitionsCount } from '@/flexternships/services/project-managemen
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { RecognitionStats } from '@/flexternships/constraints/types/recognition-types';
 import Spinner from '../components/core/Spinner';
+import NoRecognitionFound from '../components/pages/recognition/view-recognitions/NoRecognitionFound';
 
 // Page-specific enums
 enum RecognitionAction {
@@ -61,7 +62,8 @@ export default function FlexternProjectRecognition() {
       case RecognitionAction.GIVE_RECOGNITION:
         return <GiveRecognition refreshStats={fetchStats} />;
       case RecognitionAction.VIEW_RECOGNITIONS:
-        return <ViewRecognitions />;
+        // if stats are loaded and there are no recognitions, show no recognition found, otherwise show the actual recognitions
+        return !isStatsLoading && stats?.totalRecognitions === 0 ? <NoRecognitionFound /> : <ViewRecognitions />;
       default:
         return null;
     }
@@ -72,7 +74,6 @@ export default function FlexternProjectRecognition() {
     setIsStatsLoading(true);
     try {
       const stats = await getRecognitionsCount(projectId);
-      console.log(stats);
       setStats(stats);
       setIsStatsLoading(false);
     } catch (error: unknown) {

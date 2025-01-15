@@ -46,7 +46,6 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
       </div>
       {talentInfo.appreciationScore && (
         <div className="flex flex-row items-center gap-x-2">
-          {/* TODO: Thumbs/Wows */}
           <img
             className="size-6"
             src={userDetails.userType === UserType.CLIENT ? defaultWowIcon : defaultKudosIcon}

@@ -130,18 +130,7 @@ export default function ViewRecognitions() {
               />
             </div>
           </div>
-          {/* TODO: Add timeline */}
           <div className="flex flex-col gap-y-7">
-            {/* <ViewRecognitionManagerCard />
-            <ViewRecognitionManagerCard /> */}
-            {/* <VerticalTimeline
-              timelineItems={mockRecognitions.map((recognition) => ({
-                component: <ViewRecognitionManagerCard {...recognition} />,
-                color: 'orange',
-              }))}
-              spaceLeft={26}
-              spaceBottom={28}
-            /> */}
             {recognitionTimelineLoading ? (
               <div className="py-10 flex justify-center items-center">
                 <div className="size-10">

@@ -115,7 +115,6 @@ export const getUserDetails = async () => {
   };
   try {
     const response = await axios.get(routes.userManagement.user.getUserDetails, config);
-    console.log('response : ' + response);
 
     return response.data.data;
   } catch (error) {

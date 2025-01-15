@@ -89,7 +89,6 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
     if (!projectId) throw new Error('Project ID is required');
     setIsSubmitLoading(true);
     try {
-      // TODO: Submit recognition and show a modal
       await submitRecognition(projectId, data.milestone._id, data.selectedTalents);
       refreshStats?.();
       openConfirmationModal();
