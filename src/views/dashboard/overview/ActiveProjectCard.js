@@ -80,9 +80,7 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
                 : secondaryStatusEnum[data?.secondary_status]) || statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <h4 className="active-project-name mt-1 truncate-2">
-            {truncateSentence({ sentence: getBidByName(data?.bid_by) || data?.name, maxCharacters: 30 })}
-          </h4>
+          <h4 className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</h4>
           {data?.worker_details.length > 0 && (
             <div className="team-badge px-1">
               <p className="mb-25">Team</p>
