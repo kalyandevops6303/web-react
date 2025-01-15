@@ -112,8 +112,12 @@ const LeftSideBarProjectDetails = () => {
     };
   }, [showMore]);
 
-  const handleRecognitionClick = () => {
+  const handleGiveRecognitionClick = () => {
     navigate(`/recognition/${projectId}`);
+  };
+
+  const handleViewRecognitionClick = () => {
+    navigate(`/recognition/${projectId}`, { state: { viewRecognitions: true } });
   };
 
   return (
@@ -364,12 +368,12 @@ const LeftSideBarProjectDetails = () => {
               />
             }
             disabled={!data?.giveRecognition}
-            onClick={handleRecognitionClick}
+            onClick={handleGiveRecognitionClick}
           />
           <PrimaryIconText
             text={`View ${userDetails.userType === UserType.TALENT ? 'Kudos' : 'WOWs'}!`}
             icon={<Eye className="text-trublue-secondary-500" size={18} />}
-            onClick={handleRecognitionClick}
+            onClick={handleViewRecognitionClick}
             disabled={!data?.viewRecognition}
           />
         </div>

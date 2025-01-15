@@ -1,6 +1,6 @@
 // React and hooks
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 // UI Components
 import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
@@ -34,6 +34,7 @@ export default function FlexternProjectRecognition() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { projectId } = useParams();
 
   /**
@@ -90,10 +91,10 @@ export default function FlexternProjectRecognition() {
 
   useEffect(() => {
     if (!stats) return;
-    if (!stats.teamMembers) {
+    if (!stats.teamMembers || (location?.state as { viewRecognitions?: boolean })?.viewRecognitions) {
       setSelectedAction(RecognitionAction.VIEW_RECOGNITIONS);
     }
-  }, [stats]);
+  }, [stats, location.state]);
 
   const recognitionIcon = userDetails.userType === UserType.TALENT ? kudosIcon : wowIcon;
   const giveRecognitionTitle = userDetails.userType === UserType.TALENT ? 'Give Kudos' : 'Give a WOW!';
