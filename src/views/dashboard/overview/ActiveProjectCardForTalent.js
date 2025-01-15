@@ -62,9 +62,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
-            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
-          </p>
+          <p className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</p>
           <div className="client-badge px-1 mb-75">
             <p className="mb-0">Client</p>
           </div>
