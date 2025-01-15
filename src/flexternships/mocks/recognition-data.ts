@@ -61,7 +61,7 @@ export const mockRecognitions = [
       designation: 'Engineering Manager',
       company: 'Tech Corp',
     },
-    type: RecognitionSource.QUICK_ACTIONS,
+    type: RecognitionSource.QUICK_ACTION,
     milestoneNumber: 1,
     timestamp: Date.now() - 1000 * 60 * 60 * 24, // 1 day ago
     selectedCompetencies: [
@@ -92,7 +92,7 @@ export const mockRecognitions = [
       designation: 'Senior Developer',
       company: 'Tech Corp',
     },
-    type: RecognitionSource.QUICK_ACTIONS,
+    type: RecognitionSource.QUICK_ACTION,
     milestoneNumber: 1,
     timestamp: Date.now() - 1000 * 60 * 60 * 24 * 3, // 3 days ago
     selectedCompetencies: [

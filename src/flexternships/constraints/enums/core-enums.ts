@@ -67,9 +67,8 @@ export enum MilestoneFeedbackStatus {
   COMPLETED = 'COMPLETED',
 }
 
-// TODO: Subject to change as per BE
 export enum RecognitionSource {
-  QUICK_ACTIONS = 'QUICK_ACTIONS',
+  QUICK_ACTION = 'QUICK_ACTION',
   FEEDBACK = 'FEEDBACK',
 }
 
