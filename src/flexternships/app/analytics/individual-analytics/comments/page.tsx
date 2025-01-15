@@ -115,9 +115,7 @@ const Comments = () => {
         </div>
         <div className="flex flex-col items-start w-full">
           <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-t-lg">
-            <Statbox title={overallCommentCount} desc="Overall Comments" />
-            <Statbox title={managerCommentCount} desc="Manager Comments" />
-            <Statbox title={mentorCommentCount} desc="Mentor Comments" />
+            <Statbox title={overallCommentCount} desc="Overall Comments" isSelected />
           </div>
           <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-b-lg">
             <AIGeneratedSummary aiGeneratedSummary={aiSummary} title="Overall Comments Summary" />
