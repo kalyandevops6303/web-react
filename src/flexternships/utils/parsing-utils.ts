@@ -317,7 +317,7 @@ export const parseTeamDetails = (
 export const parseRecognitionStats = (data: Record<string, any>): RecognitionStats => {
   return {
     teamMembers: data.team_members_count,
-    totalRecognitions: data.kudos_count || data.wows_count || 0,
+    totalRecognitions: data.kudos_count || data.wow_count || 0,
   };
 };
 
