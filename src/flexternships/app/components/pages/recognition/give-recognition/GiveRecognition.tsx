@@ -108,7 +108,10 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
       setTalentsLoading(true);
       try {
         const teamData = await fetchTeamDetails(projectId);
-        const formattedTeamDetails = parseTeamDetails(teamData, { includeOnlyJoined: true });
+        const formattedTeamDetails = parseTeamDetails(teamData, {
+          includeOnlyJoined: true,
+          hideUserIds: [userDetails.id],
+        });
         setTeamDetails(formattedTeamDetails);
       } catch (error: unknown) {
         showToastMessage(

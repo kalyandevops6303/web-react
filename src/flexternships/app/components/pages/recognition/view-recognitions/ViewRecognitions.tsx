@@ -25,6 +25,7 @@ import VerticalTimeline from './RecognitionVerticalTimeline';
 import Spinner from '../../../core/Spinner';
 import NoRecognitionFound from './NoRecognitionFound';
 import { DEFAULT_ALL_MILESTONES_OPTION } from '@/flexternships/static/recognition-constants';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function ViewRecognitions() {
   const [talentsLoading, setTalentsLoading] = useState<boolean>(false);
@@ -33,6 +34,8 @@ export default function ViewRecognitions() {
   const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
   const [selectedTalentId, setSelectedTalentId] = useState<string | undefined>(undefined);
   const [recognitionTimeline, setRecognitionTimeline] = useState<RecognitionTimeline>([]);
+
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const { projectId } = useParams();
 
@@ -48,7 +51,10 @@ export default function ViewRecognitions() {
       setTalentsLoading(true);
       try {
         const teamData = await fetchTeamDetails(projectId);
-        const formattedTeamDetails = parseTeamDetails(teamData, { includeOnlyJoined: true });
+        const formattedTeamDetails = parseTeamDetails(teamData, {
+          includeOnlyJoined: true,
+          hideUserIds: [userDetails.id],
+        });
 
         setTeamDetails(formattedTeamDetails);
         if (!isEmpty(formattedTeamDetails)) setSelectedTalentId(formattedTeamDetails[0].id);

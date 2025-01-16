@@ -284,7 +284,7 @@ export const parseRecognitionTimeline = (data: Record<string, any>): Recognition
  */
 export const parseTeamDetails = (
   data: Record<string, any>,
-  options: { includeOnlyJoined: boolean } = { includeOnlyJoined: false },
+  options: { includeOnlyJoined: boolean; hideUserIds?: string[] } = { includeOnlyJoined: false, hideUserIds: [] },
 ): TeamMemberDetails[] => {
   let teamMembers = data.map((member: Record<string, any>) => ({
     id: member._id,
@@ -302,6 +302,9 @@ export const parseTeamDetails = (
     teamMembers = teamMembers.filter(
       (member: Record<string, any>) => member.isDocumentsSigned === options.includeOnlyJoined,
     );
+  }
+  if (options.hideUserIds) {
+    teamMembers = teamMembers.filter((member: Record<string, any>) => !options.hideUserIds?.includes(member.id));
   }
   return teamMembers;
 };
