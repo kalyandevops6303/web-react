@@ -26,8 +26,8 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   return (
     <div className="w-full">
       {isEmpty(milestoneId) && (
-        <div className="flex justify-between items-end">
-          <div className=" bg-white w-fit flex flex-row items-start justify-start gap-1 max-w-5xl">
+        <div className="flex justify-between items-end max-w-5xl">
+          <div className=" bg-white w-fit flex flex-row items-start justify-start gap-1">
             {tabs.map((tab, index) => (
               <NavigationTab key={index} tab={tab} index={index} />
             ))}
