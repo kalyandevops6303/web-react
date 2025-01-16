@@ -1,12 +1,15 @@
+// External dependencies
+import classNames from 'classnames';
+
 // Core enums and types
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
-
-// UI Components
-import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 
 // Icons and assets
 import defaultKudosIcon from '@/flexternships/assets/icons/core/kudos/kudos-default.svg';
 import defaultWowIcon from '@/flexternships/assets/icons/core/wow/wow-default.svg';
+
+// UI Components
+import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 
 // Utils and stores
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
@@ -15,26 +18,24 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 export default function SelectTalentCard(props: SelectTalentCardProps) {
   const { selected, onClick, talentInfo } = props;
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+
+  const cardClasses = classNames('flex flex-row justify-between gap-x-6 rounded-md p-4 border-1 min-w-[330px]', {
+    'bg-trublue-light border-trublue-secondary-500': selected,
+    'bg-white shadow-card border-transparent cursor-pointer': !selected,
+  });
+
+  const defaultAvatarStyle = {
+    color: stringToColour(talentInfo.name),
+    backgroundColor: `${stringToColour(talentInfo.name, { opacity: 10 })}`,
+  };
+
   return (
-    <div
-      className={`flex flex-row justify-between gap-x-6 rounded-md p-4 border-1 min-w-[330px] ${
-        selected
-          ? 'bg-trublue-light border-trublue-secondary-500'
-          : 'bg-white shadow-card border-transparent cursor-pointer'
-      }`}
-      onClick={onClick}
-    >
+    <div className={cardClasses} onClick={onClick}>
       <div className="flex flex-row items-center gap-x-4">
         <div>
           <Avatar className="size-8">
             <AvatarImage src={talentInfo.profileImage} />
-            <AvatarFallback
-              className="p-2 font-semibold text-sm"
-              style={{
-                color: stringToColour(talentInfo.name),
-                backgroundColor: `${stringToColour(talentInfo.name, { opacity: 10 })}`,
-              }}
-            >
+            <AvatarFallback className="p-2 font-semibold text-sm" style={defaultAvatarStyle}>
               {talentInfo.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>

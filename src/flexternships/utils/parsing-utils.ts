@@ -13,6 +13,7 @@ import { FlexternComments } from '../constraints/types/analytics-types';
 import { RecognitionStats, RecognitionTimeline } from '../constraints/types/recognition-types';
 import { TeamMemberDetails } from '../constraints/types/project-details-types';
 import { Competency } from '../constraints/types/competency-types';
+import { FlexternUserAppRole } from '../constraints/enums/core-enums';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -239,27 +240,40 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
  * @returns Formatted recognition timeline array
  */
 export const parseRecognitionTimeline = (data: Record<string, any>): RecognitionTimeline => {
-  return data.map((recognition: Record<string, any>) => ({
-    // TODO: Change this from receiver to giver
-    clientInfo: {
-      name: `${recognition.receiver.first_name} ${recognition.receiver.last_name}`,
-      profileImage: recognition.receiver.image_uri,
-      designation: recognition.receiver.project_role,
-      company: recognition.org_slug_id,
-    },
-    type: recognition.giver_location,
-    milestoneNumber: recognition.milestone.seq,
-    timestamp: recognition.created_at,
-    selectedCompetencies: recognition.competencies.map((competency: Record<string, any>) => ({
-      id: competency._id,
-      name: competency.name,
-      abbreviation: competency.abbreviation,
-      colorCode: competency.color_code,
-      createdAt: competency.created_at,
-      updatedAt: competency.updated_at,
-    })),
-    comment: recognition.comment,
-  }));
+  return data.map((recognition: Record<string, any>) => {
+    const giverAppRole = recognition.giver_details.app_role;
+    const giverDesignation =
+      giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
+        ? 'Mentor'
+        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT
+        ? 'Manager'
+        : recognition.giver_details.project_role;
+
+    const giverName =
+      giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
+        ? `${recognition.giver_details.first_name} ${recognition.giver_details.last_name} (${recognition.giver_details.delegate.first_name} ${recognition.giver_details.delegate.last_name})`
+        : `${recognition.giver_details.first_name} ${recognition.giver_details.last_name}`; // Full name for both client and talent
+    return {
+      giverDetails: {
+        name: giverName,
+        profileImage: recognition.giver_details.image_uri,
+        designation: giverDesignation,
+        appRole: giverAppRole,
+      },
+      type: recognition.giver_location,
+      milestoneNumber: recognition.milestone.seq,
+      timestamp: recognition.created_at,
+      selectedCompetencies: recognition.competencies.map((competency: Record<string, any>) => ({
+        id: competency._id,
+        name: competency.name,
+        abbreviation: competency.abbreviation,
+        colorCode: competency.color_code,
+        createdAt: competency.created_at,
+        updatedAt: competency.updated_at,
+      })),
+      comment: recognition.comment,
+    };
+  });
 };
 
 /**

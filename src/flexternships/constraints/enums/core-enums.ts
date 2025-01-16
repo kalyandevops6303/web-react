@@ -74,6 +74,7 @@ export enum RecognitionSource {
 
 export enum FlexternUserAppRole {
   FLEXTERN_CLIENT = 'FLEXTERN_CLIENT',
+  FLEXTERN_CLIENT_DELEGATE = 'FLEXTERN_CLIENT_DELEGATE',
   FLEXTERN_TALENT = 'FLEXTERN_TALENT',
 }
 

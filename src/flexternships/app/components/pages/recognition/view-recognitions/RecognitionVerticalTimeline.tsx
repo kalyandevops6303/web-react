@@ -34,7 +34,7 @@ function RecognitionVerticalTimeline({
               }`}
           >
             <div
-              className={`absolute left-2 -translate-x-1/2 mt-[13px] mr-4 p-1 rounded-full`}
+              className="absolute left-2 -translate-x-1/2 mt-[13px] mr-4 p-1 rounded-full"
               style={{ backgroundColor: `${item.color}1F` }}
             >
               <div className={`size-3 bg-${item.color} rounded-full`} style={{ backgroundColor: item.color }} />

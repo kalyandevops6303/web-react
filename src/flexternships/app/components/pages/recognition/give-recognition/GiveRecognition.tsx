@@ -35,7 +35,7 @@ const defaultValues = {
   selectedTalents: [],
 };
 
-export default function GiveRecognition({ refreshStats }: { refreshStats?: () => void }) {
+export default function GiveRecognition({ refreshStats }: { refreshStats?: () => Promise<void> }) {
   const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
   const [talentsLoading, setTalentsLoading] = useState<boolean>(true);
   const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
@@ -67,8 +67,9 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
 
   const selectedTalents = watch('selectedTalents');
 
-  const closeConfirmationModal = () => {
+  const closeConfirmationModal = async () => {
     reset(defaultValues);
+    await refreshStats?.();
     setIsConfirmationModalOpen(false);
   };
 
@@ -90,7 +91,6 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
     setIsSubmitLoading(true);
     try {
       await submitRecognition(projectId, data.milestone._id, data.selectedTalents);
-      refreshStats?.();
       openConfirmationModal();
     } catch (error: unknown) {
       if (error instanceof Error) {

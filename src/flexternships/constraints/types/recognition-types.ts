@@ -1,4 +1,4 @@
-import { RecognitionSource } from '../enums/core-enums';
+import { FlexternUserAppRole, RecognitionSource } from '../enums/core-enums';
 import { Competency } from './competency-types';
 
 export type GiveRecognitionForm = {
@@ -14,11 +14,11 @@ export type GiveRecognitionForm = {
 };
 
 export type RecognitionTimelineItem = {
-  clientInfo: {
+  giverDetails: {
     name: string;
     profileImage: string;
     designation: string;
-    company: string;
+    appRole: FlexternUserAppRole;
   };
   type: RecognitionSource;
   milestoneNumber: number;

@@ -11,11 +11,10 @@ import { Competency } from '@/flexternships/constraints/types/competency-types';
 import { getReadableTimeDifference } from '@/flexternships/utils/date-utils';
 
 interface ViewRecognitionManagerCardProps {
-  clientInfo: {
+  giverDetails: {
     name: string;
     profileImage: string;
     designation: string;
-    company: string;
   };
   type: RecognitionSource;
   milestoneNumber: number;
@@ -25,7 +24,7 @@ interface ViewRecognitionManagerCardProps {
 }
 
 export default function ViewRecognitionManagerCard({
-  clientInfo,
+  giverDetails,
   type,
   milestoneNumber,
   timestamp,
@@ -39,21 +38,21 @@ export default function ViewRecognitionManagerCard({
           <div className="flex flex-row gap-x-2 items-center">
             <div>
               <Avatar className="size-10">
-                <AvatarImage src={clientInfo.profileImage} />
+                <AvatarImage src={giverDetails.profileImage} />
                 <AvatarFallback
                   className="p-2 font-semibold text-sm"
                   style={{
-                    color: stringToColour(clientInfo.name),
-                    backgroundColor: `${stringToColour(clientInfo.name, { opacity: 10 })}`,
+                    color: stringToColour(giverDetails.name),
+                    backgroundColor: `${stringToColour(giverDetails.name, { opacity: 10 })}`,
                   }}
                 >
-                  {clientInfo.name.charAt(0).toUpperCase()}
+                  {giverDetails.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </div>
             <div className="w-[345px]">
-              <div className="text-grey-heading text-sm font-medium leading-[23px]">{clientInfo.name}</div>
-              <div className="text-grey text-sm font-normal leading-[21px]">{clientInfo.designation}</div>
+              <div className="text-grey-heading text-sm font-medium leading-[23px]">{giverDetails.name}</div>
+              <div className="text-grey text-sm font-normal leading-[21px]">{giverDetails.designation}</div>
             </div>
           </div>
           <div className="min-w-[211px]">
