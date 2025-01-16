@@ -3,18 +3,24 @@ import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleE
 interface StatboxProps {
   title: string | React.ReactNode;
   desc?: string;
+  isSelected?: boolean;
 }
 
-const Statbox: React.FC<StatboxProps> = ({ title, desc }) => {
-  const [isActive, setIsActive] = useState(false);
+const styles = {
+  active: 'border-trublue-secondary-500 border-1 bg-trublue-light',
+  inactive: 'border-grey-200 border-1',
+};
+
+const Statbox: React.FC<StatboxProps> = ({ title, desc, isSelected }) => {
+  const [isActive, setIsActive] = useState(isSelected ?? false);
   const handleClick = () => {
-    setIsActive(!isActive);
+    setIsActive(true);
   };
   return (
     <div onClick={handleClick}>
       <SimpleElevatedCard
         className={`flex flex-col items-start flex-shrink-0 px-5 py-4 gap-3 ${
-          isActive && 'border-trublue-secondary-500 border-1 bg-trublue-light'
+          isActive && styles.active
         } rounded-[10px]`}
       >
         <div className="my-auto">

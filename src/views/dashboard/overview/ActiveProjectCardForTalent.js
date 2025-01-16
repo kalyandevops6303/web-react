@@ -54,17 +54,15 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design new-tag-relative-card">
+      <Card className="card-app-design new-tag-relative-card project-card-dashboard">
         {!data?.is_read && <NewTag />}
-        <CardBody>
+        <CardBody className="project-card-body">
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
-            {truncateSentence({ sentence: data?.name, maxCharacters: 30 })}
-          </p>
+          <p className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</p>
           <div className="client-badge px-1 mb-75">
             <p className="mb-0">Client</p>
           </div>
