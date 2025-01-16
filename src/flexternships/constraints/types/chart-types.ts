@@ -105,7 +105,7 @@ export type MatrixConfig = {
 };
 export type MatrixDataItem = {
   label: string; // shown as a row label
-  [key: string]: { score: number } | string; // column records with scores
+  [key: string]: { score: number | null } | string; // column records with scores
 };
 
 export interface ColoredGridMatrixProps {

@@ -8,7 +8,8 @@ import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
-import { FlexternComments } from '../constraints/types/analytics-types';
+import { DetailedPerformanceInsights, FlexternComments } from '../constraints/types/analytics-types';
+import { MatrixDataItem } from '../constraints/types/chart-types';
 
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
@@ -204,5 +205,34 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
         },
         competencyInfo: comment.competency_info,
       })) || [],
+  };
+};
+export const parseDetailedPerformanceInsights = (data: Record<string, any>): DetailedPerformanceInsights => {
+  return {
+    chartData:
+      data.chart_data?.map((item: Record<string, string | { score: number | null }>) => {
+        const chartItem: MatrixDataItem = {
+          label: item.label as string,
+        };
+        // Add dynamic user scores
+        Object.keys(item).forEach((key) => {
+          if (key !== 'label') {
+            chartItem[key] = item[key];
+          }
+        });
+        return chartItem;
+      }) || [],
+    chartConfig: {
+      legend:
+        data.chart_config?.legend?.map((item: Record<string, string | number>) => ({
+          color: item.color as string,
+          rangeMin: item.range_min as number,
+          rangeMax: item.range_max as number,
+        })) || [],
+    },
+    score: {
+      average: data.score?.average,
+      max: data.score?.max,
+    },
   };
 };

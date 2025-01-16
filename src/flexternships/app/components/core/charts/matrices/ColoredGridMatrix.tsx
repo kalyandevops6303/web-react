@@ -1,7 +1,6 @@
 import { ColoredGridMatrixProps } from '@/flexternships/constraints/types/chart-types';
 
 export default function ColoredGridMatrix({ matrixConfig, matrixData }: ColoredGridMatrixProps) {
-  console.log(matrixConfig, matrixData);
   return (
     <div className="flex flex-col gap-y-4">
       {matrixConfig.legend && (
@@ -32,7 +31,10 @@ export default function ColoredGridMatrix({ matrixConfig, matrixData }: ColoredG
                 {Object.entries(row)
                   .filter(([key]) => key !== 'label')
                   .map(([columnName, value]) => {
-                    const score = (value as { score: number }).score;
+                    const score = (value as { score: number | null }).score;
+
+                    if (score === null) return <div className="max-w-28 min-h-7 bg-grey-100 rounded-md" />;
+
                     const legendItem = matrixConfig.legend?.find(
                       (item) => score >= item.rangeMin && score <= item.rangeMax,
                     );

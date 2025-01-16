@@ -3,6 +3,8 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
+import { parseDetailedPerformanceInsights } from '../utils/parsing-utils';
+import { DetailedPerformanceInsights } from '../constraints/types/analytics-types';
 
 export const getIndividualOverviewService: (userId: string, projectId: string) => Promise<any> = async (
   userId,
@@ -83,5 +85,25 @@ export const getAiSummaryService: (projectId: string, userId: string) => Promise
     return response.data?.data || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching AI summary');
+  }
+};
+
+export const getDetailedPerformanceInsightsService = async (
+  projectId: string,
+  competencyAbbreviation: string,
+): Promise<DetailedPerformanceInsights | undefined> => {
+  const config = {
+    params: {
+      project_id: projectId,
+      competency_abbreviation: competencyAbbreviation,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(`${routes.analytics.detailedPerformanceInsights}`, config);
+    return parseDetailedPerformanceInsights(response.data?.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching detailed performance insights');
   }
 };

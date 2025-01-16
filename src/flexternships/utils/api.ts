@@ -123,6 +123,7 @@ export const routes = {
     performanceChart: `${serviceUrls.dashboardV2}/analytics/performance-rating`,
     projectsList: `${serviceUrls.dashboardV2}/analytics/individual/projects-list`,
     thirdPartyAppsData: `${serviceUrls.dashboardV2}/analytics/third-party-apps-data`,
+    detailedPerformanceInsights: `${serviceUrls.dashboardV2}/team/performance/insights/detail`,
   },
 };
 
