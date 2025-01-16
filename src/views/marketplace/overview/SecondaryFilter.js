@@ -545,20 +545,24 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                 primaryFilter === 'teams') &&
                 !inMyBids && (
                   <Col>
-                    <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
-                    <Select
-                      isClearable
-                      options={sortingOptions}
-                      classNamePrefix="select"
-                      placeholder="Select type"
-                      theme={selectThemeColors}
-                      onChange={onChangeSort}
-                      value={
-                        secondFilterState?.sort_by?.length > 0
-                          ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                          : null
-                      }
-                    />
+                    {primaryFilter === 'all_listings' || primaryFilter === 'talents' ? (
+                      <>
+                        <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
+                        <Select
+                          isClearable
+                          options={sortingOptions}
+                          classNamePrefix="select"
+                          placeholder="Select type"
+                          theme={selectThemeColors}
+                          onChange={onChangeSort}
+                          value={
+                            secondFilterState?.sort_by?.length > 0
+                              ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
+                              : null
+                          }
+                        />
+                      </>
+                    ) : null}
                   </Col>
                 )}
             </PermissionWrapper>

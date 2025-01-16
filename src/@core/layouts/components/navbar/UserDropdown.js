@@ -231,7 +231,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {userDetailsData?.user_type === userTypes.talent && (
             <Avatar
               img={
-                userDetailsData?.talent_info?.image_uri.length > 0
+                userDetailsData?.talent_info?.image_uri?.length > 0
                   ? userDetailsData?.talent_info?.image_uri
                   : defaultAvatar
               }
@@ -242,7 +242,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
           {userDetailsData?.user_type === userTypes.client && (
             <Avatar
               img={
-                userDetailsData?.client_info?.image_uri.length > 0
+                userDetailsData?.client_info?.image_uri?.length > 0
                   ? userDetailsData?.client_info?.image_uri
                   : defaultAvatar
               }
@@ -273,7 +273,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
                 {userDetailsData && (
                   <DelegateNameCard
                     img={
-                      userDetailsData?.admin_client_info?.image_uri.length > 0
+                      userDetailsData?.admin_client_info?.image_uri?.length > 0
                         ? userDetailsData?.admin_client_info?.image_uri
                         : defaultAvatar
                     }
@@ -304,7 +304,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
                       {savedUserDetails?.user_type === userTypes.talent ? (
                         <Avatar
                           img={
-                            savedUserDetails?.talent_info?.image_uri.length > 0
+                            savedUserDetails?.talent_info?.image_uri?.length > 0
                               ? savedUserDetails?.talent_info?.image_uri
                               : defaultAvatar
                           }
@@ -314,7 +314,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
                       ) : (
                         <Avatar
                           img={
-                            savedUserDetails?.client_info?.image_uri.length > 0
+                            savedUserDetails?.client_info?.image_uri?.length > 0
                               ? savedUserDetails?.client_info?.image_uri
                               : defaultAvatar
                           }
