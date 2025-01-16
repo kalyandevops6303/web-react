@@ -251,7 +251,7 @@ export const parseRecognitionTimeline = (data: Record<string, any>): Recognition
 
     const giverName =
       giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
-        ? `${recognition.giver_details.first_name} ${recognition.giver_details.last_name} (${recognition.giver_details.delegate.first_name} ${recognition.giver_details.delegate.last_name})`
+        ? `${recognition.giver_details.first_name} ${recognition.giver_details.last_name} (${recognition.giver_details.delegate_first_name} ${recognition.giver_details.delegate_last_name})`
         : `${recognition.giver_details.first_name} ${recognition.giver_details.last_name}`; // Full name for both client and talent
     return {
       giverDetails: {
