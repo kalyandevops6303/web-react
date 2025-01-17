@@ -547,6 +547,9 @@ const updateCardStatus =
   ({ switch_team_id, data, id, type, onSuccess }) =>
   async (dispatch) => {
     dispatch(updateCardStatusRequest());
+
+    if (!switch_team_id) return;
+
     try {
       await updateCardStatusService({ data, switch_team_id });
       dispatch(updateCardStatusSuccess({ type, id }));
