@@ -1,5 +1,5 @@
 // React and hooks
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 // UI Components
@@ -70,7 +70,7 @@ export default function FlexternProjectRecognition() {
     }
   };
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     if (!projectId) throw new Error('Project ID is required');
     setIsStatsLoading(true);
     try {
@@ -83,11 +83,11 @@ export default function FlexternProjectRecognition() {
         error instanceof Error ? error.message : 'An error occurred while fetching recognition stats',
       );
     }
-  };
+  }, [projectId]);
 
   useEffect(() => {
     fetchStats();
-  }, [projectId]);
+  }, [projectId, fetchStats]);
 
   useEffect(() => {
     if (!stats) return;
