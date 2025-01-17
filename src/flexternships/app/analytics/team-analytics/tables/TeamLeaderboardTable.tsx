@@ -97,7 +97,6 @@ export default function TeamLeaderboardTable() {
             allowSelection={false}
             className="max-h-[378px] overflow-y-auto"
             highlightByKey="name"
-            highlightedValues={['Analytics test 1']}
           />
         )}
       </div>
