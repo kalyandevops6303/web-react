@@ -7,11 +7,12 @@ import {
   getTeamCompetencySummaryService,
 } from '@/flexternships/services/analytics-service';
 import { useParams } from 'react-router-dom';
-import { DetailedPerformanceInsights } from '@/flexternships/constraints/types/analytics-types';
+import { DetailedPerformanceInsights, TeamCompetencySummary } from '@/flexternships/constraints/types/analytics-types';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import AIGeneratedSummary from '@/flexternships/app/components/core/cards/AIGeneratedSummary';
 import { isEmpty } from 'lodash';
+import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
 
 export default function PerformanceInsightsCard({ competencyItem }: PerformanceInsightsCardProps) {
   const [isGridLoading, setIsGridLoading] = useState<boolean>(true);
@@ -20,7 +21,7 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
   >(undefined);
 
   const [isSummaryLoading, setIsSummaryLoading] = useState<boolean>(true);
-  const [teamCompetencySummary, setTeamCompetencySummary] = useState<string | undefined>();
+  const [teamCompetencySummary, setTeamCompetencySummary] = useState<TeamCompetencySummary | undefined>();
 
   const { projectId } = useParams();
 
@@ -49,8 +50,8 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
     const fetchSummary = async () => {
       setIsSummaryLoading(true);
       try {
-        const summary = await getTeamCompetencySummaryService(projectId, competencyItem.id);
-        setTeamCompetencySummary(summary);
+        const summaryList = await getTeamCompetencySummaryService(projectId, competencyItem.id);
+        setTeamCompetencySummary(summaryList?.[0]);
         setIsSummaryLoading(false);
       } catch (error: unknown) {
         showToastMessage(
@@ -98,10 +99,12 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
         {(isSummaryLoading || !isEmpty(teamCompetencySummary)) && (
           <AIGeneratedSummary
             className="shadow-none border-1 border-grey-50"
-            title={`Team ${competencyItem.name} Summary`}
+            title={`Team ${teamCompetencySummary?.competencyName} Summary`}
             isLoading={isSummaryLoading}
           >
-            {teamCompetencySummary}
+            <ExpandableText className="text-dark-200 font-montserrat text-sm leading-5.5" charLimit={500}>
+              {teamCompetencySummary?.summary}
+            </ExpandableText>
           </AIGeneratedSummary>
         )}
         <CompetencyMatrix matrixData={matrixInsights} isLoading={isGridLoading} />

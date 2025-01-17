@@ -40,3 +40,9 @@ export type DetailedPerformanceInsights = {
     max: number;
   };
 };
+
+export type TeamCompetencySummary = {
+  competencyName: string;
+  competencyAbbreviation: string;
+  summary: string;
+};

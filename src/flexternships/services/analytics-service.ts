@@ -3,8 +3,8 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
-import { parseDetailedPerformanceInsights } from '../utils/parsing-utils';
-import { DetailedPerformanceInsights } from '../constraints/types/analytics-types';
+import { parseDetailedPerformanceInsights, parseTeamCompetencySummary } from '../utils/parsing-utils';
+import { DetailedPerformanceInsights, TeamCompetencySummary } from '../constraints/types/analytics-types';
 
 /**
  * Retrieves individual overview data for a user and project.
@@ -153,7 +153,7 @@ export const getDetailedPerformanceInsightsService = async (
 export const getTeamCompetencySummaryService = async (
   projectId: string,
   competency_id?: string,
-): Promise<string | undefined> => {
+): Promise<TeamCompetencySummary[] | undefined> => {
   const config = {
     params: {
       project_id: projectId,
@@ -164,7 +164,7 @@ export const getTeamCompetencySummaryService = async (
 
   try {
     const response = await axios.get(`${routes.analytics.teamCompetencySummary}`, config);
-    return response.data.data;
+    return parseTeamCompetencySummary(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching team competency summary');
   }

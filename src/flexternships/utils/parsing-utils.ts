@@ -8,7 +8,11 @@ import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
-import { DetailedPerformanceInsights, FlexternComments } from '../constraints/types/analytics-types';
+import {
+  DetailedPerformanceInsights,
+  FlexternComments,
+  TeamCompetencySummary,
+} from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
 
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
@@ -235,4 +239,12 @@ export const parseDetailedPerformanceInsights = (data: Record<string, any>): Det
       max: data.score?.max,
     },
   };
+};
+
+export const parseTeamCompetencySummary = (data: Array<Record<string, string>>): TeamCompetencySummary[] => {
+  return data.map((item: Record<string, string>) => ({
+    competencyName: item.competency_name,
+    competencyAbbreviation: item.competency_abbreviation,
+    summary: item.summary,
+  }));
 };
