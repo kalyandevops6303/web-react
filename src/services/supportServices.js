@@ -1,7 +1,7 @@
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const supportServive = (data) => DataService.post(API.support.create, data);
+const createSupportService = (data) => DataService.post(API.support.create, data);
 
 const getSupportCount = (data) => DataService.get(`${API.support.count}`, data);
 
@@ -11,4 +11,4 @@ const getRequestsService = (data) => DataService.post(`${API.support.list}?page=
 
 const deleteRequestService = (data) => DataService.post(`${API.support.delete}/${data}`);
 
-export { supportServive, getSupportCount, getIssueTypeService, getRequestsService, deleteRequestService };
+export { createSupportService, getSupportCount, getIssueTypeService, getRequestsService, deleteRequestService };
