@@ -1,18 +1,29 @@
-import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard';
-import CompetencyMatrix from './CompetencyMatrix';
+// React and routing imports
 import { useEffect, useState } from 'react';
-import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
+import { useParams } from 'react-router-dom';
+
+// Third party utilities
+import { isEmpty } from 'lodash';
+
+// Types and enums
+import { DetailedPerformanceInsights, TeamCompetencySummary } from '@/flexternships/constraints/types/analytics-types';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+
+// Services
 import {
   getDetailedPerformanceInsightsService,
   getTeamCompetencySummaryService,
 } from '@/flexternships/services/analytics-service';
-import { useParams } from 'react-router-dom';
-import { DetailedPerformanceInsights, TeamCompetencySummary } from '@/flexternships/constraints/types/analytics-types';
+
+// Utilities
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+
+// Components
 import AIGeneratedSummary from '@/flexternships/app/components/core/cards/AIGeneratedSummary';
-import { isEmpty } from 'lodash';
+import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
+import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard';
+import CompetencyMatrix from './CompetencyMatrix';
 
 export default function PerformanceInsightsCard({ competencyItem }: PerformanceInsightsCardProps) {
   const [isGridLoading, setIsGridLoading] = useState<boolean>(true);

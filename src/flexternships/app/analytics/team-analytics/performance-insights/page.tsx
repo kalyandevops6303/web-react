@@ -1,13 +1,20 @@
 // 'use client'; // For NextJS App
 
+// React and hooks
+// import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+// Icons
+import { ArrowLeft, Upload } from 'react-feather';
+
+// Components
+import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
 import SecondaryButton from '@/flexternships/app/components/core/buttons/SecondaryButton';
-import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
 import PerformanceInsightsCard from '@/flexternships/app/components/pages/analytics/team-analytics/performance-insights/PerformanceInsightsCard';
+
+// Mock data
 import { mockCompetencies } from '@/flexternships/mocks/competency-data';
-// import { useState } from 'react';
-import { ArrowLeft, Upload } from 'react-feather';
-import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TeamPerformanceInsights() {
   // const [isCompetenciesLoading, setIsCompetenciesLoading] = useState<boolean>(false);
