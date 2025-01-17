@@ -58,21 +58,26 @@ export enum MilestoneArtifactErrorType {
   UPLOAD_FAILED = 'UPLOAD_FAILED',
 }
 
-// Subject to changer as per BE
 export enum MilestoneFeedbackType {
   TEAM_FEEDBACK = 'MANAGER_TO_TEAM',
   INDIVIDUAL_FEEDBACK = 'MANAGER_TO_PEER',
   SELF_FEEDBACK = 'SELF',
   PEER_FEEDBACK = 'PEER_TO_PEER',
 }
-// Subject to changer as per BE
+
 export enum MilestoneFeedbackStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
 }
 
+export enum RecognitionSource {
+  QUICK_ACTION = 'QUICK_ACTION',
+  FEEDBACK = 'FEEDBACK',
+}
+
 export enum FlexternUserAppRole {
   FLEXTERN_CLIENT = 'FLEXTERN_CLIENT',
+  FLEXTERN_CLIENT_DELEGATE = 'FLEXTERN_CLIENT_DELEGATE',
   FLEXTERN_TALENT = 'FLEXTERN_TALENT',
 }
 

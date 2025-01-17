@@ -1,18 +1,32 @@
+/**
+ * Project management service module for handling project-related operations.
+ * @module project-management-v2
+ */
+
 import axios from 'axios';
 import { ProjectCreationFormData } from '@flexternships/types/project-creation-types';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
-import { MilestoneDraftArtifact } from '../constraints/types/project-milestones-types';
+import { MilestoneDraftArtifact, MilestoneDropdownItem } from '../constraints/types/project-milestones-types';
 import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
-import { parseMilestoneDetails } from '../utils/parsing-utils';
+import {
+  parseCompetencies,
+  parseMilestoneDetails,
+  parseMilestoneDropdown,
+  parseRecognitionStats,
+  parseRecognitionTimeline,
+} from '../utils/parsing-utils';
+import { PaginatedData } from './user-management';
+import { MilestoneDropdownOptions } from '../constraints/enums/miscellaneous-enums';
+import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/recognition-constants';
 
 /**
- * Retrieves a file upload URL for a given filename?.
- * @param filename - The name of the file to be uploaded?.
- * @returns A Promise that resolves to the upload URL data?.
- * @throws {Error} If the file upload URL retrieval fails or an unexpected error occurs?.
+ * Retrieves a file upload URL for a given filename.
+ * @param filename - The name of the file to be uploaded.
+ * @returns A Promise that resolves to the upload URL data.
+ * @throws {Error} If the file upload URL retrieval fails or an unexpected error occurs.
  */
 export const getFileUploadUrl = async (filename: string) => {
   const headers = appendAuthToken({});
@@ -32,10 +46,10 @@ export const getFileUploadUrl = async (filename: string) => {
 };
 
 /**
- * Retrieves a file download URL for a given file key?.
- * @param fileKey - The key of the file to be downloaded?.
- * @returns A Promise that resolves to the download URL data?.
- * @throws {Error} If the file download URL retrieval fails or an unexpected error occurs?.
+ * Retrieves a file download URL for a given file key.
+ * @param fileKey - The key of the file to be downloaded.
+ * @returns A Promise that resolves to the download URL data.
+ * @throws {Error} If the file download URL retrieval fails or an unexpected error occurs.
  */
 export const getFileDownloadUrl = async (fileKey: string) => {
   const headers = appendAuthToken({});
@@ -55,11 +69,11 @@ export const getFileDownloadUrl = async (fileKey: string) => {
 };
 
 /**
- * Creates a new Flextern project?.
- * @param projectData - The data for the project to be created?.
+ * Creates a new Flextern project.
+ * @param projectData - The data for the project to be created.
  * @param draftProjectId - Optional ID of an existing draft project to update
- * @returns A Promise that resolves to the created project ID or undefined?.
- * @throws {Error} If the project creation fails or an unexpected error occurs?.
+ * @returns A Promise that resolves to the created project ID or undefined.
+ * @throws {Error} If the project creation fails or an unexpected error occurs.
  */
 export const createFlexternProject: (
   projectData: ProjectCreationFormData,
@@ -126,11 +140,11 @@ export const createFlexternProject: (
 };
 
 /**
- * Creates a draft of a Flextern project?.
- * @param projectData - The data for the project draft to be created?.
+ * Creates a draft of a Flextern project.
+ * @param projectData - The data for the project draft to be created.
  * @param draftProjectId - Optional ID of an existing draft project to update
- * @returns A Promise that resolves to the created draft project ID or undefined?.
- * @throws {Error} If the project draft creation fails or an unexpected error occurs?.
+ * @returns A Promise that resolves to the created draft project ID or undefined.
+ * @throws {Error} If the project draft creation fails or an unexpected error occurs.
  */
 export const createFlexternProjectDraft: (
   projectData: ProjectCreationFormData,
@@ -427,6 +441,8 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         },
       },
       isDocumentsNeeded: data.is_document_needed,
+      viewRecognition: data.view_recognition,
+      giveRecognition: data.give_recognition,
     };
 
     return projectDetailsData;
@@ -632,6 +648,7 @@ export const updateMilestoneStatus = async (milestoneId: string, targetStatus: M
     handleError(error as Error, 'An unexpected error occurred while updating milestone status');
   }
 };
+
 /**
  * Marks milestone artifacts as read.
  * @param milestoneId - The ID of the milestone whose artifacts should be marked as read.
@@ -667,6 +684,12 @@ export const submitKudosOrWow = async (milestoneId: string, teamMemberIds: strin
   }
 };
 
+/**
+ * Terminates a project.
+ * @param projectId - The ID of the project to terminate.
+ * @returns A Promise that resolves when the project is terminated.
+ * @throws {Error} If the termination fails or an unexpected error occurs.
+ */
 export const terminateProject = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
@@ -678,6 +701,12 @@ export const terminateProject = async (projectId: string) => {
   }
 };
 
+/**
+ * Withdraws a project.
+ * @param projectId - The ID of the project to withdraw.
+ * @returns A Promise that resolves when the project is withdrawn.
+ * @throws {Error} If the withdrawal fails or an unexpected error occurs.
+ */
 export const withdrawProject = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
@@ -689,6 +718,14 @@ export const withdrawProject = async (projectId: string) => {
   }
 };
 
+/**
+ * Relists a project with new dates.
+ * @param projectId - The ID of the project to relist.
+ * @param startDate - The new start date timestamp.
+ * @param endDate - The new end date timestamp.
+ * @returns A Promise that resolves when the project is relisted.
+ * @throws {Error} If the relisting fails or an unexpected error occurs.
+ */
 export const relistProject = async (projectId: string, startDate: number, endDate: number) => {
   const headers = appendAuthToken({});
   const config = {
@@ -701,5 +738,139 @@ export const relistProject = async (projectId: string, startDate: number, endDat
     await axios.put(routes.projectManagementV2.project.relistProject, {}, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while withdrawing the project');
+  }
+};
+
+/**
+ * Retrieves the recognition timeline for a project and talent user.
+ * @param projectId - The ID of the project to get the timeline for.
+ * @param talentUserId - The ID of the talent user to get the timeline for.
+ * @param milestoneId - Optional milestone ID to filter timeline by.
+ * @returns A Promise that resolves to the parsed recognition timeline data.
+ * @throws {Error} If the timeline retrieval fails or an unexpected error occurs.
+ */
+export const getRecognitionTimeline = async (projectId: string, talentUserId: string, milestoneId?: string) => {
+  const config = {
+    params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.projectManagementV2.recognition.recognitionTimeline, config);
+    return parseRecognitionTimeline(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching recognition timeline');
+  }
+};
+
+/**
+ * Submits recognition for one or more talents in a project milestone.
+ * @param projectId - The ID of the project.
+ * @param milestoneId - The ID of the milestone.
+ * @param selectedTalents - Array of talent recognition data containing competencies, comments and talent IDs.
+ * @returns A Promise that resolves to the submission response data.
+ * @throws {Error} If the submission fails or an unexpected error occurs.
+ */
+export const submitRecognition = async (
+  projectId: string,
+  milestoneId: string,
+  selectedTalents: { competencies: string[]; comment: string; talentId: string }[],
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+  const payload = {
+    project_id: projectId,
+    milestone_id: milestoneId,
+    user_competency_comments: selectedTalents.map((talent) => ({
+      user_id: talent.talentId,
+      competencies: talent.competencies.map((competency) => ({
+        competency_id: competency,
+      })),
+      comment: talent.comment,
+    })),
+  };
+
+  try {
+    const response = await axios.post(routes.projectManagementV2.recognition.submitRecognition, payload, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting recognition');
+  }
+};
+
+/**
+ * Gets recognition count statistics for a project.
+ * @param projectId - The ID of the project.
+ * @param talentUserId - Optional talent user ID to filter stats by.
+ * @param milestoneId - Optional milestone ID to filter stats by.
+ * @returns A Promise that resolves to the parsed recognition statistics.
+ * @throws {Error} If the stats retrieval fails or an unexpected error occurs.
+ */
+export const getRecognitionsCount = async (projectId: string, talentUserId?: string, milestoneId?: string) => {
+  const config = {
+    params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.projectManagementV2.recognition.getRecognitionsCount, config);
+    return parseRecognitionStats(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching recognition count');
+  }
+};
+/**
+ * Gets a dropdown list of milestones for a project.
+ * @param projectId - The ID of the project.
+ * @param options - Optional array of milestone options to filter by.
+ * @returns A Promise that resolves to paginated milestone dropdown data.
+ * @throws {Error} If the milestones retrieval fails or an unexpected error occurs.
+ */
+export const getMilestonesDropdown = async (
+  projectId: string,
+  options: MilestoneDropdownOptions,
+  parsingOptions: { useSequence?: boolean } = { useSequence: false },
+): Promise<PaginatedData<MilestoneDropdownItem>> => {
+  const config = { params: { project_id: projectId, options: options }, withCredentials: true };
+  try {
+    const response = await axios.get(routes.projectManagementV2.milestone.milestonesDropdown, config);
+    const data = parseMilestoneDropdown(response.data.data, parsingOptions);
+
+    // Add "All Milestones" option if this is the first page and the view recognition option is selected
+    if (data.metadata.current_page === 1 && options === MilestoneDropdownOptions.VIEW_RECOGNITION) {
+      data.data.unshift(DEFAULT_ALL_MILESTONES_OPTION);
+    }
+
+    return data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching milestones dropdown');
+  }
+  return {
+    metadata: {
+      current_page: 1,
+      page_size: 0,
+      total_records: 0,
+      has_next_page: false,
+    },
+    data: [],
+  };
+};
+
+/**
+ * Gets the list of available competencies.
+ * @returns A Promise that resolves to the parsed competencies data.
+ * @throws {Error} If the competencies retrieval fails or an unexpected error occurs.
+ */
+export const getCompetencies = async () => {
+  const config = { withCredentials: true };
+  try {
+    const response = await axios.get(routes.projectManagementV2.feedback.getCompetencies, config);
+    return parseCompetencies(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching competencies');
   }
 };

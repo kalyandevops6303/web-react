@@ -115,7 +115,6 @@ export const getUserDetails = async () => {
   };
   try {
     const response = await axios.get(routes.userManagement.user.getUserDetails, config);
-    console.log('response : ' + response);
 
     return response.data.data;
   } catch (error) {
@@ -242,16 +241,15 @@ export const getFlexternClientOrgInfo = async () => {
 };
 
 // Static Data Endpoints
-
 // Types used in the services
-export type PaginatedData = {
+export type PaginatedData<T = any> = {
   metadata: {
     current_page: number;
     page_size: number;
     total_records: number;
     has_next_page: boolean;
   };
-  data: { _id: string; name: string }[];
+  data: (T & { _id: string; name: string })[];
 };
 
 // Services code starts here

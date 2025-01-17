@@ -32,14 +32,12 @@ export default function InvitationCard({ hideSubtitle = false }) {
     headerContent: (
       <div className="flex w-full items-center mr-3 justify-between">
         <div className="flex flex-col text-left">
-          {!hideSubtitle && (
-            <div className="text-[#B9B9C3] font-sans text-[12px] font-semibold leading-[16px]">STEP 1</div>
-          )}
+          {!hideSubtitle && <div className="text-grey-muted font-sans text-xs font-semibold leading-4">STEP 1</div>}
           <div className="relative">
             {projectInvitationDetails?.is_read && (
-              <div className="absolute top-0 -right-2 w-2 h-2 border bg-[#EA5455] rounded-full border-[#EA5455]"></div>
+              <div className="absolute top-0 -right-2 w-2 h-2 border bg-error rounded-full border-error"></div>
             )}
-            <div className="text-[#5E5873] font-sans text-[16px] font-medium leading-[24px] !no-underline hover:!no-underline">
+            <div className="text-grey-heading font-sans text-base font-medium leading-6 !no-underline hover:!no-underline">
               Invitation
             </div>
           </div>
@@ -47,7 +45,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
         <div>
           <Link
             to={`/project-details/${params?.projectId}/milestone`}
-            className="text-center text-[14px] font-semibold tracking-[0.4px] text-[#0185E4]"
+            className="text-center text-sm font-semibold tracking-wide text-trublue-secondary-500"
           >
             View Milestone(s)
           </Link>
