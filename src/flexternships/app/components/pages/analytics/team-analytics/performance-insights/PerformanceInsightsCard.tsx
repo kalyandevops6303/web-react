@@ -2,28 +2,36 @@ import SimpleElevatedCard from '@/flexternships/app/components/core/cards/Simple
 import CompetencyMatrix from './CompetencyMatrix';
 import { useEffect, useState } from 'react';
 import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
-import { getDetailedPerformanceInsightsService } from '@/flexternships/services/analytics-service';
+import {
+  getDetailedPerformanceInsightsService,
+  getTeamCompetencySummaryService,
+} from '@/flexternships/services/analytics-service';
 import { useParams } from 'react-router-dom';
 import { DetailedPerformanceInsights } from '@/flexternships/constraints/types/analytics-types';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import AIGeneratedSummary from '@/flexternships/app/components/core/cards/AIGeneratedSummary';
+import { isEmpty } from 'lodash';
 
 export default function PerformanceInsightsCard({ competencyItem }: PerformanceInsightsCardProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isGridLoading, setIsGridLoading] = useState<boolean>(true);
   const [detailedPerformanceInsights, setDetailedPerformanceInsights] = useState<
     DetailedPerformanceInsights | undefined
   >(undefined);
+
+  const [isSummaryLoading, setIsSummaryLoading] = useState<boolean>(true);
+  const [teamCompetencySummary, setTeamCompetencySummary] = useState<string | undefined>();
 
   const { projectId } = useParams();
 
   useEffect(() => {
     if (!projectId) throw new Error('Project ID is required');
     const fetchData = async () => {
-      setIsLoading(true);
+      setIsGridLoading(true);
       try {
         const data = await getDetailedPerformanceInsightsService(projectId, competencyItem.abbreviation);
         setDetailedPerformanceInsights(data);
-        setIsLoading(false);
+        setIsGridLoading(false);
       } catch (error: unknown) {
         showToastMessage(
           ToastType.ERROR,
@@ -34,9 +42,27 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
       }
     };
     fetchData();
-  }, []);
+  }, [projectId, competencyItem.abbreviation]);
 
-  if (!isLoading && !detailedPerformanceInsights) return <div>No data found</div>;
+  useEffect(() => {
+    if (!projectId) return;
+    const fetchSummary = async () => {
+      setIsSummaryLoading(true);
+      try {
+        const summary = await getTeamCompetencySummaryService(projectId, competencyItem.id);
+        setTeamCompetencySummary(summary);
+        setIsSummaryLoading(false);
+      } catch (error: unknown) {
+        showToastMessage(
+          ToastType.ERROR,
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred while fetching team competency summary',
+        );
+      }
+    };
+    fetchSummary();
+  }, [projectId, competencyItem.id]);
 
   const matrixInsights = detailedPerformanceInsights
     ? {
@@ -49,7 +75,7 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
     <SimpleElevatedCard className="bg-white">
       <div className="flex flex-row items-end gap-x-2 px-5 py-4 border-b-1 border-grey-border">
         <div className="text-grey-700 text-lg font-medium leading-[26px]">{competencyItem.name}</div>
-        {isLoading ? (
+        {isGridLoading ? (
           <BoxSkeleton className="h-6 w-8" />
         ) : (
           detailedPerformanceInsights && (
@@ -69,8 +95,16 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
       </div>
 
       <div className="p-5 flex flex-col gap-y-5">
-        {/* TODO: Add AI Summary Card and implement grid layout */}
-        <CompetencyMatrix matrixData={matrixInsights} isLoading={isLoading} />
+        {(isSummaryLoading || !isEmpty(teamCompetencySummary)) && (
+          <AIGeneratedSummary
+            className="shadow-none border-1 border-grey-50"
+            title={`Team ${competencyItem.name} Summary`}
+            isLoading={isSummaryLoading}
+          >
+            {teamCompetencySummary}
+          </AIGeneratedSummary>
+        )}
+        <CompetencyMatrix matrixData={matrixInsights} isLoading={isGridLoading} />
       </div>
     </SimpleElevatedCard>
   );
@@ -78,6 +112,7 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
 
 interface PerformanceInsightsCardProps {
   competencyItem: {
+    id: string;
     name: string;
     abbreviation: string;
   };

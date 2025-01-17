@@ -6,6 +6,13 @@ import { keysToCamelCase } from '../utils/core-utils';
 import { parseDetailedPerformanceInsights } from '../utils/parsing-utils';
 import { DetailedPerformanceInsights } from '../constraints/types/analytics-types';
 
+/**
+ * Retrieves individual overview data for a user and project.
+ * @param userId - The ID of the user to get overview for
+ * @param projectId - The ID of the project to get overview for
+ * @returns Promise resolving to the individual overview data or undefined
+ * @throws {Error} If the overview retrieval fails
+ */
 export const getIndividualOverviewService: (userId: string, projectId: string) => Promise<any> = async (
   userId,
   projectId,
@@ -28,6 +35,13 @@ export const getIndividualOverviewService: (userId: string, projectId: string) =
   }
 };
 
+/**
+ * Retrieves recognition chart data for a project and user.
+ * @param projectId - The ID of the project
+ * @param userId - The ID of the user
+ * @returns Promise resolving to the recognition chart data or undefined
+ * @throws {Error} If the chart data retrieval fails
+ */
 export const getRecognitionChartDataService: (projectId: string, userId: string) => Promise<any> = async (
   projectId,
   userId,
@@ -49,6 +63,13 @@ export const getRecognitionChartDataService: (projectId: string, userId: string)
   }
 };
 
+/**
+ * Retrieves performance chart data for a project and user.
+ * @param projectId - The ID of the project
+ * @param userId - The ID of the user
+ * @returns Promise resolving to the performance chart data or undefined
+ * @throws {Error} If the chart data retrieval fails
+ */
 export const getPerformanceChartDataService: (projectId: string, userId: string) => Promise<any> = async (
   projectId,
   userId,
@@ -70,6 +91,13 @@ export const getPerformanceChartDataService: (projectId: string, userId: string)
   }
 };
 
+/**
+ * Retrieves AI-generated summary for a project and user.
+ * @param projectId - The ID of the project
+ * @param userId - The ID of the user
+ * @returns Promise resolving to the AI summary data or undefined
+ * @throws {Error} If the summary retrieval fails
+ */
 export const getAiSummaryService: (projectId: string, userId: string) => Promise<any> = async (projectId, userId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -88,6 +116,13 @@ export const getAiSummaryService: (projectId: string, userId: string) => Promise
   }
 };
 
+/**
+ * Retrieves detailed performance insights for a project and competency.
+ * @param projectId - The ID of the project
+ * @param competencyAbbreviation - The abbreviation code for the competency
+ * @returns Promise resolving to the detailed performance insights or undefined
+ * @throws {Error} If the insights retrieval fails
+ */
 export const getDetailedPerformanceInsightsService = async (
   projectId: string,
   competencyAbbreviation: string,
@@ -102,8 +137,35 @@ export const getDetailedPerformanceInsightsService = async (
 
   try {
     const response = await axios.get(`${routes.analytics.detailedPerformanceInsights}`, config);
-    return parseDetailedPerformanceInsights(response.data?.data);
+    return parseDetailedPerformanceInsights(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching detailed performance insights');
+  }
+};
+
+/**
+ * Retrieves team competency summary for a project.
+ * @param projectId - The ID of the project
+ * @param competency_id - Optional ID of specific competency to filter by
+ * @returns Promise resolving to the team competency summary data or undefined
+ * @throws {Error} If the summary retrieval fails or an unexpected error occurs
+ */
+export const getTeamCompetencySummaryService = async (
+  projectId: string,
+  competency_id?: string,
+): Promise<string | undefined> => {
+  const config = {
+    params: {
+      project_id: projectId,
+      competency_id: competency_id,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(`${routes.analytics.teamCompetencySummary}`, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team competency summary');
   }
 };
