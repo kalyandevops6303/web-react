@@ -208,7 +208,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           project_status: primaryFilter?.toUpperCase() || '',
           talent_name: metaDataFlextern?.talent_name || '',
         },
-        onError,
       }),
     );
   }, [secondFilterState, searchText, primaryFilter]);
