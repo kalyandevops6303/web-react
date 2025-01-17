@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 export default function TopStatCard(props: TopStatCardProps) {
   const { title, value, icon, selected = false, onClick, disabled = false } = props;
@@ -10,10 +11,15 @@ export default function TopStatCard(props: TopStatCardProps) {
 
   return (
     <div
-      className={`flex flex-row justify-between p-5 rounded-md border-1 border-transparent ${
-        selected ? 'border-trublue-secondary-500 bg-trublue-light' : 'bg-white'
-      } gap-x-4 shadow-card ${onClick && !selected && !disabled ? 'cursor-pointer' : ''}
-      ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+      className={classNames(
+        'flex flex-row justify-between p-5 rounded-md border-1 border-transparent gap-x-4 shadow-card',
+        {
+          'border-trublue-secondary-500 bg-trublue-light': selected,
+          'bg-white': !selected,
+          'cursor-pointer': onClick && !selected && !disabled,
+          'opacity-70 cursor-not-allowed': disabled,
+        },
+      )}
       onClick={handleClick}
     >
       <div className="flex flex-col gap-y-1">
