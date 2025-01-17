@@ -1,3 +1,7 @@
+import { MatrixDataItem } from './chart-types';
+
+import { MatrixConfig } from './chart-types';
+
 export type FlexternComments = {
   metadata: {
     currentPage: number;
@@ -26,4 +30,19 @@ export type FlexternComments = {
     };
     createdAt: number;
   }>;
+};
+
+export type DetailedPerformanceInsights = {
+  chartData: MatrixDataItem[];
+  chartConfig: MatrixConfig;
+  score: {
+    average: number;
+    max: number;
+  };
+};
+
+export type TeamCompetencySummary = {
+  competencyName: string;
+  competencyAbbreviation: string;
+  summary: string;
 };
