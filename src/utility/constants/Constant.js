@@ -2,6 +2,7 @@
 import { Box, Check, Watch } from 'react-feather';
 
 const SUPPORT_EMAIL = 'support@trumio.ai';
+const DEFAULT_SUPPORT_TYPE = 'others';
 
 const counts = {
   AVATAR_MAX_COUNT: 3,
@@ -333,6 +334,7 @@ export {
   CHECKOUT_STATUS,
   PAYMENT_TYPES,
   SUPPORT_EMAIL,
+  DEFAULT_SUPPORT_TYPE,
   projectStatusEnum,
   statusEnum,
   delegateTypes,
