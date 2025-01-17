@@ -59,7 +59,7 @@ const LeftSideBarProjectDetails = () => {
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
 
-  const [ongoingProjectFlow, setOngoingProjectFlow] = useState<ProjectFlowType | undefined>(undefined);
+  const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>(undefined);
 
   const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });
   const secondaryAction = getSecondaryAction({ status: data?.status, userType: userDetails.userType });
@@ -82,7 +82,7 @@ const LeftSideBarProjectDetails = () => {
 
   const [documentsModal, setDocumentsModal] = useState(false);
 
-  const closeOngoingProjectFlow = () => setOngoingProjectFlow(undefined);
+  const closeCurrentProjectFlow = () => setCurrentProjectFlow(undefined);
 
   const primaryActionHandler = () => {
     console.log('primaryActionHandler', primaryAction);
@@ -90,7 +90,7 @@ const LeftSideBarProjectDetails = () => {
       case ProjectLeftPanelAction.MESSAGE:
         return handleMessageClick();
       case ProjectLeftPanelAction.RELIST:
-        return setOngoingProjectFlow(ProjectFlowType.RELIST);
+        return setCurrentProjectFlow(ProjectFlowType.RELIST);
       default:
         break;
     }
@@ -100,9 +100,9 @@ const LeftSideBarProjectDetails = () => {
     console.log('secondaryActionHandler', secondaryAction);
     switch (secondaryAction) {
       case ProjectLeftPanelAction.TERMINATE:
-        return setOngoingProjectFlow(ProjectFlowType.TERMINATE);
+        return setCurrentProjectFlow(ProjectFlowType.TERMINATE);
       case ProjectLeftPanelAction.WITHDRAW:
-        return setOngoingProjectFlow(ProjectFlowType.WITHDRAW);
+        return setCurrentProjectFlow(ProjectFlowType.WITHDRAW);
       default:
         break;
     }
@@ -305,12 +305,12 @@ const LeftSideBarProjectDetails = () => {
         />
       )}
       {projectId &&
-        ongoingProjectFlow &&
+        currentProjectFlow &&
         {
-          [ProjectFlowType.RELIST]: <ProjectRelistFlow projectId={projectId} onClose={closeOngoingProjectFlow} />,
-          [ProjectFlowType.TERMINATE]: <ProjectTerminateFlow projectId={projectId} onClose={closeOngoingProjectFlow} />,
-          [ProjectFlowType.WITHDRAW]: <ProjectWithdrawFlow projectId={projectId} onClose={closeOngoingProjectFlow} />,
-        }[ongoingProjectFlow]}
+          [ProjectFlowType.RELIST]: <ProjectRelistFlow projectId={projectId} onClose={closeCurrentProjectFlow} />,
+          [ProjectFlowType.TERMINATE]: <ProjectTerminateFlow projectId={projectId} onClose={closeCurrentProjectFlow} />,
+          [ProjectFlowType.WITHDRAW]: <ProjectWithdrawFlow projectId={projectId} onClose={closeCurrentProjectFlow} />,
+        }[currentProjectFlow]}
     </div>
   );
 };
