@@ -560,7 +560,24 @@ export const FlexternshipRoutes = [
   },
   {
     path: '/analytics/project/:projectId/team/performance-insights',
-    element: <TeamPerformanceInsights />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <TeamPerformanceInsights />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: '*',
