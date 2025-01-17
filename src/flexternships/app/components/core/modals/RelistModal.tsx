@@ -5,11 +5,9 @@ import { DatePicker } from '../form/DatePicker';
 import { dateToEpoch, getTodayDate } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
 import PrimaryButton from '../buttons/PrimaryButton';
-import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
 export default function RelistModal(props: RelistModalProps) {
-  const { isOpen, onClose, projectId } = props;
-  const setRelistProject = useProjectsStore((state) => state.setRelistProject);
+  const { isOpen, onClose } = props;
   const [listImmediately, setListImmediately] = useState(false);
   const [inputs, setInputs] = useState<{
     duration: string;
@@ -154,13 +152,7 @@ export default function RelistModal(props: RelistModalProps) {
             >
               Cancel
             </PrimaryButton>
-            <PrimaryButton
-              onClick={async () => {
-                await setRelistProject(projectId, inputs.startDate, inputs.endDate);
-              }}
-            >
-              Re-list
-            </PrimaryButton>
+            <PrimaryButton onClick={() => {}}>Re-list</PrimaryButton>
           </div>
         </div>
       </div>
