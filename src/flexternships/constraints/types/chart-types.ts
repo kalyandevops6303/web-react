@@ -108,7 +108,7 @@ export type MatrixDataItem = {
   [key: string]: { score: number | null } | string; // column records with scores
 };
 
-export interface ColoredGridMatrixProps {
+export type ColoredGridMatrixProps = {
   matrixConfig: MatrixConfig;
   matrixData: MatrixDataItem[];
-}
+};
