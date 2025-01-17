@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export default function VerticalTimeline({
   timelineItems = [],
   checked,
-  hideLine,
+  hideLine = false,
   spaceLeft = 20,
   spaceBottom = 40,
 }: VerticalTimelineProps) {
@@ -17,9 +17,10 @@ export default function VerticalTimeline({
           return (
             <li
               className={classNames({
-                'border-s border-l': !isLastItem,
+                'border-s border-l border-r-0 border-t-0 border-b-0': !isLastItem,
                 'border-success': !isLastItem && checked,
                 'border-grey-border': !isLastItem && !checked,
+                'border-none': isLastItem,
               })}
               style={{
                 paddingLeft: hideLine ? undefined : spaceLeft,
