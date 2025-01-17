@@ -59,6 +59,7 @@ import { FEATURE_NAMES } from '@/utility/constants/Constant';
 import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
 import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
 import FlexternProjectRecognition from '@/flexternships/app/recognition/page';
+import TeamPerformanceInsights from '@/flexternships/app/analytics/team-analytics/performance-insights/page';
 import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
 
 // ** Default Route
@@ -590,6 +591,27 @@ export const FlexternshipRoutes = [
         ]}
       >
         <FlexternProjectRecognition />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
+    path: '/analytics/project/:projectId/team/performance-insights',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <TeamPerformanceInsights />
       </RoleAccessWrapper>
     ),
   },

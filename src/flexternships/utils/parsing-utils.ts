@@ -9,11 +9,16 @@ import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
-import { FlexternComments } from '../constraints/types/analytics-types';
 import { RecognitionStats, RecognitionTimeline } from '../constraints/types/recognition-types';
 import { TeamMemberDetails } from '../constraints/types/project-details-types';
 import { Competency } from '../constraints/types/competency-types';
 import { FlexternUserAppRole } from '../constraints/enums/core-enums';
+import {
+  DetailedPerformanceInsights,
+  FlexternComments,
+  TeamCompetencySummary,
+} from '../constraints/types/analytics-types';
+import { MatrixDataItem } from '../constraints/types/chart-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -361,4 +366,42 @@ export const parseMilestoneDropdown = (
       };
 
   return parsedData;
+};
+
+export const parseDetailedPerformanceInsights = (data: Record<string, any>): DetailedPerformanceInsights => {
+  return {
+    chartData:
+      data.chart_data?.map((item: Record<string, string | { score: number | null }>) => {
+        const chartItem: MatrixDataItem = {
+          label: item.label as string,
+        };
+        // Add dynamic user scores
+        Object.keys(item).forEach((key) => {
+          if (key !== 'label') {
+            chartItem[key] = item[key];
+          }
+        });
+        return chartItem;
+      }) || [],
+    chartConfig: {
+      legend:
+        data.chart_config?.legend?.map((item: Record<string, string | number>) => ({
+          color: item.color as string,
+          rangeMin: item.range_min as number,
+          rangeMax: item.range_max as number,
+        })) || [],
+    },
+    score: {
+      average: data.score?.average,
+      max: data.score?.max,
+    },
+  };
+};
+
+export const parseTeamCompetencySummary = (data: Array<Record<string, string>>): TeamCompetencySummary[] => {
+  return data.map((item: Record<string, string>) => ({
+    competencyName: item.competency_name,
+    competencyAbbreviation: item.competency_abbreviation,
+    summary: item.summary,
+  }));
 };
