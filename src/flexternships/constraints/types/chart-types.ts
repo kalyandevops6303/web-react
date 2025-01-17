@@ -1,11 +1,14 @@
 import { ChartConfig } from '@/flexternships/app/components/ui/chart';
+import { TooltipProps } from 'recharts';
+import { Payload, NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { ChartOrientation, StatsOrientation } from '../enums/chart-enums';
 
 export interface IChartLayoutProps {
   title: string;
   selectOptions?: { label: string; value: string }[];
   defaultSelectedValue?: string;
   handleSelect?: (value: string) => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   showDownloadIcon?: boolean;
   isDonutChart?: boolean;
   showInfoIcon?: boolean;
@@ -29,6 +32,7 @@ export interface IStatsProps {
   label: string;
   value: number;
   percentage: string;
+  orientation?: StatsOrientation;
 }
 
 export interface IDonutChartProps extends IBaseChartProps {
@@ -59,6 +63,16 @@ export interface IBaseChartProps {
   handleTabChange?: (value: string) => void;
 }
 
+export interface CustomPieChartProps2 {
+  chartData: { label: string; count: number; name: string }[];
+  chartConfig: { [key: string]: { color: string } };
+  totalCount: number;
+  title: string | React.ReactNode;
+  centerText: string;
+  statsOrientation: StatsOrientation;
+  className: string;
+}
+
 export interface CustomPieChartProps extends IChartLayoutProps {
   chartData: Array<{
     name: string;
@@ -71,7 +85,7 @@ export interface CustomPieChartProps extends IChartLayoutProps {
   showInfoIcon?: boolean;
 }
 
-type PayloadItem = {
+export type PayloadItem = {
   payload: {
     name: string;
     value: number | string;
@@ -94,6 +108,29 @@ export interface ChartLabelProps {
   index?: number;
 }
 
+export interface TeamMembersChartTooltipProps extends TooltipProps<any, any> {
+  selectedMetrics: string[];
+  showAll: boolean;
+  label: string;
+  payload: Payload<ValueType, NameType>[] | undefined;
+  active: boolean | undefined;
+  data: any;
+  hideDeselectedMetricsFromTooltip?: boolean;
+}
+
+export interface CustomDonutChart2Props {
+  chartData: { label: string; count: number; name: string }[];
+  chartConfig: { [key: string]: { color: string } };
+  totalCount: number;
+  title: string | React.ReactNode;
+  centerText: string;
+  isSemiCircle?: boolean;
+  statsOrientation?: StatsOrientation;
+  orientation?: ChartOrientation;
+  className?: string;
+  isDonutChart?: boolean;
+}
+
 export type MatrixLegendItem = {
   color: string;
   rangeMin: number;
@@ -108,7 +145,7 @@ export type MatrixDataItem = {
   [key: string]: { score: number | null } | string; // column records with scores
 };
 
-export type ColoredGridMatrixProps = {
+export interface ColoredGridMatrixProps {
   matrixConfig: MatrixConfig;
   matrixData: MatrixDataItem[];
-};
+}

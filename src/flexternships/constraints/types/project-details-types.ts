@@ -37,6 +37,7 @@ export type ProjectTabType = {
 export type BreadCrumbType = {
   title: string;
   link: string;
+  isActive?: boolean;
 };
 
 type Document = {

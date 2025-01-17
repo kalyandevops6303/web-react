@@ -10,6 +10,11 @@ import {
 } from '../../../components/ui/breadcrumb';
 import { Home } from 'react-feather';
 
+const styles = {
+  active: 'text-[#0185E4] font-medium text-sm leading-[150%] font-montserrat',
+  inactive: 'text-[#394042] font-normal text-sm leading-[150%] font-montserrat',
+};
+
 const BreadCrumbs = ({ steps }: { steps: BreadCrumbType[] }) => {
   return (
     <Breadcrumb>
@@ -25,7 +30,9 @@ const BreadCrumbs = ({ steps }: { steps: BreadCrumbType[] }) => {
             <React.Fragment key={index}>
               <BreadcrumbItem>
                 {index === steps.length - 1 ? (
-                  <BreadcrumbPage>{step?.title}</BreadcrumbPage>
+                  <BreadcrumbPage className={`${step?.isActive ? styles.active : styles.inactive}`}>
+                    {step?.title}
+                  </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink href={step?.link}>{step?.title}</BreadcrumbLink>
                 )}

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import IndividualOverview from './individual-overview';
-import MultipleLinesChart from './MultipleLinesChart';
+import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart';
 
 import { TooltipProps } from 'recharts';
 import { ArrowLeft, ThumbsUp } from 'react-feather';
@@ -203,6 +203,7 @@ export default function IndividualAnalytics() {
           {
             title: `${formattedIndividualOverviewDetails?.firstName} ${formattedIndividualOverviewDetails?.lastName}`,
             link: window.location.href,
+            isActive: true,
           },
         ]}
       />
