@@ -93,6 +93,8 @@ export type ProjectDetails = {
     };
   };
   isDocumentsNeeded: boolean;
+  viewRecognition: boolean;
+  giveRecognition: boolean;
 };
 
 type ProjectRole = {

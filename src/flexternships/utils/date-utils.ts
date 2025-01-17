@@ -188,3 +188,41 @@ export function formatEpochToTimeInTimezone(epoch: number, timezone?: string): s
   const dt = DateTime.fromMillis(epoch);
   return timezone ? dt.setZone(timezone).toFormat('h:mm a') : dt.toFormat('h:mm a');
 }
+
+/**
+ * Gets a human readable time difference string (e.g. "2 years ago", "5 days left")
+ * @param epoch - The epoch timestamp in milliseconds to compare against
+ * @param referenceTime - Optional reference timestamp to compare with. Defaults to current time
+ * @returns A formatted string describing the time difference
+ * @throws {TypeError} If epoch is not a number
+ */
+export function getReadableTimeDifference(epoch: number, referenceTime?: number): string {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+
+  const reference = referenceTime ? DateTime.fromMillis(referenceTime) : DateTime.now();
+  const target = DateTime.fromMillis(epoch);
+  const diff = target.diff(reference, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
+  const { years, months, days, hours, minutes, seconds } = diff.toObject();
+
+  const isFuture = target > reference;
+  const suffix = isFuture ? 'left' : 'ago';
+
+  if (years && Math.abs(years) >= 1) {
+    return `${Math.abs(Math.floor(years))} year${Math.abs(years) !== 1 ? 's' : ''} ${suffix}`;
+  }
+  if (months && Math.abs(months) >= 1) {
+    return `${Math.abs(Math.floor(months))} month${Math.abs(months) !== 1 ? 's' : ''} ${suffix}`;
+  }
+  if (days && Math.abs(days) >= 1) {
+    return `${Math.abs(Math.floor(days))} day${Math.abs(days) !== 1 ? 's' : ''} ${suffix}`;
+  }
+  if (hours && Math.abs(hours) >= 1) {
+    return `${Math.abs(Math.floor(hours))} hour${Math.abs(hours) !== 1 ? 's' : ''} ${suffix}`;
+  }
+  if (minutes && Math.abs(minutes) >= 1) {
+    return `${Math.abs(Math.floor(minutes))} minute${Math.abs(minutes) !== 1 ? 's' : ''} ${suffix}`;
+  }
+  return `${Math.abs(Math.floor(seconds || 0))} second${Math.abs(Math.floor(seconds || 0)) !== 1 ? 's' : ''} ${suffix}`;
+}
