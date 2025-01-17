@@ -7,7 +7,7 @@ RUN apk --no-cache add --virtual native-deps \
 # Create app directory
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
