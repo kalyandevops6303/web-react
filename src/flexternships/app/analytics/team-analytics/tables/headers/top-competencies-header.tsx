@@ -2,8 +2,8 @@ import { Info } from 'react-feather';
 
 export default function TopCompetenciesHeader() {
   return (
-    <div className="flex items-center gap-[8px]">
-      <span className="text-[#5E5873] font-montserrat text-[12px] font-semibold leading-none tracking-[1px] uppercase">
+    <div className="flex items-center gap-2">
+      <span className="text-grey-heading font-montserrat text-xs font-semibold leading-none tracking-wider uppercase">
         TOP COMPETENCIES
       </span>
       <Info size={12} color="#5E5873" className="cursor-pointer" />

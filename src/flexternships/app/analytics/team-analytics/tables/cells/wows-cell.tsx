@@ -4,9 +4,7 @@ export default function WowsCell({ row }: Readonly<{ row: Row<any> }>) {
   return (
     <div className="lowercase">
       <div>
-        <span className="text-[#6E6B7B] font-montserrat text-[18px] font-semibold leading-[26px]">
-          {row.original.wows}
-        </span>
+        <span className="text-grey font-montserrat text-lg font-semibold leading-xxl-custom">{row.original.wows}</span>
       </div>
     </div>
   );
