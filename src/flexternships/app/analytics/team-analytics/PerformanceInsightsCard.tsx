@@ -50,10 +50,12 @@ export default function PerformanceInsightsCard() {
                   /{item.total}
                 </span>
               </div>
-              <div className="text-trublue-secondary-500 font-montserrat text-sm font-medium leading-sm-custom flex items-center gap-1">
-                <span>{CompetencyLabels[item.name as keyof typeof CompetencyLabels]}</span>
-                <ChevronRight size={16} />
-              </div>
+              <Link to={`/analytics/project/${params?.projectId}/team/performance-insights#${item.name}`}>
+                <div className="text-trublue-secondary-500 font-montserrat text-sm font-medium leading-sm-custom flex items-center gap-1">
+                  <span>{CompetencyLabels[item.name as keyof typeof CompetencyLabels]}</span>
+                  <ChevronRight size={16} />
+                </div>
+              </Link>
             </div>
           ))}
         </div>
