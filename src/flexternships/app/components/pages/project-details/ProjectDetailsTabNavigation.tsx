@@ -1,6 +1,6 @@
 import { ProjectTabType } from '@/flexternships/constraints/types/project-details-types';
 import NavigationTab from './NavigationTab';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import React from 'react';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
@@ -18,19 +18,19 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   const param = useParams();
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
-
+  const location = useLocation();
   const handleGiveRecognition = () => {
     navigate(`/recognition/${param.projectId}`);
   };
-
   return (
     <div className="w-full">
       {isEmpty(milestoneId) && (
         <div className="flex justify-between items-end max-w-5xl">
           <div className=" bg-white w-fit flex flex-row items-start justify-start gap-1">
-            {tabs.map((tab, index) => (
-              <NavigationTab key={index} tab={tab} index={index} />
-            ))}
+            {tabs.map((tab, index) => {
+              const isActive = location.pathname.includes(tab.route);
+              return <NavigationTab key={index} tab={tab} index={index} isActive={isActive} />;
+            })}
           </div>
           {!projectLoading && (
             <PrimaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>

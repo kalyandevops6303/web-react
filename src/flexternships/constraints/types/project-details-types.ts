@@ -58,7 +58,6 @@ type StatusLog = {
 };
 
 export type ProjectDetails = {
-  [x: string]: any;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -78,12 +77,12 @@ export type ProjectDetails = {
   lastInProgressMilestone: number;
   clientUserId: string;
   orgSlugId: string;
-  isDocumentsSent: boolean;
-  isDocumentsSigned: boolean;
+  isDocumentsSent?: boolean; // Optional based on assumption
+  isDocumentsSigned?: boolean; // Optional based on assumption
   clientInfo: ClientInfo;
   skillsData: Skill[];
-  toolsData?: Tool[];
-  clientDetails?: ClientInfo;
+  toolsData?: Tool[]; // Optional in the data
+  clientDetails?: ClientInfo; // Optional in the data
   secondaryStatus: SecondaryStatus;
   invitationDetails: {
     member: {
@@ -180,11 +179,37 @@ export type ProjectDetailsState = {
   projectDetailsLoading: boolean;
   isTeamDetailsLoading: boolean;
   teamDetails: Array<TeamMemberDetails>;
-  projectInvitationDetails: any;
+  projectInvitationDetails: ProjectInvitation;
   isProjectInvitationDetailsLoading: boolean;
-  performanceDetails: any;
+  performanceDetails: PerformanceDetails[];
   isPerformanceDetailsLoading: boolean;
 };
+
+export type PerformanceDetails = {
+  _id: string;
+  name: string;
+  description: string;
+  seq: number; 
+  score?: number; 
+  feedbackId?: string; 
+  milestoneId: string; 
+};
+
+
+export type ProjectInvitation = {
+  invitationExists: boolean;
+  createdAt: number;
+  projectStartDate: number;
+  projectEstimatedDuration: {
+    duration: number;
+    durationType: DurationType; 
+    hoursPerWeek: number;
+  };
+  talentRole: string;
+  invitationMessage: string | null; 
+  isRead: boolean;
+};
+
 
 export type ProjectDetailsActions = {
   getProjectDetails: (

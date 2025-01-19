@@ -1,6 +1,6 @@
 import { Box, Star, Users, Watch } from 'react-feather';
 import ProjectDetailsTabNavigation from '../components/pages/project-details/ProjectDetailsTabNavigation';
-import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
+
 import { useEffect } from 'react';
 import MilestoneTab from '../components/pages/project-details/tabs/milestone';
 import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
@@ -13,6 +13,7 @@ import { useProjectMilestonesStore } from '@/flexternships/stores/project-milest
 import Spinner from '../components/core/Spinner';
 import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
+import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
