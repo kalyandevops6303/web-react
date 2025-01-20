@@ -87,6 +87,7 @@ const LeftSideBarProjectDetails = () => {
   const [documentsModal, setDocumentsModal] = useState(false);
 
   const closeCurrentProjectFlow = () => setCurrentProjectFlow(undefined);
+  const initiateRelistFlow = () => setCurrentProjectFlow(ProjectFlowType.RELIST);
 
   const primaryActionHandler = () => {
     console.log('primaryActionHandler', primaryAction);
@@ -336,12 +337,14 @@ const LeftSideBarProjectDetails = () => {
               <ProjectTerminateFlow
                 project={{ id: projectId, name: data?.details?.name }}
                 onClose={closeCurrentProjectFlow}
+                initiateRelist={initiateRelistFlow}
               />
             ),
             [ProjectFlowType.WITHDRAW]: (
               <ProjectWithdrawFlow
                 project={{ id: projectId, name: data?.details?.name }}
                 onClose={closeCurrentProjectFlow}
+                initiateRelist={initiateRelistFlow}
               />
             ),
           }[currentProjectFlow]}

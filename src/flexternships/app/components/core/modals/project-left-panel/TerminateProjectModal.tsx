@@ -33,13 +33,13 @@ const TerminateWithoutRelistBody = () => {
 };
 
 export default function TerminateProjectModal(props: TerminateProjectModalProps) {
-  const { onClose, isOpen, onConfirm, withRelist, onCancel, project } = props;
+  const { onClose, isOpen, withRelist, project, initiateRelist } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
-  const handleConfirm = async () => {
+  const terminateProject = async () => {
     setIsConfirmLoading(true);
     try {
-      await onConfirm();
+      // TODO: Implement terminate project
     } catch (error) {
       showToastMessage(
         ToastType.ERROR,
@@ -48,6 +48,10 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
     } finally {
       setIsConfirmLoading(false);
     }
+  };
+
+  const deleteProject = async () => {
+    // TODO: Implement delete project
   };
 
   return (
@@ -66,10 +70,15 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
             </div>
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <SecondaryButton cancel={withRelist} className="m-0" onClick={onCancel}>
+            <SecondaryButton cancel={withRelist} className="m-0" onClick={withRelist ? deleteProject : onClose}>
               {withRelist ? 'Delete' : 'Cancel'}
             </SecondaryButton>
-            <PrimaryButton cancel className="m-0" onClick={handleConfirm} loading={isConfirmLoading}>
+            <PrimaryButton
+              cancel
+              className="m-0"
+              onClick={withRelist ? initiateRelist : terminateProject}
+              loading={isConfirmLoading}
+            >
               {withRelist ? 'Relist Project' : 'Terminate Project'}
             </PrimaryButton>
           </div>
@@ -81,12 +90,11 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
 
 interface TerminateProjectModalProps {
   onClose: () => void;
-  onConfirm: () => Promise<void>;
-  onCancel: () => Promise<void>;
   isOpen?: boolean;
   withRelist?: boolean;
   project: {
     id: string;
     name: string;
   };
+  initiateRelist: () => void;
 }

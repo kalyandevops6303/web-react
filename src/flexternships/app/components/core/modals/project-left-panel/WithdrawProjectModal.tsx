@@ -6,13 +6,13 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
-  const { onClose, isOpen, onConfirm, project } = props;
+  const { onClose, isOpen, project, initiateRelist } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
-  const handleConfirm = async () => {
+  const withdrawProject = async () => {
     setIsConfirmLoading(true);
     try {
-      await onConfirm();
+      // TODO: Implement withdraw project
     } catch (error) {
       showToastMessage(
         ToastType.ERROR,
@@ -48,10 +48,10 @@ export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
             </div>
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <PrimaryButton className="m-0" onClick={onClose}>
+            <PrimaryButton className="m-0" onClick={initiateRelist}>
               Relist
             </PrimaryButton>
-            <PrimaryButton cancel className="m-0" onClick={handleConfirm} loading={isConfirmLoading}>
+            <PrimaryButton cancel className="m-0" onClick={withdrawProject} loading={isConfirmLoading}>
               Withdraw
             </PrimaryButton>
           </div>
@@ -63,10 +63,10 @@ export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
 
 interface WithdrawProjectModalProps {
   onClose: () => void;
-  onConfirm: () => Promise<void>;
   isOpen?: boolean;
   project: {
     id: string;
     name: string;
   };
+  initiateRelist: () => void;
 }
