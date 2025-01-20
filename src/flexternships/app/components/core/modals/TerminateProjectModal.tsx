@@ -1,6 +1,6 @@
-import PrimaryButton from '../../buttons/PrimaryButton';
-import SecondaryButton from '../../buttons/SecondaryButton';
-import GenericModal from '../GenericModal';
+import PrimaryButton from '../buttons/PrimaryButton';
+import SecondaryButton from '../buttons/SecondaryButton';
+import GenericModal from './GenericModal';
 import DangerGif from '@flexternships/assets/gifs/danger.gif';
 import { useState } from 'react';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';

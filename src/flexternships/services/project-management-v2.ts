@@ -749,7 +749,7 @@ export const deleteProject = async (projectId: string) => {
  * @returns A Promise that resolves when the project is relisted.
  * @throws {Error} If the relisting fails or an unexpected error occurs.
  */
-export const relistProject = async (projectId: string, startDate: number, endDate: number) => {
+export const relistProject = async (projectId: string, startDate: number, endDate?: number) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,

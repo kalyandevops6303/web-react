@@ -1,4 +1,4 @@
-import TerminateProjectModal from '../modals/project-left-panel/TerminateProjectModal';
+import TerminateProjectModal from '../modals/TerminateProjectModal';
 
 export default function ProjectTerminateFlow({
   project,

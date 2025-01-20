@@ -59,11 +59,11 @@ const LeftSideBarProjectDetails = () => {
 
   const data = useProjectsStore((state) => state.projectDetails);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
+  const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>();
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
 
-  const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>(undefined);
+  const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>();
 
   const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });
   const secondaryAction = getSecondaryAction({ status: data?.status, userType: userDetails.userType });
