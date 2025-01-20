@@ -6,9 +6,10 @@ import Stats from '@flexternships/components/core/charts/Stats';
 import { StatsOrientation } from '@/flexternships/constraints/enums/chart-enums';
 import { useMemo, useState } from 'react';
 import CustomPieChartTooltip from '@/flexternships/app/components/core/charts/CustomPieChart2/CustomPieChartTooltip';
+import BoxSkeleton from '../../skeletons/BoxSkeleton';
 
 export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
-  const { chartData, chartConfig, totalCount, title, statsOrientation, className } = props;
+  const { chartData, chartConfig, totalCount, title, statsOrientation, className, isLoading } = props;
 
   const statsData = chartData?.map((item) => ({
     label: item.label,
@@ -20,7 +21,7 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
   const labelStyles = {
     color: '#7367F0',
     fontFamily: 'Montserrat',
-    fontSize: '18px',
+    fontSize: '16px',
     fontStyle: 'normal',
     fontWeight: 600,
     lineHeight: '26px',
@@ -80,6 +81,10 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
     setActiveIndex(-1);
   };
 
+  if (isLoading) {
+    return <BoxSkeleton className="w-full h-[200px]" />;
+  }
+
   return (
     <Card className={`${className} border-none p-0 h-full w-full outline-none`}>
       <CardHeader className="border-b border-grey-50 px-5 py-4">
@@ -103,10 +108,11 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
                 activeIndex={activeIndex}
                 onMouseEnter={onPieEnter}
                 onMouseLeave={onPieLeave}
+                outerRadius={130}
               >
                 <LabelList
                   dataKey="count"
-                  className="fill-background pointer-events-none"
+                  className="pointer-events-none"
                   stroke="none"
                   formatter={(value: number) => `${((value / totalCount) * 100).toFixed(2)}%`}
                   style={labelStyles}

@@ -20,6 +20,8 @@ import {
   RankCell,
 } from '@flexternships/app/analytics/team-analytics/tables/cells';
 import { isEmpty } from 'lodash';
+import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
+import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
 
 type TableRecordType = {
   userId: string;
@@ -48,6 +50,9 @@ type TableRecordType = {
 };
 
 export default function TeamMembersTable({ data }: { data: TableRecordType[] }) {
+  const isTeamMembersDetailsLoading = useAnalyticsStore(
+    (state) => state.team.isTeamMembersAttractivenessDetailsLoading,
+  );
   const columns: ColumnDef<TableRecordType>[] = [
     {
       id: 'select',
@@ -111,22 +116,28 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-card">
-      <div className="py-4 px-5 border-b border-grey-50 text-dark-700 font-montserrat text-lg font-medium leading-xxl-custom">
-        Team Members
-      </div>
-      {!isEmpty(data) && (
-        <div className="px-5 rounded-lg py-4 bg-white">
-          <TanstackTable<TableRecordType>
-            data={data}
-            columns={columns}
-            allowPagination={false}
-            allowColumnFilters={false}
-            allowSelection={false}
-            className="max-h-[378px] overflow-y-auto"
-          />
+    <>
+      {isTeamMembersDetailsLoading ? (
+        <BoxSkeleton className="w-full h-[200px]" />
+      ) : (
+        <div className="bg-white rounded-lg shadow-card">
+          <div className="py-4 px-5 border-b border-grey-50 text-dark-700 font-montserrat text-lg font-medium leading-xxl-custom">
+            Team Members
+          </div>
+          {!isEmpty(data) && (
+            <div className="px-5 rounded-lg py-4 bg-white">
+              <TanstackTable<TableRecordType>
+                data={data}
+                columns={columns}
+                allowPagination={false}
+                allowColumnFilters={false}
+                allowSelection={false}
+                className="max-h-[378px] overflow-y-auto"
+              />
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 }

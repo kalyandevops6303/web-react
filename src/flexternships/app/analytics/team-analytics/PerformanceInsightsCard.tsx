@@ -5,18 +5,26 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { CompetencyLabels } from '@/flexternships/constraints/enums/analytics-enums';
 import { Link } from 'react-router-dom';
+import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 
 export default function PerformanceInsightsCard() {
   const params = useParams();
 
   const performanceInsightsOverview = useAnalyticsStore((state) => state.team.teamPerformanceInsightsOverview);
   const getTeamPerformanceInsightsOverview = useAnalyticsStore((state) => state.getTeamPerformanceInsightsOverview);
+  const isTeamPerformanceInsightsOverviewLoading = useAnalyticsStore(
+    (state) => state.team.isTeamPerformanceInsightsOverviewLoading,
+  );
 
   useEffect(() => {
     if (params?.projectId) {
       getTeamPerformanceInsightsOverview(params?.projectId);
     }
   }, [params?.projectId]);
+
+  if (isTeamPerformanceInsightsOverviewLoading) {
+    return <BoxSkeleton className="w-full h-[200px]" />;
+  }
 
   return (
     <div>

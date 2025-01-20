@@ -71,6 +71,7 @@ export interface CustomPieChartProps2 {
   centerText: string;
   statsOrientation: StatsOrientation;
   className: string;
+  isLoading?: boolean;
 }
 
 export interface CustomPieChartProps extends IChartLayoutProps {
@@ -129,6 +130,7 @@ export interface CustomDonutChart2Props {
   orientation?: ChartOrientation;
   className?: string;
   isDonutChart?: boolean;
+  isLoading?: boolean;
 }
 
 export type MatrixLegendItem = {

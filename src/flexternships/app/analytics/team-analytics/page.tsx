@@ -27,6 +27,7 @@ import {
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
+import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -48,6 +49,16 @@ export default function TeamAnalytics() {
   const getTeamUniversities = useAnalyticsStore((state) => state.getTeamUniversities);
   const getTeamDiversity = useAnalyticsStore((state) => state.getTeamDiversity);
   const getTeamMembersDetails = useAnalyticsStore((state) => state.getTeamMembersDetails);
+
+  const isProjectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
+  const isTeamRolesLoading = useAnalyticsStore((state) => state.team.isTeamRolesLoading);
+  const isTeamUniversitiesLoading = useAnalyticsStore((state) => state.team.isTeamUniversitiesLoading);
+  const isTeamDiversityLoading = useAnalyticsStore((state) => state.team.isTeamDiversityLoading);
+  const isTeamPerformanceSummaryLoading = useAnalyticsStore((state) => state.team.isPerformanceSummaryLoading);
+  const isTeamMembersAttractivenessLoading = useAnalyticsStore(
+    (state) => state.team.isTeamMembersAttractivenessDetailsLoading,
+  );
+  const isTeamMembersDetailsLoading = useAnalyticsStore((state) => state.team.isTeamMembersDetailsLoading);
 
   useEffect(() => {
     if (params?.projectId) {
@@ -80,7 +91,7 @@ export default function TeamAnalytics() {
   };
 
   return (
-    <div className="bg-background flex flex-col gap-6 px-4 md:px-0">
+    <div className="bg-background flex flex-col gap-6 px-4 md:px-0 mt-20 md:mt-0">
       <BreadCrumbs
         steps={[
           {
@@ -103,7 +114,7 @@ export default function TeamAnalytics() {
         <div className="w-auto text-dark-200 font-montserrat text-base font-medium leading-6">
           Select project to view analytics:{' '}
         </div>
-        <div className="w-[480px]">
+        <div className="w-[480px] max-w-full">
           <Select value={params?.projectId as string} disabled>
             <SelectTrigger className="border-border bg-white">
               <SelectValue placeholder="Select project" />
@@ -116,87 +127,105 @@ export default function TeamAnalytics() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
-        <SimpleElevatedCard className="bg-white p-6 w-full md:w-1/4">
-          <div className="flex flex-col gap-4">
-            <ProjectStatusChip status={projectDetails?.status} statusType={StatusType?.PRIMARY} />
-            <div className="flex flex-row items-center gap-2">
-              <Link to={`/project-details/${projectDetails?.id}/team`}>
-                <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5">
-                  {projectDetails?.details?.name}
+        {isProjectDetailsLoading || isEmpty(tagsData) ? (
+          <BoxSkeleton className="w-full md:w-1/4 h-[200px]" />
+        ) : (
+          <SimpleElevatedCard className="bg-white p-6 w-full md:w-1/4">
+            <div className="flex flex-col gap-4">
+              <ProjectStatusChip status={projectDetails?.status} statusType={StatusType?.PRIMARY} />
+              <div className="flex flex-row items-center gap-2">
+                <Link to={`/project-details/${projectDetails?.id}/team`}>
+                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5">
+                    {projectDetails?.details?.name}
+                  </div>
+                </Link>
+                <ChevronRight size={18} color="#0185E4" />
+              </div>
+              <div className="flex gap-1">
+                <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">
+                  Project Duration:
                 </div>
-              </Link>
-              <ChevronRight size={18} color="#0185E4" />
-            </div>
-            <div className="flex gap-1">
-              <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">Project Duration:</div>
-              {projectDetails && (
+                {projectDetails && (
+                  <div className="text-dark-200 font-montserrat text-sm font-medium leading-[22px]">
+                    {formatDate(Number(projectDetails?.details?.expectedStartDate))} -{' '}
+                    {formatDate(Number(projectDetails?.details?.expectedEndDate))}
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-1">
+                <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">Status:</div>
                 <div className="text-dark-200 font-montserrat text-sm font-medium leading-[22px]">
-                  {formatDate(Number(projectDetails?.details?.expectedStartDate))} -{' '}
-                  {formatDate(Number(projectDetails?.details?.expectedEndDate))}
+                  <ProjectStatusChip
+                    status={projectDetails?.status}
+                    statusType={StatusType?.PRIMARY}
+                    rounded={true}
+                    lastInProgressMilestone={projectDetails?.lastInProgressMilestone}
+                  />
                 </div>
-              )}
-            </div>
-            <div className="flex gap-1">
-              <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">Status:</div>
-              <div className="text-dark-200 font-montserrat text-sm font-medium leading-[22px]">
-                <ProjectStatusChip
-                  status={projectDetails?.status}
-                  statusType={StatusType?.PRIMARY}
-                  rounded={true}
-                  lastInProgressMilestone={projectDetails?.lastInProgressMilestone}
-                />
+              </div>
+              <div className="flex gap-1">
+                <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">Tags:</div>
+                <div className="text-dark-200 font-montserrat text-sm font-medium leading-[22px] flex items-center">
+                  <TagGroup tags={tagsData} truncateAfter={3} />
+                </div>
               </div>
             </div>
-            <div className="flex gap-1">
-              <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">Tags:</div>
-              <div className="text-dark-200 font-montserrat text-sm font-medium leading-[22px] flex items-center">
-                <TagGroup tags={tagsData} truncateAfter={3} />
-              </div>
-            </div>
+          </SimpleElevatedCard>
+        )}
+        {isTeamPerformanceSummaryLoading ? (
+          <BoxSkeleton className="w-full md:w-3/4" />
+        ) : (
+          <div className="flex flex-col gap-2 rounded-10 bg-white shadow-card w-full md:w-3/4">
+            <AIGeneratedSummary title="Team Performance Summary">{teamPerformanceSummary}</AIGeneratedSummary>
           </div>
-        </SimpleElevatedCard>
-        <div className="flex flex-col gap-2 rounded-10 bg-white shadow-card w-full md:w-3/4">
-          <AIGeneratedSummary title="Team Performance Summary">{teamPerformanceSummary}</AIGeneratedSummary>
-        </div>
+        )}
       </div>
 
       <TeamMembersTable data={teamMembersDetails?.teamData} />
 
       <div className="rounded-lg bg-white">
-        <div className="flex flex-row gap-3 w-full bg-white rounded-t-10 border-b border-grey-50">
-          <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 border-r border-grey-50 p-3 md:px-6">
-            <div>
-              <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
-                {teamMembersDetails?.averageAttractivenessScore}
-              </span>
-              <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
+        {isTeamMembersDetailsLoading ? (
+          <BoxSkeleton className="w-full h-[200px]" />
+        ) : (
+          <div className="flex flex-row gap-3 w-full bg-white rounded-t-10 border-b border-grey-50">
+            <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 border-r border-grey-50 p-3 md:px-6">
+              <div>
+                <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
+                  {teamMembersDetails?.averageAttractivenessScore}
+                </span>
+                <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
+              </div>
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Attractiveness</div>
             </div>
-            <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Attractiveness</div>
-          </div>
-          <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
-            <div>
-              <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
-                {teamMembersDetails?.totalRecognitionCount}
-              </span>
+            <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
+              <div>
+                <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
+                  {teamMembersDetails?.totalRecognitionCount}
+                </span>
+              </div>
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">WOWs & Kudos</div>
             </div>
-            <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">WOWs & Kudos</div>
           </div>
-        </div>
+        )}
 
-        <div className="mt-[24px]">
-          {teamMembersAttractiveness && (
-            <MultipleLinesChart
-              chartData={teamMembersAttractiveness?.chartData}
-              chartConfig={teamMembersAttractiveness?.chartConfig}
-              XAxisDataKey={'milestone'}
-              maxYAxis={teamMembersAttractiveness?.maxYAxis}
-              showFilters
-              customTooltipContent={TeamMembersChartTooltip}
-              YAxisDataKey={'score'}
-              hideDeselectedMetricsFromTooltip
-            />
-          )}
-        </div>
+        {isTeamMembersAttractivenessLoading ? (
+          <BoxSkeleton className="w-full h-[200px]" />
+        ) : (
+          <div className="mt-[24px]">
+            {teamMembersAttractiveness && (
+              <MultipleLinesChart
+                chartData={teamMembersAttractiveness?.chartData}
+                chartConfig={teamMembersAttractiveness?.chartConfig}
+                XAxisDataKey={'milestone'}
+                maxYAxis={teamMembersAttractiveness?.maxYAxis}
+                showFilters
+                customTooltipContent={TeamMembersChartTooltip}
+                YAxisDataKey={'score'}
+                hideDeselectedMetricsFromTooltip
+              />
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col md:flex-row gap-[24px] h-full">
@@ -210,6 +239,7 @@ export default function TeamAnalytics() {
               centerText="Roles"
               className="bg-white"
               statsOrientation={StatsOrientation.VERTICAL}
+              isLoading={isTeamRolesLoading}
             />
           </div>
         )}
@@ -225,6 +255,7 @@ export default function TeamAnalytics() {
               isDonutChart
               statsOrientation={StatsOrientation.VERTICAL}
               className="bg-white"
+              isLoading={isTeamUniversitiesLoading}
             />
           </div>
         )}
@@ -239,6 +270,7 @@ export default function TeamAnalytics() {
               statsOrientation={StatsOrientation.HORIZONTAL}
               isDonutChart
               className="bg-white"
+              isLoading={isTeamDiversityLoading}
             />
           </div>
         )}

@@ -16,6 +16,7 @@ import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
 
 type LeaderboardTableRecordType = {
   projectId: string;
@@ -77,10 +78,14 @@ export default function TeamLeaderboardTable() {
 
   const leaderboardData = useAnalyticsStore((state) => state.team.teamLeaderboard);
   const getTeamLeaderboard = useAnalyticsStore((state) => state.getTeamLeaderboard);
-
+  const isTeamLeaderboardLoading = useAnalyticsStore((state) => state.team.isTeamLeaderboardLoading);
   useEffect(() => {
     getTeamLeaderboard(projectId);
   }, [projectId]);
+
+  if (isTeamLeaderboardLoading) {
+    return <BoxSkeleton className="w-full h-[200px]" />;
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-card">
@@ -95,8 +100,10 @@ export default function TeamLeaderboardTable() {
             allowPagination={false}
             allowColumnFilters={false}
             allowSelection={false}
-            className="max-h-[378px] overflow-y-auto"
-            highlightByKey="name"
+            className="max-h-[200px] overflow-y-auto"
+            highlightByKey="projectId"
+            highlightedValues={[projectId as string]}
+            scrollHighlightedRowsIntoView
           />
         )}
       </div>

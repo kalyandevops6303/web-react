@@ -36,13 +36,14 @@ type TanstackTableProps<T> = {
   className?: string;
   highlightByKey?: string;
   highlightedValues?: string[];
+  scrollHighlightedRowsIntoView?: boolean;
 };
 
 const styles = {
   row: {
     default: 'bg-white',
     highlighted: 'bg-[#0185E41F]',
-    border: '!border !border-trublue-secondary-500',
+    border: '!outline outline-1 !outline-trublue-secondary-500',
   },
 };
 
@@ -55,6 +56,7 @@ export default function TanstackTable<T>({
   className,
   highlightByKey,
   highlightedValues,
+  scrollHighlightedRowsIntoView,
 }: TanstackTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -62,6 +64,7 @@ export default function TanstackTable<T>({
     select: allowSelection ?? false,
   });
   const [rowSelection, setRowSelection] = useState({});
+  const firstHighlightedRowRef = React.useRef<HTMLTableRowElement>(null);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
@@ -92,6 +95,18 @@ export default function TanstackTable<T>({
   const isRowHighlighted = (row: Row<T>) => {
     return highlightedValues?.includes(row.original[highlightByKey as keyof typeof row.original] as string) ?? false;
   };
+
+  React.useEffect(() => {
+    if (scrollHighlightedRowsIntoView && highlightedValues?.length && firstHighlightedRowRef.current) {
+      const tableContainer = firstHighlightedRowRef.current.closest('.overflow-auto');
+      if (tableContainer) {
+        const containerRect = tableContainer.getBoundingClientRect();
+        const rowRect = firstHighlightedRowRef.current.getBoundingClientRect();
+        const scrollTop = rowRect.top - containerRect.top - containerRect.height / 2 + tableContainer.scrollTop;
+        tableContainer.scrollTo({ top: scrollTop, behavior: 'smooth' });
+      }
+    }
+  }, [scrollHighlightedRowsIntoView, highlightedValues]);
 
   return (
     <div className={`${className} w-full`}>
@@ -130,52 +145,56 @@ export default function TanstackTable<T>({
         </div>
       )}
       <div className="rounded-lg border border-[#EBE9F1] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
-        <Table className={`rounded-lg relative`}>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="bg-[#F3F2F7] text-[#5E5873] font-montserrat text-[12px] font-semibold leading-none tracking-[1px] uppercase px-[12px]"
-                    >
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody className={`${className} relative`}>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className={`bg-white ${isRowHighlighted(row) ? styles.row.border : styles.row.default}`}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={`${
-                        isRowHighlighted(row) ? styles.row.highlighted : styles.row.default
-                      } text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] px-[12px]`}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+        <div className="max-h-[500px] overflow-auto">
+          <Table className={`rounded-lg relative`}>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className="bg-[#F3F2F7] text-[#5E5873] font-montserrat text-[12px] font-semibold leading-none tracking-[1px] uppercase px-[12px]"
+                      >
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody className={`${className} relative`}>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    className={`bg-white ${isRowHighlighted(row) ? styles.row.border : styles.row.default}`}
+                    ref={isRowHighlighted(row) && !firstHighlightedRowRef.current ? firstHighlightedRowRef : null}
+                  >
+                    {row.getVisibleCells().map((cell, index) => (
+                      <TableCell
+                        key={cell.id}
+                        className={`${isRowHighlighted(row) ? styles.row.highlighted : styles.row.default} 
+                        ${index === 0 && isRowHighlighted(row) && '!border-l'}
+                        ${index === row.getVisibleCells().length - 1 && isRowHighlighted(row) && '!border-r'}
+                        text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] px-[12px]`}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       {allowPagination && (
         <div className="flex items-center justify-end space-x-2 py-4">

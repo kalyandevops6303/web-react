@@ -9,6 +9,7 @@ import { CustomDonutChart2Props } from '@/flexternships/constraints/types/chart-
 import { StatsOrientation } from '@/flexternships/constraints/enums/chart-enums';
 import CustomPieChartTooltip from '@/flexternships/app/components/core/charts/CustomPieChart2/CustomPieChartTooltip';
 import { isEmpty } from 'lodash';
+import BoxSkeleton from '../../skeletons/BoxSkeleton';
 
 const CenterLabel = ({
   viewBox,
@@ -73,6 +74,7 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
     statsOrientation,
     className,
     isDonutChart,
+    isLoading,
   } = props;
 
   const statsData = chartData?.map((item) => ({
@@ -83,6 +85,10 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
   }));
 
   if (isEmpty(chartData)) return null;
+
+  if (isLoading) {
+    return <BoxSkeleton className="w-full h-[200px]" />;
+  }
 
   return (
     <Card className={`${className} flex flex-col border-none p-0 w-full h-full outline-none max-h-[320px]"`}>
