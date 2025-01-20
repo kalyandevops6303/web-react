@@ -16,7 +16,7 @@ pipeline {
 
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['tru-dev', 'tru-qa', 'qa', 'dev'], description: 'Select deployment environment')
-        choice(name: 'DEPENDENCY', choices: ['No', 'Yes'], description: 'Force install dependencies')
+        choice(name: 'DEPENDENCY', choices: ['no', 'yes'], description: 'Force install dependencies')
     }
 
     stages {
@@ -192,7 +192,8 @@ pipeline {
             }
         }
     }
-  post {
+
+post {
     always {
         script {
             def paramsSubtitle = "Build with parameters:"
@@ -200,11 +201,11 @@ pipeline {
                 JOB_NAME=${env.JOB_NAME}
                 ENVIRONMENT=${params.ENVIRONMENT}
                 BRANCH=${params.BRANCH}
-		DEPENDENCY=${params.DEPENDENCY}
+                DEPENDENCY=${params.DEPENDENCY}
             """.stripIndent().trim()
  
             currentBuild.description = "${paramsSubtitle}\n${paramsSummary}"
         }
-     }
-  }
+    }
+}
 }
