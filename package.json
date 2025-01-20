@@ -143,6 +143,7 @@
     "sass-loader/webpack": "5.0.0",
     "recharts/prop-types": "15.6.0",
     "styled-components/react-is": "16.8.0",
+    "react-hot-toast/goober/csstype": "3.0.10",
     "html-to-draftjs/immutable": "4.0.0",
     "postcss-custom-properties/postcss": "8.2",
     "@esbuild-plugins/node-globals-polyfill/esbuild": "0.15.15"
