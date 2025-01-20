@@ -16,6 +16,7 @@ pipeline {
 
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['tru-dev', 'tru-qa', 'qa', 'dev'], description: 'Select deployment environment')
+        choice(name: 'DEPENDENCY', choices: ['No', 'Yes'], description: 'Force install dependencies')
     }
 
     stages {
@@ -172,7 +173,9 @@ pipeline {
                     echo servicename = "${serviceName}"
                     echo serviceport = "${servicePort}"
                     echo targetport  = "${targetPort}"
-                    //echo envfile = "${env.FILENAME}"
+
+	            def buildCommand = params.DEPENDENCY == 'Yes' ? 'docker compose build --no-cache' : 'docker compose build'
+
 
                     // Use the downloaded environment file for Docker Compose
                     sh """
@@ -181,7 +184,7 @@ pipeline {
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
 	             	    sed -i "s/5000/${targetPort}/g" Dockerfile
 	     		    sed -i "s/'test'/'${mode}'/g" vite.config.ts
-                            docker compose build
+                            ${buildCommand}
                             docker compose up -d
                      """
                     cleanWs()

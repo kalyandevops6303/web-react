@@ -27,7 +27,7 @@ import theme from '../../configs/themeVariables';
 import { getIssueTypeService } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport } from '../../redux/actions/supportActions';
-import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { CUSTOMER_SUPPORT_TYPES, DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '../../utility/constants/Constant';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
   const [issueTypeOptions, setIssueTypeOptions] = useState(null);
@@ -54,49 +54,49 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
 
   const [defaultOption, setDefaultOption] = useState(null);
   const CustomerSupportSchema = yup.object().shape({
-    issueType: yup
-      .object()
-      .shape({
-        label: yup.string().required('Issue type is required'),
-        value: yup.string().required('Issue type is required'),
-      })
-      .required('Issue type is required'),
-    skill: yup.string().when('issueType.value', {
-      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_skill,
-      then: () =>
-        yup
-          .string()
-          .min(1, 'Skill must be at least 1 character')
-          .max(150, 'Skill must be 150 characters or less')
-          .required('Skill is required'),
-    }),
-    tool: yup.string().when('issueType.value', {
-      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_tool,
-      then: () =>
-        yup
-          .string()
-          .min(1, 'Tool must be at least 1 character')
-          .max(150, 'Tool must be 150 characters or less')
-          .required('Tool is required'),
-    }),
-    institute: yup.string().when('issueType.value', {
-      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_institute,
-      then: () =>
-        yup
-          .string()
-          .min(1, 'Institution must be at least 1 character')
-          .max(150, 'Institution must be 150 characters or less')
-          .required('Institution is required'),
-    }),
-    assessment: yup.string().when('issueType.value', {
-      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_assessment,
-      then: () =>
-        yup
-          .string()
-          .min(1, 'Assessment must be at least 1 character')
-          .max(150, 'Assessment must be 150 characters or less')
-          .required('Assessment is required'),
-    }),
+    // issueType: yup
+    //   .object()
+    //   .shape({
+    //     label: yup.string().required('Issue type is required'),
+    //     value: yup.string().required('Issue type is required'),
+    //   })
+    //   .required('Issue type is required'),
+    // skill: yup.string().when('issueType.value', {
+    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_skill,
+    //   then: () =>
+    //     yup
+    //       .string()
+    //       .min(1, 'Skill must be at least 1 character')
+    //       .max(150, 'Skill must be 150 characters or less')
+    //       .required('Skill is required'),
+    // }),
+    // tool: yup.string().when('issueType.value', {
+    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_tool,
+    //   then: () =>
+    //     yup
+    //       .string()
+    //       .min(1, 'Tool must be at least 1 character')
+    //       .max(150, 'Tool must be 150 characters or less')
+    //       .required('Tool is required'),
+    // }),
+    // institute: yup.string().when('issueType.value', {
+    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_institute,
+    //   then: () =>
+    //     yup
+    //       .string()
+    //       .min(1, 'Institution must be at least 1 character')
+    //       .max(150, 'Institution must be 150 characters or less')
+    //       .required('Institution is required'),
+    // }),
+    // assessment: yup.string().when('issueType.value', {
+    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_assessment,
+    //   then: () =>
+    //     yup
+    //       .string()
+    //       .min(1, 'Assessment must be at least 1 character')
+    //       .max(150, 'Assessment must be 150 characters or less')
+    //       .required('Assessment is required'),
+    // }),
     supportDetails: yup
       .string()
       .min(50, 'Description must be at least 50 characters')
@@ -127,8 +127,8 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       to_email: SUPPORT_EMAIL,
       cc_email: [userEmail],
       description: values?.supportDetails,
-      issue_type: values?.issueType?.value,
-      missing_name: getMissingName(values?.issueType?.value, values),
+      issue_type: DEFAULT_SUPPORT_TYPE,
+      // missing_name: getMissingName(values?.issueType?.value, values),
     };
 
     dispatch(customerSupport({ data: postData, onSuccess }));
@@ -201,7 +201,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
   }, []);
 
   return (
-    <Modal isOpen={modal} contentClassName="custom-modal-style " className="modal-dialog trumio">
+    <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog trumio">
       <ModalHeader toggle={isLoading ? null : toggleModal} />
       <ModalBody className="pt-0 px-10">
         <h2 className="font-large-1 text-center mb-7 text-[28px]">Contact Support</h2>
@@ -231,7 +231,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                 </div>
               </Col>
             </Row>
-            <Row className="mb-1">
+            {/* <Row className="mb-1">
               <Col sm="12" md="12" lg="7">
                 <Label className="form-label text-grey font-normal text-sm" for="issueType">
                   Issue Type
@@ -311,31 +311,6 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                   {errors.tool && <FormFeedback>{errors.tool.message}</FormFeedback>}
                 </Col>
               )}
-              {/* {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute && (
-                <Col sm="12" md="12" lg="5">
-                  <Label className="form-label" for="institute">
-                    Institute
-                    <span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="institute"
-                    name="institute"
-                    control={control}
-                    invalid={errors.institute && true}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        step="any"
-                        onWheel={(e) => e.target.blur()}
-                        placeholder="Enter institute"
-                        invalid={errors.institute && true}
-                        style={{ height: '54px' }}
-                      />
-                    )}
-                  />
-                  {errors.institute && <FormFeedback>{errors.institute.message}</FormFeedback>}
-                </Col>
-              )} */}
               {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_assessment && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="assessment">
@@ -360,9 +335,9 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                   {errors.tool && <FormFeedback>{errors.assessment.message}</FormFeedback>}
                 </Col>
               )}
-            </Row>
+            </Row> */}
 
-            <Row className="mb-1">
+            <Row className="mt-4 mb-1">
               <Col sm="12" md="12" lg="12">
                 <Label className="form-label text-grey font-normal text-sm" for="skill">
                   Tell us in detail how we can help you?
