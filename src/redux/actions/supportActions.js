@@ -2,7 +2,7 @@ import {
   deleteRequestService,
   getRequestsService,
   getSupportCount,
-  supportServive,
+  createSupportService,
 } from '../../services/supportServices';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -25,7 +25,7 @@ const customerSupport =
   async (dispatch) => {
     dispatch(supportRequest());
     try {
-      const res = await supportServive(data);
+      const res = await createSupportService(data);
       dispatch(supportSuccess(res.data.data));
       onSuccess();
     } catch (error) {

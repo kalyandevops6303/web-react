@@ -84,7 +84,7 @@ export default function PerformanceInsightsCard({ competencyItem }: PerformanceI
     : null;
 
   return (
-    <SimpleElevatedCard className="bg-white">
+    <SimpleElevatedCard id={competencyItem.abbreviation} className="bg-white">
       <div className="flex flex-row items-end gap-x-2 px-5 py-4 border-b-1 border-grey-border">
         <div className="text-grey-700 text-lg font-medium leading-[26px]">{competencyItem.name}</div>
         {isGridLoading ? (

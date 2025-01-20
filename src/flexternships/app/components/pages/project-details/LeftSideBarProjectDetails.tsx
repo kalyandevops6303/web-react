@@ -5,7 +5,12 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 import { Eye, Paperclip, User } from 'react-feather';
-import { ProjectSecondaryStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import {
+  ProjectPrimaryStatus,
+  ProjectSecondaryStatus,
+  ToastType,
+  UserType,
+} from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
 import {
   ProjectLeftPanelAction,
@@ -60,11 +65,11 @@ const LeftSideBarProjectDetails = () => {
 
   const data = useProjectsStore((state) => state.projectDetails);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
+  const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>();
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
 
-  const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>(undefined);
+  const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>();
 
   const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });
   const secondaryAction = getSecondaryAction({ status: data?.status, userType: userDetails.userType });
@@ -88,6 +93,7 @@ const LeftSideBarProjectDetails = () => {
   const [documentsModal, setDocumentsModal] = useState(false);
 
   const closeCurrentProjectFlow = () => setCurrentProjectFlow(undefined);
+  const initiateRelistFlow = () => setCurrentProjectFlow(ProjectFlowType.RELIST);
 
   const primaryActionHandler = () => {
     console.log('primaryActionHandler', primaryAction);
@@ -326,11 +332,27 @@ const LeftSideBarProjectDetails = () => {
         {projectId &&
           currentProjectFlow &&
           {
-            [ProjectFlowType.RELIST]: <ProjectRelistFlow projectId={projectId} onClose={closeCurrentProjectFlow} />,
-            [ProjectFlowType.TERMINATE]: (
-              <ProjectTerminateFlow projectId={projectId} onClose={closeCurrentProjectFlow} />
+            [ProjectFlowType.RELIST]: (
+              <ProjectRelistFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+              />
             ),
-            [ProjectFlowType.WITHDRAW]: <ProjectWithdrawFlow projectId={projectId} onClose={closeCurrentProjectFlow} />,
+            [ProjectFlowType.TERMINATE]: (
+              <ProjectTerminateFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+                initiateRelist={initiateRelistFlow}
+                withRelist={data.status === ProjectPrimaryStatus.ACTIVE}
+              />
+            ),
+            [ProjectFlowType.WITHDRAW]: (
+              <ProjectWithdrawFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+                initiateRelist={initiateRelistFlow}
+              />
+            ),
           }[currentProjectFlow]}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="bg-white p-4 flex flex-col gap-y-3">

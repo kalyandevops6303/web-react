@@ -3,6 +3,7 @@
 import React from 'react';
 import Styles from '@flexternships/styles/components/core/buttons.module.css';
 import Spinner from '../Spinner';
+import classNames from 'classnames';
 
 export default function SecondaryButton(props: ButtonProps) {
   const { children, onClick, loading = false, disabled, className, cancel = false } = props;
@@ -20,7 +21,7 @@ export default function SecondaryButton(props: ButtonProps) {
       onClick={onClick}
       className={`${Styles.baseButton} ${getButtonStyle()} ${className || ''}`}
     >
-      {loading ? <Spinner /> : children}
+      {loading ? <Spinner className={classNames({ 'border-error': cancel })} /> : children}
     </button>
   );
 }

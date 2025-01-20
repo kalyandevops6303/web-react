@@ -20,7 +20,7 @@ export default function PrimaryButton(props: ButtonProps) {
       onClick={onClick}
       className={`${Styles.baseButton} ${getButtonStyle()} ${className || ''}`}
     >
-      {loading ? <Spinner white={true} /> : children}
+      {loading ? <Spinner className="border-white" /> : children}
     </button>
   );
 }

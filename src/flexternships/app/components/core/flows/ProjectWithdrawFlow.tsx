@@ -1,9 +1,14 @@
-export default function ProjectWithdrawFlow({ projectId, onClose }: ProjectWithdrawFlowProps) {
-  console.log('projectId', projectId, onClose);
-  return <div>ProjectWithdrawFlow</div>;
+import WithdrawProjectModal from '../modals/WithdrawProjectModal';
+
+export default function ProjectWithdrawFlow({ project, onClose, initiateRelist }: ProjectWithdrawFlowProps) {
+  return <WithdrawProjectModal isOpen onClose={onClose} project={project} initiateRelist={initiateRelist} />;
 }
 
 interface ProjectWithdrawFlowProps {
-  projectId: string;
+  project: {
+    id: string;
+    name: string;
+  };
   onClose: () => void;
+  initiateRelist: () => void;
 }

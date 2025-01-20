@@ -1,9 +1,28 @@
-export default function ProjectTerminateFlow({ projectId, onClose }: ProjectTerminateFlowProps) {
-  console.log('projectId', projectId, onClose);
-  return <div>ProjectTerminateFlow</div>;
+import TerminateProjectModal from '../modals/TerminateProjectModal';
+
+export default function ProjectTerminateFlow({
+  project,
+  withRelist = false,
+  onClose,
+  initiateRelist,
+}: ProjectTerminateFlowProps) {
+  return (
+    <TerminateProjectModal
+      isOpen
+      onClose={onClose}
+      withRelist={withRelist}
+      project={project}
+      initiateRelist={initiateRelist}
+    />
+  );
 }
 
 interface ProjectTerminateFlowProps {
-  projectId: string;
+  project: {
+    id: string;
+    name: string;
+  };
+  withRelist?: boolean;
   onClose: () => void;
+  initiateRelist: () => void;
 }

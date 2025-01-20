@@ -695,7 +695,9 @@ export const terminateProject = async (projectId: string) => {
   const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
 
   try {
-    await axios.put(routes.projectManagementV2.project.terminateProject, {}, config);
+    // TODO: Implement terminate project
+    // await axios.put(routes.projectManagementV2.project.terminateProject, {}, config);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while terminating the project');
   }
@@ -719,6 +721,23 @@ export const withdrawProject = async (projectId: string) => {
 };
 
 /**
+ * Deletes a project.
+ * @param projectId - The ID of the project to delete.
+ * @returns A Promise that resolves when the project is deleted.
+ * @throws {Error} If the deletion fails or an unexpected error occurs.
+ */
+export const deleteProject = async (projectId: string) => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
+
+  try {
+    await axios.delete(routes.projectManagementV2.project.create, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while deleting the project');
+  }
+};
+
+/**
  * Relists a project with new dates.
  * @param projectId - The ID of the project to relist.
  * @param startDate - The new start date timestamp.
@@ -726,7 +745,7 @@ export const withdrawProject = async (projectId: string) => {
  * @returns A Promise that resolves when the project is relisted.
  * @throws {Error} If the relisting fails or an unexpected error occurs.
  */
-export const relistProject = async (projectId: string, startDate: number, endDate: number) => {
+export const relistProject = async (projectId: string, startDate: number, endDate?: number) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
@@ -735,9 +754,11 @@ export const relistProject = async (projectId: string, startDate: number, endDat
   };
 
   try {
-    await axios.put(routes.projectManagementV2.project.relistProject, {}, config);
+    // TODO: Implement relist project
+    // await axios.put(routes.projectManagementV2.project.relistProject, {}, config);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   } catch (error) {
-    handleError(error as Error, 'An unexpected error occurred while withdrawing the project');
+    handleError(error as Error, 'An unexpected error occurred while relisting the project');
   }
 };
 
