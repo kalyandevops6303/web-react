@@ -714,9 +714,7 @@ export const withdrawProject = async (projectId: string) => {
   const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
 
   try {
-    // TODO: Implement withdraw project
-    // await axios.put(routes.projectManagementV2.project.withdrawProject, {}, config);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await axios.put(routes.projectManagementV2.project.withdrawProject, {}, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while withdrawing the project');
   }

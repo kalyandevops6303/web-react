@@ -7,7 +7,12 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 import { Eye, Paperclip, User } from 'react-feather';
-import { ProjectSecondaryStatus, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import {
+  ProjectPrimaryStatus,
+  ProjectSecondaryStatus,
+  ToastType,
+  UserType,
+} from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
 import {
   ProjectLeftPanelAction,
@@ -338,6 +343,7 @@ const LeftSideBarProjectDetails = () => {
                 project={{ id: projectId, name: data?.details?.name }}
                 onClose={closeCurrentProjectFlow}
                 initiateRelist={initiateRelistFlow}
+                withRelist={data.status === ProjectPrimaryStatus.ACTIVE}
               />
             ),
             [ProjectFlowType.WITHDRAW]: (
