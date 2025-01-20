@@ -64,8 +64,11 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
       populateProjectDetails(project.id);
       onClose();
       showToastMessage(ToastType.SUCCESS, 'Project deleted successfully');
-    } catch (error) {
-      showToastMessage(ToastType.ERROR, 'An unexpected error occurred while deleting project');
+    } catch (error: unknown) {
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'An unexpected error occurred while deleting project',
+      );
     } finally {
       setIsCancelLoading(false);
     }

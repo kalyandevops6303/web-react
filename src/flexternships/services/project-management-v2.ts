@@ -731,9 +731,7 @@ export const deleteProject = async (projectId: string) => {
   const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
 
   try {
-    // TODO: Implement delete project
-    // await axios.delete(routes.projectManagementV2.project.create, config);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await axios.delete(routes.projectManagementV2.project.create, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while deleting the project');
   }
