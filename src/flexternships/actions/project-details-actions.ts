@@ -38,10 +38,10 @@ export const getProjectDetails = async (
 ) => {
   set({ isProjectsLoading: true });
   const res = await getProjectDetailsById(projectId);
-    set({ projectDetails: res, isProjectsLoading: false });
-    if (onSuccessBySecondaryStatus && res?.secondaryStatus?.next) {
-      onSuccessBySecondaryStatus(res.secondaryStatus.next, res.isDocumentsNeeded ?? false);
-    }
+  set({ projectDetails: res, isProjectsLoading: false });
+  if (onSuccessBySecondaryStatus && res?.secondaryStatus?.next) {
+    onSuccessBySecondaryStatus(res.secondaryStatus.next, res.isDocumentsNeeded ?? false);
+  }
 };
 
 export const getProjectInvitationDetails = async (projectId: string, set: any) => {

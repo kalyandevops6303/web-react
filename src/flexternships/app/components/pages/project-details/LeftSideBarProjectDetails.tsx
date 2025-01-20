@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
@@ -177,7 +176,9 @@ const LeftSideBarProjectDetails = () => {
                   <User color="#6E6B7B" />
                 </AvatarFallback>
               </Avatar>
-              <h1 className={classNames(UserTypeChipClassnames[UserType?.CLIENT],`font-semibold px-2 py-1 rounded-xl`) }>
+              <h1
+                className={classNames(UserTypeChipClassnames[UserType?.CLIENT], `font-semibold px-2 py-1 rounded-xl`)}
+              >
                 Client
               </h1>
             </div>
@@ -272,9 +273,7 @@ const LeftSideBarProjectDetails = () => {
                     ProjectSecondaryStatus.SIGN_DOCUMENTS,
                   ].includes(secondaryStatus) && (
                     <div className="flex flex-row items-start gap-3">
-                      <div className="text-grey font-normal text-[14px] leading-[21px] font-montserrat">
-                        Status:
-                      </div>
+                      <div className="text-grey font-normal text-[14px] leading-[21px] font-montserrat">Status:</div>
                       <ProjectStatusChip
                         status={secondaryStatus}
                         statusType={StatusType?.SECONDARY}
@@ -288,17 +287,13 @@ const LeftSideBarProjectDetails = () => {
 
           {(data?.skillsData?.length! > 0 || data?.toolsData?.length! > 0) && (
             <div className="flex flex-row items-start w-full justify-start gap-2">
-              <h1 className="text-grey font-normal text-[14px] leading-[21px] font-montserrat m-0">
-                Tags:
-              </h1>
+              <h1 className="text-grey font-normal text-[14px] leading-[21px] font-montserrat m-0">Tags:</h1>
               <BadgeGroup tags={tagsData || []} className="bg-skyblue-light text-skyblue" />
             </div>
           )}
 
           <div className="flex flex-col w-full ">
-            <h1 className="text-grey font-medium text-[14px] leading-[21px] font-montserrat">
-              Description:{' '}
-            </h1>
+            <h1 className="text-grey font-medium text-[14px] leading-[21px] font-montserrat">Description: </h1>
             <p className="text-grey font-normal text-[14px] leading-[21px] font-montserrat break-words">
               {`${data?.details?.description?.slice(0, 100)}` + (data?.details?.description?.length > 100 ? '...' : '')}
               <span onClick={handleToggle} className="text-skyblue cursor-pointer">

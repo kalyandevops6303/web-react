@@ -189,12 +189,11 @@ export type PerformanceDetails = {
   _id: string;
   name: string;
   description: string;
-  seq: number; 
-  score?: number; 
-  feedbackId?: string; 
-  milestoneId: string; 
+  seq: number;
+  score?: number;
+  feedbackId?: string;
+  milestoneId: string;
 };
-
 
 export type ProjectInvitation = {
   invitationExists: boolean;
@@ -202,14 +201,13 @@ export type ProjectInvitation = {
   projectStartDate: number;
   projectEstimatedDuration: {
     duration: number;
-    durationType: DurationType; 
+    durationType: DurationType;
     hoursPerWeek: number;
   };
   talentRole: string;
-  invitationMessage: string | null; 
+  invitationMessage: string | null;
   isRead: boolean;
 };
-
 
 export type ProjectDetailsActions = {
   getProjectDetails: (
