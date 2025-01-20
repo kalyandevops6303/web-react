@@ -4,15 +4,22 @@ import DangerGif from '@flexternships/assets/gifs/danger.gif';
 import { useState } from 'react';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { withdrawProject } from '@/flexternships/services/project-management-v2';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
 export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
   const { onClose, isOpen, project, initiateRelist } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
-  const withdrawProject = async () => {
+  const populateProjectDetails = useProjectsStore((state) => state.getProjectDetails);
+
+  const handleWithdrawProject = async () => {
     setIsConfirmLoading(true);
     try {
-      // TODO: Implement withdraw project
+      await withdrawProject(project.id);
+      populateProjectDetails(project.id);
+      onClose();
+      showToastMessage(ToastType.SUCCESS, 'Project withdrawn successfully');
     } catch (error) {
       showToastMessage(
         ToastType.ERROR,
@@ -51,7 +58,13 @@ export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
             <PrimaryButton className="m-0" onClick={initiateRelist}>
               Relist
             </PrimaryButton>
-            <PrimaryButton cancel className="m-0" onClick={withdrawProject} loading={isConfirmLoading}>
+            <PrimaryButton
+              cancel
+              className="m-0"
+              onClick={handleWithdrawProject}
+              loading={isConfirmLoading}
+              disabled={isConfirmLoading}
+            >
               Withdraw
             </PrimaryButton>
           </div>
