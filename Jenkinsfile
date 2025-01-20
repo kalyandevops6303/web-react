@@ -200,6 +200,7 @@ pipeline {
                 JOB_NAME=${env.JOB_NAME}
                 ENVIRONMENT=${params.ENVIRONMENT}
                 BRANCH=${params.BRANCH}
+		DEPENDENCY=${params.DEPENDENCY}
             """.stripIndent().trim()
  
             currentBuild.description = "${paramsSubtitle}\n${paramsSummary}"
