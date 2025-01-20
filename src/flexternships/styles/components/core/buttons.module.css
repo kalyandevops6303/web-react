@@ -30,31 +30,40 @@
 }
 
 button.secondaryEnabledButtonBlue,
-button.secondaryEnabledButtonRed {
+button:focus.secondaryEnabledButtonBlue,
+button.secondaryEnabledButtonRed,
+button:focus.secondaryEnabledButtonRed {
   @apply outline outline-1 cursor-pointer;
   @apply transition-transform duration-100 ease-in-out transform active:scale-95;
   @apply transition-colors duration-200 hover:bg-opacity-10;
 }
 
-button.secondaryEnabledButtonBlue {
+button.secondaryEnabledButtonBlue,
+button:focus.secondaryEnabledButtonBlue {
   @apply outline-trublue-secondary-500 text-trublue-secondary-500;
-  @apply hover:bg-trublue-secondary-500;
+  @apply hover:bg-trublue-light;
 }
-button.secondaryEnabledButtonRed {
+
+button.secondaryEnabledButtonRed,
+button:focus.secondaryEnabledButtonRed {
   @apply outline-error text-error;
-  @apply hover:bg-error;
+  @apply hover:bg-error hover:bg-opacity-10;
 }
 
 button.secondaryDisabledButtonBlue,
-button.secondaryDisabledButtonRed {
+button:focus.secondaryDisabledButtonBlue,
+button.secondaryDisabledButtonRed,
+button:focus.secondaryDisabledButtonRed {
   @apply outline outline-1 cursor-default;
 }
 
-button.secondaryDisabledButtonBlue {
+button.secondaryDisabledButtonBlue,
+button:focus.secondaryDisabledButtonBlue {
   @apply outline-trublue-disabled text-trublue-disabled;
 }
 
-button.secondaryDisabledButtonRed {
+button.secondaryDisabledButtonRed,
+button:focus.secondaryDisabledButtonRed {
   @apply outline-error-disabled text-error-disabled;
 }
 

@@ -1,9 +1,14 @@
-export default function ProjectWithdrawFlow({ projectId, onClose }: ProjectWithdrawFlowProps) {
-  console.log('projectId', projectId, onClose);
-  return <div>ProjectWithdrawFlow</div>;
+import WithdrawProjectModal from '../modals/project-left-panel/WithdrawProjectModal';
+
+export default function ProjectWithdrawFlow({ project, onClose }: ProjectWithdrawFlowProps) {
+  console.log('projectId', project.id);
+  return <WithdrawProjectModal isOpen onClose={onClose} onConfirm={() => Promise.resolve()} project={project} />;
 }
 
 interface ProjectWithdrawFlowProps {
-  projectId: string;
+  project: {
+    id: string;
+    name: string;
+  };
   onClose: () => void;
 }

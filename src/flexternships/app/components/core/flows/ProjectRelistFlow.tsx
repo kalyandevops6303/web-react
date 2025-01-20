@@ -1,15 +1,18 @@
-import RelistModal from '../modals/RelistModal';
+import RelistModal from '../modals/project-left-panel/RelistModal';
 
-export default function ProjectRelistFlow({ projectId, onClose }: ProjectRelistFlowProps) {
+export default function ProjectRelistFlow({ project, onClose }: ProjectRelistFlowProps) {
   return (
     <>
       {/* TODO: Implement RelistFlow with relevant modals */}
-      <RelistModal isOpen onClose={onClose} projectId={projectId} />
+      <RelistModal isOpen onClose={onClose} projectId={project.id} />
     </>
   );
 }
 
 interface ProjectRelistFlowProps {
-  projectId: string;
+  project: {
+    id: string;
+    name: string;
+  };
   onClose: () => void;
 }

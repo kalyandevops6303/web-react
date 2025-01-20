@@ -326,11 +326,24 @@ const LeftSideBarProjectDetails = () => {
         {projectId &&
           currentProjectFlow &&
           {
-            [ProjectFlowType.RELIST]: <ProjectRelistFlow projectId={projectId} onClose={closeCurrentProjectFlow} />,
-            [ProjectFlowType.TERMINATE]: (
-              <ProjectTerminateFlow projectId={projectId} onClose={closeCurrentProjectFlow} />
+            [ProjectFlowType.RELIST]: (
+              <ProjectRelistFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+              />
             ),
-            [ProjectFlowType.WITHDRAW]: <ProjectWithdrawFlow projectId={projectId} onClose={closeCurrentProjectFlow} />,
+            [ProjectFlowType.TERMINATE]: (
+              <ProjectTerminateFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+              />
+            ),
+            [ProjectFlowType.WITHDRAW]: (
+              <ProjectWithdrawFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+              />
+            ),
           }[currentProjectFlow]}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="bg-white p-4 flex flex-col gap-y-3">
