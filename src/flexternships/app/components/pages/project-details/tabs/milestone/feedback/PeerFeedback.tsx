@@ -131,7 +131,7 @@ export default function PeerFeedback({ goBack }: { goBack: () => void }) {
         text="Peer Feedback"
         onClick={goBack}
       />
-      <div className="flex gap-2 items-start">
+      <div className="overflow-y-auto flex gap-2 items-start">
         <div className="flex items-start justify-center gap-2">
           {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
           {peerFeedbackForm && (
