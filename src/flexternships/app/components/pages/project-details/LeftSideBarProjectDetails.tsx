@@ -184,7 +184,7 @@ const LeftSideBarProjectDetails = () => {
             </div>
 
             <div className="flex flex-col items-start gap-1">
-              <h1 className="text-grey-heading font-normal text-[16px] font-montserrat">
+              <h1 className="text-grey-heading font-normal text-base font-montserrat">
                 <div>{data?.clientInfo?.departmentName ?? ''}</div>
                 <div>
                   {data?.clientInfo?.firstName ?? ''} {data?.clientInfo?.lastName ?? ''}
@@ -193,11 +193,8 @@ const LeftSideBarProjectDetails = () => {
             </div>
           </div>
         )}
-
-        <div className="text-grey-heading font-medium text-[18px] leading-[21px] font-montserrat mt-2">
-          Project Details
-        </div>
-        <div className="h-[1px] w-[313px] bg-[#EBE9F1]"></div>
+        <div className="text-grey-heading font-medium text-lg leading-[21px] font-montserrat mt-2">Project Details</div>
+        <div className="h-[1px] w-[313px] bg-grey-border"></div>
 
         <div className="w-full flex flex-row  items-center justify-start gap-5">
           <div className="flex flex-row items-center gap-1">
@@ -206,31 +203,33 @@ const LeftSideBarProjectDetails = () => {
             </div>
 
             <div className="flex flex-col items-start">
-              <h1 className="text-grey-heading font-medium text-[14px] leading-5.5 font-montserrat">
+              <h1 className="text-grey-heading font-medium text-sm leading-5.5 font-montserrat">
                 {formatEpochToHumanReadable(getProjectPanelDate1Values(data)[data?.status] ?? 0)}
               </h1>
-              <h1 className="text-grey-heading font-normal text-[12px] leading-4.5 font-montserrat no-ligatures">
+              <h1 className="text-grey-heading font-normal text-xs leading-4.5 font-montserrat no-ligatures">
                 {ProjectPanelCaptionDate1[data?.status]}
               </h1>
             </div>
           </div>
           <div className="flex flex-row items-center gap-1">
-            <div className={ProjectPanelIcon2Classnames[data?.status] + 'border rounded-full'}>
+            <div className={classNames(ProjectPanelIcon2Classnames[data?.status], 'border rounded-full')}>
               {getProjectPanelDate2Icon(data)}
             </div>
 
             <div className="flex flex-col items-start">
               <h1
-                className={`${
-                  ProjectPanelDate2Classnames[data?.status]
-                } font-medium text-[14px] leading-5.5 font-montserrat`}
+                className={classNames(
+                  ProjectPanelDate2Classnames[data?.status],
+                  'font-medium text-sm leading-5.5 font-montserrat',
+                )}
               >
                 {formatEpochToHumanReadable(getProjectPanelDate2Values(data)[data?.status] ?? 0)}
               </h1>
               <h1
-                className={`${
-                  ProjectPanelDate2Classnames[data?.status]
-                } font-normal text-[12px] leading-4.5 font-montserrat no-ligatures`}
+                className={classNames(
+                  ProjectPanelDate2Classnames[data?.status],
+                  'font-normal text-xs leading-4.5 font-montserrat no-ligatures',
+                )}
               >
                 {ProjectPanelCaptionDate2[data?.status]}
               </h1>
@@ -240,9 +239,9 @@ const LeftSideBarProjectDetails = () => {
 
         <div className="flex flex-col items-start justify-start w-full gap-5 text-gray-600">
           <div className="flex flex-row items-start justify-between w-full">
-            <div className="text-grey-heading font-normal text-[14px] leading-[21px] font-montserrat">
+            <div className="text-grey-heading font-normal text-sm leading-[21px] font-montserrat">
               Estimated Duration :{' '}
-              <span className="text-grey-heading font-medium text-[14px] leading-[21px] font-montserrat">
+              <span className="text-grey-heading font-medium text-sm leading-[21px] font-montserrat">
                 {data?.details?.expectedDuration?.duration} Weeks
               </span>
             </div>
@@ -257,7 +256,7 @@ const LeftSideBarProjectDetails = () => {
               className="flex flex-row items-center gap-1 cursor-pointer"
             >
               <Paperclip size={14} />
-              <h1 className="text-grey-heading font-normal text-[14px] leading-[21px] font-montserrat">
+              <h1 className="text-grey-heading font-normal text-sm leading-[21px] font-montserrat">
                 {data?.details?.documents?.length}
               </h1>
             </div>
@@ -273,7 +272,7 @@ const LeftSideBarProjectDetails = () => {
                     ProjectSecondaryStatus.SIGN_DOCUMENTS,
                   ].includes(secondaryStatus) && (
                     <div className="flex flex-row items-start gap-3">
-                      <div className="text-grey font-normal text-[14px] leading-[21px] font-montserrat">Status:</div>
+                      <div className="text-grey font-normal text-sm leading-[21px] font-montserrat">Status:</div>
                       <ProjectStatusChip
                         status={secondaryStatus}
                         statusType={StatusType?.SECONDARY}
@@ -287,14 +286,14 @@ const LeftSideBarProjectDetails = () => {
 
           {(data?.skillsData?.length! > 0 || data?.toolsData?.length! > 0) && (
             <div className="flex flex-row items-start w-full justify-start gap-2">
-              <h1 className="text-grey font-normal text-[14px] leading-[21px] font-montserrat m-0">Tags:</h1>
+              <h1 className="text-grey font-normal text-sm leading-[21px] font-montserrat m-0">Tags:</h1>
               <BadgeGroup tags={tagsData || []} className="bg-skyblue-light text-skyblue" />
             </div>
           )}
 
           <div className="flex flex-col w-full ">
-            <h1 className="text-grey font-medium text-[14px] leading-[21px] font-montserrat">Description: </h1>
-            <p className="text-grey font-normal text-[14px] leading-[21px] font-montserrat break-words">
+            <h1 className="text-grey font-medium text-sm leading-[21px] font-montserrat">Description: </h1>
+            <p className="text-grey font-normal text-sm leading-[21px] font-montserrat break-words">
               {`${data?.details?.description?.slice(0, 100)}` + (data?.details?.description?.length > 100 ? '...' : '')}
               <span onClick={handleToggle} className="text-skyblue cursor-pointer">
                 {data?.details?.description?.length > 100 ? (showMore ? ' read less' : ' read more') : null}

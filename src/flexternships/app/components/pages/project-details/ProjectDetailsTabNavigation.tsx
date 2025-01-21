@@ -18,6 +18,7 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   const param = useParams();
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
+  console.log(projectStep);
   const location = useLocation();
   const handleGiveRecognition = () => {
     navigate(`/recognition/${param.projectId}`);

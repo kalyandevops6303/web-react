@@ -78,8 +78,8 @@ export type ProjectDetails = {
   lastInProgressMilestone: number;
   clientUserId: string;
   orgSlugId: string;
-  isDocumentsSent?: boolean; // Optional based on assumption
-  isDocumentsSigned?: boolean; // Optional based on assumption
+  isDocumentsSent: boolean;
+  isDocumentsSigned: boolean;
   clientInfo: ClientInfo;
   skillsData: Skill[];
   toolsData?: Tool[]; // Optional in the data
@@ -194,6 +194,17 @@ export type PerformanceDetails = {
   score?: number;
   feedbackId?: string;
   milestoneId: string;
+};
+
+export type TeamMemberInfo = {
+  image: string;
+  name: string;
+  role: string;
+  completed: boolean;
+  lastMessageTime: string;
+  isActive: boolean;
+  userId: string;
+  isDocumentsSigned: boolean;
 };
 
 export type ProjectInvitation = {
