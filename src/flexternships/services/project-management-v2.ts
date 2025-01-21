@@ -695,9 +695,9 @@ export const terminateProject = async (projectId: string) => {
   const config = { headers: headers, params: { project_id: projectId }, withCredentials: true };
 
   try {
-    // TODO: Implement terminate project
-    // await axios.put(routes.projectManagementV2.project.terminateProject, {}, config);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // TODO: Implement actual api call
+    await axios.put(routes.projectManagementV2.project.terminateProject, {}, config);
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while terminating the project');
   }
@@ -754,9 +754,9 @@ export const relistProject = async (projectId: string, startDate: number, endDat
   };
 
   try {
-    // TODO: Implement relist project
-    // await axios.put(routes.projectManagementV2.project.relistProject, {}, config);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // TODO: Implement actual api call
+    await axios.put(routes.projectManagementV2.project.relistProject, {}, config);
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while relisting the project');
   }
