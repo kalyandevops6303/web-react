@@ -1,4 +1,4 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import SelfFeedback from './SelfFeedback';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import TeamFeedback from './TeamFeedback';
@@ -6,15 +6,21 @@ import PeerFeedback from './PeerFeedback';
 import IndividualFeedback from './IndividualFeedback';
 
 export default function HandleFeedbacks() {
-  const componentsByFeedbackType = {
-    self: <SelfFeedback />,
-    manager_to_team: <TeamFeedback />,
-    peer_to_peer: <PeerFeedback />,
-    manager_to_peer: <IndividualFeedback />,
+  const { feedbackType, projectId, milestoneId } = useParams();
+  const allowedFeedbackTypes = Object.values(MilestoneFeedbackType).map((type) => type.toLowerCase());
+
+  const navigate = useNavigate();
+
+  const goToMilestonePage = () => {
+    navigate(`/project-details/${projectId}/milestone/${milestoneId}`);
   };
 
-  const { feedbackType } = useParams();
-  const allowedFeedbackTypes = Object.values(MilestoneFeedbackType).map((type) => type.toLowerCase());
+  const componentsByFeedbackType = {
+    self: <SelfFeedback goBack={goToMilestonePage} />,
+    manager_to_team: <TeamFeedback goBack={goToMilestonePage} />,
+    peer_to_peer: <PeerFeedback goBack={goToMilestonePage} />,
+    manager_to_peer: <IndividualFeedback goBack={goToMilestonePage} />,
+  };
 
   if (!feedbackType || !allowedFeedbackTypes.includes(feedbackType)) {
     return <Navigate to="/404" />;

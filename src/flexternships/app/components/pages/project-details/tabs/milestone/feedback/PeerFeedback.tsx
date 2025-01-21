@@ -2,7 +2,7 @@ import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import Sidebar from '@/flexternships/app/components/core/surveys/Sidebar';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
@@ -13,10 +13,10 @@ import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-utils';
 import SucessModal from './modals/SucessModal';
+import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
 
-export default function PeerFeedback() {
+export default function PeerFeedback({ goBack }: { goBack: () => void }) {
   const params = useParams();
-  const navigate = useNavigate();
 
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
@@ -54,13 +54,13 @@ export default function PeerFeedback() {
 
       if (!firstMemberWithoutFeedback) {
         // Navigate if all members have feedback
-        navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+        goBack();
       } else {
         // Set the active team member to the first one without feedback
         setActiveTeamMember(firstMemberWithoutFeedback);
       }
     }
-  }, [filteredTeam, params, setActiveTeamMember, navigate]);
+  }, [filteredTeam, params, setActiveTeamMember, goBack]);
 
   useEffect(() => {
     if (activeTeamMember) {
@@ -124,16 +124,14 @@ export default function PeerFeedback() {
 
   return (
     <>
-      <div
-        className="flex items-center gap-1 cursor-pointer mb-5 pr-0 max-w-[7/12] p-0 flex-nowrap"
-        onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
-      >
-        <div className="bg-[#0185E4] w-min text-white rounded-full p-1">
-          <ArrowLeft size="20px" />
-        </div>
-        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">Peer Feedback</div>
-      </div>
-      <div className="relative overflow-y-auto flex gap-2 items-start">
+      <PrimaryIconText
+        className="mb-5"
+        bgDark
+        icon={<ArrowLeft className="text-white" size="20px" />}
+        text="Peer Feedback"
+        onClick={goBack}
+      />
+      <div className="flex gap-2 items-start">
         <div className="flex items-start justify-center gap-2">
           {formattedTeamInfo && <Sidebar data={formattedTeamInfo} onChange={handleActiveMemberChange} />}
           {peerFeedbackForm && (
