@@ -1,3 +1,4 @@
+import SelectCompetencyCard from '@/flexternships/app/components/core/cards/SelectCompetencyCard';
 import React from 'react';
 import { ThumbsUp } from 'react-feather';
 import { ItemValue, Question, Serializer } from 'survey-core';
@@ -123,7 +124,7 @@ export class Kudos extends SurveyQuestionElementBase {
     const { selectedValue } = this.state;
 
     return (
-      <div className={cssClasses.root}>
+      <div className={`${cssClasses.root} flex flex-col gap-y-4`}>
         <div className="kudos-choices text-black flex gap-4">
           {choices.length > 0 ? (
             choices.map((choice: ItemValue, index: number) => (
@@ -152,6 +153,16 @@ export class Kudos extends SurveyQuestionElementBase {
           ) : (
             <span>No choices available</span>
           )}
+        </div>
+        {/* TODO: Make this dynamic and update the data model */}
+        <div className="flex flex-col gap-y-2">
+          <div className="text-sm font-medium leading-5.5 text-grey-600">
+            Select applicable competencies <span className="text-error">*</span>
+          </div>
+          <div className="flex flex-row flex-wrap gap-4">
+            <SelectCompetencyCard text="Collaboration & Teamwork" value="1" selected={true} onClick={() => {}} />
+            <SelectCompetencyCard text="Innovation" value="2" selected={false} onClick={() => {}} />
+          </div>
         </div>
 
         {/* Render the comment box if hasComment is true */}

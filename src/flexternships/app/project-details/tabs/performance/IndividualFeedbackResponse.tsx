@@ -1,5 +1,6 @@
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import Spinner from '@/flexternships/app/components/core/Spinner';
+import CompetencyTag from '@/flexternships/app/components/core/tags/CompetencyTag';
 import VerticalTimeline from '@/flexternships/app/components/core/timelines/VerticalTimeline';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
@@ -97,7 +98,7 @@ export default function IndividualFeedbackResponse(props: any) {
   const getResponseComponent = (data: any, index: number) => {
     return (
       <div className="max-w-full flex flex-col gap-3">
-        <div className="text-[14px] font-medium leading-[22px] text-[var(--Grey-600,#515759)] font-montserrat">
+        <div className="text-sm font-medium leading-5.5 text-grey-600 font-montserrat">
           {index + 1}. {data?.title}
         </div>
         <div>
@@ -107,20 +108,18 @@ export default function IndividualFeedbackResponse(props: any) {
             </div>
           )}
           {data?.type === 'areacheckbox' && (
-            <div className="mb-5 rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
+            <div className="mb-5 rounded-md border border-grey-50 bg-white px-3 py-2 min-h-[38px]">
               <ul>
                 {data?.answer?.value?.map((item: any) => (
-                  <li className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
-                    &#8226; {item}
-                  </li>
+                  <li className="text-sm font-medium leading-5.5 text-grey-heading font-montserrat">&#8226; {item}</li>
                 ))}
               </ul>
             </div>
           )}
           {data?.type === 'gridcheckbox' && (
-            <div className="rounded-md bg-[var(--Grey-0,#FFF)] min-h-[38px] flex flex-wrap gap-3">
+            <div className="rounded-md bg-white min-h-[38px] flex flex-wrap gap-3">
               {data?.answer?.value?.map((item: any) => (
-                <span className="w-[200px] text-left text-[14px] font-semibold leading-[22px] font-montserrat text-[#6E6B7B] shadow-[2px_2px_12px_0px_rgba(33,150,243,0.5)] border border-[#2196F3] px-3 py-1 rounded-lg">
+                <span className="w-[200px] text-left text-sm font-semibold leading-5.5 font-montserrat text-grey shadow-[2px_2px_12px_0px_rgba(33,150,243,0.5)] border border-blue px-3 py-1 rounded-lg">
                   <div>
                     <div className="flex gap-1 items-center mt-1">
                       <Avatar className="w-7 h-7">
@@ -134,7 +133,7 @@ export default function IndividualFeedbackResponse(props: any) {
                         <div className="flex flex-nowrap w-[120px] whitespace-nowrap overflow-hidden text-ellipsis font-montserrat">
                           {item?.first_name} {item?.last_name}
                         </div>
-                        <div className="text-[12px] font-normal leading-[20px] font-montserrat text-[#6E6B7B] font-montserrat">
+                        <div className="text-xs font-normal leading-5 font-montserrat text-grey font-montserrat">
                           {item?.role_name}
                         </div>
                       </div>
@@ -146,15 +145,26 @@ export default function IndividualFeedbackResponse(props: any) {
             </div>
           )}
           {(data?.type === 'kudosgroup' || data?.type === 'wowgroup') && (
-            <div className="mb-5 rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
-              <div className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
-                {data?.answer?.value == 'na' ? 'Not Applicable' : data?.answer?.value}
+            <div className="flex flex-col gap-y-4">
+              {/* TODO: Make this dynamic */}
+              {/* Competencies */}
+              <div className="flex flex-row flex-wrap gap-2">
+                <CompetencyTag competency={{ name: 'Collaboration', colorCode: '#0DA8B2' }} />
+                <CompetencyTag competency={{ name: 'Leadership', colorCode: '#7367F0' }} />
+                <CompetencyTag competency={{ name: 'Communication', colorCode: '#FF9F43' }} />
+              </div>
+
+              {/* Comment Box */}
+              <div className="mb-5 rounded-md border border-grey-50 bg-white px-3 py-2 min-h-[38px]">
+                <div className="text-sm font-medium leading-5.5 text-grey-heading font-montserrat">
+                  {data?.answer?.value == 'na' ? 'Not Applicable' : data?.answer?.value}
+                </div>
               </div>
             </div>
           )}
           {(data?.type === 'comment' || data?.answer?.comment) && (
-            <div className="rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
-              <div className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
+            <div className="rounded-md border border-grey-50 bg-white px-3 py-2 min-h-[38px]">
+              <div className="text-sm font-medium leading-5.5 text-grey-heading font-montserrat">
                 {data?.answer?.comment || data?.answer?.value}
               </div>
             </div>

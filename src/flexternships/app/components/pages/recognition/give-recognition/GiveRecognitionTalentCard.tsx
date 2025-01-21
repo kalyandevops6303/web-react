@@ -7,7 +7,7 @@ import { GiveRecognitionForm } from '@/flexternships/constraints/types/recogniti
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import Rating from '../../../core/feedback/Rating';
-import SelectCompetencyCard from './SelectCompetencyCard';
+import SelectCompetencyCard from '../../../core/cards/SelectCompetencyCard';
 import TextInput from '../../../core/form/TextInput';
 
 // Icons and assets
