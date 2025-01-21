@@ -12,6 +12,7 @@ import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import CardSkeleton from '@src/assets/images/gifs/card_loader.gif';
+import noBidsGif from '@src/assets/images/gifs/noBids.gif';
 
 import Project from './Project';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
@@ -76,7 +77,7 @@ import OpenProjectCardForClient from './OpenProjectCardForClient';
 import WithdrawnProjectCardForClient from './WithdrawnProjectCardForClient';
 import { isFlexternshipApp } from '../../../configs/api/env';
 
-const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
+const Empty = ({ active, recommended, payment, isEducationNotCompleted, noBids, open, withdrawn }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const userDetailsData = useSelector(userData);
@@ -97,9 +98,21 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {noBids && <img src={noBidsGif} className="empty-gif" alt="empty-gif" />}
+
             {active && (
               <CardText className="get-started">
                 Lets get you <br /> started!
+              </CardText>
+            )}
+            {open && (
+              <CardText className="get-started">
+                No Open <br /> Projects
+              </CardText>
+            )}
+            {withdrawn && (
+              <CardText className="get-started">
+                No Withdrawn <br /> Projects
               </CardText>
             )}
             {payment && (
@@ -367,13 +380,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        active
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -457,13 +468,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        recommended
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -545,13 +554,12 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        noBids
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
+                        open
                       />
                     )}
                   </ProjectsListingWrap>
@@ -631,13 +639,12 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        noBids
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
+                        withdrawn
                       />
                     )}
                   </ProjectsListingWrap>
@@ -723,13 +730,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        active
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -905,13 +910,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
                         recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -994,13 +997,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
                         recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -1087,13 +1088,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
                         recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
