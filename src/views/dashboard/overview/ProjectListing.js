@@ -1113,6 +1113,9 @@ Empty.propTypes = {
   recommended: Proptypes.bool,
   payment: Proptypes.bool,
   isEducationNotCompleted: Proptypes.bool,
+  noBids: Proptypes.bool,
+  withdrawn: Proptypes.bool,
+  open: Proptypes.bool,
 };
 
 Empty.defaultProps = {
@@ -1120,4 +1123,7 @@ Empty.defaultProps = {
   recommended: false,
   payment: false,
   isEducationNotCompleted: false,
+  noBids: false,
+  withdrawn: false,
+  open: false,
 };
