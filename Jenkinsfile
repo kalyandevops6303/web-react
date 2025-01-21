@@ -16,7 +16,7 @@ pipeline {
 
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['tru-dev', 'tru-qa', 'qa', 'dev'], description: 'Select deployment environment')
-        choice(name: 'DEPENDENCY', choices: ['No', 'Yes'], description: 'Force install dependencies')
+        choice(name: 'DEPENDENCY', choices: ['no', 'yes'], description: 'Force install dependencies')
     }
 
     stages {
@@ -56,19 +56,19 @@ pipeline {
                     def filename
                     switch (params.ENVIRONMENT) {
                         case 'dev':
-                            filename = '/Dev/env-dev.txt'
+                            filename = '/Dev/env-fe-dev.txt'
                             break
                         case 'qa':
-                            filename = '/QA/env-qa.txt'
+                            filename = '/QA/env-fe-qa.txt'
                             break
                         case 'qa-auto':
-                            filename = '/QA-auto/env-qa-auto.txt'
+                            filename = '/QA-auto/env-fe-qa-auto.txt'
                             break
                         case 'tru-dev':
-                            filename = '/Dev/env-tru-dev.txt'
+                            filename = '/Dev/env-fe-tru-dev.txt'
                             break
 			case 'tru-qa':
-                            filename = '/QA/env-tru-qa.txt'
+                            filename = '/QA/env-fe-tru-qa.txt'
                             break
                         default:
                             error("Unknown environment: ${params.ENVIRONMENT}")
@@ -108,14 +108,14 @@ pipeline {
                     if (!env.DOWNLOAD_URL) {
                         error("Error: Download URL is empty")
                     }
-                    sh "curl -L '${env.DOWNLOAD_URL}' --output env-${params.ENVIRONMENT}.txt"
+                    sh "curl -L '${env.DOWNLOAD_URL}' --output env-fe-${params.ENVIRONMENT}.txt"
                 }
             }
         }
 
         stage('Archive the File') {
             steps {
-                archiveArtifacts artifacts: "env-${params.ENVIRONMENT}.txt", allowEmptyArchive: false
+                archiveArtifacts artifacts: "env-fe-${params.ENVIRONMENT}.txt", allowEmptyArchive: false
             }
         }
 
@@ -179,6 +179,7 @@ pipeline {
 
                     // Use the downloaded environment file for Docker Compose
                     sh """
+		            cp env-fe-${params.ENVIRONMENT}.txt .env.trudev.local
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
@@ -192,7 +193,8 @@ pipeline {
             }
         }
     }
-  post {
+
+post {
     always {
         script {
             def paramsSubtitle = "Build with parameters:"
@@ -200,10 +202,11 @@ pipeline {
                 JOB_NAME=${env.JOB_NAME}
                 ENVIRONMENT=${params.ENVIRONMENT}
                 BRANCH=${params.BRANCH}
+                DEPENDENCY=${params.DEPENDENCY}
             """.stripIndent().trim()
  
             currentBuild.description = "${paramsSubtitle}\n${paramsSummary}"
         }
-     }
-  }
+    }
+}
 }
