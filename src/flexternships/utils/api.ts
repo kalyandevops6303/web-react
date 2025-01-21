@@ -132,6 +132,16 @@ export const routes = {
     thirdPartyAppsData: `${serviceUrls.dashboardV2}/analytics/third-party-apps-data`,
     detailedPerformanceInsights: `${serviceUrls.dashboardV2}/team/performance/insights/detail`,
     teamCompetencySummary: `${serviceUrls.dashboardV2}/team/competency/summary`,
+    team: {
+      performanceSummary: `${serviceUrls.dashboardV2}/team/performance/summary`,
+      teamMembersAttractivenessDetails: `${serviceUrls.dashboardV2}/team/performance/leaderboard`,
+      teamLeaderboard: `${serviceUrls.dashboardV2}/team/overall/leaderboard`,
+      roles: `${serviceUrls.dashboardV2}/team/analytics/roles`,
+      universities: `${serviceUrls.dashboardV2}/team/analytics/institutes`,
+      diversity: `${serviceUrls.dashboardV2}/team/analytics/diversity`,
+      teamMembersDetails: `${serviceUrls.dashboardV2}/team/analytics/leaderboard`,
+      performanceInsightsOverview: `${serviceUrls.dashboardV2}/team/performance/insights`,
+    },
   },
 };
 

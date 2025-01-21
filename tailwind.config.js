@@ -102,6 +102,9 @@ module.exports = {
         border: {
           DEFAULT: '#E6E7E7',
         },
+        background: {
+          DEFAULT: '#F9F9F9'
+        },
       },
       width: {
         8.5: '2.125rem',
