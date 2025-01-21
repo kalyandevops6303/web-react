@@ -541,7 +541,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   survey.css = cssClasses;
 
   return (
-    <div className="w-[650px] overflow-y-scroll rounded-md p-[24px] bg-white">
+    <div className="w-[650px] scrollbar-hide overflow-y-scroll rounded-md p-[24px] bg-white">
       <div className="bg-white flex items-start justify-between mb-[28px]">
         {userDetails ? (
           <div className="flex items-center gap-2">
@@ -582,7 +582,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       <div className="mb-[28px]">
         <SurveyProgress />
       </div>
-      <div className="overflow-y-scroll scrollbar-hide max-h-[400px] overflow-y-auto w-full" ref={scrollDivRef}>
+      <div className="scrollbar-hide max-h-[400px] overflow-y-auto w-full" ref={scrollDivRef}>
         <Survey model={survey} />
       </div>
     </div>
