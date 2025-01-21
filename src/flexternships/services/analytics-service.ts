@@ -116,6 +116,128 @@ export const getAiSummaryService: (projectId: string, userId: string) => Promise
   }
 };
 
+export const getTeamPerformanceSummaryService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      project_id: projectId,
+    },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.performanceSummary}`, config);
+    return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team performance summary');
+  }
+};
+
+export const getTeamMembersAttractivenessDetailsService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.teamMembersAttractivenessDetails}`, config);
+    return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team members details');
+  }
+};
+
+export const getTeamLeaderboardService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.teamLeaderboard}`, config);
+    return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team leaderboard');
+  }
+};
+
+export const getTeamRolesService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.roles}`, config);
+    return keysToCamelCase(response.data?.data, 1) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team roles');
+  }
+};
+
+export const getTeamUniversitiesService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.universities}`, config);
+    return keysToCamelCase(response.data?.data, 1) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team universities');
+  }
+};
+
+export const getTeamDiversityService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.diversity}`, config);
+    return keysToCamelCase(response.data?.data, 1) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team diversity');
+  }
+};
+
+export const getTeamMembersDetailsService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.teamMembersDetails}`, config);
+    return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team members details');
+  }
+};
+
+export const getTeamPerformanceInsightsOverviewService: (projectId: string) => Promise<any> = async (projectId) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.team.performanceInsightsOverview}`, config);
+    return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching team performance insights overview');
+  }
+};
+
 /**
  * Retrieves detailed performance insights for a project and competency.
  * @param projectId - The ID of the project

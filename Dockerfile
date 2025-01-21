@@ -7,13 +7,11 @@ RUN apk --no-cache add --virtual native-deps \
 # Create app directory
 WORKDIR /app
 
-COPY package.json ./
+# Copy source code to image
+COPY . .
 
 # Install dependencies
 RUN npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
-
-# Copy source code to image
-COPY . .
 
 RUN npm run build
 
