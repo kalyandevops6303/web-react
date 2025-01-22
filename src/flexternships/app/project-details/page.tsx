@@ -1,7 +1,7 @@
 import { Box, Star, Users, Watch } from 'react-feather';
 import ProjectDetailsTabNavigation from '../components/pages/project-details/ProjectDetailsTabNavigation';
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import MilestoneTab from '../components/pages/project-details/tabs/milestone';
 import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
 import { Params, useNavigate, useParams } from 'react-router-dom';
@@ -22,7 +22,15 @@ export default function FlexternshipProjectDetails() {
 
   const params: Readonly<Params<string>> = useParams();
   const navigate = useNavigate();
-
+  const [breadCrumbData, setBreadCrumbData] = useState<{
+    projectName: string;
+    projectStep: string;
+    milestoneName: string;
+  }>({
+    projectName: '',
+    projectStep: '',
+    milestoneName: '',
+  });
   const redirectUserAsPerSecondaryStatus = (status: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => {
     if (!isEmpty(params.milestoneId)) return;
     if (!params?.projectId) throw new Error('Project ID is mandatory to view the project details');
@@ -99,6 +107,23 @@ export default function FlexternshipProjectDetails() {
       clientVisible: true,
     },
   ];
+  const getCapitalizedStep = (step: string) => step.charAt(0).toUpperCase() + step.slice(1);
+  useEffect(() => {
+    if (params.projectStep) {
+      setBreadCrumbData((prev) => ({
+        ...prev,
+        projectStep: params['projectStep']
+          ? getCapitalizedStep(params['projectStep'])
+          : getCapitalizedStep(location.pathname.split('/')[3]),
+      }));
+    }
+    if (projectDetails?.details?.name) {
+      setBreadCrumbData((prev) => ({ ...prev, projectName: projectDetails?.details?.name }));
+    }
+    if (params?.milestoneId) {
+      setBreadCrumbData((prev) => ({ ...prev, projectStep: 'Milestone', milestoneName: milestoneDetails?.name }));
+    }
+  }, [params.projectStep, params?.milestoneId, projectDetails]);
   return (
     <div className="flexternships-page">
       {projectLoading ? (
@@ -116,13 +141,11 @@ export default function FlexternshipProjectDetails() {
                 link: `/project-details/${params?.projectId}/milestone`,
               },
               {
-                title: params['projectStep']
-                  ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
-                  : location.pathname.split('/')[3].charAt(0).toUpperCase() + location.pathname.split('/')[3].slice(1),
+                title: breadCrumbData?.projectStep ?? null,
                 link: `/project-details/${params?.projectId}/${location.pathname.split('/')[3]}`,
               },
               {
-                title: milestoneDetails?.name ?? null,
+                title: breadCrumbData?.milestoneName ?? null,
                 link: `/project-details/${params?.projectId}/${params['projectStep']}/${params['milestoneId']}`,
               },
             ]}
