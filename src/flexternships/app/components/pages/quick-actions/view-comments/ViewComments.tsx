@@ -1,36 +1,38 @@
 // External dependencies
+import classNames from 'classnames';
 import { isEmpty } from 'lodash';
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
-// Types and enums
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
-import { CommentsTimeline } from '@/flexternships/constraints/types/quick-actions-types';
-import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
-
-// Services and utils
-import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { fetchTeamDetails } from '@/flexternships/services/project-details';
-import { getMilestonesDropdown, getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
+import { useParams } from 'react-router-dom';
 
 // Components
-import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
-import SelectTalentCard from './SelectTalentCard';
-import ViewCommentsManagerCard from './ViewCommentsManagerCard';
-import SingleSelectInput from '../../../core/form/SingleSelectInput';
-import VerticalTimeline from './CommentsVerticalTimeline';
-import Spinner from '../../../core/Spinner';
 import NoCommentsFound from './NoCommentsFound';
+import SelectTalentCard from './SelectTalentCard';
+import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
+import SingleSelectInput from '../../../core/form/SingleSelectInput';
+import Spinner from '../../../core/Spinner';
+import VerticalTimeline from './CommentsVerticalTimeline';
+import ViewCommentsManagerCard from './ViewCommentsManagerCard';
+
+// Constants
 import {
   DEFAULT_ALL_MILESTONES_OPTION,
   DEFAULT_ALL_NOTE_CATEGORIES_OPTION,
 } from '@/flexternships/static/constants/quick-actions-constants';
+
+// Services and utils
+import { fetchTeamDetails } from '@/flexternships/services/project-details';
+import { getMilestonesDropdown, getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
+import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+
+// Types and enums
+import { CommentsTimeline } from '@/flexternships/constraints/types/quick-actions-types';
+import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
 import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
-import classNames from 'classnames';
+import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 export default function ViewComments({ category = QuickActionCategory.RECOGNITION }: ViewCommentsProps) {
   const [talentsLoading, setTalentsLoading] = useState<boolean>(false);

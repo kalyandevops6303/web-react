@@ -1,8 +1,13 @@
-// React Hook Form
+// External dependencies
+import classNames from 'classnames';
+import { isEmpty } from 'lodash';
+import { ReactNode, useState } from 'react';
 import { Control, Controller, useController } from 'react-hook-form';
+import { AlertCircle, ChevronDown, ChevronUp } from 'react-feather';
 
 // Types and enums
 import { GiveRecognitionForm, GiveNotesForm } from '@/flexternships/constraints/types/quick-actions-types';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
@@ -14,15 +19,12 @@ import TextInput from '../../../core/form/TextInput';
 import checkedIcon from '@flexternships/assets/icons/checkboxes/checked.svg';
 import uncheckedIcon from '@flexternships/assets/icons/checkboxes/unchecked.svg';
 
-// Utils and data
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+// Stores
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
-import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-store';
-import classNames from 'classnames';
-import { isEmpty } from 'lodash';
-import { ReactNode, useState } from 'react';
-import { AlertCircle, ChevronDown, ChevronUp } from 'react-feather';
+
+// Utils
+import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 
 function UnselectedTalentCard({
   talentInfo,

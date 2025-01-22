@@ -1,5 +1,6 @@
 // Core enums and types
 import { RecognitionSource } from '@/flexternships/constraints/enums/core-enums';
+import { Competency } from '@/flexternships/constraints/types/competency-types';
 
 // UI Components
 import CompetencyTag from '../../../core/tags/CompetencyTag';
@@ -7,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 
 // Utils
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
-import { Competency } from '@/flexternships/constraints/types/competency-types';
 import { getReadableTimeDifference } from '@/flexternships/utils/date-utils';
 
 interface ViewCommentsManagerCardProps {

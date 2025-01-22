@@ -1,15 +1,7 @@
-// React and hooks
+// External dependencies
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-
-// Internal dependencies
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { getQuickActionsCount } from '@/flexternships/services/project-management-v2';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-
-// Types and enums
-import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { QuickActionsStats } from '@/flexternships/constraints/types/quick-actions-types';
+import { ArrowLeft, Eye, MessageSquare } from 'react-feather';
 
 // Components
 import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
@@ -19,11 +11,21 @@ import ViewComments from '../components/pages/quick-actions/view-comments/ViewCo
 import NoCommentsFound from '../components/pages/quick-actions/view-comments/NoCommentsFound';
 import Spinner from '../components/core/Spinner';
 
-// Icons and assets
-import { ArrowLeft, Eye, MessageSquare } from 'react-feather';
+// Services and Stores
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { getQuickActionsCount } from '@/flexternships/services/project-management-v2';
+
+// Types and Enums
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { QuickActionsStats } from '@/flexternships/constraints/types/quick-actions-types';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
+
+// Utils
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+
+// Assets
 import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
 import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
-import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 
 // Page-specific enums
 enum QuickAction {

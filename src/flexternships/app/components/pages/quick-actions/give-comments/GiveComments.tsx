@@ -1,37 +1,37 @@
 // External dependencies
+import { Controller, useForm, useFieldArray } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Controller, useForm, useFieldArray } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 
-// Types and schemas
-import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { GiveNotesForm, GiveRecognitionForm } from '@/flexternships/constraints/types/quick-actions-types';
-import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
-import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
+// Components
+import GiveCommentsTalentCard from './GiveCommentsTalentCard';
+import PrimaryButton from '../../../core/buttons/PrimaryButton';
+import QuickActionConfirmationModal from '../../../core/modals/QuickActionConfirmationModal';
+import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
+import SingleSelectInput from '../../../core/form/SingleSelectInput';
+import Spinner from '../../../core/Spinner';
+
+// Enums and Types
 import { GiveCommentsSchema } from '@/flexternships/schemas/quick-actions-schemas';
+import { GiveNotesForm, GiveRecognitionForm } from '@/flexternships/constraints/types/quick-actions-types';
+import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
+import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 
-// Services and stores
+// Services and Stores
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
 import { getMilestonesDropdown, submitNotes, submitRecognition } from '@/flexternships/services/project-management-v2';
+import { giveCommentsTitle } from '@/flexternships/static/content/quick-actions-content';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-store';
 
 // Utils
-import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
-
-// Components
-import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
-import GiveCommentsTalentCard from './GiveCommentsTalentCard';
-import PrimaryButton from '../../../core/buttons/PrimaryButton';
-import SingleSelectInput from '../../../core/form/SingleSelectInput';
-import Spinner from '../../../core/Spinner';
-import QuickActionConfirmationModal from '../../../core/modals/QuickActionConfirmationModal';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
-import { giveCommentsTitle } from '@/flexternships/static/content/quick-actions-content';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 const defaultValues = {
   milestone: undefined,
