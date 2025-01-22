@@ -2,7 +2,7 @@ import SecondaryButton from '../buttons/SecondaryButton';
 import GenericModal from './GenericModal';
 import CelebrationGif from '@flexternships/assets/gifs/celebration.gif';
 
-export default function RecognitionConfirmationModal(props: RecognitionConfirmationModalProps) {
+export default function QuickActionConfirmationModal(props: QuickActionConfirmationModalProps) {
   const { onClose, isOpen, title, description } = props;
 
   return (
@@ -27,7 +27,7 @@ export default function RecognitionConfirmationModal(props: RecognitionConfirmat
   );
 }
 
-type RecognitionConfirmationModalProps = {
+type QuickActionConfirmationModalProps = {
   onClose: () => void;
   isOpen?: boolean;
   title: string;

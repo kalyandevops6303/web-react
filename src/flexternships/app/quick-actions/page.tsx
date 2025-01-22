@@ -33,7 +33,7 @@ enum QuickAction {
   VIEW_NOTES = 'view-notes',
 }
 
-export default function FlexternProjectRecognition() {
+export default function FlexternProjectQuickActions() {
   const [selectedAction, setSelectedAction] = useState<QuickAction>(QuickAction.GIVE_RECOGNITION);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const [stats, setStats] = useState<QuickActionsStats | undefined>();
@@ -75,7 +75,7 @@ export default function FlexternProjectRecognition() {
 
   const getComponentBySelection = () => {
     const quickActionCategory = [QuickAction.ADD_NOTES, QuickAction.VIEW_NOTES].includes(selectedAction)
-      ? QuickActionCategory.NOTES
+      ? QuickActionCategory.NOTE
       : QuickActionCategory.RECOGNITION;
     switch (selectedAction) {
       case QuickAction.GIVE_RECOGNITION:
@@ -114,6 +114,7 @@ export default function FlexternProjectRecognition() {
   }, [projectId, fetchStats]);
 
   useEffect(() => {
+    // TODO: Update this to include all other cases
     if (!stats) return;
     if (!stats.teamMembers || (location?.state as { viewRecognitions?: boolean })?.viewRecognitions) {
       setSelectedAction(QuickAction.VIEW_RECOGNITIONS);

@@ -14,7 +14,7 @@ import { GiveCommentsSchema } from '@/flexternships/schemas/quick-actions-schema
 
 // Services and stores
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
-import { getMilestonesDropdown, submitRecognition } from '@/flexternships/services/project-management-v2';
+import { getMilestonesDropdown, submitNotes, submitRecognition } from '@/flexternships/services/project-management-v2';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
 import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-store';
 
@@ -28,9 +28,10 @@ import GiveCommentsTalentCard from './GiveCommentsTalentCard';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
 import Spinner from '../../../core/Spinner';
-import RecognitionConfirmationModal from '../../../core/modals/RecognitionConfirmationModal';
+import QuickActionConfirmationModal from '../../../core/modals/QuickActionConfirmationModal';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
+import { giveCommentsTitle } from '@/flexternships/static/content/quick-actions-content';
 
 const defaultValues = {
   milestone: undefined,
@@ -101,9 +102,8 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
         await submitRecognition(projectId, recognitionData.milestone._id, recognitionData.selectedTalents);
       } else {
         // Notes submission to be implemented
-        // const notesData = data as GiveNotesForm;
-        // await submitNotes(projectId, notesData.milestone._id, notesData.selectedTalents);
-        console.log(data);
+        const notesData = data as GiveNotesForm;
+        await submitNotes(projectId, notesData.milestone._id, notesData.selectedTalents);
       }
       openConfirmationModal();
     } catch (error: unknown) {
@@ -135,14 +135,14 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
     };
     fetchTalents();
     populateCompetencies();
+    populateNoteCategories();
   }, [projectId]);
 
   useEffect(() => {
-    if (category === QuickActionCategory.RECOGNITION) return;
-    populateNoteCategories();
-  }, [projectId, category]);
+    reset(watch(), { keepErrors: false });
+  }, [category, reset]);
 
-  if (talentsLoading || isCompetenciesLoading || (isNoteCategoriesLoading && category === QuickActionCategory.NOTES))
+  if (talentsLoading || isCompetenciesLoading || (isNoteCategoriesLoading && category === QuickActionCategory.NOTE))
     return (
       <SimpleElevatedCard className="bg-white p-6 flex flex-col gap-y-5">
         <div className="py-10 flex justify-center items-center">
@@ -162,9 +162,7 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
       ) : (
         <>
           <div className="flex flex-col gap-y-2 items-start">
-            <div className="text-base text-grey-600 font-medium leading-6">
-              Do you see impressive work or contribution from team member(s)? Recognize with a WOW!
-            </div>
+            <div className="text-base text-grey-600 font-medium leading-6">{giveCommentsTitle[category]}</div>
             <div className="w-full max-w-[540px]">
               <Controller
                 name="milestone"
@@ -217,11 +215,13 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
           </div>
         </>
       )}
-      <RecognitionConfirmationModal
+      <QuickActionConfirmationModal
         isOpen={isConfirmationModalOpen}
         onClose={closeConfirmationModal}
         title="Great Job!"
-        description={`You have submitted the ${userDetails.userType === UserType.TALENT ? 'Kudos!' : 'WOWs'}!`}
+        description={`You have submitted the ${
+          category === QuickActionCategory.NOTE ? 'Notes' : userDetails.userType === UserType.TALENT ? 'Kudos!' : 'WOWs'
+        }!`}
       />
     </SimpleElevatedCard>
   );

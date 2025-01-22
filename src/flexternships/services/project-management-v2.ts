@@ -21,7 +21,8 @@ import {
 } from '../utils/parsing-utils';
 import { PaginatedData } from './user-management';
 import { MilestoneDropdownOptions } from '../constraints/enums/miscellaneous-enums';
-import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/quick-actions-constants';
+import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/constants/quick-actions-constants';
+import { QuickActionCategory } from '../constraints/enums/quick-actions-enums';
 
 /**
  * Retrieves a file upload URL for a given filename.
@@ -750,9 +751,14 @@ export const relistProject = async (projectId: string, startDate: number, endDat
  * @returns A Promise that resolves to the parsed recognition timeline data.
  * @throws {Error} If the timeline retrieval fails or an unexpected error occurs.
  */
-export const getRecognitionTimeline = async (projectId: string, talentUserId: string, milestoneId?: string) => {
+export const getRecognitionTimeline = async (
+  projectId: string,
+  talentUserId: string,
+  category: QuickActionCategory,
+  milestoneId?: string,
+) => {
   const config = {
-    params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
+    params: { project_id: projectId, talent_user_id: talentUserId, action_type: category, milestone_id: milestoneId },
     withCredentials: true,
   };
 
@@ -763,7 +769,6 @@ export const getRecognitionTimeline = async (projectId: string, talentUserId: st
     handleError(error as Error, 'An unexpected error occurred while fetching recognition timeline');
   }
 };
-
 /**
  * Submits recognition for one or more talents in a project milestone.
  * @param projectId - The ID of the project.
@@ -800,6 +805,46 @@ export const submitRecognition = async (
     return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while submitting recognition');
+  }
+};
+
+/**
+ * Submits notes for one or more talents in a project milestone.
+ * @param projectId - The ID of the project.
+ * @param milestoneId - The ID of the milestone.
+ * @param selectedTalents - Array of talent note data containing note category, comments and talent IDs.
+ * @returns A Promise that resolves to the submission response data.
+ * @throws {Error} If the submission fails or an unexpected error occurs.
+ */
+export const submitNotes = async (
+  projectId: string,
+  milestoneId: string,
+  selectedTalents: { noteCategory: string; competencies?: string[]; comment: string; talentId: string }[],
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+  const payload = {
+    project_id: projectId,
+    milestone_id: milestoneId,
+    user_note_comments: selectedTalents.map((talent) => ({
+      user_id: talent.talentId,
+      note_category_id: talent.noteCategory,
+      competencies: (talent.competencies ?? []).map((competency) => ({
+        competency_id: competency,
+      })),
+      comment: talent.comment,
+    })),
+  };
+
+  try {
+    const response = await axios.post(routes.projectManagementV2.notes.submitNotes, payload, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting notes');
   }
 };
 

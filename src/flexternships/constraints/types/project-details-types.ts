@@ -15,6 +15,7 @@ export type TeamMemberDetails = {
   ratingText?: string;
   ratingColor?: string;
   appreciationScore?: number;
+  noteCount?: number;
   isDocumentsSigned?: boolean;
 };
 

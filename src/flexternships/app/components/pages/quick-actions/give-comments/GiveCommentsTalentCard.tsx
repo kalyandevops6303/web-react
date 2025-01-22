@@ -19,53 +19,73 @@ import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
 import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-store';
+import classNames from 'classnames';
+import { isEmpty } from 'lodash';
+import { ReactNode, useState } from 'react';
+import { AlertCircle, ChevronDown, ChevronUp } from 'react-feather';
 
 function UnselectedTalentCard({
   talentInfo,
-  onToggle,
+  onSelectionToggle,
+  onExpandToggle,
+  trailIcon,
   checkboxIcon = uncheckedIcon,
   className = 'bg-white shadow-card',
 }: UnselectedTalentCardProps) {
+  const handleClick = onExpandToggle || onSelectionToggle;
+  const avatarColor = stringToColour(talentInfo.name);
+  const avatarBgColor = stringToColour(talentInfo.name, { opacity: 10 });
+  const nameInitial = talentInfo.name.charAt(0).toUpperCase();
+
   return (
     <div
-      className={`flex flex-row flex-wrap items-center gap-x-6 gap-y-2 py-3 px-6 rounded-lg ${className}`}
-      onClick={onToggle}
+      className={classNames('flex flex-row justify-between items-center py-3 px-6 rounded-lg', className, {
+        'cursor-pointer': !!handleClick,
+      })}
+      onClick={handleClick}
     >
-      <div className="flex flex-row items-center gap-x-3">
+      <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-2">
+        <div className="flex flex-row items-center gap-x-3">
+          <div onClick={onSelectionToggle} className="cursor-default">
+            <img src={checkboxIcon} alt="checkbox" />
+          </div>
+          <div className="flex flex-row items-center gap-x-4">
+            <Avatar className="size-8">
+              <AvatarImage src={''} />
+              <AvatarFallback
+                className="p-2 font-semibold text-sm"
+                style={{
+                  color: avatarColor,
+                  backgroundColor: avatarBgColor,
+                }}
+              >
+                {nameInitial}
+              </AvatarFallback>
+            </Avatar>
+            <div className="w-[400px] text-sm font-semibold leading-5.5 text-grey">{talentInfo.name}</div>
+          </div>
+        </div>
+        <div className="w-[200px] text-sm text-grey font-medium leading-5.5">{talentInfo.designation}</div>
         <div>
-          <img src={checkboxIcon} alt="checkbox" />
-        </div>
-        <div className="flex flex-row items-center gap-x-4">
-          <Avatar className="size-8">
-            <AvatarImage src={''} />
-            <AvatarFallback
-              className="p-2 font-semibold text-sm"
-              style={{
-                color: stringToColour(talentInfo.name),
-                backgroundColor: `${stringToColour(talentInfo.name, { opacity: 10 })}`,
-              }}
-            >
-              {talentInfo.name.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="w-[400px] text-sm font-semibold leading-5.5 text-grey">{talentInfo.name}</div>
+          {talentInfo.averageRating && (
+            <Rating rating={talentInfo.averageRating} ratingColor="#0185E4" showTotalScore />
+          )}
         </div>
       </div>
-      <div className="w-[200px] text-sm text-grey font-medium leading-5.5">{talentInfo.designation}</div>
-      <div>
-        {talentInfo.averageRating && <Rating rating={talentInfo.averageRating} ratingColor="#0185E4" showTotalScore />}
-      </div>
+      {!!onExpandToggle && trailIcon}
     </div>
   );
 }
 
 function SelectedTalentCard({
   talentInfo,
-  onToggle,
+  onSelectionToggle,
   control,
   talentIndex,
   category = QuickActionCategory.RECOGNITION,
 }: SelectedTalentCardProps) {
+  const [isExpanded, setIsExpanded] = useState<boolean>(true);
+
   const competencies = useCompetenciesStore((state) => state.competencies);
   const noteCategories = useNoteCategoriesStore((state) => state.noteCategories);
 
@@ -83,91 +103,125 @@ function SelectedTalentCard({
   } = useController({
     name: `selectedTalents.${talentIndex}.noteCategory`,
     control,
-    defaultValue: '',
     shouldUnregister: true,
   });
 
+  const {
+    fieldState: { error },
+  } = useController({
+    name: `selectedTalents.${talentIndex}`,
+    control,
+    shouldUnregister: true,
+  });
+
+  const handleExpandToggle = () => setIsExpanded((prev) => !prev);
+
   const handleCompetencyToggle = (competencyId: string) => {
-    if (selectedCompetencies.includes(competencyId)) {
-      onCompetenciesChange(selectedCompetencies.filter((id: string) => id !== competencyId));
-    } else {
-      onCompetenciesChange([...selectedCompetencies, competencyId]);
-    }
+    const newCompetencies = selectedCompetencies.includes(competencyId)
+      ? selectedCompetencies.filter((id: string) => id !== competencyId)
+      : [...selectedCompetencies, competencyId];
+    onCompetenciesChange(newCompetencies);
   };
 
   const handleNoteCategoryToggle = (noteCategory: string) => {
-    if (noteCategory === selectedNoteCategory) {
-      onNoteCategoryChange();
-    } else {
-      onNoteCategoryChange(noteCategory);
-    }
+    onNoteCategoryChange(noteCategory === selectedNoteCategory ? '' : noteCategory);
   };
 
+  const isNotesCategory = category === QuickActionCategory.NOTE;
+  const isRecognitionCategory = category === QuickActionCategory.RECOGNITION;
+  const showExpandedContent = isExpanded || isRecognitionCategory;
+  const showErrorBanner = isNotesCategory && !isExpanded && !isEmpty(error);
+
+  const cardClassName = classNames('flex flex-col rounded-lg border-1', {
+    'bg-trublue-light border-trublue-secondary-500 gap-y-4': isRecognitionCategory || isExpanded || !showErrorBanner,
+    'border-error': showErrorBanner,
+  });
+
   return (
-    <div className="flex flex-col gap-y-4 rounded-lg bg-trublue-light">
+    <div className={cardClassName}>
       <UnselectedTalentCard
         talentInfo={talentInfo}
-        onToggle={onToggle}
+        onSelectionToggle={onSelectionToggle}
+        onExpandToggle={isNotesCategory ? handleExpandToggle : undefined}
+        trailIcon={
+          isExpanded ? (
+            <ChevronUp size={24} className="text-grey-300" />
+          ) : (
+            <ChevronDown size={24} className="text-grey-300" />
+          )
+        }
         checkboxIcon={checkedIcon}
-        className="bg-trublue-light"
+        className="bg-transparent"
       />
-      <div className="flex flex-col gap-y-4 px-6 pb-3">
-        <div className="flex flex-col gap-y-2">
-          <div className="text-sm font-medium leading-5.5 text-grey-600">
-            Select applicable competencies{' '}
-            {category === QuickActionCategory.RECOGNITION && <span className="text-error">*</span>}
+
+      {showExpandedContent && (
+        <div className="flex flex-col gap-y-4 px-6 pb-3">
+          <div className="flex flex-col gap-y-2">
+            <div className="text-sm font-medium leading-5.5 text-grey-600">
+              Select applicable competencies {isRecognitionCategory && <span className="text-error">*</span>}
+            </div>
+            <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
+              {competencies.map((competency) => (
+                <SelectOptionCard
+                  key={competency.id}
+                  text={competency.name}
+                  value={competency.id}
+                  selected={selectedCompetencies.includes(competency.id)}
+                  onClick={() => handleCompetencyToggle(competency.id)}
+                  multiselect
+                />
+              ))}
+            </div>
           </div>
-          <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
-            {competencies.map((competency) => (
-              <SelectOptionCard
-                key={competency.id}
-                text={competency.name}
-                value={competency.id}
-                selected={selectedCompetencies.includes(competency.id)}
-                onClick={() => handleCompetencyToggle(competency.id)}
-                multiselect
-              />
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-2">
-          {category === QuickActionCategory.NOTES && (
-            <>
-              <div className="text-sm font-medium leading-4.5 text-grey-600">
-                Your note <span className="text-error">*</span>
-              </div>
-              <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
-                {noteCategories.map((noteCategory) => (
-                  <SelectOptionCard
-                    key={noteCategory.id}
-                    text={noteCategory.name}
-                    value={noteCategory.id}
-                    selected={noteCategory.id === selectedNoteCategory}
-                    onClick={() => handleNoteCategoryToggle(noteCategory.id)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-          <Controller
-            name={`selectedTalents.${talentIndex}.comment`}
-            control={control}
-            defaultValue=""
-            render={({ field: { value, onChange }, fieldState: { error } }) => (
-              <TextInput
-                label={category === QuickActionCategory.RECOGNITION ? 'Your comment' : undefined}
-                textarea
-                required
-                placeholder="Please enter your comment"
-                className="w-full"
-                value={value}
-                onChange={onChange}
-                error={error?.message}
-              />
+
+          <div className="flex flex-col gap-y-2">
+            {isNotesCategory && (
+              <>
+                <div className="text-sm font-medium leading-4.5 text-grey-600">
+                  Your note <span className="text-error">*</span>
+                </div>
+                <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
+                  {noteCategories.map((noteCategory) => (
+                    <SelectOptionCard
+                      key={noteCategory.id}
+                      text={noteCategory.name}
+                      value={noteCategory.id}
+                      selected={noteCategory.id === selectedNoteCategory}
+                      onClick={() => handleNoteCategoryToggle(noteCategory.id)}
+                    />
+                  ))}
+                </div>
+              </>
             )}
-          />
+            <Controller
+              name={`selectedTalents.${talentIndex}.comment`}
+              control={control}
+              defaultValue=""
+              render={({ field: { value, onChange }, fieldState: { error: commentError } }) => (
+                <TextInput
+                  label={isRecognitionCategory ? 'Your comment' : undefined}
+                  textarea
+                  required
+                  placeholder="Please enter your comment"
+                  className="w-full"
+                  value={value}
+                  onChange={onChange}
+                  error={commentError?.message}
+                />
+              )}
+            />
+          </div>
         </div>
-      </div>
+      )}
+
+      {showErrorBanner && (
+        <div className="px-6 py-3 flex flex-row items-center gap-x-2 text-error bg-error bg-opacity-10">
+          <AlertCircle size={18} />
+          <div className="text-sm font-medium leading-4.5">
+            <span className="font-semibold">Note:</span> Please enter all required details to submit a note.
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -184,7 +238,7 @@ export default function GiveCommentsTalentCard(props: GiveCommentsTalentCardProp
     return (
       <SelectedTalentCard
         talentInfo={talentInfo}
-        onToggle={onToggle!}
+        onSelectionToggle={onToggle}
         control={control}
         talentIndex={talentIndex}
         category={category}
@@ -192,7 +246,7 @@ export default function GiveCommentsTalentCard(props: GiveCommentsTalentCardProp
     );
   }
 
-  return <UnselectedTalentCard talentInfo={talentInfo} onToggle={onToggle!} />;
+  return <UnselectedTalentCard talentInfo={talentInfo} onSelectionToggle={onToggle} />;
 }
 
 type GiveCommentsTalentCardProps = {
@@ -205,14 +259,14 @@ type GiveCommentsTalentCardProps = {
     averageRating?: number;
     isDocumentsSigned?: boolean;
   };
-  onToggle?: () => void;
+  onToggle: () => void;
   control: Control<GiveRecognitionForm | GiveNotesForm>;
   category?: QuickActionCategory;
 };
 
 type SelectedTalentCardProps = {
   talentInfo: GiveCommentsTalentCardProps['talentInfo'];
-  onToggle: () => void;
+  onSelectionToggle: () => void;
   control: Control<GiveRecognitionForm | GiveNotesForm>;
   talentIndex: number;
   category?: QuickActionCategory;
@@ -220,7 +274,9 @@ type SelectedTalentCardProps = {
 
 type UnselectedTalentCardProps = {
   talentInfo: GiveCommentsTalentCardProps['talentInfo'];
-  onToggle: () => void;
+  onSelectionToggle: () => void;
+  onExpandToggle?: () => void;
+  trailIcon?: ReactNode;
   checkboxIcon?: string;
   className?: string;
 };

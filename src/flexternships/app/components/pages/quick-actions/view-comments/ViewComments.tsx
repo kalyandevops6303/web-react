@@ -24,9 +24,13 @@ import SingleSelectInput from '../../../core/form/SingleSelectInput';
 import VerticalTimeline from './CommentsVerticalTimeline';
 import Spinner from '../../../core/Spinner';
 import NoCommentsFound from './NoCommentsFound';
-import { DEFAULT_ALL_MILESTONES_OPTION } from '@/flexternships/static/quick-actions-constants';
+import {
+  DEFAULT_ALL_MILESTONES_OPTION,
+  DEFAULT_ALL_NOTE_CATEGORIES_OPTION,
+} from '@/flexternships/static/constants/quick-actions-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
+import classNames from 'classnames';
 
 export default function ViewComments({ category = QuickActionCategory.RECOGNITION }: ViewCommentsProps) {
   const [talentsLoading, setTalentsLoading] = useState<boolean>(false);
@@ -43,6 +47,7 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
   const { control, watch } = useForm({
     defaultValues: {
       milestone: DEFAULT_ALL_MILESTONES_OPTION,
+      noteCategory: DEFAULT_ALL_NOTE_CATEGORIES_OPTION,
     },
   });
 
@@ -77,7 +82,12 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
     const fetchCommentsTimeline = async () => {
       setCommentsTimelineLoading(true);
       try {
-        const commentsTimeline = await getRecognitionTimeline(projectId, selectedTalentId, watch('milestone')._id);
+        const commentsTimeline = await getRecognitionTimeline(
+          projectId,
+          selectedTalentId,
+          category,
+          watch('milestone')._id,
+        );
         setCommentsTimeline(commentsTimeline || []);
       } catch (error: unknown) {
         showToastMessage(
@@ -117,6 +127,7 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
             onClick={() => setSelectedTalentId(joinedTalent.id)}
             key={joinedTalent.id}
             selected={joinedTalent.id === selectedTalentId}
+            category={category}
           />
         ))}
       </div>
@@ -124,17 +135,40 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
         <SimpleElevatedCard className="flex flex-col gap-y-4 bg-white p-6">
           <div className="flex flex-col gap-y-4">
             <div className="text-lg font-medium leading-[26px] text-grey-700">Timeline</div>
-            <div className="w-full max-w-[540px]">
-              <SingleSelectInput
-                name="milestone"
-                control={control}
-                label="Milestone"
-                loadOptions={() =>
-                  getMilestonesDropdown(projectId, MilestoneDropdownOptions.VIEW_RECOGNITION, { useSequence: true })
-                }
-                defaultFirstOption
-                allowSelectionOfEmptyValue
-              />
+            <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
+              <div
+                className={classNames('w-full', {
+                  'max-w-[540px]': category === QuickActionCategory.RECOGNITION,
+                  'max-w-[460px]': category === QuickActionCategory.NOTE,
+                })}
+              >
+                <SingleSelectInput
+                  name="milestone"
+                  control={control}
+                  label="Milestone"
+                  loadOptions={() =>
+                    getMilestonesDropdown(projectId, MilestoneDropdownOptions.VIEW_RECOGNITION, { useSequence: true })
+                  }
+                  defaultFirstOption
+                  allowSelectionOfEmptyValue
+                />
+              </div>
+              {category === QuickActionCategory.NOTE && (
+                <div className="w-full max-w-[200px]">
+                  <SingleSelectInput
+                    name="noteCategory"
+                    control={control}
+                    label="Type"
+                    // TODO: Add note categories
+                    loadOptions={async () => ({
+                      metadata: { has_next_page: false, current_page: 1, page_size: 10, total_records: 10 },
+                      data: [{ name: 'All', _id: '' }],
+                    })}
+                    defaultFirstOption
+                    allowSelectionOfEmptyValue
+                  />
+                </div>
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-y-7">

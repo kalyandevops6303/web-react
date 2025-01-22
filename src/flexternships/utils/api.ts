@@ -54,12 +54,13 @@ export const routes = {
       markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
     },
     quickActions: {
-      recognitionTimeline: `${serviceUrls.projectManagementV2}/recognition/timeline`,
+      getCount: `${serviceUrls.projectManagementV2}/quick-action/count`,
+      recognitionTimeline: `${serviceUrls.projectManagementV2}/quick-action/timeline`,
       submitRecognition: `${serviceUrls.projectManagementV2}/recognition`,
-      getCount: `${serviceUrls.projectManagementV2}/recognition/count`,
     },
     notes: {
       getNoteCategories: `${serviceUrls.projectManagementV2}/note/category`,
+      submitNotes: `${serviceUrls.projectManagementV2}/note`,
     },
   },
   userManagement: {

@@ -12,7 +12,7 @@ function NoCommentsFound({ category = QuickActionCategory.RECOGNITION }: { categ
         <img src={NoCommentsFoundGif} alt="No Comments Found" className="w-[169px]" />
         <div className="text-lg font-medium leading-[21px] text-trublue-secondary-500">
           No{' '}
-          {category === QuickActionCategory.NOTES
+          {category === QuickActionCategory.NOTE
             ? 'Notes'
             : userDetails.userType === UserType.TALENT
             ? 'Kudos'

@@ -1,4 +1,4 @@
 export enum QuickActionCategory {
   RECOGNITION = 'RECOGNITION',
-  NOTES = 'NOTES',
+  NOTE = 'NOTE',
 }

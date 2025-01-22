@@ -33,6 +33,7 @@ export type CommentsTimelineItem = {
     appRole: FlexternUserAppRole;
   };
   type: RecognitionSource;
+  noteCategory?: string;
   milestoneNumber: number;
   timestamp: number;
   selectedCompetencies: Array<Competency>;

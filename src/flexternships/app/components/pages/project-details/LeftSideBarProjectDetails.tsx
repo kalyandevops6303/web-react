@@ -27,7 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
 import { epochDifferenceInDays, formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
-import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants';
+import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants/core-constants';
 import {
   getProjectPanelDate1Icon,
   getProjectPanelDate1Values,

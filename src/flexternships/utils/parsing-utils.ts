@@ -267,6 +267,7 @@ export const parseCommentsTimeline = (data: Record<string, any>): CommentsTimeli
         appRole: giverAppRole,
       },
       type: commentsTimelineItem.giver_location,
+      noteCategory: commentsTimelineItem.note_category?.name,
       milestoneNumber: commentsTimelineItem.milestone.seq,
       timestamp: commentsTimelineItem.created_at,
       selectedCompetencies: commentsTimelineItem.competencies.map((competency: Record<string, any>) => ({
@@ -301,6 +302,7 @@ export const parseTeamDetails = (
     invitedOn: member?.invited_on,
     averageRating: member?.averageRating,
     appreciationScore: member?.appreciation_score,
+    noteCount: member?.note_count,
     isDocumentsSigned: member?.is_documents_signed,
   }));
 
@@ -324,7 +326,7 @@ export const parseQuickActionsStats = (data: Record<string, any>): QuickActionsS
   return {
     teamMembers: data.team_members_count,
     totalRecognitions: data.kudos_count || data.wow_count || 0,
-    totalNotes: data.notes_count || 20, // TODO: Remove this after backend is updated
+    totalNotes: data.note_count || 0, // TODO: Remove this after backend is updated
   };
 };
 
