@@ -1,6 +1,6 @@
 import { Minus, Plus } from 'react-feather';
 
-export default function SelectCompetencyCard(props: SelectCompetencyCardProps) {
+export default function SelectOptionCard(props: SelectOptionCardProps) {
   const { text, selected, onClick } = props;
   return (
     <div
@@ -15,7 +15,7 @@ export default function SelectCompetencyCard(props: SelectCompetencyCardProps) {
   );
 }
 
-type SelectCompetencyCardProps = {
+type SelectOptionCardProps = {
   text: string;
   value: string;
   selected: boolean;
