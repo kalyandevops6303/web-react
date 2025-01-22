@@ -45,6 +45,7 @@ import SimpleElevatedCard from '../../core/cards/SimpleElevatedCard';
 import PrimaryIconText from '../../core/buttons/PrimaryIconText';
 import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
 import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
+import StartsInTimer from '../../core/timers/StartsInTimer';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
@@ -64,6 +65,7 @@ const LeftSideBarProjectDetails = () => {
 
   const data = useProjectsStore((state) => state.projectDetails);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+  const [showStartsInTimer, setShowStartsInTimer] = useState(false);
   const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>();
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
@@ -142,6 +144,13 @@ const LeftSideBarProjectDetails = () => {
     };
   }, [showMore]);
 
+  useEffect(() => {
+    const differenceLessThanADay = data?.details?.expectedStartDate - Date.now() < 24 * 60 * 60 * 1000;
+    if (data?.details?.expectedStartDate && Date.now() < data?.details?.expectedStartDate && differenceLessThanADay) {
+      setShowStartsInTimer(true);
+    }
+  }, [data?.details?.expectedStartDate]);
+
   const handleGiveRecognitionClick = () => {
     navigate(`/recognition/${projectId}`);
   };
@@ -159,7 +168,14 @@ const LeftSideBarProjectDetails = () => {
             onClose={() => setDocumentsModal(false)}
             data={data?.details?.documents}
           />
-          <ProjectStatusChip status={data?.status} statusType={StatusType?.PRIMARY} />
+          <div className="flex flex-row items-center justify-between w-full">
+            <ProjectStatusChip status={data?.status} statusType={StatusType?.PRIMARY} />
+            {showStartsInTimer && (
+              <div>
+                <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
+              </div>
+            )}
+          </div>
 
           {daysLeft > 0 && <h1 className="text-error font-semibold">{daysLeft} Days Left</h1>}
         </div>
@@ -263,26 +279,32 @@ const LeftSideBarProjectDetails = () => {
           </div>
           {secondaryStatus && (
             <>
-              {userDetails.userType === UserType.CLIENT
-                ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
-                : userDetails.userType === UserType.TALENT &&
-                  ![
-                    ProjectSecondaryStatus.SIGN_NDA,
-                    ProjectSecondaryStatus.SIGN_CONTRACT,
-                    ProjectSecondaryStatus.SIGN_DOCUMENTS,
-                  ].includes(secondaryStatus) && (
-                    <div className="flex flex-row items-start gap-3">
-                      <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
-                        Status:
+              {secondaryStatus && (
+                <>
+                  {(userDetails.userType === UserType.CLIENT
+                    ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
+                    : userDetails.userType === UserType.TALENT) &&
+                    ![
+                      ProjectSecondaryStatus.SIGN_NDA,
+                      ProjectSecondaryStatus.SIGN_CONTRACT,
+                      ProjectSecondaryStatus.SIGN_DOCUMENTS,
+                    ].includes(secondaryStatus) && (
+                      <div className="flex flex-row items-center gap-3">
+                        <div className="text-grey font-normal text-sm leading-[21px] font-montserrat">Status:</div>
+                        {showStartsInTimer ? (
+                          <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
+                        ) : (
+                          <ProjectStatusChip
+                            status={secondaryStatus}
+                            statusType={StatusType?.SECONDARY}
+                            rounded={true}
+                            lastInProgressMilestone={data.lastInProgressMilestone}
+                          />
+                        )}
                       </div>
-                      <ProjectStatusChip
-                        status={secondaryStatus}
-                        statusType={StatusType?.SECONDARY}
-                        rounded={true}
-                        lastInProgressMilestone={data.lastInProgressMilestone}
-                      />
-                    </div>
-                  )}
+                    )}
+                </>
+              )}
             </>
           )}
 
