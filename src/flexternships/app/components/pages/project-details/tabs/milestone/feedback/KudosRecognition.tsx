@@ -1,4 +1,4 @@
-import SelectCompetencyCard from '@/flexternships/app/components/core/cards/SelectCompetencyCard';
+import SelectOptionCard from '@/flexternships/app/components/core/form/SelectOptionCard';
 import React from 'react';
 import { ThumbsUp } from 'react-feather';
 import { ItemValue, Question, Serializer } from 'survey-core';
@@ -160,8 +160,8 @@ export class Kudos extends SurveyQuestionElementBase {
             Select applicable competencies <span className="text-error">*</span>
           </div>
           <div className="flex flex-row flex-wrap gap-4">
-            <SelectCompetencyCard text="Collaboration & Teamwork" value="1" selected={true} onClick={() => {}} />
-            <SelectCompetencyCard text="Innovation" value="2" selected={false} onClick={() => {}} />
+            <SelectOptionCard text="Collaboration & Teamwork" value="1" selected={true} onClick={() => {}} />
+            <SelectOptionCard text="Innovation" value="2" selected={false} onClick={() => {}} />
           </div>
         </div>
 
