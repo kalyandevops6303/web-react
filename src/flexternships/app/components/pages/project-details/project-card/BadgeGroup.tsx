@@ -11,7 +11,7 @@ const BadgeGroup = ({ className, tags }: { className?: string; tags: BadgeType[]
           key={tag.id}
           className={classNames(
             className,
-            'flex p-[1px_9px] items-center gap-[3px] rounded-[12px] bg-[#E3F2FD] text-[#2196F3] text-center font-semibold text-[12px] leading-[18px] font-montserrat',
+            'flex p-[1px_9px] items-center gap-[3px] rounded-xs bg-blue-soft text-blue text-center font-semibold text-xs leading-[18px] font-montserrat',
           )}
         >
           {tag.name}

@@ -23,6 +23,7 @@ module.exports = {
           },
           gold: '#F6C01C',
           light: '#FFD966',
+          newGold: '#FFD700',
         },
         orange: {
           DEFAULT: '#FF9F43',
@@ -93,6 +94,20 @@ module.exports = {
         blue: {
           DEFAULT: '#2196F3',
           light: '#2196F31F',
+          soft: '#E3F2FD',
+          newBlue: '#005EFF',
+          newBlueLight: '#005EFF1F',
+        },
+        red: {
+          light: '#EA54551F',
+          dark: '#B71C1C',
+          darkLight: '#B71C1C1F',
+        },
+        green: {
+          DEFAULT: '#28C76F',
+          successLight: '#28C76F1F',
+          newGreen: '#00C853',
+          newGreenLight: '#00C8531F',
         },
         primary: '#0185E4',
         'primary-light': '#0185E41F',
@@ -106,7 +121,7 @@ module.exports = {
           DEFAULT: '#E6E7E7',
         },
         background: {
-          DEFAULT: '#F9F9F9'
+          DEFAULT: '#F9F9F9',
         },
       },
       width: {
