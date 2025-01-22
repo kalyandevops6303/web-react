@@ -291,3 +291,58 @@ export const getTeamCompetencySummaryService = async (
     handleError(error as Error, 'An unexpected error occurred while fetching team competency summary');
   }
 };
+
+export const getConversationParticipationService = async (projectId: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          messagesCount: 6,
+          participationPercentage: 60,
+          frequencyOfMessagesMinutes: 10,
+          averageResponseTimeMinutes: 10,
+        });
+      }, 800); // 800ms delay
+    });
+    // const response = await axios.get(`${routes.analytics.conversationParticipation}`, config);
+    // return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching conversation participation');
+  }
+};
+
+export const getConversationParticipationFilesService = async (projectId: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId },
+    withCredentials: true,
+  };
+  try {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          totalFilesShared: 10,
+          documents: {
+            count: 5,
+            percentage: 50,
+          },
+          links: {
+            count: 5,
+            percentage: 50,
+          },
+        });
+      }, 800); // 800ms delay
+    });
+    // const response = await axios.get(`${routes.analytics.conversationParticipationFiles}`, config);
+    // return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching conversation participation files');
+  }
+};

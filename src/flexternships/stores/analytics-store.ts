@@ -12,6 +12,8 @@ import {
   getTeamDiversity,
   getTeamMembersAttractivenessDetails,
   getTeamUniversities,
+  getConversationParticipationFiles,
+  getConversationParticipation,
 } from '../actions/analytics-actions';
 
 const defaultInitState = {
@@ -51,6 +53,10 @@ const defaultInitState = {
   isAiSummaryLoading: false,
   thirdPartyAppsData: null,
   isThirdPartyAppsDataLoading: false,
+  conversationParticipation: null,
+  isConversationParticipationLoading: false,
+  conversationParticipationFiles: null,
+  isConversationParticipationFilesLoading: false,
 };
 
 export const useAnalyticsStore = create<any>((set) => ({
@@ -67,4 +73,6 @@ export const useAnalyticsStore = create<any>((set) => ({
   getTeamDiversity: async (projectId: string) => getTeamDiversity(projectId, set),
   getTeamMembersDetails: async (projectId: string) => getTeamMembersDetails(projectId, set),
   getTeamPerformanceInsightsOverview: async (projectId: string) => getTeamPerformanceInsightsOverview(projectId, set),
+  getConversationParticipation: async (projectId: string) => getConversationParticipation(projectId, set),
+  getConversationParticipationFiles: async (projectId: string) => getConversationParticipationFiles(projectId, set),
 }));

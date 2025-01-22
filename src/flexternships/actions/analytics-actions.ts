@@ -1,5 +1,7 @@
 import {
   getAiSummaryService,
+  getConversationParticipationFilesService,
+  getConversationParticipationService,
   getIndividualOverviewService,
   getPerformanceChartDataService,
   getRecognitionChartDataService,
@@ -264,4 +266,26 @@ export const getTeamPerformanceInsightsOverview = async (projectId: string, set:
       isTeamPerformanceInsightsOverviewLoading: false,
     },
   }));
+};
+
+// Conversation Participation
+export const getConversationParticipation = async (projectId: string, set: any) => {
+  set({ isConversationParticipationLoading: true });
+  const data: any = await getConversationParticipationService(projectId);
+  set((state: any) => ({
+    ...state,
+    conversationParticipation: data,
+  }));
+  set({ isConversationParticipationLoading: false });
+};
+
+// Conversation Participation Files
+export const getConversationParticipationFiles = async (projectId: string, set: any) => {
+  set({ isConversationParticipationFilesLoading: true });
+  const data: any = await getConversationParticipationFilesService(projectId);
+  set((state: any) => ({
+    ...state,
+    conversationParticipationFiles: data,
+  }));
+  set({ isConversationParticipationFilesLoading: false });
 };
