@@ -2,26 +2,31 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
-// UI Components
-import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
-import TopStatCard from '../components/core/cards/TopStatCard';
-import GiveRecognition from '../components/pages/quick-actions/give-comments/GiveComments';
-import ViewRecognitions from '../components/pages/quick-actions/view-comments/ViewComments';
-
-// Icons and assets
-import { ArrowLeft, Eye } from 'react-feather';
-import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
-import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
+// Internal dependencies
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { getQuickActionsCount } from '@/flexternships/services/project-management-v2';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+
+// Types and enums
+import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { QuickActionsStats } from '@/flexternships/constraints/types/quick-actions-types';
+
+// Components
+import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
+import TopStatCard from '../components/core/cards/TopStatCard';
+import GiveComments from '../components/pages/quick-actions/give-comments/GiveComments';
+import ViewComments from '../components/pages/quick-actions/view-comments/ViewComments';
+import NoCommentsFound from '../components/pages/quick-actions/view-comments/NoCommentsFound';
 import Spinner from '../components/core/Spinner';
-import NoRecognitionFound from '../components/pages/quick-actions/view-comments/NoCommentsFound';
+
+// Icons and assets
+import { ArrowLeft, Eye, MessageSquare } from 'react-feather';
+import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
+import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 
 // Page-specific enums
-enum RecognitionAction {
+enum QuickAction {
   GIVE_RECOGNITION = 'give-recognition',
   VIEW_RECOGNITIONS = 'view-recognitions',
   ADD_NOTES = 'add-notes',
@@ -29,7 +34,7 @@ enum RecognitionAction {
 }
 
 export default function FlexternProjectRecognition() {
-  const [selectedAction, setSelectedAction] = useState<RecognitionAction>(RecognitionAction.GIVE_RECOGNITION);
+  const [selectedAction, setSelectedAction] = useState<QuickAction>(QuickAction.GIVE_RECOGNITION);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const [stats, setStats] = useState<QuickActionsStats | undefined>();
 
@@ -53,20 +58,37 @@ export default function FlexternProjectRecognition() {
   };
 
   const viewRecognitions = () => {
-    setSelectedAction(RecognitionAction.VIEW_RECOGNITIONS);
+    setSelectedAction(QuickAction.VIEW_RECOGNITIONS);
   };
 
   const giveRecognition = () => {
-    setSelectedAction(RecognitionAction.GIVE_RECOGNITION);
+    setSelectedAction(QuickAction.GIVE_RECOGNITION);
+  };
+
+  const addNotes = () => {
+    setSelectedAction(QuickAction.ADD_NOTES);
+  };
+
+  const viewNotes = () => {
+    setSelectedAction(QuickAction.VIEW_NOTES);
   };
 
   const getComponentBySelection = () => {
+    const quickActionCategory = [QuickAction.ADD_NOTES, QuickAction.VIEW_NOTES].includes(selectedAction)
+      ? QuickActionCategory.NOTES
+      : QuickActionCategory.RECOGNITION;
     switch (selectedAction) {
-      case RecognitionAction.GIVE_RECOGNITION:
-        return <GiveRecognition refreshStats={fetchStats} />;
-      case RecognitionAction.VIEW_RECOGNITIONS:
+      case QuickAction.GIVE_RECOGNITION:
+      case QuickAction.ADD_NOTES:
+        return <GiveComments refreshStats={fetchStats} category={quickActionCategory} />;
+      case QuickAction.VIEW_RECOGNITIONS:
+      case QuickAction.VIEW_NOTES:
         // if stats are loaded and there are no recognitions, show no recognition found, otherwise show the actual recognitions
-        return !isStatsLoading && stats?.totalRecognitions === 0 ? <NoRecognitionFound /> : <ViewRecognitions />;
+        return !isStatsLoading && stats?.totalRecognitions === 0 ? (
+          <NoCommentsFound category={quickActionCategory} />
+        ) : (
+          <ViewComments category={quickActionCategory} />
+        );
       default:
         return null;
     }
@@ -94,7 +116,7 @@ export default function FlexternProjectRecognition() {
   useEffect(() => {
     if (!stats) return;
     if (!stats.teamMembers || (location?.state as { viewRecognitions?: boolean })?.viewRecognitions) {
-      setSelectedAction(RecognitionAction.VIEW_RECOGNITIONS);
+      setSelectedAction(QuickAction.VIEW_RECOGNITIONS);
     }
   }, [stats, location.state]);
 
@@ -124,7 +146,7 @@ export default function FlexternProjectRecognition() {
                   <img src={recognitionIcon} alt={giveRecognitionTitle} className="w-6 h-6" />
                 </div>
               }
-              selected={selectedAction === RecognitionAction.GIVE_RECOGNITION}
+              selected={selectedAction === QuickAction.GIVE_RECOGNITION}
               onClick={giveRecognition}
               disabled={!stats?.teamMembers}
             />
@@ -132,13 +154,40 @@ export default function FlexternProjectRecognition() {
               title={viewRecognitionTitle}
               value={`${stats?.totalRecognitions} total recognitions`}
               icon={
-                <div className="p-3 rounded-full bg-cyan bg-opacity-10 text-cyan">
+                <div className="p-3 rounded-full bg-trublue-secondary-500 bg-opacity-10 text-trublue-secondary-500">
                   <Eye size={24} />
                 </div>
               }
-              selected={selectedAction === RecognitionAction.VIEW_RECOGNITIONS}
+              selected={selectedAction === QuickAction.VIEW_RECOGNITIONS}
               onClick={viewRecognitions}
             />
+            {userDetails.userType === UserType.CLIENT && (
+              <>
+                <TopStatCard
+                  title="Add Notes"
+                  value={`${stats?.teamMembers} team members`}
+                  icon={
+                    <div className="p-3 rounded-full bg-purple-light text-purple">
+                      <MessageSquare size={24} />
+                    </div>
+                  }
+                  selected={selectedAction === QuickAction.ADD_NOTES}
+                  onClick={addNotes}
+                  disabled={!stats?.teamMembers}
+                />
+                <TopStatCard
+                  title="View Notes"
+                  value={`Total ${stats?.totalNotes}`}
+                  icon={
+                    <div className="p-3 rounded-full bg-purple-light text-purple">
+                      <Eye size={24} />
+                    </div>
+                  }
+                  selected={selectedAction === QuickAction.VIEW_NOTES}
+                  onClick={viewNotes}
+                />
+              </>
+            )}
           </div>
           <div>{getComponentBySelection()}</div>
         </>

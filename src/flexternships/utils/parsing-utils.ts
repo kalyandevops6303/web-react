@@ -19,6 +19,7 @@ import {
   TeamCompetencySummary,
 } from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
+import { NoteCategory } from '../constraints/types/note-category-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -323,6 +324,7 @@ export const parseQuickActionsStats = (data: Record<string, any>): QuickActionsS
   return {
     teamMembers: data.team_members_count,
     totalRecognitions: data.kudos_count || data.wow_count || 0,
+    totalNotes: data.notes_count || 20, // TODO: Remove this after backend is updated
   };
 };
 
@@ -368,6 +370,11 @@ export const parseMilestoneDropdown = (
   return parsedData;
 };
 
+/**
+ * Parses detailed performance insights from raw API response
+ * @param data Raw performance insights data from API
+ * @returns Formatted detailed performance insights
+ */
 export const parseDetailedPerformanceInsights = (data: Record<string, any>): DetailedPerformanceInsights => {
   return {
     chartData:
@@ -398,10 +405,29 @@ export const parseDetailedPerformanceInsights = (data: Record<string, any>): Det
   };
 };
 
+/**
+ * Parses team competency summary from raw API response
+ * @param data Raw team competency summary data from API
+ * @returns Array of formatted team competency summaries
+ */
 export const parseTeamCompetencySummary = (data: Array<Record<string, string>>): TeamCompetencySummary[] => {
   return data.map((item: Record<string, string>) => ({
     competencyName: item.competency_name,
     competencyAbbreviation: item.competency_abbreviation,
     summary: item.summary,
+  }));
+};
+
+/**
+ * Parses note categories from raw API response
+ * @param data Raw note categories data from API
+ * @returns Array of formatted note categories
+ */
+export const parseNoteCategories = (data: Record<string, any>): NoteCategory[] => {
+  return data.map((item: Record<string, any>) => ({
+    id: item._id,
+    name: item.name,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
   }));
 };

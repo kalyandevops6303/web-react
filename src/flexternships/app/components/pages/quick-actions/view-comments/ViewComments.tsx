@@ -24,10 +24,11 @@ import SingleSelectInput from '../../../core/form/SingleSelectInput';
 import VerticalTimeline from './CommentsVerticalTimeline';
 import Spinner from '../../../core/Spinner';
 import NoCommentsFound from './NoCommentsFound';
-import { DEFAULT_ALL_MILESTONES_OPTION } from '@/flexternships/static/recognition-constants';
+import { DEFAULT_ALL_MILESTONES_OPTION } from '@/flexternships/static/quick-actions-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 
-export default function ViewRecognitions() {
+export default function ViewComments({ category = QuickActionCategory.RECOGNITION }: ViewCommentsProps) {
   const [talentsLoading, setTalentsLoading] = useState<boolean>(false);
   const [commentsTimelineLoading, setCommentsTimelineLoading] = useState<boolean>(false);
 
@@ -99,7 +100,7 @@ export default function ViewRecognitions() {
       </div>
     );
 
-  if (isEmpty(teamDetails)) return <NoCommentsFound />;
+  if (isEmpty(teamDetails)) return <NoCommentsFound category={category} />;
 
   if (!projectId) throw new Error('Project ID is required');
 
@@ -144,7 +145,7 @@ export default function ViewRecognitions() {
                 </div>
               </div>
             ) : isEmpty(commentsTimeline) ? (
-              <NoCommentsFound />
+              <NoCommentsFound category={category} />
             ) : (
               <VerticalTimeline
                 timelineItems={commentsTimeline.map((comment) => ({
@@ -161,3 +162,7 @@ export default function ViewRecognitions() {
     </div>
   );
 }
+
+type ViewCommentsProps = {
+  category?: QuickActionCategory;
+};

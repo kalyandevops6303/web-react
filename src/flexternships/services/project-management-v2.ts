@@ -17,10 +17,11 @@ import {
   parseMilestoneDropdown,
   parseCommentsTimeline,
   parseQuickActionsStats,
+  parseNoteCategories,
 } from '../utils/parsing-utils';
 import { PaginatedData } from './user-management';
 import { MilestoneDropdownOptions } from '../constraints/enums/miscellaneous-enums';
-import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/recognition-constants';
+import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/quick-actions-constants';
 
 /**
  * Retrieves a file upload URL for a given filename.
@@ -872,5 +873,20 @@ export const getCompetencies = async () => {
     return parseCompetencies(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching competencies');
+  }
+};
+
+/**
+ * Gets the list of available note categories.
+ * @returns A Promise that resolves to the parsed note categories data.
+ * @throws {Error} If the note categories retrieval fails or an unexpected error occurs.
+ */
+export const getNoteCategories = async () => {
+  const config = { withCredentials: true };
+  try {
+    const response = await axios.get(routes.projectManagementV2.notes.getNoteCategories, config);
+    return parseNoteCategories(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching note categories');
   }
 };

@@ -7,15 +7,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 // Types and schemas
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { GiveCommentsForm } from '@/flexternships/constraints/types/quick-actions-types';
+import { GiveNotesForm, GiveRecognitionForm } from '@/flexternships/constraints/types/quick-actions-types';
 import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
 import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
-import { GiveCommentsSchema } from '@/flexternships/schemas/recognition-schemas';
+import { GiveCommentsSchema } from '@/flexternships/schemas/quick-actions-schemas';
 
 // Services and stores
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
 import { getMilestonesDropdown, submitRecognition } from '@/flexternships/services/project-management-v2';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
+import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-store';
 
 // Utils
 import { showToastMessage } from '@/flexternships/utils/core-utils';
@@ -29,13 +30,14 @@ import SingleSelectInput from '../../../core/form/SingleSelectInput';
 import Spinner from '../../../core/Spinner';
 import RecognitionConfirmationModal from '../../../core/modals/RecognitionConfirmationModal';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 
 const defaultValues = {
   milestone: undefined,
   selectedTalents: [],
 };
 
-export default function GiveComments({ refreshStats }: { refreshStats?: () => Promise<void> }) {
+export default function GiveComments({ refreshStats, category = QuickActionCategory.RECOGNITION }: GiveCommentsProps) {
   const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
   const [talentsLoading, setTalentsLoading] = useState<boolean>(true);
   const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
@@ -46,6 +48,9 @@ export default function GiveComments({ refreshStats }: { refreshStats?: () => Pr
   const populateCompetencies = useCompetenciesStore((state) => state.populateCompetencies);
   const isCompetenciesLoading = useCompetenciesStore((state) => state.isCompetenciesLoading);
 
+  const populateNoteCategories = useNoteCategoriesStore((state) => state.populateNoteCategories);
+  const isNoteCategoriesLoading = useNoteCategoriesStore((state) => state.isNoteCategoriesLoading);
+
   const { projectId } = useParams();
 
   const {
@@ -54,10 +59,10 @@ export default function GiveComments({ refreshStats }: { refreshStats?: () => Pr
     watch,
     reset,
     formState: { errors, isValid },
-  } = useForm<GiveCommentsForm>({
+  } = useForm<GiveRecognitionForm | GiveNotesForm>({
     mode: 'onChange',
     defaultValues,
-    resolver: yupResolver(GiveCommentsSchema),
+    resolver: yupResolver(GiveCommentsSchema[category]),
   });
 
   const { append, remove } = useFieldArray({
@@ -86,20 +91,26 @@ export default function GiveComments({ refreshStats }: { refreshStats?: () => Pr
     }
   };
 
-  const onSubmit = async (data: GiveCommentsForm) => {
+  const onSubmit = async (data: GiveRecognitionForm | GiveNotesForm) => {
     if (!projectId) throw new Error('Project ID is required');
+
     setIsSubmitLoading(true);
     try {
-      await submitRecognition(projectId, data.milestone._id, data.selectedTalents);
+      if (category === QuickActionCategory.RECOGNITION) {
+        const recognitionData = data as GiveRecognitionForm;
+        await submitRecognition(projectId, recognitionData.milestone._id, recognitionData.selectedTalents);
+      } else {
+        // Notes submission to be implemented
+        // const notesData = data as GiveNotesForm;
+        // await submitNotes(projectId, notesData.milestone._id, notesData.selectedTalents);
+        console.log(data);
+      }
       openConfirmationModal();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        showToastMessage(ToastType.ERROR, error.message);
-      } else {
-        showToastMessage(ToastType.ERROR, 'Failed to submit recognition. Please try again.');
-      }
+      showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitLoading(false);
     }
-    setIsSubmitLoading(false);
   };
 
   useEffect(() => {
@@ -124,9 +135,14 @@ export default function GiveComments({ refreshStats }: { refreshStats?: () => Pr
     };
     fetchTalents();
     populateCompetencies();
-  }, []);
+  }, [projectId]);
 
-  if (talentsLoading || isCompetenciesLoading)
+  useEffect(() => {
+    if (category === QuickActionCategory.RECOGNITION) return;
+    populateNoteCategories();
+  }, [projectId, category]);
+
+  if (talentsLoading || isCompetenciesLoading || (isNoteCategoriesLoading && category === QuickActionCategory.NOTES))
     return (
       <SimpleElevatedCard className="bg-white p-6 flex flex-col gap-y-5">
         <div className="py-10 flex justify-center items-center">
@@ -184,6 +200,7 @@ export default function GiveComments({ refreshStats }: { refreshStats?: () => Pr
                   }}
                   control={control}
                   onToggle={() => handleToggle(joinedTalent.id)}
+                  category={category}
                 />
               ))}
             </div>
@@ -209,3 +226,8 @@ export default function GiveComments({ refreshStats }: { refreshStats?: () => Pr
     </SimpleElevatedCard>
   );
 }
+
+type GiveCommentsProps = {
+  refreshStats?: () => Promise<void>;
+  category?: QuickActionCategory;
+};

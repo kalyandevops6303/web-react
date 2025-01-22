@@ -58,6 +58,9 @@ export const routes = {
       submitRecognition: `${serviceUrls.projectManagementV2}/recognition`,
       getCount: `${serviceUrls.projectManagementV2}/recognition/count`,
     },
+    notes: {
+      getNoteCategories: `${serviceUrls.projectManagementV2}/note/category`,
+    },
   },
   userManagement: {
     static: {

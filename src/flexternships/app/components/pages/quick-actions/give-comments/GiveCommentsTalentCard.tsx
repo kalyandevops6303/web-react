@@ -2,7 +2,7 @@
 import { Control, Controller, useController } from 'react-hook-form';
 
 // Types and enums
-import { GiveCommentsForm } from '@/flexternships/constraints/types/quick-actions-types';
+import { GiveRecognitionForm, GiveNotesForm } from '@/flexternships/constraints/types/quick-actions-types';
 
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
@@ -17,18 +17,15 @@ import uncheckedIcon from '@flexternships/assets/icons/checkboxes/unchecked.svg'
 // Utils and data
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
+import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-store';
 
 function UnselectedTalentCard({
   talentInfo,
   onToggle,
   checkboxIcon = uncheckedIcon,
   className = 'bg-white shadow-card',
-}: {
-  talentInfo: GiveCommentsTalentCardProps['talentInfo'];
-  onToggle: () => void;
-  checkboxIcon?: string;
-  className?: string;
-}) {
+}: UnselectedTalentCardProps) {
   return (
     <div
       className={`flex flex-row flex-wrap items-center gap-x-6 gap-y-2 py-3 px-6 rounded-lg ${className}`}
@@ -67,13 +64,10 @@ function SelectedTalentCard({
   onToggle,
   control,
   talentIndex,
-}: {
-  talentInfo: GiveCommentsTalentCardProps['talentInfo'];
-  onToggle: () => void;
-  control: Control<GiveCommentsForm>;
-  talentIndex: number;
-}) {
+  category = QuickActionCategory.RECOGNITION,
+}: SelectedTalentCardProps) {
   const competencies = useCompetenciesStore((state) => state.competencies);
+  const noteCategories = useNoteCategoriesStore((state) => state.noteCategories);
 
   const {
     field: { value: selectedCompetencies = [], onChange: onCompetenciesChange },
@@ -84,11 +78,28 @@ function SelectedTalentCard({
     shouldUnregister: true,
   });
 
+  const {
+    field: { value: selectedNoteCategory = '', onChange: onNoteCategoryChange },
+  } = useController({
+    name: `selectedTalents.${talentIndex}.noteCategory`,
+    control,
+    defaultValue: '',
+    shouldUnregister: true,
+  });
+
   const handleCompetencyToggle = (competencyId: string) => {
     if (selectedCompetencies.includes(competencyId)) {
       onCompetenciesChange(selectedCompetencies.filter((id: string) => id !== competencyId));
     } else {
       onCompetenciesChange([...selectedCompetencies, competencyId]);
+    }
+  };
+
+  const handleNoteCategoryToggle = (noteCategory: string) => {
+    if (noteCategory === selectedNoteCategory) {
+      onNoteCategoryChange();
+    } else {
+      onNoteCategoryChange(noteCategory);
     }
   };
 
@@ -103,7 +114,8 @@ function SelectedTalentCard({
       <div className="flex flex-col gap-y-4 px-6 pb-3">
         <div className="flex flex-col gap-y-2">
           <div className="text-sm font-medium leading-5.5 text-grey-600">
-            Select applicable competencies <span className="text-error">*</span>
+            Select applicable competencies{' '}
+            {category === QuickActionCategory.RECOGNITION && <span className="text-error">*</span>}
           </div>
           <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
             {competencies.map((competency) => (
@@ -113,18 +125,37 @@ function SelectedTalentCard({
                 value={competency.id}
                 selected={selectedCompetencies.includes(competency.id)}
                 onClick={() => handleCompetencyToggle(competency.id)}
+                multiselect
               />
             ))}
           </div>
         </div>
-        <div>
+        <div className="flex flex-col gap-y-2">
+          {category === QuickActionCategory.NOTES && (
+            <>
+              <div className="text-sm font-medium leading-4.5 text-grey-600">
+                Your note <span className="text-error">*</span>
+              </div>
+              <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
+                {noteCategories.map((noteCategory) => (
+                  <SelectOptionCard
+                    key={noteCategory.id}
+                    text={noteCategory.name}
+                    value={noteCategory.id}
+                    selected={noteCategory.id === selectedNoteCategory}
+                    onClick={() => handleNoteCategoryToggle(noteCategory.id)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
           <Controller
             name={`selectedTalents.${talentIndex}.comment`}
             control={control}
             defaultValue=""
             render={({ field: { value, onChange }, fieldState: { error } }) => (
               <TextInput
-                label="Your comment"
+                label={category === QuickActionCategory.RECOGNITION ? 'Your comment' : undefined}
                 textarea
                 required
                 placeholder="Please enter your comment"
@@ -142,7 +173,7 @@ function SelectedTalentCard({
 }
 
 export default function GiveCommentsTalentCard(props: GiveCommentsTalentCardProps) {
-  const { selected, talentInfo, onToggle, control } = props;
+  const { selected, talentInfo, onToggle, control, category = QuickActionCategory.RECOGNITION } = props;
 
   const talentIndex = useController({
     name: 'selectedTalents',
@@ -151,7 +182,13 @@ export default function GiveCommentsTalentCard(props: GiveCommentsTalentCardProp
 
   if (selected) {
     return (
-      <SelectedTalentCard talentInfo={talentInfo} onToggle={onToggle!} control={control} talentIndex={talentIndex} />
+      <SelectedTalentCard
+        talentInfo={talentInfo}
+        onToggle={onToggle!}
+        control={control}
+        talentIndex={talentIndex}
+        category={category}
+      />
     );
   }
 
@@ -169,5 +206,21 @@ type GiveCommentsTalentCardProps = {
     isDocumentsSigned?: boolean;
   };
   onToggle?: () => void;
-  control: Control<GiveCommentsForm>;
+  control: Control<GiveRecognitionForm | GiveNotesForm>;
+  category?: QuickActionCategory;
+};
+
+type SelectedTalentCardProps = {
+  talentInfo: GiveCommentsTalentCardProps['talentInfo'];
+  onToggle: () => void;
+  control: Control<GiveRecognitionForm | GiveNotesForm>;
+  talentIndex: number;
+  category?: QuickActionCategory;
+};
+
+type UnselectedTalentCardProps = {
+  talentInfo: GiveCommentsTalentCardProps['talentInfo'];
+  onToggle: () => void;
+  checkboxIcon?: string;
+  className?: string;
 };
