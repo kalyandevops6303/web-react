@@ -26,12 +26,6 @@ import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
 import { epochDifferenceInDays, formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants';
-import {
-  getProjectPanelDate1Icon,
-  getProjectPanelDate1Values,
-  getProjectPanelDate2Icon,
-  getProjectPanelDate2Values,
-} from './left-sidebar-project-panel/ProjectData';
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { getPrimaryAction, getSecondaryAction, getTextByAction } from '@/flexternships/static/project-details-content';
@@ -45,6 +39,12 @@ import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
 import ProjectStatusChip from './project-card/ProjectStatusChip';
 import BadgeGroup from './project-card/BadgeGroup';
 import classNames from 'classnames';
+import {
+  getProjectPanelDate1Icon,
+  getProjectPanelDate1Values,
+  getProjectPanelDate2Icon,
+  getProjectPanelDate2Values,
+} from '@/flexternships/static/project-left-panel-content';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-yellow-soft text-error',
