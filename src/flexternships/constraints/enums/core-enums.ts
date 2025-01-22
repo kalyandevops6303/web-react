@@ -26,6 +26,10 @@ export enum ProjectPrimaryStatus {
   CLOSED = 'CLOSED',
 }
 
+export enum DurationType {
+  WEEK = 'WEEK',
+}
+
 export enum ProjectSecondaryStatus {
   SIGN_CONTRACT = 'SIGN_CONTRACT',
   SIGN_NDA = 'SIGN_NDA',

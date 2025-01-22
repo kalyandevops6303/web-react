@@ -1,8 +1,4 @@
-import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '../enums/core-enums';
-
-export enum DurationType {
-  WEEK = 'WEEK',
-}
+import { DurationType, ProjectPrimaryStatus, ProjectSecondaryStatus } from '../enums/core-enums';
 
 export type TeamMemberDetails = {
   id: string;
