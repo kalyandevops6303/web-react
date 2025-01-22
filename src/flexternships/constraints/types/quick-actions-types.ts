@@ -1,7 +1,7 @@
 import { FlexternUserAppRole, RecognitionSource } from '../enums/core-enums';
 import { Competency } from './competency-types';
 
-export type GiveRecognitionForm = {
+export type GiveCommentsForm = {
   milestone: {
     _id: string;
     name: string;
@@ -13,7 +13,7 @@ export type GiveRecognitionForm = {
   }>;
 };
 
-export type RecognitionTimelineItem = {
+export type CommentsTimelineItem = {
   giverDetails: {
     name: string;
     profileImage: string;
@@ -27,9 +27,9 @@ export type RecognitionTimelineItem = {
   comment: string;
 };
 
-export type RecognitionTimeline = Array<RecognitionTimelineItem>;
+export type CommentsTimeline = Array<CommentsTimelineItem>;
 
-export type RecognitionStats = {
+export type QuickActionsStats = {
   teamMembers: number;
   totalRecognitions: number;
 };

@@ -7,10 +7,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 // Types and schemas
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
+import { GiveCommentsForm } from '@/flexternships/constraints/types/quick-actions-types';
 import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
 import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
-import { GiveRecognitionSchema } from '@/flexternships/schemas/recognition-schemas';
+import { GiveCommentsSchema } from '@/flexternships/schemas/recognition-schemas';
 
 // Services and stores
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
@@ -23,7 +23,7 @@ import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
 
 // Components
 import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
-import GiveRecognitionTalentCard from './GiveRecognitionTalentCard';
+import GiveCommentsTalentCard from './GiveCommentsTalentCard';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
 import Spinner from '../../../core/Spinner';
@@ -35,7 +35,7 @@ const defaultValues = {
   selectedTalents: [],
 };
 
-export default function GiveRecognition({ refreshStats }: { refreshStats?: () => Promise<void> }) {
+export default function GiveComments({ refreshStats }: { refreshStats?: () => Promise<void> }) {
   const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
   const [talentsLoading, setTalentsLoading] = useState<boolean>(true);
   const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
@@ -54,10 +54,10 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
     watch,
     reset,
     formState: { errors, isValid },
-  } = useForm<GiveRecognitionForm>({
+  } = useForm<GiveCommentsForm>({
     mode: 'onChange',
     defaultValues,
-    resolver: yupResolver(GiveRecognitionSchema),
+    resolver: yupResolver(GiveCommentsSchema),
   });
 
   const { append, remove } = useFieldArray({
@@ -86,7 +86,7 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
     }
   };
 
-  const onSubmit = async (data: GiveRecognitionForm) => {
+  const onSubmit = async (data: GiveCommentsForm) => {
     if (!projectId) throw new Error('Project ID is required');
     setIsSubmitLoading(true);
     try {
@@ -174,7 +174,7 @@ export default function GiveRecognition({ refreshStats }: { refreshStats?: () =>
             </div>
             <div className="flex flex-col gap-y-5">
               {teamDetails.map((joinedTalent: TeamMemberDetails) => (
-                <GiveRecognitionTalentCard
+                <GiveCommentsTalentCard
                   key={joinedTalent.id}
                   selected={selectedTalents.some((selectedTalent) => selectedTalent.talentId === joinedTalent.id)}
                   talentInfo={{

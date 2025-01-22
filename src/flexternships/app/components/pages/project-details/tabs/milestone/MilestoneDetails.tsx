@@ -159,7 +159,7 @@ export default function MilestoneDetails() {
   };
 
   const handleGiveRecognition = () => {
-    navigate(`/recognition/${projectId}`);
+    navigate(`/quick-actions/${projectId}`);
   };
 
   if (isMilestoneDetailsLoading && activeModal === undefined) {

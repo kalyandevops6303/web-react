@@ -5,8 +5,8 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 // UI Components
 import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
 import TopStatCard from '../components/core/cards/TopStatCard';
-import GiveRecognition from '../components/pages/recognition/give-recognition/GiveRecognition';
-import ViewRecognitions from '../components/pages/recognition/view-recognitions/ViewRecognitions';
+import GiveRecognition from '../components/pages/quick-actions/give-comments/GiveComments';
+import ViewRecognitions from '../components/pages/quick-actions/view-comments/ViewComments';
 
 // Icons and assets
 import { ArrowLeft, Eye } from 'react-feather';
@@ -14,22 +14,24 @@ import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
 import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { getRecognitionsCount } from '@/flexternships/services/project-management-v2';
+import { getQuickActionsCount } from '@/flexternships/services/project-management-v2';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { RecognitionStats } from '@/flexternships/constraints/types/recognition-types';
+import { QuickActionsStats } from '@/flexternships/constraints/types/quick-actions-types';
 import Spinner from '../components/core/Spinner';
-import NoRecognitionFound from '../components/pages/recognition/view-recognitions/NoRecognitionFound';
+import NoRecognitionFound from '../components/pages/quick-actions/view-comments/NoCommentsFound';
 
 // Page-specific enums
 enum RecognitionAction {
   GIVE_RECOGNITION = 'give-recognition',
   VIEW_RECOGNITIONS = 'view-recognitions',
+  ADD_NOTES = 'add-notes',
+  VIEW_NOTES = 'view-notes',
 }
 
 export default function FlexternProjectRecognition() {
   const [selectedAction, setSelectedAction] = useState<RecognitionAction>(RecognitionAction.GIVE_RECOGNITION);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
-  const [stats, setStats] = useState<RecognitionStats | undefined>();
+  const [stats, setStats] = useState<QuickActionsStats | undefined>();
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
@@ -74,7 +76,7 @@ export default function FlexternProjectRecognition() {
     if (!projectId) throw new Error('Project ID is required');
     setIsStatsLoading(true);
     try {
-      const stats = await getRecognitionsCount(projectId);
+      const stats = await getQuickActionsCount(projectId);
       setStats(stats);
       setIsStatsLoading(false);
     } catch (error: unknown) {

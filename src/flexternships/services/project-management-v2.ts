@@ -15,8 +15,8 @@ import {
   parseCompetencies,
   parseMilestoneDetails,
   parseMilestoneDropdown,
-  parseRecognitionStats,
-  parseRecognitionTimeline,
+  parseCommentsTimeline,
+  parseQuickActionsStats,
 } from '../utils/parsing-utils';
 import { PaginatedData } from './user-management';
 import { MilestoneDropdownOptions } from '../constraints/enums/miscellaneous-enums';
@@ -756,8 +756,8 @@ export const getRecognitionTimeline = async (projectId: string, talentUserId: st
   };
 
   try {
-    const response = await axios.get(routes.projectManagementV2.recognition.recognitionTimeline, config);
-    return parseRecognitionTimeline(response.data.data);
+    const response = await axios.get(routes.projectManagementV2.quickActions.recognitionTimeline, config);
+    return parseCommentsTimeline(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching recognition timeline');
   }
@@ -795,7 +795,7 @@ export const submitRecognition = async (
   };
 
   try {
-    const response = await axios.post(routes.projectManagementV2.recognition.submitRecognition, payload, config);
+    const response = await axios.post(routes.projectManagementV2.quickActions.submitRecognition, payload, config);
     return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while submitting recognition');
@@ -803,24 +803,24 @@ export const submitRecognition = async (
 };
 
 /**
- * Gets recognition count statistics for a project.
+ * Gets quick actions count statistics for a project.
  * @param projectId - The ID of the project.
  * @param talentUserId - Optional talent user ID to filter stats by.
  * @param milestoneId - Optional milestone ID to filter stats by.
- * @returns A Promise that resolves to the parsed recognition statistics.
+ * @returns A Promise that resolves to the parsed quick actions statistics.
  * @throws {Error} If the stats retrieval fails or an unexpected error occurs.
  */
-export const getRecognitionsCount = async (projectId: string, talentUserId?: string, milestoneId?: string) => {
+export const getQuickActionsCount = async (projectId: string, talentUserId?: string, milestoneId?: string) => {
   const config = {
     params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
     withCredentials: true,
   };
 
   try {
-    const response = await axios.get(routes.projectManagementV2.recognition.getRecognitionsCount, config);
-    return parseRecognitionStats(response.data.data);
+    const response = await axios.get(routes.projectManagementV2.quickActions.getCount, config);
+    return parseQuickActionsStats(response.data.data);
   } catch (error) {
-    handleError(error as Error, 'An unexpected error occurred while fetching recognition count');
+    handleError(error as Error, 'An unexpected error occurred while fetching quick actions count');
   }
 };
 /**

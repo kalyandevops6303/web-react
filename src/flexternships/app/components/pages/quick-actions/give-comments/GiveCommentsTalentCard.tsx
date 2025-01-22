@@ -2,7 +2,7 @@
 import { Control, Controller, useController } from 'react-hook-form';
 
 // Types and enums
-import { GiveRecognitionForm } from '@/flexternships/constraints/types/recognition-types';
+import { GiveCommentsForm } from '@/flexternships/constraints/types/quick-actions-types';
 
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
@@ -24,7 +24,7 @@ function UnselectedTalentCard({
   checkboxIcon = uncheckedIcon,
   className = 'bg-white shadow-card',
 }: {
-  talentInfo: GiveRecognitionTalentCardProps['talentInfo'];
+  talentInfo: GiveCommentsTalentCardProps['talentInfo'];
   onToggle: () => void;
   checkboxIcon?: string;
   className?: string;
@@ -68,9 +68,9 @@ function SelectedTalentCard({
   control,
   talentIndex,
 }: {
-  talentInfo: GiveRecognitionTalentCardProps['talentInfo'];
+  talentInfo: GiveCommentsTalentCardProps['talentInfo'];
   onToggle: () => void;
-  control: Control<GiveRecognitionForm>;
+  control: Control<GiveCommentsForm>;
   talentIndex: number;
 }) {
   const competencies = useCompetenciesStore((state) => state.competencies);
@@ -141,7 +141,7 @@ function SelectedTalentCard({
   );
 }
 
-export default function GiveRecognitionTalentCard(props: GiveRecognitionTalentCardProps) {
+export default function GiveCommentsTalentCard(props: GiveCommentsTalentCardProps) {
   const { selected, talentInfo, onToggle, control } = props;
 
   const talentIndex = useController({
@@ -158,7 +158,7 @@ export default function GiveRecognitionTalentCard(props: GiveRecognitionTalentCa
   return <UnselectedTalentCard talentInfo={talentInfo} onToggle={onToggle!} />;
 }
 
-type GiveRecognitionTalentCardProps = {
+type GiveCommentsTalentCardProps = {
   selected?: boolean;
   talentInfo: {
     id: string;
@@ -169,5 +169,5 @@ type GiveRecognitionTalentCardProps = {
     isDocumentsSigned?: boolean;
   };
   onToggle?: () => void;
-  control: Control<GiveRecognitionForm>;
+  control: Control<GiveCommentsForm>;
 };

@@ -58,7 +58,7 @@ import ChatInterface from '@/flexternships/app/components/pages/chat-interface/C
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
 import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
 import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
-import FlexternProjectRecognition from '@/flexternships/app/recognition/page';
+import FlexternProjectRecognition from '@/flexternships/app/quick-actions/page';
 import TeamPerformanceInsights from '@/flexternships/app/analytics/team-analytics/performance-insights/page';
 import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
 import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
@@ -561,7 +561,7 @@ export const FlexternshipRoutes = [
     },
   },
   {
-    path: '/recognition/:projectId',
+    path: '/quick-actions/:projectId',
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[

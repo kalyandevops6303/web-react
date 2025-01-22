@@ -10,7 +10,7 @@ import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 import { Competency } from '@/flexternships/constraints/types/competency-types';
 import { getReadableTimeDifference } from '@/flexternships/utils/date-utils';
 
-interface ViewRecognitionManagerCardProps {
+interface ViewCommentsManagerCardProps {
   giverDetails: {
     name: string;
     profileImage: string;
@@ -23,14 +23,14 @@ interface ViewRecognitionManagerCardProps {
   comment: string;
 }
 
-export default function ViewRecognitionManagerCard({
+export default function ViewCommentsManagerCard({
   giverDetails,
   type,
   milestoneNumber,
   timestamp,
   selectedCompetencies,
   comment,
-}: ViewRecognitionManagerCardProps) {
+}: ViewCommentsManagerCardProps) {
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex flex-row justify-between">

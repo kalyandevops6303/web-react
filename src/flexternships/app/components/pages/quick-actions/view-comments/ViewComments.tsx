@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 // Types and enums
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
-import { RecognitionTimeline } from '@/flexternships/constraints/types/recognition-types';
+import { CommentsTimeline } from '@/flexternships/constraints/types/quick-actions-types';
 import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
 
 // Services and utils
@@ -19,21 +19,21 @@ import { getMilestonesDropdown, getRecognitionTimeline } from '@/flexternships/s
 // Components
 import SimpleElevatedCard from '../../../core/cards/SimpleElevatedCard';
 import SelectTalentCard from './SelectTalentCard';
-import ViewRecognitionManagerCard from './ViewRecognitionManagerCard';
+import ViewCommentsManagerCard from './ViewCommentsManagerCard';
 import SingleSelectInput from '../../../core/form/SingleSelectInput';
-import VerticalTimeline from './RecognitionVerticalTimeline';
+import VerticalTimeline from './CommentsVerticalTimeline';
 import Spinner from '../../../core/Spinner';
-import NoRecognitionFound from './NoRecognitionFound';
+import NoCommentsFound from './NoCommentsFound';
 import { DEFAULT_ALL_MILESTONES_OPTION } from '@/flexternships/static/recognition-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function ViewRecognitions() {
   const [talentsLoading, setTalentsLoading] = useState<boolean>(false);
-  const [recognitionTimelineLoading, setRecognitionTimelineLoading] = useState<boolean>(false);
+  const [commentsTimelineLoading, setCommentsTimelineLoading] = useState<boolean>(false);
 
   const [teamDetails, setTeamDetails] = useState<TeamMemberDetails[]>([]);
   const [selectedTalentId, setSelectedTalentId] = useState<string | undefined>(undefined);
-  const [recognitionTimeline, setRecognitionTimeline] = useState<RecognitionTimeline>([]);
+  const [commentsTimeline, setCommentsTimeline] = useState<CommentsTimeline>([]);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
@@ -73,21 +73,21 @@ export default function ViewRecognitions() {
   useEffect(() => {
     if (!projectId) throw new Error('Project ID is required');
     if (!selectedTalentId) return;
-    const fetchRecognitionTimeline = async () => {
-      setRecognitionTimelineLoading(true);
+    const fetchCommentsTimeline = async () => {
+      setCommentsTimelineLoading(true);
       try {
-        const recognitionTimeline = await getRecognitionTimeline(projectId, selectedTalentId, watch('milestone')._id);
-        setRecognitionTimeline(recognitionTimeline || []);
+        const commentsTimeline = await getRecognitionTimeline(projectId, selectedTalentId, watch('milestone')._id);
+        setCommentsTimeline(commentsTimeline || []);
       } catch (error: unknown) {
         showToastMessage(
           ToastType.ERROR,
           error instanceof Error ? error.message : 'Failed to fetch recognition timeline. Please try again.',
         );
       } finally {
-        setRecognitionTimelineLoading(false);
+        setCommentsTimelineLoading(false);
       }
     };
-    fetchRecognitionTimeline();
+    fetchCommentsTimeline();
   }, [selectedTalentId, projectId, watch('milestone')]);
 
   if (talentsLoading)
@@ -99,7 +99,7 @@ export default function ViewRecognitions() {
       </div>
     );
 
-  if (isEmpty(teamDetails)) return <NoRecognitionFound />;
+  if (isEmpty(teamDetails)) return <NoCommentsFound />;
 
   if (!projectId) throw new Error('Project ID is required');
 
@@ -137,18 +137,18 @@ export default function ViewRecognitions() {
             </div>
           </div>
           <div className="flex flex-col gap-y-7">
-            {recognitionTimelineLoading ? (
+            {commentsTimelineLoading ? (
               <div className="py-10 flex justify-center items-center">
                 <div className="size-10">
                   <Spinner />
                 </div>
               </div>
-            ) : isEmpty(recognitionTimeline) ? (
-              <NoRecognitionFound />
+            ) : isEmpty(commentsTimeline) ? (
+              <NoCommentsFound />
             ) : (
               <VerticalTimeline
-                timelineItems={recognitionTimeline.map((recognition) => ({
-                  component: <ViewRecognitionManagerCard {...recognition} />,
+                timelineItems={commentsTimeline.map((comment) => ({
+                  component: <ViewCommentsManagerCard {...comment} />,
                   color: '#FF9F43',
                 }))}
                 spaceLeft={36}

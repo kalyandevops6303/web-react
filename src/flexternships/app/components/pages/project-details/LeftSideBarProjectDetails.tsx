@@ -113,11 +113,11 @@ const LeftSideBarProjectDetails = () => {
   }, [showMore]);
 
   const handleGiveRecognitionClick = () => {
-    navigate(`/recognition/${projectId}`);
+    navigate(`/quick-actions/${projectId}`);
   };
 
   const handleViewRecognitionClick = () => {
-    navigate(`/recognition/${projectId}`, { state: { viewRecognitions: true } });
+    navigate(`/quick-actions/${projectId}`, { state: { viewRecognitions: true } });
   };
 
   return (

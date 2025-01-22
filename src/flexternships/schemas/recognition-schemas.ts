@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const GiveRecognitionSchema = yup.object().shape({
+export const GiveCommentsSchema = yup.object().shape({
   milestone: yup.object().shape({
     _id: yup.string().required('Please select a milestone'),
   }),
