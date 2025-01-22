@@ -23,7 +23,7 @@ module.exports = {
           },
           gold: '#F6C01C',
           light: '#FFD966',
-          newGold: '#FFD700',
+          soft: '#FFD700',
         },
         orange: {
           DEFAULT: '#FF9F43',
@@ -95,8 +95,8 @@ module.exports = {
           DEFAULT: '#2196F3',
           light: '#2196F31F',
           soft: '#E3F2FD',
-          newBlue: '#005EFF',
-          newBlueLight: '#005EFF1F',
+          brightLight: '#005EFF',
+          softLight: '#005EFF1F',
         },
         red: {
           light: '#EA54551F',
@@ -106,8 +106,8 @@ module.exports = {
         green: {
           DEFAULT: '#28C76F',
           successLight: '#28C76F1F',
-          newGreen: '#00C853',
-          newGreenLight: '#00C8531F',
+          brightLight: '#00C853',
+          softLight: '#00C8531F',
         },
         primary: '#0185E4',
         'primary-light': '#0185E41F',

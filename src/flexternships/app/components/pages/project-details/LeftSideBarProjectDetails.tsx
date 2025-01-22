@@ -47,8 +47,8 @@ import BadgeGroup from './project-card/BadgeGroup';
 import classNames from 'classnames';
 
 enum UserTypeChipClassnames {
-  TALENT = 'bg-yellow-newGold text-error',
-  CLIENT = 'flex h-[18px] p-[1px_9px] items-center gap-[3px] rounded-4.5 bg-blue-newBlueLight text-blue-newBlue text-center font-semibold text-3 leading-4.5 font-montserrat',
+  TALENT = 'bg-yellow-soft text-error',
+  CLIENT = 'flex h-[18px] p-[1px_9px] items-center gap-[3px] rounded-4.5 bg-blue-softLight text-blue-brightLight text-center font-semibold text-3 leading-4.5 font-montserrat',
 }
 
 enum ProjectFlowType {

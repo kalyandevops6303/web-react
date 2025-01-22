@@ -38,7 +38,7 @@ const ProjectStatusChip = ({
     [ProjectSecondaryStatus.MILESTONE]: 'bg-orange-light text-orange-dark',
     [ProjectSecondaryStatus.SIGN_NDA]: 'bg-orange-50 text-orange-600',
     [ProjectSecondaryStatus.SIGN_REQUESTED]: 'bg-skyblue-light text-skyblue',
-    [ProjectSecondaryStatus.COMPLETED]: 'bg-green-newGreenLight text-green-newGreen',
+    [ProjectSecondaryStatus.COMPLETED]: 'bg-green-softLight text-green-brightLight',
   };
 
   const SecondaryStatusChipRedirectionLinks = {
