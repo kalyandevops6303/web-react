@@ -7,7 +7,6 @@ import { GiveRecognitionForm } from '@/flexternships/constraints/types/recogniti
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import Rating from '../../../core/feedback/Rating';
-import SelectCompetencyCard from './SelectCompetencyCard';
 import TextInput from '../../../core/form/TextInput';
 
 // Icons and assets
@@ -17,6 +16,7 @@ import uncheckedIcon from '@flexternships/assets/icons/checkboxes/unchecked.svg'
 // Utils and data
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
+import SelectOptionCard from '../../../core/form/SelectOptionCard';
 
 function UnselectedTalentCard({
   talentInfo,
@@ -107,7 +107,7 @@ function SelectedTalentCard({
           </div>
           <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
             {competencies.map((competency) => (
-              <SelectCompetencyCard
+              <SelectOptionCard
                 key={competency.id}
                 text={competency.name}
                 value={competency.id}
