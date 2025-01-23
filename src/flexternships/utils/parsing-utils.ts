@@ -9,7 +9,7 @@ import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
-import { RecognitionStats, RecognitionTimeline } from '../constraints/types/recognition-types';
+import { QuickActionsStats, CommentsTimeline } from '../constraints/types/quick-actions-types';
 import { TeamMemberDetails } from '../constraints/types/project-details-types';
 import { Competency } from '../constraints/types/competency-types';
 import { FlexternUserAppRole } from '../constraints/enums/core-enums';
@@ -19,6 +19,7 @@ import {
   TeamCompetencySummary,
 } from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
+import { NoteCategory } from '../constraints/types/note-category-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -244,31 +245,32 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
  * @param data Raw recognition timeline data from API
  * @returns Formatted recognition timeline array
  */
-export const parseRecognitionTimeline = (data: Record<string, any>): RecognitionTimeline => {
-  return data.map((recognition: Record<string, any>) => {
-    const giverAppRole = recognition.giver_details.app_role;
+export const parseCommentsTimeline = (data: Record<string, any>): CommentsTimeline => {
+  return data.map((commentsTimelineItem: Record<string, any>) => {
+    const giverAppRole = commentsTimelineItem.giver_details.app_role;
     const giverDesignation =
       giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
         ? 'Mentor'
         : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT
         ? 'Manager'
-        : recognition.giver_details.project_role;
+        : commentsTimelineItem.giver_details.project_role;
 
     const giverName =
       giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
-        ? `${recognition.giver_details.first_name} ${recognition.giver_details.last_name} (${recognition.giver_details.delegate_first_name} ${recognition.giver_details.delegate_last_name})`
-        : `${recognition.giver_details.first_name} ${recognition.giver_details.last_name}`; // Full name for both client and talent
+        ? `${commentsTimelineItem.giver_details.first_name} ${commentsTimelineItem.giver_details.last_name} (${commentsTimelineItem.giver_details.delegate_first_name} ${commentsTimelineItem.giver_details.delegate_last_name})`
+        : `${commentsTimelineItem.giver_details.first_name} ${commentsTimelineItem.giver_details.last_name}`; // Full name for both client and talent
     return {
       giverDetails: {
         name: giverName,
-        profileImage: recognition.giver_details.image_uri,
+        profileImage: commentsTimelineItem.giver_details.image_uri,
         designation: giverDesignation,
         appRole: giverAppRole,
       },
-      type: recognition.giver_location,
-      milestoneNumber: recognition.milestone.seq,
-      timestamp: recognition.created_at,
-      selectedCompetencies: recognition.competencies.map((competency: Record<string, any>) => ({
+      type: commentsTimelineItem.giver_location,
+      noteCategory: commentsTimelineItem.note_category?.name,
+      milestoneNumber: commentsTimelineItem.milestone.seq,
+      timestamp: commentsTimelineItem.created_at,
+      selectedCompetencies: commentsTimelineItem.competencies.map((competency: Record<string, any>) => ({
         id: competency._id,
         name: competency.name,
         abbreviation: competency.abbreviation,
@@ -276,7 +278,7 @@ export const parseRecognitionTimeline = (data: Record<string, any>): Recognition
         createdAt: competency.created_at,
         updatedAt: competency.updated_at,
       })),
-      comment: recognition.comment,
+      comment: commentsTimelineItem.comment,
     };
   });
 };
@@ -300,6 +302,7 @@ export const parseTeamDetails = (
     invitedOn: member?.invited_on,
     averageRating: member?.averageRating,
     appreciationScore: member?.appreciation_score,
+    noteCount: member?.note_count,
     isDocumentsSigned: member?.is_documents_signed,
   }));
 
@@ -319,10 +322,11 @@ export const parseTeamDetails = (
  * @param data Raw recognition stats data from API
  * @returns Formatted recognition statistics
  */
-export const parseRecognitionStats = (data: Record<string, any>): RecognitionStats => {
+export const parseQuickActionsStats = (data: Record<string, any>): QuickActionsStats => {
   return {
     teamMembers: data.team_members_count,
     totalRecognitions: data.kudos_count || data.wow_count || 0,
+    totalNotes: data.note_count || 0, // TODO: Remove this after backend is updated
   };
 };
 
@@ -368,6 +372,11 @@ export const parseMilestoneDropdown = (
   return parsedData;
 };
 
+/**
+ * Parses detailed performance insights from raw API response
+ * @param data Raw performance insights data from API
+ * @returns Formatted detailed performance insights
+ */
 export const parseDetailedPerformanceInsights = (data: Record<string, any>): DetailedPerformanceInsights => {
   return {
     chartData:
@@ -398,10 +407,29 @@ export const parseDetailedPerformanceInsights = (data: Record<string, any>): Det
   };
 };
 
+/**
+ * Parses team competency summary from raw API response
+ * @param data Raw team competency summary data from API
+ * @returns Array of formatted team competency summaries
+ */
 export const parseTeamCompetencySummary = (data: Array<Record<string, string>>): TeamCompetencySummary[] => {
   return data.map((item: Record<string, string>) => ({
     competencyName: item.competency_name,
     competencyAbbreviation: item.competency_abbreviation,
     summary: item.summary,
+  }));
+};
+
+/**
+ * Parses note categories from raw API response
+ * @param data Raw note categories data from API
+ * @returns Array of formatted note categories
+ */
+export const parseNoteCategories = (data: Record<string, any>): NoteCategory[] => {
+  return data.map((item: Record<string, any>) => ({
+    id: item._id,
+    name: item.name,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
   }));
 };

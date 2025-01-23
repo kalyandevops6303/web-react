@@ -70,6 +70,7 @@ export enum MilestoneFeedbackStatus {
 export enum RecognitionSource {
   QUICK_ACTION = 'QUICK_ACTION',
   FEEDBACK = 'FEEDBACK',
+  QUICK_NOTE = 'QUICK_NOTE',
 }
 
 export enum FlexternUserAppRole {
