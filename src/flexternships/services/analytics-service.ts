@@ -5,6 +5,7 @@ import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
 import { parseDetailedPerformanceInsights, parseTeamCompetencySummary } from '../utils/parsing-utils';
 import { DetailedPerformanceInsights, TeamCompetencySummary } from '../constraints/types/analytics-types';
+import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
 /**
  * Retrieves individual overview data for a user and project.
@@ -292,11 +293,21 @@ export const getTeamCompetencySummaryService = async (
   }
 };
 
-export const getConversationParticipationService = async (projectId: string) => {
+export const getConversationParticipationService = async (
+  projectId: string,
+  userId: string,
+  messagesCountState: TimePeriodOptions,
+  participationPercentageState: TimePeriodOptions,
+) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
-    params: { project_id: projectId },
+    params: {
+      project_id: projectId,
+      user_id: userId,
+      messages_count: messagesCountState,
+      participation_percentage: participationPercentageState,
+    },
     withCredentials: true,
   };
   try {
@@ -317,11 +328,11 @@ export const getConversationParticipationService = async (projectId: string) => 
   }
 };
 
-export const getConversationParticipationFilesService = async (projectId: string) => {
+export const getConversationParticipationFilesService = async (projectId: string, userId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
-    params: { project_id: projectId },
+    params: { project_id: projectId, user_id: userId },
     withCredentials: true,
   };
   try {

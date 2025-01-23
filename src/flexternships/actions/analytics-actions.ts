@@ -1,3 +1,4 @@
+import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 import {
   getAiSummaryService,
   getConversationParticipationFilesService,
@@ -269,9 +270,20 @@ export const getTeamPerformanceInsightsOverview = async (projectId: string, set:
 };
 
 // Conversation Participation
-export const getConversationParticipation = async (projectId: string, set: any) => {
+export const getConversationParticipation = async (
+  projectId: string,
+  userId: string,
+  messagesCountState: TimePeriodOptions,
+  participationPercentageState: TimePeriodOptions,
+  set: any,
+) => {
   set({ isConversationParticipationLoading: true });
-  const data: any = await getConversationParticipationService(projectId);
+  const data: any = await getConversationParticipationService(
+    projectId,
+    userId,
+    messagesCountState,
+    participationPercentageState,
+  );
   set((state: any) => ({
     ...state,
     conversationParticipation: data,
@@ -280,9 +292,9 @@ export const getConversationParticipation = async (projectId: string, set: any) 
 };
 
 // Conversation Participation Files
-export const getConversationParticipationFiles = async (projectId: string, set: any) => {
+export const getConversationParticipationFiles = async (projectId: string, userId: string, set: any) => {
   set({ isConversationParticipationFilesLoading: true });
-  const data: any = await getConversationParticipationFilesService(projectId);
+  const data: any = await getConversationParticipationFilesService(projectId, userId);
   set((state: any) => ({
     ...state,
     conversationParticipationFiles: data,

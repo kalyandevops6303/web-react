@@ -6,19 +6,19 @@ import { useParams } from 'react-router-dom';
 
 const styles = {
   documentsCard: 'border-l-4 border-[#7367F0] border-b-[10px] border-[#7367F0] px-3',
-  linksCard: 'border-l-4 border-[#0185E4] border-b-[10px] border-[#0185E4] px-3',
+  linksCard: 'border-l-4 border-[#00CFE8] border-b-[10px] border-[#00CFE8] px-3',
 };
 
 export default function FileStats() {
-  const { projectId } = useParams();
+  const { projectId, userId } = useParams();
 
   const data = useAnalyticsStore((state) => state.conversationParticipationFiles);
   const getData = useAnalyticsStore((state) => state.getConversationParticipationFiles);
   const isLoading = useAnalyticsStore((state) => state.isConversationParticipationFilesLoading);
 
   useEffect(() => {
-    getData(projectId);
-  }, [projectId]);
+    getData(projectId, userId);
+  }, [projectId, userId]);
 
   if (isLoading) return <BoxSkeleton className="w-full h-[120px]" />;
 
