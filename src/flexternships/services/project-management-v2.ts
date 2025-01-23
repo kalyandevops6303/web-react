@@ -21,7 +21,10 @@ import {
 } from '../utils/parsing-utils';
 import { PaginatedData } from './user-management';
 import { MilestoneDropdownOptions } from '../constraints/enums/miscellaneous-enums';
-import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/constants/quick-actions-constants';
+import {
+  DEFAULT_ALL_MILESTONES_OPTION,
+  DEFAULT_ALL_NOTE_CATEGORIES_OPTION,
+} from '../static/constants/quick-actions-constants';
 import { QuickActionCategory } from '../constraints/enums/quick-actions-enums';
 
 /**
@@ -445,6 +448,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
       isDocumentsNeeded: data.is_document_needed,
       viewRecognition: data.view_recognition,
       giveRecognition: data.give_recognition,
+      addNote: data.add_note,
     };
 
     return projectDetailsData;
@@ -755,10 +759,17 @@ export const getRecognitionTimeline = async (
   projectId: string,
   talentUserId: string,
   category: QuickActionCategory,
+  noteCategoryId?: string,
   milestoneId?: string,
 ) => {
   const config = {
-    params: { project_id: projectId, talent_user_id: talentUserId, action_type: category, milestone_id: milestoneId },
+    params: {
+      project_id: projectId,
+      talent_user_id: talentUserId,
+      action_type: category,
+      milestone_id: milestoneId,
+      note_category_id: noteCategoryId,
+    },
     withCredentials: true,
   };
 
@@ -880,8 +891,13 @@ export const getMilestonesDropdown = async (
   projectId: string,
   options: MilestoneDropdownOptions,
   parsingOptions: { useSequence?: boolean } = { useSequence: false },
+  page: number = 1,
+  pageSize: number = 10,
 ): Promise<PaginatedData<MilestoneDropdownItem>> => {
-  const config = { params: { project_id: projectId, options: options }, withCredentials: true };
+  const config = {
+    params: { project_id: projectId, options, page, page_size: pageSize },
+    withCredentials: true,
+  };
   try {
     const response = await axios.get(routes.projectManagementV2.milestone.milestonesDropdown, config);
     const data = parseMilestoneDropdown(response.data.data, parsingOptions);
@@ -919,6 +935,51 @@ export const getCompetencies = async () => {
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching competencies');
   }
+};
+/**
+ * Gets the paginated list of available note categories.
+ * @param page - The page number to retrieve.
+ * @param pageSize - The number of items per page.
+ * @param options - Optional options to append "All Note Categories" option.
+ * @returns A Promise that resolves to the paginated note categories data.
+ * @throws {Error} If the note categories retrieval fails or an unexpected error occurs.
+ */
+export const getPaginatedNoteCategories = async (
+  page: number = 1,
+  pageSize: number = 10,
+  options: { appendAll?: boolean } = { appendAll: false },
+): Promise<PaginatedData> => {
+  const emptyData = {
+    metadata: {
+      current_page: page,
+      page_size: pageSize,
+      total_records: 0,
+      has_next_page: false,
+    },
+    data: [],
+  };
+
+  const config = {
+    params: {
+      page,
+      page_size: pageSize,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.projectManagementV2.notes.getPaginatedNoteCategories, config);
+    const data = response.data.data;
+
+    // Add "All Note Categories" option if this is the first page and the appendAll option is selected
+    if (data.metadata.current_page === 1 && options.appendAll) {
+      data.data.unshift(DEFAULT_ALL_NOTE_CATEGORIES_OPTION);
+    }
+    return data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching note categories');
+  }
+  return emptyData;
 };
 
 /**

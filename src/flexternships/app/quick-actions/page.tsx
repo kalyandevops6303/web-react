@@ -18,7 +18,7 @@ import { getQuickActionsCount } from '@/flexternships/services/project-managemen
 // Types and Enums
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { QuickActionsStats } from '@/flexternships/constraints/types/quick-actions-types';
-import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
+import { QuickAction, QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 
 // Utils
 import { showToastMessage } from '@/flexternships/utils/core-utils';
@@ -26,14 +26,6 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 // Assets
 import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
 import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
-
-// Page-specific enums
-enum QuickAction {
-  GIVE_RECOGNITION = 'give-recognition',
-  VIEW_RECOGNITIONS = 'view-recognitions',
-  ADD_NOTES = 'add-notes',
-  VIEW_NOTES = 'view-notes',
-}
 
 export default function FlexternProjectQuickActions() {
   const [selectedAction, setSelectedAction] = useState<QuickAction>(QuickAction.GIVE_RECOGNITION);
@@ -116,10 +108,20 @@ export default function FlexternProjectQuickActions() {
   }, [projectId, fetchStats]);
 
   useEffect(() => {
-    // TODO: Update this to include all other cases
     if (!stats) return;
-    if (!stats.teamMembers || (location?.state as { viewRecognitions?: boolean })?.viewRecognitions) {
-      setSelectedAction(QuickAction.VIEW_RECOGNITIONS);
+    const action = (location.state as { action: QuickAction } | undefined)?.action;
+    if (!action) return;
+    switch (action) {
+      case QuickAction.VIEW_RECOGNITIONS:
+      case QuickAction.VIEW_NOTES:
+        setSelectedAction(action);
+        break;
+      case QuickAction.ADD_NOTES:
+        setSelectedAction(stats.teamMembers ? action : QuickAction.VIEW_NOTES);
+        break;
+      default:
+        setSelectedAction(stats.teamMembers ? QuickAction.GIVE_RECOGNITION : QuickAction.VIEW_RECOGNITIONS);
+        break;
     }
   }, [stats, location.state]);
 

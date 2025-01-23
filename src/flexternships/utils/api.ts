@@ -60,6 +60,7 @@ export const routes = {
     },
     notes: {
       getNoteCategories: `${serviceUrls.projectManagementV2}/note/category`,
+      getPaginatedNoteCategories: `${serviceUrls.projectManagementV2}/note/category/paginated`,
       submitNotes: `${serviceUrls.projectManagementV2}/note`,
     },
   },

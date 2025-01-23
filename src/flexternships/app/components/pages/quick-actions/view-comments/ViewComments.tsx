@@ -22,7 +22,11 @@ import {
 
 // Services and utils
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
-import { getMilestonesDropdown, getRecognitionTimeline } from '@/flexternships/services/project-management-v2';
+import {
+  getMilestonesDropdown,
+  getPaginatedNoteCategories,
+  getRecognitionTimeline,
+} from '@/flexternships/services/project-management-v2';
 import { parseTeamDetails } from '@/flexternships/utils/parsing-utils';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
@@ -88,6 +92,7 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
           projectId,
           selectedTalentId,
           category,
+          watch('noteCategory')._id,
           watch('milestone')._id,
         );
         setCommentsTimeline(commentsTimeline || []);
@@ -101,7 +106,7 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
       }
     };
     fetchCommentsTimeline();
-  }, [selectedTalentId, projectId, watch('milestone')]);
+  }, [selectedTalentId, projectId, watch('milestone'), watch('noteCategory'), category]);
 
   if (talentsLoading)
     return (
@@ -148,8 +153,16 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
                   name="milestone"
                   control={control}
                   label="Milestone"
-                  loadOptions={() =>
-                    getMilestonesDropdown(projectId, MilestoneDropdownOptions.VIEW_RECOGNITION, { useSequence: true })
+                  loadOptions={(page, pageSize) =>
+                    getMilestonesDropdown(
+                      projectId,
+                      MilestoneDropdownOptions.VIEW_RECOGNITION,
+                      {
+                        useSequence: true,
+                      },
+                      page,
+                      pageSize,
+                    )
                   }
                   defaultFirstOption
                   allowSelectionOfEmptyValue
@@ -161,11 +174,7 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
                     name="noteCategory"
                     control={control}
                     label="Type"
-                    // TODO: Add note categories
-                    loadOptions={async () => ({
-                      metadata: { has_next_page: false, current_page: 1, page_size: 10, total_records: 10 },
-                      data: [{ name: 'All', _id: '' }],
-                    })}
+                    loadOptions={(page, pageSize) => getPaginatedNoteCategories(page, pageSize, { appendAll: true })}
                     defaultFirstOption
                     allowSelectionOfEmptyValue
                   />
