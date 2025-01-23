@@ -56,7 +56,9 @@ const LeftSideBarProjectDetails = () => {
   const [showRelistModal, setShowRelistModal] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
+  // const modalRef = useRef<HTMLDivElement | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null!) as React.RefObject<HTMLDivElement>;
+
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
