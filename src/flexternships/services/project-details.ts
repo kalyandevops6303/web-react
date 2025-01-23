@@ -1,3 +1,10 @@
+/**
+ * Project details service module for handling project-related operations.
+ * @fileoverview Contains functions for managing project teams, invitations, and other project-related data.
+ * Includes APIs for fetching team details, project invitations, and other project operations.
+ * @module project-details
+ */
+
 import axios from 'axios';
 import { appendAuthToken } from '../utils/local-storage';
 import { handleError } from '../utils/error-utils';
@@ -8,7 +15,8 @@ import { parseFlexternComments } from '../utils/parsing-utils';
 /**
  * Fetches the team details for a project
  * @param projectId The ID of the project to fetch the team details for
- * @returns The team details for the project
+ * @returns Promise that resolves to the team details for the project or undefined
+ * @throws {Error} If team details retrieval fails or an unexpected error occurs
  */
 export const fetchTeamDetails = async (projectId: string) => {
   const headers = appendAuthToken({});
@@ -24,6 +32,12 @@ export const fetchTeamDetails = async (projectId: string) => {
   }
 };
 
+/**
+ * Gets project invitation details
+ * @param projectId The ID of the project to get invitation details for
+ * @returns Promise that resolves to the project invitation details or undefined
+ * @throws {Error} If invitation details retrieval fails or an unexpected error occurs
+ */
 export const getProjectInvitationDetailsService = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = { headers: headers, withCredentials: true };
@@ -39,6 +53,11 @@ export const getProjectInvitationDetailsService = async (projectId: string) => {
   }
 };
 
+/**
+ * Marks a project invitation as read
+ * @param projectId The ID of the project whose invitation should be marked as read
+ * @throws {Error} If marking invitation as read fails or an unexpected error occurs
+ */
 export const markInvitationAsRead = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = { headers: headers, withCredentials: true };
@@ -51,6 +70,13 @@ export const markInvitationAsRead = async (projectId: string) => {
   }
 };
 
+/**
+ * Gets self or team performance details for a project
+ * @param projectId The ID of the project to get performance details for
+ * @param feedbackType The type of feedback to retrieve
+ * @returns Promise that resolves to the performance details or undefined
+ * @throws {Error} If performance details retrieval fails or an unexpected error occurs
+ */
 export const getSelfOrTeamPerformanceDetailsService = async (projectId: string, feedbackType: string) => {
   const headers = appendAuthToken({});
   const config = { headers: headers, withCredentials: true };
@@ -66,6 +92,13 @@ export const getSelfOrTeamPerformanceDetailsService = async (projectId: string, 
   }
 };
 
+/**
+ * Gets peer or individual performance details for a milestone
+ * @param milestoneId The ID of the milestone to get performance details for
+ * @param feedbackType The type of feedback to retrieve
+ * @returns Promise that resolves to the performance details or undefined
+ * @throws {Error} If performance details retrieval fails or an unexpected error occurs
+ */
 export const getPeerOrIndividualPerformanceDetailsService = async (milestoneId: string, feedbackType: string) => {
   const headers = appendAuthToken({});
   const config = { headers: headers, withCredentials: true };
@@ -81,6 +114,15 @@ export const getPeerOrIndividualPerformanceDetailsService = async (milestoneId: 
   }
 };
 
+/**
+ * Gets comments for a flextern on a project
+ * @param projectId The ID of the project to get comments for
+ * @param talentUserId The ID of the talent user (flextern) to get comments for
+ * @param page The page number for pagination (default: 1)
+ * @param pageSize The number of items per page (default: 5)
+ * @returns Promise that resolves to the parsed flextern comments or undefined
+ * @throws {Error} If comments retrieval fails or an unexpected error occurs
+ */
 export const getFlexternComments = async (
   projectId: string,
   talentUserId: string,
@@ -108,6 +150,13 @@ export const getFlexternComments = async (
   }
 };
 
+/**
+ * Gets the count of comments for a flextern on a project
+ * @param projectId The ID of the project to get comment count for
+ * @param talentUserId The ID of the talent user (flextern) to get comment count for
+ * @returns Promise that resolves to the comment count or undefined
+ * @throws {Error} If comment count retrieval fails or an unexpected error occurs
+ */
 export const getFlexternCommentCount = async (projectId: string, talentUserId: string) => {
   const headers = appendAuthToken({});
   const config = {
