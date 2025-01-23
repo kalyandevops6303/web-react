@@ -31,7 +31,7 @@ export default function StartsInTimer(props: Props) {
   ].filter(Boolean);
 
   return (
-    <span className="text-error text-sm not-italic font-semibold leading-4.5">Starts in {timeParts.join(':')} Hr</span>
+    <span className="text-error text-xs not-italic font-semibold leading-4.5">Starts in {timeParts.join(':')} Hr</span>
   );
 }
 

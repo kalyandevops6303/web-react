@@ -146,7 +146,12 @@ const LeftSideBarProjectDetails = () => {
 
   useEffect(() => {
     const differenceLessThanADay = data?.details?.expectedStartDate - Date.now() < 24 * 60 * 60 * 1000;
-    if (data?.details?.expectedStartDate && Date.now() < data?.details?.expectedStartDate && differenceLessThanADay) {
+    if (
+      (data?.status === ProjectPrimaryStatus?.ACTIVE || data?.status === ProjectPrimaryStatus?.ON_GOING) &&
+      data?.details?.expectedStartDate &&
+      Date.now() < data?.details?.expectedStartDate &&
+      differenceLessThanADay
+    ) {
       setShowStartsInTimer(true);
     }
   }, [data?.details?.expectedStartDate]);
@@ -158,6 +163,18 @@ const LeftSideBarProjectDetails = () => {
   const handleViewRecognitionClick = () => {
     navigate(`/recognition/${projectId}`, { state: { viewRecognitions: true } });
   };
+
+  const showSecondaryStatusCondition =
+    (secondaryStatus &&
+      (userDetails.userType === UserType.CLIENT
+        ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
+        : userDetails.userType === UserType.TALENT) &&
+      ![
+        ProjectSecondaryStatus.SIGN_NDA,
+        ProjectSecondaryStatus.SIGN_CONTRACT,
+        ProjectSecondaryStatus.SIGN_DOCUMENTS,
+      ].includes(secondaryStatus)) ??
+    false;
 
   return (
     <div className="flex flex-col gap-y-5">
@@ -281,28 +298,21 @@ const LeftSideBarProjectDetails = () => {
             <>
               {secondaryStatus && (
                 <>
-                  {(userDetails.userType === UserType.CLIENT
-                    ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
-                    : userDetails.userType === UserType.TALENT) &&
-                    ![
-                      ProjectSecondaryStatus.SIGN_NDA,
-                      ProjectSecondaryStatus.SIGN_CONTRACT,
-                      ProjectSecondaryStatus.SIGN_DOCUMENTS,
-                    ].includes(secondaryStatus) && (
-                      <div className="flex flex-row items-center gap-3">
-                        <div className="text-grey font-normal text-sm leading-[21px] font-montserrat">Status:</div>
-                        {showStartsInTimer ? (
-                          <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
-                        ) : (
-                          <ProjectStatusChip
-                            status={secondaryStatus}
-                            statusType={StatusType?.SECONDARY}
-                            rounded={true}
-                            lastInProgressMilestone={data.lastInProgressMilestone}
-                          />
-                        )}
-                      </div>
-                    )}
+                  {showSecondaryStatusCondition && (
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="text-grey font-normal text-sm leading-[21px] font-montserrat">Status:</div>
+                      {showStartsInTimer ? (
+                        <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
+                      ) : (
+                        <ProjectStatusChip
+                          status={secondaryStatus}
+                          statusType={StatusType?.SECONDARY}
+                          rounded={true}
+                          lastInProgressMilestone={data.lastInProgressMilestone}
+                        />
+                      )}
+                    </div>
+                  )}
                 </>
               )}
             </>

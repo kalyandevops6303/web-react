@@ -17,7 +17,7 @@ export default function CustomBreadCrumbs(props: CustomBreadCrumbsProps) {
   const firstItem = items[0];
   const lastItem = items[items.length - 1];
   const middleItems = items.slice(1, items.length - 1);
-
+  console.log(items);
   return (
     <Breadcrumb>
       <BreadcrumbList className="text-sm font-medium leading-[21px]">
