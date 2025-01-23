@@ -1,4 +1,9 @@
-// service to fetch user details along with app roles
+/**
+ * User management service module for handling user-related operations.
+ * @fileoverview Contains functions for managing user profiles, authentication, roles and permissions.
+ * Includes APIs for file uploads, password management, and user details retrieval.
+ * @module user-management
+ */
 
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
