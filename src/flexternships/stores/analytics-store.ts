@@ -14,6 +14,8 @@ import {
   getTeamUniversities,
   getConversationParticipationFiles,
   getConversationParticipation,
+  getBranchHistory,
+  getCommits,
 } from '../actions/analytics-actions';
 import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
@@ -58,6 +60,10 @@ const defaultInitState = {
   isConversationParticipationLoading: false,
   conversationParticipationFiles: null,
   isConversationParticipationFilesLoading: false,
+  commits: null,
+  isCommitsLoading: false,
+  branchHistory: null,
+  isBranchHistoryLoading: false,
 };
 
 export const useAnalyticsStore = create<any>((set) => ({
@@ -82,4 +88,6 @@ export const useAnalyticsStore = create<any>((set) => ({
   ) => getConversationParticipation(projectId, userId, messagesCountState, participationPercentageState, set),
   getConversationParticipationFiles: async (projectId: string, userId: string) =>
     getConversationParticipationFiles(projectId, userId, set),
+  getCommits: async (projectId: string, userId: string) => getCommits(projectId, userId, set),
+  getBranchHistory: async (projectId: string, userId: string) => getBranchHistory(projectId, userId, set),
 }));
