@@ -1,7 +1,7 @@
 import Tooltip from '@/flexternships/app/components/core/Tooltip';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
-import { tooltipContent } from '@/flexternships/static/milestone-feedback-content';
-import { feedbackCardContent } from '@/flexternships/static/milestones-content';
+import { tooltipContent } from '@/flexternships/static/content/milestone-feedback-content';
+import { feedbackCardContent } from '@/flexternships/static/content/milestones-content';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { formatEpochToDuration } from '@/flexternships/utils/date-utils';
 import { AlertCircle } from 'react-feather';
