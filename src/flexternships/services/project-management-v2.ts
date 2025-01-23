@@ -1,5 +1,7 @@
 /**
  * Project management service module for handling project-related operations.
+ * @fileoverview Contains functions for managing projects, milestones, artifacts, and other project-related data.
+ * Includes APIs for file uploads, milestone management, quick actions, notes and recognition features.
  * @module project-management-v2
  */
 
