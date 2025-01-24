@@ -83,30 +83,33 @@ export default function FlexternProjectQuickActions() {
   }, [projectId]);
 
   const getComponentBySelection = () => {
-    const quickActionCategory = [QuickAction.ADD_NOTES, QuickAction.VIEW_NOTES].includes(selectedAction)
-      ? QuickActionCategory.NOTE
-      : QuickActionCategory.RECOGNITION;
-    switch (selectedAction) {
-      case QuickAction.GIVE_RECOGNITION:
-      case QuickAction.ADD_NOTES:
-        return (
-          <GiveComments
-            key={`${selectedAction}-${quickActionCategory}`}
-            refreshStats={fetchStats}
-            category={quickActionCategory}
-          />
-        );
-      case QuickAction.VIEW_RECOGNITIONS:
-      case QuickAction.VIEW_NOTES:
-        // if stats are loaded and there are no recognitions, show no recognition found, otherwise show the actual recognitions
-        return !isStatsLoading && stats?.totalRecognitions === 0 ? (
-          <NoCommentsFound category={quickActionCategory} />
-        ) : (
-          <ViewComments key={`${selectedAction}-${quickActionCategory}`} category={quickActionCategory} />
-        );
-      default:
-        return null;
+    const isNoteAction = [QuickAction.ADD_NOTES, QuickAction.VIEW_NOTES].includes(selectedAction);
+    const quickActionCategory = isNoteAction ? QuickActionCategory.NOTE : QuickActionCategory.RECOGNITION;
+
+    const isGiveOrAddAction = [QuickAction.GIVE_RECOGNITION, QuickAction.ADD_NOTES].includes(selectedAction);
+    if (isGiveOrAddAction) {
+      return (
+        <GiveComments
+          key={`${selectedAction}-${quickActionCategory}`}
+          refreshStats={fetchStats}
+          category={quickActionCategory}
+        />
+      );
     }
+
+    const isViewAction = [QuickAction.VIEW_RECOGNITIONS, QuickAction.VIEW_NOTES].includes(selectedAction);
+    if (isViewAction) {
+      const noCommentsFound =
+        !isStatsLoading && (isNoteAction ? stats?.totalNotes === 0 : stats?.totalRecognitions === 0);
+
+      return noCommentsFound ? (
+        <NoCommentsFound category={quickActionCategory} />
+      ) : (
+        <ViewComments key={`${selectedAction}-${quickActionCategory}`} category={quickActionCategory} />
+      );
+    }
+
+    return null;
   };
 
   useEffect(() => {
