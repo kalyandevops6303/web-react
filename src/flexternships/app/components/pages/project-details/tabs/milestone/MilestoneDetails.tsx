@@ -36,7 +36,7 @@ import {
   getMilestoneDetailsModalConfirmCtaText,
   getMilestoneDetailsModalDescription,
   getMilestoneDetailsModalTitle,
-} from '@/flexternships/static/milestones-content';
+} from '@/flexternships/static/content/milestones-content';
 import { markMilestoneArtifactAsRead } from '@/flexternships/services/project-management-v2';
 import ConfirmActionModal from '@/flexternships/app/components/core/modals/milestone/ConfirmActionModal';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
@@ -159,7 +159,7 @@ export default function MilestoneDetails() {
   };
 
   const handleGiveRecognition = () => {
-    navigate(`/recognition/${projectId}`);
+    navigate(`/quick-actions/${projectId}`);
   };
 
   if (isMilestoneDetailsLoading && activeModal === undefined) {

@@ -13,7 +13,7 @@ import MilestoneStatusTag from '@/flexternships/app/components/core/tags/Milesto
 import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
-import { allowFeedbackCardsIfMilestoneStatus } from '@/flexternships/static/milestones-content';
+import { allowFeedbackCardsIfMilestoneStatus } from '@/flexternships/static/content/milestones-content';
 import { isEmpty } from 'lodash';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
