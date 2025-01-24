@@ -205,7 +205,7 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
               className="m-0"
               onClick={handleSubmit(onSubmit)}
               loading={isSubmitLoading}
-              disabled={!isValid}
+              disabled={!isValid || isSubmitLoading}
             >
               Submit
             </PrimaryButton>
