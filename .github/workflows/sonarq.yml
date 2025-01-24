@@ -5,9 +5,9 @@ on:
     branches:
       - tru-dev
       - pilot/project-hackathon
-  # pull_request:
-  #   branches:
-  #     - main
+  pull_request:
+    branches:
+      - tru-dev
 
 jobs:
   sonarqube-analysis:
