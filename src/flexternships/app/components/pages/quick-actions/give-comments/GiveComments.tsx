@@ -135,12 +135,9 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
     };
     fetchTalents();
     populateCompetencies();
-    populateNoteCategories();
-  }, [projectId]);
 
-  useEffect(() => {
-    reset(watch(), { keepErrors: false });
-  }, [category, reset]);
+    if (category === QuickActionCategory.NOTE) populateNoteCategories();
+  }, [projectId, category]);
 
   if (talentsLoading || isCompetenciesLoading || (isNoteCategoriesLoading && category === QuickActionCategory.NOTE))
     return (

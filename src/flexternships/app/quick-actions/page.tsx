@@ -67,27 +67,6 @@ export default function FlexternProjectQuickActions() {
     setSelectedAction(QuickAction.VIEW_NOTES);
   };
 
-  const getComponentBySelection = () => {
-    const quickActionCategory = [QuickAction.ADD_NOTES, QuickAction.VIEW_NOTES].includes(selectedAction)
-      ? QuickActionCategory.NOTE
-      : QuickActionCategory.RECOGNITION;
-    switch (selectedAction) {
-      case QuickAction.GIVE_RECOGNITION:
-      case QuickAction.ADD_NOTES:
-        return <GiveComments refreshStats={fetchStats} category={quickActionCategory} />;
-      case QuickAction.VIEW_RECOGNITIONS:
-      case QuickAction.VIEW_NOTES:
-        // if stats are loaded and there are no recognitions, show no recognition found, otherwise show the actual recognitions
-        return !isStatsLoading && stats?.totalRecognitions === 0 ? (
-          <NoCommentsFound category={quickActionCategory} />
-        ) : (
-          <ViewComments category={quickActionCategory} />
-        );
-      default:
-        return null;
-    }
-  };
-
   const fetchStats = useCallback(async () => {
     if (!projectId) throw new Error('Project ID is required');
     setIsStatsLoading(true);
@@ -102,6 +81,33 @@ export default function FlexternProjectQuickActions() {
       );
     }
   }, [projectId]);
+
+  const getComponentBySelection = () => {
+    const quickActionCategory = [QuickAction.ADD_NOTES, QuickAction.VIEW_NOTES].includes(selectedAction)
+      ? QuickActionCategory.NOTE
+      : QuickActionCategory.RECOGNITION;
+    switch (selectedAction) {
+      case QuickAction.GIVE_RECOGNITION:
+      case QuickAction.ADD_NOTES:
+        return (
+          <GiveComments
+            key={`${selectedAction}-${quickActionCategory}`}
+            refreshStats={fetchStats}
+            category={quickActionCategory}
+          />
+        );
+      case QuickAction.VIEW_RECOGNITIONS:
+      case QuickAction.VIEW_NOTES:
+        // if stats are loaded and there are no recognitions, show no recognition found, otherwise show the actual recognitions
+        return !isStatsLoading && stats?.totalRecognitions === 0 ? (
+          <NoCommentsFound category={quickActionCategory} />
+        ) : (
+          <ViewComments key={`${selectedAction}-${quickActionCategory}`} category={quickActionCategory} />
+        );
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     fetchStats();
