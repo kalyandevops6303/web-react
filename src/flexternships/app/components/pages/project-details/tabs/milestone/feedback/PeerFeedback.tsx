@@ -94,9 +94,11 @@ export default function PeerFeedback({ goBack }: { goBack: () => void }) {
       feedback_result: survey.data,
     };
 
-    submitFeedback(submitFeedbackData, () => {
-      setShowSuccessModal(true);
-    });
+    console.log(submitFeedbackData);
+
+    // submitFeedback(submitFeedbackData, () => {
+    //   setShowSuccessModal(true);
+    // });
   };
 
   const handleCloseSuccessModal = () => {

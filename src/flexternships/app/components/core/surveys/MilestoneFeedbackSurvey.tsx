@@ -202,6 +202,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       answer: {
         value: any; // Main value
         comment: any; // Optional comment
+        competency: any; // Optional competency
       };
     }[] = [];
 
@@ -210,24 +211,26 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       const [mainKey, subKey] = key.split('-');
 
       if (!acc[mainKey]) {
-        acc[mainKey] = { value: null, comment: null };
+        acc[mainKey] = { value: null, comment: null, competency: null };
       }
 
       if (subKey === 'Comment') {
         acc[mainKey].comment = input[key];
+      } else if (subKey === 'Competency') {
+        acc[mainKey].competency = input[key];
       } else {
         acc[mainKey].value = input[key];
       }
 
       return acc;
-    }, {} as Record<string, { value: any; comment: any }>);
+    }, {} as Record<string, { value: any; comment: any; competency: any }>);
 
     // Filter and process questions based on survey conditions
     survey.getAllQuestions().forEach((question: any, index: number) => {
       const questionKey = question.name;
 
       if (grouped[questionKey]) {
-        const { value, comment } = grouped[questionKey];
+        const { value, comment, competency } = grouped[questionKey];
         // Check conditions for including the question
         if (
           value !== null && // Ensure the value is answered
@@ -237,7 +240,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
           answeredQuestions.push({
             index,
             name: questionKey,
-            answer: { value, comment },
+            answer: { value, comment, competency },
           });
         }
       }
@@ -375,6 +378,8 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     }[] = [];
 
     answeredQuestions = convertToAnsweredQuestions(survey.data);
+
+    console.log(answeredQuestions);
 
     setSurveyProgress({
       answeredQuestions,
