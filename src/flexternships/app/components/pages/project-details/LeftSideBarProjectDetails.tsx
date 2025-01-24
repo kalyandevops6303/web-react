@@ -69,7 +69,6 @@ const LeftSideBarProjectDetails = () => {
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
 
-
   const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>();
 
   const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });

@@ -37,7 +37,7 @@ const Comments = () => {
   useEffect(() => {
     getFelxternCommentCount();
     fetchMoreComments();
-    getAiSummary(userId as string, projectId as string);
+    getAiSummary(projectId as string, userId as string);
   }, [userId, projectId]);
 
   useEffect(() => {
