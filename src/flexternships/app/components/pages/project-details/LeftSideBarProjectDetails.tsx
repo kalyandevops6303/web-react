@@ -69,12 +69,13 @@ const LeftSideBarProjectDetails = () => {
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
 
+
   const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>();
 
   const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });
   const secondaryAction = getSecondaryAction({ status: data?.status, userType: userDetails.userType });
 
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null!) as React.RefObject<HTMLDivElement>;
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
