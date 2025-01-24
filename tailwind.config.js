@@ -106,7 +106,7 @@ module.exports = {
           DEFAULT: '#E6E7E7',
         },
         background: {
-          DEFAULT: '#F9F9F9'
+          DEFAULT: '#F9F9F9',
         },
       },
       width: {
