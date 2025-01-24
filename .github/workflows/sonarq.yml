@@ -98,7 +98,6 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.token=$SONAR_TOKEN
             -Dsonar.branch.name=${{ github.ref_name }}
-            -Dsonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
