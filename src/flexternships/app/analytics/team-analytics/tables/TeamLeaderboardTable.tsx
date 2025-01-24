@@ -45,6 +45,9 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
   {
     accessorKey: 'name',
     header: TeamNameHeader,
+    sortingFn: (rowA, rowB) => {
+      return rowA.original.name.localeCompare(rowB.original.name);
+    },
   },
   {
     accessorKey: 'attractivenessScore',

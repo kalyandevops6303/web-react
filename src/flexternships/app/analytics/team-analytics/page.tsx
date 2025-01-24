@@ -13,7 +13,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import SimpleElevatedCard from '../../components/core/cards/SimpleElevatedCard';
 import { ChevronRight } from 'react-feather';
-import ProjectStatusChip from '../../components/pages/project-details/projectCard/ProjectStatusChip';
 import { StatusType } from '@/flexternships/constraints/enums/project-enums';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 import TagGroup from '@/flexternships/app/components/core/tags/TagGroup';
@@ -28,6 +27,7 @@ import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
+import ProjectStatusChip from '../../components/pages/project-details/projectCard/ProjectStatusChip';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -156,9 +156,9 @@ export default function TeamAnalytics() {
                 <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">Status:</div>
                 <div className="text-dark-200 font-montserrat text-sm font-medium leading-[22px]">
                   <ProjectStatusChip
-                    status={projectDetails?.status}
-                    statusType={StatusType?.PRIMARY}
-                    rounded={true}
+                    status={projectDetails?.secondaryStatus?.next}
+                    statusType={StatusType?.SECONDARY}
+                    rounded
                     lastInProgressMilestone={projectDetails?.lastInProgressMilestone}
                   />
                 </div>
@@ -219,6 +219,7 @@ export default function TeamAnalytics() {
                 XAxisDataKey={'milestone'}
                 maxYAxis={teamMembersAttractiveness?.maxYAxis}
                 showFilters
+                showDataOnFilters={false}
                 customTooltipContent={TeamMembersChartTooltip}
                 YAxisDataKey={'score'}
                 hideDeselectedMetricsFromTooltip
