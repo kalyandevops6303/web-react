@@ -84,8 +84,8 @@ export default function IndividualAnalytics() {
           endYear: individualOverviewDetails?.educationalInstitute?.gradYear,
           name: individualOverviewDetails?.educationalInstitute?.education?.name,
         },
-        flexternshipStartDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.startDateEpoch),
-        flexternshipEndDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.endDateEpoch),
+        flexternshipStartDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.startDateEpoch ?? 0),
+        flexternshipEndDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.endDateEpoch ?? 0),
         wowCount: individualOverviewDetails?.wowCount,
         kudosCount: individualOverviewDetails?.kudosCount,
         trumioAttractivenessScore: individualOverviewDetails?.attractivenessScore?.score,
@@ -96,7 +96,7 @@ export default function IndividualAnalytics() {
   }, [individualOverviewDetails]);
 
   useEffect(() => {
-    if (individualOverviewDetails) {
+    if (formattedIndividualOverviewDetails) {
       setFeedbackFooterData([
         {
           title: 'Manager Feedback',
@@ -115,7 +115,7 @@ export default function IndividualAnalytics() {
         },
       ]);
     }
-  }, [individualOverviewDetails]);
+  }, [formattedIndividualOverviewDetails]);
 
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
@@ -256,10 +256,10 @@ export default function IndividualAnalytics() {
           chartData={recognitionChartData?.chartData}
           chartConfig={recognitionChartData?.chartConfig}
           maxYAxis={recognitionChartData?.maxYAxis}
-          showFilters={false}
           hasGradient={true}
           XAxisDataKey="milestone"
           customTooltipContent={CustomTooltipContent}
+          showDataOnFilters
         />
       </div>
 

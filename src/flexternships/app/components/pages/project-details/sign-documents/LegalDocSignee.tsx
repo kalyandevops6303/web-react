@@ -61,7 +61,7 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
             </div>
             {showSpinner ? (
               <div className="flex">
-                <Spinner white />
+                <Spinner className="border-white" />
               </div>
             ) : (
               <div>{signed ? 'Confirmed' : isCurrentUser ? 'Confirm Agreement' : 'Pending Agreement'}</div>

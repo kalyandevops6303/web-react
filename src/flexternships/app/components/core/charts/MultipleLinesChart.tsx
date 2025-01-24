@@ -34,7 +34,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
     YAxisDataKey,
     customTooltipContent: CustomContent,
     filterPropertyName,
-    showDataOnFilters,
+    showDataOnFilters = true,
     hideDeselectedMetricsFromTooltip,
   } = props;
 
@@ -89,15 +89,21 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
   };
 
   const getAverage = (data: any[], metric: string) => {
+    if (data.length <= 1) return 0;
+
+    let dataWithoutFirst = data.slice(1);
     if (YAxisDataKey) {
-      data = data.map((item) => {
+      dataWithoutFirst = dataWithoutFirst.map((item) => {
         return {
           ...item,
           [metric]: item[metric][YAxisDataKey],
         };
       });
     }
-    return Math.round(data.reduce((acc, curr) => acc + curr[metric as keyof typeof curr], 0) / data.length);
+    return (
+      dataWithoutFirst.reduce((acc, curr) => acc + curr[metric as keyof typeof curr], 0) /
+      (data.length - 1)
+    ).toFixed(2);
   };
 
   useEffect(() => {
@@ -116,7 +122,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
               showAll ? 'border-primary bg-primary-light' : 'border-grey-50'
             }`}
           >
-            {showDataOnFilters && (
+            {showFilters && showDataOnFilters && (
               <div>
                 <span className="font-montserrat text-lg font-semibold leading-xxl-custom text-dark-900 text-center">
                   {Object.keys(chartConfig).length}{' '}
@@ -132,7 +138,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
           {chartConfig &&
             Object.entries(chartConfig).map(([key, { label, color }]) => (
               <>
-                {showDataOnFilters ? (
+                {showFilters && showDataOnFilters ? (
                   <div
                     onClick={() => toggleMetric(key)}
                     className={`flex flex-col justify-center items-start gap-1 p-3 flex-1 rounded-lg border cursor-pointer ${

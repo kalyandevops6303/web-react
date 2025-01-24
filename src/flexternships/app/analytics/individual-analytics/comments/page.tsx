@@ -99,7 +99,7 @@ const Comments = () => {
   useEffect(() => {
     // Fetch comment count and ai summary
     fetchFlexternCommentCount();
-    getAiSummary(userId, projectId);
+    getAiSummary(projectId, userId);
   }, [userId, projectId]);
 
   useEffect(() => {
