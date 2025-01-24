@@ -21,6 +21,9 @@ export enum ProjectPrimaryStatus {
   WITHDRAWN = 'WITHDRAWN',
   TERMINATED = 'TERMINATED',
   BLOCKED = 'BLOCKED',
+
+  // Specific to talent
+  CLOSED = 'CLOSED',
 }
 
 export enum ProjectSecondaryStatus {

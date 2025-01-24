@@ -199,9 +199,6 @@ export type ProjectDetailsActions = {
   getProjectInvitationDetails: (projectId: string) => Promise<void>;
   getSelfOrTeamPerformanceDetails: (projectId: string, feedbackType: string) => Promise<void>;
   getPeerOrIndividualPerformanceDetails: (milestoneId: string, feedbackType: string) => Promise<void>;
-  setTerminateProject: (projectId: string) => Promise<void>;
-  setWithdrawProject: (projectId: string) => Promise<void>;
-  setRelistProject: (projectId: string, startDate: number, endDate: number) => Promise<void>;
   setProjectInvitationRead: (projectId: string) => Promise<void>;
 };
 
