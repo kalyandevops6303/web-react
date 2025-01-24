@@ -3,17 +3,17 @@ interface TimelineItem {
   color: string;
 }
 
-interface RecognitionVerticalTimelineProps {
+interface CommentsVerticalTimelineProps {
   timelineItems: TimelineItem[];
   spaceLeft?: number;
   spaceBottom?: number;
 }
 
-function RecognitionVerticalTimeline({
+export default function CommentsVerticalTimeline({
   timelineItems,
   spaceLeft = 8,
   spaceBottom = 6,
-}: RecognitionVerticalTimelineProps) {
+}: CommentsVerticalTimelineProps) {
   return (
     <div className="flex flex-col">
       {timelineItems.map((item, index) => {
@@ -46,5 +46,3 @@ function RecognitionVerticalTimeline({
     </div>
   );
 }
-
-export default RecognitionVerticalTimeline;
