@@ -16,30 +16,24 @@ jobs:
     steps:
       #Checking out repository
       - uses: actions/checkout@v4
-        # with:
-        #   fetch-depth: 0
-        #   ref: pilot/project-hackathon
  
       # Python environment
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: 3.9 
+          node-version: '18.x'
  
       #Dependencies installation
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt 
-          pip install pysonar-scanner
+        run: npm install
  
       # SonarCloud scan
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          pysonar-scanner \
-            -Dsonar.projectKey=trumio_trumio-user-management-be \
+          npx sonarqube-scanner \
+            -Dsonar.projectKey=trumio_trumio-web-react \
             -Dsonar.organization=trumio \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
