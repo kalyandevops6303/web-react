@@ -21,6 +21,8 @@ module.exports = {
           secondary: {
             500: '#FBC02D',
           },
+          gold: '#F6C01C',
+          light: '#FFD966',
         },
         orange: {
           DEFAULT: '#FF9F43',
@@ -48,6 +50,7 @@ module.exports = {
           600: '#515759',
           700: '#394042',
           800: '#757575',
+          900: '#071013',
           loadingText: '#9E9E9E',
         },
         skyblue: {
@@ -55,7 +58,10 @@ module.exports = {
           light: '#00B0FF1F',
         },
         success: '#28C76F',
-        error: '#EA5455',
+        error: {
+          DEFAULT: '#EA5455',
+          disabled: '#F7BBBB',
+        },
         trublue: {
           DEFAULT: '#0065C1',
           review: '#03D8F5',
@@ -72,6 +78,22 @@ module.exports = {
         text: {
           dark: '#071013',
         },
+        cyan: {
+          DEFAULT: '#00CFE8',
+          light: '#00CFE81F',
+        },
+        purple: {
+          DEFAULT: '#7367F0',
+          light: '#7367F01F',
+        },
+        aqua: {
+          DEFAULT: '#0DA8B2',
+          light: '#0DA8B21F',
+        },
+        blue: {
+          DEFAULT: '#2196F3',
+          light: '#2196F31F',
+        },
         primary: '#0185E4',
         'primary-light': '#0185E41F',
         dark: {
@@ -83,8 +105,8 @@ module.exports = {
         border: {
           DEFAULT: '#E6E7E7',
         },
-        purple: {
-          DEFAULT: '#7367F0',
+        background: {
+          DEFAULT: '#F9F9F9'
         },
       },
       width: {
@@ -131,7 +153,8 @@ module.exports = {
         card: '0px 4px 24px 0px rgba(0, 0, 0, 0.06)',
         table: '0px 4px 6px -1px rgba(0, 0, 0, 0.10)',
         'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
-        'primary-button': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
+        'primary-button-blue': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
+        'primary-button-red': '0px 6px 16px 0px rgba(234, 84, 85, 0.50)',
         'custom-blue': '0px 2px 4px 0px rgba(1, 133, 228, 0.40)',
         'custom-pieChart-shadow': '0px 2px 8px 0px rgba(0, 0, 0, 0.16)',
       },

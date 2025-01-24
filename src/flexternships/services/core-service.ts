@@ -1,3 +1,11 @@
+/**
+ * Core service module for handling file operations and core functionality.
+ * @fileoverview Contains utility functions for file uploads and other core operations
+ * used across the application. Includes APIs for file upload progress tracking and
+ * handling file metadata.
+ * @module core-service
+ */
+
 import axios from 'axios';
 
 /**

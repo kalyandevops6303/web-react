@@ -1,4 +1,9 @@
-// service to fetch user details along with app roles
+/**
+ * User management service module for handling user-related operations.
+ * @fileoverview Contains functions for managing user profiles, authentication, roles and permissions.
+ * Includes APIs for file uploads, password management, and user details retrieval.
+ * @module user-management
+ */
 
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
@@ -115,7 +120,6 @@ export const getUserDetails = async () => {
   };
   try {
     const response = await axios.get(routes.userManagement.user.getUserDetails, config);
-    console.log('response : ' + response);
 
     return response.data.data;
   } catch (error) {
@@ -242,16 +246,15 @@ export const getFlexternClientOrgInfo = async () => {
 };
 
 // Static Data Endpoints
-
 // Types used in the services
-export type PaginatedData = {
+export type PaginatedData<T = any> = {
   metadata: {
     current_page: number;
     page_size: number;
     total_records: number;
     has_next_page: boolean;
   };
-  data: { _id: string; name: string }[];
+  data: (T & { _id: string; name: string })[];
 };
 
 // Services code starts here

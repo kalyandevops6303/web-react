@@ -96,7 +96,7 @@ export default function IndividualFeedbackResponse(props: any) {
 
   const getResponseComponent = (data: any, index: number) => {
     return (
-      <div className="max-w-full flex flex-col gap-3 -ml-5">
+      <div className="max-w-full flex flex-col gap-3">
         <div className="text-[14px] font-medium leading-[22px] text-[var(--Grey-600,#515759)] font-montserrat">
           {index + 1}. {data?.title}
         </div>

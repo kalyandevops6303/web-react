@@ -11,7 +11,7 @@ import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { getProjectListing, getProjectsListingFlextern } from '../../../redux/actions/projectActions';
+import { getProjectsListingFlextern } from '../../../redux/actions/projectActions';
 import ProjectCard from '../../cards/ProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';

@@ -1,4 +1,4 @@
-FROM node:20.17.0-alpine3.20 as module-install-stage
+FROM node:20.17.0-alpine3.20 AS module-install-stage
 
 RUN apk --no-cache add --virtual native-deps \
     g++ gcc libgcc libstdc++ linux-headers make python3 && \
@@ -27,3 +27,4 @@ RUN npm install -g serve
 EXPOSE 5000
 
 CMD ["serve", "-l", "5000", "-s", "/app/dist"]
+

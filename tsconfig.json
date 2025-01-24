@@ -22,7 +22,7 @@
     "jsxImportSource": "@emotion/react",
     "types": ["@emotion/react/types/css-prop", "jest", "node", "react"],
     "outDir": "build",
-    "baseUrl": "./",  // Ensure this points to the project root
+    "baseUrl": "./", // Ensure this points to the project root
     "paths": {
       "@/*": ["./src/*"],
       "@src/*": ["./src/*"],
@@ -47,8 +47,7 @@
       "@flexternships/stores/*": ["./src/flexternships/stores/*"],
       "@flexternships/actions/*": ["./src/flexternships/actions/*"],
       "@flexternships/schemas/*": ["./src/flexternships/schemas/*"],
-      "@flexternships/services/*": ["./src/flexternships/services/*"],
-      
+      "@flexternships/services/*": ["./src/flexternships/services/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],

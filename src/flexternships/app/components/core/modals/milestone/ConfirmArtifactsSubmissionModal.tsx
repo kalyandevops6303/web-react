@@ -1,7 +1,7 @@
 import { MilestoneDraftArtifact } from '@/flexternships/constraints/types/project-milestones-types';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
-import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { MilestoneArtifactType } from '@/flexternships/constraints/enums/core-enums';
 import { Link } from 'react-feather';

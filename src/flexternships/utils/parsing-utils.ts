@@ -3,13 +3,30 @@ import {
   MilestoneArtifact,
   MilestoneDetails,
   MilestoneDraftArtifact,
+  MilestoneDropdown,
 } from '../constraints/types/project-milestones-types';
 import {
   FlexternClientProjectDetails,
   FlexternClientPublicProfileDetails,
 } from '../constraints/types/user-profile-types';
-import { FlexternComments } from '../constraints/types/analytics-types';
+import { QuickActionsStats, CommentsTimeline } from '../constraints/types/quick-actions-types';
+import { TeamMemberDetails } from '../constraints/types/project-details-types';
+import { Competency } from '../constraints/types/competency-types';
+import { FlexternUserAppRole } from '../constraints/enums/core-enums';
+import {
+  DetailedPerformanceInsights,
+  FlexternComments,
+  TeamCompetencySummary,
+} from '../constraints/types/analytics-types';
+import { MatrixDataItem } from '../constraints/types/chart-types';
+import { NoteCategory } from '../constraints/types/note-category-types';
 
+/**
+ * Parses milestone details from raw data into a structured format
+ * @param data Raw milestone data from API
+ * @param separateArtifacts Whether to separate milestone details and artifacts into separate objects
+ * @returns Formatted milestone details with optional separate artifact details
+ */
 export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = false) => {
   const formattedMilestoneDetails: MilestoneDetails = {
     id: data._id,
@@ -91,6 +108,12 @@ export const parseMilestoneDetails = (data: any, separateArtifacts: boolean = fa
     ? { milestoneDetails: formattedMilestoneDetails, artifactDetails: formattedArtifactDetails }
     : { ...formattedMilestoneDetails, ...formattedArtifactDetails };
 };
+
+/**
+ * Parses client public profile details from raw data
+ * @param data Raw client profile data from API
+ * @returns Formatted client public profile details
+ */
 export const parseClientPublicDetails = (data: Record<string, any>): FlexternClientPublicProfileDetails => {
   return {
     userId: data.user_id,
@@ -124,6 +147,11 @@ export const parseClientPublicDetails = (data: Record<string, any>): FlexternCli
   };
 };
 
+/**
+ * Parses client completed projects from raw data
+ * @param data Raw project data from API
+ * @returns Formatted client project details
+ */
 export const parseClientCompletedProjects = (data: Record<string, any>): FlexternClientProjectDetails => {
   return {
     metadata: {
@@ -171,6 +199,11 @@ export const parseClientCompletedProjects = (data: Record<string, any>): Flexter
   };
 };
 
+/**
+ * Parses Flextern comments from raw data
+ * @param data Raw comments data from API
+ * @returns Formatted Flextern comments
+ */
 export const parseFlexternComments = (data: Record<string, any>): FlexternComments => {
   return {
     metadata: {
@@ -205,4 +238,198 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
         competencyInfo: comment.competency_info,
       })) || [],
   };
+};
+
+/**
+ * Parses recognition timeline data from raw API response
+ * @param data Raw recognition timeline data from API
+ * @returns Formatted recognition timeline array
+ */
+export const parseCommentsTimeline = (data: Record<string, any>): CommentsTimeline => {
+  return data.map((commentsTimelineItem: Record<string, any>) => {
+    const giverAppRole = commentsTimelineItem.giver_details.app_role;
+    const giverDesignation =
+      giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
+        ? 'Mentor'
+        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT
+        ? 'Manager'
+        : commentsTimelineItem.giver_details.project_role;
+
+    const giverName =
+      giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
+        ? `${commentsTimelineItem.giver_details.first_name} ${commentsTimelineItem.giver_details.last_name} (${commentsTimelineItem.giver_details.delegate_first_name} ${commentsTimelineItem.giver_details.delegate_last_name})`
+        : `${commentsTimelineItem.giver_details.first_name} ${commentsTimelineItem.giver_details.last_name}`; // Full name for both client and talent
+    return {
+      giverDetails: {
+        name: giverName,
+        profileImage: commentsTimelineItem.giver_details.image_uri,
+        designation: giverDesignation,
+        appRole: giverAppRole,
+      },
+      type: commentsTimelineItem.giver_location,
+      noteCategory: commentsTimelineItem.note_category?.name,
+      milestoneNumber: commentsTimelineItem.milestone.seq,
+      timestamp: commentsTimelineItem.created_at,
+      selectedCompetencies: commentsTimelineItem.competencies.map((competency: Record<string, any>) => ({
+        id: competency._id,
+        name: competency.name,
+        abbreviation: competency.abbreviation,
+        colorCode: competency.color_code,
+        createdAt: competency.created_at,
+        updatedAt: competency.updated_at,
+      })),
+      comment: commentsTimelineItem.comment,
+    };
+  });
+};
+
+/**
+ * Parses team details from raw API response
+ * @param data Raw team details data from API
+ * @param options Options to filter team members (e.g. include only joined members)
+ * @returns Array of formatted team member details
+ */
+export const parseTeamDetails = (
+  data: Record<string, any>,
+  options: { includeOnlyJoined: boolean; hideUserIds?: string[] } = { includeOnlyJoined: false, hideUserIds: [] },
+): TeamMemberDetails[] => {
+  let teamMembers = data.map((member: Record<string, any>) => ({
+    id: member._id,
+    name: member?.first_name + ' ' + member?.last_name || '',
+    profileImage: member?.image_uri || '',
+    designation: member?.role_name || '',
+    email: member?.user_email,
+    invitedOn: member?.invited_on,
+    averageRating: member?.averageRating,
+    appreciationScore: member?.appreciation_score,
+    noteCount: member?.note_count,
+    isDocumentsSigned: member?.is_documents_signed,
+  }));
+
+  if (options.includeOnlyJoined) {
+    teamMembers = teamMembers.filter(
+      (member: Record<string, any>) => member.isDocumentsSigned === options.includeOnlyJoined,
+    );
+  }
+  if (options.hideUserIds) {
+    teamMembers = teamMembers.filter((member: Record<string, any>) => !options.hideUserIds?.includes(member.id));
+  }
+  return teamMembers;
+};
+
+/**
+ * Parses recognition statistics from raw API response
+ * @param data Raw recognition stats data from API
+ * @returns Formatted recognition statistics
+ */
+export const parseQuickActionsStats = (data: Record<string, any>): QuickActionsStats => {
+  return {
+    teamMembers: data.team_members_count,
+    totalRecognitions: data.kudos_count || data.wow_count || 0,
+    totalNotes: data.note_count || 0, // TODO: Remove this after backend is updated
+  };
+};
+
+/**
+ * Parses competencies data from raw API response
+ * @param data Raw competencies data from API
+ * @returns Array of formatted competencies
+ */
+export const parseCompetencies = (data: Record<string, any>): Competency[] => {
+  return data.map((competency: Record<string, any>) => ({
+    id: competency._id,
+    name: competency.name,
+    abbreviation: competency.abbreviation,
+    colorCode: competency.color_code,
+    createdAt: competency.created_at,
+    updatedAt: competency.updated_at,
+  }));
+};
+
+/**
+ * Parses milestone dropdown data from raw API response
+ * @param data Raw milestone dropdown data from API
+ * @param parsingOptions Options for parsing (e.g. whether to use sequence numbers)
+ * @returns Formatted milestone dropdown data
+ */
+export const parseMilestoneDropdown = (
+  data: Record<string, any>,
+  parsingOptions: { useSequence?: boolean },
+): MilestoneDropdown => {
+  let parsedData = parsingOptions.useSequence
+    ? {
+        metadata: data.metadata,
+        data: data.data.map((milestone: Record<string, any>) => ({
+          ...milestone,
+          name: `Milestone ${milestone.seq}`,
+        })),
+      }
+    : {
+        metadata: data.metadata,
+        data: data.data,
+      };
+
+  return parsedData;
+};
+
+/**
+ * Parses detailed performance insights from raw API response
+ * @param data Raw performance insights data from API
+ * @returns Formatted detailed performance insights
+ */
+export const parseDetailedPerformanceInsights = (data: Record<string, any>): DetailedPerformanceInsights => {
+  return {
+    chartData:
+      data.chart_data?.map((item: Record<string, string | { score: number | null }>) => {
+        const chartItem: MatrixDataItem = {
+          label: item.label as string,
+        };
+        // Add dynamic user scores
+        Object.keys(item).forEach((key) => {
+          if (key !== 'label') {
+            chartItem[key] = item[key];
+          }
+        });
+        return chartItem;
+      }) || [],
+    chartConfig: {
+      legend:
+        data.chart_config?.legend?.map((item: Record<string, string | number>) => ({
+          color: item.color as string,
+          rangeMin: item.range_min as number,
+          rangeMax: item.range_max as number,
+        })) || [],
+    },
+    score: {
+      average: data.score?.average,
+      max: data.score?.max,
+    },
+  };
+};
+
+/**
+ * Parses team competency summary from raw API response
+ * @param data Raw team competency summary data from API
+ * @returns Array of formatted team competency summaries
+ */
+export const parseTeamCompetencySummary = (data: Array<Record<string, string>>): TeamCompetencySummary[] => {
+  return data.map((item: Record<string, string>) => ({
+    competencyName: item.competency_name,
+    competencyAbbreviation: item.competency_abbreviation,
+    summary: item.summary,
+  }));
+};
+
+/**
+ * Parses note categories from raw API response
+ * @param data Raw note categories data from API
+ * @returns Array of formatted note categories
+ */
+export const parseNoteCategories = (data: Record<string, any>): NoteCategory[] => {
+  return data.map((item: Record<string, any>) => ({
+    id: item._id,
+    name: item.name,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
+  }));
 };
