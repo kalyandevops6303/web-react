@@ -11,6 +11,7 @@ import { handleError } from '../utils/error-utils';
 import { routes } from '../utils/api';
 import API from '@/configs/api';
 import { parseFlexternComments } from '../utils/parsing-utils';
+import { PaginatedData } from './user-management';
 
 /**
  * Fetches the team details for a project
@@ -128,6 +129,7 @@ export const getFlexternComments = async (
   talentUserId: string,
   page: number = 1,
   pageSize: number = 5,
+  appRoleId: string = '',
 ) => {
   const headers = appendAuthToken({});
   const config = {
@@ -137,6 +139,7 @@ export const getFlexternComments = async (
       talent_user_id: talentUserId,
       page,
       page_size: pageSize,
+      app_role_id: appRoleId,
     },
     withCredentials: true,
   };
@@ -174,4 +177,40 @@ export const getFlexternCommentCount = async (projectId: string, talentUserId: s
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while retrieving comment count');
   }
+};
+
+/**
+ * Gets the paginated list of flextern roles.
+ * @param page - The page number to retrieve.
+ * @param pageSize - The number of items per page.
+ * @param options - Optional options to append "All Flextern Roles" option.
+ * @returns A Promise that resolves to the paginated flextern roles data.
+ * @throws {Error} If the flextern roles retrieval fails or an unexpected error occurs.
+ */
+export const getPaginatedFlexternRoles = async (page: number = 1, pageSize: number = 10): Promise<PaginatedData> => {
+  const emptyData = {
+    metadata: {
+      current_page: page,
+      page_size: pageSize,
+      total_records: 0,
+      has_next_page: false,
+    },
+    data: [],
+  };
+
+  const config = {
+    params: {
+      page,
+      page_size: pageSize,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.dashboardV2.flexternRoles.getPaginatedFlexternRoles, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching flextern roles');
+  }
+  return emptyData;
 };

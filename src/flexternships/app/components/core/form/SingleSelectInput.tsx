@@ -117,6 +117,7 @@ type InputProps = {
   disabled?: boolean;
   defaultFirstOption?: boolean;
   allowSelectionOfEmptyValue?: boolean;
+  isClearable?: boolean;
 };
 
 type OptionType = {

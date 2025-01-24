@@ -234,6 +234,7 @@ export const parseFlexternComments = (data: Record<string, any>): FlexternCommen
           userId: comment.giver_details.user_id,
           appRole: comment.giver_details.app_role,
           userType: comment.giver_details.user_type,
+          projectRole: comment.giver_details?.project_role,
         },
         competencyInfo: comment.competency_info,
       })) || [],

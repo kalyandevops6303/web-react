@@ -8,12 +8,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
 
 // Icons
-import { ArrowLeft, Upload } from 'react-feather';
+import { ArrowLeft } from 'react-feather';
 
 // Components
 import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
-import SecondaryButton from '@/flexternships/app/components/core/buttons/SecondaryButton';
 import PerformanceInsightsCard from '@/flexternships/app/components/pages/analytics/team-analytics/performance-insights/PerformanceInsightsCard';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 
