@@ -3,6 +3,7 @@ name: SonarQube-Analysis
 on:
   push:
     branches:
+      - tru-dev
       - pilot/project-hackathon 
   # pull_request:
   #   branches:
