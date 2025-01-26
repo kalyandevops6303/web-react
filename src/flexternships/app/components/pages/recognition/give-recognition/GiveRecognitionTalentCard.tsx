@@ -7,7 +7,7 @@ import { GiveRecognitionForm } from '@/flexternships/constraints/types/recogniti
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import Rating from '../../../core/feedback/Rating';
-import SelectCompetencyCard from './SelectCompetencyCard';
+import SelectOptionCard from '../../../core/form/SelectOptionCard';
 import TextInput from '../../../core/form/TextInput';
 
 // Icons and assets
@@ -107,7 +107,7 @@ function SelectedTalentCard({
           </div>
           <div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
             {competencies.map((competency) => (
-              <SelectCompetencyCard
+              <SelectOptionCard
                 key={competency.id}
                 text={competency.name}
                 value={competency.id}

@@ -360,7 +360,7 @@ const LeftSideBarProjectDetails = () => {
         </div>
         <div className="flex flex-col gap-y-2">
           <PrimaryIconText
-            text="Give a WOW!"
+            text={`Give ${userDetails.userType === UserType.TALENT ? 'Kudos!' : 'a WOW!'}`}
             icon={
               <img
                 src={userDetails.userType === UserType.TALENT ? kudosIcon : wowIcon}
