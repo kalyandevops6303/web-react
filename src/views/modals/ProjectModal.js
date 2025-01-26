@@ -38,7 +38,7 @@ import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
-import { getDownloadUrl } from '../../redux/actions/dashboardActions';
+import { getDownloadUrl, updateCardStatus } from '../../redux/actions/dashboardActions';
 import ReportModal from './ReportModal';
 import FeedbackForCustomerSupportModal from './CustomerSupportFeedbackModal';
 import { selectAlreadyReported } from '../../redux/selectors/reportSelectors';
@@ -284,7 +284,27 @@ const ProjectModal = ({
   const appPermissions = useSelector(appPermissionsSelector);
 
   const handleViewFlexternProject = () => {
-    navigate(`/project-details/${data?._id}/team`);
+    console.log('data');
+    if (!data?.is_read) {
+      const postData = {
+        metadata: {
+          project_id: data?._id,
+        },
+        type: 'PROJECT_SECTION',
+        status: 'READ',
+      };
+      dispatch(
+        updateCardStatus({
+          data: postData,
+          isFlextern: true,
+          onSuccess: () => {
+            navigate(`/project-details/${data?._id}/team`);
+          },
+        }),
+      );
+    } else {
+      navigate(`/project-details/${data?._id}/team`);
+    }
   };
 
   const handleRelistFlexternProject = () => {
