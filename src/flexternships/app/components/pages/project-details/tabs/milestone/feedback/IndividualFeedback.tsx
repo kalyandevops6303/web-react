@@ -13,7 +13,7 @@ import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-ut
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import SucessModal from './modals/SucessModal';
-import { PerformanceDetails, TeamMemberInfo } from '@/flexternships/constraints/types/project-details-types';
+import { PerformanceDetails, FormattedTeamMemberInfo } from '@/flexternships/constraints/types/project-details-types';
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
 
 export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
@@ -32,7 +32,7 @@ export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
 
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
-  const [formattedTeamInfo, setFormattedTeamInfo] = useState<TeamMemberInfo[]>([]);
+  const [formattedTeamInfo, setFormattedTeamInfo] = useState<FormattedTeamMemberInfo[]>([]);
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [filteredTeam, setFilteredTeam] = useState(team);

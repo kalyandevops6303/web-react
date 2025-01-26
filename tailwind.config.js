@@ -58,10 +58,19 @@ module.exports = {
           DEFAULT: '#00B0FF',
           light: '#00B0FF1F',
         },
-        success: '#28C76F',
+        success: {
+          DEFAULT: '#28C76F',
+          normal: '#28C76F',
+          successLight: '#28C76F1F',
+          brightLight: '#00C853',
+          softLight: '#00C8531F',
+        },
         error: {
           DEFAULT: '#EA5455',
           disabled: '#F7BBBB',
+          light: '#EA54551F',
+          dark: '#B71C1C',
+          darkLight: '#B71C1C1F',
         },
         trublue: {
           DEFAULT: '#0065C1',
@@ -97,17 +106,6 @@ module.exports = {
           soft: '#E3F2FD',
           brightLight: '#005EFF',
           softLight: '#005EFF1F',
-        },
-        red: {
-          light: '#EA54551F',
-          dark: '#B71C1C',
-          darkLight: '#B71C1C1F',
-        },
-        green: {
-          DEFAULT: '#28C76F',
-          successLight: '#28C76F1F',
-          brightLight: '#00C853',
-          softLight: '#00C8531F',
         },
         primary: '#0185E4',
         'primary-light': '#0185E41F',

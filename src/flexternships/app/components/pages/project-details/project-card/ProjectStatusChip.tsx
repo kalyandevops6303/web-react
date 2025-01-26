@@ -25,7 +25,7 @@ const ProjectStatusChip = ({
     [ProjectPrimaryStatus.DRAFT]: '',
     [ProjectPrimaryStatus.ACTIVE]: 'bg-green-successLight text-success border border-success',
     [ProjectPrimaryStatus.ON_GOING]: 'bg-green-successLight text-success border border-success',
-    [ProjectPrimaryStatus.TERMINATED]: 'bg-red-darkLight text-red-dark border border-red-dark',
+    [ProjectPrimaryStatus.TERMINATED]: 'bg-error-darkLight text-error-dark border border-error-dark',
     [ProjectPrimaryStatus.COMPLETED]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.WITHDRAWN]: 'bg-orange-light text-orange-dark border-1 border-orange-dark',
     [ProjectPrimaryStatus.BLOCKED]: 'bg-[#EA54551F] text-error border border-error',

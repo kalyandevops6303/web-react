@@ -192,7 +192,7 @@ export type PerformanceDetails = {
   milestoneId: string;
 };
 
-export type TeamMemberInfo = {
+export type FormattedTeamMemberInfo = {
   image: string;
   name: string;
   role: string;

@@ -13,7 +13,7 @@ import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-utils';
 import SucessModal from './modals/SucessModal';
-import { PerformanceDetails, TeamMemberInfo } from '@/flexternships/constraints/types/project-details-types';
+import { PerformanceDetails, FormattedTeamMemberInfo } from '@/flexternships/constraints/types/project-details-types';
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
 
 export default function PeerFeedback({ goBack }: { goBack: () => void }) {
@@ -32,7 +32,7 @@ export default function PeerFeedback({ goBack }: { goBack: () => void }) {
 
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
-  const [formattedTeamInfo, setFormattedTeamInfo] = useState<TeamMemberInfo[]>([]);
+  const [formattedTeamInfo, setFormattedTeamInfo] = useState<FormattedTeamMemberInfo[]>([]);
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [filteredTeam, setFilteredTeam] = useState(team);
