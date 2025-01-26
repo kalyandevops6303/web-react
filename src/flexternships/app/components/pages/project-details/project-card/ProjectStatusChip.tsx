@@ -23,8 +23,8 @@ const ProjectStatusChip = ({
   const ProjectStatusChipClassnames = {
     [ProjectPrimaryStatus.OPEN]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.DRAFT]: '',
-    [ProjectPrimaryStatus.ACTIVE]: 'bg-green-successLight text-success border border-success',
-    [ProjectPrimaryStatus.ON_GOING]: 'bg-green-successLight text-success border border-success',
+    [ProjectPrimaryStatus.ACTIVE]: 'bg-success-successLight text-success border border-success',
+    [ProjectPrimaryStatus.ON_GOING]: 'bg-success-successLight text-success border border-success',
     [ProjectPrimaryStatus.TERMINATED]: 'bg-error-darkLight text-error-dark border border-error-dark',
     [ProjectPrimaryStatus.COMPLETED]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.WITHDRAWN]: 'bg-orange-light text-orange-dark border-1 border-orange-dark',
@@ -38,7 +38,7 @@ const ProjectStatusChip = ({
     [ProjectSecondaryStatus.MILESTONE]: 'bg-orange-light text-orange-dark',
     [ProjectSecondaryStatus.SIGN_NDA]: 'bg-orange-50 text-orange-600',
     [ProjectSecondaryStatus.SIGN_REQUESTED]: 'bg-skyblue-light text-skyblue',
-    [ProjectSecondaryStatus.COMPLETED]: 'bg-green-softLight text-green-brightLight',
+    [ProjectSecondaryStatus.COMPLETED]: 'bg-success-softLight text-success-brightLight',
   };
 
   const SecondaryStatusChipRedirectionLinks = {

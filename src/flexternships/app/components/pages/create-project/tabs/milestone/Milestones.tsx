@@ -21,7 +21,7 @@ import { getUserTimezone, showToastMessage } from '@/flexternships/utils/core-ut
 import DurationUpdated from '@/flexternships/app/components/core/modals/DurationUpdated';
 import { useParams } from 'react-router-dom';
 import { useAppStore } from '@/flexternships/stores/core-stores';
-import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
 
 export default function Milestones() {
   const {

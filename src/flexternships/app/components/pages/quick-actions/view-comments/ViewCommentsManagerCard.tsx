@@ -1,5 +1,6 @@
 // Core enums and types
 import { RecognitionSource } from '@/flexternships/constraints/enums/core-enums';
+import { Competency } from '@/flexternships/constraints/types/competency-types';
 
 // UI Components
 import CompetencyTag from '../../../core/tags/CompetencyTag';
@@ -7,30 +8,31 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 
 // Utils
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
-import { Competency } from '@/flexternships/constraints/types/competency-types';
 import { getReadableTimeDifference } from '@/flexternships/utils/date-utils';
 
-interface ViewRecognitionManagerCardProps {
+interface ViewCommentsManagerCardProps {
   giverDetails: {
     name: string;
     profileImage: string;
     designation: string;
   };
   type: RecognitionSource;
+  noteCategory?: string;
   milestoneNumber: number;
   timestamp: number;
   selectedCompetencies: Competency[];
   comment: string;
 }
 
-export default function ViewRecognitionManagerCard({
+export default function ViewCommentsManagerCard({
   giverDetails,
   type,
+  noteCategory,
   milestoneNumber,
   timestamp,
   selectedCompetencies,
   comment,
-}: ViewRecognitionManagerCardProps) {
+}: ViewCommentsManagerCardProps) {
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex flex-row justify-between">
@@ -57,7 +59,11 @@ export default function ViewRecognitionManagerCard({
           </div>
           <div className="min-w-[211px]">
             <div className="text-grey-heading text-sm font-medium leading-[23px]">
-              Via {type === RecognitionSource.FEEDBACK ? 'Feedback' : 'Quick Actions'}
+              {type === RecognitionSource.QUICK_NOTE
+                ? noteCategory || 'Unknown'
+                : type === RecognitionSource.FEEDBACK
+                ? 'Via Feedback'
+                : 'Via Quick Actions'}
             </div>
             <div className="text-grey text-sm font-normal leading-[21px]">Type</div>
           </div>
@@ -68,16 +74,20 @@ export default function ViewRecognitionManagerCard({
         </div>
         <div className="text-grey-muted text-xs font-normal leading-4.5">{getReadableTimeDifference(timestamp)}</div>
       </div>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-grey text-xs font-normal leading-5">Competencies</div>
-        <div className="flex flex-row flex-wrap gap-x-2 gap-y-1">
-          {selectedCompetencies.map((competency) => (
-            <CompetencyTag key={competency.id} competency={competency} />
-          ))}
+      {selectedCompetencies && selectedCompetencies.length > 0 && (
+        <div className="flex flex-col gap-y-1">
+          <div className="text-grey text-xs font-normal leading-5">Competencies</div>
+          <div className="flex flex-row flex-wrap gap-x-2 gap-y-1">
+            {selectedCompetencies.map((competency) => (
+              <CompetencyTag key={competency.id} competency={competency} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex flex-col gap-y-1">
-        <div className="text-grey text-xs font-normal leading-5">Comment</div>
+        <div className="text-grey text-xs font-normal leading-5">
+          {type === RecognitionSource.QUICK_NOTE ? 'Note' : 'Comment'}
+        </div>
         <div className="text-sm font-normal leading-5.5 text-grey-700">{comment}</div>
       </div>
     </div>

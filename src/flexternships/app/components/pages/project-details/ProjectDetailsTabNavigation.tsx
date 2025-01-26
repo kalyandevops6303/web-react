@@ -19,7 +19,7 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
   const handleGiveRecognition = () => {
-    navigate(`/recognition/${param.projectId}`);
+    navigate(`/quick-actions/${param.projectId}`);
   };
   return (
     <div className="w-full">

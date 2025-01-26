@@ -69,7 +69,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'Team', value: 'TEAM' },
     { label: 'Client', value: 'CLIENT' },
   ];
-  const metaData = { page: 1, page_size: 10 };
   const metaDataFlextern = {
     page: 1,
     page_size: 10,

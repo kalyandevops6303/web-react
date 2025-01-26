@@ -3,7 +3,7 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
-import { Eye, Paperclip, User } from 'react-feather';
+import { Eye, MessageSquare, Paperclip, User } from 'react-feather';
 import {
   ProjectPrimaryStatus,
   ProjectSecondaryStatus,
@@ -25,7 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
 import { epochDifferenceInDays, formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
-import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants';
+import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants/core-constants';
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { getPrimaryAction, getSecondaryAction, getTextByAction } from '@/flexternships/static/project-details-content';
@@ -36,6 +36,7 @@ import SimpleElevatedCard from '../../core/cards/SimpleElevatedCard';
 import PrimaryIconText from '../../core/buttons/PrimaryIconText';
 import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
 import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
+import { QuickAction } from '@/flexternships/constraints/enums/quick-actions-enums';
 import ProjectStatusChip from './project-card/ProjectStatusChip';
 import BadgeGroup from './project-card/BadgeGroup';
 import classNames from 'classnames';
@@ -73,7 +74,7 @@ const LeftSideBarProjectDetails = () => {
   const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });
   const secondaryAction = getSecondaryAction({ status: data?.status, userType: userDetails.userType });
 
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null!) as React.RefObject<HTMLDivElement>;
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
@@ -142,12 +143,8 @@ const LeftSideBarProjectDetails = () => {
     };
   }, [showMore]);
 
-  const handleGiveRecognitionClick = () => {
-    navigate(`/recognition/${projectId}`);
-  };
-
-  const handleViewRecognitionClick = () => {
-    navigate(`/recognition/${projectId}`, { state: { viewRecognitions: true } });
+  const handleQuickActionClick = (action: QuickAction) => {
+    navigate(`/quick-actions/${projectId}`, { state: { action } });
   };
 
   return (
@@ -369,14 +366,24 @@ const LeftSideBarProjectDetails = () => {
               />
             }
             disabled={!data?.giveRecognition}
-            onClick={handleGiveRecognitionClick}
+            onClick={() => handleQuickActionClick(QuickAction.GIVE_RECOGNITION)}
           />
-          <PrimaryIconText
-            text={`View ${userDetails.userType === UserType.TALENT ? 'Kudos' : 'WOWs'}!`}
-            icon={<Eye className="text-trublue-secondary-500" size={18} />}
-            onClick={handleViewRecognitionClick}
-            disabled={!data?.viewRecognition}
-          />
+          {userDetails.userType === UserType.CLIENT && (
+            <PrimaryIconText
+              text="Add Note"
+              icon={<MessageSquare className="text-trublue-secondary-500" size={18} />}
+              disabled={!data?.addNote}
+              onClick={() => handleQuickActionClick(QuickAction.ADD_NOTES)}
+            />
+          )}
+          {userDetails.userType === UserType.TALENT && (
+            <PrimaryIconText
+              text="View Kudos"
+              icon={<Eye className="text-trublue-secondary-500" size={18} />}
+              onClick={() => handleQuickActionClick(QuickAction.VIEW_RECOGNITIONS)}
+              disabled={!data?.viewRecognition}
+            />
+          )}
         </div>
       </SimpleElevatedCard>
     </div>

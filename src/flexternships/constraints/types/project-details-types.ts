@@ -11,6 +11,7 @@ export type TeamMemberDetails = {
   ratingText?: string;
   ratingColor?: string;
   appreciationScore?: number;
+  noteCount?: number;
   isDocumentsSigned?: boolean;
 };
 
@@ -89,8 +90,9 @@ export type ProjectDetails = {
     };
   };
   isDocumentsNeeded: boolean;
-  viewRecognition: boolean;
+  viewRecognition?: boolean;
   giveRecognition: boolean;
+  addNote: boolean;
 };
 
 type ProjectRole = {

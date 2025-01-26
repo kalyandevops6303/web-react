@@ -56,11 +56,13 @@ export default function TextInput(props: InputProps) {
 
   return (
     <div className={`${Styles.formFieldContainer} ${className ?? ''}`}>
-      <div className={Styles.formInputLabelContainer}>
-        <label className={Styles.formInputLabel}>{label}</label>
-        {required && <span className={Styles.requiredAsterisk}>*</span>}
-        {tooltip && <Tooltip content={tooltip} />}
-      </div>
+      {label && (
+        <div className={Styles.formInputLabelContainer}>
+          <label className={Styles.formInputLabel}>{label}</label>
+          {required && <span className={Styles.requiredAsterisk}>*</span>}
+          {tooltip && <Tooltip content={tooltip} />}
+        </div>
+      )}
       {textarea ? (
         <textarea
           ref={textareaRef}
@@ -104,7 +106,7 @@ export default function TextInput(props: InputProps) {
 type InputProps = {
   value: number | string;
   onChange: (newValue: number | string) => void;
-  label: string; // Required field
+  label?: string; // Optional field
   type?: TextInputType; // Optional field
   required?: boolean; // Optional field
   readOnly?: boolean; // Optional field

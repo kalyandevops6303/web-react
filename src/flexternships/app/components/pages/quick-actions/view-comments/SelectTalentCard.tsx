@@ -1,22 +1,24 @@
 // External dependencies
 import classNames from 'classnames';
+import { MessageSquare } from 'react-feather';
 
-// Core enums and types
+// Core components
+import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+
+// Enums and types
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
 
 // Icons and assets
 import defaultKudosIcon from '@/flexternships/assets/icons/core/kudos/kudos-default.svg';
 import defaultWowIcon from '@/flexternships/assets/icons/core/wow/wow-default.svg';
-
-// UI Components
-import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 
 // Utils and stores
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function SelectTalentCard(props: SelectTalentCardProps) {
-  const { selected, onClick, talentInfo } = props;
+  const { selected, onClick, talentInfo, category = QuickActionCategory.RECOGNITION } = props;
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const cardClasses = classNames('flex flex-row justify-between gap-x-6 rounded-md p-4 border-1 min-w-[330px]', {
@@ -28,6 +30,11 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
     color: stringToColour(talentInfo.name),
     backgroundColor: `${stringToColour(talentInfo.name, { opacity: 10 })}`,
   };
+
+  const isNoteCategory = category === QuickActionCategory.NOTE;
+  const score = isNoteCategory ? talentInfo.noteCount : talentInfo.appreciationScore;
+  const shouldShowScore = !!(isNoteCategory ? talentInfo.noteCount : talentInfo.appreciationScore);
+  const recognitionIcon = userDetails.userType === UserType.CLIENT ? defaultWowIcon : defaultKudosIcon;
 
   return (
     <div className={cardClasses} onClick={onClick}>
@@ -45,14 +52,14 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
           <div className="text-sm leading-5.5 text-grey">{talentInfo.designation}</div>
         </div>
       </div>
-      {talentInfo.appreciationScore && (
+      {shouldShowScore && (
         <div className="flex flex-row items-center gap-x-2">
-          <img
-            className="size-6"
-            src={userDetails.userType === UserType.CLIENT ? defaultWowIcon : defaultKudosIcon}
-            alt="Recognition"
-          />
-          <span className="text-base text-grey-700 font-medium">+{talentInfo.appreciationScore}</span>
+          {isNoteCategory ? (
+            <MessageSquare size={24} className="text-grey-600" />
+          ) : (
+            <img className="size-6" src={recognitionIcon} alt="Recognition" />
+          )}
+          <span className="text-base text-grey-600 font-medium">+{score}</span>
         </div>
       )}
     </div>
@@ -68,5 +75,7 @@ type SelectTalentCardProps = {
     profileImage?: string;
     designation: string;
     appreciationScore?: number;
+    noteCount?: number;
   };
+  category?: QuickActionCategory;
 };
