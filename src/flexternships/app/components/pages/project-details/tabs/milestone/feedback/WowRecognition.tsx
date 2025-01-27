@@ -83,9 +83,10 @@ export class WowModel extends Question {
         typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
       );
     }
-    if (name === 'jsonObj' && newValue && newValue.competency) {
+    if (name === 'competency' && newValue && newValue.competency) {
       this.competency = newValue.competency;
     }
+
     super.onPropertyValueChanged(name, oldValue, newValue);
   }
 }
@@ -224,7 +225,7 @@ Serializer.addClass(
       type: 'itemvalues',
       default: [new ItemValue('wow', 'WOW'), new ItemValue('na', 'NA')],
     },
-    { name: 'competency', type: 'object', default: undefined },
+    'competency',
   ],
   function () {
     return new WowModel('');

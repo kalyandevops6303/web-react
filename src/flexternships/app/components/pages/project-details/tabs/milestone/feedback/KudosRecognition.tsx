@@ -70,7 +70,6 @@ export class KudosModel extends Question {
     this.setPropertyValue('commentText', newValue);
   }
 
-  // TODO: Make this dynamic and update the data model
   get competency(): Competency {
     return this.getPropertyValue('competency', undefined);
   }
