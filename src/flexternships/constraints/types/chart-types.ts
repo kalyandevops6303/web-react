@@ -131,6 +131,7 @@ export interface CustomDonutChart2Props {
   className?: string;
   isDonutChart?: boolean;
   isLoading?: boolean;
+  calculateTotalManually?: boolean;
 }
 
 export type MatrixLegendItem = {
