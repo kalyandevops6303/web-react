@@ -377,9 +377,9 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       answer: any; // User's answer(s)
     }[] = [];
 
-    answeredQuestions = convertToAnsweredQuestions(survey.data);
+    console.log('survey.data', survey.data);
 
-    console.log(answeredQuestions);
+    answeredQuestions = convertToAnsweredQuestions(survey.data);
 
     setSurveyProgress({
       answeredQuestions,

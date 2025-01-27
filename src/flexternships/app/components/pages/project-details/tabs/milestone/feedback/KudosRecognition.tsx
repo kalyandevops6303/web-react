@@ -112,9 +112,11 @@ export class KudosModel extends Question {
     if (name === 'jsonObj' && newValue && newValue.hasComment !== undefined) {
       this.hasComment = newValue.hasComment;
     }
-    if (name === 'jsonObj' && newValue && newValue.competency) {
+    if (name === 'competency' && newValue && newValue.competency) {
       this.competency = newValue.competency;
     }
+
+    console.log('this.question.competency inside model', this.competency, name);
 
     super.onPropertyValueChanged(name, oldValue, newValue);
   }
