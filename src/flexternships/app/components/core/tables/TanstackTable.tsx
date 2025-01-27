@@ -37,6 +37,7 @@ type TanstackTableProps<T> = {
   highlightByKey?: string;
   highlightedValues?: string[];
   scrollHighlightedRowsIntoView?: boolean;
+  highlightText?: string;
 };
 
 const styles = {
@@ -57,6 +58,7 @@ export default function TanstackTable<T>({
   highlightByKey,
   highlightedValues,
   scrollHighlightedRowsIntoView,
+  highlightText,
 }: TanstackTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -193,7 +195,14 @@ export default function TanstackTable<T>({
                         ${index === row.getVisibleCells().length - 1 && isRowHighlighted(row) && '!border-r'}
                         text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] px-[12px]`}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <div className="flex flex-col">
+                          {isRowHighlighted(row) && highlightText && index === 1 && (
+                            <span className="text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] bg-[#0185E4] text-white px-2 rounded-full text-xs w-fit">
+                              {highlightText}
+                            </span>
+                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
                       </TableCell>
                     ))}
                   </TableRow>
