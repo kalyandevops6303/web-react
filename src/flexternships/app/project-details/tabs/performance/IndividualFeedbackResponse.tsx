@@ -69,17 +69,16 @@ export default function IndividualFeedbackResponse(props: any) {
       return acc;
     }, {} as Record<string, { value: any; comment: any }>);
 
-    // Map questions with feedback for title
-    Object.keys(grouped).forEach((questionKey, index) => {
-      const { value, comment } = grouped[questionKey];
-      const feedbackItem = feedback.find((item) => item.name === questionKey);
-      const title = feedbackItem?.tag?.text || 'Unknown Title'; // Fallback for missing titles
+    // Map questions with feedback for title, maintaining feedback array order
+    feedback.forEach((feedbackItem, index) => {
+      const questionKey = feedbackItem.name;
+      const groupedAnswer = grouped[questionKey] || { value: null, comment: null };
 
       answeredQuestions.push({
         index,
         name: questionKey,
-        answer: { value, comment },
-        title,
+        answer: groupedAnswer,
+        title: feedbackItem?.tag?.text || 'Unknown Title',
         type: feedbackItem?.type,
       });
     });
