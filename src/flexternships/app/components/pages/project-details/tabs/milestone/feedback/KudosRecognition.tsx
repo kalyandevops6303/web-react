@@ -116,8 +116,6 @@ export class KudosModel extends Question {
       this.competency = newValue.competency;
     }
 
-    console.log('this.question.competency inside model', this.competency, name);
-
     super.onPropertyValueChanged(name, oldValue, newValue);
   }
 }
@@ -262,7 +260,7 @@ Serializer.addClass(
     },
     { name: 'hasComment', type: 'boolean', default: false }, // Add hasComment to schema
     { name: 'commentText', type: 'string', default: '' }, // Add commentText to schema
-    { name: 'competency', type: 'object', default: undefined },
+    'competency',
   ],
   function () {
     return new KudosModel('');

@@ -216,7 +216,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
       if (subKey === 'Comment') {
         acc[mainKey].comment = input[key];
-      } else if (subKey === 'Competency') {
+      } else if (subKey === 'competency') {
         acc[mainKey].competency = input[key];
       } else {
         acc[mainKey].value = input[key];
@@ -234,8 +234,10 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
         // Check conditions for including the question
         if (
           value !== null && // Ensure the value is answered
-          (((question as any).jsonObj.commentRequired && comment?.length > 0) ||
-            !(question as any).jsonObj.commentRequired)
+          (((question as any).jsonObj.commentRequired && comment?.length > 0) || // comment is required and has value
+            !(question as any).jsonObj.commentRequired) && // or comment is not required
+          (((question as any).jsonObj?.competency?.isRequired && competency?.length > 0) || // and competency is required and has value
+            !(question as any).jsonObj?.competency?.isRequired) // or competency is not required
         ) {
           answeredQuestions.push({
             index,
@@ -370,14 +372,30 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
     });
   });
 
+  // Added this event listener to handle competency change in kudosgroup/wowgroup
+  survey.onPropertyValueChangedCallback = function (name, _oldValue, _newValue, sender) {
+    const senderJson = sender.toJSON();
+
+    if (name === 'competency' && senderJson && senderJson.competency) {
+      survey.setValue(
+        `${senderJson.name}-${name}`,
+        senderJson.competency.choices
+          .filter((choice: { selected?: boolean }) => choice.selected)
+          .map((choice: { id: string; name: string; colorCode: string }) => ({
+            id: choice.id,
+            name: choice.name,
+            colorCode: choice.colorCode,
+          })),
+      );
+    }
+  };
+
   survey.onValueChanged.add(function (_survey) {
     let answeredQuestions: {
       index: number; // Question's index
       name: string; // Question's name
       answer: any; // User's answer(s)
     }[] = [];
-
-    console.log('survey.data', survey.data);
 
     answeredQuestions = convertToAnsweredQuestions(survey.data);
 
