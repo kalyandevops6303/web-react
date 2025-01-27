@@ -24,10 +24,11 @@ export const getSecondaryAction = (params: { status: ProjectPrimaryStatus; userT
   const { status, userType } = params;
   if (userType === UserType.TALENT) return undefined;
   switch (status) {
-    case ProjectPrimaryStatus.ACTIVE:
-    case ProjectPrimaryStatus.ON_GOING:
-    case ProjectPrimaryStatus.BLOCKED:
-      return ProjectLeftPanelAction.TERMINATE;
+    // TODO: Uncomment this when terminate is implemented
+    // case ProjectPrimaryStatus.ACTIVE:
+    // case ProjectPrimaryStatus.ON_GOING:
+    // case ProjectPrimaryStatus.BLOCKED:
+    //   return ProjectLeftPanelAction.TERMINATE;
     case ProjectPrimaryStatus.OPEN:
       return ProjectLeftPanelAction.WITHDRAW;
     default:
@@ -40,8 +41,9 @@ export const getTextByAction = (action?: ProjectLeftPanelAction) => {
   switch (action) {
     case ProjectLeftPanelAction.MESSAGE:
       return 'Message';
-    case ProjectLeftPanelAction.TERMINATE:
-      return 'Terminate';
+    // TODO: Uncomment this when terminate is implemented
+    // case ProjectLeftPanelAction.TERMINATE:
+    //   return 'Terminate';
     case ProjectLeftPanelAction.WITHDRAW:
       return 'Withdraw';
     case ProjectLeftPanelAction.RELIST:
