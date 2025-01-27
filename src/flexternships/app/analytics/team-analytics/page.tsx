@@ -28,6 +28,7 @@ import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 import ProjectStatusChip from '../../components/pages/project-details/projectCard/ProjectStatusChip';
+import CustomXAxisLabel from './labels/CustomXAxisLabel';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -223,6 +224,7 @@ export default function TeamAnalytics() {
                 customTooltipContent={TeamMembersChartTooltip}
                 YAxisDataKey={'score'}
                 hideDeselectedMetricsFromTooltip
+                customXAxisLabel={CustomXAxisLabel}
               />
             )}
           </div>

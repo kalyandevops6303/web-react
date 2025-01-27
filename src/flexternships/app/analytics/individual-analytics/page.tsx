@@ -20,6 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/flexternships/app/components/ui/select';
+import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
+import CustomXAxisLabel from './labels/CustomXAxisLabel';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -65,10 +67,6 @@ export default function IndividualAnalytics() {
   const getPeerFeedbackScore = () => {
     return formattedIndividualOverviewDetails?.scores?.filter((score: any) => score.feedbackTypes === 'PEER_TO_PEER')[0]
       ?.avgScore;
-  };
-
-  const handleBack = () => {
-    navigate(`/analytics/project/${projectId}/team`);
   };
 
   useEffect(() => {
@@ -207,12 +205,13 @@ export default function IndividualAnalytics() {
           },
         ]}
       />
-      <button onClick={handleBack} className="flex items-center gap-2 my-2 cursor-pointer" type="button">
-        <div className="p-2 rounded-full bg-trublue-light">
-          <ArrowLeft size={18} className="text-trublue-secondary-500" />
-        </div>
-        <div className="text-[#0185E4] font-montserrat text-sm font-semibold leading-normal">Team Analytics</div>
-      </button>
+
+      <PrimaryIconText
+        icon={<ArrowLeft size={18} className="text-trublue-secondary-500" />}
+        text="Team Analytics"
+        onClick={() => navigate(`/analytics/project/${projectId}/team`)}
+        className="w-fit"
+      />
 
       <div className="flex gap-2 items-center">
         <div className="w-auto text-[#394042] font-montserrat text-base font-medium leading-6">
@@ -259,6 +258,7 @@ export default function IndividualAnalytics() {
           hasGradient={true}
           XAxisDataKey="milestone"
           customTooltipContent={CustomTooltipContent}
+          customXAxisLabel={CustomXAxisLabel}
           showDataOnFilters
         />
       </div>
