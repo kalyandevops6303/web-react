@@ -45,7 +45,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
 
     return (
       <div className="bg-white w-[200px] max-w-1/2 px-3 py-2 border rounded-md shadow-lg">
-        <p className="font-montserrat text-2xs font-semibold leading-4 text-grey-500 uppercase">{label}</p>
+        <p className="font-montserrat text-2xs font-semibold leading-4 text-grey-500 uppercase">{label} PERFORMANCE</p>
         {payload.map((entry: any) => {
           if (!entry.dataKey) return null;
           const baseKey = typeof entry.dataKey === 'string' ? entry.dataKey.split('.')[0] : entry.dataKey;
@@ -262,6 +262,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   left: -20,
                   right: 100,
                   bottom: 40,
+                  top: 20,
                 }}
               >
                 <CartesianGrid vertical={false} strokeDasharray="4 12" />
