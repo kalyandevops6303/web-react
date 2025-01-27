@@ -10,10 +10,10 @@ type Choice = {
 };
 
 type CompetencyChoice = {
-  _id: string;
+  id: string;
   name: string;
   abbreviation: string;
-  color_code: string;
+  colorCode: string;
   selected?: boolean;
 };
 
@@ -132,7 +132,7 @@ export class Wow extends SurveyQuestionElementBase {
       ...this.question.competency,
       choices: this.question.competency.choices.map((choice: CompetencyChoice) => {
         const isPreviouslySelected = choice.selected;
-        const isClicked = choice._id === value;
+        const isClicked = choice.id === value;
 
         return {
           ...choice,
@@ -200,10 +200,11 @@ export class Wow extends SurveyQuestionElementBase {
             <div className="flex flex-row flex-wrap gap-4">
               {competency.choices.map((choice: CompetencyChoice) => (
                 <SelectOptionCard
+                  key={choice.id}
                   text={choice.name}
-                  value={choice._id}
+                  value={choice.id}
                   selected={!!choice.selected}
-                  onClick={() => this.handleCompetencySelect(choice._id)}
+                  onClick={() => this.handleCompetencySelect(choice.id)}
                 />
               ))}
             </div>
