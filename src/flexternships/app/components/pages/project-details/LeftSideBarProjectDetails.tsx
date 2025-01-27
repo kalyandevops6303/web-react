@@ -98,7 +98,6 @@ const LeftSideBarProjectDetails = () => {
   const initiateRelistFlow = () => setCurrentProjectFlow(ProjectFlowType.RELIST);
 
   const primaryActionHandler = () => {
-    console.log('primaryActionHandler', primaryAction);
     switch (primaryAction) {
       case ProjectLeftPanelAction.MESSAGE:
         return handleMessageClick();
@@ -110,10 +109,10 @@ const LeftSideBarProjectDetails = () => {
   };
 
   const secondaryActionHandler = () => {
-    console.log('secondaryActionHandler', secondaryAction);
     switch (secondaryAction) {
-      case ProjectLeftPanelAction.TERMINATE:
-        return setCurrentProjectFlow(ProjectFlowType.TERMINATE);
+      // TODO: Uncomment this when terminate is implemented
+      // case ProjectLeftPanelAction.TERMINATE:
+      //   return setCurrentProjectFlow(ProjectFlowType.TERMINATE);
       case ProjectLeftPanelAction.WITHDRAW:
         return setCurrentProjectFlow(ProjectFlowType.WITHDRAW);
       default:
