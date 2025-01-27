@@ -120,7 +120,7 @@ export default function IndividualAnalytics() {
 
     return (
       <div className="bg-white w-[200px] max-w-1/2 p-3 border rounded-5 shadow-lg">
-        <p className="font-montserrat text-2xs leading-4 font-semibold text-grey-500 uppercase">{label}</p>
+        <p className="font-montserrat text-2xs leading-4 font-semibold text-grey-500 uppercase">{label} PERFORMANCE</p>
         {payload.map((entry) => {
           const dataKey = entry.dataKey as keyof typeof recognitionChartData.chartConfig;
           const wowCount = entry?.payload?.wowCount;
