@@ -48,6 +48,7 @@ export default function IndividualFeedbackResponse(props: any) {
       answer: {
         value: any; // Main value
         comment: any; // Optional comment
+        competency: any; // Optional competency
       };
       title: string; // Title from feedback
       type: string; // Type from feedback
@@ -58,28 +59,30 @@ export default function IndividualFeedbackResponse(props: any) {
       const [mainKey, subKey] = key.split('-');
 
       if (!acc[mainKey]) {
-        acc[mainKey] = { value: null, comment: null };
+        acc[mainKey] = { value: null, comment: null, competency: null };
       }
 
       if (subKey === 'Comment') {
         acc[mainKey].comment = input[key];
+      } else if (subKey === 'competency') {
+        acc[mainKey].competency = input[key];
       } else {
         acc[mainKey].value = input[key];
       }
 
       return acc;
-    }, {} as Record<string, { value: any; comment: any }>);
+    }, {} as Record<string, { value: any; comment: any; competency: any }>);
 
     // Map questions with feedback for title
     Object.keys(grouped).forEach((questionKey, index) => {
-      const { value, comment } = grouped[questionKey];
+      const { value, comment, competency } = grouped[questionKey];
       const feedbackItem = feedback.find((item) => item.name === questionKey);
       const title = feedbackItem?.tag?.text || 'Unknown Title'; // Fallback for missing titles
 
       answeredQuestions.push({
         index,
         name: questionKey,
-        answer: { value, comment },
+        answer: { value, comment, competency },
         title,
         type: feedbackItem?.type,
       });
@@ -146,12 +149,11 @@ export default function IndividualFeedbackResponse(props: any) {
           )}
           {(data?.type === 'kudosgroup' || data?.type === 'wowgroup') && (
             <div className="flex flex-col gap-y-4">
-              {/* TODO: Make this dynamic */}
               {/* Competencies */}
               <div className="flex flex-row flex-wrap gap-2">
-                <CompetencyTag competency={{ name: 'Collaboration', colorCode: '#0DA8B2' }} />
-                <CompetencyTag competency={{ name: 'Leadership', colorCode: '#7367F0' }} />
-                <CompetencyTag competency={{ name: 'Communication', colorCode: '#FF9F43' }} />
+                {data?.answer?.competency?.map((competency: { name: string; colorCode: string }, index: number) => (
+                  <CompetencyTag key={index} competency={competency} />
+                ))}
               </div>
 
               {/* Comment Box */}
