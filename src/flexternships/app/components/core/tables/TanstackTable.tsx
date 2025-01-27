@@ -145,7 +145,7 @@ export default function TanstackTable<T>({
         </div>
       )}
       <div className="rounded-lg border border-[#EBE9F1] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
-        <div className="max-h-[500px] overflow-auto">
+        <div>
           <Table className={`rounded-lg relative`}>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
