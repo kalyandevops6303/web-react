@@ -127,6 +127,9 @@ export const routes = {
       getFlexternComments: `${serviceUrls.dashboardV2}/comment`,
       getFlexternCommentCount: `${serviceUrls.dashboardV2}/comment/count`,
     },
+    flexternRoles: {
+      getPaginatedFlexternRoles: `${serviceUrls.dashboardV2}/flextern/roles`,
+    },
   },
   analytics: {
     individualOverview: `${serviceUrls.dashboardV2}/talent/header`,

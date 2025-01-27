@@ -1,7 +1,7 @@
 import PrimaryButton from '../../buttons/PrimaryButton';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
-import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 
 export default function ConfirmActionModal(props: ConfirmActionModalProps) {
   const {

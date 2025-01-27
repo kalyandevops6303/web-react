@@ -2,31 +2,69 @@
   @apply px-5 py-2.5 my-2.5 flex items-center justify-center min-w-16 rounded-md text-sm not-italic font-semibold leading-4.5;
 }
 
-.primaryEnabledButton {
-  @apply text-white bg-trublue cursor-pointer hover:shadow-primary-button;
+.primaryEnabledButtonBlue,
+.primaryEnabledButtonRed {
+  @apply text-white cursor-pointer;
   @apply transition-transform duration-100 ease-in-out transform active:scale-95;
   @apply transition-shadow duration-200;
 }
-.primaryDisabledButton {
-  @apply text-white bg-trublue-disabled cursor-default;
+
+.primaryEnabledButtonBlue {
+  @apply bg-trublue hover:shadow-primary-button-blue;
+}
+
+.primaryEnabledButtonRed {
+  @apply bg-error hover:shadow-primary-button-red;
+}
+
+.primaryDisabledButtonBlue,
+.primaryDisabledButtonRed {
+  @apply text-white cursor-default;
+}
+.primaryDisabledButtonBlue {
+  @apply bg-trublue-disabled cursor-default;
+}
+
+.primaryDisabledButtonRed {
+  @apply bg-error-disabled cursor-default;
+}
+
+button.secondaryEnabledButtonBlue,
+button:focus.secondaryEnabledButtonBlue,
+button.secondaryEnabledButtonRed,
+button:focus.secondaryEnabledButtonRed {
+  @apply outline outline-1 cursor-pointer;
+  @apply transition-transform duration-100 ease-in-out transform active:scale-95;
+  @apply transition-colors duration-200 hover:bg-opacity-10;
 }
 
 button.secondaryEnabledButtonBlue,
 button:focus.secondaryEnabledButtonBlue {
-  @apply outline outline-1 outline-trublue-secondary-500 text-trublue-secondary-500 cursor-pointer;
-  @apply transition-transform duration-100 ease-in-out transform active:scale-95;
-  @apply transition-colors duration-200 hover:bg-trublue-secondary-500 hover:bg-opacity-10;
-}
-button.secondaryEnabledButtonRed,
-button:focus.secondaryEnabledButtonRed {
-  @apply outline outline-1 outline-error text-error cursor-pointer;
-  @apply transition-transform duration-100 ease-in-out transform active:scale-95;
-  @apply transition-colors duration-200 hover:bg-error hover:bg-opacity-10;
+  @apply outline-trublue-secondary-500 text-trublue-secondary-500;
+  @apply hover:bg-trublue-light;
 }
 
-button.secondaryDisabledButton,
-button:focus.secondaryDisabledButton {
-  @apply outline outline-1 outline-trublue-disabled text-trublue-disabled;
+button.secondaryEnabledButtonRed,
+button:focus.secondaryEnabledButtonRed {
+  @apply outline-error text-error;
+  @apply hover:bg-error hover:bg-opacity-10;
+}
+
+button.secondaryDisabledButtonBlue,
+button:focus.secondaryDisabledButtonBlue,
+button.secondaryDisabledButtonRed,
+button:focus.secondaryDisabledButtonRed {
+  @apply outline outline-1 cursor-default;
+}
+
+button.secondaryDisabledButtonBlue,
+button:focus.secondaryDisabledButtonBlue {
+  @apply outline-trublue-disabled text-trublue-disabled;
+}
+
+button.secondaryDisabledButtonRed,
+button:focus.secondaryDisabledButtonRed {
+  @apply outline-error-disabled text-error-disabled;
 }
 
 .primaryIconText {

@@ -15,6 +15,7 @@ import {
 } from '@/flexternships/constraints/enums/core-enums';
 import PrimaryButton from '../../core/buttons/PrimaryButton';
 import {
+  ProjectLeftPanelAction,
   ProjectPanelCaptionDate1,
   ProjectPanelCaptionDate2,
   ProjectPanelDate2Classnames,
@@ -35,17 +36,27 @@ import {
   getProjectPanelDate2Values,
 } from './leftSidebarProjectPanel/ProjectData';
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
-import RelistModal from '../../core/modals/RelistModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { getPrimaryAction, getSecondaryAction, getTextByAction } from '@/flexternships/static/project-details-content';
+import ProjectRelistFlow from '../../core/flows/ProjectRelistFlow';
+import ProjectTerminateFlow from '../../core/flows/ProjectTerminateFlow';
+import ProjectWithdrawFlow from '../../core/flows/ProjectWithdrawFlow';
 import SimpleElevatedCard from '../../core/cards/SimpleElevatedCard';
 import PrimaryIconText from '../../core/buttons/PrimaryIconText';
 import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
 import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
+import StartsInTimer from '../../core/timers/StartsInTimer';
 import { QuickAction } from '@/flexternships/constraints/enums/quick-actions-enums';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-error',
   CLIENT = 'flex h-[18px] p-[1px_9px] items-center gap-[3px] rounded-[17px] bg-[rgba(0,94,255,0.12)] text-[#005EFF] text-center font-semibold text-[12px] leading-[18px] font-montserrat',
+}
+
+enum ProjectFlowType {
+  WITHDRAW = 'WITHDRAW',
+  TERMINATE = 'TERMINATE',
+  RELIST = 'RELIST',
 }
 
 const LeftSideBarProjectDetails = () => {
@@ -54,14 +65,18 @@ const LeftSideBarProjectDetails = () => {
   const { projectId } = params;
 
   const data = useProjectsStore((state) => state.projectDetails);
-  // const setTerminateProject = useProjectsStore((state) => state.setTerminateProject);
-  const setWithdrawProject = useProjectsStore((state) => state.setWithdrawProject);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>(undefined);
-  const [showRelistModal, setShowRelistModal] = useState(false);
+  const [showStartsInTimer, setShowStartsInTimer] = useState(false);
+  const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>();
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
+
+  const [currentProjectFlow, setCurrentProjectFlow] = useState<ProjectFlowType | undefined>();
+
+  const primaryAction = getPrimaryAction({ status: data?.status, userType: userDetails.userType });
+  const secondaryAction = getSecondaryAction({ status: data?.status, userType: userDetails.userType });
+
+  const modalRef = useRef<HTMLDivElement>(null!) as React.RefObject<HTMLDivElement>;
   const handleToggle = () => {
     setShowMore((prev) => !prev);
   };
@@ -69,18 +84,8 @@ const LeftSideBarProjectDetails = () => {
   const handleMessageClick = () => {
     window.open(CHAT_ENTRY_POINT, '_blank');
   };
-  const handleRelist = () => {
-    setShowRelistModal(true);
-  };
-  // const handleTerminateProject = async () => {
-  //   await setTerminateProject(data?.id);
-  //   navigate(`/project-details/${data?.id}/team`);
-  // };
-  const handleWithdrawProject = async () => {
-    await setWithdrawProject(data?.id);
-    navigate(`/project-details/${data?.id}/team`);
-  };
-  const handleCloseDescriptionModal = () => setShowMore((prev) => !prev);
+
+  const handleCloseDescriptionModal = () => setShowMore(false);
 
   const daysLeft =
     Date.now() < data?.details?.expectedStartDate
@@ -88,6 +93,32 @@ const LeftSideBarProjectDetails = () => {
       : 0;
 
   const [documentsModal, setDocumentsModal] = useState(false);
+
+  const closeCurrentProjectFlow = () => setCurrentProjectFlow(undefined);
+  const initiateRelistFlow = () => setCurrentProjectFlow(ProjectFlowType.RELIST);
+
+  const primaryActionHandler = () => {
+    switch (primaryAction) {
+      case ProjectLeftPanelAction.MESSAGE:
+        return handleMessageClick();
+      case ProjectLeftPanelAction.RELIST:
+        return setCurrentProjectFlow(ProjectFlowType.RELIST);
+      default:
+        break;
+    }
+  };
+
+  const secondaryActionHandler = () => {
+    switch (secondaryAction) {
+      // TODO: Uncomment this when terminate is implemented
+      // case ProjectLeftPanelAction.TERMINATE:
+      //   return setCurrentProjectFlow(ProjectFlowType.TERMINATE);
+      case ProjectLeftPanelAction.WITHDRAW:
+        return setCurrentProjectFlow(ProjectFlowType.WITHDRAW);
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
     if (data) {
@@ -113,9 +144,33 @@ const LeftSideBarProjectDetails = () => {
     };
   }, [showMore]);
 
+  useEffect(() => {
+    const differenceLessThanADay = data?.details?.expectedStartDate - Date.now() < 24 * 60 * 60 * 1000;
+    if (
+      (data?.status === ProjectPrimaryStatus?.ACTIVE || data?.status === ProjectPrimaryStatus?.ON_GOING) &&
+      data?.details?.expectedStartDate &&
+      Date.now() < data?.details?.expectedStartDate &&
+      differenceLessThanADay
+    ) {
+      setShowStartsInTimer(true);
+    }
+  }, [data?.details?.expectedStartDate]);
+
   const handleQuickActionClick = (action: QuickAction) => {
     navigate(`/quick-actions/${projectId}`, { state: { action } });
   };
+
+  const showSecondaryStatusCondition =
+    (secondaryStatus &&
+      (userDetails.userType === UserType.CLIENT
+        ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
+        : userDetails.userType === UserType.TALENT) &&
+      ![
+        ProjectSecondaryStatus.SIGN_NDA,
+        ProjectSecondaryStatus.SIGN_CONTRACT,
+        ProjectSecondaryStatus.SIGN_DOCUMENTS,
+      ].includes(secondaryStatus)) ??
+    false;
 
   return (
     <div className="flex flex-col gap-y-5">
@@ -126,7 +181,14 @@ const LeftSideBarProjectDetails = () => {
             onClose={() => setDocumentsModal(false)}
             data={data?.details?.documents}
           />
-          <ProjectStatusChip status={data?.status} statusType={StatusType?.PRIMARY} />
+          <div className="flex flex-row items-center justify-between w-full">
+            <ProjectStatusChip status={data?.status} statusType={StatusType?.PRIMARY} />
+            {showStartsInTimer && (
+              <div>
+                <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
+              </div>
+            )}
+          </div>
 
           {daysLeft > 0 && <h1 className="text-error font-semibold">{daysLeft} Days Left</h1>}
         </div>
@@ -230,26 +292,25 @@ const LeftSideBarProjectDetails = () => {
           </div>
           {secondaryStatus && (
             <>
-              {userDetails.userType === UserType.CLIENT
-                ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
-                : userDetails.userType === UserType.TALENT &&
-                  ![
-                    ProjectSecondaryStatus.SIGN_NDA,
-                    ProjectSecondaryStatus.SIGN_CONTRACT,
-                    ProjectSecondaryStatus.SIGN_DOCUMENTS,
-                  ].includes(secondaryStatus) && (
-                    <div className="flex flex-row items-start gap-3">
-                      <div className="text-[var(--1-theme-color-body-text,#6E6B7B)] font-normal text-[14px] leading-[21px] font-montserrat">
-                        Status:
-                      </div>
-                      <ProjectStatusChip
-                        status={secondaryStatus}
-                        statusType={StatusType?.SECONDARY}
-                        rounded={true}
-                        lastInProgressMilestone={data.lastInProgressMilestone}
-                      />
+              {secondaryStatus && (
+                <>
+                  {showSecondaryStatusCondition && (
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="text-grey font-normal text-sm leading-[21px] font-montserrat">Status:</div>
+                      {showStartsInTimer ? (
+                        <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
+                      ) : (
+                        <ProjectStatusChip
+                          status={secondaryStatus}
+                          statusType={StatusType?.SECONDARY}
+                          rounded={true}
+                          lastInProgressMilestone={data.lastInProgressMilestone}
+                        />
+                      )}
                     </div>
                   )}
+                </>
+              )}
             </>
           )}
 
@@ -274,59 +335,20 @@ const LeftSideBarProjectDetails = () => {
             </p>
           </div>
 
-          <div className="flex flex-row items-center w-full mx-auto justify-center gap-5">
-            {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
-              <PrimaryButton
-                onClick={handleWithdrawProject}
-                className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
-              >
-                Withdraw
+          <div className="w-full flex flex-row items-center justify-center gap-x-8">
+            {secondaryAction && (
+              <PrimaryButton className="m-0" onClick={secondaryActionHandler} cancel>
+                {getTextByAction(secondaryAction)}
               </PrimaryButton>
             )}
-            {/* {userDetails.userType === UserType.CLIENT &&
-            (data?.status === ProjectPrimaryStatus.ACTIVE ||
-              data?.status === ProjectPrimaryStatus.ON_GOING ||
-              data?.status === ProjectPrimaryStatus.BLOCKED) && (
-              <PrimaryButton
-                disabled={data?.status === ProjectPrimaryStatus.BLOCKED)}
-                onClick={handleTerminateProject}
-                className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#EA5455]"
-              >
-                Terminate
-              </PrimaryButton>
-            )} */}
-            {((userDetails.userType === UserType.CLIENT &&
-              (data?.status === ProjectPrimaryStatus.ACTIVE ||
-                data?.status === ProjectPrimaryStatus.ON_GOING ||
-                data?.status === ProjectPrimaryStatus.BLOCKED)) ||
-              (userDetails.userType === UserType.TALENT &&
-                data?.status !== ProjectPrimaryStatus.TERMINATED &&
-                data?.status !== ProjectPrimaryStatus.COMPLETED)) && (
-              <PrimaryButton
-                onClick={handleMessageClick}
-                className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
-              >
-                <span>Message</span>
-              </PrimaryButton>
-            )}
-            {/* {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.OPEN && (
-            <PrimaryButton
-              onClick={() => {}}
-              className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
-            >
-              Invite
-            </PrimaryButton>
-          )} */}
-            {userDetails.userType === UserType.CLIENT && data?.status === ProjectPrimaryStatus.WITHDRAWN && (
-              <PrimaryButton
-                onClick={handleRelist}
-                className="flex w-[113.431px] px-[22px] py-[10px] justify-center items-center gap-[8px] rounded-[5px] bg-[#0065C1]"
-              >
-                Re-List
+            {primaryAction && (
+              <PrimaryButton onClick={primaryActionHandler} className="m-0">
+                {getTextByAction(primaryAction)}
               </PrimaryButton>
             )}
           </div>
         </div>
+
         {showMore && (
           <ProjectDescriptionModal
             modalRef={modalRef}
@@ -335,15 +357,31 @@ const LeftSideBarProjectDetails = () => {
             data={data?.details?.description}
           />
         )}
-        {showRelistModal && (
-          <RelistModal
-            isOpen={showRelistModal}
-            onClose={() => {
-              setShowRelistModal(false);
-            }}
-            projectId={projectId ?? ''}
-          />
-        )}
+        {projectId &&
+          currentProjectFlow &&
+          {
+            [ProjectFlowType.RELIST]: (
+              <ProjectRelistFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+              />
+            ),
+            [ProjectFlowType.TERMINATE]: (
+              <ProjectTerminateFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+                initiateRelist={initiateRelistFlow}
+                withRelist={data.status === ProjectPrimaryStatus.ACTIVE}
+              />
+            ),
+            [ProjectFlowType.WITHDRAW]: (
+              <ProjectWithdrawFlow
+                project={{ id: projectId, name: data?.details?.name }}
+                onClose={closeCurrentProjectFlow}
+                initiateRelist={initiateRelistFlow}
+              />
+            ),
+          }[currentProjectFlow]}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="bg-white p-4 flex flex-col gap-y-3">
         <div className="flex flex-row items-center gap-x-3">
