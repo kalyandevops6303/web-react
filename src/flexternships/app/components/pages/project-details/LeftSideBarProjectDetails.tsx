@@ -36,6 +36,7 @@ import SimpleElevatedCard from '../../core/cards/SimpleElevatedCard';
 import PrimaryIconText from '../../core/buttons/PrimaryIconText';
 import wowIcon from '@flexternships/assets/icons/core/wow/wow-blue.svg';
 import kudosIcon from '@flexternships/assets/icons/core/kudos/kudos-blue.svg';
+import StartsInTimer from '../../core/timers/StartsInTimer';
 import { QuickAction } from '@/flexternships/constraints/enums/quick-actions-enums';
 import ProjectStatusChip from './project-card/ProjectStatusChip';
 import BadgeGroup from './project-card/BadgeGroup';
@@ -65,6 +66,7 @@ const LeftSideBarProjectDetails = () => {
 
   const data = useProjectsStore((state) => state.projectDetails);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+  const [showStartsInTimer, setShowStartsInTimer] = useState(false);
   const [secondaryStatus, setSecondaryStatus] = useState<ProjectSecondaryStatus | undefined>();
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
   const [showMore, setShowMore] = useState(false);
@@ -96,7 +98,6 @@ const LeftSideBarProjectDetails = () => {
   const initiateRelistFlow = () => setCurrentProjectFlow(ProjectFlowType.RELIST);
 
   const primaryActionHandler = () => {
-    console.log('primaryActionHandler', primaryAction);
     switch (primaryAction) {
       case ProjectLeftPanelAction.MESSAGE:
         return handleMessageClick();
@@ -108,10 +109,10 @@ const LeftSideBarProjectDetails = () => {
   };
 
   const secondaryActionHandler = () => {
-    console.log('secondaryActionHandler', secondaryAction);
     switch (secondaryAction) {
-      case ProjectLeftPanelAction.TERMINATE:
-        return setCurrentProjectFlow(ProjectFlowType.TERMINATE);
+      // TODO: Uncomment this when terminate is implemented
+      // case ProjectLeftPanelAction.TERMINATE:
+      //   return setCurrentProjectFlow(ProjectFlowType.TERMINATE);
       case ProjectLeftPanelAction.WITHDRAW:
         return setCurrentProjectFlow(ProjectFlowType.WITHDRAW);
       default:
@@ -143,9 +144,33 @@ const LeftSideBarProjectDetails = () => {
     };
   }, [showMore]);
 
+  useEffect(() => {
+    const differenceLessThanADay = data?.details?.expectedStartDate - Date.now() < 24 * 60 * 60 * 1000;
+    if (
+      (data?.status === ProjectPrimaryStatus?.ACTIVE || data?.status === ProjectPrimaryStatus?.ON_GOING) &&
+      data?.details?.expectedStartDate &&
+      Date.now() < data?.details?.expectedStartDate &&
+      differenceLessThanADay
+    ) {
+      setShowStartsInTimer(true);
+    }
+  }, [data?.details?.expectedStartDate]);
+
   const handleQuickActionClick = (action: QuickAction) => {
     navigate(`/quick-actions/${projectId}`, { state: { action } });
   };
+
+  const showSecondaryStatusCondition =
+    (secondaryStatus &&
+      (userDetails.userType === UserType.CLIENT
+        ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
+        : userDetails.userType === UserType.TALENT) &&
+      ![
+        ProjectSecondaryStatus.SIGN_NDA,
+        ProjectSecondaryStatus.SIGN_CONTRACT,
+        ProjectSecondaryStatus.SIGN_DOCUMENTS,
+      ].includes(secondaryStatus)) ??
+    false;
 
   return (
     <div className="flex flex-col gap-y-5">
@@ -156,7 +181,14 @@ const LeftSideBarProjectDetails = () => {
             onClose={() => setDocumentsModal(false)}
             data={data?.details?.documents}
           />
-          <ProjectStatusChip status={data?.status} statusType={StatusType?.PRIMARY} />
+          <div className="flex flex-row items-center justify-between w-full">
+            <ProjectStatusChip status={data?.status} statusType={StatusType?.PRIMARY} />
+            {showStartsInTimer && (
+              <div>
+                <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
+              </div>
+            )}
+          </div>
 
           {daysLeft > 0 && <h1 className="text-error font-semibold">{daysLeft} Days Left</h1>}
         </div>
@@ -260,24 +292,25 @@ const LeftSideBarProjectDetails = () => {
           </div>
           {secondaryStatus && (
             <>
-              {userDetails.userType === UserType.CLIENT
-                ? data.isDocumentsNeeded || secondaryStatus !== ProjectSecondaryStatus.SIGN_REQUESTED
-                : userDetails.userType === UserType.TALENT &&
-                  ![
-                    ProjectSecondaryStatus.SIGN_NDA,
-                    ProjectSecondaryStatus.SIGN_CONTRACT,
-                    ProjectSecondaryStatus.SIGN_DOCUMENTS,
-                  ].includes(secondaryStatus) && (
-                    <div className="flex flex-row items-start gap-3">
+              {secondaryStatus && (
+                <>
+                  {showSecondaryStatusCondition && (
+                    <div className="flex flex-row items-center gap-3">
                       <div className="text-grey font-normal text-sm leading-[21px] font-montserrat">Status:</div>
-                      <ProjectStatusChip
-                        status={secondaryStatus}
-                        statusType={StatusType?.SECONDARY}
-                        rounded={true}
-                        lastInProgressMilestone={data.lastInProgressMilestone}
-                      />
+                      {showStartsInTimer ? (
+                        <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
+                      ) : (
+                        <ProjectStatusChip
+                          status={secondaryStatus}
+                          statusType={StatusType?.SECONDARY}
+                          rounded={true}
+                          lastInProgressMilestone={data.lastInProgressMilestone}
+                        />
+                      )}
                     </div>
                   )}
+                </>
+              )}
             </>
           )}
 
@@ -347,14 +380,25 @@ const LeftSideBarProjectDetails = () => {
           }[currentProjectFlow]}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="bg-white p-4 flex flex-col gap-y-3">
-        <div className="flex flex-row items-center gap-x-3">
-          <div className="text-sm font-medium leading-5.5 text-black">Quick Actions</div>
-          {secondaryStatus === ProjectSecondaryStatus.MILESTONE && (
-            <div className="py-[1px] px-[9px] rounded-4.5 bg-orange-light text-orange-dark text-xs font-semibold leading-4.5">
-              Milestone {data.lastInProgressMilestone}
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center gap-x-3">
+            <div className="text-sm font-medium leading-5.5 text-black">Quick Actions</div>
+            {secondaryStatus === ProjectSecondaryStatus.MILESTONE && (
+              <div className="py-[1px] px-[9px] rounded-4.5 bg-orange-light text-orange-dark text-xs font-semibold leading-4.5">
+                Milestone {data.lastInProgressMilestone}
+              </div>
+            )}
+          </div>
+          {userDetails.userType === UserType.CLIENT && (
+            <div
+              onClick={() => handleQuickActionClick(QuickAction.GIVE_RECOGNITION)}
+              className="text-trublue-secondary-500 text-sm font-semibold leading-4.5 cursor-pointer"
+            >
+              View All
             </div>
           )}
         </div>
+
         <div className="flex flex-col gap-y-2">
           <PrimaryIconText
             text={`Give ${userDetails.userType === UserType.TALENT ? 'Kudos!' : 'a WOW!'}`}

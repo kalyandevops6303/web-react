@@ -460,7 +460,6 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
 
     return projectDetailsData;
   } catch (error) {
-    console?.log(error);
     handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
   }
 };

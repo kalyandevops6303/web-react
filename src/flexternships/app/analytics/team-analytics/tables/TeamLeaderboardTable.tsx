@@ -107,6 +107,7 @@ export default function TeamLeaderboardTable() {
             highlightByKey="projectId"
             highlightedValues={[projectId as string]}
             scrollHighlightedRowsIntoView
+            highlightText="Current Team"
           />
         )}
       </div>

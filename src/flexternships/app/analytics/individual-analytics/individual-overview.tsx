@@ -107,7 +107,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
               <span className="text-grey-500 text-center font-montserrat text-xl font-normal">/100</span>
             </div>
             <div className="flex items-center gap-2">
-              <div>Attractiveness Score</div>
+              <div>Learnability Score</div>
               <Info size={18} className="text-grey-500" />
             </div>
           </div>

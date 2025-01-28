@@ -28,6 +28,7 @@ import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 import ProjectStatusChip from '../../components/pages/project-details/project-card/ProjectStatusChip';
+import CustomXAxisLabel from './labels/CustomXAxisLabel';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -195,7 +196,9 @@ export default function TeamAnalytics() {
                 </span>
                 <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
               </div>
-              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Attractiveness</div>
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">
+                Team Learnability Score
+              </div>
             </div>
             <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
               <div>
@@ -223,6 +226,7 @@ export default function TeamAnalytics() {
                 customTooltipContent={TeamMembersChartTooltip}
                 YAxisDataKey={'score'}
                 hideDeselectedMetricsFromTooltip
+                customXAxisLabel={CustomXAxisLabel}
               />
             )}
           </div>
@@ -257,6 +261,7 @@ export default function TeamAnalytics() {
               statsOrientation={StatsOrientation.VERTICAL}
               className="bg-white"
               isLoading={isTeamUniversitiesLoading}
+              calculateTotalManually
             />
           </div>
         )}

@@ -25,7 +25,7 @@ import {
 } from '@flexternships/components/ui/dropdown-menu';
 import { Input } from '@flexternships/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@flexternships/components/ui/table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type TanstackTableProps<T> = {
   data: T[];
@@ -37,6 +37,7 @@ type TanstackTableProps<T> = {
   highlightByKey?: string;
   highlightedValues?: string[];
   scrollHighlightedRowsIntoView?: boolean;
+  highlightText?: string;
 };
 
 const styles = {
@@ -57,6 +58,7 @@ export default function TanstackTable<T>({
   highlightByKey,
   highlightedValues,
   scrollHighlightedRowsIntoView,
+  highlightText,
 }: TanstackTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -65,6 +67,7 @@ export default function TanstackTable<T>({
   });
   const [rowSelection, setRowSelection] = useState({});
   const firstHighlightedRowRef = React.useRef<HTMLTableRowElement>(null);
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
@@ -96,20 +99,32 @@ export default function TanstackTable<T>({
     return highlightedValues?.includes(row.original[highlightByKey as keyof typeof row.original] as string) ?? false;
   };
 
-  React.useEffect(() => {
-    if (scrollHighlightedRowsIntoView && highlightedValues?.length && firstHighlightedRowRef.current) {
-      const tableContainer = firstHighlightedRowRef.current.closest('.overflow-auto');
-      if (tableContainer) {
-        const containerRect = tableContainer.getBoundingClientRect();
-        const rowRect = firstHighlightedRowRef.current.getBoundingClientRect();
-        const scrollTop = rowRect.top - containerRect.top - containerRect.height / 2 + tableContainer.scrollTop;
-        tableContainer.scrollTo({ top: scrollTop, behavior: 'smooth' });
-      }
+  useEffect(() => {
+    if (
+      scrollHighlightedRowsIntoView &&
+      highlightedValues?.length &&
+      firstHighlightedRowRef.current &&
+      tableContainerRef.current
+    ) {
+      const rowRect = firstHighlightedRowRef.current.getBoundingClientRect();
+      const containerRect = tableContainerRef.current.getBoundingClientRect();
+
+      // Calculate the scroll position to center the row in the container
+      const scrollTop =
+        rowRect.top -
+        containerRect.top -
+        containerRect.height / 2 +
+        rowRect.height / 2 +
+        tableContainerRef.current.scrollTop;
+
+      tableContainerRef.current.scrollTo({
+        top: scrollTop,
+        behavior: 'smooth',
+      });
     }
   }, [scrollHighlightedRowsIntoView, highlightedValues]);
-
   return (
-    <div className={`${className} w-full`}>
+    <div ref={tableContainerRef} className={`${className} w-full`}>
       {allowColumnFilters && (
         <div className="flex items-center py-4">
           <Input
@@ -145,9 +160,9 @@ export default function TanstackTable<T>({
         </div>
       )}
       <div className="rounded-lg border border-[#EBE9F1] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
-        <div className="max-h-[500px] overflow-auto">
+        <div>
           <Table className={`rounded-lg relative`}>
-            <TableHeader>
+            <TableHeader className="">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
@@ -180,7 +195,14 @@ export default function TanstackTable<T>({
                         ${index === row.getVisibleCells().length - 1 && isRowHighlighted(row) && '!border-r'}
                         text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] px-[12px]`}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <div className="flex flex-col">
+                          {isRowHighlighted(row) && highlightText && index === 1 && (
+                            <span className="text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] bg-[#0185E4] text-white px-2 rounded-full text-xs w-fit">
+                              {highlightText}
+                            </span>
+                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
                       </TableCell>
                     ))}
                   </TableRow>
