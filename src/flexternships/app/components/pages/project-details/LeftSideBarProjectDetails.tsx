@@ -384,14 +384,25 @@ const LeftSideBarProjectDetails = () => {
           }[currentProjectFlow]}
       </SimpleElevatedCard>
       <SimpleElevatedCard className="bg-white p-4 flex flex-col gap-y-3">
-        <div className="flex flex-row items-center gap-x-3">
-          <div className="text-sm font-medium leading-5.5 text-black">Quick Actions</div>
-          {secondaryStatus === ProjectSecondaryStatus.MILESTONE && (
-            <div className="py-[1px] px-[9px] rounded-[17px] bg-orange-light text-orange-dark text-xs font-semibold leading-4.5">
-              Milestone {data.lastInProgressMilestone}
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center gap-x-3">
+            <div className="text-sm font-medium leading-5.5 text-black">Quick Actions</div>
+            {secondaryStatus === ProjectSecondaryStatus.MILESTONE && (
+              <div className="py-[1px] px-[9px] rounded-[17px] bg-orange-light text-orange-dark text-xs font-semibold leading-4.5">
+                Milestone {data.lastInProgressMilestone}
+              </div>
+            )}
+          </div>
+          {userDetails.userType === UserType.CLIENT && (
+            <div
+              onClick={() => handleQuickActionClick(QuickAction.GIVE_RECOGNITION)}
+              className="text-trublue-secondary-500 text-sm font-semibold leading-4.5 cursor-pointer"
+            >
+              View All
             </div>
           )}
         </div>
+
         <div className="flex flex-col gap-y-2">
           <PrimaryIconText
             text={`Give ${userDetails.userType === UserType.TALENT ? 'Kudos!' : 'a WOW!'}`}

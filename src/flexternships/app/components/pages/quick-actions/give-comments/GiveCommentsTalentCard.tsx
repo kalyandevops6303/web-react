@@ -34,10 +34,15 @@ function UnselectedTalentCard({
   checkboxIcon = uncheckedIcon,
   className = 'bg-white shadow-card',
 }: UnselectedTalentCardProps) {
-  const handleClick = onExpandToggle || onSelectionToggle;
+  const handleClick = onExpandToggle || onSelectionToggle; // if onExpandToggle is not provided, then onSelectionToggle is used
   const avatarColor = stringToColour(talentInfo.name);
   const avatarBgColor = stringToColour(talentInfo.name, { opacity: 10 });
   const nameInitial = talentInfo.name.charAt(0).toUpperCase();
+
+  const handleCheckboxClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // not to invoke handleClick again as checkbox is a child of the div
+    onSelectionToggle();
+  };
 
   return (
     <div
@@ -48,7 +53,7 @@ function UnselectedTalentCard({
     >
       <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-2">
         <div className="flex flex-row items-center gap-x-3">
-          <div onClick={onSelectionToggle} className="cursor-default">
+          <div onClick={handleCheckboxClick} className="cursor-default">
             <img src={checkboxIcon} alt="checkbox" />
           </div>
           <div className="flex flex-row items-center gap-x-4">

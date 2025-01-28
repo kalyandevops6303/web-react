@@ -57,7 +57,6 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
   const {
     control,
     handleSubmit,
-    watch,
     reset,
     formState: { errors, isValid },
   } = useForm<GiveRecognitionForm | GiveNotesForm>({
@@ -66,12 +65,14 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
     resolver: yupResolver(GiveCommentsSchema[category]),
   });
 
-  const { append, remove } = useFieldArray({
+  const {
+    fields: selectedTalents,
+    append,
+    remove,
+  } = useFieldArray({
     control,
     name: 'selectedTalents',
   });
-
-  const selectedTalents = watch('selectedTalents');
 
   const closeConfirmationModal = async () => {
     reset(defaultValues);

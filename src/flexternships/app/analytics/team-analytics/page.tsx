@@ -259,6 +259,7 @@ export default function TeamAnalytics() {
               statsOrientation={StatsOrientation.VERTICAL}
               className="bg-white"
               isLoading={isTeamUniversitiesLoading}
+              calculateTotalManually
             />
           </div>
         )}
