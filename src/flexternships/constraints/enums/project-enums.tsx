@@ -1,5 +1,12 @@
 import { ProjectPrimaryStatus } from './core-enums';
 
+export enum ProjectLeftPanelAction {
+  MESSAGE = 'MESSAGE',
+  TERMINATE = 'TERMINATE',
+  WITHDRAW = 'WITHDRAW',
+  RELIST = 'RELIST',
+}
+
 export enum UserTypeChipClassnames {
   TALENT = 'bg-[#FFD700] text-[#333333]',
   CLIENT = 'text-blue-700 bg-blue-100',
@@ -59,6 +66,7 @@ export const ProjectPanelCaptionDate1 = {
   [ProjectPrimaryStatus.COMPLETED]: 'Start Date',
   [ProjectPrimaryStatus.WITHDRAWN]: 'Posted On',
   [ProjectPrimaryStatus.BLOCKED]: 'Start Date',
+  [ProjectPrimaryStatus.CLOSED]: 'Posted On',
 };
 
 export const ProjectPanelCaptionDate2 = {
@@ -70,6 +78,7 @@ export const ProjectPanelCaptionDate2 = {
   [ProjectPrimaryStatus.COMPLETED]: 'End Date',
   [ProjectPrimaryStatus.WITHDRAWN]: 'Withdraw Date',
   [ProjectPrimaryStatus.BLOCKED]: 'End Date',
+  [ProjectPrimaryStatus.CLOSED]: 'Closed Date',
 };
 
 export const ProjectPanelIcon1Classnames = {
@@ -87,6 +96,8 @@ export const ProjectPanelIcon1Classnames = {
   [ProjectPrimaryStatus.WITHDRAWN]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
   [ProjectPrimaryStatus.BLOCKED]:
+    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
+  [ProjectPrimaryStatus.CLOSED]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
 };
 
@@ -106,6 +117,8 @@ export const ProjectPanelIcon2Classnames = {
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] text-[#EA5455] flex items-center justify-center',
   [ProjectPrimaryStatus.BLOCKED]:
     'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
+  [ProjectPrimaryStatus.CLOSED]:
+    'w-[46px] h-[46px] flex-shrink-0 rounded-[26px] bg-[#0185E41F] text-[#0185E4] flex items-center justify-center',
 };
 
 export const ProjectPanelDate2Classnames = {
@@ -117,4 +130,5 @@ export const ProjectPanelDate2Classnames = {
   [ProjectPrimaryStatus.COMPLETED]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
   [ProjectPrimaryStatus.WITHDRAWN]: 'text-[#EA5455]',
   [ProjectPrimaryStatus.BLOCKED]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
+  [ProjectPrimaryStatus.CLOSED]: 'text-[var(--1-theme-color-heading-display-text,#5E5873)]',
 };

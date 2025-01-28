@@ -29,6 +29,7 @@ const ProjectStatusChip = ({
     [ProjectPrimaryStatus.COMPLETED]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.WITHDRAWN]: 'bg-orange-light text-orange-dark border-1 border-orange-dark',
     [ProjectPrimaryStatus.BLOCKED]: 'bg-[#EA54551F] text-[#EA5455] border border-[#EA5455]',
+    [ProjectPrimaryStatus.CLOSED]: 'bg-gray-300 text-gray-600 border border-gray-500',
   };
 
   const SecondaryStatusChipClassNames = {

@@ -1,4 +1,4 @@
-import { GlobalModalContent } from '../constraints/types/core-types';
+import { GlobalModalContent } from '../../constraints/types/core-types';
 
 export const saveForLaterModalContent: GlobalModalContent = {
   title: 'Save For Later',

@@ -41,15 +41,27 @@ export const routes = {
       putArtifactsByMilestoneId: `${serviceUrls.projectManagementV2}/milestones/submission`,
       updateStatus: `${serviceUrls.projectManagementV2}/update-status/milestones`,
       deleteMilestoneArtifactById: `${serviceUrls.projectManagementV2}/milestones/artifacts`,
+      milestonesDropdown: `${serviceUrls.projectManagementV2}/milestones/dropdown`,
     },
     feedback: {
       submitKudosWow: `${serviceUrls.projectManagementV2}/feedback/kudos_wow`,
       milestoneFeedbackInfo: `${serviceUrls.projectManagementV2}/feedback`,
       submitFeedback: `${serviceUrls.projectManagementV2}/feedback/response`,
       feedbackResponse: `${serviceUrls.projectManagementV2}/feedback/response`,
+      getCompetencies: `${serviceUrls.projectManagementV2}/feedback/competency`,
     },
     notification: {
       markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
+    },
+    quickActions: {
+      getCount: `${serviceUrls.projectManagementV2}/quick-action/count`,
+      recognitionTimeline: `${serviceUrls.projectManagementV2}/quick-action/timeline`,
+      submitRecognition: `${serviceUrls.projectManagementV2}/recognition`,
+    },
+    notes: {
+      getNoteCategories: `${serviceUrls.projectManagementV2}/note/category`,
+      getPaginatedNoteCategories: `${serviceUrls.projectManagementV2}/note/category/paginated`,
+      submitNotes: `${serviceUrls.projectManagementV2}/note`,
     },
   },
   userManagement: {
@@ -115,6 +127,9 @@ export const routes = {
       getFlexternComments: `${serviceUrls.dashboardV2}/comment`,
       getFlexternCommentCount: `${serviceUrls.dashboardV2}/comment/count`,
     },
+    flexternRoles: {
+      getPaginatedFlexternRoles: `${serviceUrls.dashboardV2}/flextern/roles`,
+    },
   },
   analytics: {
     individualOverview: `${serviceUrls.dashboardV2}/talent/header`,
@@ -123,6 +138,18 @@ export const routes = {
     performanceChart: `${serviceUrls.dashboardV2}/analytics/performance-rating`,
     projectsList: `${serviceUrls.dashboardV2}/analytics/individual/projects-list`,
     thirdPartyAppsData: `${serviceUrls.dashboardV2}/analytics/third-party-apps-data`,
+    detailedPerformanceInsights: `${serviceUrls.dashboardV2}/team/performance/insights/detail`,
+    teamCompetencySummary: `${serviceUrls.dashboardV2}/team/competency/summary`,
+    team: {
+      performanceSummary: `${serviceUrls.dashboardV2}/team/performance/summary`,
+      teamMembersAttractivenessDetails: `${serviceUrls.dashboardV2}/team/performance/leaderboard`,
+      teamLeaderboard: `${serviceUrls.dashboardV2}/team/overall/leaderboard`,
+      roles: `${serviceUrls.dashboardV2}/team/analytics/roles`,
+      universities: `${serviceUrls.dashboardV2}/team/analytics/institutes`,
+      diversity: `${serviceUrls.dashboardV2}/team/analytics/diversity`,
+      teamMembersDetails: `${serviceUrls.dashboardV2}/team/analytics/leaderboard`,
+      performanceInsightsOverview: `${serviceUrls.dashboardV2}/team/performance/insights`,
+    },
   },
 };
 

@@ -10,6 +10,10 @@ interface FooterProps {
   }[];
 }
 
+const styles = {
+  disabled: 'opacity-50 cursor-not-allowed pointer-events-none',
+};
+
 export default function Footer(props: Readonly<FooterProps>) {
   const { items } = props;
 
@@ -29,7 +33,7 @@ export default function Footer(props: Readonly<FooterProps>) {
               )}
             </div>
             {item.href ? (
-              <Link to={item.href}>
+              <Link to={item.href} className={item.score === '0' ? styles.disabled : ''}>
                 <div className="flex items-center gap-1 justify-center text-center text-sm leading-sm-custom font-medium text-trublue-secondary-500 font-montserrat md:truncate cursor-pointer">
                   <span>{item.title}</span>
                   <ChevronRight size={18} className="text-trublue-secondary-500" />

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import IndividualOverview from './individual-overview';
-import MultipleLinesChart from './MultipleLinesChart';
+import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart';
 
 import { TooltipProps } from 'recharts';
 import { ArrowLeft, ThumbsUp } from 'react-feather';
@@ -20,6 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/flexternships/app/components/ui/select';
+import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
+import CustomXAxisLabel from './labels/CustomXAxisLabel';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -67,10 +69,6 @@ export default function IndividualAnalytics() {
       ?.avgScore;
   };
 
-  const handleBack = () => {
-    navigate(`/analytics/project/${projectId}/team`);
-  };
-
   useEffect(() => {
     if (individualOverviewDetails) {
       setFormattedIndividualOverviewDetails({
@@ -84,8 +82,8 @@ export default function IndividualAnalytics() {
           endYear: individualOverviewDetails?.educationalInstitute?.gradYear,
           name: individualOverviewDetails?.educationalInstitute?.education?.name,
         },
-        flexternshipStartDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.startDateEpoch),
-        flexternshipEndDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.endDateEpoch),
+        flexternshipStartDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.startDateEpoch ?? 0),
+        flexternshipEndDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.endDateEpoch ?? 0),
         wowCount: individualOverviewDetails?.wowCount,
         kudosCount: individualOverviewDetails?.kudosCount,
         trumioAttractivenessScore: individualOverviewDetails?.attractivenessScore?.score,
@@ -96,7 +94,7 @@ export default function IndividualAnalytics() {
   }, [individualOverviewDetails]);
 
   useEffect(() => {
-    if (individualOverviewDetails) {
+    if (formattedIndividualOverviewDetails) {
       setFeedbackFooterData([
         {
           title: 'Manager Feedback',
@@ -115,7 +113,7 @@ export default function IndividualAnalytics() {
         },
       ]);
     }
-  }, [individualOverviewDetails]);
+  }, [formattedIndividualOverviewDetails]);
 
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
@@ -203,15 +201,17 @@ export default function IndividualAnalytics() {
           {
             title: `${formattedIndividualOverviewDetails?.firstName} ${formattedIndividualOverviewDetails?.lastName}`,
             link: window.location.href,
+            isActive: true,
           },
         ]}
       />
-      <button onClick={handleBack} className="flex items-center gap-2 my-2 cursor-pointer" type="button">
-        <div className="p-2 rounded-full bg-trublue-light">
-          <ArrowLeft size={18} className="text-trublue-secondary-500" />
-        </div>
-        <div className="text-[#0185E4] font-montserrat text-sm font-semibold leading-normal">Team Analytics</div>
-      </button>
+
+      <PrimaryIconText
+        icon={<ArrowLeft size={18} className="text-trublue-secondary-500" />}
+        text="Team Analytics"
+        onClick={() => navigate(`/analytics/project/${projectId}/team`)}
+        className="w-fit"
+      />
 
       <div className="flex gap-2 items-center">
         <div className="w-auto text-[#394042] font-montserrat text-base font-medium leading-6">
@@ -239,7 +239,7 @@ export default function IndividualAnalytics() {
             </span>
             <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
           </div>
-          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Attractiveness</div>
+          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Learnability</div>
         </div>
         <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
           <div>
@@ -255,10 +255,11 @@ export default function IndividualAnalytics() {
           chartData={recognitionChartData?.chartData}
           chartConfig={recognitionChartData?.chartConfig}
           maxYAxis={recognitionChartData?.maxYAxis}
-          showFilters={false}
           hasGradient={true}
           XAxisDataKey="milestone"
           customTooltipContent={CustomTooltipContent}
+          customXAxisLabel={CustomXAxisLabel}
+          showDataOnFilters
         />
       </div>
 

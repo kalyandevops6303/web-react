@@ -32,11 +32,11 @@ import {
   getMilestoneDetailsModalCancelCtaText,
   getMilestoneDetailsModalConfirmCtaText,
   getMilestoneDetailsModalTitle,
-} from '@/flexternships/static/milestones-content';
-import { getMilestoneDetailsModalDescription } from '@/flexternships/static/milestones-content';
+} from '@/flexternships/static/content/milestones-content';
+import { getMilestoneDetailsModalDescription } from '@/flexternships/static/content/milestones-content';
 import DraftSavedModal from '@/flexternships/app/components/core/modals/milestone/DraftSavedModal';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
 import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 
 export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: boolean }) {

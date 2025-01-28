@@ -3,7 +3,7 @@ import { useState } from 'react';
 import PrimaryButton from '../buttons/PrimaryButton';
 import SecondaryButton from '../buttons/SecondaryButton';
 import CloseModalButton from '../buttons/CloseModalButton';
-import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 
 export default function DraftAvailable() {
   const [isOpen, setIsOpen] = useState<boolean>(true);

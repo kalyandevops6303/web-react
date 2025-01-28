@@ -1,3 +1,4 @@
+import SelectOptionCard from '@/flexternships/app/components/core/form/SelectOptionCard';
 import React from 'react';
 import { Award } from 'react-feather';
 import { ItemValue, Question, Serializer } from 'survey-core';
@@ -6,6 +7,20 @@ import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui
 type Choice = {
   value: string;
   text: string;
+};
+
+type CompetencyChoice = {
+  id: string;
+  name: string;
+  abbreviation: string;
+  colorCode: string;
+  selected?: boolean;
+};
+
+type Competency = {
+  choices: Array<CompetencyChoice>;
+  title: string;
+  isRequired: boolean;
 };
 
 export class WowModel extends Question {
@@ -34,11 +49,31 @@ export class WowModel extends Question {
     this.setPropertyValue('choices', newChoices);
   }
 
+  get competency(): Competency {
+    return this.getPropertyValue('competency', undefined);
+  }
+
+  set competency(newValue: Competency) {
+    this.setPropertyValue('competency', newValue);
+  }
+
   onSurveyLoad(): void {
-    if (this.jsonObj && this.jsonObj.choices) {
+    if (!this.jsonObj) return;
+
+    if (this.jsonObj.choices) {
       this.choices = this.jsonObj.choices.map((choice: Choice | string) =>
         typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
       );
+    }
+
+    if (this.jsonObj.competency) {
+      this.competency = {
+        ...this.jsonObj.competency,
+        choices: this.jsonObj.competency.choices.map((choice: CompetencyChoice) => ({
+          ...choice,
+          selected: false,
+        })),
+      };
     }
   }
 
@@ -48,6 +83,10 @@ export class WowModel extends Question {
         typeof choice === 'string' ? new ItemValue(choice) : new ItemValue(choice.value, choice.text),
       );
     }
+    if (name === 'competency' && newValue && newValue.competency) {
+      this.competency = newValue.competency;
+    }
+
     super.onPropertyValueChanged(name, oldValue, newValue);
   }
 }
@@ -89,15 +128,33 @@ export class Wow extends SurveyQuestionElementBase {
     this.setState({ selectedValue: value });
   };
 
+  handleCompetencySelect = (value: string): void => {
+    const updatedCompetency = {
+      ...this.question.competency,
+      choices: this.question.competency.choices.map((choice: CompetencyChoice) => {
+        const isPreviouslySelected = choice.selected;
+        const isClicked = choice.id === value;
+
+        return {
+          ...choice,
+          selected: isClicked ? !isPreviouslySelected : isPreviouslySelected,
+        };
+      }),
+    };
+
+    this.question.competency = updatedCompetency;
+  };
+
   render() {
     if (!this.question) return null;
 
     const cssClasses = this.question.cssClasses;
     const choices = this.question.choices || [];
+    const competency = this.question.competency;
     const { selectedValue } = this.state;
 
     return (
-      <div className={cssClasses.root}>
+      <div className={`${cssClasses.root} flex flex-col gap-y-4`}>
         <div className="wow-choices text-black flex gap-4">
           {choices.length > 0 ? (
             choices.map((choice: any, index: number) => (
@@ -135,6 +192,25 @@ export class Wow extends SurveyQuestionElementBase {
             <span>No choices available</span>
           )}
         </div>
+
+        {competency && (
+          <div className="flex flex-col gap-y-2">
+            <div className="text-sm font-medium leading-5.5 text-grey-600">
+              {competency.title} {competency.isRequired && <span className="text-error">*</span>}
+            </div>
+            <div className="flex flex-row flex-wrap gap-4">
+              {competency.choices.map((choice: CompetencyChoice) => (
+                <SelectOptionCard
+                  key={choice.id}
+                  text={choice.name}
+                  value={choice.id}
+                  selected={!!choice.selected}
+                  onClick={() => this.handleCompetencySelect(choice.id)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -149,6 +225,7 @@ Serializer.addClass(
       type: 'itemvalues',
       default: [new ItemValue('wow', 'WOW'), new ItemValue('na', 'NA')],
     },
+    'competency',
   ],
   function () {
     return new WowModel('');

@@ -95,7 +95,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   return (
     <div>
       {filteredPerformanceDetails?.map((peerFeedback: any, index: number) => (
-        <div>
+        <div key={index}>
           {peerFeedback?.feedback_id && (
             <CollapsableCard
               white

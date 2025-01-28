@@ -1,3 +1,4 @@
+import React from 'react';
 import CollapsableCard from '@/flexternships/app/components/core/cards/CollapsableCard';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
@@ -64,7 +65,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   return (
     <div>
       {performanceDetails?.map((individualFeedback: any, index: number) => (
-        <>
+        <React.Fragment key={index}>
           {individualFeedback?.feedback_id && (
             <CollapsableCard
               white
@@ -81,7 +82,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
               )}
             </CollapsableCard>
           )}
-        </>
+        </React.Fragment>
       ))}
     </div>
   );
