@@ -373,13 +373,14 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   });
 
   // Added this event listener to handle competency change in kudosgroup/wowgroup
-  survey.onPropertyValueChangedCallback = function (name, _oldValue, _newValue, sender) {
-    const senderJson = sender.toJSON();
+  survey.onPropertyValueChangedCallback = function (name, _oldValue, newValue, sender) {
+    if (!sender) return;
+    const { name: questionName } = (sender as any).jsonObj;
 
-    if (name === 'competency' && senderJson && senderJson.competency) {
+    if (name === 'competency' && questionName && newValue) {
       survey.setValue(
-        `${senderJson.name}-${name}`,
-        senderJson.competency.choices
+        `${questionName}-${name}`,
+        newValue.choices
           .filter((choice: { selected?: boolean }) => choice.selected)
           .map((choice: { id: string; name: string; colorCode: string }) => ({
             id: choice.id,
