@@ -5,7 +5,7 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
 import { useNavigate } from 'react-router-dom';
 
-export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
+export default function TabNavigationForm({ tabs, hideTabHeader = false }: TabNavigationFormProps) {
   const currentTabIndex = useFlexternUserProfileStore((state) => state.currentTabIndex);
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
@@ -17,20 +17,22 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex">
-        {tabs.map((tab, index) => (
-          <div
-            key={tab.id}
-            onClick={() => tabClickHandler(tab.id)}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-md ${
-              index === currentTabIndex ? 'text-trublue-secondary-500 bg-trublue-light' : 'text-grey-muted'
-            } ${userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE ? 'cursor-pointer' : ''}`}
-          >
-            <div>{tab.icon}</div>
-            <div className="text-sm tracking-wide leading-4 font-medium">{tab.title}</div>
-          </div>
-        ))}
-      </div>
+      {!hideTabHeader && (
+        <div className="flex">
+          {tabs.map((tab, index) => (
+            <div
+              key={tab.id}
+              onClick={() => tabClickHandler(tab.id)}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-md ${
+                index === currentTabIndex ? 'text-trublue-secondary-500 bg-trublue-light' : 'text-grey-muted'
+              } ${userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE ? 'cursor-pointer' : ''}`}
+            >
+              <div>{tab.icon}</div>
+              <div className="text-sm tracking-wide leading-4 font-medium">{tab.title}</div>
+            </div>
+          ))}
+        </div>
+      )}
       <div>{tabs[currentTabIndex].content}</div>
     </div>
   );
@@ -41,4 +43,9 @@ type TabProp = {
   title: string;
   icon: React.ReactNode;
   content: React.ReactNode;
+};
+
+type TabNavigationFormProps = {
+  tabs: TabProp[];
+  hideTabHeader?: boolean;
 };
