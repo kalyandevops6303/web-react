@@ -284,7 +284,6 @@ const ProjectModal = ({
   const appPermissions = useSelector(appPermissionsSelector);
 
   const handleViewFlexternProject = () => {
-    console.log('data');
     if (!data?.is_read) {
       const postData = {
         metadata: {
@@ -297,14 +296,10 @@ const ProjectModal = ({
         updateCardStatus({
           data: postData,
           isFlextern: true,
-          onSuccess: () => {
-            navigate(`/project-details/${data?._id}/team`);
-          },
         }),
       );
-    } else {
-      navigate(`/project-details/${data?._id}/team`);
     }
+    navigate(`/project-details/${data?._id}/team`);
   };
 
   const handleRelistFlexternProject = () => {
