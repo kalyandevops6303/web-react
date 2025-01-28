@@ -10,7 +10,7 @@ export default function TeamMembersChartTooltip(props: Readonly<TeamMembersChart
   return (
     <div className="bg-white min-w-[200px] max-w-1/2 p-[8px_12px] border rounded-[6px] shadow-lg flex flex-col gap-1">
       <p className="font-medium font-montserrat text-[10px] font-semibold leading-[16px] text-[#838889] uppercase">
-        ATTRACTIVENESS SCORE
+        LEARNABILITY SCORE
       </p>
       <p className="font-medium font-montserrat text-[10px] font-semibold leading-[16px] text-[#838889] uppercase">
         {label}

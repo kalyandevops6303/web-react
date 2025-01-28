@@ -218,7 +218,6 @@ export default function TanstackTable<T>({
           </Table>
         </div>
       </div>
-      {/* For testing */}
       {allowPagination && (
         <div className="flex items-center justify-end space-x-2 py-4">
           {allowSelection && (

@@ -239,7 +239,7 @@ export default function IndividualAnalytics() {
             </span>
             <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
           </div>
-          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Attractiveness</div>
+          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Learnability</div>
         </div>
         <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
           <div>
