@@ -22,6 +22,17 @@ export const FlexternClientAccountDetailsSchema = yup.object().shape({
     })
     .required('Timezone is required'),
   imageUri: yup.string().optional(), // submits file key gets public uri
+  linkedin: yup.string().url('LinkedIn must be a valid URL').optional(),
+  title: yup
+    .string()
+    .matches(/^[a-zA-Z0-9\s]+$/, 'Designation must only contain alphanumeric characters')
+    .max(50, 'Designation must not exceed 50 characters')
+    .required('Designation is required'),
+  department: yup
+    .string()
+    .matches(/^[a-zA-Z0-9\s]+$/, 'Department must only contain alphanumeric characters')
+    .max(50, 'Department must not exceed 50 characters')
+    .required('Department is required'),
 });
 
 export const FlexternClientCompanyDetailsSchema = yup.object().shape({
