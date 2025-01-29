@@ -4,6 +4,8 @@ import {
   ProjectDetails,
   ProjectDetailsState,
   ProjectStore,
+  ProjectInvitation,
+  PerformanceDetails,
 } from '../constraints/types/project-details-types';
 import {
   populateTeamDetails,
@@ -16,14 +18,14 @@ import {
 import { ProjectSecondaryStatus } from '../constraints/enums/core-enums';
 
 const defaultInitState: ProjectDetailsState = {
-  isProjectsLoading: false,
+  isProjectsLoading: false, // this state is determining the loading state of list of projects
   projectDetails: {} as ProjectDetails,
-  projectDetailsLoading: false,
+  projectDetailsLoading: false, // this state is determining the loading state of project details of a particular project
   isTeamDetailsLoading: false,
   teamDetails: [] as Array<TeamMemberDetails>,
-  projectInvitationDetails: null,
+  projectInvitationDetails: {} as ProjectInvitation,
   isProjectInvitationDetailsLoading: false,
-  performanceDetails: null,
+  performanceDetails: [] as PerformanceDetails[],
   isPerformanceDetailsLoading: false,
 };
 
