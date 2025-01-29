@@ -43,6 +43,12 @@ export enum MilestoneStatus {
   COMPLETED = 'COMPLETED',
 }
 
+export enum ProjectSortTypes {
+  ALL = 'ALL',
+  NEW = 'NEW',
+  FAVOURITE = 'FAVOURITE',
+}
+
 export enum MilestoneArtifactStatus {
   DRAFT = 'DRAFT',
   SUBMITTED = 'SUBMITTED',
