@@ -13,8 +13,9 @@ import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
-import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
 const getBidByName = (bidBy) => {
   if (!bidBy) return '';
@@ -40,11 +41,16 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
     LISTING_EXPIRED: 'Listing Expired',
   };
 
-  const navigate = useNavigate();
-
-  const viewProject = () => {
-    navigate(`/project-details/${data._id}/milestone`);
+  const secondaryStatusEnum = {
+    SIGN_CONTRACT: 'Sign Contract',
+    SIGN_NDA: 'Sign NDA',
+    COMPLETED: 'Completed',
+    SIGN_REQUESTED: 'Sign Requested',
+    SIGN_DOCUMENTS: 'Sign Documents',
+    MILESTONE: 'Milestone',
   };
+
+  const navigate = useNavigate();
 
   const updateCard = () => {
     const postData = {
@@ -58,19 +64,23 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
       dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForClient' }));
     }
   };
+  const viewProject = () => {
+    updateCard();
+    navigate(`/project-details/${data._id}/milestone`);
+  };
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design new-tag-relative-card">
+      <Card className="card-app-design new-tag-relative-card project-card-dashboard">
         {!data?.is_read && <NewTag />}
-        <CardBody>
+        <CardBody className="project-card-body">
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
-              {statusEnum[data?.status]}
+              {(data?.secondary_status === 'MILESTONE'
+                ? `${secondaryStatusEnum[data?.secondary_status]} ${data?.current_milestone?.seq}`
+                : secondaryStatusEnum[data?.secondary_status]) || statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="active-project-name mt-1 truncate-2" style={{ height: '60px' }}>
-            {getBidByName(data?.bid_by) || data?.name}
-          </p>
+          <h4 className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</h4>
           {data?.worker_details.length > 0 && (
             <div className="team-badge px-1">
               <p className="mb-25">Team</p>
@@ -88,7 +98,14 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
                       user_id: worker?.user_id,
                       user_type: userTypes.talent,
                       title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                      img: worker.image_uri || defaultAvatar,
+                      img:
+                        (worker.image_uri?.length > 0
+                          ? worker.image_uri
+                          : generateAvatar(
+                              worker?.user_id,
+                              (worker?.first_name?.charAt(0)?.toUpperCase() || '') +
+                                (worker?.last_name?.charAt(0)?.toUpperCase() || ''),
+                            )) || defaultAvatar,
                       placement: 'bottom',
                       imgHeight: 33,
                       imgWidth: 33,

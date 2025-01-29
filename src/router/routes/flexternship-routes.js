@@ -54,6 +54,14 @@ import FlexternshipsContractView from '@/flexternships/app/project-details/sign-
 import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
 import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
+import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
+import { FEATURE_NAMES } from '@/utility/constants/Constant';
+import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
+import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
+import FlexternProjectQuickActions from '@/flexternships/app/quick-actions/page';
+import TeamPerformanceInsights from '@/flexternships/app/analytics/team-analytics/performance-insights/page';
+import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
+import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -97,6 +105,27 @@ export const FlexternshipRoutes = [
         ]}
       >
         <PrivateDashboard />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
+    path: '/analytics/project/:projectId/individual/:userId/comments',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <Comments />
       </RoleAccessWrapper>
     ),
   },
@@ -502,7 +531,101 @@ export const FlexternshipRoutes = [
     element: <HandleFeedbacks />,
   },
   {
+    path: '/chat-interface',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+        ]}
+        featureName={FEATURE_NAMES.AYESHA_BOT}
+        fallbackRoute="/dashboard"
+      >
+        <ChatInterface />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
+    path: '/verify-invitation',
+    element: <VerifyInvitation />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/quick-actions/:projectId',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/talent-onboarding/account-details',
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: '/talent-onboarding/personal-details',
+              },
+            ],
+          },
+        ]}
+      >
+        <FlexternProjectQuickActions />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
+    path: '/analytics/project/:projectId/team/performance-insights',
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: '/client-onboarding',
+              },
+            ],
+          },
+        ]}
+      >
+        <TeamPerformanceInsights />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
     path: '*',
     element: <NotFound />,
+  },
+  {
+    path: '/analytics/project/:projectId/individual/:userId',
+    element: <IndividualAnalytics />,
+  },
+  {
+    path: '/analytics/project/:projectId/team',
+    element: <TeamAnalytics />,
   },
 ];

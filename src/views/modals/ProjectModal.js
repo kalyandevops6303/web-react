@@ -16,17 +16,13 @@ import {
   CardText,
   Button,
   Spinner,
-  Table,
-  Accordion,
-  AccordionItem,
-  AccordionHeader,
-  AccordionBody,
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import styled from 'styled-components';
+import { isEmpty } from 'lodash';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
@@ -42,14 +38,13 @@ import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { convertUnixTimestampToDate, downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
-import { getDownloadUrl } from '../../redux/actions/dashboardActions';
+import { getDownloadUrl, updateCardStatus } from '../../redux/actions/dashboardActions';
 import ReportModal from './ReportModal';
 import FeedbackForCustomerSupportModal from './CustomerSupportFeedbackModal';
 import { selectAlreadyReported } from '../../redux/selectors/reportSelectors';
 import { checkIfReported } from '../../redux/actions/reportActions';
 import { checkReportSuccess } from '../../redux/reducers/report';
 import PermissionWrapper from '@/PermissionWrapper';
-import { isEmpty } from 'lodash';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
@@ -121,7 +116,6 @@ const ProjectModal = ({
   const navigate = useNavigate();
   const location = useLocation();
   const populateProjectMilestones = useProjectMilestonesStore((state) => state.populateProjectMilestones);
-  const milestoneDetails = useProjectMilestonesStore((state) => state.projectMilestones);
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
@@ -129,20 +123,11 @@ const ProjectModal = ({
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const [selectedFileKey, setSelectedFileKey] = useState(null);
   const [reportModal, setReportModal] = useState(false);
-  const [accordionOpen, setAccordionOpen] = useState('1');
   const [successReportModal, setSuccessReportModal] = useState(false);
   const alreadyReported = useSelector(selectAlreadyReported);
   // const checkReportLoading = useSelector(selectCheckReportLoading);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-
-  const toggle = (id) => {
-    if (accordionOpen === id) {
-      setAccordionOpen();
-    } else {
-      setAccordionOpen(id);
-    }
-  };
   useEffect(() => {
     dispatch(
       checkIfReported({
@@ -244,7 +229,7 @@ const ProjectModal = ({
           );
           if (!isCurrentUserWorker) {
             navigate(`/project-details/${data?._id}/bid`);
-            return;
+            return null;
           }
         }
         navigate(`/project-details/${data?._id}/milestone`);
@@ -272,6 +257,7 @@ const ProjectModal = ({
     } else {
       navigate(`/project-details/${data?._id}/bid`);
     }
+    return null;
   };
 
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
@@ -298,6 +284,21 @@ const ProjectModal = ({
   const appPermissions = useSelector(appPermissionsSelector);
 
   const handleViewFlexternProject = () => {
+    if (!data?.is_read) {
+      const postData = {
+        metadata: {
+          project_id: data?._id,
+        },
+        type: 'PROJECT_SECTION',
+        status: 'READ',
+      };
+      dispatch(
+        updateCardStatus({
+          data: postData,
+          isFlextern: true,
+        }),
+      );
+    }
     navigate(`/project-details/${data?._id}/team`);
   };
 
@@ -319,7 +320,8 @@ const ProjectModal = ({
           onClick: handleRelistFlexternProject,
         },
       ];
-    } else if (
+    }
+    if (
       data.is_invited ||
       location.pathname.split('/').includes('my_listings') ||
       [data.client.user_id, data.client._id].includes(userDetails.id)

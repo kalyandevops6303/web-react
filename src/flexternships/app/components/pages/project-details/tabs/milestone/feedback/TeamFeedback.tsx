@@ -2,7 +2,7 @@ import { SurveyModel } from 'survey-react-ui';
 import MilestoneFeedbackSurvey from '@/flexternships/app/components/core/surveys/MilestoneFeedbackSurvey';
 import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
@@ -13,6 +13,7 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import SucessModal from './modals/SucessModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
 
 export { MyQuestion } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/MyQuestion';
 export { Kudos } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/KudosRecognition';
@@ -22,9 +23,8 @@ export { AreaCheckbox } from '@/flexternships/app/components/pages/project-detai
 export { GridCheckbox } from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/GridCheckBox';
 export { Wow } from '@flexternships/app/components/pages/project-details/tabs/milestone/feedback/WowRecognition';
 
-export default function TeamFeedback() {
+export default function TeamFeedback({ goBack }: { goBack: () => void }) {
   const params = useParams();
-  const navigate = useNavigate();
 
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
   const teamDetails = useProjectsStore((state) => state.teamDetails);
@@ -44,11 +44,12 @@ export default function TeamFeedback() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
+    if (!params?.projectId) throw new Error('Project ID is required to fetch team feedback form');
     getTeamFeedbackForm(params?.projectId, FeedbackTypesAPI.TEAM);
     populateTeamDetails(params?.projectId);
-    getProjectDetails(params?.projectId as string);
-    getMilestones(params?.projectId as string);
-  }, []);
+    getProjectDetails(params?.projectId);
+    getMilestones(params?.projectId);
+  }, [params?.projectId, getTeamFeedbackForm, populateTeamDetails, getProjectDetails, getMilestones]);
 
   const handleSurveyComplete = (survey: SurveyModel) => {
     const submitFeedbackData: any = {
@@ -67,10 +68,11 @@ export default function TeamFeedback() {
   };
 
   const handleCloseSuccessModal = () => {
+    if (!params?.projectId) throw new Error('Project ID is required to submit feedback');
     populateUserDetails(true);
-    getProjectDetails(params?.projectId as string);
+    getProjectDetails(params?.projectId);
     setShowSuccessModal(false);
-    navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`);
+    goBack();
     showToastMessage(ToastType.SUCCESS, 'Feedback has been submitted successfully');
   };
 
@@ -86,15 +88,13 @@ export default function TeamFeedback() {
 
   return (
     <div>
-      <div
-        className="flex items-center gap-1 cursor-pointer mb-5"
-        onClick={() => navigate(`/project-details/${params?.projectId}/milestone/${params?.milestoneId}`)}
-      >
-        <div className="p-1 bg-[#0185E4] w-min text-white rounded-full">
-          <ArrowLeft size="20px" />
-        </div>
-        <div className="text-[#0185E4] font-montserrat text-[16px] font-light leading-normal">Team Feedback</div>
-      </div>
+      <PrimaryIconText
+        className="mb-5"
+        bgDark
+        icon={<ArrowLeft className="text-white" size="20px" />}
+        text="Team Feedback"
+        onClick={goBack}
+      />
 
       <div className="flex gap-3">
         <div>

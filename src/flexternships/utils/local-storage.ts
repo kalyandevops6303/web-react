@@ -4,9 +4,9 @@
  * @returns A new dictionary with the authentication token appended.
  * @throws {Error} If the access token is not found in local storage.
  */
-import { getCookiesItem } from '@/utility/cookiesControl';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 export const appendAuthToken = (dict: any) => {
-  const token = getCookiesItem('access_token');
+  const token = isUserLoggedIn();
   if (token === null) {
     throw new Error('Access token not found');
   }

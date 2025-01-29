@@ -99,6 +99,9 @@ const AlertCardWrapper = styled(CardWrapper)`
   .card-body {
     padding: 0.5rem 1.5rem 1rem !important;
   }
+  .card-wrapper {
+    background-color: #f8f8f8;
+  }
   .card-inside {
     .card-header {
       padding: 1.2rem 1.2rem;
@@ -108,6 +111,30 @@ const AlertCardWrapper = styled(CardWrapper)`
     }
   }
 
+  .empty-alerts {
+    width: 90%;
+    margin: 0 auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem 2.5rem 2rem;
+
+    .empty-alert-gif {
+      height: 13rem;
+      @media (max-width: 768px) {
+        height: 13rem;
+      }
+    }
+    .empty-alert-text {
+      font-size: 14px;
+      line-height: normal;
+      color: #9c9fa1;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
   .add-det {
     font-weight: 400;
     font-size: 16px;
@@ -122,13 +149,14 @@ const AlertCardWrapper = styled(CardWrapper)`
     height: 10vw;
   }
   .relative-time {
-    width: 30%;
+    font-size: 12px;
+    width: fit-content;
     text-align: end;
   }
   .additional-text {
     color: ${theme.lightBlueColor};
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     margin: auto;
   }
   .w-65 {
@@ -175,6 +203,7 @@ const EarningAmount = styled.div`
 
 const ProjectWrapper = styled.div`
   position: relative;
+  min-width: 33%;
   @media (max-width: 768px) {
     min-width: 20rem;
   }
@@ -283,15 +312,19 @@ const ProjectWrapper = styled.div`
     gap: 12px;
   }
   .project-cta {
-    font-weight: 400;
-    font-size: 16px;
+    color: #005eff;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: normal;
+    text-align: center;
+    letter-spacing: 0.4px;
   }
 
   .empty-card {
     margin-bottom: 1rem;
     padding-bottom:1rem;
     margin-top: 1rem;
-    width: fit-content;
+    width: 100%;
   }
 
   .empty {
@@ -351,16 +384,16 @@ const ProjectWrapper = styled.div`
   .additional-text {
     color: ${theme.lightBlueColor};
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     margin: auto;
   }
 
   .active-project-name {
+    margin: 8px 0px;
     color: #5e5873;
-    font-size: 18px;
-    font-weight: 400;
-    height: 40px;
-    margin-top: 0.5rem;
+    line-height: 24px;
+    font-size: 16px;
+    font-weight: 500;
   }
 
   .team-badge {
@@ -390,9 +423,11 @@ const ProjectWrapper = styled.div`
   }
 
   .active-project-milestone-name {
+    width: 50%;
     color: #5e5873;
     font-size: 14px;
     font-weight: 500;
+    padding-left: 10px;
   }
 
   .bids-count-wrapper {
@@ -513,10 +548,13 @@ const DashboardHeaderWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1rem;
-  margin-top: -4rem;
+  margin-top: -3.4rem;
 
   @media (max-width: 767px) {
-    margin-top: -2rem;
+    margin-top: -3.3rem;
+  }
+  @media (max-width: 640px) {
+    margin-top: 0rem;
   }
 `;
 
@@ -565,7 +603,7 @@ const TagsWrap = styled.div`
   .additional-text {
     color: ${theme.lightBlueColor};
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     margin: 0 0 0 10px;
   }
 `;

@@ -1,4 +1,9 @@
-// service to fetch user details along with app roles
+/**
+ * User management service module for handling user-related operations.
+ * @fileoverview Contains functions for managing user profiles, authentication, roles and permissions.
+ * Includes APIs for file uploads, password management, and user details retrieval.
+ * @module user-management
+ */
 
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
@@ -6,6 +11,9 @@ import axios from 'axios';
 import { FlexternClientAccountDetails, FlexternClientProfileDetails } from '../constraints/types/user-profile-types';
 import { isEmpty } from 'lodash';
 import { handleError } from '../utils/error-utils';
+import { ValidatedRequestToken } from '../constraints/types/core-types';
+import { logout as logoutZustand } from '../utils/core-utils';
+import errorHandler from '@/utility/errorHandler';
 
 /// File Endpoints
 /**
@@ -18,6 +26,7 @@ export const getImageUploadUrl = async (filename: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
     params: {
       filename: filename,
     },
@@ -40,7 +49,7 @@ export const getImageUploadUrl = async (filename: string) => {
  */
 export const changePasswordWithCurrentPassword = async (currentPassword: string, newPassword: string) => {
   const headers = appendAuthToken({});
-  const config = { headers };
+  const config = { headers: headers, withCredentials: true };
 
   try {
     const response = await axios.post(
@@ -56,6 +65,49 @@ export const changePasswordWithCurrentPassword = async (currentPassword: string,
 
 /// User Endpoints
 /**
+ * Validates a request token.
+ * @param requestToken - The token to validate.
+ * @returns A Promise that resolves to the validation response data.
+ * @throws {Error} If the validation fails or an unexpected error occurs.
+ */
+export const validateRequestToken = async (requestToken: string): Promise<ValidatedRequestToken | undefined> => {
+  try {
+    const response = await axios.post(routes.userManagement.requests.v2.validateRequestToken, {
+      request_token: requestToken,
+    });
+
+    return {
+      invitationByUserId: response.data.data.invitation_by_user_id,
+      emailInvited: response.data.data.email_invited,
+      projectId: response.data.data.project_id,
+      invitationType: response.data.data.invitation_type,
+      userStatus: response.data.data.user_status,
+    };
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while validating the request token');
+  }
+};
+
+/**
+ * Validates a user request.
+ * @param requestToken - The token to validate the user request.
+ * @returns A Promise that resolves to the validation response data.
+ * @throws {Error} If the validation fails or an unexpected error occurs.
+ */
+export const validateUserRequestByToken = async (requestToken: string): Promise<boolean | undefined> => {
+  try {
+    const response = await axios.post(
+      routes.userManagement.requests.v2.checkUser,
+      { request_token: requestToken },
+      { withCredentials: true },
+    );
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while validating the user request');
+  }
+};
+
+/**
  * Fetches user details including app roles.
  * @returns A Promise that resolves to the user details.
  * @throws {Error} If the user details retrieval fails or an unexpected error occurs.
@@ -64,11 +116,18 @@ export const getUserDetails = async () => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   try {
     const response = await axios.get(routes.userManagement.user.getUserDetails, config);
+
     return response.data.data;
   } catch (error) {
+    localStorage.clear();
+    sessionStorage.clear();
+    logoutZustand();
+    // To logout mother app from redux
+    errorHandler(error as Error);
     handleError(error as Error, 'An unexpected error occurred while fetching user details');
   }
 };
@@ -83,6 +142,7 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   const formattedData: Record<string, any> = {};
   if (!isEmpty(data.firstname)) {
@@ -94,9 +154,17 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
   if (!isEmpty(data.timezone)) {
     formattedData.timezone = data.timezone.name;
   }
-  if (!isEmpty(data.imageUri)) {
-    formattedData.image_uri = data.imageUri;
+
+  if (!isEmpty(data.title)) {
+    formattedData.title = data.title;
   }
+  if (!isEmpty(data.department)) {
+    formattedData.department = data.department;
+  }
+
+  // Optional fields - these are allowed to be unset
+  formattedData.image_uri = data.imageUri;
+  formattedData.linkedin_url = data.linkedin;
 
   try {
     await axios.post(routes.userManagement.user.v2.postAccountDetails, formattedData, config);
@@ -115,6 +183,7 @@ export const updateFlexternClientInfo = async (data: Partial<FlexternClientProfi
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   const formattedData: Record<string, any> = {};
 
@@ -174,6 +243,7 @@ export const getFlexternClientOrgInfo = async () => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
   try {
     const response = await axios.get(routes.userManagement.user.v2.getOrganisationDetails, config);
@@ -184,16 +254,15 @@ export const getFlexternClientOrgInfo = async () => {
 };
 
 // Static Data Endpoints
-
 // Types used in the services
-export type PaginatedData = {
+export type PaginatedData<T = any> = {
   metadata: {
     current_page: number;
     page_size: number;
     total_records: number;
     has_next_page: boolean;
   };
-  data: { _id: string; name: string }[];
+  data: (T & { _id: string; name: string })[];
 };
 
 // Services code starts here
@@ -204,7 +273,7 @@ export type PaginatedData = {
  */
 export const fetchAllRoles = async () => {
   try {
-    const response = await axios.get(routes.userManagement.static.roles.fetchAll);
+    const response = await axios.get(routes.userManagement.static.roles.fetchAll, { withCredentials: true });
     return response?.data || [];
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching roles');
@@ -218,7 +287,7 @@ export const fetchAllRoles = async () => {
  */
 export const fetchAllSkills = async () => {
   try {
-    const response = await axios.get(routes.userManagement.static.skills.fetchAll);
+    const response = await axios.get(routes.userManagement.static.skills.fetchAll, { withCredentials: true });
     return response?.data?.data || [];
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching skills');
@@ -232,7 +301,7 @@ export const fetchAllSkills = async () => {
  */
 export const fetchAllTools = async () => {
   try {
-    const response = await axios.get(routes.userManagement.static.tools.fetchAll);
+    const response = await axios.get(routes.userManagement.static.tools.fetchAll, { withCredentials: true });
     return response?.data?.data || [];
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching tools');
@@ -263,6 +332,7 @@ export const fetchRolesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.roles.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -288,6 +358,7 @@ export const fetchTimezonesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.timezone.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -321,6 +392,7 @@ export const fetchSkillsPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.skills.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -354,6 +426,7 @@ export const fetchToolsPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.tools.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -387,6 +460,7 @@ export const fetchCompanyIndustriesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.companyIndustry.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -420,6 +494,7 @@ export const fetchCountriesPaginated = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.country.fetchPaginated}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -455,6 +530,7 @@ export const fetchStatesPaginatedByCountry = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.state.fetchPaginatedByCountry}/${country_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {
@@ -490,6 +566,7 @@ export const fetchCitiesPaginatedByState = async (
   try {
     const response = await axios.get(
       `${routes.userManagement.static.city.fetchPaginatedByState}/${state_id}?page=${page}&page_size=${page_size}&search_query=${search_query}`,
+      { withCredentials: true },
     );
     return response?.data?.data || emptyData;
   } catch (error) {

@@ -29,7 +29,7 @@ import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
 import { clubStatus, delegateTypes, userTypes } from '../../../../utility/constants/Constant';
-import { getItem, setItem } from '../../../../utility/localStorageControl';
+import { getItem } from '../../../../utility/localStorageControl';
 import {
   selectSavedUserData,
   selectIsTeamLoggedIn,
@@ -43,7 +43,7 @@ import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
 import DelegateAccordion from './DelegateAccordion';
-import { DeclinedButton, InreviewButton, TextWrapper, UserDropDownWrapper } from './style';
+import { DeclinedButton, InreviewButton, TextWrapper, UserDropDownWrapper, EditProfileActionContainer } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { clearAllFormData, setFormDocuments } from '../../../../redux/reducers/formData';
@@ -59,7 +59,6 @@ import { truncateSentence } from '../../../../utility/Utils';
 import PermissionWrapper from '@/PermissionWrapper';
 import { FlexternUserAppRole, GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import { isFlexternshipApp } from '@/configs/api/env';
-import { removeCookiesItem } from '@/utility/cookiesControl';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import useLogout from '@/utility/hooks/useLogout';
 
@@ -78,6 +77,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isDelegate = getItem('isDelegate');
+
   const delegateType = getItem('delegateType');
 
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
@@ -156,6 +156,10 @@ const UserDropdown = ({ setNavBarLoading }) => {
     }
   };
 
+  const handleClientEditProfile = () => {
+    navigate('/client-profile-edit/account-details');
+  };
+
   // get app permissions
   useEffect(() => {
     if (isLoggedIn) {
@@ -198,61 +202,63 @@ const UserDropdown = ({ setNavBarLoading }) => {
           setDelegateEmail={setDelegateEmail}
         />
       )}
-      <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
-        <div
-          className={`user-nav d-sm-flex d-none 
+      {userDetailsData && (
+        <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
+          <div
+            className={`user-nav d-sm-flex d-none 
           ${isDelegate ? 'delegate-username' : ''}
           `}
-        >
-          <span className="user-name truncate-1 fw-bold" id="username">
-            {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
-          </span>
-          {userName?.length > 15 && (
-            <UncontrolledTooltip placement="right" target="username">
-              <div className="d-flex flex-column align-items-start">
-                <p className="m-0">{isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}</p>
-              </div>
-            </UncontrolledTooltip>
-          )}
-          {isDelegate ? (
-            <span className="user-name truncate-1" id="delegateUsername">
-              {truncateSentence({ sentence: `${userName} (${adminUsername})`, maxCharacters: 15 })}
+          >
+            <span className="user-name truncate-1 fw-bold" id="username">
+              {isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}
             </span>
-          ) : (
-            <span className="user-status">
-              {userDetailsData?.team_type
-                ? capitalize(userDetailsData?.team_type)
-                : capitalize(userDetailsData?.user_type) || 'Role'}
-            </span>
-          )}
-        </div>
+            {userName?.length > 15 && (
+              <UncontrolledTooltip placement="right" target="username">
+                <div className="d-flex flex-column align-items-start">
+                  <p className="m-0">{isDelegate ? `${userDetailsData?.admin_client_info?.company_name}` : userName}</p>
+                </div>
+              </UncontrolledTooltip>
+            )}
+            {isDelegate ? (
+              <span className="user-name truncate-1" id="delegateUsername">
+                {truncateSentence({ sentence: `${userName} (${adminUsername})`, maxCharacters: 15 })}
+              </span>
+            ) : (
+              <span className="user-status">
+                {userDetailsData?.team_type
+                  ? capitalize(userDetailsData?.team_type)
+                  : capitalize(userDetailsData?.user_type) || 'Role'}
+              </span>
+            )}
+          </div>
 
-        {userDetailsData?.user_type === userTypes.talent && (
-          <Avatar
-            img={
-              userDetailsData?.talent_info?.image_uri.length > 0
-                ? userDetailsData?.talent_info?.image_uri
-                : defaultAvatar
-            }
-            imgHeight="40"
-            imgWidth="40"
-          />
-        )}
-        {userDetailsData?.user_type === userTypes.client && (
-          <Avatar
-            img={
-              userDetailsData?.client_info?.image_uri.length > 0
-                ? userDetailsData?.client_info?.image_uri
-                : defaultAvatar
-            }
-            imgHeight="40"
-            imgWidth="40"
-          />
-        )}
-        {userDetailsData?.user_type === userTypes.team && (
-          <Avatar img={userDetailsData?.team_logo || defaultAvatar} imgHeight="40" imgWidth="40" />
-        )}
-      </DropdownToggle>
+          {userDetailsData?.user_type === userTypes.talent && (
+            <Avatar
+              img={
+                userDetailsData?.talent_info?.image_uri?.length > 0
+                  ? userDetailsData?.talent_info?.image_uri
+                  : defaultAvatar
+              }
+              imgHeight="40"
+              imgWidth="40"
+            />
+          )}
+          {userDetailsData?.user_type === userTypes.client && (
+            <Avatar
+              img={
+                userDetailsData?.client_info?.image_uri?.length > 0
+                  ? userDetailsData?.client_info?.image_uri
+                  : defaultAvatar
+              }
+              imgHeight="40"
+              imgWidth="40"
+            />
+          )}
+          {userDetailsData?.user_type === userTypes.team && (
+            <Avatar img={userDetailsData?.team_logo || defaultAvatar} imgHeight="40" imgWidth="40" />
+          )}
+        </DropdownToggle>
+      )}
 
       {location?.pathname?.split?.('/')?.[3] === userDetailsData?._id && (
         <LineWrapper>
@@ -263,15 +269,15 @@ const UserDropdown = ({ setNavBarLoading }) => {
       <UserDropDownWrapper>
         <DropdownMenu style={{ width: '24rem' }} end>
           {isDelegate && (
-            <div className="mt-1">
-              <span className="px-1">
+            <div className="mt-4">
+              <span className="px-3">
                 {delegateType === delegateTypes.payment_delegate ? 'Payment Delegate for' : 'Delegate for'}:
               </span>
               <div className="mt-50 border-bottom border-grey-light">
                 {userDetailsData && (
                   <DelegateNameCard
                     img={
-                      userDetailsData?.admin_client_info?.image_uri.length > 0
+                      userDetailsData?.admin_client_info?.image_uri?.length > 0
                         ? userDetailsData?.admin_client_info?.image_uri
                         : defaultAvatar
                     }
@@ -287,15 +293,12 @@ const UserDropdown = ({ setNavBarLoading }) => {
               Public Profile
             </TextWrapper>
           )}
-          {!isDelegate || isDelegateProfileCreated ? (
+          {userDetailsData?.user_type === userTypes.talent ? (
             <EditProfileAccordion />
           ) : (
-            <TextWrapper
-              onClick={() => navigate('/client-onboarding/account-details')}
-              className="w-100 edit-accordion"
-            >
-              <span className="align-middle">Create My Profile</span>
-            </TextWrapper>
+            <EditProfileActionContainer onClick={handleClientEditProfile}>
+              <TextWrapper>Edit Profile</TextWrapper>
+            </EditProfileActionContainer>
           )}
           {!isDelegate && (
             <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
@@ -311,7 +314,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
                       {savedUserDetails?.user_type === userTypes.talent ? (
                         <Avatar
                           img={
-                            savedUserDetails?.talent_info?.image_uri.length > 0
+                            savedUserDetails?.talent_info?.image_uri?.length > 0
                               ? savedUserDetails?.talent_info?.image_uri
                               : defaultAvatar
                           }
@@ -321,7 +324,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
                       ) : (
                         <Avatar
                           img={
-                            savedUserDetails?.client_info?.image_uri.length > 0
+                            savedUserDetails?.client_info?.image_uri?.length > 0
                               ? savedUserDetails?.client_info?.image_uri
                               : defaultAvatar
                           }
@@ -384,14 +387,16 @@ const UserDropdown = ({ setNavBarLoading }) => {
               ))}
             </div>
           )}
-          {savedUserDetails?.user_type === userTypes.client && !isDelegate && (
+
+          {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? (
             <DelegateAccordion setDelegateEmail={setDelegateEmail} />
-          )}
-          {savedUserDetails?.user_type === userTypes.client && isFlexternshipApp ? null : (
-            <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
-              <span className="align-middle ">Contact support</span>
-            </TextWrapper>
-          )}
+          ) : isDelegate ? (
+            <DelegateAccordion setDelegateEmail={setDelegateEmail} />
+          ) : null}
+
+          <TextWrapper onClick={handleCustomerSupport} className="mt-0 w-100 customer-support">
+            <span className="align-middle ">Contact support</span>
+          </TextWrapper>
           <TextWrapper onClick={handleLogout} className="w-100 logout cursor-pointer">
             <span className="align-middle ">Logout</span>
           </TextWrapper>

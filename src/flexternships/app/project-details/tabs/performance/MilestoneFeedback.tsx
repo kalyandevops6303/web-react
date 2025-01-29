@@ -24,9 +24,10 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   const [filteredPerformanceDetails, setFilteredPerformanceDetails] = useState<any>([]);
 
   useEffect(() => {
-    getPerformanceDetails(params?.projectId as string, feedbackType);
+    if (!params?.projectId) throw new Error('Project ID is required to fetch performance details');
+    getPerformanceDetails(params?.projectId, feedbackType);
     populateTeamDetails(params?.projectId);
-  }, []);
+  }, [params?.projectId, getPerformanceDetails, populateTeamDetails]);
 
   useEffect(() => {
     const receiverId = currentUserType === UserType.CLIENT ? teamDetails[0]?.id : currentUserId;
@@ -64,7 +65,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
         <div className="flex items-center gap-2">
           <div className="flex flex-col text-left">
             <div className="text-[14px] leading-[21px] font-[600] font-[Montserrat] text-[#6E6B7B] ml-3">
-              <span className="text-[#5E5873] font-[Montserrat] text-[15px] font-medium leading-[24px]">
+              <span className="text-[#5E5873] font-[Montserrat] text-[16px] font-medium leading-[24px]">
                 Milestone #{peerFeedback?.index + 1}
               </span>
             </div>
@@ -94,7 +95,7 @@ export default function MilestoneFeedback(props: MilestoneFeedbackProps) {
   return (
     <div>
       {filteredPerformanceDetails?.map((peerFeedback: any, index: number) => (
-        <div>
+        <div key={index}>
           {peerFeedback?.feedback_id && (
             <CollapsableCard
               white

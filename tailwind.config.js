@@ -21,6 +21,9 @@ module.exports = {
           secondary: {
             500: '#FBC02D',
           },
+          gold: '#F6C01C',
+          light: '#FFD966',
+          soft: '#FFD700',
         },
         orange: {
           DEFAULT: '#FF9F43',
@@ -44,29 +47,79 @@ module.exports = {
           50: '#E6E7E7',
           200: '#B4B7B8',
           300: '#9C9FA1',
-          500: '#6A7071',
+          500: '#838889',
           600: '#515759',
           700: '#394042',
           800: '#757575',
+          900: '#071013',
           loadingText: '#9E9E9E',
         },
         skyblue: {
           DEFAULT: '#00B0FF',
           light: '#00B0FF1F',
         },
-        success: '#28C76F',
-        error: '#EA5455',
+        success: {
+          DEFAULT: '#28C76F',
+          normal: '#28C76F',
+          successLight: '#28C76F1F',
+          brightLight: '#00C853',
+          softLight: '#00C8531F',
+        },
+        error: {
+          DEFAULT: '#EA5455',
+          disabled: '#F7BBBB',
+          light: '#EA54551F',
+          dark: '#B71C1C',
+          darkLight: '#B71C1C1F',
+        },
         trublue: {
           DEFAULT: '#0065C1',
           review: '#03D8F5',
           secondary: {
             500: '#0185E4',
           },
+
           disabled: '#99C1E6',
           light: '#E0F0FB',
           a1: '#0065C1',
           a3: '#00B2FF',
           a4: '#23DFEB',
+        },
+        text: {
+          dark: '#071013',
+        },
+        cyan: {
+          DEFAULT: '#00CFE8',
+          light: '#00CFE81F',
+        },
+        purple: {
+          DEFAULT: '#7367F0',
+          light: '#7367F01F',
+        },
+        aqua: {
+          DEFAULT: '#0DA8B2',
+          light: '#0DA8B21F',
+        },
+        blue: {
+          DEFAULT: '#2196F3',
+          light: '#2196F31F',
+          soft: '#E3F2FD',
+          brightLight: '#005EFF',
+          softLight: '#005EFF1F',
+        },
+        primary: '#0185E4',
+        'primary-light': '#0185E41F',
+        dark: {
+          DEFAULT: '#071013',
+          100: '#394042',
+          200: '#6A7071',
+          300: '#838889',
+        },
+        border: {
+          DEFAULT: '#E6E7E7',
+        },
+        background: {
+          DEFAULT: '#F9F9F9',
         },
       },
       width: {
@@ -97,10 +150,13 @@ module.exports = {
       lineHeight: {
         4.5: '18px',
         5.5: '22px',
+        'sm-custom': '22px',
+        'xxl-custom': '26px',
       },
       borderRadius: {
         5: '5px',
         7: '7px',
+        10: '10px',
         52: '52px',
       },
       borderWidth: {
@@ -110,8 +166,10 @@ module.exports = {
         card: '0px 4px 24px 0px rgba(0, 0, 0, 0.06)',
         table: '0px 4px 6px -1px rgba(0, 0, 0, 0.10)',
         'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
-        'primary-button': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
+        'primary-button-blue': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
+        'primary-button-red': '0px 6px 16px 0px rgba(234, 84, 85, 0.50)',
         'custom-blue': '0px 2px 4px 0px rgba(1, 133, 228, 0.40)',
+        'custom-pieChart-shadow': '0px 2px 8px 0px rgba(0, 0, 0, 0.16)',
       },
       keyframes: {
         'accordion-down': {
@@ -126,6 +184,11 @@ module.exports = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      fontSize: {
+        '2xs': '10px',
+        '3xs': '8px',
+        xxl: '22px',
       },
     },
   },

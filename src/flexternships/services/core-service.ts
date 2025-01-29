@@ -1,3 +1,11 @@
+/**
+ * Core service module for handling file operations and core functionality.
+ * @fileoverview Contains utility functions for file uploads and other core operations
+ * used across the application. Includes APIs for file upload progress tracking and
+ * handling file metadata.
+ * @module core-service
+ */
+
 import axios from 'axios';
 
 /**
@@ -19,6 +27,7 @@ export const uploadFileToUrl = async (url: string, file: any, setUploadProgress?
       const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
       setUploadProgress && setUploadProgress(progress, index);
     },
+    withCredentials: true,
   });
   return uploadResponse;
 };

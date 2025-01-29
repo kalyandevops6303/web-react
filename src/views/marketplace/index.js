@@ -16,6 +16,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import { clearData } from '../../redux/reducers/marketPlace';
 import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 import PermissionWrapper from '@/PermissionWrapper';
+import { Button } from 'reactstrap';
 const MarketPlaceContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
     .primary-row {
@@ -104,7 +105,11 @@ const MarketPlace = () => {
             },
           ]}
         />
-        <CreateProjectButton />
+        <div className="d-flex justify-content-end align-items-center gap-2 mb-2">
+          <div className="d-flex gap-2">
+            <CreateProjectButton />
+          </div>
+        </div>
         <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
         <Routes>
           <Route

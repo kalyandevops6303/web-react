@@ -66,6 +66,21 @@ const upcomingProjectsForClientLoading = createSelector(
   (dashboard) => dashboard.upcomingProjectsForClientLoading,
 );
 
+const openProjectsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.openProjectsForClient);
+const openProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.openProjectsForClientLoading,
+);
+
+const withdrawnProjectsForClient = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForClient,
+);
+const withdrawnProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForClientLoading,
+);
+
 const projectsBidsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.projectsBidsForClient);
 const projectsBidsForClientLoading = createSelector(
   dashboardSelector,
@@ -91,6 +106,21 @@ const upcomingProjectsForTalent = createSelector(dashboardSelector, (dashboard) 
 const upcomingProjectsForTalentLoading = createSelector(
   dashboardSelector,
   (dashboard) => dashboard.upcomingProjectsForTalentLoading,
+);
+
+const openProjectsForTalent = createSelector(dashboardSelector, (dashboard) => dashboard.openProjectsForTalent);
+const openProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.openProjectsForTalentLoading,
+);
+
+const withdrawnProjectsForTalent = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForTalent,
+);
+const withdrawnProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.withdrawnProjectsForTalentLoading,
 );
 
 const activeProjectsForTeam = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForTeam);
@@ -145,6 +175,10 @@ export {
   activeProjectsForClientLoading,
   upcomingProjectsForClient,
   upcomingProjectsForClientLoading,
+  openProjectsForClient,
+  openProjectsForClientLoading,
+  withdrawnProjectsForClient,
+  withdrawnProjectsForClientLoading,
   projectsBidsForClient,
   projectsBidsForClientLoading,
   recommendedTeamsForClient,
@@ -155,6 +189,10 @@ export {
   activeProjectsForTalentLoading,
   upcomingProjectsForTalent,
   upcomingProjectsForTalentLoading,
+  openProjectsForTalent,
+  openProjectsForTalentLoading,
+  withdrawnProjectsForTalent,
+  withdrawnProjectsForTalentLoading,
   activeProjectsForTeam,
   activeProjectsForTeamLoading,
   upcomingProjectsForTeam,

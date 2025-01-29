@@ -22,7 +22,7 @@
     "jsxImportSource": "@emotion/react",
     "types": ["@emotion/react/types/css-prop", "jest", "node", "react"],
     "outDir": "build",
-    "baseUrl": "./",  // Ensure this points to the project root
+    "baseUrl": "./", // Ensure this points to the project root
     "paths": {
       "@/*": ["./src/*"],
       "@src/*": ["./src/*"],

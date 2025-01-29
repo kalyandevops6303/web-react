@@ -125,6 +125,11 @@ const relistProjectByDateService = (projectId, startDate, endDate) =>
     `${API.projectDetails.relistProjectByDate}?project_id=${projectId}&start_date=${startDate}&end_date=${endDate}`,
   );
 
+const relistProjectByDateServiceForFlextern = (projectId, startDate, endDate) =>
+  DataService.put(
+    `${API.projectDetails.relistProjectByDateForFlextern}?project_id=${projectId}&start_date=${startDate}&end_date=${endDate}`,
+  );
+
 const requestChangeService = ({ bid_id, description }) =>
   DataService.post(`${API.projectDetails.requestChange}`, { bid_id, description });
 
@@ -169,6 +174,7 @@ export {
   withdrawProjectServices,
   relistProjectService,
   relistProjectByDateService,
+  relistProjectByDateServiceForFlextern,
   requestChangeService,
   rejectBidChangeService,
   acceptBidChangeService,

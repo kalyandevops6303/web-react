@@ -10,7 +10,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-export default function InvitationCard() {
+export default function InvitationCard({ hideSubtitle = false }) {
   const params = useParams();
 
   const projectDetails = useProjectsStore((state) => state.projectDetails);
@@ -21,7 +21,7 @@ export default function InvitationCard() {
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
   useEffect(() => {
-    if (!projectInvitationDetails?.is_read) {
+    if (!projectInvitationDetails?.isRead) {
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);
@@ -32,12 +32,12 @@ export default function InvitationCard() {
     headerContent: (
       <div className="flex w-full items-center mr-3 justify-between">
         <div className="flex flex-col text-left">
-          <div className="text-[#B9B9C3] font-sans text-[12px] font-semibold leading-[16px]">STEP 1</div>
+          {!hideSubtitle && <div className="text-grey-muted font-sans text-xs font-semibold leading-4">STEP 1</div>}
           <div className="relative">
-            {projectInvitationDetails?.is_read && (
-              <div className="absolute top-0 -right-2 w-2 h-2 border bg-[#EA5455] rounded-full border-[#EA5455]"></div>
+            {projectInvitationDetails?.isRead && (
+              <div className="absolute top-0 -right-2 w-2 h-2 border bg-error rounded-full border-error"></div>
             )}
-            <div className="text-[#5E5873] font-sans text-[16px] font-medium leading-[24px] !no-underline hover:!no-underline">
+            <div className="text-grey-heading font-sans text-base font-medium leading-6 !no-underline hover:!no-underline">
               Invitation
             </div>
           </div>
@@ -45,7 +45,7 @@ export default function InvitationCard() {
         <div>
           <Link
             to={`/project-details/${params?.projectId}/milestone`}
-            className="text-center text-[14px] font-semibold tracking-[0.4px] text-[#0185E4]"
+            className="text-center text-sm font-semibold tracking-wide text-trublue-secondary-500"
           >
             View Milestone(s)
           </Link>
@@ -58,10 +58,10 @@ export default function InvitationCard() {
     company: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
     department: projectDetails?.clientInfo?.departmentName,
     image_uri: projectDetails?.clientInfo?.imageUri,
-    start_date: formatEpochToHumanReadable(projectInvitationDetails?.project_start_date || 1),
-    role: projectInvitationDetails?.talent_role,
-    estimated_duration: `${projectInvitationDetails?.project_estimated_duration?.duration} Weeks`,
-    message: projectInvitationDetails?.message,
+    start_date: formatEpochToHumanReadable(projectInvitationDetails?.projectStartDate || 1),
+    role: projectInvitationDetails?.talentRole,
+    estimated_duration: `${projectInvitationDetails?.projectEstimatedDuration?.duration} Weeks`,
+    message: projectInvitationDetails?.invitationMessage,
   };
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function InvitationCard() {
       </div>
     );
   }
-  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.project_start_date || 1, Date.now());
+  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.projectStartDate || 1, Date.now());
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="p-3 flex flex-col gap-5 w-full">
@@ -87,7 +87,14 @@ export default function InvitationCard() {
               <AvatarImage
                 src={invitationCardDetailsData?.image_uri ? invitationCardDetailsData?.image_uri : defaultAvatar}
               />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>
+                {invitationCardDetailsData?.company
+                  ?.split(' ')
+                  .slice(0, 2)
+                  .map((word) => word[0])
+                  .join('')
+                  .toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div>
               <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.company}</div>

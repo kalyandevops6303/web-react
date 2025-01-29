@@ -12,6 +12,7 @@ import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import CardSkeleton from '@src/assets/images/gifs/card_loader.gif';
+import noBidsGif from '@src/assets/images/gifs/no_bids.gif';
 
 import Project from './Project';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
@@ -29,6 +30,8 @@ import {
   activeProjectsForTalentLoading,
   activeProjectsForTeam,
   activeProjectsForTeamLoading,
+  openProjectsForClient,
+  openProjectsForClientLoading,
   profilePercentage,
   recommendedProjects,
   recommendedProjectsLoading,
@@ -39,18 +42,24 @@ import {
   upcomingProjectsForTeam,
   upcomingProjectsForTeamLoading,
   userData,
+  withdrawnProjectsForClient,
+  withdrawnProjectsForClientLoading,
 } from '../../../redux/selectors/dashboardSelectors';
 import {
   getActiveProjectsForClient,
   getActiveProjectsForTalent,
   getActiveProjectsForTeam,
+  getOpenProjectsForClient,
+  getOpenProjectsForTalent,
   getRecommendedProjects,
   getUpcomingProjectsForClient,
   getUpcomingProjectsForTalent,
   getUpcomingProjectsForTeam,
+  getWithdrawnProjectsForClient,
+  getWithdrawnProjectsForTalent,
 } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
-import { clubStatus, userTypes } from '../../../utility/constants/Constant';
+import { appRoles, clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { appPermissionsSelector, selectUserData } from '../../../redux/selectors/authSelectors';
 import ActiveProjectCard from './ActiveProjectCard';
 import UpcomingProjectCard from './UpcomingProjectCard';
@@ -64,8 +73,11 @@ import ViewAllCard from './ExtraCardWithCount';
 import { AccordionName } from './DashboardConstant';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import PermissionWrapper from '@/PermissionWrapper';
+import OpenProjectCardForClient from './OpenProjectCardForClient';
+import WithdrawnProjectCardForClient from './WithdrawnProjectCardForClient';
+import { isFlexternshipApp } from '../../../configs/api/env';
 
-const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
+const Empty = ({ active, recommended, payment, isEducationNotCompleted, noBids, open, withdrawn }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const userDetailsData = useSelector(userData);
@@ -86,9 +98,21 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {noBids && <img src={noBidsGif} className="empty-gif" alt="empty-gif" />}
+
             {active && (
               <CardText className="get-started">
                 Lets get you <br /> started!
+              </CardText>
+            )}
+            {open && (
+              <CardText className="get-started">
+                No Open <br /> Projects
+              </CardText>
+            )}
+            {withdrawn && (
+              <CardText className="get-started">
+                No Withdrawn <br /> Projects
               </CardText>
             )}
             {payment && (
@@ -199,7 +223,14 @@ const ProjectListing = () => {
   const upcomingProjectsForClientData = useSelector(upcomingProjectsForClient);
   const upcomingProjectsForClientIsLoading = useSelector(upcomingProjectsForClientLoading);
 
+  const openProjectsForClientData = useSelector(openProjectsForClient);
+  const openProjectsForClientIsLoading = useSelector(openProjectsForClientLoading);
+
+  const withdrawnProjectsForClientData = useSelector(withdrawnProjectsForClient);
+  const withdrawnProjectsForClientIsLoading = useSelector(withdrawnProjectsForClientLoading);
+
   const activeProjectsForTalentData = useSelector(activeProjectsForTalent);
+
   const activeProjectsForTalentIsLoading = useSelector(activeProjectsForTalentLoading);
 
   const upcomingProjectsForTalentData = useSelector(upcomingProjectsForTalent);
@@ -223,6 +254,16 @@ const ProjectListing = () => {
       setIsSliderLoading(false);
     }, 150);
   }, [open]);
+
+  useEffect(() => {
+    if (userDetailsData?.app_roles.includes(appRoles.flexternClient)) {
+      dispatch(getOpenProjectsForClient());
+      dispatch(getWithdrawnProjectsForClient());
+    } else if (userDetailsData?.app_roles.includes(appRoles.flexternTalent)) {
+      dispatch(getOpenProjectsForTalent());
+      dispatch(getWithdrawnProjectsForTalent());
+    }
+  }, [userDetailsData]);
 
   useEffect(() => {
     if (userDetailsData?.user_type === userTypes.client) {
@@ -250,7 +291,9 @@ const ProjectListing = () => {
       userDetailsData?.team_type === userTypes.team ||
       userDetailsData?.team_type === userTypes.club
     ) {
-      dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
+      if (!isFlexternshipApp) {
+        dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
+      }
     }
   }, [userDetailsData?.user_type]);
   const onViewAllClick = (e, path) => {
@@ -267,7 +310,7 @@ const ProjectListing = () => {
             <AccordionItem>
               <AccordionHeader targetId="1">
                 <AccordionHeadStyle>
-                  <span className="d-flex align-items-center">
+                  <span className="d-flex align-items-center heading-text">
                     Active Projects
                     <Tag
                       hasNew={
@@ -285,7 +328,7 @@ const ProjectListing = () => {
               </AccordionHeader>
               <AccordionBody accordionId="1">
                 {isSliderLoading || activeProjectsForClientIsLoading ? (
-                  <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                  <div className="d-flex justify-content-between gap-1">
                     <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
                     <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
                     <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
@@ -337,13 +380,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        active
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -355,7 +396,7 @@ const ProjectListing = () => {
             <AccordionItem>
               <AccordionHeader targetId="2">
                 <AccordionHeadStyle>
-                  <span className="d-flex align-items-center">
+                  <span className="d-flex align-items-center heading-text">
                     Upcoming Projects{' '}
                     <Tag
                       hasNew={
@@ -427,13 +468,183 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        recommended
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </AccordionItem>
+          </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.OPEN_PROJECTS']}>
+            <AccordionItem>
+              <AccordionHeader targetId="3">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center heading-text">
+                    Open Projects
+                    <Tag
+                      hasNew={
+                        openProjectsForClientData?.unreadCount > 0 ? openProjectsForClientData?.unreadCount : false
+                      }
+                      count={openProjectsForClientData?.metadata?.total_records}
+                    />
+                  </span>
+                  {openProjectsForClientData?.data?.length > 0 && (
+                    <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_listings')} className="view-all-cta">
+                      View All
+                    </CardText>
+                  )}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="3">
+                {isSliderLoading || openProjectsForClientIsLoading ? (
+                  <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {openProjectsForClientData?.data?.length > 0 && isTab ? (
+                      openProjectsForClientData?.data?.map((project) => (
+                        <OpenProjectCardForClient
+                          accordionName={AccordionName.openProjects}
+                          key={project._id}
+                          data={project}
+                        />
+                      ))
+                    ) : openProjectsForClientData?.data?.length > 0 ? (
+                      <>
+                        {openProjectsForClientData?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {openProjectsForClientData?.data?.map((project, index) => (
+                              <OpenProjectCardForClient
+                                accordionName={AccordionName.openProjects}
+                                className={`slide-${index}`}
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+
+                            {openProjectsForClientData?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.openProjects}
+                                height={420}
+                                onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                                count={calculateRemainingBidsCount(openProjectsForClientData)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {openProjectsForClientData?.data?.map((project) => (
+                              <OpenProjectCardForClient
+                                accordionName={AccordionName.openProjects}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        noBids
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        open
+                      />
+                    )}
+                  </ProjectsListingWrap>
+                )}
+              </AccordionBody>
+            </AccordionItem>
+          </PermissionWrapper>
+          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PROJECTS.WITHDRAWN_PROJECTS']}>
+            <AccordionItem>
+              <AccordionHeader targetId="4">
+                <AccordionHeadStyle>
+                  <span className="d-flex align-items-center heading-text">
+                    Withdrawn Projects
+                    <Tag
+                      hasNew={
+                        withdrawnProjectsForClientData?.unreadCount > 0
+                          ? withdrawnProjectsForClientData?.unreadCount
+                          : false
+                      }
+                      count={withdrawnProjectsForClientData?.metadata?.total_records}
+                    />
+                  </span>
+                  {withdrawnProjectsForClientData?.data?.length > 0 && (
+                    <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_listings')} className="view-all-cta">
+                      View All
+                    </CardText>
+                  )}
+                </AccordionHeadStyle>
+              </AccordionHeader>
+              <AccordionBody accordionId="4">
+                {isSliderLoading || withdrawnProjectsForClientIsLoading ? (
+                  <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                    <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  </div>
+                ) : (
+                  <ProjectsListingWrap>
+                    {withdrawnProjectsForClientData?.data?.length > 0 && isTab ? (
+                      withdrawnProjectsForClientData?.data?.map((project) => (
+                        <WithdrawnProjectCardForClient key={project._id} data={project} />
+                      ))
+                    ) : withdrawnProjectsForClientData?.data?.length > 0 ? (
+                      // If more than 4 projects, show slider
+                      <>
+                        {withdrawnProjectsForClientData?.data?.length >= 4 ? (
+                          <Slider {...settings}>
+                            {withdrawnProjectsForClientData?.data?.map((project, index) => (
+                              <WithdrawnProjectCardForClient
+                                className={`slide-${index}`}
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+
+                            {withdrawnProjectsForClientData?.metadata?.total_records > 10 && (
+                              <ViewAllCard
+                                accordionName={AccordionName.withdrawnProjects}
+                                height={420}
+                                onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                                count={calculateRemainingBidsCount(withdrawnProjectsForClientData)}
+                              />
+                            )}
+                          </Slider>
+                        ) : (
+                          <div className="custom-slider-wrap">
+                            {withdrawnProjectsForClientData?.data?.map((project) => (
+                              <WithdrawnProjectCardForClient
+                                accordionName={AccordionName.withdrawnProjects}
+                                className="custom-slider-project"
+                                key={project._id}
+                                data={project}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Empty
+                        noBids
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        withdrawn
                       />
                     )}
                   </ProjectsListingWrap>
@@ -467,7 +678,7 @@ const ProjectListing = () => {
               </AccordionHeader>
               <AccordionBody accordionId="1">
                 {isSliderLoading || activeProjectsForTalentIsLoading ? (
-                  <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
+                  <div style={{ height: '340px' }} className="d-flex justify-content-between gap-1">
                     <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
                     <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
                     <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
@@ -519,13 +730,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
+                        active
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
-                        recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -701,13 +910,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
                         recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -790,13 +997,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
                         recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -883,13 +1088,11 @@ const ProjectListing = () => {
                       </>
                     ) : (
                       <Empty
-                        active={false}
                         isEducationNotCompleted={returnDetailsForMarketPlace(
                           userDetailsData?.user_type,
                           profilePercentageData?.values_missing,
                         )}
                         recommended
-                        payment={false}
                       />
                     )}
                   </ProjectsListingWrap>
@@ -910,6 +1113,9 @@ Empty.propTypes = {
   recommended: Proptypes.bool,
   payment: Proptypes.bool,
   isEducationNotCompleted: Proptypes.bool,
+  noBids: Proptypes.bool,
+  withdrawn: Proptypes.bool,
+  open: Proptypes.bool,
 };
 
 Empty.defaultProps = {
@@ -917,4 +1123,7 @@ Empty.defaultProps = {
   recommended: false,
   payment: false,
   isEducationNotCompleted: false,
+  noBids: false,
+  withdrawn: false,
+  open: false,
 };

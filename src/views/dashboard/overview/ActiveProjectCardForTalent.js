@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { useNavigate } from 'react-router-dom';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import ProjectModalViews from './ProjectModalViews';
@@ -12,9 +13,8 @@ import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
-import { convertUnixTimestampToDate } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { useNavigate } from 'react-router-dom';
 
 const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
   const dispatch = useDispatch();
@@ -35,11 +35,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
 
   const navigate = useNavigate();
 
-  const viewProject = () => {
-    navigate(`/project-details/${data._id}/milestone`);
-  };
-
-  const updateCard = ({ switch_team_id }) => {
+  const updateCard = () => {
     const postData = {
       metadata: {
         project_id: data._id,
@@ -47,23 +43,26 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
       type: accordionName,
     };
     if (data?.is_read === false) {
-      dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
+      dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
     }
+  };
+
+  const viewProject = () => {
+    updateCard();
+    navigate(`/project-details/${data._id}/milestone`);
   };
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design new-tag-relative-card">
+      <Card className="card-app-design new-tag-relative-card project-card-dashboard">
         {!data?.is_read && <NewTag />}
-        <CardBody>
+        <CardBody className="project-card-body">
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
-            {data?.name}
-          </p>
+          <p className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</p>
           <div className="client-badge px-1 mb-75">
             <p className="mb-0">Client</p>
           </div>

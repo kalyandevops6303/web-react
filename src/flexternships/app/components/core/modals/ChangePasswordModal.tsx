@@ -107,8 +107,8 @@ export default function ChangePasswordModal({ isOpen, onClose }: ClientOnboardin
                   value={value}
                   onChange={onChange}
                   className="w-[393px]"
-                  label="Old Password"
-                  placeholder="Enter your old password"
+                  label="Confirm New Password"
+                  placeholder="Confirm your new password"
                   error={errors.confirmNewPassword?.message}
                   isPassword
                   required

@@ -54,6 +54,17 @@ export const resetProjectCreationStore = () => {
   useProjectCreationStore.getState().resetStore();
 };
 
+export const getProjectMetadataForTalentByStatus = (
+  primaryStatus: ProjectPrimaryStatus,
+  secondaryStatus: ProjectSecondaryStatus,
+) => {
+  const isProjectDocumentsSigned =
+    ![ProjectPrimaryStatus.OPEN, ProjectPrimaryStatus.ACTIVE].includes(primaryStatus) || // Primary status is not open or active
+    (primaryStatus === ProjectPrimaryStatus.ACTIVE && secondaryStatus === ProjectSecondaryStatus.MILESTONE); // Primary status is active but secondary status is on milestone
+  const isProjectObselete = [ProjectPrimaryStatus.TERMINATED, ProjectPrimaryStatus.WITHDRAWN].includes(primaryStatus);
+  return { isProjectDocumentsSigned, isProjectObselete };
+};
+
 export const getMilestoneStatusTextByUserType = (status: MilestoneStatus, _userType: UserType) => {
   switch (status) {
     case MilestoneStatus.CREATED:
@@ -110,9 +121,11 @@ export const getProjectSecondaryStatusText = (status: ProjectSecondaryStatus, la
   }
 };
 
-export const keysToCamelCase = (data: any): any => {
+export const keysToCamelCase = (data: any, depth: number = Infinity): any => {
+  if (depth < 0) return data;
+
   if (Array.isArray(data)) {
-    return data.map((item) => keysToCamelCase(item)); // Handle arrays
+    return data.map((item) => keysToCamelCase(item, depth)); // Pass remaining depth to array items
   }
 
   if (data !== null && typeof data === 'object') {
@@ -120,11 +133,12 @@ export const keysToCamelCase = (data: any): any => {
 
     Object.keys(data).forEach((key) => {
       const camelCaseKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
-      newObject[camelCaseKey] = keysToCamelCase(data[key]); // Recursively process nested objects
+      // Only recurse if depth > 1, otherwise keep the original value
+      newObject[camelCaseKey] = depth > 1 ? keysToCamelCase(data[key], depth - 1) : data[key];
     });
 
     return newObject;
   }
 
-  return data; // Return the value as is if it's not an object or array
+  return data;
 };

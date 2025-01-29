@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
+import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
@@ -241,11 +242,11 @@ export const returnFilteredDropdownOptions = (search, options) =>
       option.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-export const convertUnixTimestampToDate = (timestamp, timeZone) => {
+export const convertUnixTimestampToDate = (timestamp, timeZone, isFlextern = false) => {
   // Create a new Date object adjusted to UTC from the timestamp
   let timezoneToUse = timeZone;
   if (!timeZone) {
-    timezoneToUse = 'America/Los_Angeles';
+    timezoneToUse = isFlextern ? 'Asia/Kolkata' : 'America/Los_Angeles';
   }
   if (!timestamp) {
     return '';
@@ -283,6 +284,15 @@ export const renderFormattedListingDate = (date) => {
     .split(' ');
 
   return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
+};
+
+export const renderListingDate = (date) => {
+  const formattedDate = date
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+
+  return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 };
 
 export const returnRelativeTime = (time, timeZone) => {
@@ -910,7 +920,7 @@ export const getMissingName = (type, values) => {
       return '';
   }
 };
-export const checkPointRedirection = ({ response, navigate }) => {
+export const checkPointRedirection = ({ response, navigate, nextPath }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
     if (response?.is_flextern) {
       navigate('/auth/register-phone-flexternship');
@@ -926,7 +936,7 @@ export const checkPointRedirection = ({ response, navigate }) => {
       navigate(`/${response.user_type.toLowerCase()}-onboarding`);
     } else navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
   } else if (response?.checkpoint === checkPoints.COMPLETE) {
-    navigate('/dashboard');
+    navigate(nextPath || '/dashboard');
   } else if (response?.checkpoint === checkPoints?.CREATE_PASSWORD) {
     navigate('/auth/set-password');
   }
@@ -937,11 +947,12 @@ export function areObjectsEqual(obj1, obj2) {
 }
 
 export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
-  const filteredObj = Object.fromEntries(
-    Object.keys(savedData) // Get all keys from savedData
-      .filter((key) => key in formSchemaFields) // Keep only keys that are in form schema
-      .map((key) => [key, savedData[key]]), // Map the key-value pairs for the new object
-  );
+  const filteredObj = Object.keys(savedData) // Get all keys from savedData
+    .filter((key) => key in formSchemaFields) // Keep only keys that are in formSchemaFields
+    .reduce((acc, key) => {
+      acc[key] = savedData[key]; // Add the key-value pair to the accumulator
+      return acc;
+    }, {}); // Start with an empty object
 
   return filteredObj;
 };
@@ -960,4 +971,23 @@ export const formatDateWithTime = (date) => {
     })
     .replace(',', '')
     .replace(/\s+/g, ' ');
+};
+
+export const formatWebSocketMessage = (data) => {
+  switch (data.message_type) {
+    case MessageType.INITIAL:
+    case MessageType.CLARIFICATION:
+    case MessageType.NUMBER_REQUEST:
+    case MessageType.ERROR:
+      return { role: MessageRole.ASSISTANT, content: data.content };
+    case MessageType.PROJECTS:
+      return {
+        role: MessageRole.ASSISTANT,
+        content: data.content,
+        projects: data.content.projects,
+        domain: data.content.domain,
+      };
+    default:
+      return { role: MessageRole.ASSISTANT, content: 'Unsupported message type' };
+  }
 };

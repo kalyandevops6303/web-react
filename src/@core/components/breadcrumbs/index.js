@@ -26,7 +26,7 @@ const BreadCrumbs = (props) => {
           tag="li"
           key={index}
           active={!isLastItem}
-          className="text-capitalize d-flex align-items-center justify-content-center"
+          className="breadcrumb-text text-capitalize d-flex align-items-center justify-content-center"
           // className={isLastItem ? 'text-primary' : 'body-color'}
         >
           <Wrapper {...(item.link?.length > 0 ? { to: item.link } : {})}>{item.title}</Wrapper>

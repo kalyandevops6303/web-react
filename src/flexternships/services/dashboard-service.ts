@@ -1,3 +1,10 @@
+/**
+ * Dashboard service module for handling dashboard-related operations.
+ * @fileoverview Contains functions for managing dashboard data including client details and project history.
+ * Includes APIs for retrieving client public profiles, completed projects, and other dashboard metrics.
+ * @module dashboard-service
+ */
+
 import axios from 'axios';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
@@ -15,6 +22,7 @@ export const getClientPublicDetails = async (clientUserId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
+    withCredentials: true,
   };
 
   try {
@@ -45,6 +53,7 @@ export const getClientCompletedProjects = async (clientUserId: string, page: num
       page,
       page_size: pageSize,
     },
+    withCredentials: true,
   };
 
   try {

@@ -18,7 +18,7 @@ import {
 import { getClientCompletedProjects, getClientPublicDetails } from '@/flexternships/services/dashboard-service';
 
 // Static content
-import { clientDelegateRoleText } from '@/flexternships/static/profile-content';
+import { clientDelegateRoleText } from '@/flexternships/static/content/profile-content';
 
 // Components
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';

@@ -11,7 +11,7 @@ import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { getProjectListing, getProjectsListingFlextern } from '../../../redux/actions/projectActions';
+import { getProjectsListingFlextern } from '../../../redux/actions/projectActions';
 import ProjectCard from '../../cards/ProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
@@ -65,11 +65,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'Received', value: 'RECEIVED' },
     { label: 'Sent', value: 'SENT' },
   ];
+  const projectStateOptions = [
+    { label: 'ALL', value: 'ALL' },
+    { label: 'NEW', value: 'NEW' },
+    { label: 'FAVOURITE', value: 'FAVOURITE' },
+  ];
   const invitedByOptions = [
     { label: 'Team', value: 'TEAM' },
     { label: 'Client', value: 'CLIENT' },
   ];
-  const metaData = { page: 1, page_size: 10 };
   const metaDataFlextern = {
     page: 1,
     page_size: 10,
@@ -84,6 +88,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [secondFilterState, setSecondFilterState] = useState({
     team_name: [],
     department_name: [],
+    project_state_type: [],
     status: [],
     project_name: [],
     talent_name: [],
@@ -163,6 +168,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (secondFilterState?.talent_name?.length > 0) {
       metaDataFlextern.talent_name = secondFilterState.talent_name[0].label;
     }
+    if (secondFilterState?.project_state_type?.length > 0) {
+      metaDataFlextern.project_state_type = secondFilterState.project_state_type[0].value;
+    }
   }, [secondFilterState]);
 
   useEffect(() => {
@@ -207,20 +215,23 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           status: metaDataFlextern?.status || '',
           project_status: primaryFilter?.toUpperCase() || '',
           talent_name: metaDataFlextern?.talent_name || '',
+          sort_by: metaDataFlextern?.project_state_type || 'ALL',
         },
       }),
     );
   }, [secondFilterState, searchText, primaryFilter]);
 
   const fetchMore = () => {
-    const newMetaData = {
-      ...metaData,
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      page: selectProjectMetaData?.current_page + 1 || 1,
-    };
     const newFlexternMetaData = {
       ...metaDataFlextern,
+      // eslint-disable-next-line no-unsafe-optional-chaining
       page: selectProjectMetaData?.current_page + 1 || 1,
+      search_query: metaDataFlextern?.project_name || searchText || '',
+      department_name: metaDataFlextern?.department_name?.department_name || '',
+      status: metaDataFlextern?.status || '',
+      project_status: primaryFilter?.toUpperCase() || '',
+      talent_name: metaDataFlextern?.talent_name || '',
+      sort_by: metaDataFlextern?.project_state_type,
     };
 
     const filterData = {};
@@ -247,13 +258,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //   }),
     // );
     dispatch(
-      getProjectListing({
+      getProjectsListingFlextern({
         data: {
           ...filterData,
           search_query: searchText || '',
           project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
         },
-        metaData: newMetaData,
+        metaData: newFlexternMetaData,
         onSuccess,
         onError,
       }),
@@ -508,6 +519,28 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     value={
                       secondFilterState.department_name?.length > 0
                         ? secondFilterState.department_name?.map((item) => item)
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TYPE']}>
+              {userType !== userTypes.team && (
+                <Col>
+                  <Label className="form-label">Type</Label>
+                  <Select
+                    options={projectStateOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('project_state_type', value)}
+                    value={
+                      secondFilterState?.project_state_type?.length > 0
+                        ? {
+                            value: secondFilterState.project_state_type[0].value,
+                            label: secondFilterState.project_state_type[0].label,
+                          }
                         : null
                     }
                   />

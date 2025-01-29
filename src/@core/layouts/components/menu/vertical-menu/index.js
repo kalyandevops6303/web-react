@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import VerticalMenuHeader from './VerticalMenuHeader';
 import VerticalNavMenuItems from './VerticalNavMenuItems';
 import { selectUserData } from '../../../../../redux/selectors/authSelectors';
+import { FlexternUserAppRole } from '@/flexternships/constraints/enums/core-enums';
 
 const Sidebar = (props) => {
   // ** Props
@@ -17,7 +18,11 @@ const Sidebar = (props) => {
 
   const userDetailsData = useSelector(selectUserData);
 
-  const menus = userDetailsData?.user_type === 'TALENT' ? menuData : menuData.filter((menu) => menu.id !== 'clubs');
+  const menus = [FlexternUserAppRole.FLEXTERN_TALENT, FlexternUserAppRole.FLEXTERN_CLIENT].includes(
+    userDetailsData?.app_roles[0],
+  )
+    ? menuData.filter((menu) => menu.id !== 'clubs' && menu.id !== 'myteam')
+    : menuData;
 
   // ** States
   const [groupOpen, setGroupOpen] = useState([]);

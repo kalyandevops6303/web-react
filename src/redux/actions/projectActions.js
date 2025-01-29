@@ -1,14 +1,4 @@
-import {
-  getCardService,
-  getCardServiceFlextern,
-  getCompletedProjectListingService,
-  getDisutedProjectListingService,
-  getInvitedProjectListingService,
-  getOngoingProjectListingService,
-  getProjectsListFlexternService,
-  getTerminatedProjectListingService,
-  getUpcomingProjectListingService,
-} from '../../services/projectServices';
+import { getCardService, getCardServiceFlextern, getProjectsListFlexternService } from '../../services/projectServices';
 import {
   getCardInfoErr,
   getCardInfoReq,
@@ -48,41 +38,6 @@ const getCardInfoFlextern =
     }
   };
 
-const serviceMap = {
-  ONGOING: getOngoingProjectListingService,
-  COMPLETED: getCompletedProjectListingService,
-  UPCOMING: getUpcomingProjectListingService,
-  DISPUTE: getDisutedProjectListingService,
-  TERMINATED: getTerminatedProjectListingService,
-  INVITED: getInvitedProjectListingService,
-};
-
-const getProjectListing =
-  ({ data, metaData, onSuccess, onError }) =>
-  async (dispatch) => {
-    const { project_filter, project_type } = data;
-    if (metaData?.page === 1) {
-      dispatch(getListReq());
-    }
-    try {
-      if (project_filter in serviceMap) {
-        const res = await serviceMap[project_filter]({
-          data: { ...data, project_types: project_type ? [project_type] : [] },
-          metaData,
-        });
-        if (res) {
-          dispatch(storeSuccessData(res?.data?.data));
-          onSuccess();
-        }
-      } else {
-        throw new Error(`Invalid project filter: ${project_filter}`);
-      }
-    } catch (error) {
-      onError();
-      errorHandler(error, getListErr);
-    }
-  };
-
 const getProjectsListingFlextern =
   ({ metaData, onSuccess, onError }) =>
   async (dispatch) => {
@@ -103,4 +58,4 @@ const getProjectsListingFlextern =
     }
   };
 
-export { getCardInfo, getProjectListing, getProjectsListingFlextern, getCardInfoFlextern };
+export { getCardInfo, getProjectsListingFlextern, getCardInfoFlextern };

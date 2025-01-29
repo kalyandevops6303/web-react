@@ -33,7 +33,7 @@ import {
   isFileValid,
   removeEmptyKeys,
   renderFilePreview,
-  renderFormattedListingDate,
+  renderListingDate,
   returnFilteredDropdownOptions,
   selectThemeColors,
   giveProgressBarColorClassName,
@@ -104,6 +104,7 @@ import { returnCompleteProfileDetailsCta } from '../../../utility/constants/Comp
 import '../../../App.css';
 import { resumeParsedDetailsSuccess } from '@/redux/reducers/talentOnboarding';
 import { saveDraftTeamError } from '@/redux/reducers/team';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 const customDropdownStyles = {
   menuList: (provided) => ({
@@ -114,10 +115,11 @@ const customDropdownStyles = {
 };
 
 const Additional = () => {
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const AdditionalInformationSchema = yup.object().shape({
     gender: yup
       .string()
-      .oneOf(['MALE', 'FEMALE', 'OTHER'], 'Please select a valid gender')
+      .oneOf(['MALE', 'FEMALE', 'NON_BINARY', 'OTHER'], 'Please select a valid gender')
       .required('Gender is required'),
     country: yup
       .object()
@@ -521,7 +523,7 @@ const Additional = () => {
               </Col>
               <Col>
                 <h5 className="text-sm text-grey font-normal text-center">
-                  {renderFormattedListingDate(new Date(file.file.lastModified))}
+                  {renderListingDate(new Date(file.file.lastModified))}
                 </h5>
               </Col>
               <Button
@@ -572,7 +574,9 @@ const Additional = () => {
     // } else if (flexternBoolean && !trumioTalent) {
     //   navigate(`/dashboard`);
     // }
+
     dispatch(setResumeDataUploadedForAdditional(parseResume));
+    populateUserDetails(true);
     navigate('/marketplace/all_listings');
   };
 
@@ -597,8 +601,11 @@ const Additional = () => {
       },
     };
 
-    dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    dispatch(saveCheckpointComplete(() => {}));
+    dispatch(
+      saveCheckpointComplete(() => {
+        dispatch(saveFlexternProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      }),
+    );
   };
 
   const onGetUserDetailsSuccess = (res) => {
@@ -958,6 +965,21 @@ const Additional = () => {
                               <Input
                                 type="radio"
                                 {...field}
+                                id="non-binary"
+                                value="NON_BINARY"
+                                checked={field.value === 'NON_BINARY'}
+                              />
+                              <Label htmlFor="non-binary" className="form-check-label">
+                                Non-Binary
+                              </Label>
+                            </div>
+                            <div
+                              style={{ maxWidth: '350px' }}
+                              className="form-check form-check-inline checkbox-custom-margin"
+                            >
+                              <Input
+                                type="radio"
+                                {...field}
                                 id="other"
                                 value="OTHER"
                                 checked={field.value === 'OTHER'}
@@ -1075,15 +1097,17 @@ const Additional = () => {
                 </div>
                 <div className="d-flex justify-content-end">
                   {/* {flexternBoolean && trumioTalent ? ( */}
-                  <Button
-                    color="primary"
-                    outline
-                    className="d-flex align-items-center justify-content-between me-2"
-                    onClick={onSkipClick}
-                  >
-                    <span className="me-50">Skip</span>
-                    <ChevronRight size={14} />
-                  </Button>
+                  {location?.pathname.includes('profile-edit') && (
+                    <Button
+                      color="primary"
+                      outline
+                      className="d-flex align-items-center justify-content-between me-2"
+                      onClick={onSkipClick}
+                    >
+                      <span className="me-50">Skip</span>
+                      <ChevronRight size={14} />
+                    </Button>
+                  )}
                   {/* ) : null} */}
                   <Button
                     className="d-flex align-items-center justify-content-between"
@@ -1195,74 +1219,26 @@ const Additional = () => {
                 </CardHeader>
 
                 <CardBody>
-                  <hr className="m-0 card-header-border" />
-
-                  {isTrumioTalent && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox"
-                          className="custom-checkbox-input"
-                          checked={isProjectReady}
-                        />
-                        <label htmlFor="customCheckbox" className="custom-checkbox-label" />
-                      </div>
+                  {isFlextern && !isFlexternReady && (
+                    <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
-                        <CardText className="m-0">Client Projects Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer"
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                ?.path || '/marketplace',
-                            )
-                          }
-                        >
-                          {isProjectReady
-                            ? 'Explore Projects'
-                            : `${
-                                returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionProjectMissingValues)
-                                  ?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
-                      </div>
-                    </div>
-                  )}
-
-                  {isFlextern && (
-                    <div className="d-flex gap-1 mt-1">
-                      <div className="custom-checkbox-wrapper">
-                        <Input
-                          type="checkbox"
-                          id="customCheckbox2"
-                          className="custom-checkbox-input"
-                          checked={isFlexternReady}
-                        />
-                        <label htmlFor="customCheckbox2" className="custom-checkbox-label" />
-                      </div>
-                      <div>
-                        <CardText className="m-0">Flexternship Ready</CardText>
-                        <b
-                          className="text-primary cursor-pointer d-flex align-items-center"
-                          onClick={() =>
-                            navigate(
-                              returnCompleteProfileDetailsCta(userTypes.talent, profileCompletionFlexternMissingValues)
-                                ?.path || '/dashboard',
-                            )
-                          }
-                        >
-                          {isFlexternReady
-                            ? 'Explore Flexternships'
-                            : `${
+                        <CardText className="m-0">
+                          <a
+                            href="#"
+                            className="text-primary cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(
                                 returnCompleteProfileDetailsCta(
                                   userTypes.talent,
                                   profileCompletionFlexternMissingValues,
-                                )?.label
-                              }`}{' '}
-                          <ChevronRight size="1.2em" />
-                        </b>
+                                )?.path || '/dashboard',
+                              );
+                            }}
+                          >
+                            Add More
+                          </a>
+                        </CardText>
                       </div>
                     </div>
                   )}

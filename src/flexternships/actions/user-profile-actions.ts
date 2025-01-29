@@ -24,6 +24,7 @@ export const populateClientInfoDetails = async (set: any) => {
       imageUri: data.client_info?.image_uri,
       title: data.client_info?.title,
       department: data.client_info?.department,
+      linkedin: data.client_info?.social_links?.find((link: any) => link.platform === 'linkedin')?.url,
       socialLinks: data.client_info?.social_links?.map((link: any) => ({
         platform: link.platform,
         url: link.url,
@@ -65,13 +66,19 @@ export const upsertClientAccountInfo = async (data: FlexternClientAccountDetails
       firstname: data.firstname,
       lastname: data.lastname,
       timezone: data.timezone,
+      linkedin: data.linkedin,
       imageUri: data.imageUri,
+      title: data.title,
+      department: data.department,
     },
   }));
   await upsertFlexternClientAccountInfo({
     firstname: data.firstname,
     lastname: data.lastname,
     timezone: data.timezone,
+    linkedin: data.linkedin,
+    title: data.title,
+    department: data.department,
     ...(data.imageUri?.startsWith('https') ? {} : { imageUri: data.imageUri }),
   });
 };

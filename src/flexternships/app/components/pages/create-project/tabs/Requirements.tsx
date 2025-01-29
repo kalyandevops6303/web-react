@@ -20,7 +20,7 @@ import { isEmpty } from 'lodash';
 import { useParams } from 'react-router-dom';
 import { verifyProjectName } from '@/flexternships/services/project-management-v2';
 import { MAX_FILE_COUNT } from '@/flexternships/lib/constants';
-import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 export default function Requirements() {

@@ -2,6 +2,7 @@
 import { Box, Check, Watch } from 'react-feather';
 
 const SUPPORT_EMAIL = 'support@trumio.ai';
+const DEFAULT_SUPPORT_TYPE = 'others';
 
 const counts = {
   AVATAR_MAX_COUNT: 3,
@@ -135,6 +136,16 @@ const disputeStatusEnum = {
   UNDER_REVIEW: 'Under Review',
   RESPONDED: 'Responded',
   RESOLVED: 'Resolved',
+};
+
+const statusEnum = {
+  OPEN: 'Open',
+  IN_REVIEW: 'In Review',
+  ON_GOING: 'On Going',
+  ACTIVE: 'Active',
+  TERMINATED: 'Terminated',
+  CLOSED: 'Closed',
+  LISTING_EXPIRED: 'Listing Expired',
 };
 
 const roleTypeOptions = [
@@ -285,6 +296,10 @@ const generateYearArrays = () => {
 };
 const { studyYears, graduationYears } = generateYearArrays();
 
+const FEATURE_NAMES = {
+  AYESHA_BOT: 'Ayesha Bot',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -319,7 +334,9 @@ export {
   CHECKOUT_STATUS,
   PAYMENT_TYPES,
   SUPPORT_EMAIL,
+  DEFAULT_SUPPORT_TYPE,
   projectStatusEnum,
+  statusEnum,
   delegateTypes,
   CUSTOMER_SUPPORT_TYPES,
   CITIZEN_TYPES,
@@ -333,4 +350,5 @@ export {
   studyYears,
   graduationYears,
   counts,
+  FEATURE_NAMES,
 };
