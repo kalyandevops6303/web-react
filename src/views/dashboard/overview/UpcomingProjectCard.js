@@ -11,9 +11,10 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
-import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { userData } from '@/redux/selectors/dashboardSelectors';
 
 const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -23,6 +24,7 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const savedUserData = useSelector(selectSavedUserData);
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
+  const userDetailsData = useSelector(userData);
 
   const navigate = useNavigate();
 
@@ -135,10 +137,12 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
                   }`}
                 </p>
               </div>
-              {/* <div className="design-planning">
-                <p className="mb-25 details-box-title">Amount</p>
-                <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
-              </div> */}
+              {userDetailsData?.app_roles && userDetailsData?.app_roles?.includes('FLEXTERN') ? null : (
+                <div className="design-planning">
+                  <p className="mb-25 details-box-title">Amount</p>
+                  <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
+                </div>
+              )}
             </div>
           </div>
           <div
