@@ -174,9 +174,6 @@ pipeline {
                     echo serviceport = "${servicePort}"
                     echo targetport  = "${targetPort}"
 
-	            def buildCommand = params.DEPENDENCY == 'Yes' ? 'docker compose build --no-cache' : 'docker compose build'
-
-
                     // Use the downloaded environment file for Docker Compose
                     sh """
 		            cp env-fe-${params.ENVIRONMENT}.txt .env.trudev.local
@@ -185,7 +182,7 @@ pipeline {
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
 	             	    sed -i "s/5000/${targetPort}/g" Dockerfile
 	     		    sed -i "s/'test'/'${mode}'/g" vite.config.ts
-                            ${buildCommand}
+                            docker compose build
                             docker compose up -d
                      """
                     cleanWs()
