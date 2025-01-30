@@ -223,13 +223,7 @@ export default function AccountDetails() {
               <TextInput value={userDetails.phone} onChange={() => {}} className="w-[281px]" label="" readOnly />
             </div>
           </div>
-          <TextInput
-            value={userDetails.email}
-            onChange={() => {}}
-            className="w-[393px]"
-            label="Email address"
-            readOnly
-          />
+          <TextInput value={userDetails.email} onChange={() => {}} className="w-[393px]" label="Email" readOnly />
         </div>
       </div>
       {/* Actions */}
