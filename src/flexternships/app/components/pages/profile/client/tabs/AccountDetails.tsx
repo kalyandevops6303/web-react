@@ -157,8 +157,8 @@ export default function AccountDetails() {
             pageSize={10}
             loadOptions={fetchTimezonesPaginated}
             className="w-[393px]"
-            label="Timezone"
-            placeholder="Select your timezone"
+            label="Preferred Time Zone"
+            placeholder="Select preferred time zone"
             error={errors?.timezone?.message}
             maxMenuHeight={220}
             required
@@ -172,7 +172,7 @@ export default function AccountDetails() {
                 value={value ?? ''}
                 onChange={onChange}
                 className="w-[393px]"
-                label="LinkedIn"
+                label="Linkedin"
                 placeholder="Enter your profile URL"
                 error={errors.linkedin?.message}
               />
@@ -211,12 +211,10 @@ export default function AccountDetails() {
             )}
           ></Controller>
 
-          <div className="flex flex-col">
-            <div className="text-xs text-grey-500 leading-5 not-italic font-normal flex flex-row gap-0.5">
-              Mobile Number
-            </div>
+          <div className="flex flex-col gap-y-1">
+            <div className="text-xs text-grey-500 leading-5 not-italic font-normal">Mobile Number</div>
             <div className="flex gap-x-3">
-              <div className="px-3 mt-1 rounded-md min-w-[100px] flex items-center gap-x-2 border-1 border-solid border-trublue bg-gradient-to-t from-[rgba(153,193,230,0.10)] to-[rgba(153,193,230,0.10)]">
+              <div className="px-3 rounded-md min-w-[100px] flex items-center gap-x-2 border-1 border-solid border-trublue bg-gradient-to-t from-[rgba(153,193,230,0.10)] to-[rgba(153,193,230,0.10)]">
                 <ReactCountryFlag className="rounded-md min-h-4" countryCode={userDetails.phoneCountry.code} svg />
                 <span className="text-sm leading-5.5 font-normal text-grey-600 not-italic">
                   {userDetails.countryCode}
@@ -225,13 +223,7 @@ export default function AccountDetails() {
               <TextInput value={userDetails.phone} onChange={() => {}} className="w-[281px]" label="" readOnly />
             </div>
           </div>
-          <TextInput
-            value={userDetails.email}
-            onChange={() => {}}
-            className="w-[393px]"
-            label="Email address"
-            readOnly
-          />
+          <TextInput value={userDetails.email} onChange={() => {}} className="w-[393px]" label="Email" readOnly />
         </div>
       </div>
       {/* Actions */}

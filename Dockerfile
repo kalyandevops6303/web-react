@@ -7,17 +7,22 @@ RUN apk --no-cache add --virtual native-deps \
 # Create app directory
 WORKDIR /app
 
-# Copy source code to image
-COPY . .
+# Copy only package.json and package-lock.json first for caching
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
 
+# Copy source code to image
+COPY . .
+
 RUN npm run build
 
+# Second stage: Running the application
 FROM node:20.17.0-alpine3.20
 WORKDIR /app
 
+# Copy built assets from the first stage
 COPY --from=module-install-stage /app/dist/ /app/dist
 
 # Install and configure `serve`.
