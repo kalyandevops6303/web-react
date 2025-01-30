@@ -81,6 +81,15 @@ const ProjectCard = ({
     BLOCKED: 'Blocked',
   };
 
+  const secondaryStatusEnum = {
+    SIGN_CONTRACT: 'Sign Contract',
+    SIGN_NDA: 'Sign NDA',
+    SIGN_REQUESTED: 'Sign Requested',
+    SIGN_DOCUMENTS: 'Sign Documents',
+    COMPLETED: 'Completed',
+    MILESTONE: 'Milestone',
+  };
+
   const primaryStatus = {
     OPEN: 'Open Listing',
     IN_REVIEW: 'In Review',
@@ -146,6 +155,18 @@ const ProjectCard = ({
 
     return switchData?.navigateTo;
   };
+
+  const getSecondaryStatus = (secondaryStatus, seq = 1) => {
+    if (Object.keys(secondaryStatusEnum).includes(secondaryStatus)) {
+      if (secondaryStatus === 'MILESTONE') {
+        return `${secondaryStatusEnum[secondaryStatus]} ${seq}`;
+      } else {
+        return secondaryStatusEnum[secondaryStatus];
+      }
+    } else {
+      return '';
+    }
+  };
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -169,14 +190,25 @@ const ProjectCard = ({
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
-                    <Badge
-                      className={`${
-                        Object.keys(primaryStatus)?.includes(data?.status) ? data?.status : pathname
-                      } truncate-1`}
-                      color="badge"
-                    >
-                      {`${statusEnum[data?.status] || data?.status}`}
-                    </Badge>
+                    {(() => {
+                      const isSecondaryStatusValid = data?.secondary_status
+                        ? Object.keys(secondaryStatusEnum)?.includes(data?.secondary_status?.next)
+                        : Object.keys(primaryStatus)?.includes(data?.status);
+
+                      const badgeStatus = isSecondaryStatusValid
+                        ? data?.secondary_status
+                          ? data?.secondary_status?.next
+                          : data?.status
+                        : pathname;
+
+                      return (
+                        <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
+                          {data?.secondary_status
+                            ? getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
+                            : primaryStatus[data?.status]}
+                        </Badge>
+                      );
+                    })()}
                   </CustomBadge>
                 </div>
                 <CardTitle className="d-flex align-items-center mb-3">
