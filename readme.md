@@ -1,196 +1,156 @@
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/github_username/repo_name">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
 
-# Trumio Web React 
+<h3 align="center">project_title</h3>
 
-## Project Overview
+[![Built & Pretty](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml/badge.svg?branch=tru-dev)](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md)
 
-This is a React-based web application designed for Trumio Flexternships.
+  <p align="center">
+    project_description
+    <br />
+    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    ·
+    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+  </p>
+</div>
 
-## Folder Structure
+<!-- ABOUT THE PROJECT -->
 
-Here's an overview of the project's folder structure:
+## About The Project
 
-```
-/trumio-web-react/
-│
-├── .dockerignore                              # Files to be ignored by Docker
-├── .env.tru-production.local                  # Flexternships Production environment variables
-├── .env.truqa.local                           # Flexternships QA environment variables
-├── .env.trudev.local                          # Flexternships Test environment variables
-├── .env.tru-uat.local                         # Flexternships UAT environment variables
-├── .eslintignore                              # Files to be ignored by ESLint
-├── .eslintrc                                  # ESLint configuration - currently not used
-├── .gitignore                                 # Git ignore rules
-├── .prettierrc.json                           # Prettier configuration
-│
-├── /src/                                      # Source code files
-│   ├── @flexternships/                        # Flexternships Application Source Code
-│   │   ├── actions/                           # Redux actions and action creators
-│   │   ├── app/                               # Main application components
-│   │   │   └── components/                    # Reusable UI components
-│   │   │       ├── core/                      # Core design system components
-│   │   │       ├── pages/                     # Page specific components
-│   │   │       └── ui/                        # Shadcn components
-│   │   ├── assets/                            # Static assets specific to flexternships
-│   │   ├── constraints/                       # Type definitions and enums
-│   │   │   ├── types/                         # TypeScript type definitions
-│   │   │   └── enums/                         # Enumerated values
-│   │   ├── lib/                               # Helper functions and utilities
-│   │   ├── schemas/                           # Data validation schemas
-│   │   ├── services/                          # API service integrations
-│   │   ├── stores/                            # State management stores
-│   │   ├── styles/                            # Styling and theme files
-│   │   └── utils/                             # Utility functions
-│   ├── @core/                                 # Core functionalities and assets
-│   ├── assets/                                # Static assets like images and icons
-│   ├── CometChatWorkspace/                    # Integration with CometChat for real-time chat
-│   ├── configs/                               # Configuration files for various environments
-│   ├── layouts/                               # Layout components for pages
-│   ├── lib/                                   # Custom and third-party libraries
-│   ├── navigation/                            # Routing and navigation logic
-│   ├── redux/                                 # Redux state management
-│   ├── router/                                # Application routes
-│   ├── services/                              # API service files
-│   ├── utility/                               # Utility functions
-│   ├── views/                                 # Page-level components representing different views
-│   ├── App.css                  
-│   ├── App.js                
-│   ├── App.test.js     
-│   ├── constant.js                
-│   ├── index.js                
-│   ├── index.css                    
-│   └── serviceWorker.js             
-│   
-├── /public/                                   # Public static files
-│
-├── package.json                               # Node.js dependencies and scripts
-└── README.md                                  # Project documentation 
-```
+[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-## Detailed Functionality
+Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
 
-1. **Real-Time Chat:**  
-   The project includes a real-time chat feature powered by CometChat. This allows users to communicate in real time, making it ideal for collaborative environments.
+### Built With
 
-2. **State Management (Redux):**  
-   The application uses Redux for state management, ensuring a scalable and maintainable state across different components and views.
+<!-- [![Next][Next.js]][Next-url] -->
 
-3. **Routing (React Router):**  
-   The app features dynamic routing using React Router, allowing for seamless navigation between different pages and components.
+[![React][React.js]][React-url]
 
-4. **Custom Libraries:**  
-   The `lib/` folder contains custom-built libraries or direct integrations of third-party libraries that provide additional functionality.
+<!-- GETTING STARTED -->
 
-5. **Layouts and Views:**  
-   The project follows a modular approach by separating layout components and page-specific views, enhancing code reusability and organization.
+## Getting Started
 
-6. **Service Worker:**  
-   Offline capabilities are supported through a service worker, improving the user experience in low or no network environments.
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
 
-7. **Environment Configurations:**  
-   The project supports multiple environments (development, production, QA, UAT) with separate configuration files for each.
+### Prerequisites
 
-## Dependencies
+This is an example of how to list things you need to use the software and how to install them.
 
-This project relies on the following tools and libraries:
+- npm
+  ```sh
+  npm install npm@latest -g
+  ```
 
-- **React:** Frontend library
-- **Redux:** State management
-- **React Router:** Routing library
-- **CometChat:** Real-time chat integration
-- **Docker:** Containerization tool
-- **ESLint:** Linter for JavaScript/React code
-- **Prettier:** Code formatter
+### Installation
 
-You can find all dependencies in the `package.json` file.
-
-## Installation
-
-To set up the project locally, follow these steps:
-
-1. **Clone the Repository:**
-
-   ```bash
-   git clone https://github.com/trumio/trumio-web-react.git
+1. Get a free API Key at [https://example.com](https://example.com)
+2. Clone the repo
+   ```sh
+   git clone https://github.com/github_username/repo_name.git
+   ```
+3. Install NPM packages
+   ```sh
+   npm install
+   ```
+4. Enter your API in `config.js`
+   ```js
+   const API_KEY = 'ENTER YOUR API';
    ```
 
-2. **Navigate to the Project Directory:**
-
-   ```bash
-   cd trumio-web-react
-   ```
-
-3. **Install Dependencies with Yarn:**
-
-   ```bash
-   yarn install
-   ```
-
-4. **Set Up Environment Variables:**
-   - Copy the appropriate `.env` file based on your environment (development, production, etc.).
-   - Customize the environment variables as needed.
-
-5. **Run the Development Server:**
-
-   ```bash
-   yarn start
-   ```
+<!-- USAGE EXAMPLES -->
 
 ## Usage
 
-Here’s how you can use different scripts with Yarn:
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-- **Development Server:**
+_For more examples, please refer to the [Documentation](https://example.com)_
 
-  ```bash
-  yarn start
-  ```
+<!-- CONTRIBUTING -->
 
-- **Production Build:**
+## Contributing
 
-  ```bash
-  yarn build
-  ```
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-- **Run Tests:**
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-  ```bash
-  yarn test
-  ```
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-- **Linting and Formatting:**
+See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
 
-  - **Linting with ESLint:**
+## Code Structure
 
-    ```bash
-    yarn lint
-    ```
+Here comes the tricky part of this project - the codebase is a mix of two applications - OneOff and Flexternships.
 
-  - **Formatting with Prettier:**
+### OneOff App
 
-    ```bash
-    yarn prettier
-    ```
+> [!CAUTION]
+>
+> ## Deprecated
+>
+> OneOff App Code in this project was the base for building flexternships' pages and components at the end of 2024, it is now in long-term stasis and will be removed soon. We recommend that you add all your code inside the `src/flexternships` directory.
+>
+> If you are modifying any component from the OneOff App, you can still continue to do so, but please do not add any new components to the OneOff App - instead, add them to the `src/flexternships` directory with the appropriate conventions.
 
-## Detailed Code Explanation
+### Flexternships App
 
+This is the new app that is being built. It is located in the `src/flexternships` directory. This application holds high significance. It's carefully built considering scalability, performance, and maintainability.
 
-### Key Components:
+<!-- LICENSE -->
 
-- **`App.js`:**  
-  The main entry point for the application. It initializes routing, applies global styles, and sets up Redux state management.
+## License
 
-- **`index.js`:**  
-  The root file that renders the app into the DOM. It’s responsible for bootstrapping the entire application.
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-- **`layouts/`:**  
-  Contains reusable layout components that define the structure of different pages, such as header, footer, and sidebar components.
+<!-- CONTACT -->
 
-- **`views/`:**  
-  Page-specific components that represent different screens of the application, such as the home page, login page, and dashboard.
+## Contact
 
-- **`services/`:**  
-  Handles communication with external APIs, abstracts API calls, and manages response handling.
+Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
 
+Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
 
----
+<!-- ACKNOWLEDGMENTS -->
 
+## Acknowledgments
+
+- [Ack 1](https://example.com)
+- [Ack 1](https://example.com)
+- [Ack 1](https://example.com)
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
+[forks-url]: https://github.com/github_username/repo_name/network/members
+[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
+[stars-url]: https://github.com/github_username/repo_name/stargazers
+[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
+[issues-url]: https://github.com/github_username/repo_name/issues
+[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
+[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/linkedin_username
+[product-screenshot]: images/screenshot.png
+[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
