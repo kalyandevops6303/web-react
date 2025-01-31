@@ -18,6 +18,7 @@ export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
+  const milestoneDetailsLoading = useProjectMilestonesStore((state) => state.isMilestoneDetailsLoading);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectLoading = useProjectsStore((state) => state.isProjectsLoading);
 
@@ -124,10 +125,13 @@ export default function FlexternshipProjectDetails() {
     if (projectDetails?.details?.name) {
       setBreadCrumbData((prev) => ({ ...prev, projectName: projectDetails?.details?.name }));
     }
-    if (params?.milestoneId) {
+    if (milestoneDetailsLoading) {
+      setBreadCrumbData((prev) => ({ ...prev, milestoneName: '' }));
+    }
+    if (!milestoneDetailsLoading && params?.milestoneId) {
       setBreadCrumbData((prev) => ({ ...prev, projectStep: 'Milestone', milestoneName: milestoneDetails?.name }));
     }
-  }, [params.projectStep, params?.milestoneId, projectDetails]);
+  }, [params.projectStep, params?.milestoneId, projectDetails, milestoneDetails, milestoneDetailsLoading]);
   const breadCrumbs = [
     {
       label: 'Projects',
