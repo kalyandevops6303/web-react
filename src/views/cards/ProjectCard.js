@@ -1,11 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
-import parse from 'html-react-parser';
 import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { AlertCircle } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { EstimatedTimeHeading, ProjectCardWrap, CardInfoWrapper } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -15,13 +15,18 @@ import BaseInfoUI from './BaseInfoCardUI';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
-import { convertUnixTimestampToDate, getModifiedProjectResponse, getPath, getReadType } from '../../utility/Utils';
+import {
+  convertUnixTimestampToDate,
+  getModifiedProjectResponse,
+  getPath,
+  getReadType,
+  getSecondaryStatus,
+} from '../../utility/Utils';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
-import { userTypes } from '../../utility/constants/Constant';
+import { secondaryStatusConstants, userTypes } from '../../utility/constants/Constant';
 import PermissionWrapper from '@/PermissionWrapper';
-import { AlertCircle } from 'react-feather';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -55,39 +60,6 @@ const ProjectCard = ({
   const handleToggleView = (e) => {
     e.stopPropagation();
     setShowFullText(!showFullText);
-  };
-
-  const statusEnum = {
-    OPEN: 'Open Listing',
-    IN_REVIEW: 'In Review',
-    TERMINATED: 'Terminated',
-    CLOSED: 'Closed',
-    LISTING_EXPIRED: 'Listing Expired',
-    COMPLETED: 'Completed',
-    ON_GOING: 'On Going',
-    ACTIVE: 'Active',
-    BID_SUBMITTED: 'Bid Submitted',
-    BID_IN_REVIEW: 'Bid In Review',
-    BID_ACCEPTED: 'Bid Accepted',
-    BID_CHANGE_REQUEST: 'Change Request',
-    SIGN_CONTRACT: 'Sign Contract',
-    SIGN_NDA: 'Sign NDA',
-    PAYMENT_PENDING: 'Payment Pending',
-    WITHDRAWN: 'Withdrawn',
-    DISPUTED: 'Disputed',
-    SIGN_REQUESTED: 'Sign Requested',
-    NOT_FUNDED: 'Not Funded',
-    INTIATE_FUNDS: 'Initiate Funds',
-    BLOCKED: 'Blocked',
-  };
-
-  const secondaryStatusEnum = {
-    SIGN_CONTRACT: 'Sign Contract',
-    SIGN_NDA: 'Sign NDA',
-    SIGN_REQUESTED: 'Sign Requested',
-    SIGN_DOCUMENTS: 'Sign Documents',
-    COMPLETED: 'Completed',
-    MILESTONE: 'Milestone',
   };
 
   const primaryStatus = {
@@ -156,17 +128,6 @@ const ProjectCard = ({
     return switchData?.navigateTo;
   };
 
-  const getSecondaryStatus = (secondaryStatus, seq = 1) => {
-    if (Object.keys(secondaryStatusEnum).includes(secondaryStatus)) {
-      if (secondaryStatus === 'MILESTONE') {
-        return `${secondaryStatusEnum[secondaryStatus]} ${seq}`;
-      } else {
-        return secondaryStatusEnum[secondaryStatus];
-      }
-    } else {
-      return '';
-    }
-  };
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -192,7 +153,7 @@ const ProjectCard = ({
                   <CustomBadge>
                     {(() => {
                       const isSecondaryStatusValid = data?.secondary_status
-                        ? Object.keys(secondaryStatusEnum)?.includes(data?.secondary_status?.next)
+                        ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
                         : Object.keys(primaryStatus)?.includes(data?.status);
 
                       const badgeStatus = isSecondaryStatusValid

@@ -278,6 +278,15 @@ const PROJECT_INVITATION_STATUS = {
   READ_ONLY: 'READ_ONLY',
 };
 
+const secondaryStatusConstants = {
+  SIGN_CONTRACT: 'Sign Contract',
+  SIGN_NDA: 'Sign NDA',
+  SIGN_REQUESTED: 'Sign Requested',
+  SIGN_DOCUMENTS: 'Sign Documents',
+  COMPLETED: 'Completed',
+  MILESTONE: 'Milestone',
+};
+
 const generateYearArrays = () => {
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 7;
@@ -351,4 +360,5 @@ export {
   graduationYears,
   counts,
   FEATURE_NAMES,
+  secondaryStatusConstants,
 };
