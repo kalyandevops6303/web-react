@@ -10,9 +10,14 @@ import { ProjectCreationFormData } from '@flexternships/types/project-creation-t
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
-import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
+import { ProjectDetails } from '../constraints/types/project-details-types';
 import { MilestoneDraftArtifact, MilestoneDropdownItem } from '../constraints/types/project-milestones-types';
-import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
+import {
+  DurationType,
+  MilestoneArtifactStatus,
+  MilestoneArtifactType,
+  MilestoneStatus,
+} from '../constraints/enums/core-enums';
 import {
   parseCompetencies,
   parseMilestoneDetails,

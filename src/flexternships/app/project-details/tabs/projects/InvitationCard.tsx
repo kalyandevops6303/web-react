@@ -21,7 +21,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
   useEffect(() => {
-    if (projectInvitationDetails && !projectInvitationDetails?.is_read) {
+    if (!projectInvitationDetails?.isRead) {
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);
@@ -34,7 +34,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
         <div className="flex flex-col text-left">
           {!hideSubtitle && <div className="text-grey-muted font-sans text-xs font-semibold leading-4">STEP 1</div>}
           <div className="relative">
-            {projectInvitationDetails?.is_read && (
+            {projectInvitationDetails?.isRead && (
               <div className="absolute top-0 -right-2 w-2 h-2 border bg-error rounded-full border-error"></div>
             )}
             <div className="text-grey-heading font-sans text-base font-medium leading-6 !no-underline hover:!no-underline">
@@ -58,10 +58,10 @@ export default function InvitationCard({ hideSubtitle = false }) {
     company: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
     department: projectDetails?.clientInfo?.departmentName,
     image_uri: projectDetails?.clientInfo?.imageUri,
-    start_date: formatEpochToHumanReadable(projectInvitationDetails?.project_start_date || 1),
-    role: projectInvitationDetails?.talent_role,
-    estimated_duration: `${projectInvitationDetails?.project_estimated_duration?.duration} Weeks`,
-    message: projectInvitationDetails?.message,
+    start_date: formatEpochToHumanReadable(projectInvitationDetails?.projectStartDate || 1),
+    role: projectInvitationDetails?.talentRole,
+    estimated_duration: `${projectInvitationDetails?.projectEstimatedDuration?.duration} Weeks`,
+    message: projectInvitationDetails?.invitationMessage,
   };
 
   useEffect(() => {
@@ -79,6 +79,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
   }
 
   const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.created_at || 1, Date.now());
+
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="p-3 flex flex-col gap-5 w-full">
