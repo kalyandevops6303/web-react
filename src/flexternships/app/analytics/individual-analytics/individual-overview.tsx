@@ -107,7 +107,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
               </span>
               <span className="text-grey-500 text-center font-montserrat text-xl font-normal">/100</span>
             </div>
-            <div className="flex items-center gap-2 text-[#394042] font-medium">
+            <div className="flex items-center gap-2 text-dark-100 font-medium">
               <div>Learnability Score</div>
               <TooltipInfo iconSize={18}>
                 <div>Learnability Score</div>
@@ -120,7 +120,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
               <div>
                 <span className="text-dark text-center font-montserrat text-[26px] font-semibold">{wowCount}</span>
               </div>
-              <div className="flex items-center gap-2 text-[#394042] font-medium">
+              <div className="flex items-center gap-2 text-dark-100 font-medium">
                 <div>Wows!</div>
                 <TooltipInfo iconSize={18}>
                   <div>Wows!</div>
@@ -131,7 +131,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
               <div>
                 <span className="text-dark text-center font-montserrat text-[26px] font-semibold">{kudosCount}</span>
               </div>
-              <div className="flex items-center gap-2 text-[#394042] font-medium">
+              <div className="flex items-center gap-2 text-dark-100 font-medium">
                 <div>Kudos!</div>
                 <TooltipInfo iconSize={18}>
                   <div>Kudos!</div>

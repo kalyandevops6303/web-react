@@ -40,7 +40,7 @@ export default function Footer(props: Readonly<FooterProps>) {
                 </div>
               </Link>
             ) : (
-              <div className="text-sm leading-5.5 font-medium text-[#394042] font-montserrat truncate max-w-full">
+              <div className="text-sm leading-5.5 font-medium text-dark-100 font-montserrat truncate max-w-full">
                 {item.title}
               </div>
             )}
