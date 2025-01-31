@@ -1,8 +1,8 @@
 import ViewMilestoneFeedbackModal from '@/flexternships/app/components/core/modals/ViewMilestoneFeedbackModal';
 import Tooltip from '@/flexternships/app/components/core/Tooltip';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
-import { tooltipContent } from '@/flexternships/static/milestone-feedback-content';
-import { feedbackCardContent } from '@/flexternships/static/milestones-content';
+import { tooltipContent } from '@/flexternships/static/content/milestone-feedback-content';
+import { feedbackCardContent } from '@/flexternships/static/content/milestones-content';
 import { useState } from 'react';
 import { AlertCircle, Check } from 'react-feather';
 

@@ -1,5 +1,7 @@
 /**
  * Project management service module for handling project-related operations.
+ * @fileoverview Contains functions for managing projects, milestones, artifacts, and other project-related data.
+ * Includes APIs for file uploads, milestone management, quick actions, notes and recognition features.
  * @module project-management-v2
  */
 
@@ -15,12 +17,17 @@ import {
   parseCompetencies,
   parseMilestoneDetails,
   parseMilestoneDropdown,
-  parseRecognitionStats,
-  parseRecognitionTimeline,
+  parseCommentsTimeline,
+  parseQuickActionsStats,
+  parseNoteCategories,
 } from '../utils/parsing-utils';
 import { PaginatedData } from './user-management';
 import { MilestoneDropdownOptions } from '../constraints/enums/miscellaneous-enums';
-import { DEFAULT_ALL_MILESTONES_OPTION } from '../static/recognition-constants';
+import {
+  DEFAULT_ALL_MILESTONES_OPTION,
+  DEFAULT_ALL_NOTE_CATEGORIES_OPTION,
+} from '../static/constants/quick-actions-constants';
+import { QuickActionCategory } from '../constraints/enums/quick-actions-enums';
 
 /**
  * Retrieves a file upload URL for a given filename.
@@ -443,6 +450,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
       isDocumentsNeeded: data.is_document_needed,
       viewRecognition: data.view_recognition,
       giveRecognition: data.give_recognition,
+      addNote: data.add_note,
     };
 
     return projectDetailsData;
@@ -770,20 +778,31 @@ export const relistProject = async (projectId: string, startDate: number, endDat
  * @returns A Promise that resolves to the parsed recognition timeline data.
  * @throws {Error} If the timeline retrieval fails or an unexpected error occurs.
  */
-export const getRecognitionTimeline = async (projectId: string, talentUserId: string, milestoneId?: string) => {
+export const getRecognitionTimeline = async (
+  projectId: string,
+  talentUserId: string,
+  category: QuickActionCategory,
+  noteCategoryId?: string,
+  milestoneId?: string,
+) => {
   const config = {
-    params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
+    params: {
+      project_id: projectId,
+      talent_user_id: talentUserId,
+      action_type: category,
+      milestone_id: milestoneId,
+      note_category_id: noteCategoryId,
+    },
     withCredentials: true,
   };
 
   try {
-    const response = await axios.get(routes.projectManagementV2.recognition.recognitionTimeline, config);
-    return parseRecognitionTimeline(response.data.data);
+    const response = await axios.get(routes.projectManagementV2.quickActions.recognitionTimeline, config);
+    return parseCommentsTimeline(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching recognition timeline');
   }
 };
-
 /**
  * Submits recognition for one or more talents in a project milestone.
  * @param projectId - The ID of the project.
@@ -816,7 +835,7 @@ export const submitRecognition = async (
   };
 
   try {
-    const response = await axios.post(routes.projectManagementV2.recognition.submitRecognition, payload, config);
+    const response = await axios.post(routes.projectManagementV2.quickActions.submitRecognition, payload, config);
     return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while submitting recognition');
@@ -824,24 +843,64 @@ export const submitRecognition = async (
 };
 
 /**
- * Gets recognition count statistics for a project.
+ * Submits notes for one or more talents in a project milestone.
+ * @param projectId - The ID of the project.
+ * @param milestoneId - The ID of the milestone.
+ * @param selectedTalents - Array of talent note data containing note category, comments and talent IDs.
+ * @returns A Promise that resolves to the submission response data.
+ * @throws {Error} If the submission fails or an unexpected error occurs.
+ */
+export const submitNotes = async (
+  projectId: string,
+  milestoneId: string,
+  selectedTalents: { noteCategory: string; competencies?: string[]; comment: string; talentId: string }[],
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, milestone_id: milestoneId },
+    withCredentials: true,
+  };
+  const payload = {
+    project_id: projectId,
+    milestone_id: milestoneId,
+    user_note_comments: selectedTalents.map((talent) => ({
+      user_id: talent.talentId,
+      note_category_id: talent.noteCategory,
+      competencies: (talent.competencies ?? []).map((competency) => ({
+        competency_id: competency,
+      })),
+      comment: talent.comment,
+    })),
+  };
+
+  try {
+    const response = await axios.post(routes.projectManagementV2.notes.submitNotes, payload, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting notes');
+  }
+};
+
+/**
+ * Gets quick actions count statistics for a project.
  * @param projectId - The ID of the project.
  * @param talentUserId - Optional talent user ID to filter stats by.
  * @param milestoneId - Optional milestone ID to filter stats by.
- * @returns A Promise that resolves to the parsed recognition statistics.
+ * @returns A Promise that resolves to the parsed quick actions statistics.
  * @throws {Error} If the stats retrieval fails or an unexpected error occurs.
  */
-export const getRecognitionsCount = async (projectId: string, talentUserId?: string, milestoneId?: string) => {
+export const getQuickActionsCount = async (projectId: string, talentUserId?: string, milestoneId?: string) => {
   const config = {
     params: { project_id: projectId, talent_user_id: talentUserId, milestone_id: milestoneId },
     withCredentials: true,
   };
 
   try {
-    const response = await axios.get(routes.projectManagementV2.recognition.getRecognitionsCount, config);
-    return parseRecognitionStats(response.data.data);
+    const response = await axios.get(routes.projectManagementV2.quickActions.getCount, config);
+    return parseQuickActionsStats(response.data.data);
   } catch (error) {
-    handleError(error as Error, 'An unexpected error occurred while fetching recognition count');
+    handleError(error as Error, 'An unexpected error occurred while fetching quick actions count');
   }
 };
 /**
@@ -855,8 +914,13 @@ export const getMilestonesDropdown = async (
   projectId: string,
   options: MilestoneDropdownOptions,
   parsingOptions: { useSequence?: boolean } = { useSequence: false },
+  page: number = 1,
+  pageSize: number = 10,
 ): Promise<PaginatedData<MilestoneDropdownItem>> => {
-  const config = { params: { project_id: projectId, options: options }, withCredentials: true };
+  const config = {
+    params: { project_id: projectId, options, page, page_size: pageSize },
+    withCredentials: true,
+  };
   try {
     const response = await axios.get(routes.projectManagementV2.milestone.milestonesDropdown, config);
     const data = parseMilestoneDropdown(response.data.data, parsingOptions);
@@ -893,5 +957,65 @@ export const getCompetencies = async () => {
     return parseCompetencies(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching competencies');
+  }
+};
+/**
+ * Gets the paginated list of available note categories.
+ * @param page - The page number to retrieve.
+ * @param pageSize - The number of items per page.
+ * @param options - Optional options to append "All Note Categories" option.
+ * @returns A Promise that resolves to the paginated note categories data.
+ * @throws {Error} If the note categories retrieval fails or an unexpected error occurs.
+ */
+export const getPaginatedNoteCategories = async (
+  page: number = 1,
+  pageSize: number = 10,
+  options: { appendAll?: boolean } = { appendAll: false },
+): Promise<PaginatedData> => {
+  const emptyData = {
+    metadata: {
+      current_page: page,
+      page_size: pageSize,
+      total_records: 0,
+      has_next_page: false,
+    },
+    data: [],
+  };
+
+  const config = {
+    params: {
+      page,
+      page_size: pageSize,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.projectManagementV2.notes.getPaginatedNoteCategories, config);
+    const data = response.data.data;
+
+    // Add "All Note Categories" option if this is the first page and the appendAll option is selected
+    if (data.metadata.current_page === 1 && options.appendAll) {
+      data.data.unshift(DEFAULT_ALL_NOTE_CATEGORIES_OPTION);
+    }
+    return data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching note categories');
+  }
+  return emptyData;
+};
+
+/**
+ * Gets the list of available note categories.
+ * @returns A Promise that resolves to the parsed note categories data.
+ * @throws {Error} If the note categories retrieval fails or an unexpected error occurs.
+ */
+export const getNoteCategories = async () => {
+  const config = { withCredentials: true };
+  try {
+    const response = await axios.get(routes.projectManagementV2.notes.getNoteCategories, config);
+    return parseNoteCategories(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching note categories');
   }
 };

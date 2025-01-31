@@ -1,7 +1,7 @@
 import IndividualFeedback from '@/flexternships/app/project-details/tabs/performance/IndividualFeedback';
 import MilestoneFeedback from '@/flexternships/app/project-details/tabs/performance/MilestoneFeedback';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
-import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/milestones-content';
+import { viewMilestoneFeedbackModalTitle } from '@/flexternships/static/content/milestones-content';
 import { X } from 'react-feather';
 import SecondaryButton from '../buttons/SecondaryButton';
 

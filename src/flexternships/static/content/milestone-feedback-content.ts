@@ -1,4 +1,4 @@
-import { UserType } from '../constraints/enums/core-enums';
+import { UserType } from '../../constraints/enums/core-enums';
 
 export const tooltipContent = {
   feedbackYetToStart: {
