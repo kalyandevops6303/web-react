@@ -78,7 +78,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
     );
   }
 
-  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.created_at || 1, Date.now());
+  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.createdAt || 1, Date.now());
 
   return (
     <CollapsableCard {...invitationCardData}>
