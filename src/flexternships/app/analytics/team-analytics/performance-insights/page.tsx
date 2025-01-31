@@ -8,12 +8,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useCompetenciesStore } from '@/flexternships/stores/competencies-store';
 
 // Icons
-import { ArrowLeft, Upload } from 'react-feather';
+import { ArrowLeft } from 'react-feather';
 
 // Components
 import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
-import SecondaryButton from '@/flexternships/app/components/core/buttons/SecondaryButton';
 import PerformanceInsightsCard from '@/flexternships/app/components/pages/analytics/team-analytics/performance-insights/PerformanceInsightsCard';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 
@@ -67,10 +66,10 @@ export default function TeamPerformanceInsights() {
           <div className="flex flex-row justify-between items-center">
             <div className="text-grey-700 text-lg font-medium leading-[26px]">Team Performance Insights</div>
             {/* TODO: Future export functionality */}
-            <SecondaryButton className="m-0 cursor-not-allowed" onClick={() => {}} disabled>
+            {/* <SecondaryButton className="m-0 cursor-not-allowed" onClick={() => {}} disabled>
               <Upload className="mr-2" size={18} />
               Export
-            </SecondaryButton>
+            </SecondaryButton> */}
           </div>
           <div className="flex flex-col gap-y-4">
             {competencies.map((competencyItem) => (

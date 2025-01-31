@@ -8,7 +8,10 @@ export default function TeamMembersChartTooltip(props: Readonly<TeamMembersChart
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="bg-white min-w-[200px] max-w-1/2 p-[8px_12px] border rounded-[6px] shadow-lg">
+    <div className="bg-white min-w-[200px] max-w-1/2 p-[8px_12px] border rounded-[6px] shadow-lg flex flex-col gap-1">
+      <p className="font-medium font-montserrat text-[10px] font-semibold leading-[16px] text-[#838889] uppercase">
+        LEARNABILITY SCORE
+      </p>
       <p className="font-medium font-montserrat text-[10px] font-semibold leading-[16px] text-[#838889] uppercase">
         {label}
       </p>
@@ -23,7 +26,7 @@ export default function TeamMembersChartTooltip(props: Readonly<TeamMembersChart
 
         return (
           <div key={entry.dataKey} className="flex justify-between items-center gap-2">
-            <div className="font-montserrat text-[12px] font-normal leading-[20px] text-[#394042] flex items-center gap-2">
+            <div className="font-montserrat text-[12px] font-normal leading-[20px] text-[#394042] flex items-center gap-2 w-[100px]">
               <div
                 style={{
                   backgroundColor: data?.chartConfig[baseKey]?.color,
@@ -34,16 +37,16 @@ export default function TeamMembersChartTooltip(props: Readonly<TeamMembersChart
               <div>{data?.chartConfig[baseKey]?.label}</div>
             </div>
             <div className="flex items-center gap-3 font-montserrat text-[12px] font-semibold leading-[20px] text-[#394042]">
-              <div>
+              <div className="w-[70px]">
                 {payloadData[data.YAxisDataKey]}/{data.maxYAxis}
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 w-[30px]">
                 <img src={achievementIcon} alt="achievement" className="w-[16px] h-[16px]" />
                 <div>
                   {payloadData.wows} <span className="font-normal"></span>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 w-[30px]">
                 <div>
                   <ThumbsUp size={12} color="#7367F0" />
                 </div>

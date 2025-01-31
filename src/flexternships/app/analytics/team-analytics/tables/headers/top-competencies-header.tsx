@@ -1,4 +1,4 @@
-import { Info } from 'react-feather';
+import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
 
 export default function TopCompetenciesHeader() {
   return (
@@ -6,7 +6,9 @@ export default function TopCompetenciesHeader() {
       <span className="text-grey-heading font-montserrat text-xs font-semibold leading-none tracking-wider uppercase">
         TOP COMPETENCIES
       </span>
-      <Info size={12} color="#5E5873" className="cursor-pointer" />
+      <TooltipInfo>
+        <p>Top Competencies</p>
+      </TooltipInfo>
     </div>
   );
 }

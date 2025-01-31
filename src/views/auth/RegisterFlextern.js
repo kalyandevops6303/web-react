@@ -222,7 +222,9 @@ const RegisterFlextern = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          {inviteHeader[flexternInviteType]?.title}
+          {flexternInviteType === userTypes.flexternClient
+            ? inviteHeader.FLEXTERN_CLIENT?.title
+            : inviteHeader.FLEXTERN_TALENT?.title}
         </CardTitle>
         <RegisterFlexternForm
           onSubmit={handleSubmit(onSubmit)}

@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
 import { ChevronRight, Info, User } from 'react-feather';
 import AIGeneratedIcon from '@flexternships/assets/icons/core/AIGenerated.svg';
+import { Link, useParams } from 'react-router-dom';
 
 type IndividualOverviewProps = {
   userId: string;
@@ -37,6 +38,8 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
     aiGeneratedSummary,
   } = props;
 
+  const { userId } = useParams();
+
   return (
     <>
       <div>
@@ -51,9 +54,11 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
 
             <div>
               <div className="flex gap-2 items-center overflow-hidden text-trublue-secondary-500 text-ellipsis font-montserrat text-base leading-6">
-                <div className="font-semibold">
-                  {firstName} {lastName}
-                </div>
+                <Link to={`/profile/talent/${userId}`}>
+                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5font-semibold">
+                    {firstName} {lastName}
+                  </div>
+                </Link>
                 <ChevronRight size={18} className="text-trublue-secondary-500" />
               </div>
               <div className="text-grey-500 font-montserrat text-xs leading-5">{role}</div>
@@ -102,7 +107,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
               <span className="text-grey-500 text-center font-montserrat text-xl font-normal">/100</span>
             </div>
             <div className="flex items-center gap-2">
-              <div>Attractiveness Score</div>
+              <div>Learnability Score</div>
               <Info size={18} className="text-grey-500" />
             </div>
           </div>

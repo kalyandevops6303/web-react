@@ -1,8 +1,4 @@
-import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '../enums/core-enums';
-
-export enum DurationType {
-  WEEK = 'WEEK',
-}
+import { DurationType, ProjectPrimaryStatus, ProjectSecondaryStatus } from '../enums/core-enums';
 
 export type TeamMemberDetails = {
   id: string;
@@ -60,7 +56,6 @@ type StatusLog = {
 };
 
 export type ProjectDetails = {
-  [x: string]: any;
   id: string;
   createdAt: number;
   updatedAt: number;
@@ -84,8 +79,8 @@ export type ProjectDetails = {
   isDocumentsSigned: boolean;
   clientInfo: ClientInfo;
   skillsData: Skill[];
-  toolsData?: Tool[];
-  clientDetails?: ClientInfo;
+  toolsData?: Tool[]; // Optional in the data
+  clientDetails?: ClientInfo; // Optional in the data
   secondaryStatus: SecondaryStatus;
   invitationDetails: {
     member: {
@@ -183,10 +178,45 @@ export type ProjectDetailsState = {
   projectDetailsLoading: boolean;
   isTeamDetailsLoading: boolean;
   teamDetails: Array<TeamMemberDetails>;
-  projectInvitationDetails: any;
+  projectInvitationDetails: ProjectInvitation;
   isProjectInvitationDetailsLoading: boolean;
-  performanceDetails: any;
+  performanceDetails: PerformanceDetails[];
   isPerformanceDetailsLoading: boolean;
+};
+
+export type PerformanceDetails = {
+  _id: string;
+  name: string;
+  description: string;
+  seq: number;
+  score?: number;
+  feedbackId?: string;
+  milestoneId: string;
+};
+
+export type FormattedTeamMemberInfo = {
+  image: string;
+  name: string;
+  role: string;
+  completed: boolean;
+  lastMessageTime: string;
+  isActive: boolean;
+  userId: string;
+  isDocumentsSigned: boolean;
+};
+
+export type ProjectInvitation = {
+  invitationExists: boolean;
+  createdAt: number;
+  projectStartDate: number;
+  projectEstimatedDuration: {
+    duration: number;
+    durationType: DurationType;
+    hoursPerWeek: number;
+  };
+  talentRole: string;
+  invitationMessage: string | null;
+  isRead: boolean;
 };
 
 export type ProjectDetailsActions = {

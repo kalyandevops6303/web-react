@@ -21,6 +21,7 @@ interface MultipleLinesChartProps {
   filterPropertyName?: string;
   showDataOnFilters?: boolean;
   hideDeselectedMetricsFromTooltip?: boolean;
+  customXAxisLabel?: React.ComponentType<any>;
 }
 
 export default function MultipleLinesChart(props: Readonly<MultipleLinesChartProps>) {
@@ -34,8 +35,9 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
     YAxisDataKey,
     customTooltipContent: CustomContent,
     filterPropertyName,
-    showDataOnFilters,
+    showDataOnFilters = true,
     hideDeselectedMetricsFromTooltip,
+    customXAxisLabel: CustomXAxisLabel,
   } = props;
 
   const CustomTooltipContent = ({ active, payload, label, selectedMetrics, showAll }: any) => {
@@ -43,7 +45,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
 
     return (
       <div className="bg-white w-[200px] max-w-1/2 px-3 py-2 border rounded-md shadow-lg">
-        <p className="font-montserrat text-2xs font-semibold leading-4 text-grey-500 uppercase">{label}</p>
+        <p className="font-montserrat text-2xs font-semibold leading-4 text-grey-500 uppercase">{label} PERFORMANCE</p>
         {payload.map((entry: any) => {
           if (!entry.dataKey) return null;
           const baseKey = typeof entry.dataKey === 'string' ? entry.dataKey.split('.')[0] : entry.dataKey;
@@ -89,15 +91,21 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
   };
 
   const getAverage = (data: any[], metric: string) => {
+    if (data.length <= 1) return 0;
+
+    let dataWithoutFirst = data.slice(1);
     if (YAxisDataKey) {
-      data = data.map((item) => {
+      dataWithoutFirst = dataWithoutFirst.map((item) => {
         return {
           ...item,
           [metric]: item[metric][YAxisDataKey],
         };
       });
     }
-    return Math.round(data.reduce((acc, curr) => acc + curr[metric as keyof typeof curr], 0) / data.length);
+    return (
+      dataWithoutFirst.reduce((acc, curr) => acc + curr[metric as keyof typeof curr], 0) /
+      (data.length - 1)
+    ).toFixed(2);
   };
 
   useEffect(() => {
@@ -116,7 +124,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
               showAll ? 'border-primary bg-primary-light' : 'border-grey-50'
             }`}
           >
-            {showDataOnFilters && (
+            {showFilters && showDataOnFilters && (
               <div>
                 <span className="font-montserrat text-lg font-semibold leading-xxl-custom text-dark-900 text-center">
                   {Object.keys(chartConfig).length}{' '}
@@ -132,7 +140,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
           {chartConfig &&
             Object.entries(chartConfig).map(([key, { label, color }]) => (
               <>
-                {showDataOnFilters ? (
+                {showFilters && showDataOnFilters ? (
                   <div
                     onClick={() => toggleMetric(key)}
                     className={`flex flex-col justify-center items-start gap-1 p-3 flex-1 rounded-lg border cursor-pointer ${
@@ -167,20 +175,37 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
             ))}
         </div>
       )}
-      <Card className="flex flex-col max-h-[300px] bg-white border-none shadow-none rounded-t-none">
+      <Card className="flex flex-col max-h-[400px] bg-white border-none shadow-none rounded-t-none">
         <CardContent>
-          <ChartContainer config={chartConfig} className="h-[200px] max-h-full w-full mt-10">
+          <ChartContainer config={chartConfig} className="h-[270px] max-h-full w-full mt-10">
             {hasGradient ? (
               <AreaChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
                   left: -20,
-                  right: 12,
+                  right: 100,
+                  bottom: CustomXAxisLabel ? 40 : 0,
                 }}
               >
                 <CartesianGrid vertical={false} strokeDasharray="4 12" />
-                <XAxis dataKey={XAxisDataKey} tickLine={false} axisLine={false} tickMargin={8} />
+                <XAxis
+                  dataKey={XAxisDataKey}
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tick={(props: any) =>
+                    CustomXAxisLabel ? (
+                      <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
+                    ) : (
+                      <foreignObject x={props.x - 50} y={props.y} width={100} height={120}>
+                        <div className="flex flex-col items-center text-gray-600">
+                          <span className="text-sm">{props.payload.value}</span>
+                        </div>
+                      </foreignObject>
+                    )
+                  }
+                />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
@@ -239,7 +264,9 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 data={chartData}
                 margin={{
                   left: -20,
-                  right: 12,
+                  right: 100,
+                  bottom: CustomXAxisLabel ? 40 : 0,
+                  top: 20,
                 }}
               >
                 <CartesianGrid vertical={false} strokeDasharray="4 12" />
@@ -248,14 +275,22 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) => (value < 10 ? `0${value}` : `${value}`)}
-                  // tickCount={6}
                 />
                 <XAxis
                   dataKey={XAxisDataKey}
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={8}
-                  // tickFormatter={(value) => value.slice(0, 3)}
+                  tick={(props: any) =>
+                    CustomXAxisLabel ? (
+                      <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
+                    ) : (
+                      <foreignObject x={props.x - 50} y={props.y} width={100} height={120}>
+                        <div className="flex flex-col items-center text-gray-600">
+                          <span className="text-sm">{props.payload.value}</span>
+                        </div>
+                      </foreignObject>
+                    )
+                  }
                 />
                 <ChartTooltip
                   cursor={false}

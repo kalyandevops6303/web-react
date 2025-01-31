@@ -75,12 +75,20 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
     className,
     isDonutChart,
     isLoading,
+    calculateTotalManually,
   } = props;
+
+  const getTotalCount = () => {
+    if (!calculateTotalManually) {
+      return totalCount;
+    }
+    return chartData?.reduce((acc, item) => acc + item.count, 0);
+  };
 
   const statsData = chartData?.map((item) => ({
     label: item.label,
     value: item.count,
-    percentage: `${((item.count / totalCount) * 100).toFixed(2)}%`,
+    percentage: `${((item.count / getTotalCount()) * 100).toFixed(2)}%`,
     color: chartConfig[item.name as keyof typeof chartConfig].color,
   }));
 

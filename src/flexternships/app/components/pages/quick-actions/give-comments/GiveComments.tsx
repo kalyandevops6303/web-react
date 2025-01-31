@@ -57,7 +57,6 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
   const {
     control,
     handleSubmit,
-    watch,
     reset,
     formState: { errors, isValid },
   } = useForm<GiveRecognitionForm | GiveNotesForm>({
@@ -66,12 +65,14 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
     resolver: yupResolver(GiveCommentsSchema[category]),
   });
 
-  const { append, remove } = useFieldArray({
+  const {
+    fields: selectedTalents,
+    append,
+    remove,
+  } = useFieldArray({
     control,
     name: 'selectedTalents',
   });
-
-  const selectedTalents = watch('selectedTalents');
 
   const closeConfirmationModal = async () => {
     reset(defaultValues);
@@ -135,12 +136,9 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
     };
     fetchTalents();
     populateCompetencies();
-    populateNoteCategories();
-  }, [projectId]);
 
-  useEffect(() => {
-    reset(watch(), { keepErrors: false });
-  }, [category, reset]);
+    if (category === QuickActionCategory.NOTE) populateNoteCategories();
+  }, [projectId, category]);
 
   if (talentsLoading || isCompetenciesLoading || (isNoteCategoriesLoading && category === QuickActionCategory.NOTE))
     return (
@@ -208,7 +206,7 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
               className="m-0"
               onClick={handleSubmit(onSubmit)}
               loading={isSubmitLoading}
-              disabled={!isValid}
+              disabled={!isValid || isSubmitLoading}
             >
               Submit
             </PrimaryButton>
