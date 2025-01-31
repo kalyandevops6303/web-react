@@ -1,11 +1,5 @@
 // Scoped styles for .trumio
 .trumio {
-  .text-2xl-custom {
-    font-size: 24px;
-  }
-  .font-medium-custom {
-    font-weight: 500;
-  }
   .custom-modal-style {
     width: 670px !important;
     margin: 0 auto;
@@ -59,7 +53,7 @@
   }
 
   .modal-heading {
-    font-size: 1.719rem; //24.066px
+    font-size: 24px;
     font-weight: 500;
     margin-bottom: 0.75rem;
     padding: 0;

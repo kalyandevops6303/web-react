@@ -14,7 +14,7 @@ const SavedDraftsAvailableModal = ({
   firstBtnAction,
   secondBtnAction,
 }) => (
-  <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
+  <Modal isOpen={modal} contentClassName="custom-modal-style" className="trumio modal-dialog-centered modal-lg">
     <ModalHeader toggle={toggleModal} />
     <ModalBody className="pt-0">
       <RelistModalWrapper className="pe-50">
@@ -23,7 +23,7 @@ const SavedDraftsAvailableModal = ({
             <img src={Available} alt="you-did-it" width={189} height={189} />
           </div>
           <div>
-            <h2 className="mb-1 modal-heading text-2xl-custom font-medium-custom">Saved Drafts Available</h2>
+            <h2 className="mb-1 modal-heading">Saved Drafts Available</h2>
             <p className="modal-sub-heading mb-50 mt-1">{modalText}</p>
           </div>
         </div>
