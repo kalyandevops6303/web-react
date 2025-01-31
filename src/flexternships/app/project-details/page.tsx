@@ -33,25 +33,27 @@ export default function FlexternshipProjectDetails() {
     milestoneName: '',
   });
   const redirectUserAsPerSecondaryStatus = (status: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => {
+    const projectId = params?.projectId;
     if (!isEmpty(params.milestoneId)) return;
-    if (!params?.projectId) throw new Error('Project ID is mandatory to view the project details');
+    if (!projectId) throw new Error('Project ID is mandatory to view the project details');
+
+    const navigateToProjectDetailsTab = (path: string) => navigate(`/project-details/${projectId}${path}`);
+
     switch (status) {
       case ProjectSecondaryStatus.MILESTONE:
-        navigate(`/project-details/${params.projectId}/milestone`);
+        navigateToProjectDetailsTab('/milestone');
         break;
       case ProjectSecondaryStatus.SIGN_CONTRACT:
-        if (!isDocumentsNeeded) return;
-        navigate(`/project-details/${params.projectId}/doc/contract`);
+        navigateToProjectDetailsTab(isDocumentsNeeded ? '/doc/contract' : '/projects');
         break;
       case ProjectSecondaryStatus.SIGN_NDA:
-        if (!isDocumentsNeeded) return;
-        navigate(`/project-details/${params.projectId}/doc/nda`);
+        navigateToProjectDetailsTab(isDocumentsNeeded ? '/doc/nda' : '/projects');
         break;
       case ProjectSecondaryStatus.SIGN_DOCUMENTS:
-        navigate(`/project-details/${params.projectId}/projects`);
+        navigateToProjectDetailsTab('/projects');
         break;
       default:
-        navigate(`/project-details/${params.projectId}/team`);
+        navigateToProjectDetailsTab('/team');
         break;
     }
   };
