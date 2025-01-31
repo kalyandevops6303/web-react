@@ -3,6 +3,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import CollapsableCard from '@flexternships/app/components/core/cards/CollapsableCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
+import parse from 'html-react-parser';
 
 // styles
 import Styles from '@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css';
@@ -122,7 +123,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
         {invitationCardDetailsData?.message && (
           <div className="flex flex-col w-fit">
             <div className={Styles.invitationCardDetailsTitle}>Message</div>
-            <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.message}</div>
+            <div className={Styles.invitationCardDetailsSubtitle}>{parse(invitationCardDetailsData?.message)}</div>
           </div>
         )}
       </div>
