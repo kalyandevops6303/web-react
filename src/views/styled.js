@@ -209,6 +209,24 @@ const CustomBadge = styled.span`
     padding-right: 8px;
     padding-left: 8px;
   }
+  .SIGN_REQUESTED {
+    background: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.lightBlueColor}` : 'none')};
+  }
+  .SIGN_NDA,
+  .SIGN_CONTRACT,
+  .SIGN_REQUESTED,
+  .SIGN_DOCUMENTS {
+    background: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor};
+    border: ${`1px solid ${theme.lightBlueColor}`};
+  }
+  .MILESTONE {
+    background: ${theme.lightOrangeColor} !important;
+    color: ${theme.progressBarOrange};
+    border: ${`2px solid ${theme.progressBarOrange}`};
+  }
 `;
 
 const FormWrapper = styled.div`

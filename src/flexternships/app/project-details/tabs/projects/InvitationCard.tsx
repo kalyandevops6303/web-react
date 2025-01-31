@@ -3,6 +3,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import CollapsableCard from '@flexternships/app/components/core/cards/CollapsableCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
+import parse from 'html-react-parser';
 
 // styles
 import Styles from '@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css';
@@ -12,7 +13,6 @@ import { Link, useParams } from 'react-router-dom';
 
 export default function InvitationCard({ hideSubtitle = false }) {
   const params = useParams();
-
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectInvitationDetails = useProjectsStore((state) => state.projectInvitationDetails);
   const isProjectInvitationDetailsLoading = useProjectsStore((state) => state.isProjectInvitationDetailsLoading);
@@ -21,7 +21,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
   useEffect(() => {
-    if (!projectInvitationDetails?.is_read) {
+    if (projectInvitationDetails && !projectInvitationDetails?.is_read) {
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);
@@ -77,7 +77,8 @@ export default function InvitationCard({ hideSubtitle = false }) {
       </div>
     );
   }
-  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.project_start_date || 1, Date.now());
+
+  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.created_at || 1, Date.now());
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="p-3 flex flex-col gap-5 w-full">
@@ -122,7 +123,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
         {invitationCardDetailsData?.message && (
           <div className="flex flex-col w-fit">
             <div className={Styles.invitationCardDetailsTitle}>Message</div>
-            <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.message}</div>
+            <div className={Styles.invitationCardDetailsSubtitle}>{parse(invitationCardDetailsData?.message)}</div>
           </div>
         )}
       </div>
