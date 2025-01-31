@@ -1,7 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
-import { ChevronRight, Info, User } from 'react-feather';
+import { ChevronRight, User } from 'react-feather';
 import AIGeneratedIcon from '@flexternships/assets/icons/core/AIGenerated.svg';
 import { Link, useParams } from 'react-router-dom';
+import TooltipInfo from '../../components/core/tooltips/TooltipInfo';
 
 type IndividualOverviewProps = {
   userId: string;
@@ -101,34 +102,40 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
         <div className="w-full md:w-1/3">
           <div className="flex flex-col items-center gap-1 mb-4 p-[16px_24px_20px] rounded-10 bg-white shadow-card">
             <div>
-              <span className="text-dark text-center font-montserrat text-[32px] font-semibold">
+              <span className="text-dark text-center font-montserrat text-[26px] font-semibold">
                 {trumioAttractivenessScore}
               </span>
               <span className="text-grey-500 text-center font-montserrat text-xl font-normal">/100</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-[#394042] font-medium">
               <div>Learnability Score</div>
-              <Info size={18} className="text-grey-500" />
+              <TooltipInfo iconSize={18}>
+                <div>Learnability Score</div>
+              </TooltipInfo>
             </div>
           </div>
 
           <div className="flex gap-4">
             <div className="flex w-1/2 flex-col items-center gap-1 px-6 pt-4 pb-5 rounded-10 bg-white shadow-card">
               <div>
-                <span className="text-dark text-center font-montserrat text-[32px] font-semibold">{wowCount}</span>
+                <span className="text-dark text-center font-montserrat text-[26px] font-semibold">{wowCount}</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-[#394042] font-medium">
                 <div>Wows!</div>
-                <Info size={18} className="text-grey-500" />
+                <TooltipInfo iconSize={18}>
+                  <div>Wows!</div>
+                </TooltipInfo>
               </div>
             </div>
             <div className="flex w-1/2 flex-col items-center gap-1 px-6 pt-4 pb-5 rounded-10 bg-white shadow-card">
               <div>
-                <span className="text-dark text-center font-montserrat text-[32px] font-semibold">{kudosCount}</span>
+                <span className="text-dark text-center font-montserrat text-[26px] font-semibold">{kudosCount}</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-[#394042] font-medium">
                 <div>Kudos!</div>
-                <Info size={18} className="text-grey-500" />
+                <TooltipInfo iconSize={18}>
+                  <div>Kudos!</div>
+                </TooltipInfo>
               </div>
             </div>
           </div>
@@ -137,7 +144,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
         <div className="w-full md:w-2/3 flex flex-col gap-2 rounded-10 bg-white shadow-card">
           <div className="p-[16px_16px_0] flex flex-col flex-grow gap-2">
             <div className="flex md:items-center gap-2 flex-col md:flex-row">
-              <div className="text-trublue-secondary-500 font-montserrat text-xs leading-5 flex px-2 py-1 justify-center items-center gap-1 rounded-52 border border-trublue-secondary-500">
+              <div className="text-trublue-ai font-montserrat text-xs leading-5 flex px-2 py-1 justify-center items-center gap-1 rounded-52 border border-trublue-ai">
                 <img src={AIGeneratedIcon} alt="AIGenerated" />
                 <span className="font-semibold">AI Generated</span>
               </div>
