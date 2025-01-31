@@ -13,7 +13,6 @@ import { Link, useParams } from 'react-router-dom';
 
 export default function InvitationCard({ hideSubtitle = false }) {
   const params = useParams();
-
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectInvitationDetails = useProjectsStore((state) => state.projectInvitationDetails);
   const isProjectInvitationDetailsLoading = useProjectsStore((state) => state.isProjectInvitationDetailsLoading);
@@ -22,7 +21,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
   useEffect(() => {
-    if (!projectInvitationDetails?.is_read) {
+    if (projectInvitationDetails && !projectInvitationDetails?.is_read) {
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);
@@ -78,7 +77,8 @@ export default function InvitationCard({ hideSubtitle = false }) {
       </div>
     );
   }
-  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.project_start_date || 1, Date.now());
+
+  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.created_at || 1, Date.now());
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="p-3 flex flex-col gap-5 w-full">
