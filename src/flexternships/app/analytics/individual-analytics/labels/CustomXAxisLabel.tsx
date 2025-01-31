@@ -1,5 +1,6 @@
 import { ThumbsUp } from 'react-feather';
 import achievementIcon from '@flexternships/assets/svgs/analytics/achieve.svg';
+import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
 
 interface CustomXAxisLabelProps {
   props: {
@@ -37,20 +38,32 @@ export default function CustomXAxisLabel({ props, chartData, XAxisDataKey }: Cus
         {dataPoint && (
           <div className="flex gap-2">
             {totalKudos > 0 && (
-              <div className="flex items-center gap-1 bg-[#7367F01F] rounded-full py-1 px-2">
-                <ThumbsUp size={16} color="#7367F0" />
-                <div className="font-montserrat text-[14px] font-semibold leading-[22px] text-[#7367F0]">
-                  +{totalKudos}
-                </div>
-              </div>
+              <TooltipInfo
+                trigger={
+                  <div className="flex items-center gap-1 bg-[#7367F01F] rounded-full py-1 px-2">
+                    <ThumbsUp size={16} color="#7367F0" />
+                    <div className="font-montserrat text-[14px] font-semibold leading-[22px] text-[#7367F0]">
+                      +{totalKudos}
+                    </div>
+                  </div>
+                }
+              >
+                Kudos
+              </TooltipInfo>
             )}
             {totalWows > 0 && (
-              <div className="flex items-center gap-1 bg-[#1CADE31F] rounded-full py-1 px-2">
-                <img src={achievementIcon} alt="wows" width={16} height={16} />
-                <div className="font-montserrat text-[14px] font-semibold leading-[22px] text-[#1CADE3]">
-                  +{totalWows}
-                </div>
-              </div>
+              <TooltipInfo
+                trigger={
+                  <div className="flex items-center gap-1 bg-[#1CADE31F] rounded-full py-1 px-2">
+                    <img src={achievementIcon} alt="wows" width={16} height={16} />
+                    <div className="font-montserrat text-[14px] font-semibold leading-[22px] text-[#1CADE3]">
+                      +{totalWows}
+                    </div>
+                  </div>
+                }
+              >
+                Wows
+              </TooltipInfo>
             )}
           </div>
         )}
