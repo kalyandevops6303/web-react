@@ -25,7 +25,7 @@ import {
   getTalentNameService,
   getTeamNameSerive,
 } from '../../../services/projectServices';
-import { userTypes } from '../../../utility/constants/Constant';
+import { ProjectSortTypes, userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
 import { ResponsiveGrid } from '../../cards/style';
@@ -33,7 +33,6 @@ import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 import { SecondaryProjectStatus } from '@/flexternships/constraints/enums/project-enums';
-import { ProjectSortTypes } from '@/flexternships/constraints/enums/core-enums';
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {

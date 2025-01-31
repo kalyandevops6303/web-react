@@ -159,6 +159,12 @@ const clubStatus = {
   DECLINED: 'REJECTED',
 };
 
+const ProjectSortTypes = {
+  ALL: 'ALL',
+  NEW: 'NEW',
+  FAVOURITE: 'FAVOURITE',
+};
+
 const PAYMENT_STATUS = {
   PENDING: 'PENDING',
   INITIATED: 'INITIATED',
@@ -351,4 +357,5 @@ export {
   graduationYears,
   counts,
   FEATURE_NAMES,
+  ProjectSortTypes,
 };
