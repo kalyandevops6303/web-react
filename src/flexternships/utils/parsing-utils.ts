@@ -16,6 +16,8 @@ import { FlexternUserAppRole } from '../constraints/enums/core-enums';
 import {
   DetailedPerformanceInsights,
   FlexternComments,
+  GitHubBranchHistory,
+  GitHubStats,
   TeamCompetencySummary,
 } from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
@@ -438,4 +440,21 @@ export const parseNoteCategories = (data: Record<string, any>): NoteCategory[] =
     createdAt: item.created_at,
     updatedAt: item.updated_at,
   }));
+};
+
+export const parseGitHubStats = (data: Record<string, any>): GitHubStats => {
+  return {
+    commitsCount: data.commits_count,
+    pullRequestsCount: data.pr_count,
+    projectName: data.project_name,
+    githubUrl: data.github_url,
+  };
+};
+
+export const parseGitHubBranchHistory = (data: Record<string, any>): GitHubBranchHistory => {
+  return {
+    commits: data.commits,
+    issues: data.issues,
+    pullRequests: data.prs,
+  };
 };

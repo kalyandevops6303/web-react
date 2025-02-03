@@ -1,10 +1,10 @@
 import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 import {
   getAiSummaryService,
-  getBranchHistoryService,
-  getCommitsService,
   getConversationParticipationFilesService,
   getConversationParticipationService,
+  getGitHubBranchHistoryPaginatedService,
+  getGitHubStatsService,
   getIndividualOverviewService,
   getPerformanceChartDataService,
   getRecognitionChartDataService,
@@ -307,7 +307,7 @@ export const getConversationParticipationFiles = async (projectId: string, userI
 // Commits
 export const getCommits = async (projectId: string, userId: string, set: any) => {
   set({ isCommitsLoading: true });
-  const data: any = await getCommitsService(projectId, userId);
+  const data: any = await getGitHubStatsService(projectId, userId);
   set((state: any) => ({
     ...state,
     commits: data,
@@ -318,7 +318,7 @@ export const getCommits = async (projectId: string, userId: string, set: any) =>
 // Branch History
 export const getBranchHistory = async (projectId: string, userId: string, set: any) => {
   set({ isBranchHistoryLoading: true });
-  const data: any = await getBranchHistoryService(projectId, userId);
+  const data: any = await getGitHubBranchHistoryPaginatedService(projectId, userId);
   set((state: any) => ({
     ...state,
     branchHistory: data,

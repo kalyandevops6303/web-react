@@ -11,7 +11,7 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
-import { parseDetailedPerformanceInsights, parseTeamCompetencySummary } from '../utils/parsing-utils';
+import { parseDetailedPerformanceInsights, parseGitHubStats, parseTeamCompetencySummary } from '../utils/parsing-utils';
 import { DetailedPerformanceInsights, TeamCompetencySummary } from '../constraints/types/analytics-types';
 import { GithubMetricType, TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
@@ -414,7 +414,22 @@ export const getConversationParticipationFilesService = async (projectId: string
   }
 };
 
-export const getCommitsService = async (
+export const getGitHubStatsService = async (projectId: string, userId: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, user_id: userId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.github.stats}`, config);
+    return parseGitHubStats(response.data?.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching commits');
+  }
+};
+
+export const getGitHubBranchHistoryPaginatedService = async (
   projectId: string,
   userId: string,
   options: { metricType: GithubMetricType; page: number; pageSize: number } = {
@@ -435,65 +450,35 @@ export const getCommitsService = async (
     metric_type: options.metricType,
   };
   try {
-    // const response = await axios.post(`${routes.analytics.commits}`, payload, config);
-    // return keysToCamelCase(response.data?.data) || undefined;
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          commits: 100,
-          issues: 90,
-          pullRequests: 80,
-          projectName: 'Usage Data Collection and Payment',
-          githubUrl: 'https://github.com/flexternships/flexternships-frontend',
-        });
-      }, 800); // 800ms delay
-    });
-  } catch (error) {
-    handleError(error as Error, 'An unexpected error occurred while fetching commits');
-  }
-};
-
-export const getBranchHistoryService = async (projectId: string, userId: string) => {
-  const headers = appendAuthToken({});
-  const config = {
-    headers: headers,
-    params: { project_id: projectId, user_id: userId },
-    withCredentials: true,
-  };
-  try {
-    // const response = await axios.get(`${routes.analytics.branchHistory}`, config);
-    // return keysToCamelCase(response.data?.data) || undefined;
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          {
-            firstName: 'John',
-            lastName: 'Doe',
-            imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
-            role: 'Developer',
-            commitEpoch: 1716604800000,
-            commitMessage:
-              'Added new feature to the project djhkajdkaj akjshkajs  kajshkajskjah  ashkajskjaksjhakjhskaj kjahskjahks kajshkajs kajsha ksjh ',
-          },
-          {
-            firstName: 'Jane',
-            lastName: 'Doe',
-            imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
-            role: 'ML Engineer',
-            commitEpoch: 1716604100000,
-            commitMessage: 'Added new feature to the project',
-          },
-          {
-            firstName: 'David',
-            lastName: 'Gilmour',
-            imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
-            role: 'Data Scientist',
-            commitEpoch: 1716607800000,
-            commitMessage: 'Added new feature to the project',
-          },
-        ]);
-      }, 800); // 800ms delay
-    });
+    const response = await axios.post(`${routes.analytics.github.analytics}`, payload, config);
+    keysToCamelCase(response.data?.data) || undefined; //  TODO: Update this
+    return [
+      {
+        firstName: 'John',
+        lastName: 'Doe',
+        imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
+        role: 'Developer',
+        commitEpoch: 1716604800000,
+        commitMessage:
+          'Added new feature to the project djhkajdkaj akjshkajs  kajshkajskjah  ashkajskjaksjhakjhskaj kjahskjahks kajshkajs kajsha ksjh ',
+      },
+      {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
+        role: 'ML Engineer',
+        commitEpoch: 1716604100000,
+        commitMessage: 'Added new feature to the project',
+      },
+      {
+        firstName: 'David',
+        lastName: 'Gilmour',
+        imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
+        role: 'Data Scientist',
+        commitEpoch: 1716607800000,
+        commitMessage: 'Added new feature to the project',
+      },
+    ];
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching branch history');
   }

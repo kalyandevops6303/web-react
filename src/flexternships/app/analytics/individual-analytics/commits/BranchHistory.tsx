@@ -17,6 +17,16 @@ interface BranchHistoryItem {
   commitMessage: string;
 }
 
+function BranchHistorySkeleton() {
+  return (
+    <div className="flex flex-col gap-y-4">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <BoxSkeleton key={index} className="w-full h-24" />
+      ))}
+    </div>
+  );
+}
+
 export default function BranchHistory() {
   const { projectId, userId } = useParams();
 
@@ -29,7 +39,7 @@ export default function BranchHistory() {
   }, [projectId, userId]);
 
   if (isBranchHistoryLoading) {
-    return <BoxSkeleton className="w-full h-[200px]" />;
+    return <BranchHistorySkeleton />;
   }
 
   return (

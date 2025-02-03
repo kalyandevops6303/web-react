@@ -61,48 +61,35 @@ export default function Commits() {
         />
 
         {isCommitsLoading ? (
-          <BoxSkeleton className="w-[100px] h-[30px]" />
+          <BoxSkeleton className="w-[100px] h-10" />
         ) : (
           <SecondaryButton onClick={handleViewInGithub}>View in Github</SecondaryButton>
         )}
       </div>
 
-      {isCommitsLoading ? (
-        <BoxSkeleton className="w-full h-[100px]" />
-      ) : (
-        <SimpleElevatedCard className="flex items-center gap-4 bg-white p-4 w-fit text-center">
-          <div className="w-[194px]">
-            <div className="text-dark text-center font-montserrat text-xl font-semibold leading-[26px]">
-              {data?.commits}
-            </div>
-            <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">Commits</div>
+      <SimpleElevatedCard className="self-start flex items-center gap-4 bg-white p-4 text-center">
+        <div className="flex flex-col items-center gap-y-2 w-[194px]">
+          <div className="text-dark text-center font-montserrat text-xl font-semibold leading-[26px]">
+            {isCommitsLoading ? <BoxSkeleton className="w-9 h-6" /> : data?.commitsCount}
           </div>
-          <div className="w-[1px] h-[50px] bg-border" />
-          <div className="w-[194px]">
-            <div className="text-dark text-center font-montserrat text-xl font-semibold leading-[26px]">
-              {data?.issues}
-            </div>
-            <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">Issues</div>
+          <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">Commits</div>
+        </div>
+        <div className="self-stretch border-l-1 border-grey-50" />
+        <div className="flex flex-col items-center gap-y-2 w-[194px]">
+          <div className="text-dark text-center font-montserrat text-xl font-semibold leading-[26px]">
+            {isCommitsLoading ? <BoxSkeleton className="w-9 h-6" /> : data?.pullRequestsCount}
           </div>
-          <div className="w-[1px] h-[50px] bg-border" />
-          <div className="w-[194px]">
-            <div className="text-dark text-center font-montserrat text-xl font-semibold leading-[26px]">
-              {data?.pullRequests}
-            </div>
-            <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">
-              Pull Requests
-            </div>
-          </div>
-        </SimpleElevatedCard>
-      )}
-
+          <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">Pull Requests</div>
+        </div>
+      </SimpleElevatedCard>
       <div>
         <div className="text-dark-100 font-montserrat text-lg font-semibold leading-[26px]">Branch History</div>
-        <div className="text-grey-heading font-montserrat text-sm font-medium leading-[23px] flex items-center gap-2">
-          Project: {isCommitsLoading ? <BoxSkeleton className="w-full h-[30px]" /> : data?.projectName}
-        </div>
+        {(isCommitsLoading || data?.projectName) && (
+          <div className="text-grey-heading font-montserrat text-sm font-medium leading-[23px] flex items-center gap-2">
+            Project: {isCommitsLoading ? <BoxSkeleton className="w-full h-[30px]" /> : data?.projectName}
+          </div>
+        )}
       </div>
-
       <BranchHistory />
     </div>
   );

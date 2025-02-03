@@ -46,3 +46,16 @@ export type TeamCompetencySummary = {
   competencyAbbreviation: string;
   summary: string;
 };
+
+export type GitHubStats = {
+  commitsCount: number;
+  pullRequestsCount: number;
+  projectName: string;
+  githubUrl?: string;
+};
+
+export type GitHubBranchHistory = {
+  commits: number;
+  issues: number;
+  pullRequests: number;
+};
