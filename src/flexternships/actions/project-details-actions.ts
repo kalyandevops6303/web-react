@@ -1,5 +1,5 @@
 import { ProjectSecondaryStatus } from '../constraints/enums/core-enums';
-import { ProjectDetailsState, TeamMemberDetails } from '../constraints/types/project-details-types';
+import { ProjectDetailsState, ProjectInvitation, TeamMemberDetails } from '../constraints/types/project-details-types';
 import {
   fetchTeamDetails,
   getPeerOrIndividualPerformanceDetailsService,
@@ -44,10 +44,30 @@ export const getProjectDetails = async (
   }
 };
 
-export const getProjectInvitationDetails = async (projectId: string, set: any) => {
+export const getProjectInvitationDetails = async (projectId: string, set: (state: any) => void) => {
   set({ isProjectInvitationDetailsLoading: true });
-  const res: any = await getProjectInvitationDetailsService(projectId);
-  set({ projectInvitationDetails: res, isProjectInvitationDetailsLoading: false });
+
+  try {
+    const res = await getProjectInvitationDetailsService(projectId);
+    const projectInvitation: ProjectInvitation = {
+      invitationExists: res.invitation_exists,
+      createdAt: res.created_at,
+      projectStartDate: res.project_start_date,
+      projectEstimatedDuration: {
+        duration: res.project_estimated_duration.duration,
+        durationType: res.project_estimated_duration.duration_type,
+        hoursPerWeek: res.project_estimated_duration.hours_per_week,
+      },
+      talentRole: res.talent_role,
+      invitationMessage: res.invitation_message,
+      isRead: res.is_read,
+    };
+
+    set({ projectInvitationDetails: projectInvitation, isProjectInvitationDetailsLoading: false });
+  } catch (error) {
+    console.error('Error fetching project invitation details:', error);
+    set({ isProjectInvitationDetailsLoading: false });
+  }
 };
 
 export const getSelfOrTeamPerformanceDetails = async (projectId: string, feedbackType: string, set: any) => {

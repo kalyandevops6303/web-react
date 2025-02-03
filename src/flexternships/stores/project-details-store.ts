@@ -4,6 +4,7 @@ import {
   ProjectDetails,
   ProjectDetailsState,
   ProjectStore,
+  ProjectInvitation,
 } from '../constraints/types/project-details-types';
 import {
   populateTeamDetails,
@@ -21,7 +22,7 @@ const defaultInitState: ProjectDetailsState = {
   projectDetailsLoading: false,
   isTeamDetailsLoading: false,
   teamDetails: [] as Array<TeamMemberDetails>,
-  projectInvitationDetails: null,
+  projectInvitationDetails: {} as ProjectInvitation,
   isProjectInvitationDetailsLoading: false,
   performanceDetails: null,
   isPerformanceDetailsLoading: false,

@@ -189,6 +189,20 @@ export type ProjectDetailsState = {
   isPerformanceDetailsLoading: boolean;
 };
 
+export type ProjectInvitation = {
+  invitationExists: boolean;
+  createdAt: number;
+  projectStartDate: number;
+  projectEstimatedDuration: {
+    duration: number;
+    durationType: DurationType;
+    hoursPerWeek: number;
+  };
+  talentRole: string;
+  invitationMessage: string | null;
+  isRead: boolean;
+};
+
 export type ProjectDetailsActions = {
   getProjectDetails: (
     projectId: string,
