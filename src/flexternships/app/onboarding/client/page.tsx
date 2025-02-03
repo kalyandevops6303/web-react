@@ -1,9 +1,9 @@
-import { Briefcase, Home, Link } from 'react-feather';
+import { Home } from 'react-feather';
 import RestrictedNavbar from '../../components/core/layouts/RestrictedNavbar';
 import TabNavigationForm from '../../components/pages/profile/client/TabNavigationForm';
 import AccountDetails from '../../components/pages/profile/client/tabs/AccountDetails';
-import CompanyDetails from '../../components/pages/profile/client/tabs/CompanyDetails';
-import SocialDetails from '../../components/pages/profile/client/tabs/SocialDetails';
+// import CompanyDetails from '../../components/pages/profile/client/tabs/CompanyDetails';
+// import SocialDetails from '../../components/pages/profile/client/tabs/SocialDetails';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
 import { useParams } from 'react-router-dom';
@@ -23,7 +23,7 @@ export default function ClientProfilePage() {
         setCurrentTabIndex(tabIndex);
       }
     }
-  }, [userDetails?.checkpoint]);
+  }, [userDetails?.checkpoint, params.tabId]);
 
   const tabs = [
     {
@@ -32,18 +32,21 @@ export default function ClientProfilePage() {
       icon: <Home size={18} />,
       content: <AccountDetails />,
     },
-    {
-      id: 'personal-details',
-      title: 'Company',
-      icon: <Briefcase size={18} />,
-      content: <CompanyDetails />,
-    },
-    {
-      id: 'social-details',
-      title: 'Social Link',
-      icon: <Link size={18} />,
-      content: <SocialDetails />,
-    },
+    /**
+     * Removing these tabs as a part of design change - client onboarding
+     */
+    // {
+    //   id: 'personal-details',
+    //   title: 'Company',
+    //   icon: <Briefcase size={18} />,
+    //   content: <CompanyDetails />,
+    // },
+    // {
+    //   id: 'social-details',
+    //   title: 'Social Link',
+    //   icon: <Link size={18} />,
+    //   content: <SocialDetails />,
+    // },
   ];
 
   return (
@@ -53,7 +56,7 @@ export default function ClientProfilePage() {
         <div className="text-grey-heading text-2xl font-medium not-italic">
           {userDetails?.checkpoint !== FlexternUserCheckpoint.COMPLETE ? 'Onboarding' : 'Edit Profile'}
         </div>
-        <TabNavigationForm tabs={tabs} />
+        <TabNavigationForm tabs={tabs} hideTabHeader />
       </div>
     </div>
   );

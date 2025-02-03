@@ -43,7 +43,7 @@ import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
 import DelegateAccordion from './DelegateAccordion';
-import { DeclinedButton, InreviewButton, TextWrapper, UserDropDownWrapper } from './style';
+import { DeclinedButton, InreviewButton, TextWrapper, UserDropDownWrapper, EditProfileActionContainer } from './style';
 import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 import { clearAllFormData, setFormDocuments } from '../../../../redux/reducers/formData';
@@ -154,6 +154,10 @@ const UserDropdown = ({ setNavBarLoading }) => {
     if (isWorkInProgress) {
       openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath });
     }
+  };
+
+  const handleClientEditProfile = () => {
+    navigate('/client-profile-edit/account-details');
   };
 
   // get app permissions
@@ -289,7 +293,13 @@ const UserDropdown = ({ setNavBarLoading }) => {
               Public Profile
             </TextWrapper>
           )}
-          <EditProfileAccordion />
+          {userDetailsData?.user_type === userTypes.talent ? (
+            <EditProfileAccordion />
+          ) : (
+            <EditProfileActionContainer onClick={handleClientEditProfile}>
+              <TextWrapper>Edit Profile</TextWrapper>
+            </EditProfileActionContainer>
+          )}
           {!isDelegate && (
             <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
               {userDetailsData && (
