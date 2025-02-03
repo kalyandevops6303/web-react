@@ -400,6 +400,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
         valuesOnly[key] = [];
       } else {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+        valuesOnly.department_name = secondFilterState.department_name[0]?.value;
       }
     });
     if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {

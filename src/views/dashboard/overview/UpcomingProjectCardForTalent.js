@@ -13,14 +13,13 @@ import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import { convertUnixTimestampToDate, roundOfAmount, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { userData } from '@/redux/selectors/dashboardSelectors';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
-  const userDetailsData = useSelector(userData);
 
   const dispatch = useDispatch();
 
@@ -88,7 +87,7 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
                   }`}
                 </p>
               </div>
-              {userDetailsData?.app_roles && userDetailsData?.app_roles?.includes('FLEXTERN') ? null : (
+              {!isFlexternshipApp && (
                 <div className="design-planning">
                   <p className="mb-25 details-box-title">Amount</p>
                   <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>

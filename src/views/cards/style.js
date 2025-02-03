@@ -567,6 +567,29 @@ const DraftSkillsAndToolsContainer = styled.div`
   }
 `;
 
+const CountWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .option {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+  }
+  .count {
+    padding: 1px 9px;
+    background: ${(props) => (props.selected ? theme.deepTruBlue : theme.white)};
+    border: 2px solid ${(props) => (props.selected ? theme.white : theme.deepTruBlue)};
+    border-radius: 20%;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    color: ${(props) => (props.selected ? theme.white : theme.deepTruBlue)};
+  }
+`;
+
 export {
   CardWrap,
   ProjectCardWrap,
@@ -580,4 +603,5 @@ export {
   CustomDraftProjectBadge,
   DraftSkillsAndToolsContainer,
   EstimatedTimeHeading,
+  CountWrapper,
 };
