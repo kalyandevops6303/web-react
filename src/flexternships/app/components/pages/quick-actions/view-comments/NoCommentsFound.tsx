@@ -16,7 +16,7 @@ function NoCommentsFound({ category = QuickActionCategory.RECOGNITION }: { categ
             ? 'Notes'
             : userDetails.userType === UserType.TALENT
             ? 'Kudos'
-            : 'WOWs!'}
+            : 'WOWs!'}{' '}
           Found
         </div>
       </div>

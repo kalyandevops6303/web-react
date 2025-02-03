@@ -355,20 +355,25 @@ export const parseCompetencies = (data: Record<string, any>): Competency[] => {
  */
 export const parseMilestoneDropdown = (
   data: Record<string, any>,
-  parsingOptions: { useSequence?: boolean },
+  parsingOptions: { useSequence?: boolean; useName?: boolean } = { useSequence: false, useName: false },
 ): MilestoneDropdown => {
-  let parsedData = parsingOptions.useSequence
-    ? {
-        metadata: data.metadata,
-        data: data.data.map((milestone: Record<string, any>) => ({
-          ...milestone,
-          name: `Milestone ${milestone.seq}`,
-        })),
+  let parsedData = {
+    metadata: data.metadata,
+    data: data.data.map((milestone: Record<string, any>) => {
+      let name = milestone.name;
+      if (parsingOptions.useSequence && parsingOptions.useName) {
+        name = `Milestone ${milestone.seq} - ${milestone.name}`;
+      } else if (parsingOptions.useSequence) {
+        name = `Milestone ${milestone.seq}`;
+      } else if (parsingOptions.useName) {
+        name = milestone.name;
       }
-    : {
-        metadata: data.metadata,
-        data: data.data,
+      return {
+        ...milestone,
+        name,
       };
+    }),
+  };
 
   return parsedData;
 };
