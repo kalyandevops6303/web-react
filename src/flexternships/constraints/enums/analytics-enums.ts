@@ -22,3 +22,8 @@ export enum TimePeriodOptionLabels {
   LAST_6_MIN = 'In the last 6 minutes',
   LAST_1_YEAR = 'In the last 1 year',
 }
+
+export enum GithubMetricType {
+  COMMITS = 'COMMITS',
+  PULL_REQUESTS = 'PULL_REQUESTS',
+}

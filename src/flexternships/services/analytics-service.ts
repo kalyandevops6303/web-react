@@ -13,7 +13,7 @@ import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
 import { parseDetailedPerformanceInsights, parseTeamCompetencySummary } from '../utils/parsing-utils';
 import { DetailedPerformanceInsights, TeamCompetencySummary } from '../constraints/types/analytics-types';
-import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
+import { GithubMetricType, TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
 /**
  * Retrieves individual overview data for a user and project.
@@ -414,15 +414,28 @@ export const getConversationParticipationFilesService = async (projectId: string
   }
 };
 
-export const getCommitsService = async (projectId: string, userId: string) => {
+export const getCommitsService = async (
+  projectId: string,
+  userId: string,
+  options: { metricType: GithubMetricType; page: number; pageSize: number } = {
+    metricType: GithubMetricType.COMMITS,
+    page: 1,
+    pageSize: 10,
+  },
+) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
-    params: { project_id: projectId, user_id: userId },
+    params: { page: options.page, page_size: options.pageSize },
     withCredentials: true,
   };
+  const payload = {
+    project_id: projectId,
+    user_id: userId,
+    metric_type: options.metricType,
+  };
   try {
-    // const response = await axios.get(`${routes.analytics.commits}`, config);
+    // const response = await axios.post(`${routes.analytics.commits}`, payload, config);
     // return keysToCamelCase(response.data?.data) || undefined;
     return new Promise((resolve) => {
       setTimeout(() => {
