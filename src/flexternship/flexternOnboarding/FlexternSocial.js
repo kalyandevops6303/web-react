@@ -990,9 +990,9 @@ const FlexternSocial = () => {
                                 </FormFeedback>
                               )}
                           </div>
-                          {/* <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
+                          <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
                             Remove
-                          </Button> */}
+                          </Button>
                         </div>
                       </Col>
                     </Row>

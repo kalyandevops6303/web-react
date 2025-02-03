@@ -14,7 +14,7 @@ const SavedDraftsAvailableModal = ({
   firstBtnAction,
   secondBtnAction,
 }) => (
-  <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
+  <Modal isOpen={modal} contentClassName="custom-modal-style" className="trumio modal-dialog-centered modal-lg">
     <ModalHeader toggle={toggleModal} />
     <ModalBody className="pt-0">
       <RelistModalWrapper className="pe-50">

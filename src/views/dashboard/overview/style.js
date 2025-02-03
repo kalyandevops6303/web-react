@@ -99,6 +99,9 @@ const AlertCardWrapper = styled(CardWrapper)`
   .card-body {
     padding: 0.5rem 1.5rem 1rem !important;
   }
+  .card-wrapper {
+    background-color: #f8f8f8;
+  }
   .card-inside {
     .card-header {
       padding: 1.2rem 1.2rem;
@@ -109,6 +112,8 @@ const AlertCardWrapper = styled(CardWrapper)`
   }
 
   .empty-alerts {
+    width: 90%;
+    margin: 0 auto;
     background-color: #fff;
     display: flex;
     flex-direction: column;

@@ -1,4 +1,9 @@
-// service to fetch user details along with app roles
+/**
+ * User management service module for handling user-related operations.
+ * @fileoverview Contains functions for managing user profiles, authentication, roles and permissions.
+ * Includes APIs for file uploads, password management, and user details retrieval.
+ * @module user-management
+ */
 
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
@@ -149,9 +154,17 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
   if (!isEmpty(data.timezone)) {
     formattedData.timezone = data.timezone.name;
   }
-  if (!isEmpty(data.imageUri)) {
-    formattedData.image_uri = data.imageUri;
+
+  if (!isEmpty(data.title)) {
+    formattedData.title = data.title;
   }
+  if (!isEmpty(data.department)) {
+    formattedData.department = data.department;
+  }
+
+  // Optional fields - these are allowed to be unset
+  formattedData.image_uri = data.imageUri;
+  formattedData.linkedin_url = data.linkedin;
 
   try {
     await axios.post(routes.userManagement.user.v2.postAccountDetails, formattedData, config);

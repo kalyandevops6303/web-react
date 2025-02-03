@@ -11,9 +11,10 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
-import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
+import { convertUnixTimestampToDate, roundOfAmount, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -135,10 +136,12 @@ const UpcomingProjectCard = ({ accordionName, data, className }) => {
                   }`}
                 </p>
               </div>
-              {/* <div className="design-planning">
-                <p className="mb-25 details-box-title">Amount</p>
-                <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
-              </div> */}
+              {!isFlexternshipApp && (
+                <div className="design-planning">
+                  <p className="mb-25 details-box-title">Amount</p>
+                  <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
+                </div>
+              )}
             </div>
           </div>
           <div

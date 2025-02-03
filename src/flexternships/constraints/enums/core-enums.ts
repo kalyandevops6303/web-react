@@ -21,6 +21,13 @@ export enum ProjectPrimaryStatus {
   WITHDRAWN = 'WITHDRAWN',
   TERMINATED = 'TERMINATED',
   BLOCKED = 'BLOCKED',
+
+  // Specific to talent
+  CLOSED = 'CLOSED',
+}
+
+export enum DurationType {
+  WEEK = 'WEEK',
 }
 
 export enum ProjectSecondaryStatus {
@@ -70,6 +77,7 @@ export enum MilestoneFeedbackStatus {
 export enum RecognitionSource {
   QUICK_ACTION = 'QUICK_ACTION',
   FEEDBACK = 'FEEDBACK',
+  QUICK_NOTE = 'QUICK_NOTE',
 }
 
 export enum FlexternUserAppRole {

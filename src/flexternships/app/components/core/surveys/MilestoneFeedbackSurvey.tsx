@@ -202,6 +202,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       answer: {
         value: any; // Main value
         comment: any; // Optional comment
+        competency: any; // Optional competency
       };
     }[] = [];
 
@@ -210,34 +211,54 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       const [mainKey, subKey] = key.split('-');
 
       if (!acc[mainKey]) {
-        acc[mainKey] = { value: null, comment: null };
+        acc[mainKey] = { value: null, comment: null, competency: null };
       }
 
       if (subKey === 'Comment') {
         acc[mainKey].comment = input[key];
+      } else if (subKey === 'competency') {
+        acc[mainKey].competency = input[key];
       } else {
         acc[mainKey].value = input[key];
       }
 
       return acc;
-    }, {} as Record<string, { value: any; comment: any }>);
+    }, {} as Record<string, { value: any; comment: any; competency: any }>);
 
     // Filter and process questions based on survey conditions
     survey.getAllQuestions().forEach((question: any, index: number) => {
       const questionKey = question.name;
 
       if (grouped[questionKey]) {
-        const { value, comment } = grouped[questionKey];
-        // Check conditions for including the question
-        if (
-          value !== null && // Ensure the value is answered
-          (((question as any).jsonObj.commentRequired && comment?.length > 0) ||
-            !(question as any).jsonObj.commentRequired)
-        ) {
+        // User Inputs
+        const { value, comment, competency } = grouped[questionKey];
+        // Question JSON
+        const questionJson = (question as any).jsonObj;
+
+        // Recognition conditions
+        const isRecognitionQuestion = questionJson?.name === 'recognition';
+        const isRecognitionNotApplicable = value === 'na';
+        const isCompetencyRequired = questionJson?.competency?.isRequired;
+        const isCompetencySelected = competency?.length > 0;
+
+        // Comment conditions
+        const isCommentRequired = questionJson.commentRequired;
+        const hasComment = comment?.length > 0;
+
+        // Derive final conditions
+        const isValueAnswered = value !== null;
+        const isCommentConditionMet =
+          (isCommentRequired && hasComment) ||
+          !isCommentRequired ||
+          (isRecognitionQuestion && isRecognitionNotApplicable);
+        const isRecognitionConditionMet =
+          !isRecognitionQuestion || isRecognitionNotApplicable || !isCompetencyRequired || isCompetencySelected;
+
+        if (isValueAnswered && isCommentConditionMet && isRecognitionConditionMet) {
           answeredQuestions.push({
             index,
             name: questionKey,
-            answer: { value, comment },
+            answer: { value, comment, competency },
           });
         }
       }
@@ -366,6 +387,25 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       element.classList.add('sd-comment__content');
     });
   });
+
+  // Added this event listener to handle competency change in kudosgroup/wowgroup
+  survey.onPropertyValueChangedCallback = function (name, _oldValue, newValue, sender) {
+    if (!sender) return;
+    const { name: questionName } = (sender as any).jsonObj;
+
+    if (name === 'competency' && questionName && newValue) {
+      survey.setValue(
+        `${questionName}-${name}`,
+        newValue.choices
+          .filter((choice: { selected?: boolean }) => choice.selected)
+          .map((choice: { id: string; name: string; colorCode: string }) => ({
+            id: choice.id,
+            name: choice.name,
+            colorCode: choice.colorCode,
+          })),
+      );
+    }
+  };
 
   survey.onValueChanged.add(function (_survey) {
     let answeredQuestions: {

@@ -1,3 +1,11 @@
+/**
+ * Analytics service module for handling analytics-related operations.
+ * @fileoverview Contains functions for managing analytics data, including individual overviews,
+ * performance metrics, team statistics, and competency insights.
+ * Includes APIs for retrieving various analytics metrics and generating insights.
+ * @module analytics-service
+ */
+
 import axios from 'axios';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
@@ -117,6 +125,12 @@ export const getAiSummaryService: (projectId: string, userId: string) => Promise
   }
 };
 
+/**
+ * Retrieves performance summary data for a team in a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team performance summary data or undefined
+ * @throws {Error} If the summary retrieval fails
+ */
 export const getTeamPerformanceSummaryService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -134,6 +148,12 @@ export const getTeamPerformanceSummaryService: (projectId: string) => Promise<an
   }
 };
 
+/**
+ * Retrieves attractiveness details for team members in a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team members' attractiveness details or undefined
+ * @throws {Error} If the details retrieval fails
+ */
 export const getTeamMembersAttractivenessDetailsService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -149,6 +169,12 @@ export const getTeamMembersAttractivenessDetailsService: (projectId: string) => 
   }
 };
 
+/**
+ * Retrieves team leaderboard data for a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team leaderboard data or undefined
+ * @throws {Error} If the leaderboard retrieval fails
+ */
 export const getTeamLeaderboardService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -164,6 +190,12 @@ export const getTeamLeaderboardService: (projectId: string) => Promise<any> = as
   }
 };
 
+/**
+ * Retrieves team roles data for a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team roles data or undefined
+ * @throws {Error} If the roles retrieval fails
+ */
 export const getTeamRolesService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -179,6 +211,12 @@ export const getTeamRolesService: (projectId: string) => Promise<any> = async (p
   }
 };
 
+/**
+ * Retrieves team universities data for a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team universities data or undefined
+ * @throws {Error} If the universities retrieval fails
+ */
 export const getTeamUniversitiesService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -194,6 +232,12 @@ export const getTeamUniversitiesService: (projectId: string) => Promise<any> = a
   }
 };
 
+/**
+ * Retrieves team diversity data for a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team diversity data or undefined
+ * @throws {Error} If the diversity data retrieval fails
+ */
 export const getTeamDiversityService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -209,6 +253,12 @@ export const getTeamDiversityService: (projectId: string) => Promise<any> = asyn
   }
 };
 
+/**
+ * Retrieves detailed information about team members for a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team members' details or undefined
+ * @throws {Error} If the details retrieval fails
+ */
 export const getTeamMembersDetailsService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {
@@ -224,6 +274,12 @@ export const getTeamMembersDetailsService: (projectId: string) => Promise<any> =
   }
 };
 
+/**
+ * Retrieves performance insights overview for a team in a project.
+ * @param projectId - The ID of the project
+ * @returns Promise resolving to the team performance insights overview or undefined
+ * @throws {Error} If the overview retrieval fails
+ */
 export const getTeamPerformanceInsightsOverviewService: (projectId: string) => Promise<any> = async (projectId) => {
   const headers = appendAuthToken({});
   const config = {

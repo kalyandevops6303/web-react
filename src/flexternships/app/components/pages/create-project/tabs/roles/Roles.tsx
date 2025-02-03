@@ -17,7 +17,7 @@ import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppStore } from '@/flexternships/stores/core-stores';
-import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
 
 export default function Roles() {
   const rolesData = useProjectCreationStore((state) => state.data.roles);

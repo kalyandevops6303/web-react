@@ -3,6 +3,7 @@ import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import CollapsableCard from '@flexternships/app/components/core/cards/CollapsableCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
+import parse from 'html-react-parser';
 
 // styles
 import Styles from '@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css';
@@ -12,7 +13,6 @@ import { Link, useParams } from 'react-router-dom';
 
 export default function InvitationCard({ hideSubtitle = false }) {
   const params = useParams();
-
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectInvitationDetails = useProjectsStore((state) => state.projectInvitationDetails);
   const isProjectInvitationDetailsLoading = useProjectsStore((state) => state.isProjectInvitationDetailsLoading);
@@ -21,7 +21,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
   const getProjectInvitationDetails = useProjectsStore((state) => state.getProjectInvitationDetails);
 
   useEffect(() => {
-    if (!projectInvitationDetails?.is_read) {
+    if (!projectInvitationDetails?.isRead) {
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);
@@ -34,7 +34,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
         <div className="flex flex-col text-left">
           {!hideSubtitle && <div className="text-grey-muted font-sans text-xs font-semibold leading-4">STEP 1</div>}
           <div className="relative">
-            {projectInvitationDetails?.is_read && (
+            {projectInvitationDetails?.isRead && (
               <div className="absolute top-0 -right-2 w-2 h-2 border bg-error rounded-full border-error"></div>
             )}
             <div className="text-grey-heading font-sans text-base font-medium leading-6 !no-underline hover:!no-underline">
@@ -58,10 +58,10 @@ export default function InvitationCard({ hideSubtitle = false }) {
     company: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
     department: projectDetails?.clientInfo?.departmentName,
     image_uri: projectDetails?.clientInfo?.imageUri,
-    start_date: formatEpochToHumanReadable(projectInvitationDetails?.project_start_date || 1),
-    role: projectInvitationDetails?.talent_role,
-    estimated_duration: `${projectInvitationDetails?.project_estimated_duration?.duration} Weeks`,
-    message: projectInvitationDetails?.message,
+    start_date: formatEpochToHumanReadable(projectInvitationDetails?.projectStartDate || 1),
+    role: projectInvitationDetails?.talentRole,
+    estimated_duration: `${projectInvitationDetails?.projectEstimatedDuration?.duration} Weeks`,
+    message: projectInvitationDetails?.invitationMessage,
   };
 
   useEffect(() => {
@@ -77,7 +77,9 @@ export default function InvitationCard({ hideSubtitle = false }) {
       </div>
     );
   }
-  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.project_start_date || 1, Date.now());
+
+  const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.createdAt || 1, Date.now());
+
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="p-3 flex flex-col gap-5 w-full">
@@ -122,7 +124,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
         {invitationCardDetailsData?.message && (
           <div className="flex flex-col w-fit">
             <div className={Styles.invitationCardDetailsTitle}>Message</div>
-            <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.message}</div>
+            <div className={Styles.invitationCardDetailsSubtitle}>{parse(invitationCardDetailsData?.message)}</div>
           </div>
         )}
       </div>

@@ -1,7 +1,7 @@
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
 import { X } from 'react-feather';
 
-import checklistImage from '@flexternships/assets/images/checklist.gif';
+import checklistImage from '@flexternships/assets/gifs/checklist.gif';
 import { useNavigate } from 'react-router-dom';
 import { useFlexternUserStore } from '@flexternships/stores/core-stores';
 

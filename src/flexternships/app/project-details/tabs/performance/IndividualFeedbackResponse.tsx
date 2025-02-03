@@ -1,5 +1,6 @@
 import SteppedProgress from '@/flexternships/app/components/core/progress/SteppedProgress';
 import Spinner from '@/flexternships/app/components/core/Spinner';
+import CompetencyTag from '@/flexternships/app/components/core/tags/CompetencyTag';
 import VerticalTimeline from '@/flexternships/app/components/core/timelines/VerticalTimeline';
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
@@ -47,6 +48,7 @@ export default function IndividualFeedbackResponse(props: any) {
       answer: {
         value: any; // Main value
         comment: any; // Optional comment
+        competency: any; // Optional competency
       };
       title: string; // Title from feedback
       type: string; // Type from feedback
@@ -57,29 +59,30 @@ export default function IndividualFeedbackResponse(props: any) {
       const [mainKey, subKey] = key.split('-');
 
       if (!acc[mainKey]) {
-        acc[mainKey] = { value: null, comment: null };
+        acc[mainKey] = { value: null, comment: null, competency: null };
       }
 
       if (subKey === 'Comment') {
         acc[mainKey].comment = input[key];
+      } else if (subKey === 'competency') {
+        acc[mainKey].competency = input[key];
       } else {
         acc[mainKey].value = input[key];
       }
 
       return acc;
-    }, {} as Record<string, { value: any; comment: any }>);
+    }, {} as Record<string, { value: any; comment: any; competency: any }>);
 
-    // Map questions with feedback for title
-    Object.keys(grouped).forEach((questionKey, index) => {
-      const { value, comment } = grouped[questionKey];
-      const feedbackItem = feedback.find((item) => item.name === questionKey);
-      const title = feedbackItem?.tag?.text || 'Unknown Title'; // Fallback for missing titles
+    // Map questions with feedback for title, maintaining feedback array order
+    feedback.forEach((feedbackItem, index) => {
+      const questionKey = feedbackItem.name;
+      const groupedAnswer = grouped[questionKey] || { value: null, comment: null, competency: null };
 
       answeredQuestions.push({
         index,
         name: questionKey,
-        answer: { value, comment },
-        title,
+        answer: groupedAnswer,
+        title: feedbackItem?.tag?.text || 'Unknown Title',
         type: feedbackItem?.type,
       });
     });
@@ -97,7 +100,7 @@ export default function IndividualFeedbackResponse(props: any) {
   const getResponseComponent = (data: any, index: number) => {
     return (
       <div className="max-w-full flex flex-col gap-3">
-        <div className="text-[14px] font-medium leading-[22px] text-[var(--Grey-600,#515759)] font-montserrat">
+        <div className="text-sm font-medium leading-5.5 text-grey-600 font-montserrat">
           {index + 1}. {data?.title}
         </div>
         <div>
@@ -107,20 +110,18 @@ export default function IndividualFeedbackResponse(props: any) {
             </div>
           )}
           {data?.type === 'areacheckbox' && (
-            <div className="mb-5 rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
+            <div className="mb-5 rounded-md border border-grey-50 bg-white px-3 py-2 min-h-[38px]">
               <ul>
                 {data?.answer?.value?.map((item: any) => (
-                  <li className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
-                    &#8226; {item}
-                  </li>
+                  <li className="text-sm font-medium leading-5.5 text-grey-heading font-montserrat">&#8226; {item}</li>
                 ))}
               </ul>
             </div>
           )}
           {data?.type === 'gridcheckbox' && (
-            <div className="rounded-md bg-[var(--Grey-0,#FFF)] min-h-[38px] flex flex-wrap gap-3">
+            <div className="rounded-md bg-white min-h-[38px] flex flex-wrap gap-3">
               {data?.answer?.value?.map((item: any) => (
-                <span className="w-[200px] text-left text-[14px] font-semibold leading-[22px] font-montserrat text-[#6E6B7B] shadow-[2px_2px_12px_0px_rgba(33,150,243,0.5)] border border-[#2196F3] px-3 py-1 rounded-lg">
+                <span className="w-[200px] text-left text-sm font-semibold leading-5.5 font-montserrat text-grey shadow-[2px_2px_12px_0px_rgba(33,150,243,0.5)] border border-blue px-3 py-1 rounded-lg">
                   <div>
                     <div className="flex gap-1 items-center mt-1">
                       <Avatar className="w-7 h-7">
@@ -134,7 +135,7 @@ export default function IndividualFeedbackResponse(props: any) {
                         <div className="flex flex-nowrap w-[120px] whitespace-nowrap overflow-hidden text-ellipsis font-montserrat">
                           {item?.first_name} {item?.last_name}
                         </div>
-                        <div className="text-[12px] font-normal leading-[20px] font-montserrat text-[#6E6B7B] font-montserrat">
+                        <div className="text-xs font-normal leading-5 font-montserrat text-grey font-montserrat">
                           {item?.role_name}
                         </div>
                       </div>
@@ -146,15 +147,25 @@ export default function IndividualFeedbackResponse(props: any) {
             </div>
           )}
           {(data?.type === 'kudosgroup' || data?.type === 'wowgroup') && (
-            <div className="mb-5 rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
-              <div className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
-                {data?.answer?.value == 'na' ? 'Not Applicable' : data?.answer?.value}
+            <div className="flex flex-col gap-y-4">
+              {/* Competencies */}
+              <div className="flex flex-row flex-wrap gap-2">
+                {data?.answer?.competency?.map((competency: { name: string; colorCode: string }, index: number) => (
+                  <CompetencyTag key={index} competency={competency} />
+                ))}
+              </div>
+
+              {/* Comment Box */}
+              <div className="mb-5 rounded-md border border-grey-50 bg-white px-3 py-2 min-h-[38px]">
+                <div className="text-sm font-medium leading-5.5 text-grey-heading font-montserrat">
+                  {data?.answer?.value == 'na' ? 'Not Applicable' : data?.answer?.value}
+                </div>
               </div>
             </div>
           )}
           {(data?.type === 'comment' || data?.answer?.comment) && (
-            <div className="rounded-md border border-[var(--Grey-50,#E6E7E7)] bg-[var(--Grey-0,#FFF)] px-3 py-2 min-h-[38px]">
-              <div className="text-[14px] font-medium leading-[22px] text-[var(--1-theme-color-heading-display-text,#5E5873)] font-montserrat">
+            <div className="rounded-md border border-grey-50 bg-white px-3 py-2 min-h-[38px]">
+              <div className="text-sm font-medium leading-5.5 text-grey-heading font-montserrat">
                 {data?.answer?.comment || data?.answer?.value}
               </div>
             </div>

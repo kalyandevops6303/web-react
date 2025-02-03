@@ -3,7 +3,7 @@ import { useProjectCreationStore } from '@flexternships/stores/project-creation-
 import { ModalType } from '@flexternships/types/project-creation-types';
 import CloseModalButton from '../buttons/CloseModalButton';
 import PrimaryButton from '../buttons/PrimaryButton';
-import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 import { useNavigate } from 'react-router-dom';
 
 export default function SuccessfulCreation(props: Props) {

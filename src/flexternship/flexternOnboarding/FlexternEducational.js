@@ -581,7 +581,7 @@ const FlexternEducational = () => {
       return educationInstitution?.value && educationInstitution?.label && education?.value && education?.label;
     });
 
-    if (!fields.length || isFilled) {
+    if (!fields?.length || isFilled) {
       append({
         educationInstitution: null,
         education: null,
@@ -608,7 +608,7 @@ const FlexternEducational = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
-      if (res?.talent_info?.other_educational_institutes.length > 0) {
+      if (res?.talent_info?.other_educational_institutes?.length > 0) {
         setValue(
           'otherEducationDetails',
           savedFormData?.otherEducationDetails?.length > 0
@@ -662,7 +662,7 @@ const FlexternEducational = () => {
               },
         );
       }
-      if (res?.talent_info?.expertise?.tools.length > 0) {
+      if (res?.talent_info?.expertise?.tools?.length > 0) {
         setValue(
           'tools',
           savedFormData?.tools ||
@@ -670,7 +670,7 @@ const FlexternEducational = () => {
           { shouldValidate: true },
         );
       }
-      if (res?.talent_info?.expertise?.certificates.length > 0) {
+      if (res?.talent_info?.expertise?.certificates?.length > 0) {
         setValue(
           'certificates',
           savedFormData?.certificates ||
@@ -681,7 +681,7 @@ const FlexternEducational = () => {
           { shouldValidate: true },
         );
       }
-      if (res?.talent_info?.expertise?.skills.length > 0) {
+      if (res?.talent_info?.expertise?.skills?.length > 0) {
         setValue(
           'skills',
           savedFormData?.skills ||
@@ -892,7 +892,7 @@ const FlexternEducational = () => {
       }
 
       // Handle tools
-      if (res?.tools && res?.tools.length > 0) {
+      if (res?.tools && res?.tools?.length > 0) {
         setValue(
           'tools',
           res.tools.map((tool) => ({
@@ -914,7 +914,7 @@ const FlexternEducational = () => {
       }
 
       // Handle certificates
-      if (res?.certificates && res?.certificates.length > 0) {
+      if (res?.certificates && res?.certificates?.length > 0) {
         setValue(
           'certificates',
           res.certificates.map((certificate) => ({
@@ -926,7 +926,7 @@ const FlexternEducational = () => {
       }
 
       // Handle skills
-      if (res?.skills && res?.skills.length > 0) {
+      if (res?.skills && res?.skills?.length > 0) {
         setValue(
           'skills',
           res.skills.map((skill) => ({
@@ -1650,7 +1650,7 @@ const FlexternEducational = () => {
                   </h4>
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
-                <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
+                <CardBody style={{ paddingBottom: files?.length === 0 ? '0px' : '11px' }}>
                   {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column gap-7">
                     <div
@@ -1672,7 +1672,7 @@ const FlexternEducational = () => {
                           >
                             <Col lg="10" style={{ color: '#004280' }} className="font-semibold mr-2">
                               {files && files?.length > 0 && 'Auto Fill Profile'}
-                              {files && files.length === 0 && (
+                              {files && files?.length === 0 && (
                                 <span className="font-normal">
                                   <span className="font-semibold">Go Faster</span> - Upload your resume to auto fill
                                   your profile.
@@ -1724,7 +1724,7 @@ const FlexternEducational = () => {
                         </Col>
                       </div>
                     </div>
-                    <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
+                    <Row>{files && files?.length > 0 && <div>{fileList()}</div>}</Row>
                   </div>
                 </CardBody>
               </Card>

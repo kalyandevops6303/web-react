@@ -4,16 +4,16 @@ import { CompanyStrength } from '../constraints/types/user-profile-types';
 export const FlexternClientAccountDetailsSchema = yup.object().shape({
   firstname: yup
     .string()
+    .required('First name is required')
     .matches(/^[a-zA-Z\s]+$/, 'First name can only contain alphabets and spaces')
     .min(3, 'First name must be at least 3 characters')
-    .max(25, 'First name must not exceed 25 characters')
-    .required('First name is required'),
+    .max(25, 'First name must not exceed 25 characters'),
   lastname: yup
     .string()
+    .required('Last name is required')
     .matches(/^[a-zA-Z\s]+$/, 'Last name can only contain alphabets and spaces')
     .min(3, 'Last name must be at least 3 characters')
-    .max(25, 'Last name must not exceed 25 characters')
-    .required('Last name is required'),
+    .max(25, 'Last name must not exceed 25 characters'),
   timezone: yup
     .object()
     .shape({
@@ -22,6 +22,20 @@ export const FlexternClientAccountDetailsSchema = yup.object().shape({
     })
     .required('Timezone is required'),
   imageUri: yup.string().optional(), // submits file key gets public uri
+  linkedin: yup
+    .string()
+    .matches(/^(https?:\/\/)?(www\.)?linkedin\.com(\/.*)?$/, 'Must be a valid LinkedIn URL')
+    .optional(),
+  title: yup
+    .string()
+    .required('Designation is required')
+    .matches(/^[a-zA-Z0-9\s]+$/, 'Designation must only contain alphanumeric characters')
+    .max(50, 'Designation must not exceed 50 characters'),
+  department: yup
+    .string()
+    .required('Department is required')
+    .matches(/^[a-zA-Z0-9\s]+$/, 'Department must only contain alphanumeric characters')
+    .max(50, 'Department must not exceed 50 characters'),
 });
 
 export const FlexternClientCompanyDetailsSchema = yup.object().shape({

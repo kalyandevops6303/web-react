@@ -18,19 +18,17 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   const param = useParams();
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
-
   const handleGiveRecognition = () => {
-    navigate(`/recognition/${param.projectId}`);
+    navigate(`/quick-actions/${param.projectId}`);
   };
-
   return (
     <div className="w-full">
       {isEmpty(milestoneId) && (
         <div className="flex justify-between items-end max-w-5xl">
           <div className=" bg-white w-fit flex flex-row items-start justify-start gap-1">
-            {tabs.map((tab, index) => (
-              <NavigationTab key={index} tab={tab} index={index} />
-            ))}
+            {tabs.map((tab, index) => {
+              return <NavigationTab key={index} tab={tab} index={index} isActive={tab.id === projectStep} />;
+            })}
           </div>
           {!projectLoading && (
             <PrimaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>
