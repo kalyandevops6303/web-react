@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RefreshCcw, Search } from 'react-feather';
 import { PropTypes } from 'prop-types';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import InfiniteScroll from '../../../lib/infinite-scroll';
@@ -28,11 +28,22 @@ import {
 import { ProjectSortTypes, userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
-import { ResponsiveGrid } from '../../cards/style';
+import { CountWrapper, ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 import { SecondaryProjectStatus } from '@/flexternships/constraints/enums/project-enums';
+
+const Control = ({ children, ...rest }) => <components.Control {...rest}>{children}</components.Control>;
+
+const CustomOption = ({ option, count, selected }) => (
+  <CountWrapper selected={selected}>
+    <span className="option">{option}</span>
+    <span className="count">{count}</span>
+  </CountWrapper>
+);
+
+const CustomSelectWithCount = (props) => <Select {...props} components={{ Control }} />;
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -65,27 +76,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'Received', value: 'RECEIVED' },
     { label: 'Sent', value: 'SENT' },
   ];
-  const projectStateOptions = [
-    { label: 'ALL', value: 'ALL' },
-    { label: 'NEW', value: 'NEW' },
-    { label: 'FAVOURITE', value: 'FAVOURITE' },
-  ];
+
   const invitedByOptions = [
     { label: 'Team', value: 'TEAM' },
     { label: 'Client', value: 'CLIENT' },
   ];
-  const metaDataFlextern = {
-    page: 1,
-    page_size: 10,
-    search_query: '',
-    status: '',
-    department_name: '',
-    project_name: '',
-    talent_name: '',
-    project_state_type: '',
-  };
-
-  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const [secondFilterState, setSecondFilterState] = useState({
     team_name: [],
@@ -101,6 +96,41 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     invitation_type: [typeOptions[0]],
     invitation_to: [invitedOptions[0]],
   });
+
+  const projectStateOptions = [
+    {
+      label: (
+        <CustomOption
+          selected={secondFilterState.project_state_type[0]?.value === 'NEW'}
+          option="New"
+          count={selectProjectMetaData?.new_count || 0}
+        />
+      ),
+      value: 'NEW',
+    },
+    {
+      label: (
+        <CustomOption
+          selected={secondFilterState.project_state_type[0]?.value === 'FAVOURITE'}
+          option="Favourite"
+          count={selectProjectMetaData?.favourite_count || 0}
+        />
+      ),
+      value: 'FAVOURITE',
+    },
+  ];
+  const metaDataFlextern = {
+    page: 1,
+    page_size: 10,
+    search_query: '',
+    status: '',
+    department_name: '',
+    project_name: '',
+    talent_name: '',
+    project_state_type: '',
+  };
+
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const onSuccess = () => {};
   const onError = () => {
@@ -216,7 +246,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         metaData: {
           ...metaDataFlextern,
           search_query: metaDataFlextern?.project_name || searchText || '',
-          department_name: metaDataFlextern?.department_name?.department_name || '',
+          department_name: metaDataFlextern?.department_name || '',
           status: metaDataFlextern?.status || '',
           project_status: primaryFilter?.toUpperCase() || '',
           talent_name: metaDataFlextern?.talent_name || '',
@@ -233,7 +263,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       page: selectProjectMetaData?.current_page + 1 || 1,
       search_query: metaDataFlextern?.project_name || searchText || '',
-      department_name: metaDataFlextern?.department_name?.department_name || '',
+      department_name: metaDataFlextern?.department_name || '',
       status: metaDataFlextern?.status || '',
       project_status: primaryFilter?.toUpperCase() || '',
       talent_name: metaDataFlextern?.talent_name || '',
@@ -270,6 +300,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           search_query: searchText || '',
           project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
           sort_by: metaDataFlextern?.project_state_type || ProjectSortTypes.ALL,
+          department_name: metaDataFlextern?.department_name || '',
         },
         metaData: newFlexternMetaData,
         onSuccess,
@@ -510,7 +541,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && userType !== userTypes.client && (
+              {userType !== userTypes.team && (
                 <Col>
                   <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
@@ -536,7 +567,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               {userType !== userTypes.team && (
                 <Col>
                   <Label className="form-label">Type</Label>
-                  <Select
+                  <CustomSelectWithCount
+                    className="input-width"
+                    isClearable
                     options={projectStateOptions}
                     classNamePrefix="select"
                     placeholder="Select type"
@@ -747,6 +780,14 @@ SecondaryFilters.propTypes = {
 SecondaryFilters.defaultProps = {
   primaryFilter: '',
   userType: '',
+};
+Control.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+CustomOption.propTypes = {
+  option: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired,
+  selected: PropTypes.bool.isRequired,
 };
 
 export default SecondaryFilters;
