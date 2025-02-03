@@ -1,17 +1,12 @@
 import { ProjectSecondaryStatus } from '../constraints/enums/core-enums';
-import { ProjectDetailsState, TeamMemberDetails } from '../constraints/types/project-details-types';
+import { ProjectDetailsState, ProjectInvitation, TeamMemberDetails } from '../constraints/types/project-details-types';
 import {
   fetchTeamDetails,
   getPeerOrIndividualPerformanceDetailsService,
   getProjectInvitationDetailsService,
   getSelfOrTeamPerformanceDetailsService,
 } from '../services/project-details';
-import {
-  getProjectDetailsById,
-  relistProject,
-  terminateProject,
-  withdrawProject,
-} from '../services/project-management-v2';
+import { getProjectDetailsById } from '../services/project-management-v2';
 
 export const populateTeamDetails = async (set: any, projectId: string): Promise<void> => {
   set({ isTeamDetailsLoading: true });
@@ -42,50 +37,51 @@ export const getProjectDetails = async (
   onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => void,
 ) => {
   set({ isProjectsLoading: true });
-  const res: any = await getProjectDetailsById(projectId);
+  const res = await getProjectDetailsById(projectId);
   set({ projectDetails: res, isProjectsLoading: false });
   if (onSuccessBySecondaryStatus && res?.secondaryStatus?.next) {
     onSuccessBySecondaryStatus(res.secondaryStatus.next, res.isDocumentsNeeded ?? false);
   }
 };
 
-export const getProjectInvitationDetails = async (projectId: string, set: any) => {
+export const getProjectInvitationDetails = async (projectId: string, set: (state: any) => void) => {
   set({ isProjectInvitationDetailsLoading: true });
-  const res: any = await getProjectInvitationDetailsService(projectId);
-  set({ projectInvitationDetails: res, isProjectInvitationDetailsLoading: false });
+
+  try {
+    const res = await getProjectInvitationDetailsService(projectId);
+    const projectInvitation: ProjectInvitation = {
+      invitationExists: res.invitation_exists,
+      createdAt: res.created_at,
+      projectStartDate: res.project_start_date,
+      projectEstimatedDuration: {
+        duration: res.project_estimated_duration.duration,
+        durationType: res.project_estimated_duration.duration_type,
+        hoursPerWeek: res.project_estimated_duration.hours_per_week,
+      },
+      talentRole: res.talent_role,
+      invitationMessage: res.invitation_message,
+      isRead: res.is_read,
+    };
+
+    set({ projectInvitationDetails: projectInvitation, isProjectInvitationDetailsLoading: false });
+  } catch (error) {
+    console.error('Error fetching project invitation details:', error);
+    set({ isProjectInvitationDetailsLoading: false });
+  }
 };
 
 export const getSelfOrTeamPerformanceDetails = async (projectId: string, feedbackType: string, set: any) => {
   set({ isPerformanceDetailsLoading: true });
-  const res: any = await getSelfOrTeamPerformanceDetailsService(projectId, feedbackType);
+  const res = await getSelfOrTeamPerformanceDetailsService(projectId, feedbackType);
+  console.log(res);
   set({ performanceDetails: res, isPerformanceDetailsLoading: false });
 };
 
 export const getPeerOrIndividualPerformanceDetails = async (milestoneId: string, feedbackType: string, set: any) => {
   set({ isPerformanceDetailsLoading: true });
-  const res: any = await getPeerOrIndividualPerformanceDetailsService(milestoneId, feedbackType);
+  const res = await getPeerOrIndividualPerformanceDetailsService(milestoneId, feedbackType);
+  console.log(res);
   set({ performanceDetails: res, isPerformanceDetailsLoading: false });
-};
-
-export const setTerminateProject = async (projectId: string, set: any) => {
-  set({ isProjectsLoading: true, projectDetailsLoading: true });
-  await terminateProject(projectId);
-  await getProjectDetails(projectId, set);
-  set({ isProjectsLoading: false, projectDetailsLoading: false });
-};
-
-export const setWithdrawProject = async (projectId: string, set: any) => {
-  set({ isProjectsLoading: true, projectDetailsLoading: true });
-  await withdrawProject(projectId);
-  await getProjectDetails(projectId, set);
-  set({ isProjectsLoading: false, projectDetailsLoading: false });
-};
-
-export const setRelistProject = async (projectId: string, startDate: number, endDate: number, set: any) => {
-  set({ isProjectsLoading: true, projectDetailsLoading: true });
-  await relistProject(projectId, startDate, endDate);
-  await getProjectDetails(projectId, set);
-  set({ isProjectsLoading: false, projectDetailsLoading: false });
 };
 
 export const setInvitationAsRead = async (projectId: string, set: any) => {

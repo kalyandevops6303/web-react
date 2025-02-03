@@ -45,6 +45,9 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
   {
     accessorKey: 'name',
     header: TeamNameHeader,
+    sortingFn: (rowA, rowB) => {
+      return rowA.original.name.localeCompare(rowB.original.name);
+    },
   },
   {
     accessorKey: 'attractivenessScore',
@@ -104,6 +107,7 @@ export default function TeamLeaderboardTable() {
             highlightByKey="projectId"
             highlightedValues={[projectId as string]}
             scrollHighlightedRowsIntoView
+            highlightText="Current Team"
           />
         )}
       </div>

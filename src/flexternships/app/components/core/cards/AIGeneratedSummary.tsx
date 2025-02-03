@@ -18,7 +18,7 @@ export default function AIGeneratedSummary({
     <div className={cn('w-full flex flex-col gap-2 rounded-10 bg-white shadow-card h-full', className)}>
       <div className="p-[16px_16px_0] flex flex-col flex-grow gap-2">
         <div className="flex md:items-center gap-2 flex-col md:flex-row">
-          <div className="text-trublue-secondary-500 font-montserrat text-xs leading-5 flex px-2 py-1 justify-center items-center gap-1 rounded-52 border border-trublue-secondary-500">
+          <div className="text-trublue-ai font-montserrat text-xs leading-5 flex px-2 py-1 justify-center items-center gap-1 rounded-52 border border-trublue-ai">
             <img src={AIGeneratedIcon} alt="AIGenerated" />
             <span className="font-semibold">AI Generated</span>
           </div>

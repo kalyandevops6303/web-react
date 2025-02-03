@@ -544,9 +544,11 @@ const getTotalReferralAmount = () => async (dispatch) => {
 };
 
 const updateCardStatus =
-  ({ switch_team_id, data, id, type, onSuccess }) =>
+  ({ switch_team_id, data, id, type, onSuccess, isFlextern = false }) =>
   async (dispatch) => {
     dispatch(updateCardStatusRequest());
+
+    if (!isFlextern && !switch_team_id) return;
     try {
       await updateCardStatusService({ data, switch_team_id });
       dispatch(updateCardStatusSuccess({ type, id }));

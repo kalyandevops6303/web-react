@@ -23,7 +23,7 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
-import { saveForLaterModalContent } from '@/flexternships/static/core-content';
+import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import PrimaryButton from '../buttons/PrimaryButton';
 import SecondaryButton from '../buttons/SecondaryButton';
 import CloseModalButton from '../buttons/CloseModalButton';
-import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 
 export default function DraftAvailable() {
   const [isOpen, setIsOpen] = useState<boolean>(true);
@@ -24,7 +24,7 @@ export default function DraftAvailable() {
             <img src={ChecklistGif} className=" w-full" width={100} height={100} alt="Drafts available icon" />
           </div>
           <div>
-            <h2 className=" text-2xl font-medium text-grey-heading">Saved Drafts Available</h2>
+            <h2 className="text-2xl font-medium text-grey-heading">Saved Drafts Available</h2>
             <p className="mb-4 mt-4 text-lg text-grey">
               You have project(s) in draft mode. Would you like to continue where you left off?
             </p>

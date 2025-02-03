@@ -36,7 +36,7 @@ import {
   getMilestoneDetailsModalConfirmCtaText,
   getMilestoneDetailsModalDescription,
   getMilestoneDetailsModalTitle,
-} from '@/flexternships/static/milestones-content';
+} from '@/flexternships/static/content/milestones-content';
 import { markMilestoneArtifactAsRead } from '@/flexternships/services/project-management-v2';
 import ConfirmActionModal from '@/flexternships/app/components/core/modals/milestone/ConfirmActionModal';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
@@ -159,7 +159,7 @@ export default function MilestoneDetails() {
   };
 
   const handleGiveRecognition = () => {
-    navigate(`/recognition/${projectId}`);
+    navigate(`/quick-actions/${projectId}`);
   };
 
   if (isMilestoneDetailsLoading && activeModal === undefined) {
@@ -206,6 +206,10 @@ export default function MilestoneDetails() {
     (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) || // 3. If current user is talent and the milestone is already in review
     (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT); // 4. If current user is client and the milestone is still in progress
 
+  const disableGiveRecognition =
+    !projectDetails.giveRecognition ||
+    [MilestoneStatus.CREATED, MilestoneStatus.COMPLETED].includes(milestoneDetails.status);
+
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
       <div className="flex flex-row justify-between">
@@ -217,7 +221,7 @@ export default function MilestoneDetails() {
         />
         <div className="flex flex-row items-center gap-x-4">
           {!isProjectLoading && (
-            <SecondaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>
+            <SecondaryButton className="m-0" onClick={handleGiveRecognition} disabled={disableGiveRecognition}>
               Give {userDetails.userType === UserType.CLIENT ? 'a WOW!' : 'Kudos'}
             </SecondaryButton>
           )}

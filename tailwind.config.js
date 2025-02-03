@@ -23,6 +23,7 @@ module.exports = {
           },
           gold: '#F6C01C',
           light: '#FFD966',
+          soft: '#FFD700',
         },
         orange: {
           DEFAULT: '#FF9F43',
@@ -57,15 +58,27 @@ module.exports = {
           DEFAULT: '#00B0FF',
           light: '#00B0FF1F',
         },
-        success: '#28C76F',
-        error: '#EA5455',
+        success: {
+          DEFAULT: '#28C76F',
+          normal: '#28C76F',
+          successLight: '#28C76F1F',
+          brightLight: '#00C853',
+          softLight: '#00C8531F',
+        },
+        error: {
+          DEFAULT: '#EA5455',
+          disabled: '#F7BBBB',
+          light: '#EA54551F',
+          dark: '#B71C1C',
+          darkLight: '#B71C1C1F',
+        },
         trublue: {
           DEFAULT: '#0065C1',
           review: '#03D8F5',
           secondary: {
             500: '#0185E4',
           },
-
+          ai: '#015DA0',
           disabled: '#99C1E6',
           light: '#E0F0FB',
           a1: '#0065C1',
@@ -90,6 +103,9 @@ module.exports = {
         blue: {
           DEFAULT: '#2196F3',
           light: '#2196F31F',
+          soft: '#E3F2FD',
+          brightLight: '#005EFF',
+          softLight: '#005EFF1F',
         },
         primary: '#0185E4',
         'primary-light': '#0185E41F',
@@ -103,7 +119,7 @@ module.exports = {
           DEFAULT: '#E6E7E7',
         },
         background: {
-          DEFAULT: '#F9F9F9'
+          DEFAULT: '#F9F9F9',
         },
       },
       width: {
@@ -150,7 +166,8 @@ module.exports = {
         card: '0px 4px 24px 0px rgba(0, 0, 0, 0.06)',
         table: '0px 4px 6px -1px rgba(0, 0, 0, 0.10)',
         'restricted-navbar': '0px 2px 8px 0px rgba(58, 105, 187, 0.15)',
-        'primary-button': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
+        'primary-button-blue': '0px 6px 16px 0px rgba(0, 101, 193, 0.50)',
+        'primary-button-red': '0px 6px 16px 0px rgba(234, 84, 85, 0.50)',
         'custom-blue': '0px 2px 4px 0px rgba(1, 133, 228, 0.40)',
         'custom-pieChart-shadow': '0px 2px 8px 0px rgba(0, 0, 0, 0.16)',
       },

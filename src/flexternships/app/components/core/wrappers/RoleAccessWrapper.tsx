@@ -10,7 +10,7 @@ import AccessDenied from '../../pages/defaults/AccessDenied';
 import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
 import { GlobalModalActions } from '@/flexternships/constraints/types/core-types';
-import { projectsBlockedModalContent } from '@/flexternships/static/core-content';
+import { projectsBlockedModalContent } from '@/flexternships/static/content/core-content';
 import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 

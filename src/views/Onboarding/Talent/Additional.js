@@ -969,7 +969,7 @@ const Additional = () => {
                                 value="NON_BINARY"
                                 checked={field.value === 'NON_BINARY'}
                               />
-                              <Label htmlFor="female" className="form-check-label">
+                              <Label htmlFor="non-binary" className="form-check-label">
                                 Non-Binary
                               </Label>
                             </div>

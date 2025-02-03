@@ -43,10 +43,12 @@ export function DatePicker(props: InputProps) {
     <Popover>
       <PopoverTrigger disabled={disabled} ref={calendarRef} asChild>
         <div className={`${Styles.formFieldContainer} ${className || ''}`}>
-          <div className={Styles.formInputLabelContainer}>
-            <span className={Styles.formInputLabel}>{label}</span>
-            {required && <span className={Styles.requiredAsterisk}>*</span>}
-          </div>
+          {label && (
+            <div className={Styles.formInputLabelContainer}>
+              <span className={Styles.formInputLabel}>{label}</span>
+              {required && <span className={Styles.requiredAsterisk}>*</span>}
+            </div>
+          )}
           <div className={`${Styles.formDateInput} ${error ? Styles.formInputError : Styles.formInputDefault}`}>
             {value ? (
               <span className={Styles.formDateFilled}>
@@ -93,7 +95,7 @@ export function DatePicker(props: InputProps) {
 }
 
 type InputProps = {
-  label: string;
+  label?: string;
   value: number;
   onChange: (newVal: number) => void;
   required?: boolean;
