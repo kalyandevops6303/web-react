@@ -1,7 +1,7 @@
 # This workflow runs formatting checks and build verification on pull requests
 # Each job will appear as a separate check in the GitHub PR interface
 
-name: Verify Pull Request
+name: Built & Pretty
 
 on:
   pull_request:

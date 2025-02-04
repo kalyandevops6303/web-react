@@ -9,8 +9,8 @@
   Web Application
 </h3>
 
-![GitHub Actions - Built & Pretty](https://img.shields.io/github/actions/workflow/status/trumio/trumio-web-react/verify-pr.yml?label=Built%20%26%20Pretty)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/trumio/trumio-web-react)
+[![Built & Pretty](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml/badge.svg?branch=tru-dev)](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md)
 
   <p align="center">
     A web application built for Trumio Incorporation.
