@@ -9,7 +9,8 @@
   Web Application
 </h3>
 
-[![Built & Pretty](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml/badge.svg?branch=tru-dev)](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md)
+![GitHub Actions - Built & Pretty](https://img.shields.io/github/actions/workflow/status/trumio/trumio-web-react/verify-pr.yml?label=Built%20%26%20Pretty)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/trumio/trumio-web-react)
 
   <p align="center">
     A web application built for Trumio Incorporation.
@@ -31,70 +32,83 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `trumio`, `trumio-web-react`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+This is a monorepo that contains the code for the Trumio Web Applications - both the OneOff and Flexternships applications.
+
+If you are new to this project, please refer to our [contributing guidelines](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md) for more information. For quick start, please refer to the [Getting Started](#getting-started) section.
 
 ### Built With
 
 <!-- [![Next][Next.js]][Next-url] -->
 
 [![React][React.js]][React-url]
+[![Vite][Vite.js]][Vite-url]
+[![TypeScript][TypeScript.js]][TypeScript-url]
+[![Zustand][Zustand.js]][Zustand-url]
+[![Tailwind][Tailwind.js]][Tailwind-url]
+[![Redux][Redux.js]][Redux-url]
 
 <!-- GETTING STARTED -->
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Follow these steps to set up the project locally.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+Ensure you have the following installed:
 
-- npm
+- Node.js and npm
   ```sh
   npm install npm@latest -g
   ```
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repository
    ```sh
    git clone https://github.com/trumio/trumio-web-react.git
    ```
-3. Install NPM packages
+2. Navigate to the project directory
    ```sh
-   npm install
+   cd trumio-web-react
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+3. Install the required npm packages - prefer yarn over npm
+   ```sh
+   yarn install
    ```
+4. Start the development server
+   ```sh
+   yarn start
+   ```
+   You can use `yarn start:trudev` to start the application with tru-dev mode.
+
+For additional scripts, refer to the `package.json` file.
 
 <!-- USAGE EXAMPLES -->
-
+<!--
 ## Usage
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 <!-- CONTRIBUTING -->
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what made this project possible. Any contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+If you want to resolve an issue on Jira, please assign it to yourself and follow the steps below:
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Install the project as per the [Getting Started](#getting-started) section
+2. Create a new branch from `trudev` branch (`git checkout -b {issue-type}/{jira-issue-key}-title-in-kebab-case`)
+3. Make your changes and commit them (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the remote branch (`git push origin {issue-type}/{jira-issue-key}-title-in-kebab-case`)
+5. Open a Pull Request to the `trudev` branch via [PRs tab](https://github.com/trumio/trumio-web-react/pulls)
 
-See the [open issues](https://github.com/trumio/trumio-web-react/issues) for a full list of proposed features (and known issues).
+Example branch name: `feature/TRU-1234-add-comments-dashboard`
+
+See the [TRU board](https://trumio-team.atlassian.net/jira/software/c/projects/TRU/boards/2) on [Jira](https://trumio-team.atlassian.net) for a full list of proposed features (and known issues).
 
 ## Code Structure
 
@@ -104,7 +118,7 @@ Here comes the tricky part of this project - the codebase is a mix of two applic
 
 > [!CAUTION]
 >
-> ## Deprecated
+> ### Deprecated
 >
 > OneOff App Code in this project was the base for building flexternships' pages and components at the end of 2024, it is now in long-term stasis and will be removed soon. We recommend that you add all your code inside the `src/flexternships` directory.
 >
@@ -118,7 +132,7 @@ This is the new app that is being built. It is located in the `src/flexternships
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+This is a proprietary project. All rights reserved. Please contact your administrator for access to the project.
 
 <!-- CONTACT -->
 
@@ -132,7 +146,7 @@ Project Link: [https://github.com/trumio/trumio-web-react](https://github.com/tr
 
 ## Acknowledgments
 
-- [Ack 1](https://example.com)
+- [Shields.io](https://shields.io/)
 - [Ack 1](https://example.com)
 - [Ack 1](https://example.com)
 
@@ -156,3 +170,13 @@ Project Link: [https://github.com/trumio/trumio-web-react](https://github.com/tr
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[Vite.js]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev/
+[TypeScript.js]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[Zustand.js]: https://img.shields.io/badge/Zustand-000000?style=for-the-badge&logo=zustand&logoColor=white
+[Zustand-url]: https://zustand-demo.pmnd.rs/
+[Tailwind.js]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[Tailwind-url]: https://tailwindcss.com/
+[Redux.js]: https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white
+[Redux-url]: https://redux.js.org/
