@@ -133,7 +133,8 @@ export const routes = {
   },
   analytics: {
     individualOverview: `${serviceUrls.dashboardV2}/talent/header`,
-    aiSummary: `${serviceUrls.dashboardV2}/individual/analytics/overall-summary`,
+    individualPerformanceSummary: `${serviceUrls.dashboardV2}/individual/analytics/performance-summary`,
+    individualCommentsSummary: `${serviceUrls.dashboardV2}/individual/analytics/comments-summary`,
     recognitionChart: `${serviceUrls.dashboardV2}/analytics/tas-score`,
     performanceChart: `${serviceUrls.dashboardV2}/analytics/performance-rating`,
     projectsList: `${serviceUrls.dashboardV2}/analytics/individual/projects-list`,

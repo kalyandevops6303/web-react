@@ -117,10 +117,38 @@ export const getAiSummaryService: (projectId: string, userId: string) => Promise
     withCredentials: true,
   };
   try {
-    const response = await axios.get(`${routes.analytics.aiSummary}`, config);
+    const response = await axios.get(`${routes.analytics.individualPerformanceSummary}`, config);
     return response.data?.data || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching AI summary');
+  }
+};
+
+/**
+ * Retrieves individual comments summary for a project and user.
+ * @param projectId - The ID of the project
+ * @param userId - The ID of the user
+ * @returns Promise resolving to the individual comments summary data or undefined
+ * @throws {Error} If the summary retrieval fails
+ */
+export const getIndividualCommentsSummaryService: (projectId: string, userId: string) => Promise<any> = async (
+  projectId,
+  userId,
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      project_id: projectId,
+      user_id: userId,
+    },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.individualCommentsSummary}`, config);
+    return response.data?.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching individual comments summary');
   }
 };
 
