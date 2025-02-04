@@ -13,6 +13,7 @@ import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import { convertUnixTimestampToDate, roundOfAmount, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -86,10 +87,12 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
                   }`}
                 </p>
               </div>
-              <div className="design-planning">
-                <p className="mb-25 details-box-title">Amount</p>
-                <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
-              </div>
+              {!isFlexternshipApp && (
+                <div className="design-planning">
+                  <p className="mb-25 details-box-title">Amount</p>
+                  <p className="mb-0 details-box">${roundOfAmount(data?.amount)}</p>
+                </div>
+              )}
             </div>
           </div>
           <div

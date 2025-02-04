@@ -12,7 +12,11 @@ import {
   getTeamDiversity,
   getTeamMembersAttractivenessDetails,
   getTeamUniversities,
+  getConversationParticipationFiles,
+  getConversationParticipation,
+  getCommits,
 } from '../actions/analytics-actions';
+import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
 const defaultInitState = {
   individualOverview: null,
@@ -51,6 +55,14 @@ const defaultInitState = {
   isAiSummaryLoading: false,
   thirdPartyAppsData: null,
   isThirdPartyAppsDataLoading: false,
+  conversationParticipation: null,
+  isConversationParticipationLoading: false,
+  conversationParticipationFiles: null,
+  isConversationParticipationFilesLoading: false,
+  commits: null,
+  isCommitsLoading: false,
+  branchHistory: null,
+  isBranchHistoryLoading: false,
 };
 
 export const useAnalyticsStore = create<any>((set) => ({
@@ -67,4 +79,13 @@ export const useAnalyticsStore = create<any>((set) => ({
   getTeamDiversity: async (projectId: string) => getTeamDiversity(projectId, set),
   getTeamMembersDetails: async (projectId: string) => getTeamMembersDetails(projectId, set),
   getTeamPerformanceInsightsOverview: async (projectId: string) => getTeamPerformanceInsightsOverview(projectId, set),
+  getConversationParticipation: async (
+    projectId: string,
+    userId: string,
+    messagesCountState: TimePeriodOptions,
+    participationPercentageState: TimePeriodOptions,
+  ) => getConversationParticipation(projectId, userId, messagesCountState, participationPercentageState, set),
+  getConversationParticipationFiles: async (projectId: string, userId: string) =>
+    getConversationParticipationFiles(projectId, userId, set),
+  getCommits: async (projectId: string, userId: string) => getCommits(projectId, userId, set),
 }));

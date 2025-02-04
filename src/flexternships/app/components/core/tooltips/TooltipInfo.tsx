@@ -4,14 +4,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/flex
 interface TooltipInfoProps {
   children: React.ReactNode;
   iconSize?: number;
+  trigger?: React.ReactNode | string;
 }
 
-export default function TooltipInfo({ children, iconSize = 12 }: TooltipInfoProps) {
+export default function TooltipInfo({ children, iconSize = 12, trigger }: TooltipInfoProps) {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
-          <Info size={iconSize} color="#5E5873" className="cursor-pointer" />
+          {trigger || <Info size={iconSize} color="#5E5873" className="cursor-pointer" />}
         </TooltipTrigger>
         <TooltipContent className="bg-[#323232] text-white font-montserrat text-xs font-normal leading-none tracking-wider">
           {children}

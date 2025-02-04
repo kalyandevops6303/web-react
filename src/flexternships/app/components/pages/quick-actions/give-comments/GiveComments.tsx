@@ -172,7 +172,10 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
                     label="Milestone"
                     error={errors.milestone?.message}
                     loadOptions={() =>
-                      getMilestonesDropdown(projectId, MilestoneDropdownOptions.GIVE_RECOGNITION, { useSequence: true })
+                      getMilestonesDropdown(projectId, MilestoneDropdownOptions.GIVE_RECOGNITION, {
+                        useSequence: true,
+                        useName: true,
+                      })
                     }
                     defaultFirstOption
                   />

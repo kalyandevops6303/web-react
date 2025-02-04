@@ -13,7 +13,7 @@ import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-ut
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import SucessModal from './modals/SucessModal';
-import { PerformanceDetails, FormattedTeamMemberInfo } from '@/flexternships/constraints/types/project-details-types';
+import { FormattedTeamMemberInfo } from '@/flexternships/constraints/types/project-details-types';
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
 
 export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
@@ -49,9 +49,7 @@ export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
 
   useEffect(() => {
     if (filteredTeam) {
-      const firstMemberWithoutFeedback = filteredTeam.find(
-        (member: PerformanceDetails) => member.feedbackId === undefined,
-      );
+      const firstMemberWithoutFeedback = filteredTeam.find((member: any) => member.feedback_id === undefined);
       if (!firstMemberWithoutFeedback) {
         // Navigate if all members have feedback
         goBack();

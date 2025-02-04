@@ -917,7 +917,7 @@ export const getQuickActionsCount = async (projectId: string, talentUserId?: str
 export const getMilestonesDropdown = async (
   projectId: string,
   options: MilestoneDropdownOptions,
-  parsingOptions: { useSequence?: boolean } = { useSequence: false },
+  parsingOptions: { useSequence?: boolean; useName?: boolean } = { useSequence: false, useName: false },
   page: number = 1,
   pageSize: number = 10,
 ): Promise<PaginatedData<MilestoneDropdownItem>> => {

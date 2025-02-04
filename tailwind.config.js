@@ -78,7 +78,7 @@ module.exports = {
           secondary: {
             500: '#0185E4',
           },
-
+          ai: '#015DA0',
           disabled: '#99C1E6',
           light: '#E0F0FB',
           a1: '#0065C1',
