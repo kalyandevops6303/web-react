@@ -54,9 +54,8 @@ export default function Commits() {
 
       <div className="flex items-center justify-between w-full">
         <PrimaryIconText
-          icon={<ArrowLeft size={16} className="text-trublue-secondary-500" />}
+          icon={<ArrowLeft size={18} className="text-trublue-secondary-500" />}
           text="Analytics"
-          className="text-sm font-medium leading-6 font-montserrat text-dark-100 w-fit"
           onClick={goToIndividualAnalytics}
         />
 

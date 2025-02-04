@@ -29,6 +29,7 @@ import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 
 // Form handling
 import { useForm } from 'react-hook-form';
+import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard';
 
 const Comments = () => {
   const defaultMetadata = {
@@ -153,76 +154,72 @@ const Comments = () => {
   };
 
   return (
-    <div className="pt-[70px] xl:pt-0">
-      <div className="flexternships-page flex flex-col items-start gap-4 p-7 xl:p-0">
-        <div>
-          <CustomBreadCrumbs
-            items={[
-              { label: 'Analytics', href: `/analytics/project/${projectId}` },
-              { label: 'Individual Analytics', href: `/analytics/project/${projectId}/individual/${userId}` },
-              { label: 'Comments', href: `/analytics/${projectId}/individual/${userId}/comments` },
-            ]}
-            startWithHome
-          />
-        </div>
-        <PrimaryIconText
-          icon={<ArrowLeft size={20} className="text-white" />}
-          text="Comments"
-          onClick={goBack}
-          bgDark
+    <div className="flexternships-page flex flex-col items-start gap-4">
+      <div>
+        <CustomBreadCrumbs
+          items={[
+            { label: 'Analytics', href: `/analytics/project/${projectId}` },
+            { label: 'Individual Analytics', href: `/analytics/project/${projectId}/individual/${userId}` },
+            { label: 'Comments', href: `/analytics/${projectId}/individual/${userId}/comments` },
+          ]}
+          startWithHome
         />
-        <div className="flex flex-col w-full">
-          <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-t-lg">
-            <Statbox title={overallCommentCount} desc="Overall Comments" isSelected />
-          </div>
-          <div className="flex items-start p-5 gap-5 bg-white self-stretch rounded-b-lg">
-            <AIGeneratedSummary title="Overall Comments Summary" isLoading={isAiSummaryLoading}>
-              {aiSummary}
-            </AIGeneratedSummary>
-          </div>
-          <div className="flex flex-col py-5 px-0 gap-7 self-stretch">
-            <div className="flex flex-row justify-between">
-              <div className="flex flex-col">
-                <h1 className="text-lg font-semibold">Detailed Comments</h1>
-                {projectName && <p className="text-sm text-grey">Project: {projectName}</p>}
-              </div>
-              <div className="flex flex-row items-end gap-x-5">
-                <SingleSelectInput
-                  className="w-[200px]"
-                  name="flexternRole"
-                  control={control}
-                  label="User Type"
-                  placeholder="Select user type"
-                  loadOptions={(page, pageSize) => getPaginatedFlexternRoles(page, pageSize)}
-                  isClearable
-                />
-                <PrimaryIconText
-                  icon={<RefreshCcw size={20} className="text-trublue-secondary-500" />}
-                  text="Reset"
-                  onClick={resetFilters}
-                />
-              </div>
+      </div>
+      <PrimaryIconText
+        icon={<ArrowLeft size={18} className="text-trublue-secondary-500" />}
+        text="Analytics"
+        onClick={goBack}
+      />
+      <div className="flex flex-col w-full">
+        <SimpleElevatedCard className="bg-white flex flex-col items-start gap-y-5 p-5">
+          <Statbox title={overallCommentCount} desc="Overall Comments" isSelected />
+          <AIGeneratedSummary title="Overall Comments Summary" isLoading={isAiSummaryLoading}>
+            {aiSummary}
+          </AIGeneratedSummary>
+        </SimpleElevatedCard>
+
+        <div className="flex flex-col py-5 px-0 gap-7 self-stretch">
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col gap-y-1">
+              <h1 className="text-lg font-semibold">Detailed Comments</h1>
+              {projectName && <p className="text-sm text-grey">Project: {projectName}</p>}
             </div>
-            <div className="flex flex-col gap-4 w-full">
-              {flexternComments.comments.length > 0
-                ? flexternComments.comments.map((commentData, index) => (
-                    <CommentBox
-                      key={index}
-                      comment={commentData.comment}
-                      giverDetails={commentData.giverDetails}
-                      milestoneInfo={commentData.milestoneInfo}
-                      createdAt={commentData.createdAt}
-                    />
-                  ))
-                : !isCommentsLoading && <div className="text-lg text-center text-grey">No comments found</div>}
-              {isCommentsLoading && (
-                <div className="w-full flex justify-center">
-                  <div className="size-10">
-                    <Spinner />
-                  </div>
+            <div className="flex flex-row items-end gap-x-5">
+              <SingleSelectInput
+                className="w-[200px]"
+                name="flexternRole"
+                control={control}
+                label="User Type"
+                placeholder="Select user type"
+                loadOptions={(page, pageSize) => getPaginatedFlexternRoles(page, pageSize)}
+                isClearable
+              />
+              <PrimaryIconText
+                icon={<RefreshCcw size={20} className="text-trublue-secondary-500" />}
+                text="Reset"
+                onClick={resetFilters}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-4 w-full">
+            {flexternComments.comments.length > 0
+              ? flexternComments.comments.map((commentData, index) => (
+                  <CommentBox
+                    key={index}
+                    comment={commentData.comment}
+                    giverDetails={commentData.giverDetails}
+                    milestoneInfo={commentData.milestoneInfo}
+                    createdAt={commentData.createdAt}
+                  />
+                ))
+              : !isCommentsLoading && <div className="text-lg text-center text-grey">No comments found</div>}
+            {isCommentsLoading && (
+              <div className="w-full flex justify-center">
+                <div className="size-10">
+                  <Spinner />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

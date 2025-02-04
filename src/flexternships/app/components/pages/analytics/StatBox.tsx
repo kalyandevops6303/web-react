@@ -23,9 +23,9 @@ const Statbox: React.FC<StatboxProps> = ({ title, desc, isSelected }) => {
           isActive && styles.active
         } rounded-[10px]`}
       >
-        <div className="my-auto">
-          <h3 className="text-[26px] font-semibold">{title}</h3>
-          <p className="mb-0 stat-desc">{desc}</p>
+        <div className="flex flex-col gap-y-3">
+          <h3 className="text-[26px] font-semibold leading-8 text-dark">{title}</h3>
+          <div className="text-sm font-medium text-grey-700">{desc}</div>
         </div>
       </SimpleElevatedCard>
     </div>
