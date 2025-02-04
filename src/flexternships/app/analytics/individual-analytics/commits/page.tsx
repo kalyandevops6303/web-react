@@ -63,7 +63,9 @@ export default function Commits() {
         {isCommitsLoading ? (
           <BoxSkeleton className="w-[100px] h-10" />
         ) : (
-          <SecondaryButton onClick={handleViewInGithub}>View in Github</SecondaryButton>
+          <SecondaryButton onClick={handleViewInGithub} className="m-0">
+            View in Github
+          </SecondaryButton>
         )}
       </div>
 
@@ -86,7 +88,7 @@ export default function Commits() {
         <div className="text-dark-100 font-montserrat text-lg font-semibold leading-[26px]">Branch History</div>
         {(isCommitsLoading || data?.projectName) && (
           <div className="text-grey-heading font-montserrat text-sm font-medium leading-[23px] flex items-center gap-2">
-            Project: {isCommitsLoading ? <BoxSkeleton className="w-full h-[30px]" /> : data?.projectName}
+            Project: {isCommitsLoading ? <BoxSkeleton className="w-full h-[30px]" /> : data.projectName}
           </div>
         )}
       </div>

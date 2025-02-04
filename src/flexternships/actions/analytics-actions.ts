@@ -3,7 +3,6 @@ import {
   getAiSummaryService,
   getConversationParticipationFilesService,
   getConversationParticipationService,
-  getGitHubBranchHistoryPaginatedService,
   getGitHubStatsService,
   getIndividualOverviewService,
   getPerformanceChartDataService,
@@ -313,15 +312,4 @@ export const getCommits = async (projectId: string, userId: string, set: any) =>
     commits: data,
   }));
   set({ isCommitsLoading: false });
-};
-
-// Branch History
-export const getBranchHistory = async (projectId: string, userId: string, set: any) => {
-  set({ isBranchHistoryLoading: true });
-  const data: any = await getGitHubBranchHistoryPaginatedService(projectId, userId);
-  set((state: any) => ({
-    ...state,
-    branchHistory: data,
-  }));
-  set({ isBranchHistoryLoading: false });
 };

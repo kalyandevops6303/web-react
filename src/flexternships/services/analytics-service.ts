@@ -11,7 +11,12 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
-import { parseDetailedPerformanceInsights, parseGitHubStats, parseTeamCompetencySummary } from '../utils/parsing-utils';
+import {
+  parseDetailedPerformanceInsights,
+  parseGitHubStats,
+  parseTeamCompetencySummary,
+  parseGitHubBranchHistory,
+} from '../utils/parsing-utils';
 import { DetailedPerformanceInsights, TeamCompetencySummary } from '../constraints/types/analytics-types';
 import { GithubMetricType, TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
@@ -356,6 +361,7 @@ export const getConversationParticipationService = async (
   participationPercentageState: TimePeriodOptions,
 ) => {
   const headers = appendAuthToken({});
+  // @ts-ignore: Ignoring TypeScript error as this is still in TODO
   const config = {
     headers: headers,
     params: {
@@ -366,6 +372,7 @@ export const getConversationParticipationService = async (
     },
     withCredentials: true,
   };
+
   try {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -386,6 +393,7 @@ export const getConversationParticipationService = async (
 
 export const getConversationParticipationFilesService = async (projectId: string, userId: string) => {
   const headers = appendAuthToken({});
+  // @ts-ignore: Ignoring TypeScript error as this is still in TODO
   const config = {
     headers: headers,
     params: { project_id: projectId, user_id: userId },
@@ -451,34 +459,7 @@ export const getGitHubBranchHistoryPaginatedService = async (
   };
   try {
     const response = await axios.post(`${routes.analytics.github.analytics}`, payload, config);
-    keysToCamelCase(response.data?.data) || undefined; //  TODO: Update this
-    return [
-      {
-        firstName: 'John',
-        lastName: 'Doe',
-        imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
-        role: 'Developer',
-        commitEpoch: 1716604800000,
-        commitMessage:
-          'Added new feature to the project djhkajdkaj akjshkajs  kajshkajskjah  ashkajskjaksjhakjhskaj kjahskjahks kajshkajs kajsha ksjh ',
-      },
-      {
-        firstName: 'Jane',
-        lastName: 'Doe',
-        imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
-        role: 'ML Engineer',
-        commitEpoch: 1716604100000,
-        commitMessage: 'Added new feature to the project',
-      },
-      {
-        firstName: 'David',
-        lastName: 'Gilmour',
-        imageUri: 'https://github.com/flexternships/flexternships-frontend/blob/main/public/images/user.png',
-        role: 'Data Scientist',
-        commitEpoch: 1716607800000,
-        commitMessage: 'Added new feature to the project',
-      },
-    ];
+    return parseGitHubBranchHistory(response.data?.data) || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching branch history');
   }

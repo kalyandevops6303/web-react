@@ -450,11 +450,26 @@ export const parseGitHubStats = (data: Record<string, any>): GitHubStats => {
     githubUrl: data.github_url,
   };
 };
-
 export const parseGitHubBranchHistory = (data: Record<string, any>): GitHubBranchHistory => {
   return {
-    commits: data.commits,
-    issues: data.issues,
-    pullRequests: data.prs,
+    metadata: {
+      currentPage: data.metadata.current_page,
+      pageSize: data.metadata.page_size,
+      totalRecords: data.metadata.total_records,
+      hasNextPage: data.metadata.has_next_page,
+    },
+    data: data.data.map((commit: Record<string, string>) => ({
+      id: commit._id,
+      githubUser: commit.github_user,
+      message: commit.message,
+      projectId: commit.project_id,
+      timestamp: commit.timestamp,
+      url: commit.url,
+      userId: commit.user_id,
+      imageUri: commit.image_uri, // TODO
+      firstName: commit.first_name,
+      lastName: commit.last_name,
+      role: commit.role,
+    })),
   };
 };
