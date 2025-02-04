@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/trumio/trumio-web-react">
-    <img src="./docs/assets/named-logo.png" alt="Logo" height="40">
+    <img src="./assets/named-logo.png" alt="Logo" height="40">
   </a>
 
 <h3 align="center">
