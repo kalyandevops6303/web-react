@@ -141,6 +141,10 @@ export const routes = {
     thirdPartyAppsData: `${serviceUrls.dashboardV2}/analytics/third-party-apps-data`,
     detailedPerformanceInsights: `${serviceUrls.dashboardV2}/team/performance/insights/detail`,
     teamCompetencySummary: `${serviceUrls.dashboardV2}/team/competency/summary`,
+    github: {
+      analytics: `${serviceUrls.dashboardV2}/individual/github/analytics`,
+      stats: `${serviceUrls.dashboardV2}/individual/github/stats`,
+    },
     team: {
       performanceSummary: `${serviceUrls.dashboardV2}/team/performance/summary`,
       teamMembersAttractivenessDetails: `${serviceUrls.dashboardV2}/team/performance/leaderboard`,

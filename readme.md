@@ -1,180 +1,182 @@
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/trumio/trumio-web-react">
+    <img src="./docs/assets/named-logo.png" alt="Logo" height="40">
+  </a>
 
-# Trumio Web React 
+<h3 align="center">
+  Web Application
+</h3>
 
-## Project Overview
+[![Built & Pretty](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml/badge.svg?branch=tru-dev)](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md)
 
-This is a React-based web application designed for Trumio.
+  <p align="center">
+    A web application built for Trumio Incorporation.
+    <br />
+    <a href="https://github.com/trumio/trumio-web-react"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/trumio/trumio-web-react">View Demo</a>
+    ·
+    <a href="https://github.com/trumio/trumio-web-react/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/trumio/trumio-web-react/issues">Request Feature</a>
+  </p>
+</div>
 
-## Folder Structure
+<!-- ABOUT THE PROJECT -->
 
-Here's an overview of the project's folder structure:
+## About The Project
 
-```
-/trumio-web-react/
-│
-├── .dockerignore               # Files to be ignored by Docker
-├── .env                        # Environment variables
-├── .env.production.local       # Production environment variables
-├── .env.qa.local               # QA environment variables
-├── .env.test.local             # Test environment variables
-├── .env.uat.local              # UAT environment variables
-├── .eslintignore               # Files to be ignored by ESLint
-├── .eslintrc                   # ESLint configuration
-├── .gitignore                  # Git ignore rules
-├── .prettierrc.json            # Prettier configuration
-│
-├── /src/                       # Source code files
-│   ├── @core/                  # Core functionalities and assets
-│   ├── assets/                 # Static assets like images and icons
-│   ├── CometChatWorkspace/     # Integration with CometChat for real-time chat
-│   ├── configs/                # Configuration files for various environments
-│   ├── layouts/                # Layout components for pages
-│   ├── lib/                    # Custom and third-party libraries
-│   ├── navigation/             # Routing and navigation logic
-│   ├── redux/                  # Redux state management
-│   ├── router/                 # Application routes
-│   ├── services/               # API service files
-│   ├── utility/                # Utility functions
-│   ├── views/                  # Page-level components representing different views
-│   ├── App.css                  
-│   ├── App.js                
-│   ├── App.test.js     
-│   ├── constant.js                
-│   ├── index.js                
-│   ├── index.css                    
-│   └── serviceWorker.js             
-│   
-├── /public/                    # Public static files
-│
-├── package.json                # Node.js dependencies and scripts
-└── README.md                   # Project documentation 
-```
+[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-## Detailed Functionality
+This is a monorepo that contains the code for the Trumio Web Applications - both the OneOff and Flexternships applications.
 
-1. **Real-Time Chat:**  
-   The project includes a real-time chat feature powered by CometChat. This allows users to communicate in real time, making it ideal for collaborative environments.
+If you are new to this project, please refer to our [contributing guidelines](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md) for more information. For quick start, please refer to the [Getting Started](#getting-started) section.
 
-2. **State Management (Redux):**  
-   The application uses Redux for state management, ensuring a scalable and maintainable state across different components and views.
+### Built With
 
-3. **Routing (React Router):**  
-   The app features dynamic routing using React Router, allowing for seamless navigation between different pages and components.
+<!-- [![Next][Next.js]][Next-url] -->
 
-4. **Custom Libraries:**  
-   The `lib/` folder contains custom-built libraries or direct integrations of third-party libraries that provide additional functionality.
+[![React][React.js]][React-url]
+[![Vite][Vite.js]][Vite-url]
+[![TypeScript][TypeScript.js]][TypeScript-url]
+[![Zustand][Zustand.js]][Zustand-url]
+[![Tailwind][Tailwind.js]][Tailwind-url]
+[![Redux][Redux.js]][Redux-url]
 
-5. **Layouts and Views:**  
-   The project follows a modular approach by separating layout components and page-specific views, enhancing code reusability and organization.
+<!-- GETTING STARTED -->
 
-6. **Service Worker:**  
-   Offline capabilities are supported through a service worker, improving the user experience in low or no network environments.
+## Getting Started
 
-7. **Environment Configurations:**  
-   The project supports multiple environments (development, production, QA, UAT) with separate configuration files for each.
+Follow these steps to set up the project locally.
 
-## Dependencies
+### Prerequisites
 
-This project relies on the following tools and libraries:
+Ensure you have the following installed:
 
-- **React:** Frontend library
-- **Redux:** State management
-- **React Router:** Routing library
-- **CometChat:** Real-time chat integration
-- **Docker:** Containerization tool
-- **ESLint:** Linter for JavaScript/React code
-- **Prettier:** Code formatter
+- Node.js and npm
+  ```sh
+  npm install npm@latest -g
+  ```
 
-You can find all dependencies in the `package.json` file.
+### Installation
 
-## Installation
-
-To set up the project locally, follow these steps:
-
-1. **Clone the Repository:**
-
-   ```bash
+1. Clone the repository
+   ```sh
    git clone https://github.com/trumio/trumio-web-react.git
    ```
-
-2. **Navigate to the Project Directory:**
-
-   ```bash
+2. Navigate to the project directory
+   ```sh
    cd trumio-web-react
    ```
-
-3. **Install Dependencies with Yarn:**
-
-   ```bash
+3. Install the required npm packages - prefer yarn over npm
+   ```sh
    yarn install
    ```
-
-4. **Set Up Environment Variables:**
-   - Copy the appropriate `.env` file based on your environment (development, production, etc.).
-   - Customize the environment variables as needed.
-
-5. **Run the Development Server:**
-
-   ```bash
+4. Start the development server
+   ```sh
    yarn start
    ```
+   You can use `yarn start:trudev` to start the application with tru-dev mode.
 
+For additional scripts, refer to the `package.json` file.
+
+<!-- USAGE EXAMPLES -->
+<!--
 ## Usage
 
-Here’s how you can use different scripts with Yarn:
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-- **Development Server:**
+_For more examples, please refer to the [Documentation](https://example.com)_ -->
 
-  ```bash
-  yarn start
-  ```
+<!-- CONTRIBUTING -->
 
-- **Production Build:**
+## Contributing
 
-  ```bash
-  yarn build
-  ```
+Contributions are what made this project possible. Any contributions you make are **greatly appreciated**.
 
-- **Run Tests:**
+If you want to resolve an issue on Jira, please assign it to yourself and follow the steps below:
 
-  ```bash
-  yarn test
-  ```
+1. Install the project as per the [Getting Started](#getting-started) section
+2. Create a new branch from `trudev` branch (`git checkout -b {issue-type}/{jira-issue-key}-title-in-kebab-case`)
+3. Make your changes and commit them (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the remote branch (`git push origin {issue-type}/{jira-issue-key}-title-in-kebab-case`)
+5. Open a Pull Request to the `trudev` branch via [PRs tab](https://github.com/trumio/trumio-web-react/pulls)
 
-- **Linting and Formatting:**
+Example branch name: `feature/TRU-1234-add-comments-dashboard`
 
-  - **Linting with ESLint:**
+See the [TRU board](https://trumio-team.atlassian.net/jira/software/c/projects/TRU/boards/2) on [Jira](https://trumio-team.atlassian.net) for a full list of proposed features (and known issues).
 
-    ```bash
-    yarn lint
-    ```
+## Code Structure
 
-  - **Formatting with Prettier:**
+Here comes the tricky part of this project - the codebase is a mix of two applications - OneOff and Flexternships.
 
-    ```bash
-    yarn prettier
-    ```
+### OneOff App
 
-## Detailed Code Explanation
+> [!CAUTION]
+>
+> ### Deprecated
+>
+> OneOff App Code in this project was the base for building flexternships' pages and components at the end of 2024, it is now in long-term stasis and will be removed soon. We recommend that you add all your code inside the `src/flexternships` directory.
+>
+> If you are modifying any component from the OneOff App, you can still continue to do so, but please do not add any new components to the OneOff App - instead, add them to the `src/flexternships` directory with the appropriate conventions.
 
+### Flexternships App
 
-### Key Components:
+This is the new app that is being built. It is located in the `src/flexternships` directory. This application holds high significance. It's carefully built considering scalability, performance, and maintainability.
 
-- **`App.js`:**  
-  The main entry point for the application. It initializes routing, applies global styles, and sets up Redux state management.
+<!-- LICENSE -->
 
-- **`index.js`:**  
-  The root file that renders the app into the DOM. It’s responsible for bootstrapping the entire application.
+## License
 
-- **`layouts/`:**  
-  Contains reusable layout components that define the structure of different pages, such as header, footer, and sidebar components.
+This is a proprietary project. All rights reserved. Please contact your administrator for access to the project.
 
-- **`views/`:**  
-  Page-specific components that represent different screens of the application, such as the home page, login page, and dashboard.
+<!-- CONTACT -->
 
-- **`services/`:**  
-  Handles communication with external APIs, abstracts API calls, and manages response handling.
+## Contact
 
+Trumio Inc. - support@trumio.ai
 
----
+Project Link: [https://github.com/trumio/trumio-web-react](https://github.com/trumio/trumio-web-react)
 
+<!-- ACKNOWLEDGMENTS -->
+
+## Acknowledgments
+
+- [Shields.io](https://shields.io/)
+- [Ack 1](https://example.com)
+- [Ack 1](https://example.com)
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/trumio/trumio-web-react.svg?style=for-the-badge
+[contributors-url]: https://github.com/trumio/trumio-web-react/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/trumio/trumio-web-react.svg?style=for-the-badge
+[forks-url]: https://github.com/trumio/trumio-web-react/network/members
+[stars-shield]: https://img.shields.io/github/stars/trumio/trumio-web-react.svg?style=for-the-badge
+[stars-url]: https://github.com/trumio/trumio-web-react/stargazers
+[issues-shield]: https://img.shields.io/github/issues/trumio/trumio-web-react.svg?style=for-the-badge
+[issues-url]: https://github.com/trumio/trumio-web-react/issues
+[license-shield]: https://img.shields.io/github/license/trumio/trumio-web-react.svg?style=for-the-badge
+[license-url]: https://github.com/trumio/trumio-web-react/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://www.linkedin.com/company/trumio-inc
+[product-screenshot]: images/screenshot.png
+[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Vite.js]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev/
+[TypeScript.js]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[Zustand.js]: https://img.shields.io/badge/Zustand-000000?style=for-the-badge&logo=zustand&logoColor=white
+[Zustand-url]: https://zustand-demo.pmnd.rs/
+[Tailwind.js]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[Tailwind-url]: https://tailwindcss.com/
+[Redux.js]: https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white
+[Redux-url]: https://redux.js.org/

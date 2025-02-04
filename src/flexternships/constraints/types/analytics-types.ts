@@ -1,6 +1,6 @@
 import { MatrixDataItem } from './chart-types';
-
 import { MatrixConfig } from './chart-types';
+import { ParsedPaginatedData } from './core-types';
 
 export type FlexternComments = {
   metadata: {
@@ -46,3 +46,26 @@ export type TeamCompetencySummary = {
   competencyAbbreviation: string;
   summary: string;
 };
+
+export type GitHubStats = {
+  commitsCount: number;
+  pullRequestsCount: number;
+  projectName: string;
+  githubUrl?: string;
+};
+
+export type GitHubBranchCommit = {
+  id: string;
+  githubUser: string;
+  message: string;
+  projectId: string;
+  timestamp: number;
+  url: string;
+  userId: string;
+  imageUri?: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+};
+
+export type GitHubBranchHistory = ParsedPaginatedData<GitHubBranchCommit>;

@@ -84,12 +84,14 @@ export default function ViewCommentsManagerCard({
           </div>
         </div>
       )}
-      <div className="flex flex-col gap-y-1">
-        <div className="text-grey text-xs font-normal leading-5">
-          {type === RecognitionSource.QUICK_NOTE ? 'Note' : 'Comment'}
+      {comment && (
+        <div className="flex flex-col gap-y-1">
+          <div className="text-grey text-xs font-normal leading-5">
+            {type === RecognitionSource.QUICK_NOTE ? 'Note' : 'Comment'}
+          </div>
+          <div className="text-sm font-normal leading-5.5 text-grey-700">{comment}</div>
         </div>
-        <div className="text-sm font-normal leading-5.5 text-grey-700">{comment}</div>
-      </div>
+      )}
     </div>
   );
 }

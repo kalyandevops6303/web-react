@@ -159,6 +159,7 @@ export default function ViewComments({ category = QuickActionCategory.RECOGNITIO
                       MilestoneDropdownOptions.VIEW_RECOGNITION,
                       {
                         useSequence: true,
+                        useName: true,
                       },
                       page,
                       pageSize,

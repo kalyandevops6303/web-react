@@ -13,6 +13,7 @@ import { keysToCamelCase, showToastMessage } from '@/flexternships/utils/core-ut
 import FunFacts from './FunFacts';
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import SucessModal from './modals/SucessModal';
+import { FormattedTeamMemberInfo } from '@/flexternships/constraints/types/project-details-types';
 import PrimaryIconText from '@/flexternships/app/components/core/buttons/PrimaryIconText';
 
 export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
@@ -30,7 +31,8 @@ export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
   const team = useProjectsStore((state) => state.performanceDetails);
 
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
-  const [formattedTeamInfo, setFormattedTeamInfo] = useState([]);
+
+  const [formattedTeamInfo, setFormattedTeamInfo] = useState<FormattedTeamMemberInfo[]>([]);
   const [activeTeamMember, setActiveTeamMember] = useState<any>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [filteredTeam, setFilteredTeam] = useState(team);
@@ -47,9 +49,7 @@ export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
 
   useEffect(() => {
     if (filteredTeam) {
-      const firstMemberWithoutFeedback = filteredTeam.find(
-        (member: { feedback_id: undefined }) => member.feedback_id === undefined,
-      );
+      const firstMemberWithoutFeedback = filteredTeam.find((member: any) => member.feedback_id === undefined);
       if (!firstMemberWithoutFeedback) {
         // Navigate if all members have feedback
         goBack();

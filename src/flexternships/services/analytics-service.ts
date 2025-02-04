@@ -11,8 +11,14 @@ import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
 import { keysToCamelCase } from '../utils/core-utils';
-import { parseDetailedPerformanceInsights, parseTeamCompetencySummary } from '../utils/parsing-utils';
+import {
+  parseDetailedPerformanceInsights,
+  parseGitHubStats,
+  parseTeamCompetencySummary,
+  parseGitHubBranchHistory,
+} from '../utils/parsing-utils';
 import { DetailedPerformanceInsights, TeamCompetencySummary } from '../constraints/types/analytics-types';
+import { GithubMetricType, TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
 /**
  * Retrieves individual overview data for a user and project.
@@ -373,5 +379,116 @@ export const getTeamCompetencySummaryService = async (
     return parseTeamCompetencySummary(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching team competency summary');
+  }
+};
+
+export const getConversationParticipationService = async (
+  projectId: string,
+  userId: string,
+  messagesCountState: TimePeriodOptions,
+  participationPercentageState: TimePeriodOptions,
+) => {
+  const headers = appendAuthToken({});
+  // @ts-ignore: Ignoring TypeScript error as this is still in TODO
+  const config = {
+    headers: headers,
+    params: {
+      project_id: projectId,
+      user_id: userId,
+      messages_count: messagesCountState,
+      participation_percentage: participationPercentageState,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          messagesCount: 6,
+          participationPercentage: 60,
+          frequencyOfMessagesMinutes: 10,
+          averageResponseTimeMinutes: 10,
+        });
+      }, 800); // 800ms delay
+    });
+    // const response = await axios.get(`${routes.analytics.conversationParticipation}`, config);
+    // return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching conversation participation');
+  }
+};
+
+export const getConversationParticipationFilesService = async (projectId: string, userId: string) => {
+  const headers = appendAuthToken({});
+  // @ts-ignore: Ignoring TypeScript error as this is still in TODO
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, user_id: userId },
+    withCredentials: true,
+  };
+  try {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          totalFilesShared: 10,
+          documents: {
+            count: 5,
+            percentage: 50,
+          },
+          links: {
+            count: 5,
+            percentage: 50,
+          },
+        });
+      }, 800); // 800ms delay
+    });
+    // const response = await axios.get(`${routes.analytics.conversationParticipationFiles}`, config);
+    // return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching conversation participation files');
+  }
+};
+
+export const getGitHubStatsService = async (projectId: string, userId: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { project_id: projectId, user_id: userId },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.github.stats}`, config);
+    return parseGitHubStats(response.data?.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching commits');
+  }
+};
+
+export const getGitHubBranchHistoryPaginatedService = async (
+  projectId: string,
+  userId: string,
+  options: { metricType: GithubMetricType; page: number; pageSize: number } = {
+    metricType: GithubMetricType.COMMITS,
+    page: 1,
+    pageSize: 10,
+  },
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: { page: options.page, page_size: options.pageSize },
+    withCredentials: true,
+  };
+  const payload = {
+    project_id: projectId,
+    user_id: userId,
+    metric_type: options.metricType,
+  };
+  try {
+    const response = await axios.post(`${routes.analytics.github.analytics}`, payload, config);
+    return parseGitHubBranchHistory(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching branch history');
   }
 };

@@ -44,7 +44,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
     if (!active || !payload?.length) return null;
 
     return (
-      <div className="bg-white w-[200px] max-w-1/2 px-3 py-2 border rounded-md shadow-lg">
+      <div className="bg-white w-[300px] max-w-1/2 px-3 py-2 border rounded-md shadow-lg">
         <p className="font-montserrat text-2xs font-semibold leading-4 text-grey-500 uppercase">{label} PERFORMANCE</p>
         {payload.map((entry: any) => {
           if (!entry.dataKey) return null;
@@ -185,7 +185,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 margin={{
                   left: -20,
                   right: 100,
-                  bottom: 40,
+                  bottom: CustomXAxisLabel ? 40 : 0,
                 }}
               >
                 <CartesianGrid vertical={false} strokeDasharray="4 12" />
@@ -198,7 +198,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                     CustomXAxisLabel ? (
                       <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
                     ) : (
-                      <div>{props.value}</div>
+                      <foreignObject x={props.x - 50} y={props.y} width={100} height={120}>
+                        <div className="flex flex-col items-center text-gray-600">
+                          <span className="text-sm">{props.payload.value}</span>
+                        </div>
+                      </foreignObject>
                     )
                   }
                 />
@@ -261,11 +265,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 margin={{
                   left: -20,
                   right: 100,
-                  bottom: 40,
+                  bottom: CustomXAxisLabel ? 40 : 0,
                   top: 20,
                 }}
               >
-                <CartesianGrid vertical={false} strokeDasharray="4 12" />
+                <CartesianGrid vertical={false} strokeDasharray="4 12" stroke="#E6E9EC" />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
@@ -280,7 +284,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                     CustomXAxisLabel ? (
                       <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
                     ) : (
-                      <div>{props.value}</div>
+                      <foreignObject x={props.x - 50} y={props.y} width={100} height={120}>
+                        <div className="flex flex-col items-center text-gray-600">
+                          <span className="text-sm">{props.payload.value}</span>
+                        </div>
+                      </foreignObject>
                     )
                   }
                 />

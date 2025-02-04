@@ -27,7 +27,7 @@ import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
-import ProjectStatusChip from '../../components/pages/project-details/projectCard/ProjectStatusChip';
+import ProjectStatusChip from '../../components/pages/project-details/project-card/ProjectStatusChip';
 import CustomXAxisLabel from './labels/CustomXAxisLabel';
 
 export default function TeamAnalytics() {
