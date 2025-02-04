@@ -16,6 +16,8 @@ import { FlexternUserAppRole } from '../constraints/enums/core-enums';
 import {
   DetailedPerformanceInsights,
   FlexternComments,
+  GitHubBranchHistory,
+  GitHubStats,
   TeamCompetencySummary,
 } from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
@@ -438,4 +440,36 @@ export const parseNoteCategories = (data: Record<string, any>): NoteCategory[] =
     createdAt: item.created_at,
     updatedAt: item.updated_at,
   }));
+};
+
+export const parseGitHubStats = (data: Record<string, any>): GitHubStats => {
+  return {
+    commitsCount: data.commits_count,
+    pullRequestsCount: data.pr_count,
+    projectName: data.project_name,
+    githubUrl: data.github_url,
+  };
+};
+export const parseGitHubBranchHistory = (data: Record<string, any>): GitHubBranchHistory => {
+  return {
+    metadata: {
+      currentPage: data.metadata.current_page,
+      pageSize: data.metadata.page_size,
+      totalRecords: data.metadata.total_records,
+      hasNextPage: data.metadata.has_next_page,
+    },
+    data: data.data.map((commit: Record<string, string>) => ({
+      id: commit._id,
+      githubUser: commit.github_user,
+      message: commit.message,
+      projectId: commit.project_id,
+      timestamp: commit.timestamp,
+      url: commit.url,
+      userId: commit.user_id,
+      imageUri: commit.image_uri, // TODO
+      firstName: commit.first_name,
+      lastName: commit.last_name,
+      role: commit.role,
+    })),
+  };
 };

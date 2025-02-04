@@ -8,6 +8,28 @@ import {
   UserInvitationType,
 } from '../enums/core-enums';
 
+// Paginated Data Types
+
+export type ParsedPaginatedData<T = any> = {
+  metadata: {
+    currentPage: number;
+    pageSize: number;
+    totalRecords: number;
+    hasNextPage: boolean;
+  };
+  data: (T & { id: string; name: string })[];
+};
+
+export type PaginatedData<T = any> = {
+  metadata: {
+    current_page: number;
+    page_size: number;
+    total_records: number;
+    has_next_page: boolean;
+  };
+  data: (T & { _id: string; name: string })[];
+};
+
 // Static Data Types
 
 export type Skill = {
