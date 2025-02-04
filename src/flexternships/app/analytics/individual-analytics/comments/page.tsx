@@ -24,11 +24,11 @@ import {
 // Types
 import { FlexternComments } from '@/flexternships/constraints/types/analytics-types';
 
-// Store
-import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
-
 // Form handling
 import { useForm } from 'react-hook-form';
+import { getIndividualCommentsSummaryService } from '@/flexternships/services/analytics-service';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard';
 
 const Comments = () => {
@@ -47,15 +47,14 @@ const Comments = () => {
   const [overallCommentCount, setOverallCommentCount] = useState(0);
   const [projectName, setProjectName] = useState('');
 
+  const [isAiSummaryLoading, setIsAiSummaryLoading] = useState(true);
+  const [aiSummary, setAiSummary] = useState('');
+
   const { control, watch, reset } = useForm({});
 
   const { userId } = useParams();
   const { projectId } = useParams();
   const navigate = useNavigate();
-
-  const getAiSummary = useAnalyticsStore((state) => state.getAiSummary);
-  const isAiSummaryLoading = useAnalyticsStore((state) => state.isAiSummaryLoading);
-  const aiSummary = useAnalyticsStore((state) => state.aiSummary);
 
   // Function to fetch comments based on current metadata state and flextern role filter
   const fetchMoreComments = async (options = { resetPage: false }) => {
@@ -98,9 +97,22 @@ const Comments = () => {
   };
 
   useEffect(() => {
-    // Fetch comment count and ai summary
+    // Fetch comment count
     fetchFlexternCommentCount();
-    getAiSummary(projectId, userId);
+
+    // Fetch ai summary
+    if (!projectId || !userId) throw new Error('Invalid page url or project id or user id not found');
+    const fetchCommentsSummary = async () => {
+      setIsAiSummaryLoading(true);
+      try {
+        const data = await getIndividualCommentsSummaryService(projectId, userId);
+        setAiSummary(data || '');
+        setIsAiSummaryLoading(false);
+      } catch (error: unknown) {
+        showToastMessage(ToastType.ERROR, error instanceof Error ? error.message : 'Failed to fetch comments summary');
+      }
+    };
+    fetchCommentsSummary();
   }, [userId, projectId]);
 
   useEffect(() => {
