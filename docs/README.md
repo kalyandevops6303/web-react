@@ -1,44 +1,37 @@
 <!-- PROJECT LOGO -->
-<br />
 <div align="center">
   <a href="https://github.com/trumio/trumio-web-react">
     <img src="./assets/named-logo.png" alt="Logo" height="40">
   </a>
 
-<h3 align="center">
-  Web Application
-</h3>
+  <h3>Web Application</h3>
 
 [![Built & Pretty](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml/badge.svg?branch=tru-dev)](https://github.com/trumio/trumio-web-react/actions/workflows/verify-pr.yml)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md)
 
-  <p align="center">
+  <p>
     A web application built for Trumio Incorporation.
-    <br />
-    <a href="https://github.com/trumio/trumio-web-react"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/trumio/trumio-web-react">View Demo</a>
-    ·
-    <a href="https://github.com/trumio/trumio-web-react/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/trumio/trumio-web-react/issues">Request Feature</a>
   </p>
+
+[**Explore the docs »**](https://github.com/trumio/trumio-web-react)
+
+[View Demo](https://github.com/trumio/trumio-web-react) •
+[Report Bug](https://github.com/trumio/trumio-web-react/issues) •
+[Request Feature](https://github.com/trumio/trumio-web-react/issues)
+
 </div>
 
-<!-- ABOUT THE PROJECT -->
+---
 
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-This is a monorepo that contains the code for the Trumio Web Applications - both the OneOff and Flexternships applications.
+This monorepo contains the code for Trumio Web Applications - both OneOff and Flexternships applications.
 
-If you are new to this project, please refer to our [contributing guidelines](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md) for more information. For quick start, please refer to the [Getting Started](#getting-started) section.
+New to this project? Check our [contributing guidelines](https://github.com/trumio/trumio-web-react/blob/tru-dev/CONTRIBUTING.md) or jump to [Getting Started](#getting-started).
 
-### Built With
-
-<!-- [![Next][Next.js]][Next-url] -->
+### Tech Stack
 
 [![React][React.js]][React-url]
 [![Vite][Vite.js]][Vite-url]
@@ -47,111 +40,105 @@ If you are new to this project, please refer to our [contributing guidelines](ht
 [![Tailwind][Tailwind.js]][Tailwind-url]
 [![Redux][Redux.js]][Redux-url]
 
-<!-- GETTING STARTED -->
-
 ## Getting Started
-
-Follow these steps to set up the project locally.
 
 ### Prerequisites
 
-Ensure you have the following installed:
-
-- Node.js and npm
-  ```sh
+- Node.js with npm (latest version recommended)
+  ```bash
   npm install npm@latest -g
   ```
 
 ### Installation
 
 1. Clone the repository
-   ```sh
+
+   ```bash
    git clone https://github.com/trumio/trumio-web-react.git
    ```
-2. Navigate to the project directory
-   ```sh
+
+2. Navigate to project directory
+
+   ```bash
    cd trumio-web-react
    ```
-3. Install the required npm packages - prefer yarn over npm
-   ```sh
+
+3. Install dependencies (yarn preferred)
+
+   ```bash
    yarn install
    ```
-4. Start the development server
-   ```sh
+
+4. Start development server
+   ```bash
    yarn start
+   # Or for tru-dev mode:
+   yarn start:trudev
    ```
-   You can use `yarn start:trudev` to start the application with tru-dev mode.
 
-For additional scripts, refer to the `package.json` file.
-
-<!-- USAGE EXAMPLES -->
-<!--
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_ -->
-
-<!-- CONTRIBUTING -->
+> **Note**: See `package.json` for additional scripts
 
 ## Contributing
 
-Contributions are what made this project possible. Any contributions you make are **greatly appreciated**.
+We welcome contributions! Here's how you can help:
 
-If you want to resolve an issue on Jira, please assign it to yourself and follow the steps below:
+1. Install project ([Getting Started](#getting-started))
+2. Create feature branch from `trudev`:
+   ```bash
+   git checkout -b {issue-type}/{jira-issue-key}-title-in-kebab-case
+   ```
+3. Make changes and commit:
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+4. Push branch:
+   ```bash
+   git push origin {issue-type}/{jira-issue-key}-title-in-kebab-case
+   ```
+5. Open PR to `trudev` via [PRs tab](https://github.com/trumio/trumio-web-react/pulls)
 
-1. Install the project as per the [Getting Started](#getting-started) section
-2. Create a new branch from `trudev` branch (`git checkout -b {issue-type}/{jira-issue-key}-title-in-kebab-case`)
-3. Make your changes and commit them (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the remote branch (`git push origin {issue-type}/{jira-issue-key}-title-in-kebab-case`)
-5. Open a Pull Request to the `trudev` branch via [PRs tab](https://github.com/trumio/trumio-web-react/pulls)
+Example branch: `feature/TRU-1234-add-comments-dashboard`
 
-Example branch name: `feature/TRU-1234-add-comments-dashboard`
+See [TRU board](https://trumio-team.atlassian.net/jira/software/c/projects/TRU/boards/2) for feature requests and issues.
 
-See the [TRU board](https://trumio-team.atlassian.net/jira/software/c/projects/TRU/boards/2) on [Jira](https://trumio-team.atlassian.net) for a full list of proposed features (and known issues).
+## Project Structure
 
-## Code Structure
-
-Here comes the tricky part of this project - the codebase is a mix of two applications - OneOff and Flexternships.
+The codebase contains two applications:
 
 ### OneOff App
 
 > [!CAUTION]
 >
-> ### Deprecated
+> #### Deprecated
 >
-> OneOff App Code in this project was the base for building flexternships' pages and components at the end of 2024, it is now in long-term stasis and will be removed soon. We recommend that you add all your code inside the `src/flexternships` directory.
+> The OneOff App code served as foundation for Flexternships pages/components (late 2024). It's now in stasis and pending removal. Please add new code to `src/flexternships/`.
 >
-> If you are modifying any component from the OneOff App, you can still continue to do so, but please do not add any new components to the OneOff App - instead, add them to the `src/flexternships` directory with the appropriate conventions.
+> Modifications to existing OneOff components are permitted, but new components should follow Flexternships conventions.
 
 ### Flexternships App
 
-This is the new app that is being built. It is located in the `src/flexternships` directory. This application holds high significance. It's carefully built considering scalability, performance, and maintainability.
+Located in `src/flexternships/`, this is our primary focus. Built with emphasis on:
 
-<!-- LICENSE -->
+- Scalability
+- Performance
+- Maintainability
 
 ## License
 
-This is a proprietary project. All rights reserved. Please contact your administrator for access to the project.
-
-<!-- CONTACT -->
+Proprietary. All rights reserved. Contact administrator for access.
 
 ## Contact
 
 Trumio Inc. - support@trumio.ai
 
-Project Link: [https://github.com/trumio/trumio-web-react](https://github.com/trumio/trumio-web-react)
-
-<!-- ACKNOWLEDGMENTS -->
+[Project Repository](https://github.com/trumio/trumio-web-react)
 
 ## Acknowledgments
 
-- [Shields.io](https://shields.io/)
-- [Ack 1](https://example.com)
-- [Ack 1](https://example.com)
+- [GitHub Actions](https://github.com/features/actions)
+- [Jenkins](https://jenkins.io/)
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+<!-- Badge Definitions -->
 
 [contributors-shield]: https://img.shields.io/github/contributors/trumio/trumio-web-react.svg?style=for-the-badge
 [contributors-url]: https://github.com/trumio/trumio-web-react/graphs/contributors
@@ -165,7 +152,7 @@ Project Link: [https://github.com/trumio/trumio-web-react](https://github.com/tr
 [license-url]: https://github.com/trumio/trumio-web-react/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/trumio-inc
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: ./assets/product-screenshot-sign-in.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
