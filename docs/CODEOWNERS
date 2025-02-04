@@ -1,0 +1,25 @@
+# This is a comment.
+
+# Reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default owners for everything in
+
+# the repo. Unless a later match takes precedence,
+
+# @global-owner1 and @global-owner2 will be requested for
+
+# review when someone opens a pull request.
+
+-       @tr-vikas @anuj-trumio @PradipF @Infant-Rex
+
+# Code owned by praneeth-rdy and @tr-vikas
+docs/* @praneeth-rdy @tr-vikas
+src/flexternships/* @praneeth-rdy @tr-vikas
+package.json @praneeth-rdy @tr-vikas
+README.md @praneeth-rdy @tr-vikas
+CONTRIBUTING.md @praneeth-rdy @tr-vikas
+PULL_REQUEST_TEMPLATE.md @praneeth-rdy @tr-vikas
+.husky/* @praneeth-rdy @tr-vikas
+.github/* @praneeth-rdy @tr-vikas
