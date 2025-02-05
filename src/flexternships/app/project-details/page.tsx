@@ -160,7 +160,7 @@ export default function FlexternshipProjectDetails() {
         <div className="h-5"></div>
       ) : (
         <div className="flex flex-col items-start gap-5">
-          <CustomBreadCrumbs items={breadCrumbs} startWithHome={false} />
+          <CustomBreadCrumbs items={breadCrumbs} />
         </div>
       )}
       {projectDetailsLoading ? (
