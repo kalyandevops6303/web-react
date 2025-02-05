@@ -11,7 +11,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-export default function InvitationCard({ hideSubtitle = false }) {
+export default function InvitationCard({ hideSubtitle = false, isCollapsible = true }) {
   const params = useParams();
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectInvitationDetails = useProjectsStore((state) => state.projectInvitationDetails);
@@ -26,7 +26,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
     }
   }, [projectInvitationDetails]);
   const invitationCardData = {
-    isCollapsible: false,
+    isCollapsible,
     bordered: true,
     isOpen: true,
     headerContent: (
@@ -64,6 +64,8 @@ export default function InvitationCard({ hideSubtitle = false }) {
     message: projectInvitationDetails?.invitationMessage,
   };
 
+  console.log(projectDetails?.clientInfo);
+
   useEffect(() => {
     getProjectInvitationDetails(params?.projectId as string);
   }, []);
@@ -82,7 +84,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
 
   return (
     <CollapsableCard {...invitationCardData}>
-      <div className="p-3 flex flex-col gap-5 w-full">
+      <div className="px-4 pt-4 flex flex-col gap-y-6 w-full">
         <div className="flex flex-row items-start w-full justify-between">
           <div className="flex gap-2">
             <Avatar>
@@ -108,7 +110,7 @@ export default function InvitationCard({ hideSubtitle = false }) {
           </div>
         </div>
         <div className="flex">
-          <div className="border-l-0 border-y-0 px-9 border-r-1 border-grey-50 ">
+          <div className="border-l-0 border-y-0 pr-9 border-r-1 border-grey-50 ">
             <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.start_date}</div>
             <div className={Styles.invitationCardDetailsSubtitle}>Start Date</div>
           </div>

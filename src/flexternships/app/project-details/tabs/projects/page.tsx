@@ -53,7 +53,12 @@ export default function ProjectsTab() {
 
   const timelineItems = [
     {
-      component: <InvitationCard hideSubtitle={!isDocumentsNeededForThisProject} />,
+      component: (
+        <InvitationCard
+          isCollapsible={isDocumentsNeededForThisProject}
+          hideSubtitle={!isDocumentsNeededForThisProject}
+        />
+      ),
       color: '#651FFF',
     },
     ...(isDocumentsNeededForThisProject ? documentItems : []),

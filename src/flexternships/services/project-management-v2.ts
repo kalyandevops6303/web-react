@@ -420,7 +420,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         projectsWorkedOnCount: data?.client_details?.projects_worked_on_count,
         orgSlugId: data?.client_details?.org_slug_id,
         isOrgAdmin: data?.client_details?.is_org_admin,
-        departmentName: data?.client_details?.department_name,
+        departmentName: data?.client_details?.department,
       },
       skillsData:
         data?.skills?.map((skill: any) => ({
