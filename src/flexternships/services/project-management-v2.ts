@@ -452,7 +452,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
           },
         },
       },
-      isDocumentsNeeded: data.is_document_needed,
+      isDocumentsNeeded: data.is_document_needed ?? false,
       viewRecognition: data.view_recognition,
       giveRecognition: data.give_recognition,
       addNote: data.add_note,

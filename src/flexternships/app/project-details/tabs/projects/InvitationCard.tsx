@@ -64,8 +64,6 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
     message: projectInvitationDetails?.invitationMessage,
   };
 
-  console.log(projectDetails?.clientInfo);
-
   useEffect(() => {
     getProjectInvitationDetails(params?.projectId as string);
   }, []);
