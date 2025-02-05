@@ -15,7 +15,7 @@ import { acceptProject } from '@/flexternships/services/project-management-v2';
 export default function ProjectsTab() {
   const isDocumentsNeededForThisProject = useProjectsStore((state) => state.projectDetails.isDocumentsNeeded);
   const primaryStatusOfThisProject = useProjectsStore((state) => state.projectDetails.status);
-  const secondaryStatusOfThisProject = useProjectsStore((state) => state.projectDetails.secondaryStatus.next);
+  const secondaryStatusOfThisProject = useProjectsStore((state) => state.projectDetails?.secondaryStatus?.next);
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
   const [isAcceptingProject, setIsAcceptingProject] = useState(false);
