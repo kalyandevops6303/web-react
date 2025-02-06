@@ -25,6 +25,8 @@ import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-s
 
 // Utils
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { UserType } from '@/flexternships/constraints/enums/core-enums';
 
 function UnselectedTalentCard({
   talentInfo,
@@ -96,6 +98,8 @@ function SelectedTalentCard({
   const competencies = useCompetenciesStore((state) => state.competencies);
   const noteCategories = useNoteCategoriesStore((state) => state.noteCategories);
 
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
   const {
     field: { value: selectedCompetencies = [], onChange: onCompetenciesChange },
   } = useController({
@@ -136,20 +140,22 @@ function SelectedTalentCard({
 
   const isNotesCategory = category === QuickActionCategory.NOTE;
   const isRecognitionCategory = category === QuickActionCategory.RECOGNITION;
-  const showExpandedContent = isExpanded || isRecognitionCategory;
-  const showErrorBanner = isNotesCategory && !isExpanded && !isEmpty(error);
+  const showExpandedContent = isExpanded;
+  const showErrorBanner = !isExpanded && !isEmpty(error);
 
   const cardClassName = classNames('flex flex-col rounded-lg border-1', {
-    'bg-trublue-light border-trublue-secondary-500 gap-y-4': isRecognitionCategory || isExpanded || !showErrorBanner,
+    'bg-trublue-light border-trublue-secondary-500 gap-y-4': isExpanded || !showErrorBanner,
     'border-error': showErrorBanner,
   });
+
+  const isCommentRequired = !(isRecognitionCategory && userDetails.userType === UserType.CLIENT);
 
   return (
     <div className={cardClassName}>
       <UnselectedTalentCard
         talentInfo={talentInfo}
         onSelectionToggle={onSelectionToggle}
-        onExpandToggle={isNotesCategory ? handleExpandToggle : undefined}
+        onExpandToggle={handleExpandToggle}
         trailIcon={
           isExpanded ? (
             <ChevronUp size={24} className="text-grey-300" />
@@ -208,10 +214,10 @@ function SelectedTalentCard({
                 <TextInput
                   label={isRecognitionCategory ? 'Your comment' : undefined}
                   textarea
-                  required
+                  required={isCommentRequired}
                   placeholder="Please enter your comment"
                   className="w-full"
-                  value={value}
+                  value={value ?? ''}
                   onChange={onChange}
                   error={commentError?.message}
                 />
@@ -225,7 +231,8 @@ function SelectedTalentCard({
         <div className="px-6 py-3 flex flex-row items-center gap-x-2 text-error bg-error bg-opacity-10">
           <AlertCircle size={18} />
           <div className="text-sm font-medium leading-4.5">
-            <span className="font-semibold">Note:</span> Please enter all required details to submit a note.
+            <span className="font-semibold">Note:</span> Please enter all required details to submit a{' '}
+            {isNotesCategory ? 'note' : userDetails.userType === UserType.CLIENT ? 'wow' : 'kudos'}.
           </div>
         </div>
       )}

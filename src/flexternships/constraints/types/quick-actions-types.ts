@@ -11,7 +11,7 @@ type GiveCommentsBaseForm = {
 export type GiveRecognitionForm = GiveCommentsBaseForm & {
   selectedTalents: Array<{
     talentId: string;
-    comment: string;
+    comment?: string;
     competencies: string[];
   }>;
 };

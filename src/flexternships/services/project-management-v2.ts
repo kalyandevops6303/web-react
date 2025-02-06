@@ -818,7 +818,7 @@ export const getRecognitionTimeline = async (
 export const submitRecognition = async (
   projectId: string,
   milestoneId: string,
-  selectedTalents: { competencies: string[]; comment: string; talentId: string }[],
+  selectedTalents: { competencies: string[]; comment?: string; talentId: string }[],
 ) => {
   const headers = appendAuthToken({});
   const config = {

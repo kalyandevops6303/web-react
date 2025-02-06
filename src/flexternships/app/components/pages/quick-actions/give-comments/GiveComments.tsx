@@ -14,7 +14,7 @@ import SingleSelectInput from '../../../core/form/SingleSelectInput';
 import Spinner from '../../../core/Spinner';
 
 // Enums and Types
-import { GiveCommentsSchema } from '@/flexternships/schemas/quick-actions-schemas';
+import { getGiveCommentsSchema } from '@/flexternships/schemas/quick-actions-schemas';
 import { GiveNotesForm, GiveRecognitionForm } from '@/flexternships/constraints/types/quick-actions-types';
 import { MilestoneDropdownOptions } from '@/flexternships/constraints/enums/miscellaneous-enums';
 import { QuickActionCategory } from '@/flexternships/constraints/enums/quick-actions-enums';
@@ -62,7 +62,7 @@ export default function GiveComments({ refreshStats, category = QuickActionCateg
   } = useForm<GiveRecognitionForm | GiveNotesForm>({
     mode: 'onChange',
     defaultValues,
-    resolver: yupResolver(GiveCommentsSchema[category]),
+    resolver: yupResolver(getGiveCommentsSchema(category, userDetails.userType)),
   });
 
   const {

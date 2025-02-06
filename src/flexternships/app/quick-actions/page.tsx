@@ -90,7 +90,7 @@ export default function FlexternProjectQuickActions() {
     if (isGiveOrAddAction) {
       return (
         <GiveComments
-          key={`${selectedAction}-${quickActionCategory}`}
+          key={`${selectedAction}-${quickActionCategory}-${userDetails.userType}`}
           refreshStats={fetchStats}
           category={quickActionCategory}
         />
