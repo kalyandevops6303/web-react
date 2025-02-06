@@ -21,7 +21,7 @@ export default function CollapsableCard(props: CollapsableCardProps) {
       collapsible={isCollapsible}
       className={cn(
         'w-full hover:no-underline',
-        bordered && 'rounded-[6px] border border-[#0578FB] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]',
+        bordered && 'rounded-md border border-[#0578FB] bg-white shadow-card',
         className,
       )}
     >
