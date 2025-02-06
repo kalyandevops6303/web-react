@@ -161,13 +161,17 @@ const Login = () => {
         <CardTitle tag="h1" className="card-title-onboard">
           {accountCreated ? <p>Account Created!</p> : <p>Welcome Back! 👋🏻</p>}
         </CardTitle>
-        <CardBody>
-          {accountCreated ? <p>We are excited to have you onboard. For your security, please sign in.</p> : ''}
-        </CardBody>
+        {accountCreated ? (
+          <CardBody className="mt-4">
+            <p>We are excited to have you onboard. For your security, please sign in.</p>
+          </CardBody>
+        ) : (
+          <></>
+        )}
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-1">
+          <div className="form-input-spacing">
             <Label className="form-label" for="login-email">
-              Email or Mobile number
+              Email
             </Label>
             <Controller
               type="email"
@@ -186,7 +190,7 @@ const Login = () => {
             />
             {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
           </div>
-          <div className="mb-1">
+          <div className="form-input-spacing">
             <Label className="form-label" for="login-email">
               Password
             </Label>
@@ -216,7 +220,14 @@ const Login = () => {
           </div>
 
           <UserRetryCountAuth />
-          <Button size="btn-sm" type="submit" color="primary" block disabled={!emailValue || !passValue || isLoading}>
+          <Button
+            className="sign-in-btn-margin"
+            size="btn-sm"
+            type="submit"
+            color="primary"
+            block
+            disabled={!emailValue || !passValue || isLoading}
+          >
             {isLoading ? <Spinner size="sm" /> : 'Sign in'}
           </Button>
           {/* <div className="form-check mb-1"> */}
