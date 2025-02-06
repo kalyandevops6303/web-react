@@ -2,20 +2,20 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/flexternships/app/compone
 import { cn } from '@/flexternships/lib/utils';
 import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 
-export default function FlexternAvatar({ imageUri, firstName, lastName, className }: FlexternAvatarProps) {
+export default function FlexternAvatar({ imageUri, name, className }: FlexternAvatarProps) {
   return (
     <Avatar>
       <AvatarImage src={imageUri} />
       <AvatarFallback
         className={cn('p-2 leading-6 font-semibold text-lg', className)}
         style={{
-          color: stringToColour(`${firstName} ${lastName}`),
-          backgroundColor: `${stringToColour(`${firstName} ${lastName}`, {
+          color: stringToColour(name),
+          backgroundColor: `${stringToColour(name, {
             opacity: 10,
           })}`,
         }}
       >
-        {`${firstName} ${lastName}`
+        {name
           .split(' ')
           .slice(0, 2)
           .map((word) => word.charAt(0).toUpperCase())
@@ -27,7 +27,6 @@ export default function FlexternAvatar({ imageUri, firstName, lastName, classNam
 
 type FlexternAvatarProps = {
   imageUri?: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   className?: string;
 };

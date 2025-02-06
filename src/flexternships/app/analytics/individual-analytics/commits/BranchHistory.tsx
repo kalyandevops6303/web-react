@@ -93,8 +93,7 @@ export default function BranchHistory() {
                   <FlexternAvatar
                     className="text-base"
                     imageUri={item.imageUri}
-                    firstName={item.firstName}
-                    lastName={item.lastName}
+                    name={`${item.firstName} ${item.lastName}`}
                   />
                   <div>
                     <div className="text-[#5E5873] font-montserrat text-sm font-medium leading-[23px]">
