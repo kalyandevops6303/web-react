@@ -156,8 +156,15 @@ const LeftSideBarProjectDetails = () => {
     }
   }, [data?.details?.expectedStartDate]);
 
+  const disableViewAllQuickActions = [ProjectPrimaryStatus.OPEN, ProjectPrimaryStatus.WITHDRAWN].includes(data?.status);
+
   const handleQuickActionClick = (action: QuickAction) => {
     navigate(`/quick-actions/${projectId}`, { state: { action } });
+  };
+
+  const handleViewAllQuickActions = () => {
+    if (disableViewAllQuickActions) return;
+    handleQuickActionClick(QuickAction.GIVE_RECOGNITION);
   };
 
   const showSecondaryStatusCondition =
@@ -391,8 +398,11 @@ const LeftSideBarProjectDetails = () => {
           </div>
           {userDetails.userType === UserType.CLIENT && (
             <div
-              onClick={() => handleQuickActionClick(QuickAction.GIVE_RECOGNITION)}
-              className="text-trublue-secondary-500 text-sm font-semibold leading-4.5 cursor-pointer"
+              onClick={handleViewAllQuickActions}
+              className={classNames('text-trublue-secondary-500 text-sm font-semibold leading-4.5', {
+                'cursor-pointer': !disableViewAllQuickActions,
+                'cursor-default opacity-50': disableViewAllQuickActions,
+              })}
             >
               View All
             </div>

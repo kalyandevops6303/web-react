@@ -4,7 +4,7 @@ import SimpleElevatedCard from '../../../components/core/cards/SimpleElevatedCar
 import VerticalTimeline from '../../../components/core/timelines/VerticalTimeline';
 import InvitationCard from './InvitationCard';
 import DocumentCard from './DocumentCard';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryButton';
 import { useState } from 'react';
@@ -21,7 +21,7 @@ export default function ProjectsTab() {
   const [isAcceptingProject, setIsAcceptingProject] = useState(false);
 
   const params = useParams();
-
+  const navigate = useNavigate();
   const ndaCardData = {
     title: 'NDA',
     subtitle: 'STEP 2',
@@ -74,6 +74,8 @@ export default function ProjectsTab() {
       await acceptProject(params.projectId);
       // Refresh project details to get the updated status
       await getProjectDetails(params.projectId);
+      // Navigate to the project details page
+      navigate(`/project-details/${params.projectId}/milestone`);
     } catch (error: unknown) {
       showToastMessage(
         ToastType.ERROR,
