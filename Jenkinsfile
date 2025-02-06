@@ -155,14 +155,14 @@ pipeline {
                             serviceName = 'tru-dev'
                             servicePort = '4112'
                             targetPort = '4112'
-			    mode='trudev'
+			    mode='tru-dev'
                             break
                         case 'tru-qa':
                             composeFile = 'docker-compose.tru-qa.yml'
                             serviceName = 'tru-qa'
                             servicePort = '9112'
                             targetPort = '9112'
-			    mode='truqa'
+			    mode='tru-qa'
                             break
                         default:
                             composeFile = 'docker-compose.yml'
@@ -176,7 +176,7 @@ pipeline {
 
                     // Use the downloaded environment file for Docker Compose
                     sh """
-		            cp env-fe-${params.ENVIRONMENT}.txt .env.trudev.local
+		            cp env-fe-${params.ENVIRONMENT}.txt .env.${params.ENVIRONMENT}.local
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
