@@ -161,12 +161,10 @@ const Login = () => {
         <CardTitle tag="h1" className="card-title-onboard">
           {accountCreated ? <p>Account Created!</p> : <p>Welcome Back! 👋🏻</p>}
         </CardTitle>
-        {accountCreated ? (
+        {accountCreated && (
           <CardBody className="mt-4">
             <p>We are excited to have you onboard. For your security, please sign in.</p>
           </CardBody>
-        ) : (
-          <></>
         )}
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="form-input-spacing">
