@@ -180,8 +180,10 @@ export default function MilestoneDetails() {
     );
   };
 
-  const referenceDateForFeedback =
-    userDetails.userType === UserType.CLIENT ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
+  const isUserClient = userDetails.userType === UserType.CLIENT;
+  const isUserTalent = userDetails.userType === UserType.TALENT;
+
+  const referenceDateForFeedback = isUserClient ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
 
   const isNextUpcomingMilestone =
     typeof milestoneDetails.lastWorkingMilestoneSeq === 'number'
@@ -203,12 +205,21 @@ export default function MilestoneDetails() {
   const disableMilestonePrimaryAction =
     milestoneDetails.status === MilestoneStatus.COMPLETED || // 1. If milestone is already completed
     milestoneDetails.status === MilestoneStatus.CREATED || // 2. If milestone is just created and not yet started
-    (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) || // 3. If current user is talent and the milestone is already in review
-    (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT); // 4. If current user is client and the milestone is still in progress
+    (milestoneDetails.status === MilestoneStatus.IN_REVIEW && isUserTalent) || // 3. If current user is talent and the milestone is already in review
+    (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && isUserClient); // 4. If current user is client and the milestone is still in progress
 
   const disableGiveRecognition =
     !projectDetails.giveRecognition ||
     [MilestoneStatus.CREATED, MilestoneStatus.COMPLETED].includes(milestoneDetails.status);
+
+  const getPrimaryActionText = () => {
+    if (isUserClient) {
+      return milestoneDetails.status === MilestoneStatus.COMPLETED ? 'Accepted' : 'Accept';
+    }
+    return [MilestoneStatus.IN_REVIEW, MilestoneStatus.COMPLETED].includes(milestoneDetails.status)
+      ? 'Completed'
+      : 'Mark as Completed';
+  };
 
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
@@ -222,11 +233,11 @@ export default function MilestoneDetails() {
         <div className="flex flex-row items-center gap-x-4">
           {!isProjectLoading && (
             <SecondaryButton className="m-0" onClick={handleGiveRecognition} disabled={disableGiveRecognition}>
-              Give {userDetails.userType === UserType.CLIENT ? 'a WOW!' : 'Kudos'}
+              Give {isUserClient ? 'a WOW!' : 'Kudos'}
             </SecondaryButton>
           )}
           <PrimaryButton className="m-0" onClick={openConfirmActionModal} disabled={disableMilestonePrimaryAction}>
-            {userDetails.userType === UserType.CLIENT ? 'Accept' : 'Mark as Completed'}
+            {getPrimaryActionText()}
           </PrimaryButton>
         </div>
       </div>
