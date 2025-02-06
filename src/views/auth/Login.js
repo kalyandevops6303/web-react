@@ -221,7 +221,7 @@ const Login = () => {
 
           <UserRetryCountAuth />
           <Button
-            className="sign-in-btn-margin"
+            className="form-input-spacing"
             size="btn-sm"
             type="submit"
             color="primary"
