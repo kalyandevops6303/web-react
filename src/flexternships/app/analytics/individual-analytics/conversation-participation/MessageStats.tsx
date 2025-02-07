@@ -1,15 +1,15 @@
 import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard';
 import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/flexternships/app/components/ui/select';
-import { TimePeriodOptionLabels, TimePeriodOptions } from '@/flexternships/constraints/enums/analytics-enums';
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from '@/flexternships/app/components/ui/select';
+// import { TimePeriodOptionLabels, TimePeriodOptions } from '@/flexternships/constraints/enums/analytics-enums';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function MessageStats() {
@@ -19,26 +19,24 @@ export default function MessageStats() {
   const getData = useAnalyticsStore((state) => state.getConversationParticipation);
   const isLoading = useAnalyticsStore((state) => state.isConversationParticipationLoading);
 
-  const [messagesCountState, setMessagesCountState] = useState(TimePeriodOptions.LAST_7_DAYS);
-  const [participationPercentageState, setParticipationPercentageState] = useState(TimePeriodOptions.LAST_7_DAYS);
+  // const [messagesCountState, setMessagesCountState] = useState(TimePeriodOptions.LAST_7_DAYS);
+  // const [participationPercentageState, setParticipationPercentageState] = useState(TimePeriodOptions.LAST_7_DAYS);
 
   useEffect(() => {
-    console.log(messagesCountState, participationPercentageState);
-    getData(projectId, userId, messagesCountState, participationPercentageState);
-  }, [messagesCountState, participationPercentageState, userId, projectId]);
+    getData(projectId, userId);
+  }, [userId, projectId]);
 
   if (isLoading) return <BoxSkeleton className="w-full h-[100px]" />;
 
   return (
-    <SimpleElevatedCard className="bg-white p-3 flex gap-5 w-fit flex-wrap shadow-card">
+    <SimpleElevatedCard className="bg-white px-4 py-6 flex gap-5 w-fit flex-wrap shadow-card">
       <div className="w-[194px] flex flex-col items-center gap-1 justify-center">
-        <div className="text-[#071013] text-center font-montserrat text-[22px] font-semibold leading-[26px]">
+        <div className="text-grey-900 text-center font-montserrat text-[22px] font-semibold leading-6.5">
           {data?.messagesCount}
         </div>
-        <div className="text-[#6A7071] text-center font-montserrat text-[14px] font-medium leading-[22px]">
-          Messages
-        </div>
-        <Select value={messagesCountState} onValueChange={(value) => setMessagesCountState(value as TimePeriodOptions)}>
+        <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">Messages</div>
+        {/* Commented out until filter is implemented */}
+        {/* <Select value={messagesCountState} onValueChange={(value) => setMessagesCountState(value as TimePeriodOptions)}>
           <SelectTrigger className="border-none outline-none shadow-none flex items-center justify-center gap-1 focus:ring-0 py-0 h-min">
             <SelectValue>
               <div className="text-[#838889] text-center font-montserrat text-[12px] font-medium leading-[20px] flex items-center gap-1">
@@ -51,7 +49,6 @@ export default function MessageStats() {
                     ]
                   }
                 </div>
-                {/* <ChevronDown size={18} color="#838889" /> */}
               </div>
             </SelectValue>
           </SelectTrigger>
@@ -62,17 +59,16 @@ export default function MessageStats() {
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
       <div className="w-[194px] flex flex-col items-center gap-1 justify-center">
-        <div className="text-[#071013] text-center font-montserrat text-[22px] font-semibold leading-[26px]">
+        <div className="text-grey-900 text-center font-montserrat text-[22px] font-semibold leading-6.5">
           {data?.participationPercentage}%
         </div>
-        <div className="text-[#6A7071] text-center font-montserrat text-[14px] font-medium leading-[22px]">
-          Participation
-        </div>
-        <Select
+        <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">Participation</div>
+        {/* Commented out until filter is implemented */}
+        {/* <Select
           value={participationPercentageState}
           onValueChange={(value) => setParticipationPercentageState(value as TimePeriodOptions)}
         >
@@ -89,7 +85,6 @@ export default function MessageStats() {
                     ]
                   }
                 </div>
-                {/* <ChevronDown size={18} color="#838889" /> */}
               </div>
             </SelectValue>
           </SelectTrigger>
@@ -100,26 +95,27 @@ export default function MessageStats() {
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
-      <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
+      {/* Commented out until BE is implemented */}
+      {/* <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
       <div className="w-[194px] flex flex-col items-center gap-1 justify-center">
-        <div className="text-[#071013] text-center font-montserrat text-[22px] font-semibold leading-[26px]">
+        <div className="text-grey-900 text-center font-montserrat text-[22px] font-semibold leading-6.5">
           {data?.frequencyOfMessagesMinutes} mins
         </div>
-        <div className="text-[#6A7071] text-center font-montserrat text-[14px] font-medium leading-[22px]">
+        <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">
           Frequency of Messages
         </div>
       </div>
       <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
       <div className="w-[194px] flex flex-col items-center gap-1 justify-center">
-        <div className="text-[#071013] text-center font-montserrat text-[22px] font-semibold leading-[26px]">
+        <div className="text-grey-900 text-center font-montserrat text-[22px] font-semibold leading-6.5">
           {data?.averageResponseTimeMinutes} mins
         </div>
-        <div className="text-[#6A7071] text-center font-montserrat text-[14px] font-medium leading-[22px]">
+        <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">
           Average Response Time
         </div>
-      </div>
+      </div> */}
     </SimpleElevatedCard>
   );
 }
