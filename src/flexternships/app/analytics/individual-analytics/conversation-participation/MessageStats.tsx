@@ -26,7 +26,7 @@ export default function MessageStats() {
     getData(projectId, userId);
   }, [userId, projectId]);
 
-  if (isLoading) return <BoxSkeleton className="w-full h-[100px]" />;
+  if (isLoading) return <BoxSkeleton className="w-96 h-[100px]" />;
 
   return (
     <SimpleElevatedCard className="bg-white px-4 py-6 flex gap-5 w-fit flex-wrap shadow-card">
