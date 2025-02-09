@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import FadeLoader from 'react-spinners/FadeLoader';
 import {
   Button,
   Card,
@@ -21,13 +22,13 @@ import {
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
+import { RotatingLines } from 'react-loader-spinner';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
 import theme from '../../configs/themeVariables';
 import {
   deleteResume,
   getResumeParsedDetails,
   getUserDetails,
-  saveProfileDetails,
   saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import {
@@ -61,8 +62,6 @@ import {
   formDocuments,
   resumeDataUploadedForSocial,
   resumeParsed,
-  resumeDataUploadedForPersonal,
-  resumeDataUploadedForEducation,
 } from '../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
@@ -76,14 +75,13 @@ import {
   setResumeDataUploadedForAdditional,
 } from '../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
-import { updateParsedResumeService, resumeUploadService } from '../../services/talentOnboardingServices';
-import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
-
+import { resumeUploadService } from '../../services/talentOnboardingServices';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
-import { downloadUrlLoading, userData } from '@/redux/selectors/dashboardSelectors';
+import { downloadUrlLoading } from '@/redux/selectors/dashboardSelectors';
 import { projectFileUploadToAzureService } from '../../services/createProjectServices';
 import uuidv4 from '../../lib/uuidv4';
+import { getDownloadUrl } from '@/redux/actions/dashboardActions';
 
 const FlexternSocial = () => {
   const SocialSchema = yup.object().shape({
@@ -100,25 +98,14 @@ const FlexternSocial = () => {
         link: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
       }),
     ),
-    resume: yup
-      .object()
-      .shape({
-        file_name: yup.string().required('Resume is required'),
-        file_key: yup.string().required('Resume is required'),
-      })
-      .required('Resume is required'),
   });
 
   const savedFormData = useSelector(formData);
-  const trumioTalentBoolean = useSelector(selectTrumioTalent);
-  const flexternBoolean = useSelector(selectFlexternBoolean);
   const fileKeyDetails = useSelector(fileKey);
   const savedFormDocuments = useSelector(formDocuments);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const IsresumeParsed = useSelector(resumeParsed);
   const isResumeDataUploadedForSocial = useSelector(resumeDataUploadedForSocial);
-  const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
-  const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForSocial || false);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
@@ -169,17 +156,10 @@ const FlexternSocial = () => {
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
   );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector(
-    (state) => state.dashboard?.profilePercentage?.values_missing,
-  );
 
-  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
-  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
   const userData = useSelector(userDetails);
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
-  const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
-
-  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   const getOverallPercentageCompletion = () => {
@@ -314,25 +294,37 @@ const FlexternSocial = () => {
   const onSubmit = (data) => {
     const { linkedInLink, twitterLink, githubLink, otherSocialLinks } = data;
 
-    const social_links = [
-      {
+    const social_links = [];
+
+    if (linkedInLink) {
+      social_links.push({
         platform: 'linkedIn',
         url: formatUrl(linkedInLink),
-      },
-      {
+      });
+    }
+
+    if (twitterLink) {
+      social_links.push({
         platform: 'twitter',
         url: formatUrl(twitterLink),
-      },
-      {
+      });
+    }
+
+    if (githubLink) {
+      social_links.push({
         platform: 'github',
         url: formatUrl(githubLink),
-      },
-      // eslint-disable-next-line
-      ...otherSocialLinks?.map((link) => ({
-        platform: link.linkName,
-        url: formatUrl(link.link),
-      })),
-    ];
+      });
+    }
+
+    if (otherSocialLinks && otherSocialLinks.length > 0) {
+      otherSocialLinks.forEach((link) => {
+        social_links.push({
+          platform: link.linkName,
+          url: formatUrl(link.link),
+        });
+      });
+    }
 
     const reqData = {
       social_links,
@@ -452,12 +444,7 @@ const FlexternSocial = () => {
             file_key: res?.talent_info?.resume?.file_key,
           },
           isUploaded: true,
-          lastModified:
-            savedFormDocuments != null
-              ? savedFormDocuments[0]?.lastModified
-                ? savedFormDocuments[0]?.lastModified
-                : res?.talent_info?.resume?.created_at
-              : res?.talent_info?.resume?.created_at,
+          lastModified: savedFormDocuments?.[0]?.lastModified ?? res?.talent_info?.resume?.created_at,
         };
         setValue(
           'resume',
@@ -475,7 +462,7 @@ const FlexternSocial = () => {
   };
   const onGetUserResumeDetailsSuccess = (res) => {
     if (res) {
-      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+      if (res?.talent_info?.resume && 'file_name' in res.talent_info.resume) {
         const fileUrl = {
           file: {
             name: res?.talent_info?.resume?.file_name,
@@ -748,7 +735,7 @@ const FlexternSocial = () => {
               >
                 {downloadUrlIsLoading ? (
                   <div className="d-flex align-items-center justify-content-center w-100">
-                    <Spinner color="primary" />
+                    <FadeLoader color="#0185E4" />
                   </div>
                 ) : (
                   <div className="d-flex align-items-center w-100 ">
@@ -1042,13 +1029,7 @@ const FlexternSocial = () => {
                     className="d-flex align-items-center justify-content-between me-2"
                     disabled={!isValid || profileDetailsIsLoading}
                   >
-                    {profileDetailsIsLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <>
-                        <span className="me-50">Save & Continue</span>
-                      </>
-                    )}
+                    {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save & Continue</span>}
                   </Button>
                 </div>
               </div>
@@ -1063,11 +1044,14 @@ const FlexternSocial = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
+                  {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
-                        background: parseResume ? '#0185E426' : theme.greyedOutBackground,
-                        padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                        // background: parseResume ? '#0185E426' : theme.greyedOutBackground,
+                        background: '#0185E426',
+                        // padding: files.length === 0 ? '12px 20px 12px 20px' : '16px',
+                        padding: '16px',
                       }}
                     >
                       <div className={`d-flex ${files?.length > 0 ? 'align-items-center' : ''}`}>
@@ -1079,12 +1063,30 @@ const FlexternSocial = () => {
                             style={{ color: '#004280' }}
                             className="d-flex w-100  justify-content-between align-items-center"
                           >
-                            <Col lg="10" style={{ color: '#004280' }} className="fw-bold mr-2">
-                              Auto Fill {files && files?.length > 0 && 'Profile'}
-                              {files && files.length === 0 && <span> - Upload your resume</span>}
+                            <Col lg="10" style={{ color: '#004280' }} className="font-semibold mr-2">
+                              {files &&
+                                files?.length > 0 &&
+                                (resumeParsedLoading ? 'Auto filling your profile...' : 'Auto Fill Profile')}
+                              {files && files.length === 0 && (
+                                <span className="font-normal">
+                                  <span className="font-semibold">Go Faster</span> - Upload your resume to auto fill
+                                  your profile.<span className="label-asterisk me-50">*</span>
+                                </span>
+                              )}
                             </Col>
                             {resumeParsedLoading ? (
-                              <Spinner size="sm" />
+                              <RotatingLines
+                                visible
+                                height="32"
+                                width="32"
+                                strokeColor="#0185E4"
+                                color="#0185E4"
+                                strokeWidth="4"
+                                animationDuration="0.75"
+                                ariaLabel="rotating-lines-loading"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                              />
                             ) : (
                               !uploadingFiles.includes(files[0]) &&
                               !isEmpty(files) && (
@@ -1094,34 +1096,32 @@ const FlexternSocial = () => {
                               )
                             )}
                           </div>
-                          {files?.length == 0 && (
+                          {files?.length === 0 && (
                             <div className=" px-0 py-0">
-                              <>
-                                <Label
-                                  for="resume"
-                                  className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
-                                >
-                                  <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
-                                </Label>
-                                <Controller
-                                  id="resume"
-                                  name="resume"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <Input
-                                      {...field}
-                                      id="resume"
-                                      type="file"
-                                      max={1}
-                                      accept="application/pdf"
-                                      className="d-none"
-                                      onChange={(e) => {
-                                        handleFileChange(e);
-                                      }}
-                                    />
-                                  )}
-                                />
-                              </>
+                              <Label
+                                for="resume"
+                                className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
+                              >
+                                <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
+                              </Label>
+                              <Controller
+                                id="resume"
+                                name="resume"
+                                control={control}
+                                render={({ field }) => (
+                                  <Input
+                                    {...field}
+                                    id="resume"
+                                    type="file"
+                                    max={1}
+                                    accept="application/pdf"
+                                    className="d-none"
+                                    onChange={(e) => {
+                                      handleFileChange(e);
+                                    }}
+                                  />
+                                )}
+                              />
                             </div>
                           )}
                         </Col>

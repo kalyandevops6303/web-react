@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unsafe-optional-chaining */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { RotatingLines } from 'react-loader-spinner';
 import * as yup from 'yup';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,8 +22,9 @@ import {
   Progress,
   CardText,
   FormGroup,
+  UncontrolledTooltip,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info, Upload } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
@@ -34,7 +36,7 @@ import {
   deleteResume,
   getResumeParsedDetails,
   getUserDetails,
-  saveProfileDetails,
+  // saveProfileDetails,
   saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import {
@@ -44,7 +46,7 @@ import {
   resumeParsedDetailsLoading,
   resumeParsedDetails,
   userDetailsLoading,
-  userDetails,
+  // userDetails,
 } from '../../redux/selectors/talentOnboardingSelectors';
 import { languagesService, talentRolesService, timezonesService } from '../../services/staticServices';
 import {
@@ -56,7 +58,7 @@ import {
   filteredFormSchema,
   isEmpty,
   giveProgressBarColorClassName,
-  renderFormattedListingDate,
+  // renderFormattedListingDate,
   formatDateWithTime,
 } from '../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
@@ -65,10 +67,10 @@ import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { projectFileUploadToAzureService } from '../../services/createProjectServices';
 import uuidv4 from '../../lib/uuidv4';
-import { resumeUploadService, updateParsedResumeService } from '../../services/talentOnboardingServices';
+import { resumeUploadService } from '../../services/talentOnboardingServices';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { downloadUrlLoading, userData } from '../../redux/selectors/dashboardSelectors';
-import TextEditor from '../../views/CreateProject/TextEditor';
+// import TextEditor from '../../views/CreateProject/TextEditor';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
 import {
   formData,
@@ -112,13 +114,6 @@ const FlexternPersonal = () => {
         value: yup.string().required('Prefered working time zone is required'),
       })
       .required('Prefered working time zone is required'),
-    resume: yup
-      .object()
-      .shape({
-        file_name: yup.string().required('Resume is required'),
-        file_key: yup.string().required('Resume is required'),
-      })
-      .required('Resume is required'),
     speakLanguages: yup
       .array()
       .of(
@@ -142,12 +137,12 @@ const FlexternPersonal = () => {
   const savedFormDocuments = useSelector(formDocuments);
   const IsresumeParsed = useSelector(resumeParsed);
   const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
-  const userData = useSelector(userDetails);
+  // const userData = useSelector(userDetails);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForPersonal || false);
   const {
     control,
     handleSubmit,
-    watch,
+    // watch,
     setValue,
     reset,
     trigger,
@@ -165,10 +160,10 @@ const FlexternPersonal = () => {
     },
   });
 
+  const localFormData = useWatch({ control });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [workingTimeZonesOptions, setWorkingTimeZonesOptions] = useState([]);
@@ -183,23 +178,22 @@ const FlexternPersonal = () => {
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  const localFormData = useWatch({ control });
 
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const profileCompletionFlexternMissingValues = useSelector(
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
   );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector(
-    (state) => state.dashboard?.profilePercentage?.values_missing,
-  );
+  // const profileCompletionProjectMissingValues = useSelector(
+  //   (state) => state.dashboard?.profilePercentage?.values_missing,
+  // );
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
-  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
+  // const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
-  const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
+  // const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
 
-  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
+  // const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   const getOverallPercentageCompletion = () => {
@@ -944,9 +938,16 @@ const FlexternPersonal = () => {
                 <CardBody>
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="tagline">
-                        Tagline<span className="label-asterisk me-50">*</span>
-                      </Label>
+                      <div className="d-flex">
+                        <Label className="form-label" for="tagline">
+                          Tagline<span className="label-asterisk me-50">*</span>
+                        </Label>
+                        <Info size={18} color={theme.infoIcon} id="tagline-info" />
+                        <UncontrolledTooltip placement="right" target="tagline-info">
+                          <div className="d-flex flex-column align-items-start">Tagline is required !</div>
+                        </UncontrolledTooltip>
+                      </div>
+
                       <Controller
                         id="tagline"
                         name="tagline"
@@ -988,9 +989,17 @@ const FlexternPersonal = () => {
                   </Row>
                   <Row className="mb-1">
                     <Col sm="12" md="12" lg="6">
-                      <Label className="form-label" for="professionalIntroduction">
-                        Professional Introduction<span className="label-asterisk me-50">*</span>
-                      </Label>
+                      <div className="d-flex">
+                        <Label className="form-label" for="professionalIntroduction">
+                          Professional Introduction<span className="label-asterisk me-50">*</span>
+                        </Label>
+                        <Info size={18} color={theme.infoIcon} id="professional-info" />
+                        <UncontrolledTooltip placement="right" target="professional-info">
+                          <div className="d-flex flex-column align-items-start">
+                            Professional Introduction is required !
+                          </div>
+                        </UncontrolledTooltip>
+                      </div>
                       <Controller
                         id="professionalIntroduction"
                         name="professionalIntroduction"
@@ -1118,13 +1127,7 @@ const FlexternPersonal = () => {
                     className="d-flex align-items-center justify-content-between"
                     disabled={!isValid || profileDetailsIsLoading}
                   >
-                    {profileDetailsIsLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <>
-                        <span className="me-50">Save & Continue</span>
-                      </>
-                    )}
+                    {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save & Continue</span>}
                   </Button>
                 </div>
               </div>
@@ -1158,7 +1161,9 @@ const FlexternPersonal = () => {
                             className="d-flex w-100  justify-content-between align-items-center"
                           >
                             <Col lg="10" style={{ color: '#004280' }} className="font-semibold mr-2">
-                              {files && files?.length > 0 && 'Auto Fill Profile'}
+                              {files &&
+                                files?.length > 0 &&
+                                (resumeParsedLoading ? 'Auto filling your profile...' : 'Auto Fill Profile')}
                               {files && files.length === 0 && (
                                 <span className="font-normal">
                                   <span className="font-semibold">Go Faster</span> - Upload your resume to auto fill
@@ -1167,7 +1172,18 @@ const FlexternPersonal = () => {
                               )}
                             </Col>
                             {resumeParsedLoading ? (
-                              <Spinner size="sm" />
+                              <RotatingLines
+                                visible
+                                height="32"
+                                width="32"
+                                strokeColor="#0185E4"
+                                color="#0185E4"
+                                strokeWidth="4"
+                                animationDuration="0.75"
+                                ariaLabel="rotating-lines-loading"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                              />
                             ) : (
                               !uploadingFiles.includes(files[0]) &&
                               !isEmpty(files) && (
@@ -1177,34 +1193,32 @@ const FlexternPersonal = () => {
                               )
                             )}
                           </div>
-                          {files?.length == 0 && (
+                          {files?.length === 0 && (
                             <div className=" px-0 py-0">
-                              <>
-                                <Label
-                                  for="resume"
-                                  className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
-                                >
-                                  <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
-                                </Label>
-                                <Controller
-                                  id="resume"
-                                  name="resume"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <Input
-                                      {...field}
-                                      id="resume"
-                                      type="file"
-                                      max={1}
-                                      accept="application/pdf"
-                                      className="d-none"
-                                      onChange={(e) => {
-                                        handleFileChange(e);
-                                      }}
-                                    />
-                                  )}
-                                />
-                              </>
+                              <Label
+                                for="resume"
+                                className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
+                              >
+                                <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
+                              </Label>
+                              <Controller
+                                id="resume"
+                                name="resume"
+                                control={control}
+                                render={({ field }) => (
+                                  <Input
+                                    {...field}
+                                    id="resume"
+                                    type="file"
+                                    max={1}
+                                    accept="application/pdf"
+                                    className="d-none"
+                                    onChange={(e) => {
+                                      handleFileChange(e);
+                                    }}
+                                  />
+                                )}
+                              />
                             </div>
                           )}
                         </Col>

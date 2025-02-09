@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { AsyncPaginate, reduceGroupedOptions } from 'react-select-async-paginate';
+import PropTypes from 'prop-types';
+import { AsyncPaginate } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
@@ -24,18 +25,18 @@ import { ChevronLeft, ChevronRight, Plus, Info } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
+import Select from 'react-select';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
 import theme from '../../configs/themeVariables';
 import {
   deleteResume,
   getUserDetails,
-  saveProfileDetails,
   getResumeParsedDetails,
   saveFlexternProfileDetails,
 } from '../../redux/actions/talentOnboardingActions';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
-import { resumeUploadService, updateParsedResumeService } from '../../services/talentOnboardingServices';
-import { downloadUrlLoading, userData } from '../../redux/selectors/dashboardSelectors';
+import { resumeUploadService } from '../../services/talentOnboardingServices';
+import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
 import {
   deleteResumeLoading,
   profileDetailsLoading,
@@ -80,8 +81,6 @@ import {
   formDocuments,
   resumeDataUploadedForEducation,
   fileKey,
-  resumeDataUploadedForPersonal,
-  resumeDataUploadedForSocial,
 } from '../../redux/selectors/formDataSelectors';
 import {
   clearAllFormData,
@@ -103,9 +102,10 @@ import CustomerSupportModal from '../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../views/modals/CustomerSupportFeedbackModal';
 import NoteComponent from '../../views/Onboarding/NoteComponent';
 import CustomerSupportCTA from '../../views/Onboarding/CustomerSupportCTA';
-import Select from 'react-select';
+
 import uuidv4 from '../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../services/createProjectServices';
+
 const EducationFormRow = ({
   index,
   control,
@@ -114,81 +114,79 @@ const EducationFormRow = ({
   handleRemoveEducation,
   loadInstitutesOptions,
   loadEducationsOptions,
-}) => {
-  return (
-    <Row className="mt-5">
-      {/* Institution Column */}
-      <Col sm="12" lg="6">
-        <Label className="form-label" for={`otherEducationDetails.${index}.educationInstitution`}>
-          Institution
-        </Label>
-        <Controller
-          id={`otherEducationDetails.${index}.educationInstitution`}
-          name={`otherEducationDetails.${index}.educationInstitution`}
-          control={control}
-          render={({ field }) => (
-            <AsyncPaginate
-              {...field}
-              debounceTimeout={1000}
-              additional={{ page: 1 }}
-              loadOptions={loadInstitutesOptions}
-              classNamePrefix="select"
-              placeholder="Enter your institution name"
-              theme={selectThemeColors}
-              className={classNames('react-select', {
-                'is-invalid': errors?.otherEducationDetails?.[index]?.educationInstitution,
-              })}
-            />
-          )}
-        />
-        {errors?.otherEducationDetails?.[index]?.educationInstitution?.label?.message && (
-          <FormFeedback>{errors.otherEducationDetails[index].educationInstitution.label.message}</FormFeedback>
+}) => (
+  <Row className="mt-5">
+    {/* Institution Column */}
+    <Col sm="12" lg="6">
+      <Label className="form-label" for={`otherEducationDetails.${index}.educationInstitution`}>
+        Institution
+      </Label>
+      <Controller
+        id={`otherEducationDetails.${index}.educationInstitution`}
+        name={`otherEducationDetails.${index}.educationInstitution`}
+        control={control}
+        render={({ field }) => (
+          <AsyncPaginate
+            {...field}
+            debounceTimeout={1000}
+            additional={{ page: 1 }}
+            loadOptions={loadInstitutesOptions}
+            classNamePrefix="select"
+            placeholder="Enter your institution name"
+            theme={selectThemeColors}
+            className={classNames('react-select', {
+              'is-invalid': errors?.otherEducationDetails?.[index]?.educationInstitution,
+            })}
+          />
         )}
-      </Col>
+      />
+      {errors?.otherEducationDetails?.[index]?.educationInstitution?.label?.message && (
+        <FormFeedback>{errors.otherEducationDetails[index].educationInstitution.label.message}</FormFeedback>
+      )}
+    </Col>
 
-      {/* Degree Column with Remove Button */}
-      <Col sm="12" lg="6">
-        <Label className="form-label" for={`otherEducationDetails.${index}.education`}>
-          Degree
-        </Label>
-        <div className="d-flex gap-2">
-          <div className="flex-grow-1">
-            <Controller
-              id={`otherEducationDetails.${index}.education`}
-              name={`otherEducationDetails.${index}.education`}
-              control={control}
-              render={({ field }) => (
-                <AsyncPaginate
-                  {...field}
-                  loadOptions={loadEducationsOptions}
-                  placeholder="Enter your degree"
-                  classNamePrefix="select"
-                  theme={selectThemeColors}
-                  className={classNames('react-select', {
-                    'is-invalid': errors?.otherEducationDetails?.[index]?.education,
-                  })}
-                />
-              )}
-            />
-            {errors?.otherEducationDetails?.[index]?.education?.label?.message && (
-              <FormFeedback>{errors.otherEducationDetails[index].education.label.message}</FormFeedback>
+    {/* Degree Column with Remove Button */}
+    <Col sm="12" lg="6">
+      <Label className="form-label" for={`otherEducationDetails.${index}.education`}>
+        Degree
+      </Label>
+      <div className="d-flex gap-2">
+        <div className="flex-grow-1">
+          <Controller
+            id={`otherEducationDetails.${index}.education`}
+            name={`otherEducationDetails.${index}.education`}
+            control={control}
+            render={({ field }) => (
+              <AsyncPaginate
+                {...field}
+                loadOptions={loadEducationsOptions}
+                placeholder="Enter your degree"
+                classNamePrefix="select"
+                theme={selectThemeColors}
+                className={classNames('react-select', {
+                  'is-invalid': errors?.otherEducationDetails?.[index]?.education,
+                })}
+              />
             )}
-          </div>
-          {getValues('otherEducationDetails')?.length > 0 && (
-            <Button
-              type="button"
-              color="flat-danger"
-              className="text-sm h-[38px]  px-3 py-0"
-              onClick={() => handleRemoveEducation(index)}
-            >
-              Remove
-            </Button>
+          />
+          {errors?.otherEducationDetails?.[index]?.education?.label?.message && (
+            <FormFeedback>{errors.otherEducationDetails[index].education.label.message}</FormFeedback>
           )}
         </div>
-      </Col>
-    </Row>
-  );
-};
+        {getValues('otherEducationDetails')?.length > 0 && (
+          <Button
+            type="button"
+            color="flat-danger"
+            className="text-sm h-[38px]  px-3 py-0"
+            onClick={() => handleRemoveEducation(index)}
+          >
+            Remove
+          </Button>
+        )}
+      </div>
+    </Col>
+  </Row>
+);
 const FlexternEducational = () => {
   const EducationalSchema = yup.object().shape({
     startYear: yup
@@ -275,13 +273,6 @@ const FlexternEducational = () => {
       .max(5, 'Maximum of five skills can be added')
       .min(1, 'At least one skill is required')
       .required('Skill is required'),
-    resume: yup
-      .object()
-      .shape({
-        file_name: yup.string().required('Resume is required'),
-        file_key: yup.string().required('Resume is required'),
-      })
-      .required('Resume is required'),
   });
   const savedFormData = useSelector(formData);
   const fileKeyDetails = useSelector(fileKey);
@@ -322,13 +313,13 @@ const FlexternEducational = () => {
   });
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [uploadingFiles, setUploadingFiles] = useState([]);
+  const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
-  const isResumeDataUploadedForPersonal = useSelector(resumeDataUploadedForPersonal);
-  const isResumeDataUploadedForSocial = useSelector(resumeDataUploadedForSocial);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
+  const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const [files, setFiles] = useState(savedFormDocuments || []);
 
   const localFormData = useWatch({ control });
@@ -418,21 +409,13 @@ const FlexternEducational = () => {
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const supportData = useSelector((state) => state.support.supportCount);
 
-  const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const profileCompletionFlexternMissingValues = useSelector(
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
   );
   const profileCompletionProject = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed);
-  const profileCompletionProjectMissingValues = useSelector(
-    (state) => state.dashboard?.profilePercentage?.values_missing,
-  );
 
-  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) == 100;
-  const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) == 100;
+  const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
-  const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
-  const [flexternOrProjectModal, setFlexternOrProjectModal] = useState(false);
-  const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
 
   useEffect(() => {
     getOverallPercentageCompletion();
@@ -689,8 +672,8 @@ const FlexternEducational = () => {
           { shouldValidate: true },
         );
       }
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+
+      if (res?.talent_info?.resume && 'file_name' in res.talent_info.resume) {
         const fileUrl = {
           file: {
             name: res?.talent_info?.resume?.file_name,
@@ -1040,7 +1023,7 @@ const FlexternEducational = () => {
   };
   const onGetUserResumeDetailsSuccess = (res) => {
     if (res) {
-      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+      if (res?.talent_info?.resume && 'file_name' in res.talent_info.resume) {
         const fileUrl = {
           file: {
             name: res?.talent_info?.resume?.file_name,
@@ -1179,7 +1162,7 @@ const FlexternEducational = () => {
             file_key: files[0]?.uploadData?.file_key || '',
           }
         : {},
-      other_educational_institutes: other_educational_institutes,
+      other_educational_institutes,
       expertise,
     };
 
@@ -1481,7 +1464,7 @@ const FlexternEducational = () => {
                       backgroundColor: '#EBE9F1',
                     }}
                     className=""
-                  ></span>
+                  />
                   <p className="text-lg font-medium ">Other Education</p>
                   {fields?.length === 0 ? (
                     // <Row className="mt-2 mb-3">
@@ -1597,7 +1580,7 @@ const FlexternEducational = () => {
                       {errors.tools && <FormFeedback>{errors.tools?.message}</FormFeedback>}
                     </Col>
                   </Row>
-                  <Row className="mb-2"></Row>
+                  <Row className="mb-2" />
                   {supportData?.tools_and_skills?.pending_requests > 0 && (
                     <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
                   )}
@@ -1631,13 +1614,7 @@ const FlexternEducational = () => {
                     className="d-flex align-items-center justify-content-between"
                     disabled={!isValid || profileDetailsIsLoading}
                   >
-                    {profileDetailsIsLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <>
-                        <span className="me-50">Save & Continue</span>
-                      </>
-                    )}
+                    {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save & Continue</span>}
                   </Button>
                 </div>
               </div>
@@ -1691,34 +1668,32 @@ const FlexternEducational = () => {
                               )
                             )}
                           </div>
-                          {files?.length == 0 && (
+                          {files?.length === 0 && (
                             <div className=" px-0 py-0">
-                              <>
-                                <Label
-                                  for="resume"
-                                  className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
-                                >
-                                  <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
-                                </Label>
-                                <Controller
-                                  id="resume"
-                                  name="resume"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <Input
-                                      {...field}
-                                      id="resume"
-                                      type="file"
-                                      max={1}
-                                      accept="application/pdf"
-                                      className="d-none"
-                                      onChange={(e) => {
-                                        handleFileChange(e);
-                                      }}
-                                    />
-                                  )}
-                                />
-                              </>
+                              <Label
+                                for="resume"
+                                className="mt-2  d-flex flex-col align-items-center w-fit cursor-pointer"
+                              >
+                                <h5 className="fw-bold ml-0 text-trublue-secondary-500">Upload Resume</h5>
+                              </Label>
+                              <Controller
+                                id="resume"
+                                name="resume"
+                                control={control}
+                                render={({ field }) => (
+                                  <Input
+                                    {...field}
+                                    id="resume"
+                                    type="file"
+                                    max={1}
+                                    accept="application/pdf"
+                                    className="d-none"
+                                    onChange={(e) => {
+                                      handleFileChange(e);
+                                    }}
+                                  />
+                                )}
+                              />
                             </div>
                           )}
                         </Col>
@@ -1786,6 +1761,20 @@ const FlexternEducational = () => {
       )}
     </ProfileFormContainer>
   );
+};
+
+EducationFormRow.propTypes = {
+  index: PropTypes.number.isRequired,
+  control: PropTypes.object.isRequired,
+  errors: PropTypes.object,
+  getValues: PropTypes.func.isRequired,
+  handleRemoveEducation: PropTypes.func.isRequired,
+  loadInstitutesOptions: PropTypes.func.isRequired,
+  loadEducationsOptions: PropTypes.func.isRequired,
+};
+
+EducationFormRow.defaultProps = {
+  errors: {},
 };
 
 export default FlexternEducational;
