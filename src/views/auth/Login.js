@@ -167,7 +167,7 @@ const Login = () => {
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-1">
             <Label className="form-label" for="login-email">
-              Email or Mobile number
+              Email or Mobile Number
             </Label>
             <Controller
               type="email"
