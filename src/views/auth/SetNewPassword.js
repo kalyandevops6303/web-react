@@ -62,6 +62,8 @@ const SetNewPassword = () => {
   const newPassword = watch('newPassword');
   const cnfPassword = watch('cnfPassword');
 
+  const isPasswordMatch = cnfPassword?.length > 0 && newPassword?.length > 0 && cnfPassword === newPassword;
+  console.log('isPasswordMatch', isPasswordMatch, newPassword?.length, cnfPassword?.length);
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -126,9 +128,13 @@ const SetNewPassword = () => {
               )}
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
-            <p className="text-success text-xs mt-2">
-              {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
-            </p>
+
+            {cnfPassword?.length > 0 &&
+              (isPasswordMatch ? (
+                <p className="text-success text-xs mt-2">Passwords Match</p>
+              ) : (
+                <p className="text-error text-xs mt-2">Passwords Do Not Match</p>
+              ))}
           </div>
           <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
