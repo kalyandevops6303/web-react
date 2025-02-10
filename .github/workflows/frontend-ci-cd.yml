@@ -67,15 +67,31 @@ jobs:
             exit 1
           fi
 
+      - name: Set SharePoint SubFolder Name Based on Tag
+        run: |
+           if [[ "${{ vars.TAG }}" == uat_* ]]; then
+            echo "SUBFOLDER=uat" >> $GITHUB_ENV
+           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
+            echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
+           elif [[ "${{ vars.TAG }}" == v* ]]; then
+            echo "SUBFOLDER=prod" >> $GITHUB_ENV
+           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
+            echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
+           else
+            echo "Error: Unrecognized environment tag format."
+            exit 1
+           fi
+
       - name: Fetch Download URL from SharePoint
         id: get_download_url
         run: |
           file_response=$(curl -H "Authorization: Bearer ${{ env.token }}" \
-          "https://graph.microsoft.com/v1.0/sites/${{ env.site_id }}/drive/root:/${{ env.FOLDER }}/${{ env.FILENAME }}")
+          "https://graph.microsoft.com/v1.0/sites/${{ env.site_id }}/drive/root:/${{ env.FOLDER }}/${{ env.SUBFOLDER }}/${{ env.FILENAME }}")
           echo "File response: $file_response"
           download_url=$(echo $file_response | jq -r '."@microsoft.graph.downloadUrl"')
           echo "Download URL: $download_url"
           echo "download_url=$download_url" >> $GITHUB_ENV
+
 
       - name: Display Download URL
         run: |
