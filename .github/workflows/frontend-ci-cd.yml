@@ -92,7 +92,6 @@ jobs:
           echo "Download URL: $download_url"
           echo "download_url=$download_url" >> $GITHUB_ENV
 
-
       - name: Display Download URL
         run: |
           echo "Download URL:"
