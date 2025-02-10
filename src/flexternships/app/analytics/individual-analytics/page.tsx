@@ -119,7 +119,7 @@ export default function IndividualAnalytics() {
     if (!active || !payload?.length) return null;
 
     return (
-      <div className="bg-white w-[200px] max-w-1/2 p-3 border rounded-5 shadow-lg">
+      <div className="bg-white w-[300px] max-w-1/2 p-3 border rounded-5 shadow-lg">
         <p className="font-montserrat text-2xs leading-4 font-semibold text-grey-500 uppercase">{label}</p>
         {payload.map((entry) => {
           const dataKey = entry.dataKey as keyof typeof recognitionChartData.chartConfig;
@@ -133,7 +133,7 @@ export default function IndividualAnalytics() {
                     className="flex w-3 h-3 rounded-sm"
                     style={{ backgroundColor: recognitionChartData?.chartConfig[dataKey].color }}
                   ></div>
-                  <div>{recognitionChartData?.chartConfig[dataKey].label}</div>
+                  <div>Learnability Score</div>
                 </span>
                 <span className="font-montserrat text-xs leading-5 font-semibold text-dark-100">
                   {entry.value}/{recognitionChartData?.maxYAxis}
@@ -247,7 +247,7 @@ export default function IndividualAnalytics() {
               {formattedIndividualOverviewDetails?.kudosCount + formattedIndividualOverviewDetails?.wowCount}
             </span>
           </div>
-          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">WOWs & Kudos</div>
+          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Recognitions</div>
         </div>
       </div>
       <div className="-mt-6">
@@ -271,6 +271,7 @@ export default function IndividualAnalytics() {
         maxYAxis={performanceChartData?.maxYAxis}
         showFilters
         XAxisDataKey="milestone"
+        filterPropertyName="Competencies"
       />
 
       <div className="flex flex-col md:flex-row gap-3">

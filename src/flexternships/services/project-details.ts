@@ -11,7 +11,7 @@ import { handleError } from '../utils/error-utils';
 import { routes } from '../utils/api';
 import API from '@/configs/api';
 import { parseFlexternComments } from '../utils/parsing-utils';
-import { PaginatedData } from './user-management';
+import { PaginatedData } from '../constraints/types/core-types';
 
 /**
  * Fetches the team details for a project

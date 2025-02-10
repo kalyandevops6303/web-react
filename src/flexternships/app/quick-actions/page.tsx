@@ -90,7 +90,7 @@ export default function FlexternProjectQuickActions() {
     if (isGiveOrAddAction) {
       return (
         <GiveComments
-          key={`${selectedAction}-${quickActionCategory}`}
+          key={`${selectedAction}-${quickActionCategory}-${userDetails.userType}`}
           refreshStats={fetchStats}
           category={quickActionCategory}
         />
@@ -166,7 +166,7 @@ export default function FlexternProjectQuickActions() {
             />
             <TopStatCard
               title={viewRecognitionTitle}
-              value={`${stats?.totalRecognitions} total recognitions`}
+              value={`Total ${stats?.totalRecognitions}`}
               icon={
                 <div className="p-3 rounded-full bg-trublue-secondary-500 bg-opacity-10 text-trublue-secondary-500">
                   <Eye size={24} />
@@ -177,6 +177,7 @@ export default function FlexternProjectQuickActions() {
             />
             {userDetails.userType === UserType.CLIENT && (
               <>
+                <div className="border-l-1 border-grey-50" />
                 <TopStatCard
                   title="Add Notes"
                   value={`${stats?.teamMembers} team members`}

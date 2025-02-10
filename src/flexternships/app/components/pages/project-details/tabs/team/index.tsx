@@ -84,6 +84,7 @@ export default function TeamTab(props: InputProps) {
               <div className="w-full" key={index}>
                 <InvitedTeamMemberCard
                   member={{
+                    name: teamMember.name,
                     profileImage: teamMember.profileImage,
                     email: teamMember.email ?? 'Unknown Email',
                     designation: teamMember.designation ?? 'Unknown Designation',

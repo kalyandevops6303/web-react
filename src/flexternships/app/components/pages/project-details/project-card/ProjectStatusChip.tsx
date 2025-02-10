@@ -23,22 +23,22 @@ const ProjectStatusChip = ({
   const ProjectStatusChipClassnames = {
     [ProjectPrimaryStatus.OPEN]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.DRAFT]: '',
-    [ProjectPrimaryStatus.ACTIVE]: 'bg-[#28C76F1F] text-success border border-success',
-    [ProjectPrimaryStatus.ON_GOING]: 'bg-[#28C76F1F] text-success border border-success',
-    [ProjectPrimaryStatus.TERMINATED]: 'bg-[#B71C1C1F] text-[#B71C1C] border border-[#B71C1C]',
+    [ProjectPrimaryStatus.ACTIVE]: 'bg-success-successLight text-success border border-success',
+    [ProjectPrimaryStatus.ON_GOING]: 'bg-success-successLight text-success border border-success',
+    [ProjectPrimaryStatus.TERMINATED]: 'bg-error-darkLight text-error-dark border border-error-dark',
     [ProjectPrimaryStatus.COMPLETED]: 'bg-skyblue-light text-skyblue border border-skyblue',
     [ProjectPrimaryStatus.WITHDRAWN]: 'bg-orange-light text-orange-dark border-1 border-orange-dark',
-    [ProjectPrimaryStatus.BLOCKED]: 'bg-[#EA54551F] text-[#EA5455] border border-[#EA5455]',
+    [ProjectPrimaryStatus.BLOCKED]: 'bg-[#EA54551F] text-error border border-error',
     [ProjectPrimaryStatus.CLOSED]: 'bg-gray-300 text-gray-600 border border-gray-500',
   };
 
   const SecondaryStatusChipClassNames = {
-    [ProjectSecondaryStatus.SIGN_DOCUMENTS]: 'bg-[#00B0FF1F] text-[#00B0FF]',
-    [ProjectSecondaryStatus.SIGN_CONTRACT]: 'bg-[#00B0FF1F] text-[#00B0FF]',
-    [ProjectSecondaryStatus.MILESTONE]: 'bg-[#FF6D001F] text-[#FF6D00]',
+    [ProjectSecondaryStatus.SIGN_DOCUMENTS]: 'bg-skyblue-light text-skyblue',
+    [ProjectSecondaryStatus.SIGN_CONTRACT]: 'bg-skyblue-light text-skyblue',
+    [ProjectSecondaryStatus.MILESTONE]: 'bg-orange-light text-orange-dark',
     [ProjectSecondaryStatus.SIGN_NDA]: 'bg-orange-50 text-orange-600',
-    [ProjectSecondaryStatus.SIGN_REQUESTED]: 'bg-[#00B0FF1F] text-[#00B0FF]',
-    [ProjectSecondaryStatus.COMPLETED]: 'bg-[#00C8531F] text-[#00C853]',
+    [ProjectSecondaryStatus.SIGN_REQUESTED]: 'bg-skyblue-light text-skyblue',
+    [ProjectSecondaryStatus.COMPLETED]: 'bg-success-softLight text-success-brightLight',
   };
 
   const SecondaryStatusChipRedirectionLinks = {

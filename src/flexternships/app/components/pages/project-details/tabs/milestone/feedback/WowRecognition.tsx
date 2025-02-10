@@ -124,6 +124,18 @@ export class Wow extends SurveyQuestionElementBase {
   }
 
   handleChoiceSelect = (value: string) => {
+    // Reset competency if the choice selected is 'na'
+    if (value === 'na') {
+      this.question.competency = {
+        ...this.question.competency,
+        choices: this.question.competency.choices.map((choice: CompetencyChoice) => ({
+          ...choice,
+          selected: false,
+        })),
+      };
+    }
+
+    // Set the choice selected
     this.question.value = value;
     this.setState({ selectedValue: value });
   };
@@ -193,7 +205,7 @@ export class Wow extends SurveyQuestionElementBase {
           )}
         </div>
 
-        {competency && (
+        {competency && selectedValue && selectedValue !== 'na' && (
           <div className="flex flex-col gap-y-2">
             <div className="text-sm font-medium leading-5.5 text-grey-600">
               {competency.title} {competency.isRequired && <span className="text-error">*</span>}

@@ -37,7 +37,7 @@ export const getProjectDetails = async (
   onSuccessBySecondaryStatus?: (secondaryStatus: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => void,
 ) => {
   set({ isProjectsLoading: true });
-  const res: any = await getProjectDetailsById(projectId);
+  const res = await getProjectDetailsById(projectId);
   set({ projectDetails: res, isProjectsLoading: false });
   if (onSuccessBySecondaryStatus && res?.secondaryStatus?.next) {
     onSuccessBySecondaryStatus(res.secondaryStatus.next, res.isDocumentsNeeded ?? false);
@@ -72,13 +72,15 @@ export const getProjectInvitationDetails = async (projectId: string, set: (state
 
 export const getSelfOrTeamPerformanceDetails = async (projectId: string, feedbackType: string, set: any) => {
   set({ isPerformanceDetailsLoading: true });
-  const res: any = await getSelfOrTeamPerformanceDetailsService(projectId, feedbackType);
+  const res = await getSelfOrTeamPerformanceDetailsService(projectId, feedbackType);
+  console.log(res);
   set({ performanceDetails: res, isPerformanceDetailsLoading: false });
 };
 
 export const getPeerOrIndividualPerformanceDetails = async (milestoneId: string, feedbackType: string, set: any) => {
   set({ isPerformanceDetailsLoading: true });
-  const res: any = await getPeerOrIndividualPerformanceDetailsService(milestoneId, feedbackType);
+  const res = await getPeerOrIndividualPerformanceDetailsService(milestoneId, feedbackType);
+  console.log(res);
   set({ performanceDetails: res, isPerformanceDetailsLoading: false });
 };
 

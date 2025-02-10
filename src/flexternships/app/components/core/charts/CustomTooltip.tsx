@@ -12,9 +12,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
         <p className="text-grey-700 font-[Montserrat] text-xs  font-normal leading-5">{name}</p>
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-sm font-semibold  text-center text-text-dark leading-5.5">{value}</span>
+        <span className="text-sm font-semibold  text-center text-dark leading-5.5">{value}</span>
         <div className="w-[1px] h-5 rounded-10 bg-grey-50"></div>
-        <p className="text-sm font-semibold text-center text-text-dark">{percentage}</p>
+        <p className="text-sm font-semibold text-center text-dark">{percentage}</p>
       </div>
     </div>
   );

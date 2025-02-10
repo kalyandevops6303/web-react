@@ -56,19 +56,19 @@ pipeline {
                     def filename
                     switch (params.ENVIRONMENT) {
                         case 'dev':
-                            filename = '/Dev/env-fe-dev.txt'
+                            filename = '/Dev/dev/env-fe-dev.txt'
                             break
                         case 'qa':
-                            filename = '/QA/env-fe-qa.txt'
+                            filename = '/QA/qa/env-fe-qa.txt'
                             break
                         case 'qa-auto':
                             filename = '/QA-auto/env-fe-qa-auto.txt'
                             break
                         case 'tru-dev':
-                            filename = '/Dev/env-fe-tru-dev.txt'
+                            filename = '/Dev/tru-dev/env-fe-tru-dev.txt'
                             break
 			case 'tru-qa':
-                            filename = '/QA/env-fe-tru-qa.txt'
+                            filename = '/QA/tru-qa/env-fe-tru-qa.txt'
                             break
                         default:
                             error("Unknown environment: ${params.ENVIRONMENT}")
@@ -155,14 +155,14 @@ pipeline {
                             serviceName = 'tru-dev'
                             servicePort = '4112'
                             targetPort = '4112'
-			    mode='trudev'
+			    mode='tru-dev'
                             break
                         case 'tru-qa':
                             composeFile = 'docker-compose.tru-qa.yml'
                             serviceName = 'tru-qa'
                             servicePort = '9112'
                             targetPort = '9112'
-			    mode='truqa'
+			    mode='tru-qa'
                             break
                         default:
                             composeFile = 'docker-compose.yml'
@@ -174,18 +174,15 @@ pipeline {
                     echo serviceport = "${servicePort}"
                     echo targetport  = "${targetPort}"
 
-	            def buildCommand = params.DEPENDENCY == 'Yes' ? 'docker compose build --no-cache' : 'docker compose build'
-
-
                     // Use the downloaded environment file for Docker Compose
                     sh """
-		            cp env-fe-${params.ENVIRONMENT}.txt .env.trudev.local
+		            cp env-fe-${params.ENVIRONMENT}.txt .env.${params.ENVIRONMENT}.local
 			    sed -i "s/{SERVICE_NAME}/${serviceName}/g" docker-compose.yml
 			    sed -i "s/{SERVICE_PORT}/${servicePort}/g" docker-compose.yml
        			    sed -i "s/{TARGET_PORT}/${targetPort}/g" docker-compose.yml
 	             	    sed -i "s/5000/${targetPort}/g" Dockerfile
 	     		    sed -i "s/'test'/'${mode}'/g" vite.config.ts
-                            ${buildCommand}
+                            docker compose build
                             docker compose up -d
                      """
                     cleanWs()
