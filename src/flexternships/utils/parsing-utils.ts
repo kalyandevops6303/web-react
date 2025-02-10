@@ -19,6 +19,8 @@ import {
   GitHubBranchHistory,
   GitHubStats,
   TeamCompetencySummary,
+  ConversationParticipationStats,
+  ConversationAttachmentStats,
 } from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
@@ -450,6 +452,7 @@ export const parseGitHubStats = (data: Record<string, any>): GitHubStats => {
     githubUrl: data.github_url,
   };
 };
+
 export const parseGitHubBranchHistory = (data: Record<string, any>): GitHubBranchHistory => {
   return {
     metadata: {
@@ -471,5 +474,26 @@ export const parseGitHubBranchHistory = (data: Record<string, any>): GitHubBranc
       lastName: commit.last_name,
       role: commit.role,
     })),
+  };
+};
+
+export const parseConversationParticipationStats = (data: Record<string, number>): ConversationParticipationStats => {
+  return {
+    messagesCount: data.message_count,
+    participationPercentage: data.participation_percentage,
+  };
+};
+
+export const parseConversationAttachmentStats = (data: Record<string, any>): ConversationAttachmentStats => {
+  return {
+    totalFilesShared: data.total_files_shared,
+    documents: {
+      count: data.documents.count,
+      percentage: data.documents.percentage,
+    },
+    links: {
+      count: data.links.count,
+      percentage: data.links.percentage,
+    },
   };
 };

@@ -15,9 +15,9 @@ import { useParams } from 'react-router-dom';
 export default function MessageStats() {
   const { projectId, userId } = useParams();
 
-  const data = useAnalyticsStore((state) => state.conversationParticipation);
-  const getData = useAnalyticsStore((state) => state.getConversationParticipation);
-  const isLoading = useAnalyticsStore((state) => state.isConversationParticipationLoading);
+  const data = useAnalyticsStore((state) => state.conversationParticipationStats);
+  const getData = useAnalyticsStore((state) => state.getConversationParticipationStats);
+  const isLoading = useAnalyticsStore((state) => state.isConversationParticipationStatsLoading);
 
   // const [messagesCountState, setMessagesCountState] = useState(TimePeriodOptions.LAST_7_DAYS);
   // const [participationPercentageState, setParticipationPercentageState] = useState(TimePeriodOptions.LAST_7_DAYS);

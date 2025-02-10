@@ -12,9 +12,9 @@ const styles = {
 export default function FileStats() {
   const { projectId, userId } = useParams();
 
-  const data = useAnalyticsStore((state) => state.conversationParticipationFiles);
-  const getData = useAnalyticsStore((state) => state.getConversationParticipationFiles);
-  const isLoading = useAnalyticsStore((state) => state.isConversationParticipationFilesLoading);
+  const data = useAnalyticsStore((state) => state.conversationAttachmentStats);
+  const getData = useAnalyticsStore((state) => state.getConversationAttachmentStats);
+  const isLoading = useAnalyticsStore((state) => state.isConversationAttachmentStatsLoading);
 
   useEffect(() => {
     getData(projectId, userId);
