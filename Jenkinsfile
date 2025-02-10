@@ -56,19 +56,19 @@ pipeline {
                     def filename
                     switch (params.ENVIRONMENT) {
                         case 'dev':
-                            filename = '/Dev/env-fe-dev.txt'
+                            filename = '/Dev/dev/env-fe-dev.txt'
                             break
                         case 'qa':
-                            filename = '/QA/env-fe-qa.txt'
+                            filename = '/QA/qa/env-fe-qa.txt'
                             break
                         case 'qa-auto':
                             filename = '/QA-auto/env-fe-qa-auto.txt'
                             break
                         case 'tru-dev':
-                            filename = '/Dev/env-fe-tru-dev.txt'
+                            filename = '/Dev/tru-dev/env-fe-tru-dev.txt'
                             break
 			case 'tru-qa':
-                            filename = '/QA/env-fe-tru-qa.txt'
+                            filename = '/QA/tru-qa/env-fe-tru-qa.txt'
                             break
                         default:
                             error("Unknown environment: ${params.ENVIRONMENT}")
