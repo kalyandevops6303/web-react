@@ -15,11 +15,11 @@
 -       @tr-vikas @anuj-trumio @PradipF
 
 # Code owned by praneeth-rdy and @tr-vikas
-docs/* @praneeth-rdy @tr-vikas
-src/flexternships/* @praneeth-rdy @tr-vikas
-package.json @praneeth-rdy @tr-vikas
-README.md @praneeth-rdy @tr-vikas
-CONTRIBUTING.md @praneeth-rdy @tr-vikas
-PULL_REQUEST_TEMPLATE.md @praneeth-rdy @tr-vikas
-.husky/* @praneeth-rdy @tr-vikas
-.github/* @praneeth-rdy @tr-vikas
+docs/* @praneeth-rdy *@tr-vikas
+src/flexternships/* *@praneeth-rdy *@tr-vikas
+package.json @praneeth-rdy *@tr-vikas
+README.md @praneeth-rdy *@tr-vikas
+CONTRIBUTING.md @praneeth-rdy *@tr-vikas
+PULL_REQUEST_TEMPLATE.md @praneeth-rdy *@tr-vikas
+.husky/* @praneeth-rdy *@tr-vikas
+.github/* @praneeth-rdy *@tr-vikas
