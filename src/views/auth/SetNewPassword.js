@@ -99,6 +99,7 @@ const SetNewPassword = () => {
                   className="input-group-merge create-password mb-75"
                   id="newPassword"
                   placeholder="Enter new password"
+                  style={{ padding: '8px 10px 8px 15px' }}
                 />
               )}
             />
