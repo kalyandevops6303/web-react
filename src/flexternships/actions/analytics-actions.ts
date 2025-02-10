@@ -1,8 +1,8 @@
-import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
+// import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 import {
   getAiSummaryService,
-  getConversationParticipationFilesService,
-  getConversationParticipationService,
+  getConversationAttachmentStatsService,
+  getConversationParticipationStatsService,
   getGitHubStatsService,
   getIndividualOverviewService,
   getPerformanceChartDataService,
@@ -270,37 +270,26 @@ export const getTeamPerformanceInsightsOverview = async (projectId: string, set:
   }));
 };
 
-// Conversation Participation
-export const getConversationParticipation = async (
-  projectId: string,
-  userId: string,
-  messagesCountState: TimePeriodOptions,
-  participationPercentageState: TimePeriodOptions,
-  set: any,
-) => {
-  set({ isConversationParticipationLoading: true });
-  const data: any = await getConversationParticipationService(
-    projectId,
-    userId,
-    messagesCountState,
-    participationPercentageState,
-  );
+// Conversation Participation Stats
+export const getConversationParticipationStats = async (projectId: string, userId: string, set: any) => {
+  set({ isConversationParticipationStatsLoading: true });
+  const data: any = await getConversationParticipationStatsService(projectId, userId);
   set((state: any) => ({
     ...state,
-    conversationParticipation: data,
+    conversationParticipationStats: data,
   }));
-  set({ isConversationParticipationLoading: false });
+  set({ isConversationParticipationStatsLoading: false });
 };
 
-// Conversation Participation Files
-export const getConversationParticipationFiles = async (projectId: string, userId: string, set: any) => {
-  set({ isConversationParticipationFilesLoading: true });
-  const data: any = await getConversationParticipationFilesService(projectId, userId);
+// Conversation Attachment Stats
+export const getConversationAttachmentStats = async (projectId: string, userId: string, set: any) => {
+  set({ isConversationAttachmentStatsLoading: true });
+  const data: any = await getConversationAttachmentStatsService(projectId, userId);
   set((state: any) => ({
     ...state,
-    conversationParticipationFiles: data,
+    conversationAttachmentStats: data,
   }));
-  set({ isConversationParticipationFilesLoading: false });
+  set({ isConversationAttachmentStatsLoading: false });
 };
 
 // Commits

@@ -155,6 +155,10 @@ export const routes = {
       teamMembersDetails: `${serviceUrls.dashboardV2}/team/analytics/leaderboard`,
       performanceInsightsOverview: `${serviceUrls.dashboardV2}/team/performance/insights`,
     },
+    conversationParticipation: {
+      stats: `${serviceUrls.dashboardV2}/conversation/chat/stats`,
+      attachmentStats: `${serviceUrls.dashboardV2}/conversation/chat-attachment/stats`,
+    },
   },
 };
 

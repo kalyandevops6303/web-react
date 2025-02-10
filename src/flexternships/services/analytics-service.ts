@@ -16,9 +16,11 @@ import {
   parseGitHubStats,
   parseTeamCompetencySummary,
   parseGitHubBranchHistory,
+  parseConversationParticipationStats,
+  parseConversationAttachmentStats,
 } from '../utils/parsing-utils';
 import { DetailedPerformanceInsights, TeamCompetencySummary } from '../constraints/types/analytics-types';
-import { GithubMetricType, TimePeriodOptions } from '../constraints/enums/analytics-enums';
+import { GithubMetricType } from '../constraints/enums/analytics-enums';
 
 /**
  * Retrieves individual overview data for a user and project.
@@ -382,69 +384,37 @@ export const getTeamCompetencySummaryService = async (
   }
 };
 
-export const getConversationParticipationService = async (
-  projectId: string,
-  userId: string,
-  messagesCountState: TimePeriodOptions,
-  participationPercentageState: TimePeriodOptions,
-) => {
+export const getConversationParticipationStatsService = async (projectId: string, userId: string) => {
   const headers = appendAuthToken({});
   // @ts-ignore: Ignoring TypeScript error as this is still in TODO
   const config = {
     headers: headers,
     params: {
       project_id: projectId,
-      user_id: userId,
-      messages_count: messagesCountState,
-      participation_percentage: participationPercentageState,
+      talent_user_id: userId,
     },
     withCredentials: true,
   };
 
   try {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          messagesCount: 6,
-          participationPercentage: 60,
-          frequencyOfMessagesMinutes: 10,
-          averageResponseTimeMinutes: 10,
-        });
-      }, 800); // 800ms delay
-    });
-    // const response = await axios.get(`${routes.analytics.conversationParticipation}`, config);
-    // return keysToCamelCase(response.data?.data) || undefined;
+    const response = await axios.get(`${routes.analytics.conversationParticipation.stats}`, config);
+    return parseConversationParticipationStats(response.data?.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching conversation participation');
   }
 };
 
-export const getConversationParticipationFilesService = async (projectId: string, userId: string) => {
+export const getConversationAttachmentStatsService = async (projectId: string, userId: string) => {
   const headers = appendAuthToken({});
   // @ts-ignore: Ignoring TypeScript error as this is still in TODO
   const config = {
     headers: headers,
-    params: { project_id: projectId, user_id: userId },
+    params: { project_id: projectId, talent_user_id: userId },
     withCredentials: true,
   };
   try {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          totalFilesShared: 10,
-          documents: {
-            count: 5,
-            percentage: 50,
-          },
-          links: {
-            count: 5,
-            percentage: 50,
-          },
-        });
-      }, 800); // 800ms delay
-    });
-    // const response = await axios.get(`${routes.analytics.conversationParticipationFiles}`, config);
-    // return keysToCamelCase(response.data?.data) || undefined;
+    const response = await axios.get(`${routes.analytics.conversationParticipation.attachmentStats}`, config);
+    return parseConversationAttachmentStats(response.data?.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching conversation participation files');
   }

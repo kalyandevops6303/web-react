@@ -85,9 +85,6 @@ module.exports = {
           a3: '#00B2FF',
           a4: '#23DFEB',
         },
-        text: {
-          dark: '#071013',
-        },
         cyan: {
           DEFAULT: '#00CFE8',
           light: '#00CFE81F',
@@ -150,6 +147,7 @@ module.exports = {
       lineHeight: {
         4.5: '18px',
         5.5: '22px',
+        6.5: '26px',
         'sm-custom': '22px',
         'xxl-custom': '26px',
       },
