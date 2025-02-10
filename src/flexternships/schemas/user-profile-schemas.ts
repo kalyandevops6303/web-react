@@ -24,7 +24,7 @@ export const FlexternClientAccountDetailsSchema = yup.object().shape({
   imageUri: yup.string().optional(), // submits file key gets public uri
   linkedin: yup
     .string()
-    .matches(/^(https?:\/\/)?(www\.)?linkedin\.com(\/.*)?$/, 'Must be a valid LinkedIn URL')
+    .matches(/^(?:(?:https?:\/\/)?(?:www\.)?linkedin\.com(?:\/.*)?)?$/, 'Must be a valid LinkedIn URL')
     .optional(),
   title: yup
     .string()
