@@ -14,6 +14,7 @@ import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-e
 import { isEmpty } from 'lodash';
 import CustomBreadCrumbs from '../components/core/CustomBreadCrumbs';
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
+import Navbar from '../components/core/navbar';
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
@@ -156,6 +157,8 @@ export default function FlexternshipProjectDetails() {
   ];
   return (
     <div className="flexternships-page">
+      <Navbar />
+      {/* TODO: remove navbar when we have a new navbar */}
       {projectLoading ? (
         <div className="h-5"></div>
       ) : (
