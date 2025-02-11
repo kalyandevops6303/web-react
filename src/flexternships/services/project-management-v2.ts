@@ -10,9 +10,14 @@ import { ProjectCreationFormData } from '@flexternships/types/project-creation-t
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
-import { DurationType, ProjectDetails } from '../constraints/types/project-details-types';
+import { ProjectDetails } from '../constraints/types/project-details-types';
 import { MilestoneDraftArtifact, MilestoneDropdownItem } from '../constraints/types/project-milestones-types';
-import { MilestoneArtifactStatus, MilestoneArtifactType, MilestoneStatus } from '../constraints/enums/core-enums';
+import {
+  DurationType,
+  MilestoneArtifactStatus,
+  MilestoneArtifactType,
+  MilestoneStatus,
+} from '../constraints/enums/core-enums';
 import {
   parseCompetencies,
   parseMilestoneDetails,
@@ -415,7 +420,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
         projectsWorkedOnCount: data?.client_details?.projects_worked_on_count,
         orgSlugId: data?.client_details?.org_slug_id,
         isOrgAdmin: data?.client_details?.is_org_admin,
-        departmentName: data?.client_details?.department_name,
+        departmentName: data?.client_details?.department,
       },
       skillsData:
         data?.skills?.map((skill: any) => ({
@@ -447,7 +452,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
           },
         },
       },
-      isDocumentsNeeded: data.is_document_needed,
+      isDocumentsNeeded: data.is_document_needed ?? false,
       viewRecognition: data.view_recognition,
       giveRecognition: data.give_recognition,
       addNote: data.add_note,
@@ -813,7 +818,7 @@ export const getRecognitionTimeline = async (
 export const submitRecognition = async (
   projectId: string,
   milestoneId: string,
-  selectedTalents: { competencies: string[]; comment: string; talentId: string }[],
+  selectedTalents: { competencies: string[]; comment?: string; talentId: string }[],
 ) => {
   const headers = appendAuthToken({});
   const config = {
@@ -912,7 +917,7 @@ export const getQuickActionsCount = async (projectId: string, talentUserId?: str
 export const getMilestonesDropdown = async (
   projectId: string,
   options: MilestoneDropdownOptions,
-  parsingOptions: { useSequence?: boolean } = { useSequence: false },
+  parsingOptions: { useSequence?: boolean; useName?: boolean } = { useSequence: false, useName: false },
   page: number = 1,
   pageSize: number = 10,
 ): Promise<PaginatedData<MilestoneDropdownItem>> => {

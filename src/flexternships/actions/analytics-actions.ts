@@ -1,5 +1,9 @@
+// import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 import {
   getAiSummaryService,
+  getConversationAttachmentStatsService,
+  getConversationParticipationStatsService,
+  getGitHubStatsService,
   getIndividualOverviewService,
   getPerformanceChartDataService,
   getRecognitionChartDataService,
@@ -264,4 +268,37 @@ export const getTeamPerformanceInsightsOverview = async (projectId: string, set:
       isTeamPerformanceInsightsOverviewLoading: false,
     },
   }));
+};
+
+// Conversation Participation Stats
+export const getConversationParticipationStats = async (projectId: string, userId: string, set: any) => {
+  set({ isConversationParticipationStatsLoading: true });
+  const data: any = await getConversationParticipationStatsService(projectId, userId);
+  set((state: any) => ({
+    ...state,
+    conversationParticipationStats: data,
+  }));
+  set({ isConversationParticipationStatsLoading: false });
+};
+
+// Conversation Attachment Stats
+export const getConversationAttachmentStats = async (projectId: string, userId: string, set: any) => {
+  set({ isConversationAttachmentStatsLoading: true });
+  const data: any = await getConversationAttachmentStatsService(projectId, userId);
+  set((state: any) => ({
+    ...state,
+    conversationAttachmentStats: data,
+  }));
+  set({ isConversationAttachmentStatsLoading: false });
+};
+
+// Commits
+export const getCommits = async (projectId: string, userId: string, set: any) => {
+  set({ isCommitsLoading: true });
+  const data: any = await getGitHubStatsService(projectId, userId);
+  set((state: any) => ({
+    ...state,
+    commits: data,
+  }));
+  set({ isCommitsLoading: false });
 };

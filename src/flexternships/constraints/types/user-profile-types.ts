@@ -7,6 +7,9 @@ export type FlexternClientAccountDetails = {
   lastname: string;
   timezone: Timezone;
   imageUri?: string; // submits file key gets public uri
+  linkedin?: string;
+  title: string;
+  department: string;
 };
 
 export enum CompanyStrength {

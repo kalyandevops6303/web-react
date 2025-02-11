@@ -62,6 +62,8 @@ import FlexternProjectQuickActions from '@/flexternships/app/quick-actions/page'
 import TeamPerformanceInsights from '@/flexternships/app/analytics/team-analytics/performance-insights/page';
 import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
 import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
+import ConversationParticipationPage from '@/flexternships/app/analytics/individual-analytics/conversation-participation/page';
+import Commits from '@/flexternships/app/analytics/individual-analytics/commits/page';
 
 // ** Default Route
 const DefaultRoute = '/auth';
@@ -627,5 +629,13 @@ export const FlexternshipRoutes = [
   {
     path: '/analytics/project/:projectId/team',
     element: <TeamAnalytics />,
+  },
+  {
+    path: '/analytics/project/:projectId/individual/:userId/conversation-participation',
+    element: <ConversationParticipationPage />,
+  },
+  {
+    path: '/analytics/project/:projectId/individual/:userId/commits',
+    element: <Commits />,
   },
 ];
