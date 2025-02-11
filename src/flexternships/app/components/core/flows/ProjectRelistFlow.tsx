@@ -4,6 +4,7 @@ import RelistProjectInputModal from '../modals/relist/RelistProjectInputModal';
 import RelistProjectConfirmationModal from '../modals/relist/RelistProjectConfirmationModal';
 import { relistProject } from '@/flexternships/services/project-management-v2';
 import { useNavigate } from 'react-router-dom';
+import routes from '@/flexternships/routes';
 
 export default function ProjectRelistFlow({ project, onClose }: ProjectRelistFlowProps) {
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -30,7 +31,7 @@ export default function ProjectRelistFlow({ project, onClose }: ProjectRelistFlo
         setCurrentStep((cur) => cur + 1);
         break;
       case 2:
-        navigate('/marketplace/my_listings');
+        navigate(`${routes.marketplace.path}/my_listings`);
         onClose();
         break;
     }
