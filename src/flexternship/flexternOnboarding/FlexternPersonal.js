@@ -24,7 +24,7 @@ import {
   FormGroup,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info, Loader } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
@@ -1171,19 +1171,9 @@ const FlexternPersonal = () => {
                                 </span>
                               )}
                             </Col>
+
                             {resumeParsedLoading ? (
-                              <RotatingLines
-                                visible
-                                height="32"
-                                width="32"
-                                strokeColor="#0185E4"
-                                color="#0185E4"
-                                strokeWidth="4"
-                                animationDuration="0.75"
-                                ariaLabel="rotating-lines-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                              />
+                              <Loader size="xs" color="#0185E4" className="rotating-icon" />
                             ) : (
                               !uploadingFiles.includes(files[0]) &&
                               !isEmpty(files) && (

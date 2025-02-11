@@ -169,6 +169,20 @@ export const ProfileFormContainer = styled.div`
     }
   }
 
+  @keyframes rotateIcon {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .rotating-icon {
+    display: inline-block;
+    animation: rotateIcon 1s linear infinite; /* Adjust duration as needed */
+  }
+
   .select__control {
     border-color: ${theme.inputBorderColor};
 

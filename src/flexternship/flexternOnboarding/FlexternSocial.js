@@ -20,9 +20,8 @@ import {
   Progress,
   CardText,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info, Loader, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
-import { RotatingLines } from 'react-loader-spinner';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
 import theme from '../../configs/themeVariables';
 import {
@@ -1075,18 +1074,7 @@ const FlexternSocial = () => {
                               )}
                             </Col>
                             {resumeParsedLoading ? (
-                              <RotatingLines
-                                visible
-                                height="32"
-                                width="32"
-                                strokeColor="#0185E4"
-                                color="#0185E4"
-                                strokeWidth="4"
-                                animationDuration="0.75"
-                                ariaLabel="rotating-lines-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                              />
+                              <Loader size="xs" color="#0185E4" className="rotating-icon" />
                             ) : (
                               !uploadingFiles.includes(files[0]) &&
                               !isEmpty(files) && (
