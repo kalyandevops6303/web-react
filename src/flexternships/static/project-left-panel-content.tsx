@@ -1,5 +1,5 @@
-import StartDateSVG from '../../../../../assets/svgs/project-details/start-date.svg';
-import EndDateSVG from '../../../../../assets/svgs/project-details/end-date.svg';
+import StartDateSVG from '@flexternships/assets/svgs/project-details/start-date.svg';
+import EndDateSVG from '@flexternships/assets/svgs/project-details/end-date.svg';
 import { Calendar } from 'react-feather';
 import { ProjectPrimaryStatus } from '@/flexternships/constraints/enums/core-enums';
 

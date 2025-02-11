@@ -96,9 +96,9 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
                 <span className="text-sm font-medium text-grey-700">{entry.name}</span>
               </div>
               <div className="flex gap-2">
-                <span className="text-sm font-semibold text-center text-text-dark">{entry.value}</span>
+                <span className="text-sm font-semibold text-center text-dark">{entry.value}</span>
                 <div className="w-[1px] h-5 rounded-10 bg-grey-50"></div>
-                <span className="text-sm font-semibold text-center text-text-dark">{entry.percentage}</span>
+                <span className="text-sm font-semibold text-center text-dark">{entry.percentage}</span>
               </div>
             </div>
             {index !== chartData.length - 1 && <div className="border-b border-b-grey-border w-[240px]"></div>}

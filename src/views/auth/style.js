@@ -158,6 +158,9 @@ export const OnBoardWrap = styled.div`
       font-size: 1vw;
       line-height: 1.5vw;
     }
+    .form-input-spacing {
+      margin-top: 22px;
+    }
   }
 
   .google-btn {

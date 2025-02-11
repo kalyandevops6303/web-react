@@ -16,7 +16,11 @@ import { FlexternUserAppRole } from '../constraints/enums/core-enums';
 import {
   DetailedPerformanceInsights,
   FlexternComments,
+  GitHubBranchHistory,
+  GitHubStats,
   TeamCompetencySummary,
+  ConversationParticipationStats,
+  ConversationAttachmentStats,
 } from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
@@ -355,20 +359,25 @@ export const parseCompetencies = (data: Record<string, any>): Competency[] => {
  */
 export const parseMilestoneDropdown = (
   data: Record<string, any>,
-  parsingOptions: { useSequence?: boolean },
+  parsingOptions: { useSequence?: boolean; useName?: boolean } = { useSequence: false, useName: false },
 ): MilestoneDropdown => {
-  let parsedData = parsingOptions.useSequence
-    ? {
-        metadata: data.metadata,
-        data: data.data.map((milestone: Record<string, any>) => ({
-          ...milestone,
-          name: `Milestone ${milestone.seq}`,
-        })),
+  let parsedData = {
+    metadata: data.metadata,
+    data: data.data.map((milestone: Record<string, any>) => {
+      let name = milestone.name;
+      if (parsingOptions.useSequence && parsingOptions.useName) {
+        name = `Milestone ${milestone.seq} - ${milestone.name}`;
+      } else if (parsingOptions.useSequence) {
+        name = `Milestone ${milestone.seq}`;
+      } else if (parsingOptions.useName) {
+        name = milestone.name;
       }
-    : {
-        metadata: data.metadata,
-        data: data.data,
+      return {
+        ...milestone,
+        name,
       };
+    }),
+  };
 
   return parsedData;
 };
@@ -433,4 +442,58 @@ export const parseNoteCategories = (data: Record<string, any>): NoteCategory[] =
     createdAt: item.created_at,
     updatedAt: item.updated_at,
   }));
+};
+
+export const parseGitHubStats = (data: Record<string, any>): GitHubStats => {
+  return {
+    commitsCount: data.commits_count,
+    pullRequestsCount: data.pr_count,
+    projectName: data.project_name,
+    githubUrl: data.github_url,
+  };
+};
+
+export const parseGitHubBranchHistory = (data: Record<string, any>): GitHubBranchHistory => {
+  return {
+    metadata: {
+      currentPage: data.metadata.current_page,
+      pageSize: data.metadata.page_size,
+      totalRecords: data.metadata.total_records,
+      hasNextPage: data.metadata.has_next_page,
+    },
+    data: data.data.map((commit: Record<string, string>) => ({
+      id: commit._id,
+      githubUser: commit.github_user,
+      message: commit.message,
+      projectId: commit.project_id,
+      timestamp: commit.timestamp,
+      url: commit.url,
+      userId: commit.user_id,
+      imageUri: commit.image_uri, // TODO
+      firstName: commit.first_name,
+      lastName: commit.last_name,
+      role: commit.role,
+    })),
+  };
+};
+
+export const parseConversationParticipationStats = (data: Record<string, number>): ConversationParticipationStats => {
+  return {
+    messagesCount: data.message_count,
+    participationPercentage: data.participation_percentage,
+  };
+};
+
+export const parseConversationAttachmentStats = (data: Record<string, any>): ConversationAttachmentStats => {
+  return {
+    totalFilesShared: data.total_files_shared,
+    documents: {
+      count: data.documents.count,
+      percentage: data.documents.percentage,
+    },
+    links: {
+      count: data.links.count,
+      percentage: data.links.percentage,
+    },
+  };
 };

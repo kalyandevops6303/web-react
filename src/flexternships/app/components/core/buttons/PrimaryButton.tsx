@@ -7,16 +7,18 @@ import Spinner from '../Spinner';
 export default function PrimaryButton(props: ButtonProps) {
   const { children, onClick, loading = false, disabled, className, cancel = false } = props;
 
+  const isDisabled = disabled || loading;
+
   const getButtonStyle = () => {
-    if (disabled && cancel) return Styles.primaryDisabledButtonRed;
-    if (disabled) return Styles.primaryDisabledButtonBlue;
+    if (isDisabled && cancel) return Styles.primaryDisabledButtonRed;
+    if (isDisabled) return Styles.primaryDisabledButtonBlue;
     if (cancel) return Styles.primaryEnabledButtonRed;
     return Styles.primaryEnabledButtonBlue;
   };
 
   return (
     <button
-      disabled={disabled || loading}
+      disabled={isDisabled}
       onClick={onClick}
       className={`${Styles.baseButton} ${getButtonStyle()} ${className || ''}`}
     >

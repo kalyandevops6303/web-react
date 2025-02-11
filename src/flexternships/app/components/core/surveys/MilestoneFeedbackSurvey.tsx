@@ -230,15 +230,31 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
       const questionKey = question.name;
 
       if (grouped[questionKey]) {
+        // User Inputs
         const { value, comment, competency } = grouped[questionKey];
-        // Check conditions for including the question
-        if (
-          value !== null && // Ensure the value is answered
-          (((question as any).jsonObj.commentRequired && comment?.length > 0) || // comment is required and has value
-            !(question as any).jsonObj.commentRequired) && // or comment is not required
-          (((question as any).jsonObj?.competency?.isRequired && competency?.length > 0) || // and competency is required and has value
-            !(question as any).jsonObj?.competency?.isRequired) // or competency is not required
-        ) {
+        // Question JSON
+        const questionJson = (question as any).jsonObj;
+
+        // Recognition conditions
+        const isRecognitionQuestion = questionJson?.name === 'recognition';
+        const isRecognitionNotApplicable = value === 'na';
+        const isCompetencyRequired = questionJson?.competency?.isRequired;
+        const isCompetencySelected = competency?.length > 0;
+
+        // Comment conditions
+        const isCommentRequired = questionJson.commentRequired;
+        const hasComment = comment?.length > 0;
+
+        // Derive final conditions
+        const isValueAnswered = value !== null;
+        const isCommentConditionMet =
+          (isCommentRequired && hasComment) ||
+          !isCommentRequired ||
+          (isRecognitionQuestion && isRecognitionNotApplicable);
+        const isRecognitionConditionMet =
+          !isRecognitionQuestion || isRecognitionNotApplicable || !isCompetencyRequired || isCompetencySelected;
+
+        if (isValueAnswered && isCommentConditionMet && isRecognitionConditionMet) {
           answeredQuestions.push({
             index,
             name: questionKey,

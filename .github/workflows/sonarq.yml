@@ -37,8 +37,8 @@
 #             -Dsonar.organization=trumio
 #             -Dsonar.projectKey=trumio_trumio-web-react
 #             -Dsonar.sources=.
-#             -Dsonar.host.url=https://sonarcloud.io 
-#             -Dsonar.token=$SONAR_TOKEN 
+#             -Dsonar.host.url=https://sonarcloud.io
+#             -Dsonar.token=$SONAR_TOKEN
 #             -Dsonar.branch.name=${{ github.ref_name }}
 #         env:
 #           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -55,7 +55,6 @@
 #       #       -Dsonar.host.url=https://sonarcloud.io \
 #       #       -Dsonar.token=$SONAR_TOKEN \
 #       #       -Dsonar.branch.name=${{ github.ref_name }}
-
 
 name: SonarQube-Analysis
 
@@ -100,4 +99,3 @@ jobs:
             -Dsonar.branch.name=${{ github.ref_name }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-

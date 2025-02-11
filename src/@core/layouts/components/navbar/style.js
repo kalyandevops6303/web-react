@@ -125,3 +125,9 @@ export const TextWrapper = styled.div`
   line-height: 22px;
   color: #6e6b7b;
 `;
+
+export const EditProfileActionContainer = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+  cursor: pointer;
+`;
