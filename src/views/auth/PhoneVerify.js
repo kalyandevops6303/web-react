@@ -116,7 +116,7 @@ const VerifyPhone = () => {
         <Form className="auth-login-form">
           <div className="mb-3">
             <Label className="form-label" for="login-email">
-              Mobile number
+              Mobile Number
             </Label>
             <div className="d-flex">
               <CountryDropdown
