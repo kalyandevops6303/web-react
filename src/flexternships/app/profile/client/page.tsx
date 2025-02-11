@@ -19,6 +19,7 @@ import { getClientCompletedProjects, getClientPublicDetails } from '@/flexternsh
 
 // Static content
 import { clientDelegateRoleText } from '@/flexternships/static/content/profile-content';
+import routes from '@/flexternships/routes';
 
 // Components
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
@@ -122,7 +123,7 @@ export default function ClientPublicProfile() {
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1); // Go back one page in history
     } else {
-      navigate('/dashboard'); // Fallback to dashboard if no history
+      navigate(routes.dashboard.path); // Fallback to dashboard if no history
     }
   };
 

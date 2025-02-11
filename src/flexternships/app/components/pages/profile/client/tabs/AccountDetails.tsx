@@ -19,6 +19,7 @@ import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSe
 import { fetchTimezonesPaginated } from '@/flexternships/services/user-management';
 import { useNavigate } from 'react-router-dom';
 import ClientOnboardingSuccessModal from '@/flexternships/app/components/core/modals/ClientOnboardingSuccessModal';
+import routes from '@/flexternships/routes';
 
 export default function AccountDetails() {
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
@@ -85,7 +86,7 @@ export default function AccountDetails() {
     if (userDetails.checkpoint !== FlexternUserCheckpoint.COMPLETE) {
       showSuccessModal();
     } else {
-      navigate('/dashboard');
+      navigate(routes.dashboard.path);
     }
   };
 

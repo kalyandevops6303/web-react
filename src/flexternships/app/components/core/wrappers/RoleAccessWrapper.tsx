@@ -13,6 +13,7 @@ import { GlobalModalActions } from '@/flexternships/constraints/types/core-types
 import { projectsBlockedModalContent } from '@/flexternships/static/content/core-content';
 import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 import { isUserLoggedIn } from '@/utility/commonUtils';
+import routes from '@/flexternships/routes';
 
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
@@ -37,7 +38,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     if (isUserLoggedIn()) {
       populateUserDetails();
     } else {
-      navigate('/auth/login');
+      navigate(`${routes.auth.path}/login`);
     }
   }, [populateUserDetails]);
 
@@ -106,7 +107,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   if (!allowBlockedUsers && isUserBlocked) {
     const allowedAction = async () => {
       closeGlobalModal();
-      navigate('/projects/blocked');
+      navigate(routes.blockedProjects.path);
     };
     const modalActions: GlobalModalActions = {
       onClose: allowedAction,

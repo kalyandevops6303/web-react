@@ -6,6 +6,7 @@ import ClientOnboardingSuccessModal from '@/flexternships/app/components/core/mo
 import Spinner from '@/flexternships/app/components/core/Spinner';
 import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { FlexternClientSocialDetails } from '@/flexternships/constraints/types/user-profile-types';
+import routes from '@/flexternships/routes';
 import { FlexternClientSocialDetailsSchema } from '@/flexternships/schemas/user-profile-schemas';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
@@ -66,13 +67,13 @@ export default function SocialDetails() {
     if (userDetails.checkpoint !== FlexternUserCheckpoint.COMPLETE) {
       showSuccessModal();
     } else {
-      navigate('/dashboard');
+      navigate(routes.dashboard.path);
     }
   };
 
   const goToPreviousTab = () => {
     if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
-      navigate('/client-profile-edit/personal-details');
+      navigate(routes.clientProfileEdit.generate('personal-details'));
     } else {
       previousTab();
     }

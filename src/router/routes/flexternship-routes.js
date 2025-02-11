@@ -23,7 +23,6 @@ import Projects from '../../views/projects';
 import ContractView from '../../views/project-details/ContractView';
 
 // ** Constants & Enums
-import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
 import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
 import { FEATURE_NAMES } from '@/utility/constants/Constant';
 import routes from '@/flexternships/routes';
@@ -403,11 +402,11 @@ export const FlexternshipRoutes = [
     },
   },
   {
-    path: `/${userProfileEdit.talent}/:section-details`,
+    path: routes.talentProfileEdit.path,
     element: <TalentOnboarding />,
   },
   {
-    path: `/${userProfileEdit.client}/:tabId`,
+    path: routes.clientProfileEdit.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[

@@ -1,6 +1,4 @@
-type Route = { path: string; generate?: (...args: any[]) => string };
-
-const routes: Record<string, Route> = {
+const routes = {
   home: { path: '/' },
   verifyInvitation: { path: '/verify-invitation' },
   auth: { path: '/auth' },
@@ -89,6 +87,14 @@ const routes: Record<string, Route> = {
     path: '/profile/:userType/:userId',
     generate: (userType: string, userId: string) => `/profile/${userType}/${userId}`,
   },
+  clientProfileEdit: {
+    path: '/client-profile-edit/:tabId',
+    generate: (tabId: string) => `/client-profile-edit/${tabId}`,
+  },
+  talentProfileEdit: {
+    path: '/talent-profile-edit/:section-details',
+    generate: (sectionDetails: string) => `/talent-profile-edit/${sectionDetails}`,
+  },
 
   // Onboarding routes
   talentOnboarding: {
@@ -103,6 +109,9 @@ const routes: Record<string, Route> = {
     path: '/quick-actions/:projectId',
     generate: (projectId: string) => `/quick-actions/${projectId}`,
   },
+
+  // Not found
+  notFound: { path: '*' },
 };
 
 export default routes;
