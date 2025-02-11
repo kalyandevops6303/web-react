@@ -120,7 +120,7 @@ const RegisterPhone = () => {
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
             <Label className="form-label" for="login-email">
-              Mobile number
+              Mobile Number
             </Label>
             <div className="d-flex">
               <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} />

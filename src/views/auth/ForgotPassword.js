@@ -55,7 +55,7 @@ const RegisterEmail = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Forgot Password? 🔒
+          Forgot Password! 🔐
         </CardTitle>
         <CardText className="mb-2">
           Enter your email and we&apos;ll send you instructions to reset your password
