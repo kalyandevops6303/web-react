@@ -63,7 +63,6 @@ const SetNewPassword = () => {
   const cnfPassword = watch('cnfPassword');
 
   const isPasswordMatch = cnfPassword?.length > 0 && newPassword?.length > 0 && cnfPassword === newPassword;
-  console.log('isPasswordMatch', isPasswordMatch, newPassword?.length, cnfPassword?.length);
   return (
     <OnBoardWrap>
       <div className="card-onboard">
