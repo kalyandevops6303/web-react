@@ -20,6 +20,7 @@ import {
   Progress,
   CardText,
 } from 'reactstrap';
+import removeSVG from '../../assets/images/remove.svg';
 import { ChevronLeft, ChevronRight, Info, Loader, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
@@ -976,9 +977,11 @@ const FlexternSocial = () => {
                                 </FormFeedback>
                               )}
                           </div>
-                          <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
-                            Remove
-                          </Button>
+                          {watch('otherSocialLinks')?.length > 1 && (
+                            <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
+                              <img src={removeSVG} width={20} height={20} />
+                            </Button>
+                          )}
                         </div>
                       </Col>
                     </Row>
@@ -1035,7 +1038,7 @@ const FlexternSocial = () => {
             </Col>
 
             <Col xs="12" sm="12" lg="4">
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg text-grey-heading font-medium">
                     Resume <span className="label-asterisk">*</span>
@@ -1043,7 +1046,6 @@ const FlexternSocial = () => {
                 </CardHeader>
                 <hr className="m-0 card-header-border" />
                 <CardBody style={{ paddingBottom: files.length === 0 ? '0px' : '11px' }}>
-                  {/* IsresumeParsed ? resumeParsedLoading :  */}
                   <div className="d-flex flex-column gap-7">
                     <div
                       style={{
@@ -1118,7 +1120,7 @@ const FlexternSocial = () => {
                     <Row>{files && files.length > 0 && <div>{fileList()}</div>}</Row>
                   </div>
                 </CardBody>
-              </Card>
+              </Card> */}
 
               <Card>
                 <CardHeader>
