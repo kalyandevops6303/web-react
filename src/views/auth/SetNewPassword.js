@@ -129,12 +129,11 @@ const SetNewPassword = () => {
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
 
-            {cnfPassword?.length > 0 &&
-              (isPasswordMatch ? (
-                <p className="text-success text-xs mt-2">Passwords Match</p>
-              ) : (
-                <p className="text-error text-xs mt-2">Passwords Do Not Match</p>
-              ))}
+            {cnfPassword?.length > 0 && (
+              <p className={`${isPasswordMatch ? 'text-success' : 'text-error'}  text-xs mt-2`}>
+                {isPasswordMatch ? 'Passwords Match' : 'Passwords Do Not Match'}
+              </p>
+            )}
           </div>
           <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
