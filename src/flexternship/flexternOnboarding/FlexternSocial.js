@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import FadeLoader from 'react-spinners/FadeLoader';
 import {
   Button,
   Card,
