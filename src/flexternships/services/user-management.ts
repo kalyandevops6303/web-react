@@ -14,6 +14,7 @@ import { handleError } from '../utils/error-utils';
 import { ValidatedRequestToken } from '../constraints/types/core-types';
 import { logout as logoutZustand } from '../utils/core-utils';
 import errorHandler from '@/utility/errorHandler';
+import { FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
 
 /// File Endpoints
 /**
@@ -573,4 +574,55 @@ export const fetchCitiesPaginatedByState = async (
     handleError(error as Error, 'An unexpected error occurred while fetching paginated cities');
   }
   return emptyData; // Add this line to ensure a return value in all cases
+};
+/**
+ * Fetches notification statistics for the current user.
+ * @returns A Promise that resolves to an object containing notification stats like unread count.
+ * @throws {Error} If the notification stats retrieval fails or an unexpected error occurs.
+ */
+export const getNotificationsStats = async () => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(routes.userManagement.notifications.getNotificationsStats, config);
+    const serverData = response?.data?.data;
+    return {
+      unreadNotificationsCount: serverData.unread_notifications_count || 0,
+    };
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching notifications stats');
+  }
+};
+
+/**
+ * Invites a delegate user with specified access permissions.
+ * @param email - The email address of the delegate to invite.
+ * @param options - Configuration options for the delegate invitation.
+ * @param options.invitationType - The type of access to grant (defaults to FULL_ACCESS).
+ * @returns A Promise that resolves when the invitation is sent.
+ * @throws {Error} If the delegate invitation fails or an unexpected error occurs.
+ */
+export const inviteDelegate = async (
+  email: string,
+  options = {
+    invitationType: FlexternDelegateInvitationType.FULL_ACCESS,
+  },
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    await axios.post(
+      routes.userManagement.invitation.delegate,
+      { email, invitation_type: options.invitationType },
+      config,
+    );
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while inviting a delegate');
+  }
 };

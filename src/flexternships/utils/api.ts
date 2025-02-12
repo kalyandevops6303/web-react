@@ -94,6 +94,12 @@ export const routes = {
         fetchPaginatedByState: `${serviceUrls.userManagement}/static/city/paginated`,
       },
     },
+    notifications: {
+      getNotificationsStats: `${serviceUrls.userManagement}/notifications/polling`,
+    },
+    invitation: {
+      delegate: `${serviceUrls.userManagement}/invitation/delegate`,
+    },
     files: {
       getImageUploadUrl: `${serviceUrls.userManagement}/user/profile/image-url`,
     },

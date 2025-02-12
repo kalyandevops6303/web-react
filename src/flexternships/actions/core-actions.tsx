@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { getUserDetails } from '@flexternships/services/user-management';
+import { getNotificationsStats, getUserDetails } from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
 import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
 import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
@@ -81,4 +81,15 @@ export const setWip = (modalContent: GlobalModalContent, modalActions: GlobalMod
 
 export const unsetWip = (set: any) => {
   set({ isWip: false, modal: undefined, modalContent: undefined, modalActions: undefined });
+};
+
+export const fetchNotificationsCount = async (set: any) => {
+  try {
+    const data = await getNotificationsStats();
+    set({ unreadNotificationsCount: data?.unreadNotificationsCount || 0 });
+  } catch (error: unknown) {
+    console.error(
+      error instanceof Error ? error.message : 'An unexpected error occurred while fetching notifications count',
+    );
+  }
 };

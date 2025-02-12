@@ -155,6 +155,7 @@ export type AppState = {
   modal: GlobalModalType | undefined;
   modalContent: GlobalModalContent | undefined;
   modalActions: GlobalModalActions | undefined;
+  unreadNotificationsCount: number;
 };
 
 export type AppActions = {
@@ -168,6 +169,7 @@ export type AppActions = {
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
   unsetWip: () => void;
   getCurrentNextPath: () => string | undefined;
+  fetchNotificationsCount: () => void;
   resetStore: () => void;
 };
 

@@ -118,7 +118,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     openGlobalModal(GlobalModalType.PROJECTS_BLOCKED, modalActions, projectsBlockedModalContent);
   }
 
-  return <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-20 '}`}>{children}</div>;
+  return <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-5 '}`}>{children}</div>;
 }
 
 type RoleAccessWrapperProps = {

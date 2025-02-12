@@ -1,4 +1,6 @@
-export const delegatesData = {
+import { FlexternDelegateInvitationStatus } from '../constraints/enums/core-enums';
+
+export const delegateInvitationsData = {
   metadata: {
     currentPage: 1,
     pageSize: 5,
@@ -26,11 +28,12 @@ export const delegatesData = {
         entity: 'CLIENT',
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnZpdGF0aW9uX2J5X3VzZXJfaWQiOiI2NzEwYmViMTQzZWNkZWFlZmZkZTA2MTYiLCJlbWFpbF9pbnZpdGVkIjoiZGVsZWdhdGVfdGVzdF8zNEB5b3BtYWlsLmNvbSIsInVzZXJfdHlwZSI6IkZMRVhURVJOX0NMSUVOVF9ERUxFR0FURSIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE3MzgzMDQxMzcsImV4cCI6MTczODkwODkzN30.1vjH55jW9FGFfsC23tSs26yoQNMfvhfvKjewvfkzWME',
-        email: '',
+        email: 'delegate_test_34@yopmail.com',
         tokenExpiry: 0,
+        name: '',
+        imageUri: '',
       },
-      delegateName: 'delegate_test_34@yopmail.com',
-      status: 'INVITED',
+      status: FlexternDelegateInvitationStatus.INVITED,
     },
     {
       id: '6780e92f217505f18e409b36',
@@ -52,11 +55,12 @@ export const delegatesData = {
         entity: 'CLIENT',
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnZpdGF0aW9uX2J5X3VzZXJfaWQiOiI2NzgwZGU0MmFmMDVjNTQ2N2IwYTY3M2IiLCJlbWFpbF9pbnZpdGVkIjoiZGVsLXRlc3QtM0B5b3BtYWlsLmNvbSIsInVzZXJfdHlwZSI6IkZMRVhURVJOX0NMSUVOVCIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE3MzY1MDE1MjcsImV4cCI6MTczNzEwNjMyN30.qMzm2-ThpqDs9XZkOQthC_GE-fTuwiyzpT6zLwK4J7k',
-        email: '',
+        email: 'del-test-3@yopmail.com',
         tokenExpiry: 0,
+        name: '',
+        imageUri: '',
       },
-      delegateName: 'del-test-3@yopmail.com',
-      status: 'EXPIRED',
+      status: FlexternDelegateInvitationStatus.INVITED,
     },
     {
       id: '6780df65af05c5467b0a6766',
@@ -78,11 +82,12 @@ export const delegatesData = {
         entity: 'CLIENT',
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnZpdGF0aW9uX2J5X3VzZXJfaWQiOiI2NzgwZGU0MmFmMDVjNTQ2N2IwYTY3M2IiLCJlbWFpbF9pbnZpdGVkIjoiZGVsLXRlc3QtMkB5b3BtYWlsLmNvbSIsInVzZXJfdHlwZSI6IkZMRVhURVJOX0NMSUVOVF9ERUxFR0FURSIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE3MzY1MDE0NTMsImV4cCI6MTczNzEwNjI1M30.aCaJJFcGs19Nf7macL7HnNeepB-0Ha1yG7qrc1Eob1Y',
-        email: '',
+        email: 'del-test-2@yopmail.com',
         tokenExpiry: 0,
+        name: '',
+        imageUri: '',
       },
-      delegateName: 'del-test-2@yopmail.com',
-      status: 'EXPIRED',
+      status: FlexternDelegateInvitationStatus.EXPIRED,
     },
     {
       id: '6780de28af05c5467b0a6734',
@@ -104,8 +109,10 @@ export const delegatesData = {
         entity: 'CLIENT',
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnZpdGF0aW9uX2J5X3VzZXJfaWQiOiI2NzEwYmViMTQzZWNkZWFlZmZkZTA2MTYiLCJlbWFpbF9pbnZpdGVkIjoiZGVsLXRlc3QtMUB5b3BtYWlsLmNvbSIsInVzZXJfdHlwZSI6IkZMRVhURVJOX0NMSUVOVCIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE3MzY0OTg3MjgsImV4cCI6MTczNzEwMzUyOH0.cZskqAsxsL7Dkydc_Nw2NgndRnn-8u9LBLl6m4bicJU',
-        email: '',
+        email: 'del-test-1@yopmail.com',
         tokenExpiry: 0,
+        name: 'Del test one',
+        imageUri: '',
       },
       userDetails: {
         id: '6780de42af05c5467b0a673b',
@@ -129,8 +136,7 @@ export const delegatesData = {
         lastActive: 1737400431026,
         lastLogin: 1737400176546,
       },
-      delegateName: 'Del test one',
-      status: 'ACCEPTED',
+      status: FlexternDelegateInvitationStatus.ACCEPTED,
     },
     {
       id: '675a3f6f5df3a9988a632bff',
@@ -150,10 +156,12 @@ export const delegatesData = {
         entity: 'CLIENT',
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnZpdGF0aW9uX2J5X3VzZXJfaWQiOiI2NzEwYmViMTQzZWNkZWFlZmZkZTA2MTYiLCJlbWFpbF9pbnZpdGVkIjoiZmxleHRlc3RAeW9wbWFpbC5jb20iLCJ1c2VyX3R5cGUiOiJGTEVYVEVSTl9DTElFTlRfREVMRUdBVEUiLCJ0b2tlbl90eXBlIjoiYmVhcmVyIiwiaWF0IjoxNzM2NDk4Njc3LCJleHAiOjE3MzcxMDM0Nzd9.bGVeyOWzZmWKf_KNl2_j3E0-aEXRU7IMD1b9JEfZRTQ',
+        name: '',
+        email: 'flextest@yopmail.com',
+        imageUri: '',
       },
       userStatus: 'UNREGISTERED',
-      delegateName: 'flextest@yopmail.com',
-      status: 'EXPIRED',
+      status: FlexternDelegateInvitationStatus.EXPIRED,
     },
   ],
 };

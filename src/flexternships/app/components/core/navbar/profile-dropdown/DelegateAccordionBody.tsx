@@ -2,33 +2,55 @@ import FlexternAvatar from '@flexternships/components/core/avatars/FlexternAvata
 import PrimaryIconText from '@flexternships/components/core/buttons/PrimaryIconText';
 import { Plus, Settings } from 'react-feather';
 import TooltipInfo from '../../tooltips/TooltipInfo';
-import { delegatesData } from '@/flexternships/mocks/navbar-data';
-import { FlexternDelegateInvitationStatus } from '@/flexternships/constraints/enums/core-enums';
+import { FlexternDelegateInvitationStatus, ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { delegateInvitationsData } from '@/flexternships/mocks/navbar-data';
+import { useState } from 'react';
+import { inviteDelegate } from '@/flexternships/services/user-management';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 
 type DelegateItemProps = {
-  name: string;
+  name?: string;
+  email: string;
   imageUri?: string;
   status: FlexternDelegateInvitationStatus;
 };
 
 function DelegateItem(props: DelegateItemProps) {
-  const { name, imageUri, status } = props;
-  const isExpired = status === FlexternDelegateInvitationStatus.EXPIRED;
-  const isAccepted = status === FlexternDelegateInvitationStatus.ACCEPTED;
+  const { name, email, imageUri, status } = props;
 
-  const handleResendInvite = () => {
-    // TODO: Implement resend invite
-    console.log('Resend Invite');
+  const [isResending, setIsResending] = useState(false);
+  const [inviteStatus, setInviteStatus] = useState<FlexternDelegateInvitationStatus>(status);
+
+  const isExpired = inviteStatus === FlexternDelegateInvitationStatus.EXPIRED;
+  const isAccepted = inviteStatus === FlexternDelegateInvitationStatus.ACCEPTED;
+
+  const handleResendInvite = async () => {
+    setIsResending(true);
+    try {
+      await inviteDelegate(email);
+      setInviteStatus(FlexternDelegateInvitationStatus.INVITED);
+    } catch (error: unknown) {
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'An unexpected error occurred while resending invite',
+      );
+    } finally {
+      setIsResending(false);
+    }
   };
 
-  const delegate = <div className="text-sm leading-5 font-normal text-grey-heading max-w-40 truncate">{name}</div>;
+  const delegate = (
+    <div className="text-sm leading-5 font-normal text-grey-heading max-w-40 truncate cursor-default">
+      {name || email}
+    </div>
+  );
 
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row items-center gap-x-3">
-        <FlexternAvatar name={name} imageUri={imageUri} />
+        <FlexternAvatar name={name || email} imageUri={imageUri} />
         <div>
-          <TooltipInfo trigger={delegate}>{name}</TooltipInfo>
+          <TooltipInfo trigger={delegate}>{email}</TooltipInfo>
           {isExpired && <div className="text-error text-xs leading-4.5 font-normal">Invitation Expired</div>}
         </div>
       </div>
@@ -38,7 +60,14 @@ function DelegateItem(props: DelegateItemProps) {
             Accepted
           </span>
         )}
-        {isExpired && <PrimaryIconText className="py-1 px-2" text="Resend Invite" onClick={handleResendInvite} />}
+        {isExpired && (
+          <PrimaryIconText
+            className="py-1 px-2"
+            text={isResending ? 'Resending...' : 'Resend Invite'}
+            onClick={handleResendInvite}
+            disabled={isResending}
+          />
+        )}
         {!isAccepted && !isExpired && (
           <span className="py-[1.5px] px-[9px] rounded-[17px] text-xs font-semibold leading-4.5 text-trublue-secondary-500 bg-trublue-light">
             Invited
@@ -52,12 +81,13 @@ function DelegateItem(props: DelegateItemProps) {
 export default function DelegateAccordionBody() {
   return (
     <div className="flex flex-col gap-y-5 pt-3 pb-4 px-4">
-      {delegatesData.data.map((delegate) => (
+      {delegateInvitationsData.data.map((delegateInvitation) => (
         <DelegateItem
-          key={delegate.id}
-          name={delegate.delegateName}
-          imageUri={undefined}
-          status={delegate.status as FlexternDelegateInvitationStatus}
+          key={delegateInvitation.id}
+          name={delegateInvitation.invitee.name}
+          email={delegateInvitation.invitee.email}
+          imageUri={delegateInvitation.invitee.imageUri}
+          status={delegateInvitation.status}
         />
       ))}
       <div className="flex flex-col gap-y-2 text-trublue-secondary-500 self-start">

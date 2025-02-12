@@ -14,7 +14,7 @@ import { ArrowUp } from 'react-feather';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 // ** Reactstrap Imports
-import { Navbar, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 // ** Configs
 import themeConfig from '@configs/themeConfig';
@@ -42,6 +42,7 @@ import { selectUserData, selectUserType } from '../../redux/selectors/authSelect
 import { userTypes } from '../../utility/constants/Constant';
 import getTeamId from '../../utility/commonUtils';
 import { getUserData } from '../../redux/actions/authActions';
+import Navbar from '@/flexternships/app/components/core/navbar';
 
 const HorizontalLayout = (props) => {
   // ** Props
@@ -147,22 +148,7 @@ const HorizontalLayout = (props) => {
       )}
       {...(isHidden ? { 'data-col': '1-column' } : {})}
     >
-      <Navbar
-        expand="lg"
-        container={false}
-        className={classnames(
-          `${
-            isNavbarSearchBarOpen ? 'active-search' : ''
-          } header-navbar navbar-fixed align-items-center navbar-shadow navbar-brand-center`,
-          {
-            'navbar-scrolled': true,
-          },
-        )}
-      >
-        <div className="navbar-container d-flex content ">
-          <NavbarComponent skin={skin} setSkin={setSkin} />
-        </div>
-      </Navbar>
+      <Navbar />
       {switchProfileModal ? (
         <SwitchConfirmModal
           entity={entity}

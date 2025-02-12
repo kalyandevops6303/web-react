@@ -125,3 +125,7 @@ export enum FlexternDelegateInvitationStatus {
   ACCEPTED = 'ACCEPTED',
   EXPIRED = 'EXPIRED',
 }
+
+export enum FlexternDelegateInvitationType {
+  FULL_ACCESS = 'FULL_ACCESS',
+}

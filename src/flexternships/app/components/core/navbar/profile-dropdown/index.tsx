@@ -15,6 +15,38 @@ import { FlexternUserAppRole, UserType } from '@/flexternships/constraints/enums
 import { Link } from 'react-router-dom';
 import routes from '@/flexternships/routes';
 
+function DelegateProfile() {
+  return (
+    <div className="flex flex-row items-center gap-x-3.5 py-3 cursor-pointer">
+      <div className="flex flex-col items-end">
+        <div className="text-trublue-secondary-500 text-sm font-normal leading-5">Trusted Business Systems</div>
+        <div className="text-xs leading-4.5 font-normal text-trublue-secondary-500">
+          Roger Barry <span className="text-grey">(Client)</span>
+        </div>
+      </div>
+      <FlexternAvatar name="Roger Barry" />
+    </div>
+  );
+}
+
+function GenericProfile() {
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
+  // Derived
+  const isClient = userDetails?.userType === UserType.CLIENT;
+  const fullName = `${userDetails.firstName} ${userDetails.lastName}`;
+
+  return (
+    <div className="flex flex-row items-center gap-x-3.5 py-3 cursor-pointer">
+      <div className="flex flex-col items-end">
+        <div className="text-trublue-secondary-500 text-sm font-normal leading-5">{fullName}</div>
+        <div className="text-xs leading-4.5 font-normal text-grey">{isClient ? 'Client' : 'Talent'}</div>
+      </div>
+      <FlexternAvatar name={fullName} />
+    </div>
+  );
+}
+
 // Component for the profile dropdown menu
 export default function ProfileDropdown() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -48,15 +80,7 @@ export default function ProfileDropdown() {
     <DropdownMenu>
       {/* Profile Trigger Button */}
       <DropdownMenuTrigger className="border-b-2 border-transparent data-[state=open]:border-trublue-secondary-500 outline-none">
-        <div className="flex flex-row items-center gap-x-3.5 py-3 cursor-pointer">
-          <div className="flex flex-col items-end">
-            <div className="text-trublue-secondary-500 text-sm font-normal leading-5">Trusted Business Systems</div>
-            <div className="text-xs leading-4.5 font-normal text-trublue-secondary-500">
-              Roger Barry <span className="text-grey">(Client)</span>
-            </div>
-          </div>
-          <FlexternAvatar name="Roger Barry" />
-        </div>
+        {isDelegate ? <DelegateProfile /> : <GenericProfile />}
       </DropdownMenuTrigger>
 
       {/* Dropdown Content */}

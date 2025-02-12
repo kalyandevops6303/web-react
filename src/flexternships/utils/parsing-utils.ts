@@ -1,4 +1,3 @@
-import { ClientDelegateRole } from '../constraints/enums/profile-enums';
 import {
   MilestoneArtifact,
   MilestoneDetails,
@@ -12,7 +11,7 @@ import {
 import { QuickActionsStats, CommentsTimeline } from '../constraints/types/quick-actions-types';
 import { TeamMemberDetails } from '../constraints/types/project-details-types';
 import { Competency } from '../constraints/types/competency-types';
-import { FlexternUserAppRole } from '../constraints/enums/core-enums';
+import { FlexternDelegateInvitationType, FlexternUserAppRole } from '../constraints/enums/core-enums';
 import {
   DetailedPerformanceInsights,
   FlexternComments,
@@ -146,7 +145,7 @@ export const parseClientPublicDetails = (data: Record<string, any>): FlexternCli
       firstname: delegate.first_name,
       lastname: delegate.last_name,
       imageUri: delegate.image_uri,
-      delegateType: delegate.delegate_type || ClientDelegateRole.FULL_ACCESS,
+      delegateType: delegate.delegate_type || FlexternDelegateInvitationType.FULL_ACCESS,
     })),
   };
 };
