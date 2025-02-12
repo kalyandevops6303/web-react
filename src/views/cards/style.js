@@ -98,6 +98,7 @@ const ProjectCardWrap = styled(CardWrap)`
   }
   .font-name {
     font-size: 18px;
+    color: ${theme.checkboxLabel};
   }
   .name {
     color: ${theme.headingTextColor};
@@ -138,8 +139,8 @@ const ProjectCardWrap = styled(CardWrap)`
   }
 
   .market-place-card-photo {
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 30px;
+    width: 30px;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -435,7 +436,7 @@ const ClientCardWrap = styled(CardWrap)`
   }
   .marketplace-card-role {
     line-height: 1.125rem;
-    font-size: 0.75rem !important;
+    font-size: 12px !important;
     color: ${theme.gray};
     font-weight: 400;
   }

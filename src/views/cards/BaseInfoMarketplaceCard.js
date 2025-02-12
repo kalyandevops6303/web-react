@@ -280,7 +280,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         <div className="m-2" />
       )}
       {project && (
-        <div>
+        <div className="d-flex justify-content-between flex-column">
           <BadgeGroup
             title="Skills"
             data={project?.skills_required}

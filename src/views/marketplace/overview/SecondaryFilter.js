@@ -460,8 +460,8 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
     if (primaryFilter === 'my_listings') {
       return [
         ...statusesOptions,
-        { label: 'Expired', value: 'LISTING_EXPIRED' },
-        { label: 'To Be Listed', value: 'TO_BE_LISTED' },
+        // { label: 'Expired', value: 'LISTING_EXPIRED' },
+        // { label: 'To Be Listed', value: 'TO_BE_LISTED' },
         { label: 'Withdrawn', value: 'WITHDRAWN' },
         { label: 'Drafts', value: 'DRAFT' },
       ];
@@ -476,7 +476,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
       <Popover
         innerRef={popoverRef}
-        placement="right"
+        placement="bottom"
         isOpen={popoverOpen}
         target="popoverButton"
         toggle={togglePopover}
@@ -694,7 +694,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
               {(primaryFilter === 'all_listings' ||
                 primaryFilter === 'talents' ||
                 primaryFilter === 'teams' ||
-                (appRole === appRoles.flexternClient && primaryFilter === 'my_listings')) && (
+                (appRole === appRoles.flexternClient && primaryFilter === 'all_listings')) && (
                 <Col>
                   <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
