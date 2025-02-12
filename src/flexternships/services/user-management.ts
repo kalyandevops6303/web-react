@@ -15,6 +15,7 @@ import { ValidatedRequestToken } from '../constraints/types/core-types';
 import { logout as logoutZustand } from '../utils/core-utils';
 import errorHandler from '@/utility/errorHandler';
 import { FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
+import { parseDelegateInvitations } from '../utils/parsing-utils';
 
 /// File Endpoints
 /**
@@ -618,11 +619,62 @@ export const inviteDelegate = async (
   };
   try {
     await axios.post(
-      routes.userManagement.invitation.delegate,
+      routes.userManagement.invitation.inviteDelegate,
       { email, invitation_type: options.invitationType },
       config,
     );
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while inviting a delegate');
+  }
+};
+/**
+ * Fetches a paginated list of delegate invitations.
+ * @param page - The page number to fetch (defaults to 1).
+ * @param page_size - The number of items per page (defaults to 10).
+ * @returns A Promise that resolves to an object containing paginated delegate invitations and metadata.
+ * @throws {Error} If the delegate invitations retrieval fails or an unexpected error occurs.
+ */
+export const getDelegateInvitationsPaginated = async (page: number = 1, page_size: number = 10) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+    params: {
+      page,
+      page_size,
+    },
+  };
+  try {
+    const response = await axios.get(routes.userManagement.invitation.getDelegatesPaginated, config);
+    return parseDelegateInvitations(response?.data?.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching delegate invitations');
+  }
+  return {
+    metadata: {
+      currentPage: 1,
+      pageSize: 0,
+      totalRecords: 0,
+      hasNextPage: false,
+    },
+    data: [],
+  };
+};
+
+/**
+ * Logs out the current user by making a request to the logout endpoint.
+ * @returns A Promise that resolves when the logout is successful.
+ * @throws {Error} If the logout request fails or an unexpected error occurs.
+ */
+export const logoutUser = async () => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    await axios.post(routes.userManagement.auth.logout, {}, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while logging out');
   }
 };

@@ -496,3 +496,45 @@ export const parseConversationAttachmentStats = (data: Record<string, any>): Con
     },
   };
 };
+
+/**
+ * Parses delegate invitation data from raw API response
+ * @param data Raw delegate invitation data from API
+ * @returns Formatted delegate invitation data
+ */
+export const parseDelegateInvitations = (data: Record<string, any>) => {
+  return {
+    metadata: {
+      currentPage: data.metadata.current_page,
+      pageSize: data.metadata.page_size,
+      totalRecords: data.metadata.total_records,
+      hasNextPage: data.metadata.has_next_page,
+    },
+    data: data.data.map((invitation: Record<string, any>) => ({
+      id: invitation._id,
+      createdAt: invitation.created_at,
+      updatedAt: invitation.updated_at,
+      isDeleted: invitation.is_deleted,
+      userStatus: invitation.user_status,
+      invitedBy: {
+        teamId: invitation.invited_by?.team_id || '',
+        userId: invitation.invited_by?.user_id || '',
+        entity: invitation.invited_by?.entity || '',
+        delegateUserId: invitation.invited_by?.delegate_user_id || '',
+      },
+      invitationType: invitation.invitation_type,
+      orgSlugId: invitation.org_slug_id,
+      invitee: {
+        teamId: invitation.invitee?.team_id || '',
+        userId: invitation.invitee?.user_id || '',
+        entity: invitation.invitee?.entity || '',
+        token: invitation.invitee?.token || '',
+        email: invitation.invitee?.email || '',
+        tokenExpiry: invitation.invitee?.token_expiry || 0,
+        name: invitation.invitee?.name || '',
+        imageUri: invitation.invitee?.image_uri || '',
+      },
+      status: invitation.status,
+    })),
+  };
+};

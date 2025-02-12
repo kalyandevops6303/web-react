@@ -11,9 +11,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@f
 import DelegateAccordionBody from './DelegateAccordionBody';
 import EditProfileAccordionBody from './EditProfileAccordionBody';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { FlexternUserAppRole, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { FlexternUserAppRole, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { Link } from 'react-router-dom';
 import routes from '@/flexternships/routes';
+import useLogout from '@/utility/hooks/useLogout';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { useState } from 'react';
 
 function DelegateProfile() {
   return (
@@ -51,6 +54,10 @@ function GenericProfile() {
 export default function ProfileDropdown() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const { handleLogout } = useLogout();
+
   const isClient = userDetails?.userType === UserType.CLIENT;
   const isDelegate = userDetails?.appRoles.includes(FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE);
 
@@ -58,9 +65,20 @@ export default function ProfileDropdown() {
     ? routes.clientProfile.generate(userDetails.id)
     : routes.talentProfileEdit.generate(userDetails.id); // TODO: Implement for delegate
 
-  const logout = (e: { preventDefault: () => void }) => {
+  const logout = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log('logout');
+    setIsLoggingOut(true);
+    try {
+      await handleLogout({ suppressToast: true });
+      showToastMessage(ToastType.SUCCESS, 'Logged out successfully');
+    } catch (error: unknown) {
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'An unexpected error occurred while logging out',
+      );
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   // Menu items that require accordion functionality
@@ -146,7 +164,7 @@ export default function ProfileDropdown() {
           className="text-sm text-error font-medium leading-5 p-4 hover:bg-error-light cursor-pointer"
           onSelect={logout}
         >
-          Logout
+          {isLoggingOut ? 'Logging out...' : 'Logout'}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

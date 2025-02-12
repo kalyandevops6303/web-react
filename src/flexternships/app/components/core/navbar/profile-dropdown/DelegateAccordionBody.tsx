@@ -3,10 +3,10 @@ import PrimaryIconText from '@flexternships/components/core/buttons/PrimaryIconT
 import { Plus, Settings } from 'react-feather';
 import TooltipInfo from '../../tooltips/TooltipInfo';
 import { FlexternDelegateInvitationStatus, ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { delegateInvitationsData } from '@/flexternships/mocks/navbar-data';
 import { useState } from 'react';
-import { inviteDelegate } from '@/flexternships/services/user-management';
+import { getDelegateInvitationsPaginated, inviteDelegate } from '@/flexternships/services/user-management';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
+import PaginatedList from '../../lists/PaginatedList';
 
 type DelegateItemProps = {
   name?: string;
@@ -78,19 +78,27 @@ function DelegateItem(props: DelegateItemProps) {
   );
 }
 
+type DelegateInvitation = {
+  invitee: { name?: string; email: string; imageUri?: string };
+  status: FlexternDelegateInvitationStatus;
+};
+
 export default function DelegateAccordionBody() {
   return (
-    <div className="flex flex-col gap-y-5 pt-3 pb-4 px-4">
-      {delegateInvitationsData.data.map((delegateInvitation) => (
-        <DelegateItem
-          key={delegateInvitation.id}
-          name={delegateInvitation.invitee.name}
-          email={delegateInvitation.invitee.email}
-          imageUri={delegateInvitation.invitee.imageUri}
-          status={delegateInvitation.status}
-        />
-      ))}
-      <div className="flex flex-col gap-y-2 text-trublue-secondary-500 self-start">
+    <div className="flex flex-col gap-y-5 pt-3 pb-4">
+      <PaginatedList<DelegateInvitation>
+        className="flex flex-col gap-y-5 max-h-52 px-4"
+        renderItem={(item) => (
+          <DelegateItem
+            name={item.invitee.name}
+            email={item.invitee.email}
+            imageUri={item.invitee.imageUri}
+            status={item.status}
+          />
+        )}
+        loadMore={getDelegateInvitationsPaginated}
+      />
+      <div className="flex flex-col gap-y-2 text-trublue-secondary-500 self-start px-4">
         <PrimaryIconText
           text="Add Delegate"
           icon={<Plus size={18} className="text-trublue-secondary-500" />}

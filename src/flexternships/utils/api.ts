@@ -65,6 +65,9 @@ export const routes = {
     },
   },
   userManagement: {
+    auth: {
+      logout: `${serviceUrls.userManagement}/user/logout`,
+    },
     static: {
       timezone: {
         fetchPaginated: `${serviceUrls.userManagement}/static/timezone/paginated`,
@@ -98,7 +101,8 @@ export const routes = {
       getNotificationsStats: `${serviceUrls.userManagement}/notifications/polling`,
     },
     invitation: {
-      delegate: `${serviceUrls.userManagement}/invitation/delegate`,
+      inviteDelegate: `${serviceUrls.userManagement}/invitation/delegate`,
+      getDelegatesPaginated: `${serviceUrls.userManagement}/invitation/delegate/status`,
     },
     files: {
       getImageUploadUrl: `${serviceUrls.userManagement}/user/profile/image-url`,
