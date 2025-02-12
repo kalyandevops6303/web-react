@@ -104,7 +104,7 @@ export default function Roles() {
     <div className="flex flex-col">
       <div className={Styles.tabContent}>
         <div className={Styles.tabContentHeader}>Required Roles</div>
-        <div className={`${Styles.tabContentBody} mt-6`}>
+        <div className={`${Styles.tabContentBody} mt-5`}>
           <div className="w-full">
             {fields.map((field, index) => (
               <RoleCard

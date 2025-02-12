@@ -68,7 +68,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
           </div>
         ))}
       </div>
-      <div className="max-w-[944px]">
+      <div className="max-w-[944px] pt-[10px]">
         {/* Progress Bar */}
         <FlatProgressBar currentProgress={currentTabIndex + 1} maxProgress={tabs.length} hidePercentage />
       </div>
