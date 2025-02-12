@@ -1,0 +1,130 @@
+import FlexternAvatar from '@flexternships/components/core/avatars/FlexternAvatar';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@flexternships/components/ui/dropdown-menu';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@flexternships/components/ui/accordion';
+import DelegateAccordionBody from './DelegateAccordionBody';
+import EditProfileAccordionBody from './EditProfileAccordionBody';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { FlexternUserAppRole, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { Link } from 'react-router-dom';
+import routes from '@/flexternships/routes';
+
+// Component for the profile dropdown menu
+export default function ProfileDropdown() {
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
+
+  const isClient = userDetails?.userType === UserType.CLIENT;
+  const isDelegate = userDetails?.appRoles.includes(FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE);
+
+  const publicProfileUrl = isClient
+    ? routes.clientProfile.generate(userDetails.id)
+    : routes.talentProfileEdit.generate(userDetails.id); // TODO: Implement for delegate
+
+  const logout = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    console.log('logout');
+  };
+
+  // Menu items that require accordion functionality
+  const accordionToDisplay = isClient
+    ? {
+        id: 'delegates',
+        label: 'Delegate(s)',
+        content: <DelegateAccordionBody />,
+      }
+    : {
+        id: 'edit-profile',
+        label: 'Edit Profile',
+        content: <EditProfileAccordionBody />,
+      };
+
+  return (
+    <DropdownMenu>
+      {/* Profile Trigger Button */}
+      <DropdownMenuTrigger className="border-b-2 border-transparent data-[state=open]:border-trublue-secondary-500 outline-none">
+        <div className="flex flex-row items-center gap-x-3.5 py-3 cursor-pointer">
+          <div className="flex flex-col items-end">
+            <div className="text-trublue-secondary-500 text-sm font-normal leading-5">Trusted Business Systems</div>
+            <div className="text-xs leading-4.5 font-normal text-trublue-secondary-500">
+              Roger Barry <span className="text-grey">(Client)</span>
+            </div>
+          </div>
+          <FlexternAvatar name="Roger Barry" />
+        </div>
+      </DropdownMenuTrigger>
+
+      {/* Dropdown Content */}
+      <DropdownMenuContent className="bg-white w-[90vw] max-w-96 pt-2 pb-1 px-0" sideOffset={8} align="end">
+        {/* Public Profile Link */}
+        {isDelegate ? (
+          <DropdownMenuItem className="p-4 hover:bg-trublue-light cursor-pointer">
+            <div className="flex flex-col gap-y-3">
+              <div className="text-grey text-sm font-medium leading-5">Delegate for:</div>
+              <div className="flex flex-row items-center gap-x-3.5">
+                <FlexternAvatar name="Roger Barry" />
+                <div>
+                  <div className="text-sm text-grey font-normal leading-5">Roger Barry</div>
+                  <div className="text-xs text-grey-muted font-normal leading-4.5">Client</div>
+                </div>
+              </div>
+            </div>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            asChild
+            className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
+          >
+            <Link to={publicProfileUrl}>Public Profile</Link>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+
+        {/* Client Edit Profile Link */}
+        {isClient && (
+          <>
+            <DropdownMenuItem
+              asChild
+              className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
+            >
+              <Link to={routes.clientProfileEdit.generate('account-details')}>Edit Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+          </>
+        )}
+
+        {/* Accordion Menu Items */}
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value={accordionToDisplay.id} key={accordionToDisplay.id} className="border-none">
+            <AccordionTrigger className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light data-[state=open]:bg-trublue-light cursor-pointer hover:no-underline">
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="p-0 m-0 cursor-pointer">
+                {accordionToDisplay.label}
+              </DropdownMenuItem>
+            </AccordionTrigger>
+            <AccordionContent className="p-0">{accordionToDisplay.content}</AccordionContent>
+          </AccordionItem>
+          <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+        </Accordion>
+
+        {/* Support Link */}
+        <DropdownMenuItem className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer">
+          Contact Support
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+
+        {/* Logout Button */}
+        <DropdownMenuItem
+          className="text-sm text-error font-medium leading-5 p-4 hover:bg-error-light cursor-pointer"
+          onSelect={logout}
+        >
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

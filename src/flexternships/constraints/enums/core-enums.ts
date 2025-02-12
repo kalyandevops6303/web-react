@@ -119,3 +119,9 @@ export enum MessageType {
   ERROR = 'error',
   PROJECTS = 'projects',
 }
+
+export enum FlexternDelegateInvitationStatus {
+  INVITED = 'INVITED',
+  ACCEPTED = 'ACCEPTED',
+  EXPIRED = 'EXPIRED',
+}
