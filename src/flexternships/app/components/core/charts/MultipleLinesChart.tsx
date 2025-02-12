@@ -44,7 +44,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
     if (!active || !payload?.length) return null;
 
     return (
-      <div className="bg-white w-[300px] max-w-1/2 px-3 py-2 border rounded-md shadow-lg">
+      <div className="bg-white w-[300px] max-w-1/2 px-3 py-2 border rounded-md shadow-lg flex flex-col gap-y-1">
         <p className="font-montserrat text-2xs font-semibold leading-4 text-grey-500 uppercase">{label} PERFORMANCE</p>
         {payload.map((entry: any) => {
           if (!entry.dataKey) return null;
@@ -156,7 +156,10 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                       </span>
                     </div>
                     <div className="font-montserrat text-sm font-medium leading-sm-custom text-dark-700">{label}</div>
-                    <div className="flex w-full h-1 rounded-full z-10" style={{ backgroundColor: color }}></div>
+                    <div
+                      className="flex w-[52px] max-w-full h-1 rounded-full z-10"
+                      style={{ backgroundColor: color }}
+                    ></div>
                   </div>
                 ) : (
                   <div
