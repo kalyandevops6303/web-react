@@ -22,6 +22,7 @@ import {
 } from '@/flexternships/app/components/ui/select';
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
 import CustomXAxisLabel from './labels/CustomXAxisLabel';
+import TooltipInfo from '../../components/core/tooltips/TooltipInfo';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -239,7 +240,13 @@ export default function IndividualAnalytics() {
             </span>
             <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
           </div>
-          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Learnability</div>
+
+          <div className="flex items-center gap-2">
+            <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Learnability Score</div>
+            <TooltipInfo iconSize={18}>
+              <div>Learnability Score</div>
+            </TooltipInfo>
+          </div>
         </div>
         <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
           <div>
@@ -247,7 +254,13 @@ export default function IndividualAnalytics() {
               {formattedIndividualOverviewDetails?.kudosCount + formattedIndividualOverviewDetails?.wowCount}
             </span>
           </div>
-          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Recognitions</div>
+
+          <div className="flex items-center gap-2">
+            <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Recognitions</div>
+            <TooltipInfo iconSize={18}>
+              <div>Recognitions</div>
+            </TooltipInfo>
+          </div>
         </div>
       </div>
       <div className="-mt-6">
