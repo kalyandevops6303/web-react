@@ -181,7 +181,7 @@ const LeftSideBarProjectDetails = () => {
 
   return (
     <div className="flex flex-col gap-y-5">
-      <SimpleElevatedCard className="bg-white flex flex-col items-start gap-4 px-5 py-5 md:w-[350px] h-fit rounded-xl w-[400px]">
+      <SimpleElevatedCard className="bg-white flex flex-col items-start gap-4 px-6 py-[18px] md:w-[350px] h-fit rounded-xl w-[400px]">
         <div className="flex flex-row items-center w-full justify-between">
           <DocumentsModal
             isOpen={documentsModal}

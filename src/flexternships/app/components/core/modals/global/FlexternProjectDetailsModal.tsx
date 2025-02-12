@@ -35,7 +35,7 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
             />
             <ProjectDetailsItem
               className="w-[333px] m-0"
-              title="Department Name (BU)"
+              title="Department Name (BU) *"
               value={data?.client?.departmentName}
             />
             <ProjectDetailsItem
@@ -67,7 +67,7 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
             />
             <ProjectDetailsItem
               className="w-[333px] m-0"
-              title="Estimated Hours/Week per Flextern"
+              title="Estimated Hours/Week per Flextern *"
               value={
                 data?.requirements?.estimatedWeeklyHours
                   ? `${data?.requirements?.estimatedWeeklyHours}hrs weekly`
@@ -135,7 +135,7 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
                   <div className={Styles.projectDetailsCardBody}>
                     <div className={`${TabStyles.rolesPreview} m-0`}>
                       <div className={TabStyles.rolesPreviewHeader}>
-                        <div className={`${TabStyles.rolesPreviewHeaderItem} w-[240px]`}>Role</div>
+                        <div className={`${TabStyles.rolesPreviewHeaderItem} w-[240px]`}>Roles</div>
                         <div className={`${TabStyles.rolesPreviewHeaderItem} w-[100px]`}>Count</div>
                         <div className={`${TabStyles.rolesPreviewHeaderItem} grow`}>Skills</div>
                         <div className={`${TabStyles.rolesPreviewHeaderItem} grow`}>Tools</div>

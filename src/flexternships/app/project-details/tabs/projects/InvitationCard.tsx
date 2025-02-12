@@ -7,9 +7,9 @@ import parse from 'html-react-parser';
 
 // styles
 import Styles from '@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
 export default function InvitationCard({ hideSubtitle = false, isCollapsible = true }) {
   const params = useParams();
@@ -25,6 +25,7 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);
+
   const invitationCardData = {
     isCollapsible,
     bordered: true,
@@ -79,7 +80,6 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
   }
 
   const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.createdAt || 1, Date.now());
-
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="px-4 pt-4 flex flex-col gap-y-6 w-full">
@@ -87,7 +87,15 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
           <div className="flex gap-2">
             <Avatar>
               <AvatarImage
-                src={invitationCardDetailsData?.image_uri ? invitationCardDetailsData?.image_uri : defaultAvatar}
+                src={
+                  invitationCardDetailsData?.image_uri?.length > 0
+                    ? invitationCardDetailsData?.image_uri
+                    : generateAvatar(
+                        'avatar',
+                        (projectDetails?.clientInfo?.firstName?.charAt(0)?.toUpperCase() || '') +
+                          (projectDetails?.clientInfo?.lastName?.charAt(0)?.charAt(0)?.toUpperCase() || ''),
+                      )
+                }
               />
               <AvatarFallback>
                 {invitationCardDetailsData?.company

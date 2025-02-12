@@ -70,8 +70,8 @@ export function formatEpochToHumanReadable(
   const dt = timezone ? DateTime.fromMillis(epoch).setZone(timezone) : DateTime.fromMillis(epoch);
 
   const format = includeTime
-    ? `MMM d, ${truncateYear ? 'yy' : 'yyyy'}, hh:mm a`
-    : `MMM d, ${truncateYear ? 'yy' : 'yyyy'}`;
+    ? `MMM d ${truncateYear ? 'yy' : 'yyyy'}, hh:mm a`
+    : `MMM d ${truncateYear ? 'yy' : 'yyyy'}`;
 
   return dt.toFormat(format);
 }
