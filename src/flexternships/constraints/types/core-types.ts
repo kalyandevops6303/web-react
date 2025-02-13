@@ -86,6 +86,7 @@ export type FlexternClientDetails = {
   userType: UserType;
   firstName: string;
   lastName: string;
+  imageUri?: string;
   timezone: Timezone;
   departmentName: string;
   email: string;
@@ -120,6 +121,7 @@ export type FlexternTalentDetails = {
   userType: UserType;
   firstName: string;
   lastName: string;
+  imageUri?: string;
   timezone: Timezone;
   email: string;
   phone: string;

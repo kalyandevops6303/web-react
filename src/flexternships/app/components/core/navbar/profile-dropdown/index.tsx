@@ -36,7 +36,7 @@ function DelegateProfile() {
           {fullName} <span className="text-grey">({clientFullName})</span>
         </div>
       </div>
-      <FlexternAvatar name={fullName} />
+      <FlexternAvatar name={fullName} imageUri={userDetails.imageUri} />
     </div>
   );
 }
@@ -54,7 +54,7 @@ function GenericProfile() {
         <div className="text-trublue-secondary-500 text-sm font-normal leading-5">{fullName}</div>
         <div className="text-xs leading-4.5 font-normal text-grey">{isClient ? 'Client' : 'Talent'}</div>
       </div>
-      <FlexternAvatar name={fullName} />
+      <FlexternAvatar name={fullName} imageUri={userDetails.imageUri} />
     </div>
   );
 }
@@ -123,7 +123,6 @@ export default function ProfileDropdown() {
         label: 'Edit Profile',
         content: <TalentEditProfileAccordionBody />,
       };
-
   return (
     <>
       <DropdownMenu modal={false}>
@@ -141,7 +140,10 @@ export default function ProfileDropdown() {
                 <div className="flex flex-col gap-y-3">
                   <div className="text-grey text-sm font-medium leading-5">Delegate for:</div>
                   <div className="flex flex-row items-center gap-x-3.5">
-                    <FlexternAvatar name={`${adminClient.firstName} ${adminClient.lastName}`} />
+                    <FlexternAvatar
+                      name={`${adminClient.firstName} ${adminClient.lastName}`}
+                      imageUri={adminClient.imageUri}
+                    />
                     <div>
                       <div className="text-sm text-grey font-normal leading-5">{`${adminClient.firstName} ${adminClient.lastName}`}</div>
                       <div className="text-xs text-grey-muted font-normal leading-4.5">Client</div>

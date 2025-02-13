@@ -38,7 +38,7 @@ export default function Navbar() {
    * @param {string} route - Route path to check against current location
    * @returns {boolean} Whether the current route matches
    */
-  const isActiveRoute = (route: string) => location.pathname.includes(route);
+  const isActiveRoute = (route: string): boolean => location.pathname.includes(route);
 
   /**
    * Handles navigation item clicks with work-in-progress check

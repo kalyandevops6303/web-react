@@ -19,6 +19,7 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         email: data.email,
         firstName: data.client_info?.first_name ?? data?.talent_info?.first_name,
         lastName: data.client_info?.last_name ?? data?.talent_info?.last_name,
+        imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
         timezone: {
           _id: data.timezone?._id,
           name: data.timezone?.name,
@@ -42,7 +43,6 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
           name: data.phone_country?.name,
         },
         role: data.talent_info?.role,
-        imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
         isBlocked: data.is_blocked,
         adminClient: {
           id: data?.admin_client_info?.user_id,
