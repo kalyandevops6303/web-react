@@ -37,7 +37,7 @@ html {
     margin-left: $menu-expanded-width;
 
     &.app-content {
-      padding: 5.8rem 1.5rem 0rem 1.5rem !important;
+      padding: 0 1.5rem 0rem 1.5rem !important;
       padding: calc(#{$content-padding} + #{$navbar-height} + #{$floating-nav-margin}) #{$content-padding} 0;
 
       &.show-overlay {
@@ -185,7 +185,7 @@ html {
   //for navbar hidden
   .trumio .navbar-hidden {
     .app-content {
-      padding: #{$content-padding} #{$content-padding} 0 #{$content-padding} !important;
+      padding: 0 #{$content-padding} 0 #{$content-padding} !important;
     }
 
     &.footer-static {
@@ -227,7 +227,7 @@ html {
     }
 
     .app-content {
-      padding: #{$content-padding} #{$content-padding} 0 #{$content-padding};
+      padding: 0 #{$content-padding} 0 #{$content-padding};
     }
 
     &.footer-static {
@@ -268,7 +268,7 @@ html {
   // for sticky navbar
   .trumio .navbar-sticky {
     .app-content {
-      padding: calc(#{$content-padding} + #{$navbar-height}) #{$content-padding} 0 #{$content-padding};
+      padding: #{$content-padding} 0 #{$content-padding};
     }
 
     &.footer-static {

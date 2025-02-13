@@ -83,9 +83,9 @@ const routes = {
     path: '/profile/client/:userId',
     generate: (userId: string) => `/profile/client/${userId}`,
   },
-  userProfile: {
+  talentProfile: {
     path: '/profile/:userType/:userId',
-    generate: (userType: string, userId: string) => `/profile/${userType}/${userId}`,
+    generate: (userId: string) => `/profile/talent/${userId}`,
   },
   clientProfileEdit: {
     path: '/client-profile-edit/:tabId',

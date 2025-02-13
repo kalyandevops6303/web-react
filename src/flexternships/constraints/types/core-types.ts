@@ -103,6 +103,15 @@ export type FlexternClientDetails = {
     name: string;
   };
   isBlocked?: boolean;
+  adminClient?: {
+    department: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUri?: string;
+    title: string;
+    companyName: string;
+  };
 };
 
 export type FlexternTalentDetails = {
@@ -155,6 +164,7 @@ export type AppState = {
   modal: GlobalModalType | undefined;
   modalContent: GlobalModalContent | undefined;
   modalActions: GlobalModalActions | undefined;
+  unreadNotificationsCount: number;
 };
 
 export type AppActions = {
@@ -168,6 +178,7 @@ export type AppActions = {
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
   unsetWip: () => void;
   getCurrentNextPath: () => string | undefined;
+  fetchNotificationsCount: () => void;
   resetStore: () => void;
 };
 
