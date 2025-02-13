@@ -104,6 +104,7 @@ export type FlexternClientDetails = {
   };
   isBlocked?: boolean;
   adminClient?: {
+    id: string;
     department: string;
     firstName: string;
     lastName: string;

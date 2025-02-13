@@ -22,15 +22,21 @@ import TalentEditProfileAccordionBody from './TalentEditProfileAccordionBody';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 
 function DelegateProfile() {
+  const userDetails = useFlexternUserStore((state) => state.userDetails) as FlexternClientDetails;
+
+  // Derived
+  const fullName = `${userDetails.firstName} ${userDetails.lastName}`;
+  const clientFullName = `${userDetails.adminClient?.firstName} ${userDetails.adminClient?.lastName}`;
+
   return (
     <div className="flex flex-row items-center gap-x-3.5 py-3 cursor-pointer">
       <div className="flex flex-col items-end">
         <div className="text-trublue-secondary-500 text-sm font-normal leading-5">Trusted Business Systems</div>
         <div className="text-xs leading-4.5 font-normal text-trublue-secondary-500">
-          Roger Barry <span className="text-grey">(Client)</span>
+          {fullName} <span className="text-grey">({clientFullName})</span>
         </div>
       </div>
-      <FlexternAvatar name="Roger Barry" />
+      <FlexternAvatar name={fullName} />
     </div>
   );
 }
@@ -130,17 +136,19 @@ export default function ProfileDropdown() {
         <DropdownMenuContent className="bg-white w-[90vw] max-w-96 pt-2 pb-1 px-0" sideOffset={8} align="end">
           {/* Public Profile Link */}
           {isDelegate && adminClient ? (
-            <DropdownMenuItem className="p-4 hover:bg-trublue-light cursor-pointer">
-              <div className="flex flex-col gap-y-3">
-                <div className="text-grey text-sm font-medium leading-5">Delegate for:</div>
-                <div className="flex flex-row items-center gap-x-3.5">
-                  <FlexternAvatar name={`${adminClient.firstName} ${adminClient.lastName}`} />
-                  <div>
-                    <div className="text-sm text-grey font-normal leading-5">{`${adminClient.firstName} ${adminClient.lastName}`}</div>
-                    <div className="text-xs text-grey-muted font-normal leading-4.5">Client</div>
+            <DropdownMenuItem asChild className="p-4 hover:bg-trublue-light cursor-pointer">
+              <Link to={routes.clientProfile.generate(adminClient.id)}>
+                <div className="flex flex-col gap-y-3">
+                  <div className="text-grey text-sm font-medium leading-5">Delegate for:</div>
+                  <div className="flex flex-row items-center gap-x-3.5">
+                    <FlexternAvatar name={`${adminClient.firstName} ${adminClient.lastName}`} />
+                    <div>
+                      <div className="text-sm text-grey font-normal leading-5">{`${adminClient.firstName} ${adminClient.lastName}`}</div>
+                      <div className="text-xs text-grey-muted font-normal leading-4.5">Client</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem

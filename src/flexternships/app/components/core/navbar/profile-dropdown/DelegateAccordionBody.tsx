@@ -58,7 +58,7 @@ function DelegateItem(props: DelegateItemProps) {
       <div>
         {isAccepted && (
           <span className="py-[1px] px-[9px] rounded-[17px] border-1 border-trublue-secondary-500 text-xs font-semibold leading-4.5 text-trublue-secondary-500">
-            Accepted
+            Full
           </span>
         )}
         {isExpired && (

@@ -2,14 +2,13 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import CollapsableCard from '@flexternships/app/components/core/cards/CollapsableCard';
-import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
 import parse from 'html-react-parser';
 
 // styles
 import Styles from '@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 
 export default function InvitationCard({ hideSubtitle = false, isCollapsible = true }) {
   const params = useParams();
@@ -85,19 +84,7 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
       <div className="px-4 pt-4 flex flex-col gap-y-6 w-full">
         <div className="flex flex-row items-start w-full justify-between">
           <div className="flex gap-2">
-            <Avatar>
-              <AvatarImage
-                src={invitationCardDetailsData?.image_uri ? invitationCardDetailsData?.image_uri : defaultAvatar}
-              />
-              <AvatarFallback>
-                {invitationCardDetailsData?.company
-                  ?.split(' ')
-                  .slice(0, 2)
-                  .map((word) => word[0])
-                  .join('')
-                  .toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <FlexternAvatar name={invitationCardDetailsData?.company} imageUri={invitationCardDetailsData?.image_uri} />
             <div>
               <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.company}</div>
               <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.department}</div>
