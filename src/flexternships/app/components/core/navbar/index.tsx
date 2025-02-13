@@ -58,7 +58,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="flex flex-row justify-between items-center bg-white shadow-card px-6"
+      className="sticky top-0 z-50 flex flex-row justify-between items-center bg-white shadow-card px-6"
       role="navigation"
       aria-label="Main navigation"
     >
