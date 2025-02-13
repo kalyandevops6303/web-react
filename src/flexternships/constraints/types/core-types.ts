@@ -103,6 +103,15 @@ export type FlexternClientDetails = {
     name: string;
   };
   isBlocked?: boolean;
+  adminClient?: {
+    department: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUri?: string;
+    title: string;
+    companyName: string;
+  };
 };
 
 export type FlexternTalentDetails = {

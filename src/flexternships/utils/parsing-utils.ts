@@ -330,7 +330,7 @@ export const parseQuickActionsStats = (data: Record<string, any>): QuickActionsS
   return {
     teamMembers: data.team_members_count,
     totalRecognitions: data.kudos_count || data.wow_count || 0,
-    totalNotes: data.note_count || 0, // TODO: Remove this after backend is updated
+    totalNotes: data.note_count || 0,
   };
 };
 

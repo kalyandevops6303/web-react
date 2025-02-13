@@ -150,7 +150,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: routes.userProfile.path,
+    path: routes.talentProfile.path,
     element: <UserDetails />,
   },
   {

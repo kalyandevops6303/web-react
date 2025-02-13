@@ -101,21 +101,23 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
                 .join(', ')}
             </span>
           </div>
-          <div className="flex flex-col gap-y-3">
-            <div className="text-sm text-grey font-semibold">Social Links</div>
-            <div className="flex flex-row flex-wrap gap-x-2">
-              {clientDetails?.socialLinks?.map((link, index) => (
-                <a
-                  key={index}
-                  href={link.url}
-                  target="_blank"
-                  className="cursor-pointer p-2.5 rounded-full text-trublue bg-trublue-light"
-                >
-                  {getLinkIcon(link.platform)}
-                </a>
-              ))}
+          {clientDetails?.socialLinks?.length > 0 && (
+            <div className="flex flex-col gap-y-3">
+              <div className="text-sm text-grey font-semibold">Social Links</div>
+              <div className="flex flex-row flex-wrap gap-x-2">
+                {clientDetails.socialLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    className="cursor-pointer p-2.5 rounded-full text-trublue bg-trublue-light"
+                  >
+                    {getLinkIcon(link.platform)}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       {clientDetails.userId === userDetails.id && (

@@ -44,6 +44,15 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         role: data.talent_info?.role,
         imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
         isBlocked: data.is_blocked,
+        adminClient: {
+          department: data?.admin_client_info?.department,
+          firstName: data?.admin_client_info?.first_name,
+          lastName: data?.admin_client_info?.last_name,
+          email: data?.admin_client_info?.email,
+          imageUri: data?.admin_client_info?.image_uri,
+          title: data?.admin_client_info?.title,
+          companyName: data?.admin_client_info?.company_name,
+        },
       },
     });
   } catch (error: unknown) {

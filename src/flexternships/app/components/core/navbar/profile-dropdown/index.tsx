@@ -9,7 +9,6 @@ import {
 } from '@flexternships/components/ui/dropdown-menu';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@flexternships/components/ui/accordion';
 import DelegateAccordionBody from './DelegateAccordionBody';
-import EditProfileAccordionBody from './EditProfileAccordionBody';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternUserAppRole, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { Link } from 'react-router-dom';
@@ -19,6 +18,8 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { useState } from 'react';
 import ContactSupportModal from '../../modals/profile-dropdown/ContactSupportModal';
 import ContactSupportSuccessModal from '../../modals/profile-dropdown/ContactSupportSuccessModal';
+import TalentEditProfileAccordionBody from './TalentEditProfileAccordionBody';
+import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 
 function DelegateProfile() {
   return (
@@ -65,9 +66,11 @@ export default function ProfileDropdown() {
   const isClient = userDetails?.userType === UserType.CLIENT;
   const isDelegate = userDetails?.appRoles.includes(FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE);
 
+  const adminClient = (userDetails as FlexternClientDetails).adminClient;
+
   const publicProfileUrl = isClient
     ? routes.clientProfile.generate(userDetails.id)
-    : routes.talentProfileEdit.generate(userDetails.id); // TODO: Implement for delegate
+    : routes.talentProfile.generate(userDetails.id);
 
   const logout = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -112,7 +115,7 @@ export default function ProfileDropdown() {
     : {
         id: 'edit-profile',
         label: 'Edit Profile',
-        content: <EditProfileAccordionBody />,
+        content: <TalentEditProfileAccordionBody />,
       };
 
   return (
@@ -126,14 +129,14 @@ export default function ProfileDropdown() {
         {/* Dropdown Content */}
         <DropdownMenuContent className="bg-white w-[90vw] max-w-96 pt-2 pb-1 px-0" sideOffset={8} align="end">
           {/* Public Profile Link */}
-          {isDelegate ? (
+          {isDelegate && adminClient ? (
             <DropdownMenuItem className="p-4 hover:bg-trublue-light cursor-pointer">
               <div className="flex flex-col gap-y-3">
                 <div className="text-grey text-sm font-medium leading-5">Delegate for:</div>
                 <div className="flex flex-row items-center gap-x-3.5">
-                  <FlexternAvatar name="Roger Barry" />
+                  <FlexternAvatar name={`${adminClient.firstName} ${adminClient.lastName}`} />
                   <div>
-                    <div className="text-sm text-grey font-normal leading-5">Roger Barry</div>
+                    <div className="text-sm text-grey font-normal leading-5">{`${adminClient.firstName} ${adminClient.lastName}`}</div>
                     <div className="text-xs text-grey-muted font-normal leading-4.5">Client</div>
                   </div>
                 </div>
