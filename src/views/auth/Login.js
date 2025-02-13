@@ -203,7 +203,7 @@ const Login = () => {
                 <InputPasswordToggle
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  className="input-group-merge"
+                  className="input-group-merge p-0"
                   id="password"
                   placeholder="Enter password"
                   onCopy={(e) => {

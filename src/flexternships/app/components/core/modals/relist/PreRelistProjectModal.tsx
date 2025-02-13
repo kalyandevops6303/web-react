@@ -3,13 +3,14 @@ import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
 import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 import { useNavigate } from 'react-router-dom';
+import routes from '@/flexternships/routes';
 
 export default function PreRelistProjectModal(props: PreRelistProjectModalProps) {
   const { onClose, isOpen, onConfirm } = props;
   const navigate = useNavigate();
 
   const goToCreateProject = () => {
-    navigate('/create-project');
+    navigate(routes.createProject.path);
     onClose();
   };
 

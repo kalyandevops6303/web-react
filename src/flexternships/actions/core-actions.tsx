@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { getUserDetails } from '@flexternships/services/user-management';
+import { getNotificationsStats, getUserDetails } from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
 import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
 import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
@@ -19,6 +19,7 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         email: data.email,
         firstName: data.client_info?.first_name ?? data?.talent_info?.first_name,
         lastName: data.client_info?.last_name ?? data?.talent_info?.last_name,
+        imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
         timezone: {
           _id: data.timezone?._id,
           name: data.timezone?.name,
@@ -42,8 +43,17 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
           name: data.phone_country?.name,
         },
         role: data.talent_info?.role,
-        imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
         isBlocked: data.is_blocked,
+        adminClient: {
+          id: data?.admin_client_info?.user_id,
+          department: data?.admin_client_info?.department,
+          firstName: data?.admin_client_info?.first_name,
+          lastName: data?.admin_client_info?.last_name,
+          email: data?.admin_client_info?.email,
+          imageUri: data?.admin_client_info?.image_uri,
+          title: data?.admin_client_info?.title,
+          companyName: data?.admin_client_info?.company_name,
+        },
       },
     });
   } catch (error: unknown) {
@@ -81,4 +91,15 @@ export const setWip = (modalContent: GlobalModalContent, modalActions: GlobalMod
 
 export const unsetWip = (set: any) => {
   set({ isWip: false, modal: undefined, modalContent: undefined, modalActions: undefined });
+};
+
+export const fetchNotificationsCount = async (set: any) => {
+  try {
+    const data = await getNotificationsStats();
+    set({ unreadNotificationsCount: data?.unreadNotificationsCount || 0 });
+  } catch (error: unknown) {
+    console.error(
+      error instanceof Error ? error.message : 'An unexpected error occurred while fetching notifications count',
+    );
+  }
 };

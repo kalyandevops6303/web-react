@@ -24,6 +24,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
+import routes from '@/flexternships/routes';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);
@@ -87,7 +88,7 @@ export default function Preview() {
       await recallProjectById(createdProjectId);
       setRecallTimeLeft(-1);
       closeModal();
-      navigate(`/create-project/${createdProjectId}`);
+      navigate(routes.editProject.generate(createdProjectId));
     } catch (error) {
       showToastMessage(
         ToastType.ERROR,
@@ -109,7 +110,7 @@ export default function Preview() {
   const closeSuccessfulCreation = () => {
     resetProjectCreationStore();
     closeModal();
-    navigate('/marketplace/my_listings');
+    navigate(`${routes.marketplace.path}/my_listings`);
   };
 
   useEffect(() => {

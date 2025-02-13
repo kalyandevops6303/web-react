@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
-import { Eye, MessageSquare, Paperclip, User } from 'react-feather';
+import { Eye, MessageSquare, Paperclip } from 'react-feather';
 import {
   ProjectPrimaryStatus,
   ProjectSecondaryStatus,
@@ -20,8 +19,7 @@ import {
   ProjectPanelIcon2Classnames,
   StatusType,
 } from '@/flexternships/constraints/enums/project-enums';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { userTypes } from '@/utility/constants/Constant';
 import DocumentsModal from '../../core/modals/DocumentsModal';
 import { epochDifferenceInDays, formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
@@ -47,6 +45,8 @@ import {
   getProjectPanelDate2Icon,
   getProjectPanelDate2Values,
 } from '@/flexternships/static/project-left-panel-content';
+import FlexternAvatar from '../../core/avatars/FlexternAvatar';
+import routes from '@/flexternships/routes';
 
 enum UserTypeChipClassnames {
   TALENT = 'bg-yellow-soft text-error',
@@ -202,32 +202,30 @@ const LeftSideBarProjectDetails = () => {
         <h1 className="text-grey-heading font-medium text-4.5 leading-[21px] font-montserrat">{data?.details?.name}</h1>
 
         {userDetails?.userType === userTypes.talent && (
-          <div className="flex flex-row items-center justify-center gap-3">
-            <div className="flex flex-col items-center justify-center gap-1">
-              <Avatar>
-                <AvatarImage
-                  src={data?.clientInfo?.imageUri?.length! > 0 ? data?.clientInfo?.imageUri : defaultAvatar}
+          <Link to={routes.clientProfile.generate(data?.clientInfo?.userId)}>
+            <div className="flex flex-row items-center justify-center gap-3">
+              <div className="flex flex-col items-center justify-center gap-1">
+                <FlexternAvatar
+                  name={`${data?.clientInfo?.firstName} ${data?.clientInfo?.lastName}`}
+                  imageUri={data?.clientInfo?.imageUri}
                 />
-                <AvatarFallback>
-                  <User color="#6E6B7B" />
-                </AvatarFallback>
-              </Avatar>
-              <h1
-                className={classNames(UserTypeChipClassnames[UserType?.CLIENT], `font-semibold px-2 py-1 rounded-xl`)}
-              >
-                Client
-              </h1>
-            </div>
+                <h1
+                  className={classNames(UserTypeChipClassnames[UserType?.CLIENT], `font-semibold px-2 py-1 rounded-xl`)}
+                >
+                  Client
+                </h1>
+              </div>
 
-            <div className="flex flex-col items-start gap-1">
-              <h1 className="text-grey-heading font-normal text-base font-montserrat">
-                <div>{data?.clientInfo?.departmentName ?? ''}</div>
-                <div>
-                  {data?.clientInfo?.firstName ?? ''} {data?.clientInfo?.lastName ?? ''}
-                </div>
-              </h1>
+              <div className="flex flex-col items-start gap-1">
+                <h1 className="text-grey-heading font-normal text-base font-montserrat">
+                  <div>{data?.clientInfo?.departmentName ?? ''}</div>
+                  <div>
+                    {data?.clientInfo?.firstName ?? ''} {data?.clientInfo?.lastName ?? ''}
+                  </div>
+                </h1>
+              </div>
             </div>
-          </div>
+          </Link>
         )}
         <div className="text-grey-heading font-medium text-lg leading-[21px] font-montserrat mt-2">Project Details</div>
         <div className="h-[1px] w-[313px] bg-grey-border"></div>

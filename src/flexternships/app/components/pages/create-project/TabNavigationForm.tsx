@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import Spinner from '../../core/Spinner';
+import routes from '@/flexternships/routes';
 
 export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
   const currentTabIndex = useProjectCreationStore((state) => state.currentTabIndex);
@@ -29,7 +30,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
 
   const redirectToMyListings = () => {
     closeModal();
-    navigate('/marketplace/my_listings');
+    navigate(`${routes.marketplace.path}/my_listings`);
     resetProjectCreationStore();
   };
 
@@ -42,7 +43,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
           await populateDraftProject(projectId);
         } catch (error) {
           showToastMessage(ToastType.ERROR, 'An unexpected error occurred while loading the draft project data');
-          navigate('/create-project');
+          navigate(routes.createProject.path);
         } finally {
           setIsDraftLoading(false);
         }

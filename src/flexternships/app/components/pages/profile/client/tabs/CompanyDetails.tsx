@@ -21,7 +21,7 @@ import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate } from 'react-router-dom';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-
+import routes from '@/flexternships/routes';
 export default function CompanyDetails() {
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
@@ -82,7 +82,7 @@ export default function CompanyDetails() {
 
   const goToNextTab = () => {
     if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
-      navigate('/client-profile-edit/social-details');
+      navigate(routes.clientProfileEdit.generate('social-details'));
     } else {
       nextTab();
     }
@@ -90,7 +90,7 @@ export default function CompanyDetails() {
 
   const goToPreviousTab = () => {
     if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
-      navigate('/client-profile-edit/account-details');
+      navigate(routes.clientProfileEdit.generate('account-details'));
     } else {
       previousTab();
     }

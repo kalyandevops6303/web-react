@@ -1,5 +1,5 @@
-import { ClientDelegateRole } from '../../constraints/enums/profile-enums';
+import { FlexternDelegateInvitationType } from '@/flexternships/constraints/enums/core-enums';
 
 export const clientDelegateRoleText = {
-  [ClientDelegateRole.FULL_ACCESS]: 'Full Access Delegate',
+  [FlexternDelegateInvitationType.FULL_ACCESS]: 'Full Access Delegate',
 };
