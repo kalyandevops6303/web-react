@@ -95,7 +95,7 @@ export default function ProfileDropdown() {
       };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       {/* Profile Trigger Button */}
       <DropdownMenuTrigger className="border-b-2 border-transparent data-[state=open]:border-trublue-secondary-500 outline-none">
         {isDelegate ? <DelegateProfile /> : <GenericProfile />}

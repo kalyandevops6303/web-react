@@ -1,12 +1,13 @@
 import FlexternAvatar from '@flexternships/components/core/avatars/FlexternAvatar';
 import PrimaryIconText from '@flexternships/components/core/buttons/PrimaryIconText';
-import { Plus, Settings } from 'react-feather';
+import { Plus } from 'react-feather';
 import TooltipInfo from '../../tooltips/TooltipInfo';
 import { FlexternDelegateInvitationStatus, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { useState } from 'react';
 import { getDelegateInvitationsPaginated, inviteDelegate } from '@/flexternships/services/user-management';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import PaginatedList from '../../lists/PaginatedList';
+import InviteDelegateModal from '../../modals/global/InviteDelegateModal';
 
 type DelegateItemProps = {
   name?: string;
@@ -84,6 +85,16 @@ type DelegateInvitation = {
 };
 
 export default function DelegateAccordionBody() {
+  const [isInviteDelegateModalOpen, setIsInviteDelegateModalOpen] = useState(false);
+
+  const handleCloseInviteDelegateModal = () => {
+    setIsInviteDelegateModalOpen(false);
+  };
+
+  const handleAddDelegate = () => {
+    setIsInviteDelegateModalOpen(true);
+  };
+
   return (
     <div className="flex flex-col gap-y-5 pt-3 pb-4">
       <PaginatedList<DelegateInvitation>
@@ -102,14 +113,15 @@ export default function DelegateAccordionBody() {
         <PrimaryIconText
           text="Add Delegate"
           icon={<Plus size={18} className="text-trublue-secondary-500" />}
-          onClick={() => {}}
+          onClick={handleAddDelegate}
         />
-        <PrimaryIconText
+        {/* <PrimaryIconText
           text="Delegate Settings"
           icon={<Settings size={18} className="text-trublue-secondary-500" />}
-          onClick={() => {}}
-        />
+          onClick={() => { }}
+        /> */}
       </div>
+      <InviteDelegateModal isOpen={isInviteDelegateModalOpen} onClose={handleCloseInviteDelegateModal} />
     </div>
   );
 }
