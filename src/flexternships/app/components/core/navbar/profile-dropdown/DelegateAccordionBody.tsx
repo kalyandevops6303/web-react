@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { getDelegateInvitationsPaginated, inviteDelegate } from '@/flexternships/services/user-management';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import PaginatedList from '../../lists/PaginatedList';
-import InviteDelegateModal from '../../modals/profile-dropdown/InviteDelegateModal';
+import { DropdownMenuItem } from '../../../ui/dropdown-menu';
 
 type DelegateItemProps = {
   name?: string;
@@ -84,17 +84,7 @@ type DelegateInvitation = {
   status: FlexternDelegateInvitationStatus;
 };
 
-export default function DelegateAccordionBody() {
-  const [isInviteDelegateModalOpen, setIsInviteDelegateModalOpen] = useState(false);
-
-  const handleCloseInviteDelegateModal = () => {
-    setIsInviteDelegateModalOpen(false);
-  };
-
-  const handleAddDelegate = () => {
-    setIsInviteDelegateModalOpen(true);
-  };
-
+export default function DelegateAccordionBody({ onAddDelegate }: { onAddDelegate: () => void }) {
   return (
     <div className="flex flex-col gap-y-5 pt-3 pb-4">
       <PaginatedList<DelegateInvitation>
@@ -110,18 +100,20 @@ export default function DelegateAccordionBody() {
         loadMore={getDelegateInvitationsPaginated}
       />
       <div className="flex flex-col gap-y-2 text-trublue-secondary-500 self-start px-4">
-        <PrimaryIconText
-          text="Add Delegate"
-          icon={<Plus size={18} className="text-trublue-secondary-500" />}
-          onClick={handleAddDelegate}
-        />
+        <DropdownMenuItem asChild>
+          <PrimaryIconText
+            text="Add Delegate"
+            icon={<Plus size={18} className="text-trublue-secondary-500" />}
+            onClick={onAddDelegate}
+          />
+        </DropdownMenuItem>
+
         {/* <PrimaryIconText
           text="Delegate Settings"
           icon={<Settings size={18} className="text-trublue-secondary-500" />}
           onClick={() => { }}
         /> */}
       </div>
-      <InviteDelegateModal isOpen={isInviteDelegateModalOpen} onClose={handleCloseInviteDelegateModal} />
     </div>
   );
 }

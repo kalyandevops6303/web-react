@@ -20,6 +20,7 @@ import ContactSupportModal from '../../modals/profile-dropdown/ContactSupportMod
 import ContactSupportSuccessModal from '../../modals/profile-dropdown/ContactSupportSuccessModal';
 import TalentEditProfileAccordionBody from './TalentEditProfileAccordionBody';
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
+import InviteDelegateModal from '../../modals/profile-dropdown/InviteDelegateModal';
 
 function DelegateProfile() {
   const userDetails = useFlexternUserStore((state) => state.userDetails) as FlexternClientDetails;
@@ -66,6 +67,7 @@ export default function ProfileDropdown() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isContactSupportModalOpen, setIsContactSupportModalOpen] = useState(false);
   const [isContactSupportSuccessModalOpen, setIsContactSupportSuccessModalOpen] = useState(false);
+  const [isInviteDelegateModalOpen, setIsInviteDelegateModalOpen] = useState(false);
 
   const { handleLogout } = useLogout();
 
@@ -111,12 +113,21 @@ export default function ProfileDropdown() {
     setIsContactSupportSuccessModalOpen(false);
   };
 
+  //* Delegate Actions */
+  const handleCloseInviteDelegateModal = () => {
+    setIsInviteDelegateModalOpen(false);
+  };
+
+  const handleAddDelegate = () => {
+    setIsInviteDelegateModalOpen(true);
+  };
+
   // Menu items that require accordion functionality
   const accordionToDisplay = isClient
     ? {
         id: 'delegates',
         label: 'Delegate(s)',
-        content: <DelegateAccordionBody />,
+        content: <DelegateAccordionBody onAddDelegate={handleAddDelegate} />,
       }
     : {
         id: 'edit-profile',
@@ -215,6 +226,7 @@ export default function ProfileDropdown() {
         isOpen={isContactSupportSuccessModalOpen}
         onClose={handleCloseContactSupportSuccessModal}
       />
+      <InviteDelegateModal isOpen={isInviteDelegateModalOpen} onClose={handleCloseInviteDelegateModal} />
     </>
   );
 }
