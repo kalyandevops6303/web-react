@@ -73,26 +73,29 @@ export default function ContactSupportModal(props: Props) {
       <div className="flex gap-x-12 px-12 pt-12 pb-7">
         <div className="flex flex-col grow gap-y-10">
           <div className="flex flex-col gap-y-6">
-            <div className="text-2xl font-medium text-grey-heading not-italic">Contact Support</div>
+            <div className="text-2xl font-medium text-grey-heading text-center not-italic">Contact Support</div>
             <div className="flex flex-col gap-y-4">
-              <div className="flex flex-row flex-wrap gap-x-4">
-                <TextInput
-                  className="grow"
-                  value={SUPPORT_EMAIL}
-                  onChange={() => {}}
-                  label="To"
-                  error={errors.toEmail?.message}
-                  readOnly
-                />
-
-                <TextInput
-                  className="grow"
-                  value={userDetails.email}
-                  onChange={() => {}}
-                  label="CC"
-                  error={errors.ccEmail?.message}
-                  readOnly
-                />
+              <div className="flex flex-col gap-y-2">
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="uppercase text-base text-grey font-medium">To: </div>
+                  <TextInput
+                    className="w-96"
+                    value={SUPPORT_EMAIL}
+                    onChange={() => {}}
+                    error={errors.toEmail?.message}
+                    readOnly
+                  />
+                </div>
+                <div className="flex flex-row items-center gap-x-2">
+                  <div className="uppercase text-base text-grey font-medium">CC: </div>
+                  <TextInput
+                    className="w-96"
+                    value={userDetails.email}
+                    onChange={() => {}}
+                    error={errors.ccEmail?.message}
+                    readOnly
+                  />
+                </div>
               </div>
               <Controller
                 name="description"

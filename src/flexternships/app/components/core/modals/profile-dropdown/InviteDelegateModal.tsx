@@ -58,7 +58,7 @@ export default function InviteDelegateModal(props: Props) {
       <div className="flex gap-x-12 px-12 pt-12 pb-7">
         <div className="flex flex-col grow gap-y-10">
           <div className="flex flex-col gap-y-6">
-            <div className="text-2xl font-medium text-grey-heading not-italic">Add Delegate</div>
+            <div className="text-2xl font-medium text-grey-heading not-italic text-center">Add Delegate</div>
             <div className="flex flex-col gap-y-2">
               <Controller
                 name="email"
