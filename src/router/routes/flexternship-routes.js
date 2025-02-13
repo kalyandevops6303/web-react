@@ -1,64 +1,51 @@
 // ** React Imports
-import { Fragment } from 'react';
 import { Navigate } from 'react-router-dom';
-// ** Layouts
-import BlankLayout from '@layouts/BlankLayout';
-import VerticalLayout from '@src/layouts/VerticalLayout';
-import HorizontalLayout from '@src/layouts/HorizontalLayout';
-import LayoutWrapper from '@src/@core/layouts/components/layout-wrapper';
 
 // ** Route Components
 import PublicRoute from '@components/routes/PublicRoute';
 
-// ** Utils
-import { isObjEmpty } from '@utils';
-
+// ** Dashboard & User Views
 import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
 import UserDetails from '../../views/user-details';
-import AuthRoute from '../../views/auth/index';
-import TalentOnboarding from '../../views/Onboarding/Talent';
-import ClientOnboarding from '../../views/Onboarding/Client';
-import CreateProject from '../../views/CreateProject';
 import MarketPlace from '../../views/marketplace';
 import Search from '../../views/search';
 import Notifications from '../../views/notifications';
-import CreateBid from '../../views/create-bid';
-import TeamInvitation from '../../views/team-invitation';
-import Disputes from '../../views/disputes';
-import CreateTeam from '../../views/createTeam';
-import ComingSoon from '../../views/auth/ComingSoon';
-import ProjectDetails from '../../views/project-details';
-import ContractView from '../../views/project-details/ContractView';
-import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
-import Chat from '../../views/chat';
-import Projects from '../../views/projects';
-import MyTeams from '../../views/teams';
-import Clubs from '../../views/clubs';
-import ReferralAndReward from '../../views/ReferralAndReward';
-import CreateClub from '../../views/createClub';
-import ClubInvitation from '../../views/club-invitation';
-import PaymentFullView from '../../views/paymentFullView';
-import BidDetails from '../../views/project-details/BidDetails';
-import Assessments from '../../views/assessments';
-import InternalProjects from '../../views/internal/projects';
 import NotFound from '../../views/NotFound';
+
+// ** Auth & Onboarding Views
+import AuthRoute from '../../views/auth/index';
+import TalentOnboarding from '../../views/Onboarding/Talent';
+import ComingSoon from '../../views/auth/ComingSoon';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
 
+// ** Project Views
+import Projects from '../../views/projects';
+import ContractView from '../../views/project-details/ContractView';
+
+// ** Constants & Enums
 import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
+import { FEATURE_NAMES } from '@/utility/constants/Constant';
+import routes from '@/flexternships/routes';
+
+// ** Flexternship Project Components
 import CreateFlexternProject from '@flexternships/app/create-project/page';
-import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
-import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
-import ProjectsTab from '@/flexternships/app/project-details/tabs/projects/page';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 import FlexternshipsContractView from '@/flexternships/app/project-details/sign-documents/page';
-import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
-import ClientPublicProfile from '@/flexternships/app/profile/client/page';
-import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
-import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
-import { FEATURE_NAMES } from '@/utility/constants/Constant';
-import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
-import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
 import FlexternProjectQuickActions from '@/flexternships/app/quick-actions/page';
+
+// ** Flexternship Onboarding & Profile
+import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
+import ClientPublicProfile from '@/flexternships/app/profile/client/page';
+
+// ** Flexternship Core Components
+import RoleAccessWrapper from '@/flexternships/app/components/core/wrappers/RoleAccessWrapper';
+import RedirectToTeamTab from '@/flexternships/app/components/pages/project-details/RedirectToTeamTab';
+import HandleFeedbacks from '@/flexternships/app/components/pages/project-details/tabs/milestone/feedback/HandleFeedbacks';
+import ChatInterface from '@/flexternships/app/components/pages/chat-interface/ChatInterface';
+import VerifyInvitation from '@/flexternships/app/verify-invitation/page';
+
+// ** Analytics Components
+import Comments from '@/flexternships/app/analytics/individual-analytics/comments/page';
 import TeamPerformanceInsights from '@/flexternships/app/analytics/team-analytics/performance-insights/page';
 import IndividualAnalytics from '@/flexternships/app/analytics/individual-analytics/page';
 import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
@@ -66,17 +53,17 @@ import ConversationParticipationPage from '@/flexternships/app/analytics/individ
 import Commits from '@/flexternships/app/analytics/individual-analytics/commits/page';
 
 // ** Default Route
-const DefaultRoute = '/auth';
+const DefaultRoute = routes.auth.path;
 
 // ** Merge Routes
 export const FlexternshipRoutes = [
   {
-    path: '/',
+    path: routes.home.path,
     index: true,
     element: <Navigate replace to={DefaultRoute} />,
   },
   {
-    path: '/dashboard',
+    path: routes.dashboard.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -86,7 +73,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -96,12 +93,8 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding/account-details',
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
               },
-              // {
-              //     checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
-              //     redirectRoute: '/talent-onboarding/personal-details'
-              // } removing this as for now as anyway in sign in we are checking for the checkpoint otherwise the first time it's causing after save and continue before updation of checkpoint it's going to personal details
             ],
           },
         ]}
@@ -111,7 +104,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/analytics/project/:projectId/individual/:userId/comments',
+    path: routes.comments.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -121,7 +114,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -132,11 +135,11 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/search',
+    path: routes.search.path,
     element: <Search />,
   },
   {
-    path: '/profile/client/:userId',
+    path: routes.clientProfile.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -146,7 +149,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -156,7 +169,7 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding',
+                redirectRoute: routes.talentOnboarding.path,
               },
             ],
           },
@@ -167,11 +180,11 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/profile/:userType/:userId',
+    path: routes.talentProfile.path,
     element: <UserDetails />,
   },
   {
-    path: '/marketplace/*',
+    path: `${routes.marketplace.path}/*`,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -181,7 +194,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -191,7 +214,7 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding',
+                redirectRoute: routes.talentOnboarding.path,
               },
             ],
           },
@@ -202,7 +225,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/project-details/:projectId',
+    path: routes.projectDetails.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -212,7 +235,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -222,7 +255,7 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding',
+                redirectRoute: routes.talentOnboarding.path,
               },
             ],
           },
@@ -234,7 +267,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/project-details/:projectId/:projectStep',
+    path: routes.projectDetailsWithStep.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -244,7 +277,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -254,7 +297,7 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding',
+                redirectRoute: routes.talentOnboarding.path,
               },
             ],
           },
@@ -266,7 +309,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/project-details/:projectId/milestone/:milestoneId',
+    path: routes.milestone.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -276,7 +319,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -286,7 +339,7 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding',
+                redirectRoute: routes.talentOnboarding.path,
               },
             ],
           },
@@ -298,19 +351,19 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/project-details/:projectId/doc/:docType/*',
+    path: routes.projectDoc.path,
     element: <FlexternshipsContractView />,
   },
   {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
+    path: routes.projectStepDoc.path,
     element: <ContractView />,
   },
   {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
+    path: routes.projectStepDocId.path,
     element: <ContractView />,
   },
   {
-    path: '/projects/blocked',
+    path: routes.blockedProjects.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -320,7 +373,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -330,7 +393,7 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding',
+                redirectRoute: routes.talentOnboarding.path,
               },
             ],
           },
@@ -342,7 +405,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/projects/*',
+    path: `${routes.projects.path}/*`,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -352,7 +415,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -362,7 +435,7 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding',
+                redirectRoute: routes.talentOnboarding.path,
               },
             ],
           },
@@ -373,28 +446,28 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/auth/*',
+    path: `${routes.auth.path}/*`,
     element: <AuthRoute />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: '/coming-soon',
+    path: routes.comingSoon.path,
     element: <ComingSoon />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: `/${userOnboarding.talent}/:section-details`,
+    path: routes.talentOnboarding.path,
     element: <TalentOnboarding />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: `/client-onboarding/*`,
+    path: `${routes.clientOnboarding.path}/*`,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -404,7 +477,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.COMPLETE,
-                redirectRoute: '/dashboard',
+                redirectRoute: routes.dashboard.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.ACCOUNT_DETAILS],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                redirectRoute: routes.dashboard.path,
               },
             ],
           },
@@ -419,11 +502,11 @@ export const FlexternshipRoutes = [
     },
   },
   {
-    path: `/${userProfileEdit.talent}/:section-details`,
+    path: routes.talentProfileEdit.path,
     element: <TalentOnboarding />,
   },
   {
-    path: `/${userProfileEdit.client}/:tabId`,
+    path: routes.clientProfileEdit.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -433,7 +516,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -444,7 +537,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: `/create-project`,
+    path: routes.createProject.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -454,7 +547,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -465,7 +568,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/create-project/:projectId',
+    path: routes.editProject.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -475,7 +578,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -486,54 +599,22 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/notifications',
+    path: routes.notifications.path,
     element: <Notifications />,
   },
   {
-    path: '/referral-reward/*',
-    element: <ReferralAndReward />,
-  },
-  {
-    path: '/chat',
-    element: <Chat />,
-  },
-  {
-    path: '/assessments',
-    element: <Assessments />,
-  },
-  {
-    path: '/internal/projects',
-    element: <InternalProjects />,
-  },
-  {
-    path: `/${userProfileEdit.talent}/intern-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userProfileEdit.talent}/intern-xobin-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userOnboarding.talent}/intern-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `/${userOnboarding.talent}/intern-xobin-hiring`,
-    element: <TalentOnboarding />,
-  },
-  {
-    path: `${userOnboarding.talent}/choose-program`,
+    path: routes.chooseTalentProgram.path,
     element: <ChooseProgram />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: '/project-details/:projectId/milestone/:milestoneId/feedback/:feedbackType',
+    path: routes.milestoneFeedback.path,
     element: <HandleFeedbacks />,
   },
   {
-    path: '/chat-interface',
+    path: routes.chatInterface.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -543,27 +624,37 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
         ]}
         featureName={FEATURE_NAMES.AYESHA_BOT}
-        fallbackRoute="/dashboard"
+        fallbackRoute={routes.dashboard.path}
       >
         <ChatInterface />
       </RoleAccessWrapper>
     ),
   },
   {
-    path: '/verify-invitation',
+    path: routes.verifyInvitation.path,
     element: <VerifyInvitation />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: '/quick-actions/:projectId',
+    path: routes.quickActions.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -573,7 +664,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -583,11 +684,11 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/talent-onboarding/account-details',
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
               },
               {
                 checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
-                redirectRoute: '/talent-onboarding/personal-details',
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
               },
             ],
           },
@@ -598,7 +699,7 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: '/analytics/project/:projectId/team/performance-insights',
+    path: routes.teamPerformanceInsights.path,
     element: (
       <RoleAccessWrapper
         allowedAppRoles={[
@@ -608,7 +709,17 @@ export const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: '/client-onboarding',
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
               },
             ],
           },
@@ -623,19 +734,19 @@ export const FlexternshipRoutes = [
     element: <NotFound />,
   },
   {
-    path: '/analytics/project/:projectId/individual/:userId',
+    path: routes.individualAnalytics.path,
     element: <IndividualAnalytics />,
   },
   {
-    path: '/analytics/project/:projectId/team',
+    path: routes.teamAnalytics.path,
     element: <TeamAnalytics />,
   },
   {
-    path: '/analytics/project/:projectId/individual/:userId/conversation-participation',
+    path: routes.conversationParticipation.path,
     element: <ConversationParticipationPage />,
   },
   {
-    path: '/analytics/project/:projectId/individual/:userId/commits',
+    path: routes.commits.path,
     element: <Commits />,
   },
 ];

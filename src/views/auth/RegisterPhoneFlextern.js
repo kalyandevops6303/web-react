@@ -164,7 +164,7 @@ const RegisterPhoneFlextern = () => {
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
             <Label className="form-label" for="login-email">
-              Mobile number<span style={{ color: `${theme.red}` }}>*</span>
+              Mobile Number<span style={{ color: `${theme.red}` }}>*</span>
             </Label>
             <div className="d-flex">
               <div>

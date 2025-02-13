@@ -9,7 +9,14 @@ import {
   GlobalModalActions,
   GlobalModalContent,
 } from '@flexternships/types/core-types';
-import { closeModal, openModal, populateUserDetails, setWip, unsetWip } from '@flexternships/actions/core-actions';
+import {
+  closeModal,
+  fetchNotificationsCount,
+  openModal,
+  populateUserDetails,
+  setWip,
+  unsetWip,
+} from '@flexternships/actions/core-actions';
 import { GlobalModalType } from '../constraints/enums/core-enums';
 
 const defaultInitState: FlexternUser = {
@@ -28,6 +35,7 @@ const defaultAppState: AppState = {
   modal: undefined,
   modalContent: undefined,
   modalActions: undefined,
+  unreadNotificationsCount: 0,
 };
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -43,5 +51,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
     setWip(modalContent, modalActions, set),
   unsetWip: () => unsetWip(set),
   getCurrentNextPath: () => get().modalContent?.metadata?.nextPath,
+  fetchNotificationsCount: () => fetchNotificationsCount(set),
   resetStore: () => set({ ...defaultAppState }),
 }));

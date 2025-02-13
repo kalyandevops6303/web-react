@@ -1,4 +1,3 @@
-import { ClientDelegateRole } from '../constraints/enums/profile-enums';
 import {
   MilestoneArtifact,
   MilestoneDetails,
@@ -12,7 +11,7 @@ import {
 import { QuickActionsStats, CommentsTimeline } from '../constraints/types/quick-actions-types';
 import { TeamMemberDetails } from '../constraints/types/project-details-types';
 import { Competency } from '../constraints/types/competency-types';
-import { FlexternUserAppRole } from '../constraints/enums/core-enums';
+import { FlexternDelegateInvitationType, FlexternUserAppRole } from '../constraints/enums/core-enums';
 import {
   DetailedPerformanceInsights,
   FlexternComments,
@@ -146,7 +145,7 @@ export const parseClientPublicDetails = (data: Record<string, any>): FlexternCli
       firstname: delegate.first_name,
       lastname: delegate.last_name,
       imageUri: delegate.image_uri,
-      delegateType: delegate.delegate_type || ClientDelegateRole.FULL_ACCESS,
+      delegateType: delegate.delegate_type || FlexternDelegateInvitationType.FULL_ACCESS,
     })),
   };
 };
@@ -331,7 +330,7 @@ export const parseQuickActionsStats = (data: Record<string, any>): QuickActionsS
   return {
     teamMembers: data.team_members_count,
     totalRecognitions: data.kudos_count || data.wow_count || 0,
-    totalNotes: data.note_count || 0, // TODO: Remove this after backend is updated
+    totalNotes: data.note_count || 0,
   };
 };
 
@@ -495,5 +494,47 @@ export const parseConversationAttachmentStats = (data: Record<string, any>): Con
       count: data.links.count,
       percentage: data.links.percentage,
     },
+  };
+};
+
+/**
+ * Parses delegate invitation data from raw API response
+ * @param data Raw delegate invitation data from API
+ * @returns Formatted delegate invitation data
+ */
+export const parseDelegateInvitations = (data: Record<string, any>) => {
+  return {
+    metadata: {
+      currentPage: data.metadata.current_page,
+      pageSize: data.metadata.page_size,
+      totalRecords: data.metadata.total_records,
+      hasNextPage: data.metadata.has_next_page,
+    },
+    data: data.data.map((invitation: Record<string, any>) => ({
+      id: invitation._id,
+      createdAt: invitation.created_at,
+      updatedAt: invitation.updated_at,
+      isDeleted: invitation.is_deleted,
+      userStatus: invitation.user_status,
+      invitedBy: {
+        teamId: invitation.invited_by?.team_id || '',
+        userId: invitation.invited_by?.user_id || '',
+        entity: invitation.invited_by?.entity || '',
+        delegateUserId: invitation.invited_by?.delegate_user_id || '',
+      },
+      invitationType: invitation.invitation_type,
+      orgSlugId: invitation.org_slug_id,
+      invitee: {
+        teamId: invitation.invitee?.team_id || '',
+        userId: invitation.invitee?.user_id || '',
+        entity: invitation.invitee?.entity || '',
+        token: invitation.invitee?.token || '',
+        email: invitation.invitee?.email || '',
+        tokenExpiry: invitation.invitee?.token_expiry || 0,
+        name: invitation.invitee?.name || '',
+        imageUri: invitation.invitee?.image_uri || '',
+      },
+      status: invitation.status,
+    })),
   };
 };

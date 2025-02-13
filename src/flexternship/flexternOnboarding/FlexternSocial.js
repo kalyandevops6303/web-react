@@ -19,9 +19,9 @@ import {
   Progress,
   CardText,
 } from 'reactstrap';
-import removeSVG from '../../assets/images/remove.svg';
 import { ChevronLeft, ChevronRight, Info, Loader, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
+import removeSVG from '../../assets/images/remove.svg';
 import { ProfileFormContainer, UploadIconContainer } from '../../views/Onboarding/style';
 import theme from '../../configs/themeVariables';
 import {
@@ -74,7 +74,8 @@ import {
   setResumeDataUploadedForAdditional,
 } from '../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
-import { resumeUploadService } from '../../services/talentOnboardingServices';
+import { updateParsedResumeService, resumeUploadService } from '../../services/talentOnboardingServices';
+import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
 import { downloadUrlLoading } from '@/redux/selectors/dashboardSelectors';
@@ -734,7 +735,7 @@ const FlexternSocial = () => {
               >
                 {downloadUrlIsLoading ? (
                   <div className="d-flex align-items-center justify-content-center w-100">
-                    <FadeLoader color="#0185E4" />
+                    <Loader size="xs" color="#0185E4" className="rotating-icon" />
                   </div>
                 ) : (
                   <div className="d-flex align-items-center w-100 ">

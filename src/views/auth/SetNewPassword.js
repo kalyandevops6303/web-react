@@ -62,6 +62,7 @@ const SetNewPassword = () => {
   const newPassword = watch('newPassword');
   const cnfPassword = watch('cnfPassword');
 
+  const isPasswordMatch = cnfPassword?.length > 0 && newPassword?.length > 0 && cnfPassword === newPassword;
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -97,6 +98,7 @@ const SetNewPassword = () => {
                   className="input-group-merge create-password mb-75"
                   id="newPassword"
                   placeholder="Enter new password"
+                  style={{ padding: '8px 10px 8px 15px' }}
                 />
               )}
             />
@@ -126,9 +128,12 @@ const SetNewPassword = () => {
               )}
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
-            <p className="text-success text-xs mt-2">
-              {cnfPassword && newPassword && cnfPassword === newPassword ? 'Match' : ''}
-            </p>
+
+            {cnfPassword?.length > 0 && (
+              <p className={`${isPasswordMatch ? 'text-success' : 'text-error'}  text-xs mt-2`}>
+                {isPasswordMatch ? 'Passwords Match' : 'Passwords Do Not Match'}
+              </p>
+            )}
           </div>
           <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
