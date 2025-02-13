@@ -17,6 +17,8 @@ import routes from '@/flexternships/routes';
 import useLogout from '@/utility/hooks/useLogout';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { useState } from 'react';
+import ContactSupportModal from '../../modals/profile-dropdown/ContactSupportModal';
+import ContactSupportSuccessModal from '../../modals/profile-dropdown/ContactSupportSuccessModal';
 
 function DelegateProfile() {
   return (
@@ -55,6 +57,8 @@ export default function ProfileDropdown() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isContactSupportModalOpen, setIsContactSupportModalOpen] = useState(false);
+  const [isContactSupportSuccessModalOpen, setIsContactSupportSuccessModalOpen] = useState(false);
 
   const { handleLogout } = useLogout();
 
@@ -81,6 +85,23 @@ export default function ProfileDropdown() {
     }
   };
 
+  //* Contact Support Modal Actions */
+  const handleOpenContactSupportModal = () => {
+    setIsContactSupportModalOpen(true);
+  };
+
+  const handleCloseContactSupportModal = () => {
+    setIsContactSupportModalOpen(false);
+  };
+
+  const handleOpenContactSupportSuccessModal = () => {
+    setIsContactSupportSuccessModalOpen(true);
+  };
+
+  const handleCloseContactSupportSuccessModal = () => {
+    setIsContactSupportSuccessModalOpen(false);
+  };
+
   // Menu items that require accordion functionality
   const accordionToDisplay = isClient
     ? {
@@ -95,78 +116,92 @@ export default function ProfileDropdown() {
       };
 
   return (
-    <DropdownMenu modal={false}>
-      {/* Profile Trigger Button */}
-      <DropdownMenuTrigger className="border-b-2 border-transparent data-[state=open]:border-trublue-secondary-500 outline-none">
-        {isDelegate ? <DelegateProfile /> : <GenericProfile />}
-      </DropdownMenuTrigger>
+    <>
+      <DropdownMenu modal={false}>
+        {/* Profile Trigger Button */}
+        <DropdownMenuTrigger className="border-b-2 border-transparent data-[state=open]:border-trublue-secondary-500 outline-none">
+          {isDelegate ? <DelegateProfile /> : <GenericProfile />}
+        </DropdownMenuTrigger>
 
-      {/* Dropdown Content */}
-      <DropdownMenuContent className="bg-white w-[90vw] max-w-96 pt-2 pb-1 px-0" sideOffset={8} align="end">
-        {/* Public Profile Link */}
-        {isDelegate ? (
-          <DropdownMenuItem className="p-4 hover:bg-trublue-light cursor-pointer">
-            <div className="flex flex-col gap-y-3">
-              <div className="text-grey text-sm font-medium leading-5">Delegate for:</div>
-              <div className="flex flex-row items-center gap-x-3.5">
-                <FlexternAvatar name="Roger Barry" />
-                <div>
-                  <div className="text-sm text-grey font-normal leading-5">Roger Barry</div>
-                  <div className="text-xs text-grey-muted font-normal leading-4.5">Client</div>
+        {/* Dropdown Content */}
+        <DropdownMenuContent className="bg-white w-[90vw] max-w-96 pt-2 pb-1 px-0" sideOffset={8} align="end">
+          {/* Public Profile Link */}
+          {isDelegate ? (
+            <DropdownMenuItem className="p-4 hover:bg-trublue-light cursor-pointer">
+              <div className="flex flex-col gap-y-3">
+                <div className="text-grey text-sm font-medium leading-5">Delegate for:</div>
+                <div className="flex flex-row items-center gap-x-3.5">
+                  <FlexternAvatar name="Roger Barry" />
+                  <div>
+                    <div className="text-sm text-grey font-normal leading-5">Roger Barry</div>
+                    <div className="text-xs text-grey-muted font-normal leading-4.5">Client</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </DropdownMenuItem>
-        ) : (
-          <DropdownMenuItem
-            asChild
-            className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
-          >
-            <Link to={publicProfileUrl}>Public Profile</Link>
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
-
-        {/* Client Edit Profile Link */}
-        {isClient && (
-          <>
+            </DropdownMenuItem>
+          ) : (
             <DropdownMenuItem
               asChild
               className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
             >
-              <Link to={routes.clientProfileEdit.generate('account-details')}>Edit Profile</Link>
+              <Link to={publicProfileUrl}>Public Profile</Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
-          </>
-        )}
-
-        {/* Accordion Menu Items */}
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value={accordionToDisplay.id} key={accordionToDisplay.id} className="border-none">
-            <AccordionTrigger className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light data-[state=open]:bg-trublue-light cursor-pointer hover:no-underline">
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="p-0 m-0 cursor-pointer">
-                {accordionToDisplay.label}
-              </DropdownMenuItem>
-            </AccordionTrigger>
-            <AccordionContent className="p-0">{accordionToDisplay.content}</AccordionContent>
-          </AccordionItem>
+          )}
           <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
-        </Accordion>
 
-        {/* Support Link */}
-        <DropdownMenuItem className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer">
-          Contact Support
-        </DropdownMenuItem>
-        <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+          {/* Client Edit Profile Link */}
+          {isClient && (
+            <>
+              <DropdownMenuItem
+                asChild
+                className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
+              >
+                <Link to={routes.clientProfileEdit.generate('account-details')}>Edit Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+            </>
+          )}
 
-        {/* Logout Button */}
-        <DropdownMenuItem
-          className="text-sm text-error font-medium leading-5 p-4 hover:bg-error-light cursor-pointer"
-          onSelect={logout}
-        >
-          {isLoggingOut ? 'Logging out...' : 'Logout'}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          {/* Accordion Menu Items */}
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value={accordionToDisplay.id} key={accordionToDisplay.id} className="border-none">
+              <AccordionTrigger className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light data-[state=open]:bg-trublue-light cursor-pointer hover:no-underline">
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="p-0 m-0 cursor-pointer">
+                  {accordionToDisplay.label}
+                </DropdownMenuItem>
+              </AccordionTrigger>
+              <AccordionContent className="p-0">{accordionToDisplay.content}</AccordionContent>
+            </AccordionItem>
+            <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+          </Accordion>
+
+          {/* Support Link */}
+          <DropdownMenuItem
+            onClick={handleOpenContactSupportModal}
+            className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
+          >
+            Contact Support
+          </DropdownMenuItem>
+          <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+
+          {/* Logout Button */}
+          <DropdownMenuItem
+            className="text-sm text-error font-medium leading-5 p-4 hover:bg-error-light cursor-pointer"
+            onSelect={logout}
+          >
+            {isLoggingOut ? 'Logging out...' : 'Logout'}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ContactSupportModal
+        isOpen={isContactSupportModalOpen}
+        onClose={handleCloseContactSupportModal}
+        onConfirmSuccess={handleOpenContactSupportSuccessModal}
+      />
+      <ContactSupportSuccessModal
+        isOpen={isContactSupportSuccessModalOpen}
+        onClose={handleCloseContactSupportSuccessModal}
+      />
+    </>
   );
 }

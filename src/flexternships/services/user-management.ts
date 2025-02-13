@@ -660,6 +660,41 @@ export const getDelegateInvitationsPaginated = async (page: number = 1, page_siz
     data: [],
   };
 };
+/**
+ * Sends a support request to the server.
+ * @param toEmail - The recipient email address
+ * @param ccEmail - The CC email address
+ * @param description - The support request description
+ * @param issueType - The type of support issue
+ * @returns A Promise that resolves when the support request is sent successfully
+ * @throws {Error} If the request fails or an unexpected error occurs
+ */
+export const sendSupportRequest = async (
+  toEmail: string,
+  ccEmail: string[],
+  description: string,
+  issueType: string,
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    await axios.post(
+      routes.userManagement.support.contactSupport,
+      {
+        to_email: toEmail,
+        cc_email: ccEmail,
+        description,
+        issue_type: issueType,
+      },
+      config,
+    );
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while sending support request');
+  }
+};
 
 /**
  * Logs out the current user by making a request to the logout endpoint.

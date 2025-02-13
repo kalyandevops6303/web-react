@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { getDelegateInvitationsPaginated, inviteDelegate } from '@/flexternships/services/user-management';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import PaginatedList from '../../lists/PaginatedList';
-import InviteDelegateModal from '../../modals/global/InviteDelegateModal';
+import InviteDelegateModal from '../../modals/profile-dropdown/InviteDelegateModal';
 
 type DelegateItemProps = {
   name?: string;

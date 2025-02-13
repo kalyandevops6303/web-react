@@ -68,6 +68,9 @@ export const routes = {
     auth: {
       logout: `${serviceUrls.userManagement}/user/logout`,
     },
+    support: {
+      contactSupport: `${serviceUrls.userManagement}/support-request`,
+    },
     static: {
       timezone: {
         fetchPaginated: `${serviceUrls.userManagement}/static/timezone/paginated`,

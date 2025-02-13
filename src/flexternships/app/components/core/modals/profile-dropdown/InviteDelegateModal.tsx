@@ -58,8 +58,8 @@ export default function InviteDelegateModal(props: Props) {
       <div className="flex gap-x-12 px-12 pt-12 pb-7">
         <div className="flex flex-col grow gap-y-10">
           <div className="flex flex-col gap-y-6">
-            <div className="text-2xl font-medium text-grey-heading not-italic">Invite a delegate</div>
-            <div>
+            <div className="text-2xl font-medium text-grey-heading not-italic">Add Delegate</div>
+            <div className="flex flex-col gap-y-2">
               <Controller
                 name="email"
                 control={control}
@@ -67,14 +67,17 @@ export default function InviteDelegateModal(props: Props) {
                   <TextInput
                     value={value}
                     onChange={onChange}
-                    className="w-[393px]"
-                    label="Delegate email to invite"
+                    label="Delegate Email"
                     placeholder="Enter email address"
                     error={errors.email?.message}
                     required
                   />
                 )}
               />
+              <div className="text-sm text-grey-muted not-italic">
+                <span className="font-semibold">Note:</span> An invitation link will be sent to the above mentioned
+                email address.
+              </div>
             </div>
           </div>
           <div className="flex flex-row justify-end gap-x-5">
@@ -87,7 +90,7 @@ export default function InviteDelegateModal(props: Props) {
               disabled={!isValid || isConfirmLoading}
               onClick={handleSubmit(onSubmit)}
             >
-              Invite
+              Send Invite
             </PrimaryButton>
           </div>
         </div>
