@@ -15,6 +15,7 @@ import { FlexternClientPublicProfileDetails } from '@/flexternships/constraints/
 
 // Stores
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 
 export default function ClientProfileCard(props: ClientProfileCardProps) {
   const { clientDetails, isDelegatesInView, scrollToDelegates } = props;
@@ -56,10 +57,11 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
         <div className="text-lg text-grey-heading font-medium">
           {clientDetails?.companyDetails?.companyName || 'Unknown Company'}
         </div>
-        <div className="flex flex-row gap-x-2.5">
-          <div className="size-11">
-            <img className="w-full h-full object-contain rounded-full" src={clientDetails?.imageUri || defaultAvatar} />
-          </div>
+        <div className="flex flex-row items-center gap-x-2.5">
+          <FlexternAvatar
+            name={`${clientDetails?.firstname} ${clientDetails?.lastname}`}
+            imageUri={clientDetails?.imageUri}
+          />
           <div>
             <div className="text-grey-500 text-lg font-semibold leading-7">
               {clientDetails?.firstname || ''} {clientDetails?.lastname || ''}
