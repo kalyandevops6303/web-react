@@ -19,7 +19,7 @@ const contactSupportSchema = yup.object().shape({
     .string()
     .required('Message is required')
     .min(50, 'Message must be at least 50 characters')
-    .max(500, 'Message must be less than 500 characters'),
+    .max(500, 'You have exceeded character limit of 500'),
 });
 
 interface ContactSupportForm {
@@ -70,26 +70,26 @@ export default function ContactSupportModal(props: Props) {
 
   return (
     <GenericModal className="max-w-[670px]" isOpen={isOpen} onClose={onClose}>
-      <div className="flex gap-x-12 px-12 pt-12 pb-7">
+      <div className="flex gap-x-12 p-10">
         <div className="flex flex-col grow gap-y-10">
-          <div className="flex flex-col gap-y-6">
-            <div className="text-2xl font-medium text-grey-heading text-center not-italic">Contact Support</div>
-            <div className="flex flex-col gap-y-4">
-              <div className="flex flex-col gap-y-2">
-                <div className="flex flex-row items-center gap-x-2">
-                  <div className="uppercase text-base text-grey font-medium">To: </div>
+          <div className="flex flex-col gap-y-8">
+            <div className="text-[28px] font-medium text-grey-600 text-center not-italic">Email Customer Support</div>
+            <div className="flex flex-col gap-y-6">
+              <div className="flex flex-col gap-y-4">
+                <div className="flex flex-row items-center gap-x-2.5">
+                  <div className="uppercase text-sm text-grey-500 font-semibold">To: </div>
                   <TextInput
-                    className="w-96"
+                    className="w-80"
                     value={SUPPORT_EMAIL}
                     onChange={() => {}}
                     error={errors.toEmail?.message}
                     readOnly
                   />
                 </div>
-                <div className="flex flex-row items-center gap-x-2">
-                  <div className="uppercase text-base text-grey font-medium">CC: </div>
+                <div className="flex flex-row items-center gap-x-2.5">
+                  <div className="uppercase text-sm text-grey-500 font-semibold">CC: </div>
                   <TextInput
-                    className="w-96"
+                    className="w-80"
                     value={userDetails.email}
                     onChange={() => {}}
                     error={errors.ccEmail?.message}
@@ -102,9 +102,10 @@ export default function ContactSupportModal(props: Props) {
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <TextInput
+                    className="w-[590px]"
                     value={value}
                     onChange={onChange}
-                    label="Tell us in detail how can we help you?"
+                    label="Tell us in detail how we can help you?"
                     placeholder="Enter details"
                     error={errors.description?.message}
                     required
