@@ -100,7 +100,7 @@ export default function DelegateAccordionBody({ onAddDelegate }: { onAddDelegate
         loadMore={getDelegateInvitationsPaginated}
       />
       <div className="flex flex-col gap-y-2 text-trublue-secondary-500 self-start px-4">
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem className="transition-colors duration-200 pl-1 pr-2 py-0.5 rounded-md" asChild>
           <PrimaryIconText
             text="Add Delegate"
             icon={<Plus size={18} className="text-trublue-secondary-500" />}
