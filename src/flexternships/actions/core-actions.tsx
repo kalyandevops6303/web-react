@@ -45,7 +45,7 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         imageUri: data.client_info?.image_uri ?? data.talent_info?.image_uri,
         isBlocked: data.is_blocked,
         adminClient: {
-          id: data?.admin_client_info?._id,
+          id: data?.admin_client_info?.user_id,
           department: data?.admin_client_info?.department,
           firstName: data?.admin_client_info?.first_name,
           lastName: data?.admin_client_info?.last_name,
