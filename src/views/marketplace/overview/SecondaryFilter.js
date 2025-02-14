@@ -329,7 +329,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       };
     }
     try {
-      const response = await departmentNamesService();
+      const response = await departmentNamesService({ projectStatus: 'OPEN' });
       const options = response?.data?.data?.data?.map((department) => ({
         label: department.department_name,
         value: department.department_name,
