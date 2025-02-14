@@ -2,14 +2,14 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import CollapsableCard from '@flexternships/app/components/core/cards/CollapsableCard';
-import { Avatar, AvatarFallback, AvatarImage } from '@flexternships/app/components/ui/avatar';
 import parse from 'html-react-parser';
 
 // styles
 import Styles from '@flexternships/styles/pages/project-details/projects-tab/tab-content.module.css';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
+import routes from '@/flexternships/routes';
 
 export default function InvitationCard({ hideSubtitle = false, isCollapsible = true }) {
   const params = useParams();
@@ -55,7 +55,8 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
   };
 
   const invitationCardDetailsData = {
-    company: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
+    clientUserId: projectDetails?.clientInfo?.userId,
+    clientName: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
     department: projectDetails?.clientInfo?.departmentName,
     image_uri: projectDetails?.clientInfo?.imageUri,
     start_date: formatEpochToHumanReadable(projectInvitationDetails?.projectStartDate || 1),
@@ -84,25 +85,18 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
     <CollapsableCard {...invitationCardData}>
       <div className="px-4 pt-4 flex flex-col gap-y-6 w-full">
         <div className="flex flex-row items-start w-full justify-between">
-          <div className="flex gap-2">
-            <Avatar>
-              <AvatarImage
-                src={invitationCardDetailsData?.image_uri ? invitationCardDetailsData?.image_uri : defaultAvatar}
+          <Link to={routes.clientProfile.generate(invitationCardDetailsData?.clientUserId)}>
+            <div className="flex gap-2">
+              <FlexternAvatar
+                name={invitationCardDetailsData?.clientName}
+                imageUri={invitationCardDetailsData?.image_uri}
               />
-              <AvatarFallback>
-                {invitationCardDetailsData?.company
-                  ?.split(' ')
-                  .slice(0, 2)
-                  .map((word) => word[0])
-                  .join('')
-                  .toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.company}</div>
-              <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.department}</div>
+              <div>
+                <div className={Styles.invitationCardDetailsTitle}>{invitationCardDetailsData?.clientName}</div>
+                <div className={Styles.invitationCardDetailsSubtitle}>{invitationCardDetailsData?.department}</div>
+              </div>
             </div>
-          </div>
+          </Link>
           <div className="min-w-20">
             <h1 className="text-xs">{timeGapOfInvite} Day(s) ago</h1>
           </div>
