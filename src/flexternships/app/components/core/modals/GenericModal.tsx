@@ -19,7 +19,7 @@ export default function GenericModal(props: GenericModalProps) {
           >
             <X size={16} />
           </div>
-          {children}
+          <div className="max-h-[90vh] overflow-y-auto">{children}</div>
         </div>
       </DialogContent>
     </Dialog>

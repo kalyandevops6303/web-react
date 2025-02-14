@@ -38,7 +38,7 @@ export const getUserTimezone = () => {
  * Logs out the user by resetting all Zustand stores.
  */
 export const logout = () => {
-  // Reset ProjectCreationStore
+  // Reset Zustand stores
   useFlexternUserStore.getState().resetStore();
   useFlexternUserProfileStore.getState().resetStore();
   useProjectCreationStore.getState().resetStore();

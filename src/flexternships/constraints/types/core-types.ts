@@ -86,6 +86,7 @@ export type FlexternClientDetails = {
   userType: UserType;
   firstName: string;
   lastName: string;
+  imageUri?: string;
   timezone: Timezone;
   departmentName: string;
   email: string;
@@ -103,6 +104,16 @@ export type FlexternClientDetails = {
     name: string;
   };
   isBlocked?: boolean;
+  adminClient?: {
+    id: string;
+    department: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUri?: string;
+    title: string;
+    companyName: string;
+  };
 };
 
 export type FlexternTalentDetails = {
@@ -110,6 +121,7 @@ export type FlexternTalentDetails = {
   userType: UserType;
   firstName: string;
   lastName: string;
+  imageUri?: string;
   timezone: Timezone;
   email: string;
   phone: string;
@@ -155,6 +167,7 @@ export type AppState = {
   modal: GlobalModalType | undefined;
   modalContent: GlobalModalContent | undefined;
   modalActions: GlobalModalActions | undefined;
+  unreadNotificationsCount: number;
 };
 
 export type AppActions = {
@@ -168,6 +181,7 @@ export type AppActions = {
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
   unsetWip: () => void;
   getCurrentNextPath: () => string | undefined;
+  fetchNotificationsCount: () => void;
   resetStore: () => void;
 };
 

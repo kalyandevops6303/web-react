@@ -65,6 +65,12 @@ export const routes = {
     },
   },
   userManagement: {
+    auth: {
+      logout: `${serviceUrls.userManagement}/user/logout`,
+    },
+    support: {
+      contactSupport: `${serviceUrls.userManagement}/support-request`,
+    },
     static: {
       timezone: {
         fetchPaginated: `${serviceUrls.userManagement}/static/timezone/paginated`,
@@ -93,6 +99,13 @@ export const routes = {
       city: {
         fetchPaginatedByState: `${serviceUrls.userManagement}/static/city/paginated`,
       },
+    },
+    notifications: {
+      getNotificationsStats: `${serviceUrls.userManagement}/notifications/polling`,
+    },
+    invitation: {
+      inviteDelegate: `${serviceUrls.userManagement}/invitation/delegate`,
+      getDelegatesPaginated: `${serviceUrls.userManagement}/invitation/delegate/status`,
     },
     files: {
       getImageUploadUrl: `${serviceUrls.userManagement}/user/profile/image-url`,

@@ -40,7 +40,6 @@ const UserRetryCountAuth = () => {
           <span className="font-semibold">
             {minutes}:{seconds.toString().padStart(2, '0')}
           </span>{' '}
-          {''}
           mins.
         </p>
       </div>

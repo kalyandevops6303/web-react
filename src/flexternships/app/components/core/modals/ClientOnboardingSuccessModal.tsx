@@ -4,6 +4,7 @@ import { X } from 'react-feather';
 import checklistImage from '@flexternships/assets/gifs/checklist.gif';
 import { useNavigate } from 'react-router-dom';
 import { useFlexternUserStore } from '@flexternships/stores/core-stores';
+import routes from '@/flexternships/routes';
 
 interface ClientOnboardingSuccessProps {
   isOpen: boolean;
@@ -16,7 +17,7 @@ export default function ClientOnboardingSuccessModal({ isOpen, onClose }: Client
 
   const onContinue = () => {
     populateUserDetails(true);
-    navigate('/dashboard');
+    navigate(routes.dashboard.path);
   };
 
   if (!isOpen) return null;

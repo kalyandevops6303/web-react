@@ -23,7 +23,7 @@ export default function Footer(props: Readonly<FooterProps>) {
         <>
           <div className="w-1/3 text-center flex flex-col gap-2">
             <div>
-              <span className="text-center text-xxl leading-xxl-custom font-semibold text-dark font-montserrat">
+              <span className="text-center text-xxl leading-xxl-custom font-semibold text-dark-100 font-montserrat">
                 {item.score}
               </span>
               {item.total && (

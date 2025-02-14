@@ -10,6 +10,7 @@ import Requirements from '@flexternships/app/components/pages/create-project/tab
 import Roles from '@flexternships/app/components/pages/create-project/tabs/roles/Roles';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
+import routes from '@/flexternships/routes';
 
 export default function CreateFlexternProject() {
   const isWorkInProgress = useAppStore((state) => state.isWip);
@@ -50,10 +51,10 @@ export default function CreateFlexternProject() {
 
   const onBack = () => {
     if (isWorkInProgress) {
-      openGlobalModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/dashboard' });
+      openGlobalModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: routes.dashboard.path });
       return;
     }
-    navigate('/dashboard');
+    navigate(routes.dashboard.path);
   };
 
   return (

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import illustrationsLight from '@flexternships/assets/images/pages/error.svg';
 
 import PrimaryButton from '../../core/buttons/PrimaryButton';
+import routes from '@/flexternships/routes';
 
 export default function AccessDenied() {
   // ** Hooks
@@ -19,7 +20,7 @@ export default function AccessDenied() {
             <br />
             You don't have access to this page.
           </h2>
-          <PrimaryButton onClick={() => navigate('/dashboard')} className="mb-6">
+          <PrimaryButton onClick={() => navigate(routes.dashboard.path)} className="mb-6">
             Back to home
           </PrimaryButton>
           <img className="max-w-full h-auto" src={illustrationsLight} alt="Not authorized page" />
