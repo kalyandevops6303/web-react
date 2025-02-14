@@ -4,25 +4,42 @@ import { userTypes } from '@/utility/constants/Constant';
 import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
 
-const NavigationTab = ({ tab, index, isActive }: { tab: ProjectTabType; index: number; isActive: boolean }) => {
+const NavigationTab = ({
+  tab,
+  index,
+  isActive,
+  isDisabled,
+}: {
+  tab: ProjectTabType;
+  index: number;
+  isActive: boolean;
+  isDisabled: boolean;
+}) => {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const param = useParams();
 
+  const WrapperComponent = isDisabled ? 'div' : Link;
+  const wrapperProps = isDisabled ? {} : ({ to: `/project-details/${param?.projectId}/${tab.id}` } as const);
+
   return (
-    <Link
-      to={`/project-details/${param?.projectId}/${tab.id}`}
+    <WrapperComponent
+      {...(wrapperProps as {
+        to: string;
+      })}
       key={index}
       className={classNames(
         {
           'bg-[#0185E41F] text-trublue-secondary-500 border-b-2 border-b-trublue-secondary-500': isActive,
           hidden: !(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible),
+          'pointer-events-none opacity-50': isDisabled, // Prevents clicking when disabled
         },
-        'group duration-200 ease-in-out hover:cursor-pointer hover:text-trublue-secondary-500 first:rounded-tl last:rounded-tr flex flex-row w-fit p-3 items-start justify-start gap-2',
+        'group duration-200 ease-in-out first:rounded-tl last:rounded-tr flex flex-row w-fit p-3 items-start justify-start gap-2',
       )}
     >
       <div
         className={classNames(
           { 'bg-white text-trublue-secondary-500': isActive, 'bg-[#9E9E9E1F] text-grey-loadingText': !isActive },
+          { 'bg-[#9e9e9e1f] ': isDisabled },
           'h-[38px] w-[38px] flex flex-col justify-center items-center border rounded-[5px] group-hover:bg-white group-hover:text-trublue-secondary-500 transition-all ease-in-out',
         )}
       >
@@ -33,6 +50,7 @@ const NavigationTab = ({ tab, index, isActive }: { tab: ProjectTabType; index: n
           className={classNames(
             { 'text-trublue-secondary-500': isActive, 'text-grey-800': !isActive },
             'text-sm group-hover:text-trublue-secondary-500 font-semibold',
+            { 'text-grey-800': isDisabled },
           )}
         >
           {tab.title}
@@ -41,12 +59,13 @@ const NavigationTab = ({ tab, index, isActive }: { tab: ProjectTabType; index: n
           className={classNames(
             { 'text-trublue-secondary-500': isActive, 'text-grey-800': !isActive },
             'font-light group-hover:text-trublue-secondary-500 text-xs',
+            { 'text-grey-loadingText': isDisabled },
           )}
         >
           {tab.description}
         </h1>
       </div>
-    </Link>
+    </WrapperComponent>
   );
 };
 

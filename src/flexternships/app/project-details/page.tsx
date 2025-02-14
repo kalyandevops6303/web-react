@@ -10,7 +10,7 @@ import TeamTab from '../components/pages/project-details/tabs/team';
 import PerformanceTab from './tabs/performance/page';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import Spinner from '../components/core/Spinner';
-import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
 import CustomBreadCrumbs from '../components/core/CustomBreadCrumbs';
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
@@ -21,9 +21,9 @@ export default function FlexternshipProjectDetails() {
   const milestoneDetailsLoading = useProjectMilestonesStore((state) => state.isMilestoneDetailsLoading);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectLoading = useProjectsStore((state) => state.isProjectsLoading);
-
   const params: Readonly<Params<string>> = useParams();
   const navigate = useNavigate();
+
   const [breadCrumbData, setBreadCrumbData] = useState<{
     projectName: string;
     projectStep: string;
@@ -79,6 +79,7 @@ export default function FlexternshipProjectDetails() {
       component: <TeamTab />,
       talentVisible: true,
       clientVisible: true,
+      isDisabled: false,
     },
     {
       id: 'projects',
@@ -89,6 +90,7 @@ export default function FlexternshipProjectDetails() {
       component: <ProjectsTab />,
       talentVisible: true,
       clientVisible: false,
+      isDisabled: false,
     },
     {
       id: 'milestone',
@@ -99,6 +101,7 @@ export default function FlexternshipProjectDetails() {
       component: <MilestoneTab />,
       talentVisible: true,
       clientVisible: true,
+      isDisabled: false,
     },
     {
       id: 'performance',
@@ -109,6 +112,8 @@ export default function FlexternshipProjectDetails() {
       component: <PerformanceTab />,
       talentVisible: true,
       clientVisible: true,
+      isDisabled:
+        projectDetails?.status === ProjectPrimaryStatus.ACTIVE || projectDetails?.status === ProjectPrimaryStatus.OPEN,
     },
   ];
   const getCapitalizedStep = (step: string) => step.charAt(0).toUpperCase() + step.slice(1);
