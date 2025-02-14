@@ -92,7 +92,7 @@ export default function TeamAnalytics() {
   };
 
   return (
-    <div className="bg-background flex flex-col gap-6 px-4 md:px-0 mt-20 md:mt-0">
+    <div className="bg-background flex flex-col gap-6 px-7 mt-20 md:mt-0">
       <BreadCrumbs
         steps={[
           {

@@ -12,7 +12,7 @@ export default function ConversationParticipationPage() {
   const { projectId, userId } = useParams();
 
   return (
-    <div className="flex flex-col gap-5 mx-2 md:mx-0 mt-20 md:mt-0">
+    <div className="flex flex-col gap-5 px-7 mt-20 md:mt-0">
       <CustomBreadCrumbs
         items={[
           {

@@ -1,13 +1,16 @@
 import { ColoredGridMatrixProps } from '@/flexternships/constraints/types/chart-types';
+import { isEmpty } from 'lodash';
 
 export default function ColoredGridMatrix({ matrixConfig, matrixData }: ColoredGridMatrixProps) {
+  if (isEmpty(matrixData) || isEmpty(matrixConfig)) return null;
+
   return (
     <div className="flex flex-col gap-y-4">
       {matrixConfig.legend && (
         <div className="flex flex-row gap-x-3">
           <div className="text-xs text-grey-500 font-medium leading-5">Legend:</div>
-          {matrixConfig.legend.map((legendItem) => (
-            <div className="flex flex-row gap-x-1 items-center">
+          {matrixConfig.legend.map((legendItem, index) => (
+            <div key={index} className="flex flex-row gap-x-1 items-center">
               <div style={{ backgroundColor: legendItem.color }} className="size-3 rounded-sm" />
               <div className="text-xs text-grey-700 font-normal leading-5">
                 {legendItem.rangeMin} - {legendItem.rangeMax}
