@@ -60,7 +60,7 @@ function UnselectedTalentCard({
           </div>
           <div className="flex flex-row items-center gap-x-4">
             <Avatar className="size-8">
-              <AvatarImage src={''} />
+              <AvatarImage src={talentInfo.profileImage} />
               <AvatarFallback
                 className="p-2 font-semibold text-sm"
                 style={{
