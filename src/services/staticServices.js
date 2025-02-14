@@ -34,7 +34,8 @@ const currenciesService = () => DataService.get(API.static.currencies);
 
 const companyIndustriesService = () => DataService.get(API.static.companyIndustries);
 
-const departmentNamesService = () => DataService.get(API.project.departmentName);
+const departmentNamesService = ({ projectStatus }) =>
+  DataService.get(`${API.project.departmentName}?project_status=${projectStatus}`);
 
 const projectAreasService = () => DataService.get(API.static.projectAreas);
 
