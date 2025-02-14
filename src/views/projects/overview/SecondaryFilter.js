@@ -187,11 +187,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const setMetaDataForFlextern = () => {
+    console.log('secondFilterState', secondFilterState);
     if (secondFilterState?.department_name?.length > 0) {
       metaDataFlextern.department_name = secondFilterState.department_name[0]?.value;
     }
     if (secondFilterState?.status?.length > 0) {
-      metaDataFlextern.status = secondFilterState.status?.[0]?.status?.value;
+      metaDataFlextern.status = secondFilterState.status?.[0]?.value;
     }
     if (secondFilterState?.project_name?.length > 0) {
       metaDataFlextern.project_name = secondFilterState.project_name[0].label;
@@ -248,6 +249,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           search_query: metaDataFlextern?.project_name || searchText || '',
           department_name: metaDataFlextern?.department_name || '',
           status: metaDataFlextern?.status || '',
+          secondary_status: metaDataFlextern?.status || '',
           project_status: primaryFilter?.toUpperCase() || '',
           talent_name: metaDataFlextern?.talent_name || '',
           sort_by: metaDataFlextern?.project_state_type || ProjectSortTypes.ALL,
@@ -264,7 +266,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       page: selectProjectMetaData?.current_page + 1 || 1,
       search_query: metaDataFlextern?.project_name || searchText || '',
       department_name: metaDataFlextern?.department_name || '',
-      status: metaDataFlextern?.status || '',
+      secondary_status: metaDataFlextern?.status || '',
       project_status: primaryFilter?.toUpperCase() || '',
       talent_name: metaDataFlextern?.talent_name || '',
       sort_by: metaDataFlextern?.project_state_type || ProjectSortTypes.ALL,
@@ -299,6 +301,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           ...filterData,
           search_query: searchText || '',
           project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
+          secondary_status: metaDataFlextern?.status || '',
           sort_by: metaDataFlextern?.project_state_type || ProjectSortTypes.ALL,
           department_name: metaDataFlextern?.department_name || '',
         },
@@ -327,7 +330,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadTalentOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getTalentNameService(page, search);
+      const response = await getTalentNameService(page, search, primaryFilter?.toUpperCase());
       const options = response?.data?.data?.data.map((option) => ({
         value: option.talent_id,
         label: option.talent_name,
@@ -346,7 +349,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadDepartmentNameOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getDepartmentNameService(page, search);
+      const response = await getDepartmentNameService(page, search, primaryFilter?.toUpperCase());
 
       const options = response?.data?.data?.data.map((option) => ({
         value: option.department_name,
@@ -366,10 +369,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getSecondaryStatuses(page, search);
+      const response = await getSecondaryStatuses(page, search, primaryFilter?.toUpperCase());
       const options = response?.data?.data?.data.map((option) => ({
         value: option.status,
-        label: SecondaryProjectStatus[option.status],
+        label: option.status,
       }));
 
       return {
@@ -386,7 +389,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadProjectNamesOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getProjectNames(page, search);
+      const response = await getProjectNames(page, search, primaryFilter?.toUpperCase());
 
       const options = response?.data?.data?.data.map((option) => ({
         value: option._id,
