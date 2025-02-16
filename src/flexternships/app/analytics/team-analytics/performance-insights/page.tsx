@@ -73,7 +73,7 @@ export default function TeamPerformanceInsights() {
           </div>
           <div className="flex flex-col gap-y-4">
             {competencies.map((competencyItem) => (
-              <PerformanceInsightsCard competencyItem={competencyItem} />
+              <PerformanceInsightsCard key={competencyItem.id} competencyItem={competencyItem} />
             ))}
           </div>
         </div>

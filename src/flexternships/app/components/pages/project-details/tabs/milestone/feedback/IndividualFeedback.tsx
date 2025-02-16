@@ -121,7 +121,7 @@ export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
   }
 
   return (
-    <>
+    <div className="px-5">
       <PrimaryIconText
         className="mb-5"
         bgDark
@@ -148,6 +148,6 @@ export default function IndividualFeedback({ goBack }: { goBack: () => void }) {
       </div>
 
       {showSuccessModal && <SucessModal isOpen={showSuccessModal} onClose={handleCloseSuccessModal} />}
-    </>
+    </div>
   );
 }

@@ -87,7 +87,7 @@ export default function TeamFeedback({ goBack }: { goBack: () => void }) {
   }
 
   return (
-    <div>
+    <div className="px-5">
       <PrimaryIconText
         className="mb-5"
         bgDark

@@ -126,7 +126,7 @@ export default function PeerFeedback({ goBack }: { goBack: () => void }) {
   }
 
   return (
-    <>
+    <div className="px-5">
       <PrimaryIconText
         className="mb-5"
         bgDark
@@ -150,6 +150,6 @@ export default function PeerFeedback({ goBack }: { goBack: () => void }) {
       </div>
 
       {showSuccessModal && <SucessModal isOpen={showSuccessModal} onClose={handleCloseSuccessModal} />}
-    </>
+    </div>
   );
 }

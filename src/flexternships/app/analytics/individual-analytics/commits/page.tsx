@@ -33,7 +33,7 @@ export default function Commits() {
   };
 
   return (
-    <div className="flex flex-col gap-5 mx-2 md:mx-0 mt-20 md:mt-0">
+    <div className="flex flex-col gap-5 px-7">
       <CustomBreadCrumbs
         items={[
           {
