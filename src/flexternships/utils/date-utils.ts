@@ -57,11 +57,13 @@ export function addDaysToEpoch(epoch: number, days: number): number {
  * @returns A formatted date string (e.g., "Sep 30, 2024" or "Sep 30, 24" if truncateYear is true).
  * @throws {TypeError} If epoch is not a number.
  */
+
 export function formatEpochToHumanReadable(
   epoch: number,
   truncateYear = false,
   includeTime = false,
   timezone?: string,
+  useComma = true,
 ): string {
   if (typeof epoch !== 'number') {
     throw new TypeError('Expected a number for epoch');
@@ -69,9 +71,9 @@ export function formatEpochToHumanReadable(
 
   const dt = timezone ? DateTime.fromMillis(epoch).setZone(timezone) : DateTime.fromMillis(epoch);
 
-  const format = includeTime
-    ? `MMM d ${truncateYear ? 'yy' : 'yyyy'}, hh:mm a`
-    : `MMM d ${truncateYear ? 'yy' : 'yyyy'}`;
+  const dateFormat = useComma ? `MMM d, ${truncateYear ? 'yy' : 'yyyy'}` : `MMM d ${truncateYear ? 'yy' : 'yyyy'}`;
+
+  const format = includeTime ? `${dateFormat}, hh:mm a` : dateFormat;
 
   return dt.toFormat(format);
 }

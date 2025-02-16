@@ -60,7 +60,7 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
     clientName: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
     department: projectDetails?.clientInfo?.departmentName,
     image_uri: projectDetails?.clientInfo?.imageUri,
-    start_date: formatEpochToHumanReadable(projectInvitationDetails?.projectStartDate || 1),
+    start_date: formatEpochToHumanReadable(projectInvitationDetails?.projectStartDate || 1, false, false, '', false),
     role: projectInvitationDetails?.talentRole,
     estimated_duration: `${projectInvitationDetails?.projectEstimatedDuration?.duration} Weeks`,
     message: projectInvitationDetails?.invitationMessage,
