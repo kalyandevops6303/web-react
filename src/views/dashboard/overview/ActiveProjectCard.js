@@ -83,10 +83,10 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
           <h4 className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</h4>
           {data?.worker_details.length > 0 && (
             <div className="team-badge px-1">
-              <p className="mb-25">Team</p>
+              <p className="mb-10">Team</p>
             </div>
           )}
-          <div className="mb-1 mt-6">
+          <div className="mb-1 mt-4">
             {data?.worker_details.length > 0 ? (
               <span className="d-flex avatars">
                 <AvatarGroup

@@ -46,7 +46,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern: flexTern }));
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern }));
     }
   };
   const handleUnLike = (e) => {
@@ -205,7 +205,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
                 </CardText>
               </div>
-              <div className="d-flex gap-1 mt-2">
+              <div className="d-flex flex-column gap-1 mt-2">
                 <div className="w-50">
                   <BadgeGroup
                     title="Skills"
@@ -260,7 +260,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   </div>
                 </div>
               </div>
-              <div className="d-flex gap-1 mt-2">
+              <div className="d-flex flex-column gap-1 mt-2">
                 <div className="w-50">
                   <BadgeGroup
                     title="Skills"
@@ -323,9 +323,9 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                       {data?.client?.company_name || data?.client_info?.[0]?.department_name || ''}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {(data?.client?.first_name || data?.client_info?.[0]?.first_name || '') +
-                        ' ' +
-                        (data?.client?.last_name || data?.client_info?.[0]?.last_name || '')}
+                      {`${data?.client?.first_name || data?.client_info?.[0]?.first_name || ''} ${
+                        data?.client?.last_name || data?.client_info?.[0]?.last_name || ''
+                      }`}
                     </CardText>
                   </div>
 
@@ -439,7 +439,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
               </div>
             </div>
           </div>
-          <div className="d-flex">
+          <div className="d-flex flex-column">
             <section className="w-50 me-2">
               <div className="d-flex mt-2" style={{ marginTop: '35px' }}>
                 <BadgeGroup
