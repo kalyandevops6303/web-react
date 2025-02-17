@@ -33,7 +33,7 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
                   tab={tab}
                   index={index}
                   isActive={tab.id === projectStep}
-                  isDisabled={tab?.isDisabled}
+                  isDisabled={tab?.isDisabled ?? false}
                 />
               );
             })}

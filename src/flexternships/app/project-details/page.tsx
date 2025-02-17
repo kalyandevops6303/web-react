@@ -112,8 +112,7 @@ export default function FlexternshipProjectDetails() {
       component: <PerformanceTab />,
       talentVisible: true,
       clientVisible: true,
-      isDisabled:
-        projectDetails?.status === ProjectPrimaryStatus.ACTIVE || projectDetails?.status === ProjectPrimaryStatus.OPEN,
+      isDisabled: [ProjectPrimaryStatus.ACTIVE, ProjectPrimaryStatus.OPEN].includes(projectDetails?.status) ?? false,
     },
   ];
   const getCapitalizedStep = (step: string) => step.charAt(0).toUpperCase() + step.slice(1);

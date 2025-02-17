@@ -2,7 +2,7 @@ import { ProjectTabType } from '@/flexternships/constraints/types/project-detail
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { userTypes } from '@/utility/constants/Constant';
 import classNames from 'classnames';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const NavigationTab = ({
   tab,
@@ -17,23 +17,25 @@ const NavigationTab = ({
 }) => {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const param = useParams();
+  const navigate = useNavigate();
 
-  const WrapperComponent = isDisabled ? 'div' : Link;
-  const wrapperProps = isDisabled ? {} : ({ to: `/project-details/${param?.projectId}/${tab.id}` } as const);
+  const handleClick = () => {
+    if (!isDisabled) {
+      navigate(`/project-details/${param?.projectId}/${tab.id}`);
+    }
+  };
 
   return (
-    <WrapperComponent
-      {...(wrapperProps as {
-        to: string;
-      })}
+    <div
       key={index}
+      onClick={handleClick}
       className={classNames(
         {
           'bg-[#0185E41F] text-trublue-secondary-500 border-b-2 border-b-trublue-secondary-500': isActive,
           hidden: !(userDetails?.userType === userTypes?.client ? tab.clientVisible : tab.talentVisible),
-          'pointer-events-none opacity-50': isDisabled, // Prevents clicking when disabled
+          'pointer-events-none opacity-50': isDisabled,
         },
-        'group duration-200 ease-in-out first:rounded-tl last:rounded-tr flex flex-row w-fit p-3 items-start justify-start gap-2',
+        'group duration-200 ease-in-out first:rounded-tl last:rounded-tr flex flex-row w-fit p-3 items-start justify-start gap-2 cursor-pointer',
       )}
     >
       <div
@@ -65,7 +67,7 @@ const NavigationTab = ({
           {tab.description}
         </h1>
       </div>
-    </WrapperComponent>
+    </div>
   );
 };
 
