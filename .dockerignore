@@ -10,7 +10,6 @@
 **/*.*proj.user
 **/*.dbmdl
 **/*.jfm
-**/charts
 **/docker-compose*
 **/compose*
 **/Dockerfile*

@@ -78,7 +78,6 @@ import {
 import { resumeParsedDetailsSuccess } from '../../redux/reducers/talentOnboarding';
 import { updateParsedResumeService, resumeUploadService } from '../../services/talentOnboardingServices';
 import { selectFlexternBoolean, selectTrumioTalent } from '../../redux/selectors/authSelectors';
-
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
 import { downloadUrlLoading, userData } from '@/redux/selectors/dashboardSelectors';
@@ -990,9 +989,9 @@ const FlexternSocial = () => {
                                 </FormFeedback>
                               )}
                           </div>
-                          {/* <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
+                          <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
                             Remove
-                          </Button> */}
+                          </Button>
                         </div>
                       </Col>
                     </Row>

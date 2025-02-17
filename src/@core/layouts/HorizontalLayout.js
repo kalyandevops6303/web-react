@@ -14,7 +14,7 @@ import { ArrowUp } from 'react-feather';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 // ** Reactstrap Imports
-import { Navbar, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 // ** Configs
 import themeConfig from '@configs/themeConfig';
@@ -42,6 +42,8 @@ import { selectUserData, selectUserType } from '../../redux/selectors/authSelect
 import { userTypes } from '../../utility/constants/Constant';
 import getTeamId from '../../utility/commonUtils';
 import { getUserData } from '../../redux/actions/authActions';
+import Navbar from '@/flexternships/app/components/core/navbar';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
 const HorizontalLayout = (props) => {
   // ** Props
@@ -67,6 +69,8 @@ const HorizontalLayout = (props) => {
   const location = useLocation();
   const layoutStore = useSelector((state) => state.layout);
   const [searchParams] = useSearchParams();
+
+  const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
 
   // ** Vars
   const { contentWidth } = layoutStore;
@@ -147,22 +151,7 @@ const HorizontalLayout = (props) => {
       )}
       {...(isHidden ? { 'data-col': '1-column' } : {})}
     >
-      <Navbar
-        expand="lg"
-        container={false}
-        className={classnames(
-          `${
-            isNavbarSearchBarOpen ? 'active-search' : ''
-          } header-navbar navbar-fixed align-items-center navbar-shadow navbar-brand-center`,
-          {
-            'navbar-scrolled': true,
-          },
-        )}
-      >
-        <div className="navbar-container d-flex content ">
-          <NavbarComponent skin={skin} setSkin={setSkin} />
-        </div>
-      </Navbar>
+      <Navbar />
       {switchProfileModal ? (
         <SwitchConfirmModal
           entity={entity}
@@ -196,13 +185,15 @@ const HorizontalLayout = (props) => {
           setContentWidth={setContentWidth}
         />
       ) : null}
-      <footer
-        className={classnames(`footer footer-light ${footerClasses[footerType] || 'footer-static'}`, {
-          'd-none': footerType === 'hidden',
-        })}
-      >
-        {footer || <FooterComponent footerType={footerType} footerClasses={footerClasses} />}
-      </footer>
+      {!isUserDetailsLoading && (
+        <footer
+          className={classnames(`footer footer-light ${footerClasses[footerType] || 'footer-static'}`, {
+            'd-none': footerType === 'hidden',
+          })}
+        >
+          {footer || <FooterComponent footerType={footerType} footerClasses={footerClasses} />}
+        </footer>
+      )}
 
       {themeConfig.layout.scrollTop === true ? (
         <div className="scroll-to-top">

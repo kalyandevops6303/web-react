@@ -87,7 +87,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
     project_types: [],
     skills: [],
     tools: [],
-    departmentNames: [],
+    department_name: [],
     sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMENDED' }] : [],
     industries: [],
     project_areas: [],
@@ -175,6 +175,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
         valuesOnly[key] = [];
       } else {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+        valuesOnly.department_name = secondFilterState.department_name[0]?.value;
       }
     });
     if (userType) {
@@ -240,7 +241,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       project_types: [],
       skills: [],
       tools: [],
-      departmentNames: [],
+      department_name: [],
       sort_by: [],
       industries: [],
       project_areas: [],
@@ -328,7 +329,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       };
     }
     try {
-      const response = await departmentNamesService();
+      const response = await departmentNamesService({ projectStatus: primaryFilter === 'all_listings' ? '' : 'OPEN' });
       const options = response?.data?.data?.data?.map((department) => ({
         label: department.department_name,
         value: department.department_name,
@@ -399,6 +400,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
         valuesOnly[key] = [];
       } else {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+        valuesOnly.department_name = secondFilterState.department_name[0]?.value;
       }
     });
     if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
@@ -702,12 +704,12 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     placeholder="Select department"
                     theme={selectThemeColors}
                     className={classNames('react-select')}
-                    onChange={(value) => onChangeFilter('departmentNames', value)}
+                    onChange={(value) => onChangeFilter('department_name', value)}
                     value={
-                      secondFilterState?.departmentNames?.length > 0
+                      secondFilterState?.department_name?.length > 0
                         ? {
-                            value: secondFilterState.departmentNames[0].value,
-                            label: secondFilterState.departmentNames[0].label,
+                            value: secondFilterState.department_name[0].value,
+                            label: secondFilterState.department_name[0].label,
                           }
                         : null
                     }

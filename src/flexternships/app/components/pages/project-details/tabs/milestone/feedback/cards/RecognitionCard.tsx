@@ -1,6 +1,6 @@
 import PrimaryButton from '@/flexternships/app/components/core/buttons/PrimaryButton';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
-import { recognitionCardContent } from '@/flexternships/static/milestones-content';
+import { recognitionCardContent } from '@/flexternships/static/content/milestones-content';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import DefaultWow from '@/flexternships/assets/icons/core/wow/wow-default.svg';
 import DisabledWow from '@/flexternships/assets/icons/core/wow/wow-disabled.svg';

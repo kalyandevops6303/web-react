@@ -1,4 +1,4 @@
-import { ClientDelegateRole } from '../enums/profile-enums';
+import { FlexternDelegateInvitationType } from '../enums/core-enums';
 import { City, CompanyIndustry, Country, State, Timezone } from './core-types';
 import { ProjectCreationFormData } from './project-creation-types';
 
@@ -7,6 +7,9 @@ export type FlexternClientAccountDetails = {
   lastname: string;
   timezone: Timezone;
   imageUri?: string; // submits file key gets public uri
+  linkedin?: string;
+  title: string;
+  department: string;
 };
 
 export enum CompanyStrength {
@@ -95,7 +98,7 @@ export type FlexternClientPublicProfileDetails = {
     firstname: string;
     lastname: string;
     imageUri: string;
-    delegateType: ClientDelegateRole | undefined;
+    delegateType: FlexternDelegateInvitationType | undefined;
   }>;
 };
 

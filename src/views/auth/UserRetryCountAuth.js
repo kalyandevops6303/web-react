@@ -34,14 +34,12 @@ const UserRetryCountAuth = () => {
     const seconds = Math.floor((timeLeft % 60000) / 1000);
 
     return (
-      <div className="text-error text-xs flex  relative mb-4" role="alert">
-        <p>Your account is disabled.</p>
+      <div className="text-error text-xs flex  relative mt-2" role="alert">
         <p>
-          Please try again in{' '}
+          Your account is disabled. Please try again in{' '}
           <span className="font-semibold">
             {minutes}:{seconds.toString().padStart(2, '0')}
           </span>{' '}
-          {''}
           mins.
         </p>
       </div>
@@ -50,7 +48,7 @@ const UserRetryCountAuth = () => {
 
   if (maxCount - userLoginAttemptNo === 1) {
     return (
-      <div className="mb-1">
+      <div className="mt-2">
         <p className="text-error text-xs">
           This is your last attempt. If incorrect, your account will be disabled for 30 mins.
         </p>
@@ -59,7 +57,7 @@ const UserRetryCountAuth = () => {
   }
 
   return (
-    <div className="flex justify-content-between items-center mb-1 text-xs">
+    <div className="flex justify-content-between items-center text-xs mt-2">
       <p className="text-error">Invalid Password</p>
       <p>{maxCount - userLoginAttemptNo} attempts left</p>
     </div>

@@ -4,7 +4,19 @@ import {
   getPerformanceChartData,
   getRecognitionChartData,
   getAiSummary,
+  getTeamPerformanceSummary,
+  getTeamLeaderboard,
+  getTeamMembersDetails,
+  getTeamRoles,
+  getTeamPerformanceInsightsOverview,
+  getTeamDiversity,
+  getTeamMembersAttractivenessDetails,
+  getTeamUniversities,
+  getCommits,
+  getConversationParticipationStats,
+  getConversationAttachmentStats,
 } from '../actions/analytics-actions';
+// import { TimePeriodOptions } from '../constraints/enums/analytics-enums';
 
 const defaultInitState = {
   individualOverview: null,
@@ -14,6 +26,24 @@ const defaultInitState = {
   recognitionChartData: {
     chartData: [],
     chartConfig: {},
+  },
+  team: {
+    performanceSummary: null,
+    isPerformanceSummaryLoading: false,
+    teamLeaderboard: null,
+    isTeamLeaderboardLoading: false,
+    teamMembersAttractivenessDetails: null,
+    isTeamMembersAttractivenessDetailsLoading: false,
+    teamRoles: null,
+    isTeamRolesLoading: false,
+    teamUniversities: null,
+    isTeamUniversitiesLoading: false,
+    teamDiversity: null,
+    isTeamDiversityLoading: false,
+    teamMembersDetails: null,
+    isTeamMembersDetailsLoading: false,
+    teamPerformanceInsightsOverview: null,
+    isTeamPerformanceInsightsOverviewLoading: false,
   },
   isRecognitionChartDataLoading: false,
   performanceChartData: {
@@ -25,6 +55,14 @@ const defaultInitState = {
   isAiSummaryLoading: false,
   thirdPartyAppsData: null,
   isThirdPartyAppsDataLoading: false,
+  conversationParticipationStats: null,
+  isConversationParticipationStatsLoading: false,
+  conversationAttachmentStats: null,
+  isConversationAttachmentStatsLoading: false,
+  commits: null,
+  isCommitsLoading: false,
+  branchHistory: null,
+  isBranchHistoryLoading: false,
 };
 
 export const useAnalyticsStore = create<any>((set) => ({
@@ -33,4 +71,17 @@ export const useAnalyticsStore = create<any>((set) => ({
   getPerformanceChartData: async (projectId: string, userId: string) => getPerformanceChartData(projectId, userId, set),
   getAiSummary: async (projectId: string, userId: string) => getAiSummary(projectId, userId, set),
   getIndividualOverview: async (userId: string, projectId: string) => getIndividualOverview(userId, projectId, set),
+  getTeamPerformanceSummary: async (projectId: string) => getTeamPerformanceSummary(projectId, set),
+  getTeamMembersAttractivenessDetails: async (projectId: string) => getTeamMembersAttractivenessDetails(projectId, set),
+  getTeamLeaderboard: async (projectId: string) => getTeamLeaderboard(projectId, set),
+  getTeamRoles: async (projectId: string) => getTeamRoles(projectId, set),
+  getTeamUniversities: async (projectId: string) => getTeamUniversities(projectId, set),
+  getTeamDiversity: async (projectId: string) => getTeamDiversity(projectId, set),
+  getTeamMembersDetails: async (projectId: string) => getTeamMembersDetails(projectId, set),
+  getTeamPerformanceInsightsOverview: async (projectId: string) => getTeamPerformanceInsightsOverview(projectId, set),
+  getConversationParticipationStats: async (projectId: string, userId: string) =>
+    getConversationParticipationStats(projectId, userId, set),
+  getConversationAttachmentStats: async (projectId: string, userId: string) =>
+    getConversationAttachmentStats(projectId, userId, set),
+  getCommits: async (projectId: string, userId: string) => getCommits(projectId, userId, set),
 }));

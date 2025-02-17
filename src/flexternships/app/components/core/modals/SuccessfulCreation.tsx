@@ -3,8 +3,9 @@ import { useProjectCreationStore } from '@flexternships/stores/project-creation-
 import { ModalType } from '@flexternships/types/project-creation-types';
 import CloseModalButton from '../buttons/CloseModalButton';
 import PrimaryButton from '../buttons/PrimaryButton';
-import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 import { useNavigate } from 'react-router-dom';
+import routes from '@/flexternships/routes';
 
 export default function SuccessfulCreation(props: Props) {
   const { onRecall, onConfirm, recallTimeLeft, isRecalling } = props;
@@ -20,7 +21,7 @@ export default function SuccessfulCreation(props: Props) {
   const handleClose = () => {
     closeModal();
     // redirect
-    navigate('/dashboard');
+    navigate(routes.dashboard.path);
   };
 
   return (

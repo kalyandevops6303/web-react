@@ -4,14 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RefreshCcw, Search } from 'react-feather';
 import { PropTypes } from 'prop-types';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { getProjectListing, getProjectsListingFlextern } from '../../../redux/actions/projectActions';
+import { getProjectsListingFlextern } from '../../../redux/actions/projectActions';
 import ProjectCard from '../../cards/ProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
@@ -25,14 +25,25 @@ import {
   getTalentNameService,
   getTeamNameSerive,
 } from '../../../services/projectServices';
-import { userTypes } from '../../../utility/constants/Constant';
+import { ProjectSortTypes, userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
-import { ResponsiveGrid } from '../../cards/style';
+import { CountWrapper, ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 import { SecondaryProjectStatus } from '@/flexternships/constraints/enums/project-enums';
+
+const Control = ({ children, ...rest }) => <components.Control {...rest}>{children}</components.Control>;
+
+const CustomOption = ({ option, count, selected }) => (
+  <CountWrapper selected={selected}>
+    <span className="option">{option}</span>
+    <span className="count">{count}</span>
+  </CountWrapper>
+);
+
+const CustomSelectWithCount = (props) => <Select {...props} components={{ Control }} />;
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -65,25 +76,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'Received', value: 'RECEIVED' },
     { label: 'Sent', value: 'SENT' },
   ];
+
   const invitedByOptions = [
     { label: 'Team', value: 'TEAM' },
     { label: 'Client', value: 'CLIENT' },
   ];
-  const metaData = { page: 1, page_size: 10 };
-  const metaDataFlextern = {
-    page: 1,
-    page_size: 10,
-    search_query: '',
-    status: '',
-    department_name: '',
-    project_name: '',
-  };
-
-  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const [secondFilterState, setSecondFilterState] = useState({
     team_name: [],
     department_name: [],
+    project_state_type: [],
     status: [],
     project_name: [],
     talent_name: [],
@@ -94,6 +96,41 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     invitation_type: [typeOptions[0]],
     invitation_to: [invitedOptions[0]],
   });
+
+  const projectStateOptions = [
+    {
+      label: (
+        <CustomOption
+          selected={secondFilterState.project_state_type[0]?.value === 'NEW'}
+          option="New"
+          count={selectProjectMetaData?.new_count || 0}
+        />
+      ),
+      value: 'NEW',
+    },
+    {
+      label: (
+        <CustomOption
+          selected={secondFilterState.project_state_type[0]?.value === 'FAVOURITE'}
+          option="Favourite"
+          count={selectProjectMetaData?.favourite_count || 0}
+        />
+      ),
+      value: 'FAVOURITE',
+    },
+  ];
+  const metaDataFlextern = {
+    page: 1,
+    page_size: 10,
+    search_query: '',
+    status: '',
+    department_name: '',
+    project_name: '',
+    talent_name: '',
+    project_state_type: '',
+  };
+
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const onSuccess = () => {};
   const onError = () => {
@@ -149,20 +186,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   };
 
-  useEffect(() => {
+  const setMetaDataForFlextern = () => {
+    console.log('secondFilterState', secondFilterState);
     if (secondFilterState?.department_name?.length > 0) {
       metaDataFlextern.department_name = secondFilterState.department_name[0]?.value;
     }
     if (secondFilterState?.status?.length > 0) {
-      metaDataFlextern.status = secondFilterState.status?.[0]?.status?.value;
+      metaDataFlextern.status = secondFilterState.status?.[0]?.value;
     }
     if (secondFilterState?.project_name?.length > 0) {
       metaDataFlextern.project_name = secondFilterState.project_name[0].label;
     }
-
     if (secondFilterState?.talent_name?.length > 0) {
       metaDataFlextern.talent_name = secondFilterState.talent_name[0].label;
     }
+    if (secondFilterState?.project_state_type?.length > 0) {
+      metaDataFlextern.project_state_type = secondFilterState.project_state_type[0].value;
+    }
+  };
+  useEffect(() => {
+    setMetaDataForFlextern();
   }, [secondFilterState]);
 
   useEffect(() => {
@@ -198,30 +241,35 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     //     onError,
     //   }),
     // );
+
     dispatch(
       getProjectsListingFlextern({
         metaData: {
           ...metaDataFlextern,
           search_query: metaDataFlextern?.project_name || searchText || '',
-          department_name: metaDataFlextern?.department_name?.department_name || '',
+          department_name: metaDataFlextern?.department_name || '',
           status: metaDataFlextern?.status || '',
+          secondary_status: metaDataFlextern?.status || '',
           project_status: primaryFilter?.toUpperCase() || '',
           talent_name: metaDataFlextern?.talent_name || '',
+          sort_by: metaDataFlextern?.project_state_type || ProjectSortTypes.ALL,
         },
       }),
     );
   }, [secondFilterState, searchText, primaryFilter]);
 
   const fetchMore = () => {
+    setMetaDataForFlextern();
     const newFlexternMetaData = {
       ...metaDataFlextern,
       // eslint-disable-next-line no-unsafe-optional-chaining
       page: selectProjectMetaData?.current_page + 1 || 1,
       search_query: metaDataFlextern?.project_name || searchText || '',
-      department_name: metaDataFlextern?.department_name?.department_name || '',
-      status: metaDataFlextern?.status || '',
+      department_name: metaDataFlextern?.department_name || '',
+      secondary_status: metaDataFlextern?.status || '',
       project_status: primaryFilter?.toUpperCase() || '',
       talent_name: metaDataFlextern?.talent_name || '',
+      sort_by: metaDataFlextern?.project_state_type || ProjectSortTypes.ALL,
     };
 
     const filterData = {};
@@ -253,6 +301,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           ...filterData,
           search_query: searchText || '',
           project_filter: primaryFilter ? primaryFilter.toUpperCase() : '',
+          secondary_status: metaDataFlextern?.status || '',
+          sort_by: metaDataFlextern?.project_state_type || ProjectSortTypes.ALL,
+          department_name: metaDataFlextern?.department_name || '',
         },
         metaData: newFlexternMetaData,
         onSuccess,
@@ -279,7 +330,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadTalentOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getTalentNameService(page, search);
+      const response = await getTalentNameService(page, search, primaryFilter?.toUpperCase());
       const options = response?.data?.data?.data.map((option) => ({
         value: option.talent_id,
         label: option.talent_name,
@@ -298,7 +349,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadDepartmentNameOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getDepartmentNameService(page, search);
+      const response = await getDepartmentNameService(page, search, primaryFilter?.toUpperCase());
 
       const options = response?.data?.data?.data.map((option) => ({
         value: option.department_name,
@@ -318,10 +369,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getSecondaryStatuses(page, search);
+      const response = await getSecondaryStatuses(page, search, primaryFilter?.toUpperCase());
       const options = response?.data?.data?.data.map((option) => ({
         value: option.status,
-        label: SecondaryProjectStatus[option.status],
+        label: option.status,
       }));
 
       return {
@@ -338,7 +389,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadProjectNamesOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getProjectNames(page, search);
+      const response = await getProjectNames(page, search, primaryFilter?.toUpperCase());
 
       const options = response?.data?.data?.data.map((option) => ({
         value: option._id,
@@ -493,7 +544,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && userType !== userTypes.client && (
+              {userType !== userTypes.team && (
                 <Col>
                   <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
@@ -509,6 +560,30 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     value={
                       secondFilterState.department_name?.length > 0
                         ? secondFilterState.department_name?.map((item) => item)
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            </PermissionWrapper>
+            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TYPE']}>
+              {userType !== userTypes.team && (
+                <Col>
+                  <Label className="form-label">Type</Label>
+                  <CustomSelectWithCount
+                    className="input-width"
+                    isClearable
+                    options={projectStateOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('project_state_type', value)}
+                    value={
+                      secondFilterState?.project_state_type?.length > 0
+                        ? {
+                            value: secondFilterState.project_state_type[0].value,
+                            label: secondFilterState.project_state_type[0].label,
+                          }
                         : null
                     }
                   />
@@ -708,6 +783,14 @@ SecondaryFilters.propTypes = {
 SecondaryFilters.defaultProps = {
   primaryFilter: '',
   userType: '',
+};
+Control.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+CustomOption.propTypes = {
+  option: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired,
+  selected: PropTypes.bool.isRequired,
 };
 
 export default SecondaryFilters;

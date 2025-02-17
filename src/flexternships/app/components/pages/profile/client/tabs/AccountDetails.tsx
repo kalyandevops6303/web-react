@@ -18,18 +18,20 @@ import { FlexternUserCheckpoint, ToastType } from '@/flexternships/constraints/e
 import SingleSelectInput from '@/flexternships/app/components/core/form/SingleSelectInput';
 import { fetchTimezonesPaginated } from '@/flexternships/services/user-management';
 import { useNavigate } from 'react-router-dom';
+import ClientOnboardingSuccessModal from '@/flexternships/app/components/core/modals/ClientOnboardingSuccessModal';
+import routes from '@/flexternships/routes';
 
 export default function AccountDetails() {
   const profileDetails = useFlexternUserProfileStore((state) => state.profileDetails);
   const isProfileDetailsLoading = useFlexternUserProfileStore((state) => state.isProfileDetailsLoading);
   const upsertClientAccountInfo = useFlexternUserProfileStore((state) => state.upsertClientAccountInfo);
   const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
-  const nextTab = useFlexternUserProfileStore((state) => state.nextTab);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
 
   const [isSaveLoading, setIsSaveLoading] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,12 +43,7 @@ export default function AccountDetails() {
   } = useForm<FlexternClientAccountDetails>({
     mode: 'onChange',
     resolver: yupResolver(FlexternClientAccountDetailsSchema),
-    defaultValues: {
-      firstname: '',
-      lastname: '',
-      imageUri: '',
-      timezone: undefined,
-    },
+    defaultValues: {},
   });
 
   useEffect(() => {
@@ -60,6 +57,9 @@ export default function AccountDetails() {
         lastname: profileDetails.lastname,
         timezone: profileDetails.timezone,
         imageUri: profileDetails.imageUri,
+        linkedin: profileDetails.linkedin,
+        title: profileDetails.title,
+        department: profileDetails.department,
       });
     }
   }, [profileDetails, reset]);
@@ -74,11 +74,19 @@ export default function AccountDetails() {
     );
   }
 
-  const goToNextTab = () => {
-    if (userDetails.checkpoint === FlexternUserCheckpoint.COMPLETE) {
-      navigate('/client-profile-edit/personal-details');
+  const showSuccessModal = () => {
+    setIsSuccessModalOpen(true);
+  };
+
+  const closeSuccessModal = () => {
+    setIsSuccessModalOpen(false);
+  };
+
+  const handleNext = () => {
+    if (userDetails.checkpoint !== FlexternUserCheckpoint.COMPLETE) {
+      showSuccessModal();
     } else {
-      nextTab();
+      navigate(routes.dashboard.path);
     }
   };
 
@@ -86,13 +94,12 @@ export default function AccountDetails() {
     setIsSaveLoading(true);
     try {
       await upsertClientAccountInfo(data);
-      goToNextTab();
+      handleNext();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        showToastMessage(ToastType.ERROR, error.message);
-      } else {
-        showToastMessage(ToastType.ERROR, 'Failed to save account details. Please try again.');
-      }
+      showToastMessage(
+        ToastType.ERROR,
+        error instanceof Error ? error.message : 'Failed to save account details. Please try again.',
+      );
     }
     setIsSaveLoading(false);
   };
@@ -103,6 +110,7 @@ export default function AccountDetails() {
         <div className="px-6 pb-3 text-grey-heading text-lg font-medium leading-[26px] border-b-1 border-grey-border">
           Account Details
         </div>
+        {/* Profile Avatar Input */}
         <div className="px-6 pb-1">
           <Controller
             name="imageUri"
@@ -110,6 +118,7 @@ export default function AccountDetails() {
             render={({ field: { value, onChange } }) => <UploadProfileAvatar value={value} onChange={onChange} />}
           ></Controller>
         </div>
+        {/* Contains all the core inputs */}
         <div className="pl-6 flex flex-wrap gap-x-6 gap-y-8">
           <Controller
             name="firstname"
@@ -143,27 +152,70 @@ export default function AccountDetails() {
             )}
           ></Controller>
 
-          <div className="w-full">
-            <SingleSelectInput
-              name={`timezone`}
-              control={control}
-              pageSize={10}
-              loadOptions={fetchTimezonesPaginated}
-              className="w-[393px]"
-              label="Timezone"
-              placeholder="Select your timezone"
-              error={errors?.timezone?.message}
-              maxMenuHeight={220}
-              required
-            />
-          </div>
+          <SingleSelectInput
+            name={`timezone`}
+            control={control}
+            pageSize={10}
+            loadOptions={fetchTimezonesPaginated}
+            className="w-[393px]"
+            label="Preferred Time Zone"
+            placeholder="Select preferred time zone"
+            error={errors?.timezone?.message}
+            maxMenuHeight={220}
+            required
+          />
 
-          <div className="flex flex-col">
-            <div className="text-xs text-grey-500 leading-5 not-italic font-normal flex flex-row gap-0.5">
-              Mobile Number
-            </div>
+          <Controller
+            name="linkedin"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <TextInput
+                value={value ?? ''}
+                onChange={onChange}
+                className="w-[393px]"
+                label="Linkedin"
+                placeholder="Enter your profile URL"
+                error={errors.linkedin?.message}
+              />
+            )}
+          ></Controller>
+
+          <Controller
+            name="title"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <TextInput
+                value={value}
+                onChange={onChange}
+                className="w-[393px]"
+                label="Designation"
+                placeholder="Enter your designation"
+                error={errors.title?.message}
+                required
+              />
+            )}
+          ></Controller>
+
+          <Controller
+            name="department"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <TextInput
+                value={value}
+                onChange={onChange}
+                className="w-[393px]"
+                label="Department Name"
+                placeholder="Enter your department"
+                error={errors.department?.message}
+                required
+              />
+            )}
+          ></Controller>
+
+          <div className="flex flex-col gap-y-1">
+            <div className="text-xs text-grey-500 leading-5 not-italic font-normal">Mobile Number</div>
             <div className="flex gap-x-3">
-              <div className="px-3 mt-1 rounded-md min-w-[100px] flex items-center gap-x-2 border-1 border-solid border-trublue bg-gradient-to-t from-[rgba(153,193,230,0.10)] to-[rgba(153,193,230,0.10)]">
+              <div className="px-3 rounded-md min-w-[100px] flex items-center gap-x-2 border-1 border-solid border-trublue bg-gradient-to-t from-[rgba(153,193,230,0.10)] to-[rgba(153,193,230,0.10)]">
                 <ReactCountryFlag className="rounded-md min-h-4" countryCode={userDetails.phoneCountry.code} svg />
                 <span className="text-sm leading-5.5 font-normal text-grey-600 not-italic">
                   {userDetails.countryCode}
@@ -172,22 +224,18 @@ export default function AccountDetails() {
               <TextInput value={userDetails.phone} onChange={() => {}} className="w-[281px]" label="" readOnly />
             </div>
           </div>
-          <TextInput
-            value={userDetails.email}
-            onChange={() => {}}
-            className="w-[393px]"
-            label="Email address"
-            readOnly
-          />
+          <TextInput value={userDetails.email} onChange={() => {}} className="w-[393px]" label="Email" readOnly />
         </div>
       </div>
+      {/* Actions */}
       <div className="flex justify-end gap-5">
         <SecondaryButton onClick={() => setIsChangePasswordModalOpen(true)}>Change Password</SecondaryButton>
-        <PrimaryButton onClick={handleSubmit(onContinue)} loading={isSaveLoading} disabled={!isValid}>
+        <PrimaryButton onClick={handleSubmit(onContinue)} loading={isSaveLoading} disabled={!isValid || isSaveLoading}>
           Save & Continue
         </PrimaryButton>
       </div>
       <ChangePasswordModal isOpen={isChangePasswordModalOpen} onClose={() => setIsChangePasswordModalOpen(false)} />
+      <ClientOnboardingSuccessModal isOpen={isSuccessModalOpen} onClose={closeSuccessModal} />
     </div>
   );
 }

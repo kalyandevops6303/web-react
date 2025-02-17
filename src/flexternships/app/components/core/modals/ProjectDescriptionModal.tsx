@@ -1,8 +1,8 @@
 'use client';
-import CloseModalButton from '../buttons/CloseModalButton';
+import GenericModal from './GenericModal';
 
 export default function ProjectDescriptionModal(props: ProjectDescriptionModalProps) {
-  const { isOpen, onClose, data, modalRef } = props;
+  const { isOpen, onClose, data } = props;
 
   if (!isOpen) {
     return null;
@@ -13,18 +13,16 @@ export default function ProjectDescriptionModal(props: ProjectDescriptionModalPr
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-[20]">
-      <div
-        className="relative w-full min-w-[40rem] max-w-sm rounded-lg bg-white pt-13 pr-8 pb-8 pl-6 shadow-lg z-[100]"
-        ref={modalRef}
-      >
-        <CloseModalButton onClick={handleClose} />
-        <div className="relative flex flex-col items-start gap-5 text-grey-heading text-xl font-medium leading-[28px]">
-          <h1>Project Description</h1>
-          <p className="w-full max-w-full break-words text-sm">{data}</p>
+    <GenericModal className="pb-5 max-h-[70vh] max-w-[70vw] md:max-w-[50vw]" isOpen={isOpen} onClose={handleClose}>
+      <div className="max-w-[70vw] md:max-w-[50vw]">
+        <h1 className="text-grey-heading text-xl font-medium leading-[28px] pt-5 pr-8 pb-3 pl-6">
+          Project Description
+        </h1>
+        <div className="overflow-y-auto px-6 text-sm text-gray-800 max-h-[60vh]">
+          <p className=" break-words pb-10">{data}</p>
         </div>
       </div>
-    </div>
+    </GenericModal>
   );
 }
 

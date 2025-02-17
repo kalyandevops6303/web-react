@@ -28,7 +28,6 @@ import SubmittedArtifacts from './artifacts/submitted/SubmittedArtifacts';
 import MilestoneStatusTag from '@/flexternships/app/components/core/tags/MilestoneStatusTag';
 import { isEmpty } from 'lodash';
 import noSubmissionsFoundGif from '@flexternships/assets/gifs/no-submissions-found.gif';
-import RecognitionCard from './feedback/cards/RecognitionCard';
 import FeedbackStatusCard from './feedback/cards/FeedbackStatusCard';
 import StartsInTimer from '@/flexternships/app/components/core/timers/StartsInTimer';
 import {
@@ -37,7 +36,7 @@ import {
   getMilestoneDetailsModalConfirmCtaText,
   getMilestoneDetailsModalDescription,
   getMilestoneDetailsModalTitle,
-} from '@/flexternships/static/milestones-content';
+} from '@/flexternships/static/content/milestones-content';
 import { markMilestoneArtifactAsRead } from '@/flexternships/services/project-management-v2';
 import ConfirmActionModal from '@/flexternships/app/components/core/modals/milestone/ConfirmActionModal';
 import { MilestoneDetailsModalType } from '@/flexternships/constraints/enums/miscellaneous-enums';
@@ -45,6 +44,7 @@ import CelebrationModal from '@/flexternships/app/components/core/modals/milesto
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
 import { MilestoneFeedback } from '@/flexternships/constraints/types/project-milestones-types';
+import SecondaryButton from '@/flexternships/app/components/core/buttons/SecondaryButton';
 
 export default function MilestoneDetails() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -60,8 +60,8 @@ export default function MilestoneDetails() {
 
   const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
   const teamDetails = useProjectsStore((state) => state.teamDetails);
-
-  const [allowRecognition, setAllowRecognition] = useState(false);
+  const projectDetails = useProjectsStore((state) => state.projectDetails);
+  const isProjectLoading = useProjectsStore((state) => state.isProjectsLoading);
 
   const projectName = useProjectsStore((state) => state.projectDetails?.details?.name);
 
@@ -78,12 +78,6 @@ export default function MilestoneDetails() {
     if (!projectId) throw new Error('Project ID is required to fetch team details');
     populateTeamDetails(projectId);
   }, [projectId, populateTeamDetails]);
-
-  useEffect(() => {
-    setAllowRecognition(
-      teamDetails.filter((member) => member.id !== userDetails.id).some((member) => member.isDocumentsSigned),
-    );
-  }, [teamDetails]);
 
   useEffect(() => {
     const fetchMilestoneDetails = async () => {
@@ -164,6 +158,10 @@ export default function MilestoneDetails() {
     }
   };
 
+  const handleGiveRecognition = () => {
+    navigate(`/quick-actions/${projectId}`);
+  };
+
   if (isMilestoneDetailsLoading && activeModal === undefined) {
     return (
       <div className="flex flex-col items-center justify-center min-h-48">
@@ -182,8 +180,10 @@ export default function MilestoneDetails() {
     );
   };
 
-  const referenceDateForFeedback =
-    userDetails.userType === UserType.CLIENT ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
+  const isUserClient = userDetails.userType === UserType.CLIENT;
+  const isUserTalent = userDetails.userType === UserType.TALENT;
+
+  const referenceDateForFeedback = isUserClient ? milestoneDetails.acceptedAt : milestoneDetails.submittedAt;
 
   const isNextUpcomingMilestone =
     typeof milestoneDetails.lastWorkingMilestoneSeq === 'number'
@@ -202,6 +202,25 @@ export default function MilestoneDetails() {
       feedback.feedbackStatus === MilestoneFeedbackStatus.PENDING,
   );
 
+  const disableMilestonePrimaryAction =
+    milestoneDetails.status === MilestoneStatus.COMPLETED || // 1. If milestone is already completed
+    milestoneDetails.status === MilestoneStatus.CREATED || // 2. If milestone is just created and not yet started
+    (milestoneDetails.status === MilestoneStatus.IN_REVIEW && isUserTalent) || // 3. If current user is talent and the milestone is already in review
+    (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && isUserClient); // 4. If current user is client and the milestone is still in progress
+
+  const disableGiveRecognition =
+    !projectDetails.giveRecognition ||
+    [MilestoneStatus.CREATED, MilestoneStatus.COMPLETED].includes(milestoneDetails.status);
+
+  const getPrimaryActionText = () => {
+    if (isUserClient) {
+      return milestoneDetails.status === MilestoneStatus.COMPLETED ? 'Accepted' : 'Accept';
+    }
+    return [MilestoneStatus.IN_REVIEW, MilestoneStatus.COMPLETED].includes(milestoneDetails.status)
+      ? 'Completed'
+      : 'Mark as Completed';
+  };
+
   return (
     <div className="flex flex-col gap-y-6 max-w-[1040px]">
       <div className="flex flex-row justify-between">
@@ -211,17 +230,16 @@ export default function MilestoneDetails() {
           onClick={goBackToAllMilestones}
           bgDark
         />
-        <PrimaryButton
-          onClick={openConfirmActionModal}
-          disabled={
-            milestoneDetails.status === MilestoneStatus.COMPLETED ||
-            milestoneDetails.status === MilestoneStatus.CREATED ||
-            (milestoneDetails.status === MilestoneStatus.IN_REVIEW && userDetails.userType === UserType.TALENT) ||
-            (milestoneDetails.status === MilestoneStatus.IN_PROGRESS && userDetails.userType === UserType.CLIENT)
-          }
-        >
-          {userDetails.userType === UserType.CLIENT ? 'Accept' : 'Mark as Completed'}
-        </PrimaryButton>
+        <div className="flex flex-row items-center gap-x-4">
+          {!isProjectLoading && (
+            <SecondaryButton className="m-0" onClick={handleGiveRecognition} disabled={disableGiveRecognition}>
+              Give {isUserClient ? 'a WOW!' : 'Kudos'}
+            </SecondaryButton>
+          )}
+          <PrimaryButton className="m-0" onClick={openConfirmActionModal} disabled={disableMilestonePrimaryAction}>
+            {getPrimaryActionText()}
+          </PrimaryButton>
+        </div>
       </div>
       <SimpleElevatedCard className="flex flex-col px-8 pt-6 pb-10 gap-y-10 bg-white-fa overflow-hidden">
         <div className="flex flex-row gap-x-4 items-center">
@@ -313,13 +331,14 @@ export default function MilestoneDetails() {
           </Accordion>
         </SimpleElevatedCard>
       )}
-      {allowRecognition && (
+      {/* Commented for now considering the revision in wow/kudos */}
+      {/* {allowRecognition && (
         <RecognitionCard
           isDisabled={!allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status)}
           projectId={milestoneDetails.projectDetails.projectId}
           milestoneId={milestoneDetails.id}
         />
-      )}
+      )} */}
       {!isEmpty(milestoneDetails) &&
         allowFeedbackCardsIfMilestoneStatus.includes(milestoneDetails.status) &&
         milestoneDetails.milestoneFeedbackDetails.map((feedback, index) => (

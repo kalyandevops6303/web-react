@@ -4,6 +4,8 @@ import {
   ProjectDetails,
   ProjectDetailsState,
   ProjectStore,
+  ProjectInvitation,
+  PerformanceDetails,
 } from '../constraints/types/project-details-types';
 import {
   populateTeamDetails,
@@ -11,22 +13,19 @@ import {
   getProjectInvitationDetails,
   getSelfOrTeamPerformanceDetails,
   getPeerOrIndividualPerformanceDetails,
-  setTerminateProject,
-  setWithdrawProject,
-  setRelistProject,
   setInvitationAsRead,
 } from '../actions/project-details-actions';
 import { ProjectSecondaryStatus } from '../constraints/enums/core-enums';
 
 const defaultInitState: ProjectDetailsState = {
-  isProjectsLoading: false,
+  isProjectsLoading: false, // this state is determining the loading state of list of projects
   projectDetails: {} as ProjectDetails,
-  projectDetailsLoading: false,
+  projectDetailsLoading: false, // this state is determining the loading state of project details of a particular project
   isTeamDetailsLoading: false,
   teamDetails: [] as Array<TeamMemberDetails>,
-  projectInvitationDetails: null,
+  projectInvitationDetails: {} as ProjectInvitation,
   isProjectInvitationDetailsLoading: false,
-  performanceDetails: null,
+  performanceDetails: [] as PerformanceDetails[],
   isPerformanceDetailsLoading: false,
 };
 
@@ -43,10 +42,5 @@ export const useProjectsStore = create<ProjectStore>((set) => ({
     getSelfOrTeamPerformanceDetails(projectId, feedbackType, set),
   getPeerOrIndividualPerformanceDetails: async (milestoneId: string, feedbackType: string) =>
     getPeerOrIndividualPerformanceDetails(milestoneId, feedbackType, set),
-  setTerminateProject: async (projectId: string) => setTerminateProject(projectId, set),
-  setWithdrawProject: async (projectId: string) => setWithdrawProject(projectId, set),
-  setRelistProject: async (projectId: string, startDate: number, endDate: number) =>
-    setRelistProject(projectId, startDate, endDate, set),
-
   setProjectInvitationRead: async (projectId: string) => setInvitationAsRead(projectId, set),
 }));

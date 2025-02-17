@@ -97,7 +97,7 @@ const MarketPlaceProjectCard = ({
   }, [project]);
 
   const statusEnum = {
-    OPEN: 'Open Listing',
+    OPEN: 'Open',
     ON_GOING: 'On Going',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',

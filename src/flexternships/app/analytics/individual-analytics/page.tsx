@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import IndividualOverview from './individual-overview';
-import MultipleLinesChart from './MultipleLinesChart';
+import MultipleLinesChart from '../../components/core/charts/MultipleLinesChart';
 
 import { TooltipProps } from 'recharts';
 import { ArrowLeft, ThumbsUp } from 'react-feather';
@@ -20,6 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/flexternships/app/components/ui/select';
+import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
+import CustomXAxisLabel from './labels/CustomXAxisLabel';
+import TooltipInfo from '../../components/core/tooltips/TooltipInfo';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -67,10 +70,6 @@ export default function IndividualAnalytics() {
       ?.avgScore;
   };
 
-  const handleBack = () => {
-    navigate(`/analytics/project/${projectId}/team`);
-  };
-
   useEffect(() => {
     if (individualOverviewDetails) {
       setFormattedIndividualOverviewDetails({
@@ -84,8 +83,8 @@ export default function IndividualAnalytics() {
           endYear: individualOverviewDetails?.educationalInstitute?.gradYear,
           name: individualOverviewDetails?.educationalInstitute?.education?.name,
         },
-        flexternshipStartDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.startDateEpoch),
-        flexternshipEndDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.endDateEpoch),
+        flexternshipStartDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.startDateEpoch ?? 0),
+        flexternshipEndDate: formatEpochToHumanReadable(projectDetails?.listingDetails?.endDateEpoch ?? 0),
         wowCount: individualOverviewDetails?.wowCount,
         kudosCount: individualOverviewDetails?.kudosCount,
         trumioAttractivenessScore: individualOverviewDetails?.attractivenessScore?.score,
@@ -96,7 +95,7 @@ export default function IndividualAnalytics() {
   }, [individualOverviewDetails]);
 
   useEffect(() => {
-    if (individualOverviewDetails) {
+    if (formattedIndividualOverviewDetails) {
       setFeedbackFooterData([
         {
           title: 'Manager Feedback',
@@ -115,13 +114,13 @@ export default function IndividualAnalytics() {
         },
       ]);
     }
-  }, [individualOverviewDetails]);
+  }, [formattedIndividualOverviewDetails]);
 
   const CustomTooltipContent = ({ active, payload, label }: TooltipProps<any, any>) => {
     if (!active || !payload?.length) return null;
 
     return (
-      <div className="bg-white w-[200px] max-w-1/2 p-3 border rounded-5 shadow-lg">
+      <div className="bg-white w-[300px] max-w-1/2 p-3 border rounded-5 shadow-lg">
         <p className="font-montserrat text-2xs leading-4 font-semibold text-grey-500 uppercase">{label}</p>
         {payload.map((entry) => {
           const dataKey = entry.dataKey as keyof typeof recognitionChartData.chartConfig;
@@ -135,7 +134,7 @@ export default function IndividualAnalytics() {
                     className="flex w-3 h-3 rounded-sm"
                     style={{ backgroundColor: recognitionChartData?.chartConfig[dataKey].color }}
                   ></div>
-                  <div>{recognitionChartData?.chartConfig[dataKey].label}</div>
+                  <div>Learnability Score</div>
                 </span>
                 <span className="font-montserrat text-xs leading-5 font-semibold text-dark-100">
                   {entry.value}/{recognitionChartData?.maxYAxis}
@@ -189,7 +188,7 @@ export default function IndividualAnalytics() {
   }
 
   return (
-    <div className="flex flex-col gap-6 px-4 md:px-0">
+    <div className="flex flex-col gap-6 px-7">
       <BreadCrumbs
         steps={[
           {
@@ -203,15 +202,17 @@ export default function IndividualAnalytics() {
           {
             title: `${formattedIndividualOverviewDetails?.firstName} ${formattedIndividualOverviewDetails?.lastName}`,
             link: window.location.href,
+            isActive: true,
           },
         ]}
       />
-      <button onClick={handleBack} className="flex items-center gap-2 my-2 cursor-pointer" type="button">
-        <div className="p-2 rounded-full bg-trublue-light">
-          <ArrowLeft size={18} className="text-trublue-secondary-500" />
-        </div>
-        <div className="text-[#0185E4] font-montserrat text-sm font-semibold leading-normal">Team Analytics</div>
-      </button>
+
+      <PrimaryIconText
+        icon={<ArrowLeft size={18} className="text-trublue-secondary-500" />}
+        text="Team Analytics"
+        onClick={() => navigate(`/analytics/project/${projectId}/team`)}
+        className="w-fit"
+      />
 
       <div className="flex gap-2 items-center">
         <div className="w-auto text-[#394042] font-montserrat text-base font-medium leading-6">
@@ -239,7 +240,13 @@ export default function IndividualAnalytics() {
             </span>
             <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
           </div>
-          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Attractiveness</div>
+
+          <div className="flex items-center gap-2">
+            <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Learnability Score</div>
+            <TooltipInfo iconSize={18}>
+              <div>Learnability Score</div>
+            </TooltipInfo>
+          </div>
         </div>
         <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
           <div>
@@ -247,7 +254,13 @@ export default function IndividualAnalytics() {
               {formattedIndividualOverviewDetails?.kudosCount + formattedIndividualOverviewDetails?.wowCount}
             </span>
           </div>
-          <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">WOWs & Kudos</div>
+
+          <div className="flex items-center gap-2">
+            <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">Recognitions</div>
+            <TooltipInfo iconSize={18}>
+              <div>Recognitions</div>
+            </TooltipInfo>
+          </div>
         </div>
       </div>
       <div className="-mt-6">
@@ -255,10 +268,11 @@ export default function IndividualAnalytics() {
           chartData={recognitionChartData?.chartData}
           chartConfig={recognitionChartData?.chartConfig}
           maxYAxis={recognitionChartData?.maxYAxis}
-          showFilters={false}
           hasGradient={true}
           XAxisDataKey="milestone"
           customTooltipContent={CustomTooltipContent}
+          customXAxisLabel={CustomXAxisLabel}
+          showDataOnFilters
         />
       </div>
 
@@ -270,6 +284,7 @@ export default function IndividualAnalytics() {
         maxYAxis={performanceChartData?.maxYAxis}
         showFilters
         XAxisDataKey="milestone"
+        filterPropertyName="Competencies"
       />
 
       <div className="flex flex-col md:flex-row gap-3">

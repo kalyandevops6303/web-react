@@ -1,9 +1,8 @@
 import { Box, Star, Users, Watch } from 'react-feather';
 import ProjectDetailsTabNavigation from '../components/pages/project-details/ProjectDetailsTabNavigation';
-import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
-import { useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
 import MilestoneTab from '../components/pages/project-details/tabs/milestone';
-import BreadCrumbs from '../components/pages/project-details/BreadCrumbs';
 import { Params, useNavigate, useParams } from 'react-router-dom';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import ProjectsTab from './tabs/projects/page';
@@ -13,36 +12,49 @@ import { useProjectMilestonesStore } from '@/flexternships/stores/project-milest
 import Spinner from '../components/core/Spinner';
 import { ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
+import CustomBreadCrumbs from '../components/core/CustomBreadCrumbs';
+import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
   const milestoneDetails = useProjectMilestonesStore((state) => state.milestoneDetails);
+  const milestoneDetailsLoading = useProjectMilestonesStore((state) => state.isMilestoneDetailsLoading);
   const projectDetails = useProjectsStore((state) => state.projectDetails);
   const projectLoading = useProjectsStore((state) => state.isProjectsLoading);
 
   const params: Readonly<Params<string>> = useParams();
   const navigate = useNavigate();
-
+  const [breadCrumbData, setBreadCrumbData] = useState<{
+    projectName: string;
+    projectStep: string;
+    milestoneName: string;
+  }>({
+    projectName: '',
+    projectStep: '',
+    milestoneName: '',
+  });
   const redirectUserAsPerSecondaryStatus = (status: ProjectSecondaryStatus, isDocumentsNeeded: boolean) => {
+    const projectId = params?.projectId;
     if (!isEmpty(params.milestoneId)) return;
-    if (!params?.projectId) throw new Error('Project ID is mandatory to view the project details');
+    if (!projectId) throw new Error('Project ID is mandatory to view the project details');
+
+    const navigateToProjectDetailsTab = (path: string) => navigate(`/project-details/${projectId}${path}`);
+
     switch (status) {
       case ProjectSecondaryStatus.MILESTONE:
-        navigate(`/project-details/${params.projectId}/milestone`);
+        navigateToProjectDetailsTab('/milestone');
         break;
       case ProjectSecondaryStatus.SIGN_CONTRACT:
-        if (!isDocumentsNeeded) return;
-        navigate(`/project-details/${params.projectId}/doc/contract`);
+        navigateToProjectDetailsTab(isDocumentsNeeded ? '/doc/contract' : '/projects');
         break;
       case ProjectSecondaryStatus.SIGN_NDA:
-        if (!isDocumentsNeeded) return;
-        navigate(`/project-details/${params.projectId}/doc/nda`);
+        navigateToProjectDetailsTab(isDocumentsNeeded ? '/doc/nda' : '/projects');
         break;
       case ProjectSecondaryStatus.SIGN_DOCUMENTS:
-        navigate(`/project-details/${params.projectId}/projects`);
+        navigateToProjectDetailsTab('/projects');
         break;
       default:
-        navigate(`/project-details/${params.projectId}/team`);
+        navigateToProjectDetailsTab('/team');
         break;
     }
   };
@@ -99,34 +111,56 @@ export default function FlexternshipProjectDetails() {
       clientVisible: true,
     },
   ];
+  const getCapitalizedStep = (step: string) => step.charAt(0).toUpperCase() + step.slice(1);
+
+  useEffect(() => {
+    if (params.projectStep) {
+      setBreadCrumbData((prev) => ({
+        ...prev,
+        projectStep: params['projectStep']
+          ? getCapitalizedStep(params['projectStep'])
+          : getCapitalizedStep(location.pathname.split('/')[3]),
+      }));
+    }
+    if (projectDetails?.details?.name) {
+      setBreadCrumbData((prev) => ({ ...prev, projectName: projectDetails?.details?.name }));
+    }
+    if (milestoneDetailsLoading) {
+      setBreadCrumbData((prev) => ({ ...prev, milestoneName: '' }));
+    }
+    if (!milestoneDetailsLoading && params?.milestoneId) {
+      setBreadCrumbData((prev) => ({ ...prev, projectStep: 'Milestone', milestoneName: milestoneDetails?.name }));
+    }
+  }, [params.projectStep, params?.milestoneId, projectDetails, milestoneDetails, milestoneDetailsLoading]);
+  const breadCrumbs = [
+    {
+      label: 'Projects',
+      href: '/projects/ongoing',
+    },
+    {
+      label: projectDetails?.details?.name ?? 'Unknown Project',
+      href: `/project-details/${params?.projectId}/milestone`,
+    },
+    {
+      label: breadCrumbData?.projectStep ?? null,
+      href: `/project-details/${params?.projectId}/${location.pathname.split('/')[3]}`,
+    },
+    ...(params['milestoneId']
+      ? [
+          {
+            label: breadCrumbData?.milestoneName ?? null,
+            href: `/project-details/${params?.projectId}/${breadCrumbData?.projectStep}/${params['milestoneId']}`,
+          },
+        ]
+      : []),
+  ];
   return (
     <div className="flexternships-page">
       {projectLoading ? (
         <div className="h-5"></div>
       ) : (
         <div className="flex flex-col items-start gap-5">
-          <BreadCrumbs
-            steps={[
-              {
-                title: 'Projects',
-                link: '/projects/ongoing',
-              },
-              {
-                title: projectDetails?.details?.name ?? 'Unknown Project',
-                link: `/project-details/${params?.projectId}/milestone`,
-              },
-              {
-                title: params['projectStep']
-                  ? params['projectStep'].charAt(0).toUpperCase() + params['projectStep'].slice(1)
-                  : location.pathname.split('/')[3].charAt(0).toUpperCase() + location.pathname.split('/')[3].slice(1),
-                link: `/project-details/${params?.projectId}/${location.pathname.split('/')[3]}`,
-              },
-              {
-                title: milestoneDetails?.name ?? null,
-                link: `/project-details/${params?.projectId}/${params['projectStep']}/${params['milestoneId']}`,
-              },
-            ]}
-          />
+          <CustomBreadCrumbs items={breadCrumbs} />
         </div>
       )}
       {projectDetailsLoading ? (

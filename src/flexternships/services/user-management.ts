@@ -1,4 +1,9 @@
-// service to fetch user details along with app roles
+/**
+ * User management service module for handling user-related operations.
+ * @fileoverview Contains functions for managing user profiles, authentication, roles and permissions.
+ * Includes APIs for file uploads, password management, and user details retrieval.
+ * @module user-management
+ */
 
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
@@ -9,6 +14,8 @@ import { handleError } from '../utils/error-utils';
 import { ValidatedRequestToken } from '../constraints/types/core-types';
 import { logout as logoutZustand } from '../utils/core-utils';
 import errorHandler from '@/utility/errorHandler';
+import { FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
+import { parseDelegateInvitations } from '../utils/parsing-utils';
 
 /// File Endpoints
 /**
@@ -115,7 +122,6 @@ export const getUserDetails = async () => {
   };
   try {
     const response = await axios.get(routes.userManagement.user.getUserDetails, config);
-    console.log('response : ' + response);
 
     return response.data.data;
   } catch (error) {
@@ -150,9 +156,17 @@ export const upsertFlexternClientAccountInfo = async (data: FlexternClientAccoun
   if (!isEmpty(data.timezone)) {
     formattedData.timezone = data.timezone.name;
   }
-  if (!isEmpty(data.imageUri)) {
-    formattedData.image_uri = data.imageUri;
+
+  if (!isEmpty(data.title)) {
+    formattedData.title = data.title;
   }
+  if (!isEmpty(data.department)) {
+    formattedData.department = data.department;
+  }
+
+  // Optional fields - these are allowed to be unset
+  formattedData.image_uri = data.imageUri;
+  formattedData.linkedin_url = data.linkedin;
 
   try {
     await axios.post(routes.userManagement.user.v2.postAccountDetails, formattedData, config);
@@ -242,16 +256,15 @@ export const getFlexternClientOrgInfo = async () => {
 };
 
 // Static Data Endpoints
-
 // Types used in the services
-export type PaginatedData = {
+export type PaginatedData<T = any> = {
   metadata: {
     current_page: number;
     page_size: number;
     total_records: number;
     has_next_page: boolean;
   };
-  data: { _id: string; name: string }[];
+  data: (T & { _id: string; name: string })[];
 };
 
 // Services code starts here
@@ -562,4 +575,141 @@ export const fetchCitiesPaginatedByState = async (
     handleError(error as Error, 'An unexpected error occurred while fetching paginated cities');
   }
   return emptyData; // Add this line to ensure a return value in all cases
+};
+/**
+ * Fetches notification statistics for the current user.
+ * @returns A Promise that resolves to an object containing notification stats like unread count.
+ * @throws {Error} If the notification stats retrieval fails or an unexpected error occurs.
+ */
+export const getNotificationsStats = async () => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(routes.userManagement.notifications.getNotificationsStats, config);
+    const serverData = response?.data?.data;
+    return {
+      unreadNotificationsCount: serverData.unread_notifications_count || 0,
+    };
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching notifications stats');
+  }
+};
+
+/**
+ * Invites a delegate user with specified access permissions.
+ * @param email - The email address of the delegate to invite.
+ * @param options - Configuration options for the delegate invitation.
+ * @param options.invitationType - The type of access to grant (defaults to FULL_ACCESS).
+ * @returns A Promise that resolves when the invitation is sent.
+ * @throws {Error} If the delegate invitation fails or an unexpected error occurs.
+ */
+export const inviteDelegate = async (
+  email: string,
+  options = {
+    invitationType: FlexternDelegateInvitationType.FULL_ACCESS,
+  },
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    await axios.post(
+      routes.userManagement.invitation.inviteDelegate,
+      { email, invitation_type: options.invitationType },
+      config,
+    );
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while inviting a delegate');
+  }
+};
+/**
+ * Fetches a paginated list of delegate invitations.
+ * @param page - The page number to fetch (defaults to 1).
+ * @param page_size - The number of items per page (defaults to 10).
+ * @returns A Promise that resolves to an object containing paginated delegate invitations and metadata.
+ * @throws {Error} If the delegate invitations retrieval fails or an unexpected error occurs.
+ */
+export const getDelegateInvitationsPaginated = async (page: number = 1, page_size: number = 10) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+    params: {
+      page,
+      page_size,
+    },
+  };
+  try {
+    const response = await axios.get(routes.userManagement.invitation.getDelegatesPaginated, config);
+    return parseDelegateInvitations(response?.data?.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching delegate invitations');
+  }
+  return {
+    metadata: {
+      currentPage: 1,
+      pageSize: 0,
+      totalRecords: 0,
+      hasNextPage: false,
+    },
+    data: [],
+  };
+};
+/**
+ * Sends a support request to the server.
+ * @param toEmail - The recipient email address
+ * @param ccEmail - The CC email address
+ * @param description - The support request description
+ * @param issueType - The type of support issue
+ * @returns A Promise that resolves when the support request is sent successfully
+ * @throws {Error} If the request fails or an unexpected error occurs
+ */
+export const sendSupportRequest = async (
+  toEmail: string,
+  ccEmail: string[],
+  description: string,
+  issueType: string,
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    await axios.post(
+      routes.userManagement.support.contactSupport,
+      {
+        to_email: toEmail,
+        cc_email: ccEmail,
+        description,
+        issue_type: issueType,
+      },
+      config,
+    );
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while sending support request');
+  }
+};
+
+/**
+ * Logs out the current user by making a request to the logout endpoint.
+ * @returns A Promise that resolves when the logout is successful.
+ * @throws {Error} If the logout request fails or an unexpected error occurs.
+ */
+export const logoutUser = async () => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    await axios.post(routes.userManagement.auth.logout, {}, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while logging out');
+  }
 };

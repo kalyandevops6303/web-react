@@ -46,20 +46,26 @@ const getInvitedProjectListingService = ({ metaData, data }) =>
 
 const getProjectsListFlexternService = ({ metaData }) =>
   DataService.get(
-    `${API.project.allProjectsFlextern}?page=${metaData?.page}&page_size=${metaData?.page_size}&search_query=${metaData?.search_query}&project_status=${metaData?.project_status}&secondary_status=${metaData?.status}&talent_name=${metaData?.talent_name}&department_name=${metaData?.department_name}`,
+    `${API.project.allProjectsFlextern}?page=${metaData?.page}&page_size=${metaData?.page_size}&search_query=${metaData?.search_query}&project_status=${metaData?.project_status}&secondary_status=${metaData?.status}&talent_name=${metaData?.talent_name}&department_name=${metaData?.department_name}&sort_by=${metaData?.sort_by}`,
   );
 
 const getTeamNameSerive = (page, search) =>
   DataService.get(`${API.project.teamName}?page=${page}&page_size=50&search_query=${search}`);
 
-const getDepartmentNameService = (page, search) =>
-  DataService.get(`${API.project.departmentName}?page=${page}&page_size=50&search_query=${search}`);
+const getDepartmentNameService = (page, search, projectStatus) =>
+  DataService.get(
+    `${API.project.departmentName}?page=${page}&page_size=50&project_status=${projectStatus}&search_query=${search}`,
+  );
 
-const getSecondaryStatuses = (page, search) =>
-  DataService.get(`${API.project.secondaryStatuses}?page=${page}&page_size=50&search_query=${search}`);
+const getSecondaryStatuses = (page, search, projectStatus) =>
+  DataService.get(
+    `${API.project.secondaryStatuses}?page=${page}&page_size=50&project_status=${projectStatus}&search_query=${search}`,
+  );
 
-const getProjectNames = (page, search) =>
-  DataService.get(`${API.project.projectNames}?page=${page}&page_size=50&search_query=${search}`);
+const getProjectNames = (page, search, projectStatus) =>
+  DataService.get(
+    `${API.project.projectNames}?page=${page}&page_size=50&project_status=${projectStatus}&search_query=${search}`,
+  );
 
 const getProjectCounts = (page, search) =>
   DataService.get(`${API.project.projectCounts}?page=${page}&page_size=50&search_query=${search}`);
@@ -67,8 +73,10 @@ const getProjectCounts = (page, search) =>
 const getClientNameService = (page, search) =>
   DataService.get(`${API.project.clientName}?page=${page}&page_size=50&search_query=${search}`);
 
-const getTalentNameService = (page, search) =>
-  DataService.get(`${API.project.talentNames}?page=${page}&page_size=50&search_query=${search}`);
+const getTalentNameService = (page, search, projectStatus) =>
+  DataService.get(
+    `${API.project.talentNames}?page=${page}&page_size=50&project_status=${projectStatus}&search_query=${search}`,
+  );
 
 export {
   getCompletedProjectListingService,

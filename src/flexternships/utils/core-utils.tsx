@@ -38,7 +38,7 @@ export const getUserTimezone = () => {
  * Logs out the user by resetting all Zustand stores.
  */
 export const logout = () => {
-  // Reset ProjectCreationStore
+  // Reset Zustand stores
   useFlexternUserStore.getState().resetStore();
   useFlexternUserProfileStore.getState().resetStore();
   useProjectCreationStore.getState().resetStore();
@@ -121,9 +121,11 @@ export const getProjectSecondaryStatusText = (status: ProjectSecondaryStatus, la
   }
 };
 
-export const keysToCamelCase = (data: any): any => {
+export const keysToCamelCase = (data: any, depth: number = Infinity): any => {
+  if (depth < 0) return data;
+
   if (Array.isArray(data)) {
-    return data.map((item) => keysToCamelCase(item)); // Handle arrays
+    return data.map((item) => keysToCamelCase(item, depth)); // Pass remaining depth to array items
   }
 
   if (data !== null && typeof data === 'object') {
@@ -131,11 +133,12 @@ export const keysToCamelCase = (data: any): any => {
 
     Object.keys(data).forEach((key) => {
       const camelCaseKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
-      newObject[camelCaseKey] = keysToCamelCase(data[key]); // Recursively process nested objects
+      // Only recurse if depth > 1, otherwise keep the original value
+      newObject[camelCaseKey] = depth > 1 ? keysToCamelCase(data[key], depth - 1) : data[key];
     });
 
     return newObject;
   }
 
-  return data; // Return the value as is if it's not an object or array
+  return data;
 };

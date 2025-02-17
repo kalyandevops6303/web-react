@@ -5,17 +5,24 @@ import Styles from '@flexternships/styles/components/core/buttons.module.css';
 import Spinner from '../Spinner';
 
 export default function PrimaryButton(props: ButtonProps) {
-  const { children, onClick, disabled, className, loading } = props;
+  const { children, onClick, loading = false, disabled, className, cancel = false } = props;
+
+  const isDisabled = disabled || loading;
+
+  const getButtonStyle = () => {
+    if (isDisabled && cancel) return Styles.primaryDisabledButtonRed;
+    if (isDisabled) return Styles.primaryDisabledButtonBlue;
+    if (cancel) return Styles.primaryEnabledButtonRed;
+    return Styles.primaryEnabledButtonBlue;
+  };
 
   return (
     <button
+      disabled={isDisabled}
       onClick={onClick}
-      className={`${Styles.baseButton} ${
-        disabled || loading ? Styles.primaryDisabledButton : Styles.primaryEnabledButton
-      } ${className ?? ''}`}
-      disabled={(disabled || loading) ?? false}
+      className={`${Styles.baseButton} ${getButtonStyle()} ${className || ''}`}
     >
-      {loading ? <Spinner white={true} /> : children}
+      {loading ? <Spinner className="border-white" /> : children}
     </button>
   );
 }
@@ -23,7 +30,8 @@ export default function PrimaryButton(props: ButtonProps) {
 type ButtonProps = {
   children: React.ReactNode;
   onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void; // onClick handler with event type
+  loading?: boolean;
   disabled?: boolean;
   className?: string;
-  loading?: boolean;
+  cancel?: boolean;
 };

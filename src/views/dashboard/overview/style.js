@@ -99,6 +99,9 @@ const AlertCardWrapper = styled(CardWrapper)`
   .card-body {
     padding: 0.5rem 1.5rem 1rem !important;
   }
+  .card-wrapper {
+    background-color: #f8f8f8;
+  }
   .card-inside {
     .card-header {
       padding: 1.2rem 1.2rem;
@@ -108,28 +111,36 @@ const AlertCardWrapper = styled(CardWrapper)`
     }
   }
 
-  .empty-alerts {
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem 2.5rem 2rem;
+  .empty-wrapper {
+    padding-bottom: 24px;
+    .empty-alerts {
+      width: 90%;
+      margin: 0 auto;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
 
-    .empty-alert-gif {
-      height: 13rem;
-      @media (max-width: 768px) {
+      .empty-alert-gif {
         height: 13rem;
+        @media (max-width: 768px) {
+          height: 13rem;
+        }
+      }
+      .empty-alert-text {
+        font-size: 14px;
+        line-height: normal;
+        font-style: normal;
+        letter-spacing: 0.4px;
+        color: #9c9fa1;
+        font-weight: 500;
+        text-align: center;
       }
     }
-    .empty-alert-text {
-      font-size: 14px;
-      line-height: normal;
-      color: #9c9fa1;
-      font-weight: 500;
-      text-align: center;
-    }
   }
+
   .add-det {
     font-weight: 400;
     font-size: 16px;

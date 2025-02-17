@@ -2,6 +2,8 @@ import { FlexternUserAppRole } from '@/flexternships/constraints/enums/core-enum
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
+import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 interface CommentBoxProps {
   comment: string;
   giverDetails: {
@@ -11,6 +13,7 @@ interface CommentBoxProps {
     userId: string;
     appRole: string;
     userType: string;
+    projectRole?: string;
   };
   milestoneInfo: {
     name: string;
@@ -27,9 +30,24 @@ const CommentBox = ({ comment, giverDetails, milestoneInfo, createdAt }: Comment
       <div className="flex flex-col md:flex-row gap-5 w-full">
         <div className="flex flex-col gap-5 w-full md:w-1/3">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gray-200">
-              <img src={giverDetails.imageUri} alt="user" className="w-full h-full rounded-full object-cover" />
-            </div>
+            <Avatar>
+              <AvatarImage src={giverDetails.imageUri} />
+              <AvatarFallback
+                className="p-2 leading-6 font-semibold text-lg"
+                style={{
+                  color: stringToColour(`${giverDetails.firstName} ${giverDetails.lastName}`),
+                  backgroundColor: `${stringToColour(`${giverDetails.firstName} ${giverDetails.lastName}`, {
+                    opacity: 10,
+                  })}`,
+                }}
+              >
+                {`${giverDetails.firstName} ${giverDetails.lastName}`
+                  .split(' ')
+                  .slice(0, 2)
+                  .map((word) => word.charAt(0).toUpperCase())
+                  .join('')}
+              </AvatarFallback>
+            </Avatar>
             <div>
               <div className="text-sm font-medium">
                 {giverDetails.firstName}
@@ -37,7 +55,11 @@ const CommentBox = ({ comment, giverDetails, milestoneInfo, createdAt }: Comment
                 {giverDetails.lastName}
               </div>
               <p className="text-sm text-grey-DEFAULT font-normal">
-                {giverDetails.appRole === FlexternUserAppRole.FLEXTERN_CLIENT ? 'Manager' : 'Mentor'}
+                {giverDetails.projectRole
+                  ? giverDetails.projectRole
+                  : giverDetails.appRole === FlexternUserAppRole.FLEXTERN_CLIENT
+                  ? 'Manager'
+                  : 'Mentor'}
               </p>
             </div>
           </div>

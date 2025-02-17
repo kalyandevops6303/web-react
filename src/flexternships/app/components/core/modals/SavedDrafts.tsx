@@ -4,8 +4,9 @@ import SecondaryButton from '../buttons/SecondaryButton';
 import CloseModalButton from '../buttons/CloseModalButton';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { ModalType } from '@flexternships/types/project-creation-types';
-import ChecklistGif from '@flexternships/assets/images/checklist.gif';
+import ChecklistGif from '@flexternships/assets/gifs/checklist.gif';
 import { useNavigate } from 'react-router-dom';
+import routes from '@/flexternships/routes';
 
 export default function SavedDrafts(props: Props) {
   const isOpen = useProjectCreationStore((state) => state.isModalOpen);
@@ -21,7 +22,7 @@ export default function SavedDrafts(props: Props) {
 
   const handleClose = () => {
     closeModal();
-    navigate('/dashboard');
+    navigate(routes.dashboard.path);
     resetProjectCreationStore();
   };
 

@@ -1,3 +1,4 @@
+import { PaginatedData } from '@/flexternships/services/user-management';
 import {
   MilestoneArtifactStatus,
   MilestoneArtifactType,
@@ -127,3 +128,12 @@ export type MilestoneArtifactsActions = {
 };
 
 export type MilestoneArtifactsStore = MilestoneArtifactsState & MilestoneArtifactsActions;
+
+export type MilestoneDropdownItem = {
+  _id: string;
+  name: string;
+  status?: MilestoneStatus;
+  seq?: number;
+};
+
+export type MilestoneDropdown = PaginatedData<MilestoneDropdownItem>;

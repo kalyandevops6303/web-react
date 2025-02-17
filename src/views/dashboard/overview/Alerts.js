@@ -120,7 +120,7 @@ const Alerts = () => {
 
   return (
     <AlertCardWrapper>
-      <Card>
+      <Card className="card-wrapper">
         <CardHeader className="earning-head">
           <CardTitle tag="h5" style={{ fontSize: '18px' }}>
             Alerts
@@ -221,7 +221,7 @@ const Alerts = () => {
           </>
         )}
 
-        <div>
+        <div className="empty-wrapper">
           <Card className="card-inside d-none">
             <CardHeader className="d-flex">
               <CardTitle tag="h4">Club - Request Submitted</CardTitle>
@@ -275,7 +275,7 @@ const Alerts = () => {
             </div>
           )}
           {notificationsData?.metadata?.total_records > 3 && (
-            <span onClick={handleRedirection} className="cursor-pointer mb-1 additional-text text-center d-block">
+            <span onClick={handleRedirection} className="cursor-pointer additional-text text-center d-block">
               +{notificationsData.metadata.total_records - 4} more
             </span>
           )}

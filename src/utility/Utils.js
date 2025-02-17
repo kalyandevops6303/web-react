@@ -15,6 +15,7 @@ import {
   checkPoints,
   fileScanStatus,
   maxFileSize,
+  secondaryStatusConstants,
   timeDalayToRetryScanning,
   userTypes,
 } from './constants/Constant';
@@ -233,6 +234,16 @@ export const removeEmptyKeys = (obj) => {
   }
 
   return filteredObj;
+};
+
+export const getSecondaryStatus = (secondaryStatus, seq = 1) => {
+  if (Object.keys(secondaryStatusConstants).includes(secondaryStatus)) {
+    if (secondaryStatus === 'MILESTONE') {
+      return `${secondaryStatusConstants[secondaryStatus]} ${seq}`;
+    }
+    return secondaryStatusConstants[secondaryStatus];
+  }
+  return '';
 };
 
 export const returnFilteredDropdownOptions = (search, options) =>

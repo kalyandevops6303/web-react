@@ -8,6 +8,28 @@ import {
   UserInvitationType,
 } from '../enums/core-enums';
 
+// Paginated Data Types
+
+export type ParsedPaginatedData<T = any> = {
+  metadata: {
+    currentPage: number;
+    pageSize: number;
+    totalRecords: number;
+    hasNextPage: boolean;
+  };
+  data: (T & { id: string; name: string })[];
+};
+
+export type PaginatedData<T = any> = {
+  metadata: {
+    current_page: number;
+    page_size: number;
+    total_records: number;
+    has_next_page: boolean;
+  };
+  data: (T & { _id: string; name: string })[];
+};
+
 // Static Data Types
 
 export type Skill = {
@@ -64,6 +86,7 @@ export type FlexternClientDetails = {
   userType: UserType;
   firstName: string;
   lastName: string;
+  imageUri?: string;
   timezone: Timezone;
   departmentName: string;
   email: string;
@@ -81,6 +104,16 @@ export type FlexternClientDetails = {
     name: string;
   };
   isBlocked?: boolean;
+  adminClient?: {
+    id: string;
+    department: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUri?: string;
+    title: string;
+    companyName: string;
+  };
 };
 
 export type FlexternTalentDetails = {
@@ -88,6 +121,7 @@ export type FlexternTalentDetails = {
   userType: UserType;
   firstName: string;
   lastName: string;
+  imageUri?: string;
   timezone: Timezone;
   email: string;
   phone: string;
@@ -133,6 +167,7 @@ export type AppState = {
   modal: GlobalModalType | undefined;
   modalContent: GlobalModalContent | undefined;
   modalActions: GlobalModalActions | undefined;
+  unreadNotificationsCount: number;
 };
 
 export type AppActions = {
@@ -146,6 +181,7 @@ export type AppActions = {
   setWip: (modalContent: GlobalModalContent, modalActions: GlobalModalActions) => void;
   unsetWip: () => void;
   getCurrentNextPath: () => string | undefined;
+  fetchNotificationsCount: () => void;
   resetStore: () => void;
 };
 
