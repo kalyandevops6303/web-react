@@ -95,6 +95,10 @@ export const FlexternshipRoutes = [
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
                 redirectRoute: routes.talentOnboarding.generate('account-details'),
               },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
+              },
             ],
           },
         ]}
