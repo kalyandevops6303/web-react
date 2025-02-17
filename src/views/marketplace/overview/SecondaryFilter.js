@@ -9,7 +9,7 @@ import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
 import CollInactive from '@src/assets/images/coll_inactive.png';
 import ExpandActive from '@src/assets/images/expand_active.png';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
@@ -35,7 +35,6 @@ import {
   appRoles,
   bidStatusesOptions,
   projectTypesOptions,
-  sortingOptions,
   statusesOptions,
   userTypes,
 } from '../../../utility/constants/Constant';
@@ -43,12 +42,26 @@ import NoDataFoundComponent from './NoDataFoundComp';
 import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
-import { ResponsiveGrid } from '../../cards/style';
+import { CountWrapper, ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector, selectAuthUserData } from '@/redux/selectors/authSelectors';
 
+const Control = ({ children, ...rest }) => <components.Control {...rest}>{children}</components.Control>;
+
+Control.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+const CustomOption = ({ option, count, selected }) => (
+  <CountWrapper selected={selected}>
+    <span className="option">{option}</span>
+    <span className="count">{count}</span>
+  </CountWrapper>
+);
+
+const CustomSelectWithCount = (props) => <Select {...props} components={{ Control }} />;
 const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
   const location = useLocation();
   const [searchText, setSearchText] = useState(location?.state?.clientName ?? '');
@@ -96,6 +109,29 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       : [],
   });
   const { sort_by } = secondFilterState;
+
+  const projectStateOptions = [
+    {
+      label: (
+        <CustomOption
+          selected={secondFilterState.sort_by[0]?.value === 'NEW'}
+          option="New"
+          count={selectMarkeMetaData?.filter_counts?.new || 0}
+        />
+      ),
+      value: 'NEW',
+    },
+    {
+      label: (
+        <CustomOption
+          selected={secondFilterState.sort_by[0]?.value === 'FAVOURITE'}
+          option="Favourite"
+          count={selectMarkeMetaData?.filter_counts?.favorite || 0}
+        />
+      ),
+      value: 'FAVOURITE',
+    },
+  ];
 
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
@@ -438,7 +474,6 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
       );
     }
   };
-
   const inMyBids = location.pathname?.split('/')?.includes('my_bids');
 
   const getSearchPlaceholder = () => {
@@ -547,24 +582,23 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                 primaryFilter === 'teams') &&
                 !inMyBids && (
                   <Col>
-                    {primaryFilter === 'all_listings' || primaryFilter === 'talents' ? (
-                      <>
-                        <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
-                        <Select
-                          isClearable
-                          options={sortingOptions}
-                          classNamePrefix="select"
-                          placeholder="Select type"
-                          theme={selectThemeColors}
-                          onChange={onChangeSort}
-                          value={
-                            secondFilterState?.sort_by?.length > 0
-                              ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                              : null
-                          }
-                        />
-                      </>
-                    ) : null}
+                    <>
+                      <Label className="form-label">Type</Label>
+                      <CustomSelectWithCount
+                        className="input-width"
+                        isClearable
+                        options={projectStateOptions}
+                        classNamePrefix="select"
+                        placeholder="Select type"
+                        theme={selectThemeColors}
+                        onChange={onChangeSort}
+                        value={
+                          secondFilterState?.sort_by?.length > 0
+                            ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
+                            : null
+                        }
+                      />
+                    </>
                   </Col>
                 )}
             </PermissionWrapper>
@@ -849,6 +883,12 @@ SecondaryFilters.defaultProps = {
   primaryFilter: '',
   userType: '',
   appRole: '',
+};
+
+CustomOption.propTypes = {
+  option: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired,
+  selected: PropTypes.bool.isRequired,
 };
 
 export default SecondaryFilters;

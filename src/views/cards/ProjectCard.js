@@ -152,19 +152,22 @@ const ProjectCard = ({
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
                     {(() => {
-                      const isSecondaryStatusValid = data?.secondary_status
-                        ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
-                        : Object.keys(primaryStatus)?.includes(data?.status);
+                      const isBlocked = data?.status === primaryStatus.BLOCKED;
+
+                      const isSecondaryStatusValid =
+                        !isBlocked && data?.secondary_status
+                          ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
+                          : Object.keys(primaryStatus)?.includes(data?.status);
 
                       const badgeStatus = isSecondaryStatusValid
-                        ? data?.secondary_status
+                        ? data?.secondary_status && !isBlocked
                           ? data?.secondary_status?.next
                           : data?.status
                         : pathname;
 
                       return (
                         <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                          {data?.secondary_status
+                          {!isBlocked && data?.secondary_status
                             ? getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
                             : primaryStatus[data?.status]}
                         </Badge>

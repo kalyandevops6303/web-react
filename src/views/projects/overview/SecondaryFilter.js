@@ -327,7 +327,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadTalentOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getTalentNameService(page, search);
+      const response = await getTalentNameService(page, search, primaryFilter?.toUpperCase());
       const options = response?.data?.data?.data.map((option) => ({
         value: option.talent_id,
         label: option.talent_name,
@@ -346,7 +346,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadDepartmentNameOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getDepartmentNameService(page, search);
+      const response = await getDepartmentNameService(page, search, primaryFilter?.toUpperCase());
 
       const options = response?.data?.data?.data.map((option) => ({
         value: option.department_name,
@@ -366,10 +366,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadSecondaryStatusesOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getSecondaryStatuses(page, search);
+      const response = await getSecondaryStatuses(page, search, primaryFilter?.toUpperCase());
       const options = response?.data?.data?.data.map((option) => ({
         value: option.status,
-        label: SecondaryProjectStatus[option.status],
+        label: option?.status,
       }));
 
       return {
@@ -386,7 +386,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const loadProjectNamesOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await getProjectNames(page, search);
+      const response = await getProjectNames(page, search, primaryFilter?.toUpperCase());
 
       const options = response?.data?.data?.data.map((option) => ({
         value: option._id,
