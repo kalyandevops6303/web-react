@@ -227,7 +227,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
 
     // Filter and process questions based on survey conditions
     survey.getAllQuestions().forEach((question: any, index: number) => {
-      const questionKey = question.name;
+      const questionKey = question.name === 'qualitativeFeedback-Comment' ? 'qualitativeFeedback' : question.name;
 
       if (grouped[questionKey]) {
         // User Inputs
@@ -242,11 +242,12 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
         const isCompetencySelected = competency?.length > 0;
 
         // Comment conditions
-        const isCommentRequired = questionJson.commentRequired;
+        const isCommentRequired =
+          questionJson.commentRequired || (questionJson.isRequired && questionJson.type === 'comment');
         const hasComment = comment?.length > 0;
 
         // Derive final conditions
-        const isValueAnswered = value !== null;
+        const isValueAnswered = value !== null || questionJson.type === 'comment';
         const isCommentConditionMet =
           (isCommentRequired && hasComment) ||
           !isCommentRequired ||
