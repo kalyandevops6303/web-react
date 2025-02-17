@@ -30,7 +30,6 @@ export const getRecognitionChartData = async (projectId: string, userId: string,
 
 // Performance Chart
 export const getPerformanceChartData = async (projectId: string, userId: string, set: any) => {
-  console.log('getPerformanceChartData', projectId, userId);
   set({ isPerformanceChartLoading: true });
   const data: any = await getPerformanceChartDataService(projectId, userId);
   set((state: any) => ({

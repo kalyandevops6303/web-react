@@ -77,6 +77,7 @@ const getTalentNameService = (page, search, projectStatus) =>
   DataService.get(
     `${API.project.talentNames}?page=${page}&page_size=50&project_status=${projectStatus}&search_query=${search}`,
   );
+
 export {
   getCompletedProjectListingService,
   getDisutedProjectListingService,

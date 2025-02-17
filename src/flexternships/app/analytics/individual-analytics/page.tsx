@@ -188,7 +188,7 @@ export default function IndividualAnalytics() {
   }
 
   return (
-    <div className="flex flex-col gap-6 px-4 md:px-0">
+    <div className="flex flex-col gap-6 px-7">
       <BreadCrumbs
         steps={[
           {

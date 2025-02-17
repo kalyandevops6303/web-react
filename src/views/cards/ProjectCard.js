@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { EstimatedTimeHeading, ProjectCardWrap, CardInfoWrapper } from './style';
@@ -48,7 +48,7 @@ const ProjectCard = ({
   const appPermissions = useSelector(appPermissionsSelector);
   const location = useLocation();
   const pathname = location.pathname.split('/').pop();
-
+  const navigate = useNavigate();
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -175,7 +175,7 @@ const ProjectCard = ({
                     })()}
                   </CustomBadge>
                 </div>
-                <CardTitle className="d-flex align-items-center mb-3">
+                <CardTitle className="d-flex align-items-center mb-3 project-card-title">
                   <span className="cursor-pointer" onClick={handleRedirection}>
                     {data?.name || data?.details?.name}
                   </span>
@@ -195,7 +195,7 @@ const ProjectCard = ({
                   {(data?.assigned_date || data?.completed_date || data?.invite_date || data?.listing_details) && (
                     <CardText className="mb-6">
                       {(data?.assigned_date || data?.listing_details?.start_date_epoch) && (
-                        <span className="me-1">
+                        <span className="me-1 assigned-start-text">
                           Assigned Date:{' '}
                           {convertUnixTimestampToDate(
                             data?.assigned_date || data?.listing_details?.start_date_epoch,
@@ -203,16 +203,17 @@ const ProjectCard = ({
                           ) || data?.listing_details?.start_date}
                         </span>
                       )}
-                      {(data?.completed_date || data?.listing_details?.end_date_epoch) && (
-                        <span className="me-1">
-                          {data?.completed_date || data?.listing_details?.end_date_epoch
-                            ? `Completed Date: ${convertUnixTimestampToDate(
-                                data?.completed_date || data?.listing_details?.end_date_epoch,
-                                savedUserData?.availability?.timezone?.name,
-                              )}   `
-                            : ''}
-                        </span>
-                      )}
+                      {data?.status === primaryStatus?.TERMINATED &&
+                        (data?.completed_date || data?.listing_details?.end_date_epoch) && (
+                          <span className="me-1">
+                            {data?.completed_date || data?.listing_details?.end_date_epoch
+                              ? `Completed Date: ${convertUnixTimestampToDate(
+                                  data?.completed_date || data?.listing_details?.end_date_epoch,
+                                  savedUserData?.availability?.timezone?.name,
+                                )}   `
+                              : ''}
+                          </span>
+                        )}
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
@@ -261,7 +262,13 @@ const ProjectCard = ({
                   </CardText>
                 )}
 
-                <EstimatedTimeHeading>Estimated time to complete feedback 3min 30sec</EstimatedTimeHeading>
+                <EstimatedTimeHeading
+                  onClick={() => {
+                    navigate(`/project-details/${data._id}/milestone`);
+                  }}
+                >
+                  Estimated time to complete feedback 3min 30sec
+                </EstimatedTimeHeading>
               </Col>
               <Col lg="4">
                 {primaryFilter !== 'terminated' ? (

@@ -35,6 +35,7 @@ const CustomBadge = styled.span`
     border-radius: ${(props) => (props.rounded ? '10px !important' : 'none')};
     padding-right: 8px !important;
     padding-left: 8px !important;
+    margin-bottom: 16px;
   }
   .light-blue,
   .NEW {
@@ -504,7 +505,14 @@ const Elevate = styled.div`
   width: 100%;
   transition: box-shadow 0.3s; /* Optional: Add a transition for a smoother effect on hover */
   border-radius: 0.375rem;
+  .assigned-start-text {
+    font-size: 14px;
+  }
   box-shadow: ${(props) => (props.active === true ? `0px 0px 0px 1px ${theme.blueBorderColorv2}` : '')};
+  .project-card-title {
+    font-size: 18px;
+    font-weight: 500;
+  }
   &:hover {
     box-shadow: ${(props) => (props.active === false ? '' : `0px 0px 0px 1px ${theme.blueBorderColorv2}`)};
   }
