@@ -103,14 +103,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
       });
     }
 
-    const validData = dataWithoutFirst.filter(curr => curr[metric] !== undefined && curr[metric] !== null);
-    
+    const validData = dataWithoutFirst.filter((curr) => curr[metric] !== undefined && curr[metric] !== null);
+
     if (validData.length === 0) return 0;
 
-    return (
-      validData.reduce((acc, curr) => acc + (curr[metric] || 0), 0) /
-      validData.length
-    ).toFixed(2);
+    return (validData.reduce((acc, curr) => acc + (curr[metric] || 0), 0) / validData.length).toFixed(2);
   };
 
   useEffect(() => {
