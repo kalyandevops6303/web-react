@@ -1172,7 +1172,7 @@ const FlexternPersonal = () => {
                             </Col>
 
                             {resumeParsedLoading ? (
-                              <Loader size="xs" color="#0185E4" className="rotating-icon" />
+                              <Loader size={25} color="#0185E4" className="rotating-icon" />
                             ) : (
                               !uploadingFiles.includes(files[0]) &&
                               !isEmpty(files) && (

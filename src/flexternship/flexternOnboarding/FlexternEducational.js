@@ -21,7 +21,7 @@ import {
   Progress,
   CardText,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Plus, Info } from 'react-feather';
+import { ChevronLeft, ChevronRight, Plus, Info, Loader } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
@@ -1658,7 +1658,7 @@ const FlexternEducational = () => {
                               )}
                             </Col>
                             {resumeParsedLoading ? (
-                              <Spinner size="sm" />
+                              <Loader size={25} color="#0185E4" className="rotating-icon" />
                             ) : (
                               !uploadingFiles.includes(files[0]) &&
                               !isEmpty(files) && (
