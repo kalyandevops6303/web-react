@@ -78,13 +78,13 @@ const ProjectCardWrap = styled(CardWrap)`
   margin-top: 1rem;
   width: 98%;
   .card-body {
-    padding: 2.1rem 2.6rem 1.4rem 2.6rem;
+    padding: 32px 40px;
   }
   a {
     color: inherit;
   }
   .status-row {
-    margin-left: -0.5rem;
+    margin-left: 0rem;
   }
   .nowrap {
     white-space: nowrap;

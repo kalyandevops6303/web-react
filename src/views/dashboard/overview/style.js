@@ -425,7 +425,7 @@ const ProjectWrapper = styled.div`
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
-    margin-bottom: 10px;
+
   }
 
   .active-project-milestone-name {
