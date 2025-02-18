@@ -103,7 +103,7 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
       <CardHeader className="border-b border-gray-200 px-[20px] py-[16px]">
         <CardTitle className="text-[#394042] font-montserrat text-base font-medium leading-6">{title}</CardTitle>
       </CardHeader>
-      <CardContent className={`py-5 h-full px-0 flex flex-col justify-between`}>
+      <CardContent className={`py-5 h-full px-0 flex flex-col`}>
         <ChartContainer
           config={chartConfig}
           className={`mx-auto w-full ${isSemiCircle ? 'aspect-video mb-0 pb-0 h-[140px]' : 'h-[220px]'}`}
@@ -168,7 +168,8 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
             </Pie>
           </PieChart>
         </ChartContainer>
-        <div className="max-h-[240px] overflow-y-auto flex flex-col w-full mt-3">
+
+        <div className="max-h-[240px] overflow-y-auto flex flex-col w-full">
           <Stats
             statsData={statsData}
             orientation={statsOrientation ?? StatsOrientation.HORIZONTAL}

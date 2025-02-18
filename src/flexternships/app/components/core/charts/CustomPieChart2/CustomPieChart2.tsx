@@ -129,7 +129,8 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
-        <div className="h-full max-h-[320px] overflow-y-auto flex flex-col w-full">
+        <div className="w-1 h-[320px] bg-gray-100 -mt-5"></div>
+        <div className="h-full max-h-[300px] overflow-y-auto flex flex-col w-full">
           <Stats statsData={statsData} orientation={statsOrientation ?? StatsOrientation.HORIZONTAL} />
         </div>
       </CardContent>

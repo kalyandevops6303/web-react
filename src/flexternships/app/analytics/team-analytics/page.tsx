@@ -29,6 +29,7 @@ import { Link } from 'react-router-dom';
 import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 import ProjectStatusChip from '../../components/pages/project-details/project-card/ProjectStatusChip';
 import CustomXAxisLabel from './labels/CustomXAxisLabel';
+import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -136,11 +137,11 @@ export default function TeamAnalytics() {
               <ProjectStatusChip status={projectDetails?.status} statusType={StatusType?.PRIMARY} />
               <div className="flex flex-row items-center gap-2">
                 <Link to={`/project-details/${projectDetails?.id}/team`}>
-                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5">
+                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5 flex items-center gap-2">
                     {projectDetails?.details?.name}
+                    <ChevronRight size={18} color="#0185E4" />
                   </div>
                 </Link>
-                <ChevronRight size={18} color="#0185E4" />
               </div>
               <div className="flex gap-1">
                 <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">
@@ -196,8 +197,11 @@ export default function TeamAnalytics() {
                 </span>
                 <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
               </div>
-              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">
-                Team Learnability Score
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
+                <div>Team Learnability Score</div>
+                <TooltipInfo iconSize={18}>
+                  <div>Team Learnability Score</div>
+                </TooltipInfo>
               </div>
             </div>
             <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
@@ -206,7 +210,12 @@ export default function TeamAnalytics() {
                   {teamMembersDetails?.totalRecognitionCount}
                 </span>
               </div>
-              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">WOWs & Kudos</div>
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
+                <div>Recognitions</div>
+                <TooltipInfo iconSize={18}>
+                  <div>Recognitions</div>
+                </TooltipInfo>
+              </div>
             </div>
           </div>
         )}
@@ -227,6 +236,7 @@ export default function TeamAnalytics() {
                 YAxisDataKey={'score'}
                 hideDeselectedMetricsFromTooltip
                 customXAxisLabel={CustomXAxisLabel}
+                filtersLabel="Legend:"
               />
             )}
           </div>
