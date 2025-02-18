@@ -37,6 +37,7 @@ const getProjectPanelDate2Icon = (data: { status: string }) => {
       return <img src={StartDateSVG} alt="Start Date Icon" />;
     }
     case 'ON_GOING':
+    case 'BLOCKED':
     case 'COMPLETED': {
       return <img src={EndDateSVG} alt="End Date Icon" />;
     }
@@ -66,6 +67,7 @@ const getProjectPanelDate2Icon = (data: { status: string }) => {
         </svg>
       );
     }
+
     case 'WITHDRAWN': {
       return (
         <svg width="47" height="46" viewBox="0 0 47 46" fill="none" xmlns="http://www.w3.org/2000/svg">
