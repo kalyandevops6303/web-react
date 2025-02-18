@@ -43,9 +43,10 @@ const CardInfoWrapper = styled.div`
 `;
 
 const EstimatedTimeHeading = styled.h1`
+  font-size: 12px;
   background-color: #fbc02d1f;
   width: fit-content;
-  padding: 0.5rem 1rem;
+  padding: 10px 22px;
   margin-top: 1.5rem;
   border-radius: 0.75rem;
   color: #0284c7;
