@@ -1,7 +1,9 @@
 import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
 import { StatusType } from '@/flexternships/constraints/enums/project-enums';
+import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import { getProjectPrimaryStatusText, getProjectSecondaryStatusText } from '@/flexternships/utils/core-utils';
+import { userTypes } from '@/utility/constants/Constant';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface ProjectStatusChipProps {
@@ -19,6 +21,7 @@ const ProjectStatusChip = ({
 }: ProjectStatusChipProps) => {
   const navigation = useNavigate();
   const { projectId } = useParams();
+  const userDetails = useFlexternUserStore((state) => state.userDetails);
   const projectMilestones = useProjectMilestonesStore((state) => state.projectMilestones);
   const ProjectStatusChipClassnames = {
     [ProjectPrimaryStatus.OPEN]: 'bg-skyblue-light text-skyblue border border-skyblue',
@@ -63,6 +66,13 @@ const ProjectStatusChip = ({
       navigation(SecondaryStatusChipRedirectionLinks[status as ProjectSecondaryStatus]);
   };
 
+  if (
+    statusType === StatusType.PRIMARY &&
+    status === ProjectPrimaryStatus.WITHDRAWN &&
+    userDetails.userType === userTypes.talent
+  ) {
+    status = ProjectPrimaryStatus.CLOSED;
+  }
   return (
     <h1
       onClick={handleRedirection}

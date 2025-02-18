@@ -56,8 +56,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const dispatch = useDispatch();
   const popoverRef = useRef(null);
-
   const [hasMore, setHasMore] = useState(true);
+  const [showDepartmentFilter, setShowDepartmentFilter] = useState(true);
   const selectProjectData = useSelector((state) => state.project.listData);
   const selectProjectMetaData = useSelector((state) => state.project.metaData);
   const currentPreview = useSelector((state) => state.project.currentPreview);
@@ -213,6 +213,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     setMetaDataForFlextern();
   }, [secondFilterState]);
 
+  useEffect(() => {
+    if (primaryFilter === 'ongoing' || primaryFilter === 'blocked') {
+      setShowDepartmentFilter(false);
+    }
+  }, [primaryFilter]);
   useEffect(() => {
     setHasMore(true);
     if (currentPreview?.length === 0 || selectProjectData?.length === selectProjectMetaData?.total_records) {
@@ -599,8 +604,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
+            {/* && ((primaryFilter.toUpperCase() !== 'BLOCKED') || (primaryFilter.toUpperCase() !== 'ACTIVE')) */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && (
+              {userType !== userTypes.team && showDepartmentFilter && (
                 <Col>
                   <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
