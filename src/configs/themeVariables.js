@@ -108,6 +108,7 @@ const lightGreenBatchColor = '#E5F8EE';
 const lightRedColor = '#FCEAEB';
 const disputeBorderRedColor = '#E05152';
 const disputeCountBackgroundColor = '#FFF8F8';
+const shadedGrey = '#66B67B';
 const checkboxGradient = 'linear-gradient(0deg, rgba(255, 183, 1, 0.12) 0%, rgba(255, 183, 1, 0.12) 100%), #FFF;';
 const checkboxGradientActive = 'linear-gradient(0deg, rgba(0, 178, 255, 0.12) 0%, rgba(0, 178, 255, 0.12) 100%), #FFF;';
 const greyedOutBackground = 'linear-gradient(0deg, rgba(224, 224, 224, 0.50) 0%, rgba(224, 224, 224, 0.50) 100%), #FFF';
@@ -125,6 +126,7 @@ const theme = {
   grayTitleColor: navPillTextColor,
   bodyColor,
   bodyBgColor,
+  shadedGrey,
   inputBorderColor: themeInputBorderColor, // color for theme input borders
   textMuted: textMutedColor, // color for theme input borders
   toastBacgroundColor, // color for notification toast background

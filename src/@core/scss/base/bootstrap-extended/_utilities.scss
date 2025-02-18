@@ -88,6 +88,13 @@ $sizes-per: (
     width: 1rem !important;
   }
 }
+.font-small-5 {
+  font-size: 0.875rem !important;
+  @at-root svg#{&} {
+    height: 1rem !important;
+    width: 1rem !important;
+  }
+}
 //medium
 .font-medium-1 {
   font-size: 1.1rem !important;

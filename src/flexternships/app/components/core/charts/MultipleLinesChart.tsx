@@ -102,10 +102,12 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
         };
       });
     }
-    return (
-      dataWithoutFirst.reduce((acc, curr) => acc + curr[metric as keyof typeof curr], 0) /
-      (data.length - 1)
-    ).toFixed(2);
+
+    const validData = dataWithoutFirst.filter((curr) => curr[metric] !== undefined && curr[metric] !== null);
+
+    if (validData.length === 0) return 0;
+
+    return (validData.reduce((acc, curr) => acc + (curr[metric] || 0), 0) / validData.length).toFixed(2);
   };
 
   useEffect(() => {

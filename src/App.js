@@ -7,7 +7,7 @@ import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
 import Hotjar from '@hotjar/browser';
-import { getToken, messaging } from './configs/api/firebase';
+import { getToken, messaging, onMessageListener } from './configs/api/firebase';
 import Router from './router/Router';
 import { getItem, setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
@@ -130,16 +130,12 @@ const App = () => {
     };
   }, []);
 
-  messaging?.onMessage((payload) => {
-    console.log('PAYLOAD COMET', payload);
-    if (!('Notification' in window)) {
-      console.warn('This browser does not support system notifications.');
-    } else if (Notification.permission === 'granted') {
+  useEffect(() => {
+    onMessageListener().then((payload) => {
       if (location.pathname !== '/notifications') {
-        if (payload.data.alert) {
+        if (payload?.data?.alert) {
           dispatch(unreadMsgCountSuccess());
         } else {
-          // only when type single
           dispatch(notificationCount(true));
         }
 
@@ -167,10 +163,8 @@ const App = () => {
           },
         );
       }
-    } else {
-      console.log('INSIDE ELSE');
-    }
-  });
+    });
+  }, [location.pathname]);
 
   return (
     <Suspense fallback={null}>
