@@ -162,7 +162,7 @@ export default function TanstackTable<T>({
       <div className="rounded-lg border border-[#EBE9F1] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
         <div>
           <Table className={`rounded-lg relative`}>
-            <TableHeader className="">
+            <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
@@ -178,7 +178,7 @@ export default function TanstackTable<T>({
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody className={`${className} relative`}>
+            <TableBody className={`${className}`}>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
@@ -197,7 +197,7 @@ export default function TanstackTable<T>({
                       >
                         <div className="flex flex-col">
                           {isRowHighlighted(row) && highlightText && index === 1 && (
-                            <span className="text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] bg-[#0185E4] text-white px-2 rounded-full text-xs w-fit">
+                            <span className="text-[#6E6B7B] font-montserrat text-[10px] font-medium leading-[22px] bg-[#0185E4] text-white px-2 rounded-full text-xs w-fit">
                               {highlightText}
                             </span>
                           )}

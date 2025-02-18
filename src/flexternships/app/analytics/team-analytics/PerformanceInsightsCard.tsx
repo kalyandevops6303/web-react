@@ -37,7 +37,7 @@ export default function PerformanceInsightsCard() {
             <Link to={`/analytics/project/${params?.projectId}/team/performance-insights`}>
               <div className="flex items-center gap-1">
                 <p className="text-trublue-secondary-500 text-center font-montserrat text-sm font-semibold leading-normal tracking-wider">
-                  View All
+                  View all
                 </p>
                 <ChevronRight size={16} color="#0185E4" />
               </div>
@@ -48,7 +48,7 @@ export default function PerformanceInsightsCard() {
           {performanceInsightsOverview?.map((item: any) => (
             <div
               key={item.name}
-              className="flex items-center gap-4 p-2 border border-grey-50 rounded-lg w-full md:w-auto"
+              className="flex items-center gap-4 py-4 px-2 border border-grey-50 rounded-lg w-full md:w-auto"
             >
               <div>
                 <span className="text-dark-900 text-center font-montserrat text-lg font-semibold leading-xxl-custom">

@@ -91,6 +91,7 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return rowA.original.attractivenessScore.score - rowB.original.attractivenessScore.score;
       },
       cell: AttractivenessScoreCell,
+      size: 100,
     },
     {
       accessorKey: 'managerFeedback',
@@ -99,6 +100,7 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return rowA.original.managerFeedback.score - rowB.original.managerFeedback.score;
       },
       cell: ManagerFeedbackCell,
+      size: 100,
     },
     {
       accessorKey: 'wows',
@@ -107,6 +109,7 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return rowA.original.wows - rowB.original.wows;
       },
       cell: WowsCell,
+      size: 100,
     },
     {
       id: 'actions',
