@@ -766,6 +766,58 @@ const FlexternSocial = () => {
       </Card>
     </div>
   );
+  useEffect(() => {
+    if (parseResume) {
+      if (parsedUploaded) {
+        dispatch(getUserDetails(onGetUserDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData != null) {
+        setResumeParsedDetails(parsedResumeData);
+        dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+        if (savedFormDocuments) {
+          setFiles([
+            {
+              file: {
+                name: savedFormDocuments[0]?.file?.name,
+                size: savedFormDocuments[0]?.file?.size,
+              },
+              uploadData: {
+                file_key: savedFormDocuments[0]?.uploadData?.file_key,
+              },
+              isUploaded: true,
+              lastModified: savedFormDocuments[0]?.lastModified,
+            },
+          ]);
+          dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        }
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
+      } else if (!parsedUploaded && parsedResumeData === null) {
+        dispatch(
+          getResumeParsedDetails(
+            setResumeParsedDetails,
+            setParseResume,
+            savedFormDocuments[0]?.uploadData?.file_key ?? fileKeyDetails,
+          ),
+        );
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+            lastModified: savedFormDocuments[0]?.lastModified,
+          },
+        ]);
+        dispatch(setFileKey(savedFormDocuments[0]?.uploadData?.file_key));
+        dispatch(getUserDetails(onGetUserResumeDetailsSuccess));
+      }
+    } else {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
+  }, [parseResume, parsedResumeData, parsedUploaded]);
 
   return (
     <ProfileFormContainer>
