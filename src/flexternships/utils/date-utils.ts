@@ -63,7 +63,7 @@ export function formatEpochToHumanReadable(
   truncateYear = false,
   includeTime = false,
   timezone?: string,
-  useComma = true,
+  customDateFormat?: string, // Optional, takes full precedence if provided
 ): string {
   if (typeof epoch !== 'number') {
     throw new TypeError('Expected a number for epoch');
@@ -71,8 +71,13 @@ export function formatEpochToHumanReadable(
 
   const dt = timezone ? DateTime.fromMillis(epoch).setZone(timezone) : DateTime.fromMillis(epoch);
 
-  const dateFormat = useComma ? `MMM d, ${truncateYear ? 'yy' : 'yyyy'}` : `MMM d ${truncateYear ? 'yy' : 'yyyy'}`;
+  // If a custom format is provided, use it directly
+  if (customDateFormat) {
+    return dt.toFormat(customDateFormat);
+  }
 
+  // Default format construction
+  const dateFormat = `MMM d${customDateFormat?.includes(',') ? '' : ','} ${truncateYear ? 'yy' : 'yyyy'}`;
   const format = includeTime ? `${dateFormat}, hh:mm a` : dateFormat;
 
   return dt.toFormat(format);
