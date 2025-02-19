@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 import routes from '@/flexternships/routes';
-import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 export default function InvitationCard({ hideSubtitle = false, isCollapsible = true }) {
   const params = useParams();
@@ -61,18 +60,11 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
     clientName: `${projectDetails?.clientInfo?.firstName} ${projectDetails?.clientInfo?.lastName}`,
     department: projectDetails?.clientInfo?.departmentName,
     image_uri: projectDetails?.clientInfo?.imageUri,
-    start_date: formatEpochToHumanReadable(
-      projectInvitationDetails?.projectStartDate || 1,
-      false,
-      false,
-      getUserTimezone(),
-      'MMM d yyyy',
-    ),
+    start_date: formatEpochToHumanReadable(projectInvitationDetails?.projectStartDate || 1),
     role: projectInvitationDetails?.talentRole,
     estimated_duration: `${projectInvitationDetails?.projectEstimatedDuration?.duration} Weeks`,
     message: projectInvitationDetails?.invitationMessage,
   };
-
   useEffect(() => {
     getProjectInvitationDetails(params?.projectId as string);
   }, []);

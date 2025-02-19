@@ -129,7 +129,6 @@ const ProjectCard = ({
     return switchData?.navigateTo;
   };
 
-  console.log(data);
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
