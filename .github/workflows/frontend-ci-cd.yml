@@ -21,7 +21,7 @@ jobs:
 
       - name: Set manifest folder names
         run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
+          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
              echo "FOLDER=UAT" >> $GITHUB_ENV
           else
              echo "FOLDER=Prod" >> $GITHUB_ENV
@@ -57,7 +57,9 @@ jobs:
           elif [[ "${{ vars.TAG }}" == uat_* ]]; then
             echo "FILENAME=env-fe-uat.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
-            echo "FILENAME=env-fe-tru-uat.txt" >> $GITHUB_ENV
+            echo "FILENAME=env-fe-tru-uat.txt" >> $GITHUB_ENV  
+          elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
+            echo "FILENAME=env-fe-tru-uat-auto.txt" >> $GITHUB_ENV  
           elif [[ "${{ vars.TAG }}" == v* ]]; then
             echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
@@ -73,6 +75,8 @@ jobs:
             echo "SUBFOLDER=uat" >> $GITHUB_ENV
            elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
             echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
+           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
+            echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
            elif [[ "${{ vars.TAG }}" == v* ]]; then
             echo "SUBFOLDER=prod" >> $GITHUB_ENV
            elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
@@ -112,6 +116,8 @@ jobs:
               cp secrets.txt .env.uat.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
               cp secrets.txt .env.tru-uat.local
+          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
+              cp secrets.txt .env.tru-uat-auto.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "prod" ]]; then
               cp secrets.txt .env.production.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
@@ -134,7 +140,7 @@ jobs:
       - name: Set Azure environment
         id: azure
         run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
+          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
               echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID_UAT }}" >> $GITHUB_ENV
               echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
               echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
@@ -172,6 +178,13 @@ jobs:
               echo "backup_directory=tru-uat-frontend-backup" >> $GITHUB_ENV
               echo "cdn_endpoint=trumio-tru-uat-fdcdn" >> $GITHUB_ENV
               echo "cdn_domain=tru-uat.trumio.ai" >> $GITHUB_ENV
+
+          elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat-auto ]]; then
+              echo "VITE_ENV_MODE=tru-uat-auto" >> $GITHUB_ENV
+              echo "storage=aztruuatautowebsa" >> $GITHUB_ENV
+              echo "backup_directory=tru-uat-auto-frontend-backup" >> $GITHUB_ENV
+              echo "cdn_endpoint=trumio-tru-uat-auto-fdcdn" >> $GITHUB_ENV
+              echo "cdn_domain=tru-uat-auto.trumio.ai" >> $GITHUB_ENV
 
           elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
               echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
