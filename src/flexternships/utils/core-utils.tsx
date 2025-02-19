@@ -98,6 +98,8 @@ export const getProjectPrimaryStatusText = (status: ProjectPrimaryStatus) => {
       return 'Completed';
     case ProjectPrimaryStatus.BLOCKED:
       return 'Blocked';
+    case ProjectPrimaryStatus.CLOSED:
+      return 'Closed';
     default:
       return 'Unknown';
   }

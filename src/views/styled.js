@@ -33,8 +33,8 @@ const Header = styled.div`
 const CustomBadge = styled.span`
   .badge {
     border-radius: ${(props) => (props.rounded ? '10px !important' : 'none')};
-    padding-right: 8px !important;
-    padding-left: 8px !important;
+    padding-right: 9px !important;
+    padding-left: 9px !important;
     margin-bottom: 16px;
   }
   .light-blue,
@@ -59,7 +59,7 @@ const CustomBadge = styled.span`
     color: ${theme.disputeBorderRedColor};
     border: ${`2px solid ${theme.disputeBorderRedColor}`};
   }
-  .COMPLETED,
+
   .ACCEPTED,
   .CREATED,
   .YET_TO_START,
@@ -215,18 +215,18 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.lightBlueColor}` : 'none')};
   }
+
+  .COMPLETED,
   .SIGN_NDA,
   .SIGN_CONTRACT,
   .SIGN_REQUESTED,
   .SIGN_DOCUMENTS {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
-    border: ${`1px solid ${theme.lightBlueColor}`};
   }
   .MILESTONE {
     background: ${theme.lightOrangeColor} !important;
     color: ${theme.progressBarOrange};
-    border: ${`2px solid ${theme.progressBarOrange}`};
   }
 `;
 
