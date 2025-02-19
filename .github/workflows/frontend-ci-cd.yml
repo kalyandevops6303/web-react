@@ -21,7 +21,7 @@ jobs:
 
       - name: Set manifest folder names
         run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
+          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
              echo "FOLDER=UAT" >> $GITHUB_ENV
           else
              echo "FOLDER=Prod" >> $GITHUB_ENV
@@ -57,7 +57,7 @@ jobs:
           elif [[ "${{ vars.TAG }}" == uat_* ]]; then
             echo "FILENAME=env-fe-uat.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
-            echo "FILENAME=env-fe-tru-uat.txt" >> $GITHUB_ENV
+            echo "FILENAME=env-fe-tru-uat.txt" >> $GITHUB_ENV            
           elif [[ "${{ vars.TAG }}" == v* ]]; then
             echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
