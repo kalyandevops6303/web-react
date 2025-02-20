@@ -104,7 +104,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     {
       label: (
         <CustomOption
-          selected={secondFilterState.project_state_type[0]?.value === 'NEW'}
+          selected={
+            (secondFilterState?.project_state_type && secondFilterState?.project_state_type[0]?.value === 'NEW') ??
+            false
+          }
           option="New"
           count={selectProjectMetaData?.new_count || 0}
         />
@@ -114,7 +117,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     {
       label: (
         <CustomOption
-          selected={secondFilterState.project_state_type[0]?.value === 'FAVOURITE'}
+          selected={
+            (secondFilterState?.project_state_type &&
+              secondFilterState?.project_state_type[0]?.value === 'FAVOURITE') ??
+            false
+          }
           option="Favourite"
           count={selectProjectMetaData?.favourite_count || 0}
         />
