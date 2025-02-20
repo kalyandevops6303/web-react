@@ -26,7 +26,7 @@ export default function MessageStats() {
     getData(projectId, userId);
   }, [userId, projectId]);
 
-  if (isLoading) return <BoxSkeleton className="w-96 h-[100px]" />;
+  if (isLoading) return <BoxSkeleton className="w-[650px] max-w-full h-[100px]" />;
 
   return (
     <SimpleElevatedCard className="bg-white px-4 py-6 flex gap-5 w-fit flex-wrap shadow-card">
@@ -97,17 +97,17 @@ export default function MessageStats() {
           </SelectContent>
         </Select> */}
       </div>
-      {/* Commented out until BE is implemented */}
-      {/* <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
+      <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
       <div className="w-[194px] flex flex-col items-center gap-1 justify-center">
         <div className="text-grey-900 text-center font-montserrat text-[22px] font-semibold leading-6.5">
-          {data?.frequencyOfMessagesMinutes} mins
+          {data?.countOfMessagesPerDay}
         </div>
         <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">
-          Frequency of Messages
+          Frequency of Messages (Per day)
         </div>
       </div>
-      <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
+      {/* Commented out until BE is implemented */}
+      {/* <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
       <div className="w-[194px] flex flex-col items-center gap-1 justify-center">
         <div className="text-grey-900 text-center font-montserrat text-[22px] font-semibold leading-6.5">
           {data?.averageResponseTimeMinutes} mins
