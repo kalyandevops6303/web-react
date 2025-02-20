@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from '../ui/breadcrumb';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import routes from '@/flexternships/routes';
 
 export default function CustomBreadCrumbs(props: CustomBreadCrumbsProps) {
   const { items, startWithHome = true } = props;
@@ -23,7 +24,7 @@ export default function CustomBreadCrumbs(props: CustomBreadCrumbsProps) {
         {startWithHome && (
           <>
             <BreadcrumbItem className="text-trublue-secondary-500">
-              <BreadcrumbLink href={'/'}>
+              <BreadcrumbLink href={routes.dashboard.path}>
                 <Home size={14} />
               </BreadcrumbLink>
             </BreadcrumbItem>
