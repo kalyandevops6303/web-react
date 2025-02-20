@@ -24,6 +24,7 @@ type PaginationMetadata = {
  * @param props.renderItem Function to render each item in the list
  * @param props.loadMore Function to load the next page of data
  * @param props.pageSize Number of items per page (default: 10)
+ * @param props.loader Optional custom loader component to show while loading more items
  * @param props.className Optional CSS class name
  * @returns Paginated list component
  */
@@ -35,7 +36,7 @@ function PaginatedList<T>({
   className,
 }: {
   renderItem: (item: T) => React.ReactNode;
-  loadMore: () => Promise<ParsedPaginatedData<T>>;
+  loadMore: (page: number, pageSize: number) => Promise<ParsedPaginatedData<T>>;
   pageSize?: number;
   loader?: React.ReactNode;
   className?: string;
@@ -62,7 +63,7 @@ function PaginatedList<T>({
 
     setIsLoading(true);
     try {
-      const { data: newData, metadata: newMetadata } = await loadMore();
+      const { data: newData, metadata: newMetadata } = await loadMore(metadata.currentPage + 1, pageSize);
       setData((cur) => [...cur, ...newData]);
       setMetadata(newMetadata);
     } finally {

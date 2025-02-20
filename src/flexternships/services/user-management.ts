@@ -630,18 +630,18 @@ export const inviteDelegate = async (
 /**
  * Fetches a paginated list of delegate invitations.
  * @param page - The page number to fetch (defaults to 1).
- * @param page_size - The number of items per page (defaults to 10).
+ * @param pageSize - The number of items per page (defaults to 10).
  * @returns A Promise that resolves to an object containing paginated delegate invitations and metadata.
  * @throws {Error} If the delegate invitations retrieval fails or an unexpected error occurs.
  */
-export const getDelegateInvitationsPaginated = async (page: number = 1, page_size: number = 10) => {
+export const getDelegateInvitationsPaginated = async (page: number = 1, pageSize: number = 10) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
     withCredentials: true,
     params: {
       page,
-      page_size,
+      page_size: pageSize,
     },
   };
   try {
