@@ -93,7 +93,7 @@ import '../../../App.css';
 import { resumeParsedDetailsSuccess } from '@/redux/reducers/talentOnboarding';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { returnCompleteProfileDetailsCta } from '@/utility/constants/CompleteProfileDetailsCta';
-
+import { isUserLoggedIn } from '@/utility/commonUtils';
 const customDropdownStyles = {
   menuList: (provided) => ({
     ...provided,
@@ -846,6 +846,11 @@ const Additional = () => {
   //     dispatch(getUserDetails(onGetUserDetailsSuccess));
   //   }
   // }, [parseResume, parsedResumeData, parsedUploaded]);
+  useEffect(() => {
+    if (isUserLoggedIn()) {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
+  }, []);
   return (
     <ProfileFormContainer className="w-100">
       {profileDetailsIsLoading ? (
