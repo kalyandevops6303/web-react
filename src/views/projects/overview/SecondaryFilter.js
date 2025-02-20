@@ -32,7 +32,6 @@ import { CountWrapper, ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
-import { SecondaryProjectStatus } from '@/flexternships/constraints/enums/project-enums';
 
 const Control = ({ children, ...rest }) => <components.Control {...rest}>{children}</components.Control>;
 
@@ -101,7 +100,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     {
       label: (
         <CustomOption
-          selected={secondFilterState.project_state_type[0]?.value === 'NEW'}
+          selected={
+            (secondFilterState?.project_state_type && secondFilterState?.project_state_type[0]?.value === 'NEW') ??
+            false
+          }
           option="New"
           count={selectProjectMetaData?.new_count || 0}
         />
@@ -111,7 +113,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     {
       label: (
         <CustomOption
-          selected={secondFilterState.project_state_type[0]?.value === 'FAVOURITE'}
+          selected={
+            (secondFilterState?.project_state_type &&
+              secondFilterState?.project_state_type[0]?.value === 'FAVOURITE') ??
+            false
+          }
           option="Favourite"
           count={selectProjectMetaData?.favourite_count || 0}
         />
@@ -187,7 +193,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const setMetaDataForFlextern = () => {
-    console.log('secondFilterState', secondFilterState);
     if (secondFilterState?.department_name?.length > 0) {
       metaDataFlextern.department_name = secondFilterState.department_name[0]?.value;
     }

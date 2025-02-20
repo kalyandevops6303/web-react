@@ -36,6 +36,9 @@ const CustomBadge = styled.span`
     padding-right: 8px !important;
     padding-left: 8px !important;
   }
+  .count-text {
+    margin-top: 16px;
+  }
   .light-blue,
   .NEW {
     background: ${theme.lightBlueBgColor} !important;
