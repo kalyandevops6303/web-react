@@ -82,7 +82,7 @@ import { downloadUrlLoading } from '@/redux/selectors/dashboardSelectors';
 import { projectFileUploadToAzureService } from '../../services/createProjectServices';
 import uuidv4 from '../../lib/uuidv4';
 import { getDownloadUrl } from '@/redux/actions/dashboardActions';
-
+import { isUserLoggedIn } from '@/utility/commonUtils';
 const FlexternSocial = () => {
   const SocialSchema = yup.object().shape({
     linkedInLink: yup
@@ -819,6 +819,11 @@ const FlexternSocial = () => {
   //   }
   // }, [parseResume, parsedResumeData, parsedUploaded]);
 
+  useEffect(() => {
+    if (isUserLoggedIn()) {
+      dispatch(getUserDetails(onGetUserDetailsSuccess));
+    }
+  }, []);
   return (
     <ProfileFormContainer>
       {accountCreatedModal && (
