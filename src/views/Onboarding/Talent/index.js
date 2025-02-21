@@ -90,8 +90,11 @@ const TalentOnboarding = () => {
   }, [location]);
 
   const onBackClick = () => {
-    navigate(getItemFromSession('backRouteForProfileEdit'));
-    removeItemFromSession('backRouteForProfileEdit');
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   useEffect(() => {
