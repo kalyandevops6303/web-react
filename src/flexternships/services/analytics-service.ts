@@ -420,11 +420,11 @@ export const getConversationAttachmentStatsService = async (projectId: string, u
   }
 };
 
-export const getGitHubStatsService = async (projectId: string, userId: string) => {
+export const getGitHubStatsService = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
-    params: { project_id: projectId, user_id: userId },
+    params: { project_id: projectId },
     withCredentials: true,
   };
   try {
