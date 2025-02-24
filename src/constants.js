@@ -23,3 +23,7 @@ export const FIREBASE_CONSTANTS = {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
   },
 };
+
+export const CLARITY_CONSTANTS = {
+  TRACKING_ID: import.meta.env.CLARITY_TRACKING_ID,
+};
