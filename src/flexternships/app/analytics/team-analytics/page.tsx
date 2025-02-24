@@ -30,6 +30,7 @@ import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 import ProjectStatusChip from '../../components/pages/project-details/project-card/ProjectStatusChip';
 import CustomXAxisLabel from './labels/CustomXAxisLabel';
 import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
+import GithubInsightsCard from './GithubInsightsCard';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -293,6 +294,7 @@ export default function TeamAnalytics() {
       </div>
 
       <PerformanceInsightsCard />
+      <GithubInsightsCard />
       <TeamLeaderboardTable />
     </div>
   );
