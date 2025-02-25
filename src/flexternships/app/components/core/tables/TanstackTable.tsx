@@ -15,6 +15,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
+import classNames from 'classnames';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -189,7 +190,10 @@ export default function TanstackTable<T>({
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && 'selected'}
-                      className={`bg-white ${isRowHighlighted(row) ? styles.row.border : styles.row.default}`}
+                      className={classNames('bg-white', {
+                        [styles.row.border]: isRowHighlighted(row),
+                        [styles.row.default]: !isRowHighlighted(row),
+                      })}
                       ref={isRowHighlighted(row) && !firstHighlightedRowRef.current ? firstHighlightedRowRef : null}
                     >
                       {row.getVisibleCells().map((cell, index) => (
