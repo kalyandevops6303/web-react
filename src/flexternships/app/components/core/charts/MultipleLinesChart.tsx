@@ -126,7 +126,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
           {filtersLabel && <div className="font-montserrat font-medium leading-4 text-grey-700">{filtersLabel}</div>}
           <div
             onClick={toggleAll}
-            className={`flex flex-col justify-center items-start gap-1 p-3 w-[150px] rounded-lg border cursor-pointer ${
+            className={`flex flex-col justify-center items-start gap-1 p-3 min-w-[60px] rounded-lg border cursor-pointer ${
               showAll ? 'border-primary bg-primary-light' : 'border-grey-50'
             }`}
           >
@@ -170,7 +170,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 ) : (
                   <div
                     onClick={() => toggleMetric(key)}
-                    className={`flex p-3 items-center gap-3 w-[150px] rounded-lg border cursor-pointer ${
+                    className={`flex p-3 items-center gap-3 min-w-[60px] rounded-lg border cursor-pointer ${
                       selectedMetrics.includes(key) ? 'border-primary bg-primary-light' : 'border-grey-50'
                     }`}
                   >

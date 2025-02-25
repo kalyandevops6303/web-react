@@ -48,7 +48,7 @@ export default function PerformanceInsightsCard() {
           {performanceInsightsOverview?.map((item: any) => (
             <div
               key={item.name}
-              className="flex items-center gap-4 py-4 px-2 border border-grey-50 rounded-lg w-full md:w-auto"
+              className="flex items-center gap-4 p-4 border border-grey-50 rounded-lg w-full md:w-auto"
             >
               <div>
                 <span className="text-dark-900 text-center font-montserrat text-lg font-semibold leading-xxl-custom">

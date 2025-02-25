@@ -11,9 +11,9 @@ const Stats: React.FC<{
   const filteredStatsData = showZeroValues ? statsData : statsData.filter((stat) => stat.value !== 0);
 
   return (
-    <div className="h-full mt-5">
+    <div className="h-full">
       {orientation === StatsOrientation.HORIZONTAL ? (
-        <div className={`${className}flex items-center gap-2 justify-center w-full h-full`}>
+        <div className={`${className}flex items-center gap-2 justify-center w-full h-full mt-5`}>
           <div className="flex flex-wrap items-center gap-x-5 w-full h-full px-4">
             {filteredStatsData.map(({ color, label, value, percentage }: IStatsProps, index) => (
               <div key={index} className={cn('flex items-center gap-2 pb-0')}>

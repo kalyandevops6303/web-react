@@ -138,9 +138,8 @@ export default function TeamAnalytics() {
               <ProjectStatusChip status={projectDetails?.status} statusType={StatusType?.PRIMARY} />
               <div className="flex flex-row items-center gap-2">
                 <Link to={`/project-details/${projectDetails?.id}/team`}>
-                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5 flex items-center gap-2">
-                    {projectDetails?.details?.name}
-                    <ChevronRight size={18} color="#0185E4" />
+                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5 ">
+                    {projectDetails?.details?.name} <ChevronRight className="inline" size={18} color="#0185E4" />
                   </div>
                 </Link>
               </div>

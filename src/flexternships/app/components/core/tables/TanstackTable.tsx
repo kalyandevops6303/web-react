@@ -124,7 +124,7 @@ export default function TanstackTable<T>({
     }
   }, [scrollHighlightedRowsIntoView, highlightedValues]);
   return (
-    <div ref={tableContainerRef} className={`${className} w-full`}>
+    <div className={`${className} w-full`}>
       {allowColumnFilters && (
         <div className="flex items-center py-4">
           <Input
@@ -160,62 +160,69 @@ export default function TanstackTable<T>({
         </div>
       )}
       <div className="rounded-lg border border-[#EBE9F1] bg-white shadow-[0px_4px_24px_0px_rgba(0,0,0,0.06)]">
-        <div>
-          <Table className={`rounded-lg relative`}>
-            <TableHeader>
+        <div style={{ position: 'relative' }}>
+          {/* Fixed Header Table */}
+          <Table className="rounded-lg w-full table-fixed">
+            <TableHeader style={{ position: 'sticky', top: 0, zIndex: 2, background: '#F3F2F7', width: '100%' }}>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className="bg-[#F3F2F7] text-[#5E5873] font-montserrat text-[12px] font-semibold leading-none tracking-[1px] uppercase px-[12px]"
-                      >
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableHead>
-                    );
-                  })}
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      style={{ width: header.getSize() }}
+                      className="text-[#5E5873] font-montserrat text-[12px] font-semibold leading-none tracking-[1px] uppercase px-[12px]"
+                    >
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody className={`${className}`}>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                    className={`bg-white ${isRowHighlighted(row) ? styles.row.border : styles.row.default}`}
-                    ref={isRowHighlighted(row) && !firstHighlightedRowRef.current ? firstHighlightedRowRef : null}
-                  >
-                    {row.getVisibleCells().map((cell, index) => (
-                      <TableCell
-                        key={cell.id}
-                        className={`${isRowHighlighted(row) ? styles.row.highlighted : styles.row.default} 
-                        ${index === 0 && isRowHighlighted(row) && '!border-l'}
-                        ${index === row.getVisibleCells().length - 1 && isRowHighlighted(row) && '!border-r'}
-                        text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] px-[12px]`}
-                      >
-                        <div className="flex flex-col">
-                          {isRowHighlighted(row) && highlightText && index === 1 && (
-                            <span className="text-[#6E6B7B] font-montserrat text-[10px] font-medium leading-[22px] bg-[#0185E4] text-white px-2 rounded-full text-xs w-fit">
-                              {highlightText}
-                            </span>
-                          )}
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
           </Table>
+
+          {/* Scrollable Body */}
+          <div ref={tableContainerRef} style={{ overflowY: 'auto', maxHeight: '300px' }}>
+            <Table className="rounded-lg w-full table-fixed">
+              <TableBody className={`${className}`}>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && 'selected'}
+                      className={`bg-white ${isRowHighlighted(row) ? styles.row.border : styles.row.default}`}
+                      ref={isRowHighlighted(row) && !firstHighlightedRowRef.current ? firstHighlightedRowRef : null}
+                    >
+                      {row.getVisibleCells().map((cell, index) => (
+                        <TableCell
+                          key={cell.id}
+                          style={{ width: cell.column.getSize() }}
+                          className={`${isRowHighlighted(row) ? styles.row.highlighted : styles.row.default} 
+                          ${index === 0 && isRowHighlighted(row) && '!border-l'}
+                          ${index === row.getVisibleCells().length - 1 && isRowHighlighted(row) && '!border-r'}
+                          text-[#6E6B7B] font-montserrat text-[14px] font-medium leading-[22px] px-[10px] py-[12px]`}
+                        >
+                          <div className="flex flex-col">
+                            {isRowHighlighted(row) && highlightText && index === 1 && (
+                              <div className="text-[#6E6B7B] font-montserrat text-[10px] font-medium leading-[22px] bg-[#0185E4] text-white px-2 mb-1 rounded-full text-xs w-fit">
+                                {highlightText}
+                              </div>
+                            )}
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
       {allowPagination && (
