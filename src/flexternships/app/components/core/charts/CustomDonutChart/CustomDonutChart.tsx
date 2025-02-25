@@ -110,7 +110,7 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
         >
           <PieChart
             className={`${isSemiCircle ? 'min-h-[140px]' : 'min-h-[200px]'}`}
-            margin={{ top: isSemiCircle ? 50 : 0, right: 0, bottom: 0, left: 0 }}
+            margin={{ top: isSemiCircle ? 50 : -20, right: 0, bottom: 0, left: 0 }}
           >
             <ChartTooltip
               cursor={false}
@@ -169,7 +169,7 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
           </PieChart>
         </ChartContainer>
 
-        <div className="max-h-[240px] overflow-y-auto flex flex-col w-full">
+        <div className="max-h-[240px] overflow-y-auto flex flex-col w-full -mt-7">
           <Stats
             statsData={statsData}
             orientation={statsOrientation ?? StatsOrientation.HORIZONTAL}

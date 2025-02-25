@@ -11,6 +11,7 @@ import {
   ManagerFeedbackHeader,
   TeamNameHeader,
   WowsHeader,
+  TeamRankHeader,
 } from '@flexternships/app/analytics/team-analytics/tables/headers';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { useEffect } from 'react';
@@ -36,11 +37,12 @@ type LeaderboardTableRecordType = {
 const columns: ColumnDef<LeaderboardTableRecordType>[] = [
   {
     accessorKey: 'rank',
-    header: 'TEAM RANK',
+    header: TeamRankHeader,
     sortingFn: (rowA, rowB) => {
       return rowA.original.rank - rowB.original.rank;
     },
     cell: RankCell,
+    size: 70,
   },
   {
     accessorKey: 'name',
@@ -103,7 +105,7 @@ export default function TeamLeaderboardTable() {
             allowPagination={false}
             allowColumnFilters={false}
             allowSelection={false}
-            className="max-h-[200px] overflow-y-auto"
+            // className="max-h-[200px] overflow-y-auto"
             highlightByKey="projectId"
             highlightedValues={[projectId as string]}
             scrollHighlightedRowsIntoView
