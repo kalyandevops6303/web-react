@@ -169,7 +169,7 @@ export default function CustomDonutChart2(props: Readonly<CustomDonutChart2Props
           </PieChart>
         </ChartContainer>
 
-        <div className="max-h-[240px] overflow-y-auto flex flex-col w-full -mt-7">
+        <div className="flex flex-wrap flex-col w-full -mt-7 mb-2">
           <Stats
             statsData={statsData}
             orientation={statsOrientation ?? StatsOrientation.HORIZONTAL}
