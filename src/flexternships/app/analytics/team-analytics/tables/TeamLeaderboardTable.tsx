@@ -50,6 +50,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
     sortingFn: (rowA, rowB) => {
       return rowA.original.name.localeCompare(rowB.original.name);
     },
+    size: 300,
   },
   {
     accessorKey: 'attractivenessScore',
@@ -58,6 +59,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
       return rowA.original.attractivenessScore.score - rowB.original.attractivenessScore.score;
     },
     cell: AttractivenessScoreCell,
+    size: 100,
   },
   {
     accessorKey: 'managerFeedback',
@@ -66,6 +68,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
       return rowA.original.managerFeedback.score - rowB.original.managerFeedback.score;
     },
     cell: ManagerFeedbackCell,
+    size: 100,
   },
   {
     accessorKey: 'wows',
@@ -74,6 +77,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
       return rowA.original.wows - rowB.original.wows;
     },
     cell: WowsCell,
+    size: 100,
   },
 ];
 
