@@ -96,7 +96,7 @@ export default function FlexternshipProjectDetails() {
       id: 'milestone',
       title: 'Milestone',
       icon: <Watch size={18} />,
-      description: 'Status & dispute',
+      description: 'Status',
       route: '/milestone',
       component: <MilestoneTab />,
       talentVisible: true,

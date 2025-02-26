@@ -11,6 +11,7 @@ import {
   ManagerFeedbackHeader,
   TeamNameHeader,
   WowsHeader,
+  TeamRankHeader,
 } from '@flexternships/app/analytics/team-analytics/tables/headers';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { useEffect } from 'react';
@@ -36,11 +37,12 @@ type LeaderboardTableRecordType = {
 const columns: ColumnDef<LeaderboardTableRecordType>[] = [
   {
     accessorKey: 'rank',
-    header: 'TEAM RANK',
+    header: TeamRankHeader,
     sortingFn: (rowA, rowB) => {
       return rowA.original.rank - rowB.original.rank;
     },
     cell: RankCell,
+    size: 70,
   },
   {
     accessorKey: 'name',
@@ -48,6 +50,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
     sortingFn: (rowA, rowB) => {
       return rowA.original.name.localeCompare(rowB.original.name);
     },
+    size: 300,
   },
   {
     accessorKey: 'attractivenessScore',
@@ -56,6 +59,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
       return rowA.original.attractivenessScore.score - rowB.original.attractivenessScore.score;
     },
     cell: AttractivenessScoreCell,
+    size: 100,
   },
   {
     accessorKey: 'managerFeedback',
@@ -64,6 +68,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
       return rowA.original.managerFeedback.score - rowB.original.managerFeedback.score;
     },
     cell: ManagerFeedbackCell,
+    size: 100,
   },
   {
     accessorKey: 'wows',
@@ -72,6 +77,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
       return rowA.original.wows - rowB.original.wows;
     },
     cell: WowsCell,
+    size: 100,
   },
 ];
 
@@ -103,7 +109,7 @@ export default function TeamLeaderboardTable() {
             allowPagination={false}
             allowColumnFilters={false}
             allowSelection={false}
-            className="max-h-[200px] overflow-y-auto"
+            // className="max-h-[200px] overflow-y-auto"
             highlightByKey="projectId"
             highlightedValues={[projectId as string]}
             scrollHighlightedRowsIntoView

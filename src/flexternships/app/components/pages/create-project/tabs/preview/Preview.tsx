@@ -139,7 +139,7 @@ export default function Preview() {
           />
           <ProjectDetailsItem
             className="w-[333px] mb-5"
-            title="Department Name (BU)"
+            title="Department Name (BU) *"
             value={(userDetails as FlexternClientDetails).departmentName || 'NaN'}
           />
           <ProjectDetailsItem

@@ -1,5 +1,6 @@
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
 import PrimaryTag from './PrimaryTag';
+import TooltipInfo from '../tooltips/TooltipInfo';
 
 export default function TagGroup({ tags, truncateAfter }: Readonly<{ tags: BadgeType[]; truncateAfter?: number }>) {
   return (
@@ -23,11 +24,20 @@ export default function TagGroup({ tags, truncateAfter }: Readonly<{ tags: Badge
             ))}
 
       {truncateAfter && tags?.length > truncateAfter && (
-        <PrimaryTag
-          key={tags?.[truncateAfter]?.id}
-          content={`+${tags?.length - truncateAfter}`}
-          className="flex h-[18px] px-[9px] py-[1px] items-center gap-[3px] rounded-xl"
-        />
+        <TooltipInfo
+          trigger={
+            <PrimaryTag
+              key={tags?.[truncateAfter]?.id}
+              content={`+${tags?.length - truncateAfter}`}
+              className="flex h-[18px] px-[9px] py-[1px] items-center gap-[3px] rounded-xl"
+            />
+          }
+        >
+          {tags
+            .slice(truncateAfter)
+            .map((tag) => tag?.name)
+            .join(', ')}
+        </TooltipInfo>
       )}
     </div>
   );

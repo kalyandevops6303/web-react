@@ -50,7 +50,7 @@ const NavigationTab = ({
       <div className="flex flex-col items-start justify-center">
         <h1
           className={classNames(
-            { 'text-trublue-secondary-500': isActive, 'text-grey-800': !isActive },
+            { 'text-trublue-secondary-500': isActive, 'bg-muted-800': !isActive },
             'text-sm group-hover:text-trublue-secondary-500 font-semibold',
             { 'text-grey-800': isDisabled },
           )}
@@ -59,7 +59,7 @@ const NavigationTab = ({
         </h1>
         <h1
           className={classNames(
-            { 'text-trublue-secondary-500': isActive, 'text-grey-800': !isActive },
+            { 'text-trublue-secondary-500': isActive, 'bg-muted-800': !isActive },
             'font-light group-hover:text-trublue-secondary-500 text-xs',
             { 'text-grey-loadingText': isDisabled },
           )}

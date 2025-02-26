@@ -22,6 +22,7 @@ interface MultipleLinesChartProps {
   showDataOnFilters?: boolean;
   hideDeselectedMetricsFromTooltip?: boolean;
   customXAxisLabel?: React.ComponentType<any>;
+  filtersLabel?: string;
 }
 
 export default function MultipleLinesChart(props: Readonly<MultipleLinesChartProps>) {
@@ -38,6 +39,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
     showDataOnFilters = true,
     hideDeselectedMetricsFromTooltip,
     customXAxisLabel: CustomXAxisLabel,
+    filtersLabel,
   } = props;
 
   const CustomTooltipContent = ({ active, payload, label, selectedMetrics, showAll }: any) => {
@@ -103,11 +105,12 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
       });
     }
 
-    const validData = dataWithoutFirst.filter((curr) => curr[metric] !== undefined && curr[metric] !== null);
+    console.log(dataWithoutFirst);
 
-    if (validData.length === 0) return 0;
-
-    return (validData.reduce((acc, curr) => acc + (curr[metric] || 0), 0) / validData.length).toFixed(2);
+    return (
+      dataWithoutFirst.reduce((acc, curr) => acc + (curr[metric as keyof typeof curr] || 0), 0) /
+      (data.length - 1)
+    ).toFixed(2);
   };
 
   useEffect(() => {
@@ -119,10 +122,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
   return (
     <div>
       {showFilters && (
-        <div className="flex flex-wrap gap-5 bg-white rounded-t-lg p-6">
+        <div className="flex items-center flex-wrap gap-5 bg-white rounded-t-lg p-6">
+          {filtersLabel && <div className="font-montserrat font-medium leading-4 text-grey-700">{filtersLabel}</div>}
           <div
             onClick={toggleAll}
-            className={`flex flex-col justify-center items-start gap-1 p-3 w-[150px] rounded-lg border cursor-pointer ${
+            className={`flex flex-col justify-center items-start gap-1 p-3 min-w-[60px] rounded-lg border cursor-pointer ${
               showAll ? 'border-primary bg-primary-light' : 'border-grey-50'
             }`}
           >
@@ -166,7 +170,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 ) : (
                   <div
                     onClick={() => toggleMetric(key)}
-                    className={`flex p-3 items-center gap-3 w-[150px] rounded-lg border cursor-pointer ${
+                    className={`flex p-3 items-center gap-3 min-w-[60px] rounded-lg border cursor-pointer ${
                       selectedMetrics.includes(key) ? 'border-primary bg-primary-light' : 'border-grey-50'
                     }`}
                   >

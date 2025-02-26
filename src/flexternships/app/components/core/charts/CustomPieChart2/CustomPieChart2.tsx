@@ -96,7 +96,7 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
           className="flex w-[600px] md:w-1/2 h-full aspect-video z-10 justify-center text-xs [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none [&_.recharts-sector[stroke='#fff']]:stroke-white"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+            <PieChart className="max-h-[310px] mt-5">
               <ChartTooltip
                 content={({ payload }) => <CustomPieChartTooltip payload={payload} totalCount={totalCount} />}
               />
@@ -108,7 +108,7 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
                 activeIndex={activeIndex}
                 onMouseEnter={onPieEnter}
                 onMouseLeave={onPieLeave}
-                outerRadius={130}
+                outerRadius={140}
               >
                 <LabelList
                   dataKey="count"
@@ -129,7 +129,8 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
-        <div className="h-full max-h-[320px] overflow-y-auto flex flex-col w-full">
+        <div className="w-1 h-[309px] bg-gray-100 -mt-5"></div>
+        <div className="h-full max-h-[300px] overflow-y-auto flex flex-col w-full">
           <Stats statsData={statsData} orientation={statsOrientation ?? StatsOrientation.HORIZONTAL} />
         </div>
       </CardContent>

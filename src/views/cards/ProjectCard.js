@@ -36,6 +36,7 @@ const ProjectCard = ({
   data,
   isPopoverOpen,
 }) => {
+  const navigate = useNavigate();
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -48,7 +49,7 @@ const ProjectCard = ({
   const appPermissions = useSelector(appPermissionsSelector);
   const location = useLocation();
   const pathname = location.pathname.split('/').pop();
-  const navigate = useNavigate();
+
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -152,19 +153,23 @@ const ProjectCard = ({
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
                     {(() => {
-                      const isSecondaryStatusValid = data?.secondary_status
-                        ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
-                        : Object.keys(primaryStatus)?.includes(data?.status);
+                      const isBlocked =
+                        data?.status === primaryStatus.BLOCKED || data?.status === primaryStatus.COMPLETED;
+
+                      const isSecondaryStatusValid =
+                        !isBlocked && data?.secondary_status
+                          ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
+                          : Object.keys(primaryStatus)?.includes(data?.status);
 
                       const badgeStatus = isSecondaryStatusValid
-                        ? data?.secondary_status
+                        ? data?.secondary_status && !isBlocked
                           ? data?.secondary_status?.next
                           : data?.status
                         : pathname;
 
                       return (
                         <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                          {data?.secondary_status
+                          {!isBlocked && data?.secondary_status
                             ? getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
                             : primaryStatus[data?.status]}
                         </Badge>
@@ -172,7 +177,7 @@ const ProjectCard = ({
                     })()}
                   </CustomBadge>
                 </div>
-                <CardTitle className="d-flex align-items-center mb-3 project-card-title">
+                <CardTitle className="d-flex align-items-center mb-3">
                   <span className="cursor-pointer" onClick={handleRedirection}>
                     {data?.name || data?.details?.name}
                   </span>
@@ -192,7 +197,7 @@ const ProjectCard = ({
                   {(data?.assigned_date || data?.completed_date || data?.invite_date || data?.listing_details) && (
                     <CardText className="mb-6">
                       {(data?.assigned_date || data?.listing_details?.start_date_epoch) && (
-                        <span className="me-1 assigned-start-text">
+                        <span className="me-1">
                           Assigned Date:{' '}
                           {convertUnixTimestampToDate(
                             data?.assigned_date || data?.listing_details?.start_date_epoch,
@@ -200,17 +205,16 @@ const ProjectCard = ({
                           ) || data?.listing_details?.start_date}
                         </span>
                       )}
-                      {data?.status === primaryStatus?.TERMINATED &&
-                        (data?.completed_date || data?.listing_details?.end_date_epoch) && (
-                          <span className="me-1">
-                            {data?.completed_date || data?.listing_details?.end_date_epoch
-                              ? `Completed Date: ${convertUnixTimestampToDate(
-                                  data?.completed_date || data?.listing_details?.end_date_epoch,
-                                  savedUserData?.availability?.timezone?.name,
-                                )}   `
-                              : ''}
-                          </span>
-                        )}
+                      {(data?.completed_date || data?.listing_details?.end_date_epoch) && (
+                        <span className="me-1">
+                          {data?.completed_date || data?.listing_details?.end_date_epoch
+                            ? `Completed Date: ${convertUnixTimestampToDate(
+                                data?.completed_date || data?.listing_details?.end_date_epoch,
+                                savedUserData?.availability?.timezone?.name,
+                              )}   `
+                            : ''}
+                        </span>
+                      )}
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
