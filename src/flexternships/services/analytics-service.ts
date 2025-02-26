@@ -437,7 +437,6 @@ export const getGitHubStatsService = async (projectId: string) => {
 
 export const getGitHubBranchHistoryPaginatedService = async (
   projectId: string,
-  userId: string,
   options: { metricType: GithubMetricType; page: number; pageSize: number } = {
     metricType: GithubMetricType.COMMITS,
     page: 1,
@@ -452,7 +451,6 @@ export const getGitHubBranchHistoryPaginatedService = async (
   };
   const payload = {
     project_id: projectId,
-    user_id: userId,
     metric_type: options.metricType,
   };
   try {
