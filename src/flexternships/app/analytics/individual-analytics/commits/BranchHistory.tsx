@@ -23,7 +23,7 @@ function BranchHistorySkeleton() {
 }
 
 export default function BranchHistory() {
-  const { projectId, userId } = useParams();
+  const { projectId } = useParams();
   const [branchHistoryData, setBranchHistoryData] = useState<GitHubBranchCommit[]>([]);
   const [metadata, setMetadata] = useState<GitHubBranchHistory['metadata']>({
     currentPage: 0,
@@ -35,7 +35,7 @@ export default function BranchHistory() {
 
   // Function to fetch branch history data
   const fetchBranchHistory = async (options = { resetPage: false }) => {
-    if (!projectId || !userId) {
+    if (!projectId) {
       throw new Error('Invalid page url or project/user id not found');
     }
 
@@ -45,7 +45,7 @@ export default function BranchHistory() {
     try {
       const currentPage = options.resetPage ? 1 : metadata.currentPage + 1;
       const fetchOptions = { metricType: GithubMetricType.COMMITS, page: currentPage, pageSize: metadata.pageSize };
-      const data = await getGitHubBranchHistoryPaginatedService(projectId, userId, fetchOptions);
+      const data = await getGitHubBranchHistoryPaginatedService(projectId, fetchOptions);
 
       if (data) {
         setBranchHistoryData((prevData) => (options.resetPage ? data.data : [...prevData, ...data.data]));
@@ -62,7 +62,7 @@ export default function BranchHistory() {
   useEffect(() => {
     // Initial fetch of branch history data
     fetchBranchHistory({ resetPage: true });
-  }, [projectId, userId]);
+  }, [projectId]);
 
   useEffect(() => {
     const handleScroll = () => {
