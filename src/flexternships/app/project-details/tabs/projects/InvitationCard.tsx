@@ -25,6 +25,7 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
       setProjectInvitationRead(params?.projectId as string);
     }
   }, [projectInvitationDetails]);
+
   const invitationCardData = {
     isCollapsible,
     bordered: true,
@@ -64,7 +65,6 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
     estimated_duration: `${projectInvitationDetails?.projectEstimatedDuration?.duration} Weeks`,
     message: projectInvitationDetails?.invitationMessage,
   };
-
   useEffect(() => {
     getProjectInvitationDetails(params?.projectId as string);
   }, []);
@@ -80,7 +80,6 @@ export default function InvitationCard({ hideSubtitle = false, isCollapsible = t
   }
 
   const timeGapOfInvite = getDaysLeft(projectInvitationDetails?.createdAt || 1, Date.now());
-
   return (
     <CollapsableCard {...invitationCardData}>
       <div className="px-4 pt-4 flex flex-col gap-y-6 w-full">

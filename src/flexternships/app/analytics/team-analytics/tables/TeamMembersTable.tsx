@@ -60,6 +60,7 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
       cell: SelectCell,
       enableSorting: false,
       enableHiding: false,
+      size: 50,
     },
     {
       accessorKey: 'rank',
@@ -68,6 +69,7 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return rowA.original.rank - rowB.original.rank;
       },
       cell: RankCell,
+      size: 70,
     },
     {
       accessorKey: 'member',
@@ -78,11 +80,13 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return nameA.localeCompare(nameB);
       },
       cell: MemberCell,
+      size: 250,
     },
     {
       accessorKey: 'topCompetencies',
       header: TopCompetenciesHeader,
       cell: TopCompetenciesCell,
+      size: 300,
     },
     {
       accessorKey: 'attractivenessScore',
@@ -91,6 +95,7 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return rowA.original.attractivenessScore.score - rowB.original.attractivenessScore.score;
       },
       cell: AttractivenessScoreCell,
+      maxSize: 100,
     },
     {
       accessorKey: 'managerFeedback',
@@ -99,6 +104,7 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return rowA.original.managerFeedback.score - rowB.original.managerFeedback.score;
       },
       cell: ManagerFeedbackCell,
+      size: 100,
     },
     {
       accessorKey: 'wows',
@@ -107,11 +113,13 @@ export default function TeamMembersTable({ data }: { data: TableRecordType[] }) 
         return rowA.original.wows - rowB.original.wows;
       },
       cell: WowsCell,
+      size: 100,
     },
     {
       id: 'actions',
       header: 'ACTION',
       cell: ActionsCell,
+      size: 100,
     },
   ];
 

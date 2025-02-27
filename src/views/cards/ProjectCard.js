@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { EstimatedTimeHeading, ProjectCardWrap, CardInfoWrapper } from './style';
@@ -36,6 +36,7 @@ const ProjectCard = ({
   data,
   isPopoverOpen,
 }) => {
+  const navigate = useNavigate();
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -152,19 +153,23 @@ const ProjectCard = ({
                 <div className="d-flex mb-1 status-row">
                   <CustomBadge>
                     {(() => {
-                      const isSecondaryStatusValid = data?.secondary_status
-                        ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
-                        : Object.keys(primaryStatus)?.includes(data?.status);
+                      const isBlocked =
+                        data?.status === primaryStatus.BLOCKED || data?.status === primaryStatus.COMPLETED;
+
+                      const isSecondaryStatusValid =
+                        !isBlocked && data?.secondary_status
+                          ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
+                          : Object.keys(primaryStatus)?.includes(data?.status);
 
                       const badgeStatus = isSecondaryStatusValid
-                        ? data?.secondary_status
+                        ? data?.secondary_status && !isBlocked
                           ? data?.secondary_status?.next
                           : data?.status
                         : pathname;
 
                       return (
                         <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                          {data?.secondary_status
+                          {!isBlocked && data?.secondary_status
                             ? getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
                             : primaryStatus[data?.status]}
                         </Badge>
@@ -258,7 +263,13 @@ const ProjectCard = ({
                   </CardText>
                 )}
 
-                <EstimatedTimeHeading>Estimated time to complete feedback 3min 30sec</EstimatedTimeHeading>
+                <EstimatedTimeHeading
+                  onClick={() => {
+                    navigate(`/project-details/${data._id}/milestone`);
+                  }}
+                >
+                  Estimated time to complete feedback 3min 30sec
+                </EstimatedTimeHeading>
               </Col>
               <Col lg="4">
                 {primaryFilter !== 'terminated' ? (

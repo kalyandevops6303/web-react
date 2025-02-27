@@ -51,6 +51,46 @@ const isToday = (date) => {
   );
 };
 
+export function getTimeLeftIfWithin24Hours(epoch) {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+
+  const now = DateTime.now();
+  const target = DateTime.fromMillis(epoch);
+  const diff = target.diff(now, ['hours', 'minutes', 'seconds']).toObject();
+
+  const hours = Math.floor(diff.hours || 0);
+  const minutes = Math.floor(diff.minutes || 0);
+  const seconds = Math.floor(diff.seconds || 0);
+
+  // Return undefined if target is in the past or more than 24 hours away
+  if (hours < 0 || minutes < 0 || seconds < 0 || hours >= 24) {
+    return undefined;
+  }
+
+  return { hours, minutes, seconds };
+}
+
+export function getDaysLeft(epoch) {
+  if (typeof epoch !== 'number') {
+    throw new TypeError('Expected a number for epoch');
+  }
+
+  const now = DateTime.now();
+  const target = DateTime.fromMillis(epoch);
+  const diff = target.diff(now, 'days').toObject();
+
+  const days = Math.floor(diff.days || 0);
+
+  // Return undefined if the event has already passed
+  if (days < 0) {
+    return undefined;
+  }
+
+  return days;
+}
+
 /**
  ** Format and return date in Humanize format
  ** Intl docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/format

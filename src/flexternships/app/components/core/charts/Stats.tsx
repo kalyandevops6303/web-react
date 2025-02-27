@@ -13,7 +13,7 @@ const Stats: React.FC<{
   return (
     <div className="h-full">
       {orientation === StatsOrientation.HORIZONTAL ? (
-        <div className={`${className}flex items-center gap-2 justify-center w-full h-full`}>
+        <div className={`${className}flex items-center gap-2 justify-center w-full h-full mt-5`}>
           <div className="flex flex-wrap items-center gap-x-5 w-full h-full px-4">
             {filteredStatsData.map(({ color, label, value, percentage }: IStatsProps, index) => (
               <div key={index} className={cn('flex items-center gap-2 pb-0')}>
@@ -33,6 +33,7 @@ const Stats: React.FC<{
       ) : (
         <div className={`${className} flex items-center gap-5 justify-center w-full h-full`}>
           <div className="grid grid-cols-1 gap-2 p-4 pb-0 w-full">
+            <div className="border-b border-gray-200 w-full" />
             {filteredStatsData.map(({ color, label, value, percentage }: IStatsProps, index) => (
               <>
                 <div key={index} className={cn('flex items-center gap-2')}>

@@ -144,7 +144,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                         {data?.last_name}
                       </Link>
                     </CardTitle>
-                    <CardText className="truncate-1 font-small-3 fs-6 fw-300 mb-25 marketplace-card-role">
+                    <CardText className="truncate-1 font-small-3 fs-3 fw-300 mb-25">
                       {data?.role?.name || 'Role'}
                     </CardText>
                     <div className="d-flex teamcard-flex-cloumn">

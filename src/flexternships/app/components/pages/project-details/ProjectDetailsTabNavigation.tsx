@@ -27,7 +27,15 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
         <div className="flex justify-between items-end max-w-5xl">
           <div className=" bg-white w-fit flex flex-row items-start justify-start gap-1">
             {tabs.map((tab, index) => {
-              return <NavigationTab key={index} tab={tab} index={index} isActive={tab.id === projectStep} />;
+              return (
+                <NavigationTab
+                  key={index}
+                  tab={tab}
+                  index={index}
+                  isActive={tab.id === projectStep}
+                  isDisabled={tab?.isDisabled ?? false}
+                />
+              );
             })}
           </div>
           {!projectLoading && (
