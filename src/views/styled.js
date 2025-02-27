@@ -40,6 +40,9 @@ const CustomBadge = styled.span`
   .count-text {
     margin-top: 16px;
   }
+  .count-text {
+    margin-top: 16px;
+  }
   .light-blue,
   .NEW {
     background: ${theme.lightBlueBgColor} !important;
