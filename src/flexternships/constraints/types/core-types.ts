@@ -168,6 +168,7 @@ export type AppState = {
   modalContent: GlobalModalContent | undefined;
   modalActions: GlobalModalActions | undefined;
   unreadNotificationsCount: number;
+  backPath: string | undefined;
 };
 
 export type AppActions = {
@@ -183,6 +184,7 @@ export type AppActions = {
   getCurrentNextPath: () => string | undefined;
   fetchNotificationsCount: () => void;
   resetStore: () => void;
+  setBackPath: (backPath: string) => void;
 };
 
 export type AppStore = AppState & AppActions;
