@@ -75,7 +75,8 @@ export default function IndividualFeedbackResponse(props: any) {
 
     // Map questions with feedback for title, maintaining feedback array order
     feedback.forEach((feedbackItem, index) => {
-      const questionKey = feedbackItem.name;
+      const questionKey =
+        feedbackItem.name == 'qualitativeFeedback-Comment' ? 'qualitativeFeedback' : feedbackItem.name;
       const groupedAnswer = grouped[questionKey] || { value: null, comment: null, competency: null };
 
       answeredQuestions.push({
