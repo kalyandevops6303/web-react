@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { resendAction } from '../../../redux/actions/authActions';
 import { selectEmail, selectMobile, selectUserType } from '../../../redux/selectors/authSelectors';
 
-const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP, isClubEmailResend }) => {
+const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP, isClubEmailResend, resetErrorOtpandCode }) => {
   const dispatch = useDispatch();
   const userType = useSelector(selectUserType);
   const emailId = useSelector(selectEmail);
@@ -37,6 +37,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP, isClubEm
       if (isEmailResend) {
         dispatch(resendAction({ email: emailId, isEmailResend: true, userType }));
       }
+
       if (isPhoneResend) {
         dispatch(
           resendAction({
@@ -46,6 +47,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP, isClubEm
           }),
         );
       }
+      resetErrorOtpandCode();
       setCountdown(180); // reset the countdown to 60 seconds
     }
   };
@@ -76,4 +78,5 @@ ResendOTPComp.propTypes = {
   isEmailResend: PropTypes.bool,
   isPhoneResend: PropTypes.bool,
   isEmailResendFP: PropTypes.bool,
+  resetErrorOtpandCode: PropTypes.func,
 };
