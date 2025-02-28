@@ -140,7 +140,9 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 </span>
               </div>
             )}
-            <div className="font-montserrat text-sm font-medium leading-sm-custom text-dark-700">All</div>
+            <div className="flex flex-row items-center justify-start gap-2">
+              <div className="font-montserrat text-sm font-medium leading-sm-custom text-dark-700">All</div>
+            </div>
           </div>
 
           {chartConfig &&
@@ -174,7 +176,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                       selectedMetrics.includes(key) ? 'border-primary bg-primary-light' : 'border-grey-50'
                     }`}
                   >
-                    <div className="flex w-1 h-full rounded-full z-10" style={{ backgroundColor: color }}></div>
+                    <div className="flex w-1 h-[20px] rounded-full z-10" style={{ backgroundColor: color }}></div>
                     <div className="font-montserrat text-sm font-medium leading-sm-custom text-dark-700 truncate">
                       {label}
                     </div>

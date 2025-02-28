@@ -50,11 +50,11 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
     sortingFn: (rowA, rowB) => {
       return rowA.original.name.localeCompare(rowB.original.name);
     },
-    size: 300,
+    size: 250,
   },
   {
     accessorKey: 'attractivenessScore',
-    header: AttractivenessScoreHeader,
+    header: ({ column }) => <AttractivenessScoreHeader noWrap column={column} />,
     sortingFn: (rowA, rowB) => {
       return rowA.original.attractivenessScore.score - rowB.original.attractivenessScore.score;
     },
@@ -63,7 +63,7 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
   },
   {
     accessorKey: 'managerFeedback',
-    header: ManagerFeedbackHeader,
+    header: ({ column }) => <ManagerFeedbackHeader noWrap column={column} />,
     sortingFn: (rowA, rowB) => {
       return rowA.original.managerFeedback.score - rowB.original.managerFeedback.score;
     },
@@ -72,12 +72,12 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
   },
   {
     accessorKey: 'wows',
-    header: WowsHeader,
+    header: ({ column }) => <WowsHeader column={column} text="TOTAL WOWS!" />,
     sortingFn: (rowA, rowB) => {
       return rowA.original.wows - rowB.original.wows;
     },
     cell: WowsCell,
-    size: 100,
+    size: 80,
   },
 ];
 

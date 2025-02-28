@@ -3,7 +3,10 @@ import { ChevronDown, ChevronUp } from 'react-feather';
 import { Column } from '@tanstack/react-table';
 import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
 
-export default function AttractivenessScoreHeader({ column }: Readonly<{ column: Column<any> }>) {
+export default function AttractivenessScoreHeader({
+  column,
+  noWrap,
+}: Readonly<{ column: Column<any>; noWrap?: boolean }>) {
   return (
     <Button
       variant="ghost"
@@ -12,11 +15,16 @@ export default function AttractivenessScoreHeader({ column }: Readonly<{ column:
     >
       <span className="text-grey-heading font-montserrat text-xs font-semibold leading-none tracking-wider uppercase text-wrap">
         <div className="flex flex-col items-start justify-start gap-1">
-          <div>LEARNABILITY</div>
-          <div className="flex flex-row items-center justify-start gap-2">
-            <div>SCORE</div>
-            <TooltipInfo>Learnability Score</TooltipInfo>
+          <div className="flex flex-row justify-start gap-2 text-left">
+            <span>LEARNABILITY {noWrap && 'SCORE'}</span>
+            {noWrap && <TooltipInfo>Learnability Score</TooltipInfo>}
           </div>
+          {!noWrap && (
+            <div className="flex flex-row items-center justify-start gap-2">
+              <div>SCORE</div>
+              <TooltipInfo>Learnability Score</TooltipInfo>
+            </div>
+          )}
         </div>
       </span>
       <div className="flex flex-col items-center justify-center gap-0">
