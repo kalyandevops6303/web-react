@@ -38,6 +38,7 @@ export default function TeamAnalytics() {
   const teamDiversity = useAnalyticsStore((state) => state.team.teamDiversity);
   const params = useParams();
 
+  const [seperatorExpanded, setSeperatorExpanded] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
 
   const projectDetails = useProjectsStore((state) => state.projectDetails);
@@ -92,6 +93,13 @@ export default function TeamAnalytics() {
       .replace(',', '')
       .replace(/(\d{2})$/, "'$1");
   };
+
+  useEffect(() => {
+    if (teamDiversity?.chartData) {
+      const allItemsGreaterThanZero = teamDiversity.chartData.every((item: any) => item.count > 0);
+      setSeperatorExpanded(allItemsGreaterThanZero);
+    }
+  }, [teamDiversity]);
 
   return (
     <div className="bg-background flex flex-col gap-6 px-7 mt-20 md:mt-0">
@@ -255,6 +263,7 @@ export default function TeamAnalytics() {
               className="bg-white"
               statsOrientation={StatsOrientation.VERTICAL}
               isLoading={isTeamRolesLoading}
+              seperatorExpanded={seperatorExpanded}
             />
           </div>
         )}

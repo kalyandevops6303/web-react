@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronUp, ChevronDown } from 'react-feather';
 import { Column } from '@tanstack/react-table';
 
-export default function WowsHeader({ column }: Readonly<{ column: Column<any> }>) {
+export default function WowsHeader({ column, text }: Readonly<{ column: Column<any>; text?: string }>) {
   return (
     <Button
       variant="ghost"
@@ -10,7 +10,7 @@ export default function WowsHeader({ column }: Readonly<{ column: Column<any> }>
       className="flex items-center justify-between gap-2 p-0"
     >
       <span className="text-grey-heading font-montserrat text-xs font-semibold leading-none tracking-wider uppercase">
-        WOWS!
+        {text || 'WOWS!'}
       </span>
       <div className="flex flex-col items-center justify-center gap-0">
         <ChevronUp size={12} />
