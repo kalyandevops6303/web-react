@@ -7,22 +7,25 @@ import { StatsOrientation } from '@/flexternships/constraints/enums/chart-enums'
 import { useEffect, useMemo, useState } from 'react';
 import CustomPieChartTooltip from '@/flexternships/app/components/core/charts/CustomPieChart2/CustomPieChartTooltip';
 import BoxSkeleton from '../../skeletons/BoxSkeleton';
-import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import classNames from 'classnames';
 
 export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
-  const { chartData, chartConfig, totalCount, title, statsOrientation, className, isLoading } = props;
-
-  const teamDiversity = useAnalyticsStore((state) => state.team.teamDiversity);
+  const {
+    chartData,
+    chartConfig,
+    totalCount,
+    title,
+    statsOrientation,
+    className,
+    isLoading,
+    seperatorExpanded = false,
+  } = props;
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
-    if (teamDiversity?.chartData) {
-      const allItemsGreaterThanZero = teamDiversity.chartData.every((item: any) => item.count > 0);
-      setIsExpanded(allItemsGreaterThanZero);
-    }
-  }, [teamDiversity]);
+    setIsExpanded(seperatorExpanded);
+  }, [seperatorExpanded]);
 
   const statsData = chartData?.map((item) => ({
     label: item.label,
