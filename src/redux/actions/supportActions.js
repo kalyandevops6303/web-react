@@ -3,6 +3,7 @@ import {
   getRequestsService,
   getSupportCount,
   createSupportService,
+  createSupportServiceForFlextern,
 } from '../../services/supportServices';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -26,6 +27,19 @@ const customerSupport =
     dispatch(supportRequest());
     try {
       const res = await createSupportService(data);
+      dispatch(supportSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, supportFailure);
+    }
+  };
+
+const customerSupportForFlextern =
+  ({ data, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(supportRequest());
+    try {
+      const res = await createSupportServiceForFlextern(data);
       dispatch(supportSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -67,4 +81,4 @@ const deleteRequest =
     }
   };
 
-export { customerSupport, getCustomerSupportCount, getCustomerSupportList, deleteRequest };
+export { customerSupport, getCustomerSupportCount, getCustomerSupportList, deleteRequest, customerSupportForFlextern };
