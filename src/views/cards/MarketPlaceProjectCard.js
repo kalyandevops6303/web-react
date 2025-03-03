@@ -176,6 +176,7 @@ const MarketPlaceProjectCard = ({
     }
   };
 
+  console.log(data);
   return (
     <ProjectCardWrap>
       {deleteDraftModal && (
