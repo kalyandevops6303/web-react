@@ -1,13 +1,14 @@
-// Core enums and types
+// Core imports
 import { RecognitionSource } from '@/flexternships/constraints/enums/core-enums';
 import { Competency } from '@/flexternships/constraints/types/competency-types';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 // UI Components
 import CompetencyTag from '../../../core/tags/CompetencyTag';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 
 // Utils
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { addQueryParams, stringToColour } from '@/flexternships/utils/miscellaneous-utils';
 import { getReadableTimeDifference } from '@/flexternships/utils/date-utils';
 
 interface ViewCommentsManagerCardProps {
@@ -33,6 +34,8 @@ export default function ViewCommentsManagerCard({
   selectedCompetencies,
   comment,
 }: ViewCommentsManagerCardProps) {
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex flex-row justify-between">
@@ -40,7 +43,7 @@ export default function ViewCommentsManagerCard({
           <div className="flex flex-row gap-x-2 items-center">
             <div>
               <Avatar className="size-10">
-                <AvatarImage src={giverDetails.profileImage} />
+                <AvatarImage src={addQueryParams(giverDetails.profileImage, blobSasTokenParams)} />
                 <AvatarFallback
                   className="p-2 font-semibold text-sm"
                   style={{

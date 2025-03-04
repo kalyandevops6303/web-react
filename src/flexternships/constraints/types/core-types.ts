@@ -169,6 +169,7 @@ export type AppState = {
   modalActions: GlobalModalActions | undefined;
   unreadNotificationsCount: number;
   backPath: string | undefined;
+  blobSasTokenParams: Record<string, string> | undefined;
 };
 
 export type AppActions = {
@@ -185,6 +186,7 @@ export type AppActions = {
   fetchNotificationsCount: () => void;
   resetStore: () => void;
   setBackPath: (backPath: string) => void;
+  populateBlobSasTokenParams: (force?: boolean) => void;
 };
 
 export type AppStore = AppState & AppActions;

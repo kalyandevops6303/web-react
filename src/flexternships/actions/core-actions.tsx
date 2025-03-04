@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { getNotificationsStats, getUserDetails } from '@flexternships/services/user-management';
+import { getBlobSasTokenParams, getNotificationsStats, getUserDetails } from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
 import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
 import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
@@ -102,4 +102,12 @@ export const fetchNotificationsCount = async (set: any) => {
       error instanceof Error ? error.message : 'An unexpected error occurred while fetching notifications count',
     );
   }
+};
+
+export const populateBlobSasTokenParams = async (force: boolean, get: any, set: any) => {
+  const blobSasTokenParams = get().blobSasTokenParams;
+  if (!isEmpty(blobSasTokenParams) && !force) return;
+
+  const data = await getBlobSasTokenParams();
+  set({ blobSasTokenParams: data });
 };

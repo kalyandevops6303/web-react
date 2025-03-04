@@ -17,6 +17,8 @@ import { userTypes } from '../../utility/constants/Constant';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import { DisputeCount } from '../styled';
 import PermissionWrapper from '@/PermissionWrapper';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 const determineClassWhenDisputeStatus = (pathname, userData) => {
   if (pathname === 'dispute' && userData?.user_type === userTypes.client) {
@@ -42,6 +44,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const navigate = useNavigate();
   const pathname = location.pathname.split('/').pop();
   const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -232,7 +236,10 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   className="market-place-card-photo me-75"
                   src={
                     data?.client_info?.[0]?.image_uri || profileToShowInRightSideOfCard?.image_uri?.length
-                      ? data?.client_info?.[0]?.image_uri || profileToShowInRightSideOfCard?.image_uri
+                      ? addQueryParams(
+                          data?.client_info?.[0]?.image_uri || profileToShowInRightSideOfCard?.image_uri,
+                          blobSasTokenParams,
+                        )
                       : defaultAvatar
                   }
                   alt="avatar"
@@ -309,7 +316,10 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   className="market-place-card-photo cursor-pointer me-75"
                   src={
                     clientDetails?.image_uri?.length || data?.client_info?.[0]?.image_uri
-                      ? clientDetails?.image_uri || data?.client_info?.[0]?.image_uri
+                      ? addQueryParams(
+                          clientDetails?.image_uri || data?.client_info?.[0]?.image_uri,
+                          blobSasTokenParams,
+                        )
                       : defaultAvatar
                   }
                   alt="avatar"
@@ -381,7 +391,11 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     <div className="d-flex w-100">
                       <img
                         className="market-place-card-photo cursor-pointer me-75"
-                        src={data?.worker_details?.image_uri?.length ? data?.worker_details?.image_uri : defaultAvatar}
+                        src={
+                          data?.worker_details?.image_uri?.length
+                            ? addQueryParams(data?.worker_details?.image_uri, blobSasTokenParams)
+                            : defaultAvatar
+                        }
                         alt="avatar"
                         width={40}
                         height={50}
