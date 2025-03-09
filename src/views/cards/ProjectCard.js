@@ -132,6 +132,7 @@ const ProjectCard = ({
     return switchData?.navigateTo;
   };
   const checkTime = checkTimeLeft(data?.listing_details?.start_date_epoch);
+
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -154,67 +155,33 @@ const ProjectCard = ({
             <Row>
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
-                  {(data?.status === primaryStatus?.ACTIVE || data?.status === primaryStatus?.ON_GOING) &&
-                  data?.secondary_status?.next === secondaryStatusConstants?.MILESTONE ? (
-                    checkTime?.moreThanOneDay ? (
-                      <span className="text-danger fw-semibold small">
-                        Starts in {getDaysLeft(data?.listing_details?.start_date_epoch)} Days
-                      </span>
-                    ) : checkTime?.moreThanOneHour ? (
-                      <span className="text-danger fw-semibold small">
-                        Starts in {getTimeLeftIfWithin24Hours(data?.listing_details?.start_date_epoch)} Hours
-                      </span>
-                    ) : (
-                      <CustomBadge>
-                        {(() => {
-                          const isBlocked =
-                            data?.status === primaryStatus.BLOCKED || data?.status === primaryStatus.COMPLETED;
+                  {(() => {
+                    const isActiveOrOngoing = [primaryStatus.ACTIVE, primaryStatus.ON_GOING].includes(data?.status);
+                    const isNextMilestone = data?.secondary_status?.next === secondaryStatusConstants?.MILESTONE;
+                    const isBlocked = [primaryStatus.BLOCKED, primaryStatus.COMPLETED].includes(data?.status);
+                    const isSecondaryStatusValid =
+                      !isBlocked && data?.secondary_status
+                        ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
+                        : Object.keys(primaryStatus).includes(data?.status);
 
-                          const isSecondaryStatusValid =
-                            !isBlocked && data?.secondary_status
-                              ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
-                              : Object.keys(primaryStatus).includes(data?.status);
+                    const badgeStatus =
+                      isSecondaryStatusValid && !isBlocked && data?.secondary_status
+                        ? data?.secondary_status?.next.includes('SIGN')
+                          ? data?.status
+                          : data?.secondary_status?.next
+                        : data?.status || pathname;
 
-                          const badgeStatus = isSecondaryStatusValid
-                            ? data?.secondary_status && !isBlocked
-                              ? data?.secondary_status?.next.includes('SIGN')
-                                ? data?.status
-                                : data?.secondary_status?.next
-                              : data?.status
-                            : pathname;
-
-                          return (
-                            <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                              {!isBlocked && data?.secondary_status
-                                ? data?.secondary_status?.next.includes('SIGN')
-                                  ? primaryStatus[data?.status]
-                                  : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
-                                : primaryStatus[data?.status]}
-                            </Badge>
-                          );
-                        })()}
-                      </CustomBadge>
-                    )
-                  ) : (
-                    <CustomBadge>
-                      {(() => {
-                        const isBlocked =
-                          data?.status === primaryStatus.BLOCKED || data?.status === primaryStatus.COMPLETED;
-
-                        const isSecondaryStatusValid =
-                          !isBlocked && data?.secondary_status
-                            ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
-                            : Object.keys(primaryStatus).includes(data?.status);
-
-                        const badgeStatus = isSecondaryStatusValid
-                          ? data?.secondary_status && !isBlocked
-                            ? data?.secondary_status?.next.includes('SIGN')
-                              ? data?.status
-                              : data?.secondary_status?.next
-                            : data?.status
-                          : pathname;
-
-                        return (
+                    if (isActiveOrOngoing && isNextMilestone) {
+                      return checkTime?.moreThanOneDay ? (
+                        <span className="text-danger fw-semibold small">
+                          Starts in {getDaysLeft(data?.listing_details?.start_date_epoch)} Days
+                        </span>
+                      ) : checkTime?.moreThanOneHour ? (
+                        <span className="text-danger fw-semibold small">
+                          Starts in {getTimeLeftIfWithin24Hours(data?.listing_details?.start_date_epoch)} Hours
+                        </span>
+                      ) : (
+                        <CustomBadge>
                           <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
                             {!isBlocked && data?.secondary_status
                               ? data?.secondary_status?.next.includes('SIGN')
@@ -222,10 +189,22 @@ const ProjectCard = ({
                                 : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
                               : primaryStatus[data?.status]}
                           </Badge>
-                        );
-                      })()}
-                    </CustomBadge>
-                  )}
+                        </CustomBadge>
+                      );
+                    }
+
+                    return (
+                      <CustomBadge>
+                        <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
+                          {!isBlocked && data?.secondary_status
+                            ? data?.secondary_status?.next.includes('SIGN')
+                              ? primaryStatus[data?.status]
+                              : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
+                            : primaryStatus[data?.status]}
+                        </Badge>
+                      </CustomBadge>
+                    );
+                  })()}
                 </div>
 
                 <CardTitle className="d-flex align-items-center mb-3">
