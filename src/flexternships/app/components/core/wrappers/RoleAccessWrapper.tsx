@@ -14,6 +14,8 @@ import { projectsBlockedModalContent } from '@/flexternships/static/content/core
 import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 import routes from '@/flexternships/routes';
+import { triggerBeforeExpiry } from '@/flexternships/utils/core-utils';
+import { BLOB_SAS_TOKEN_EXPIRY_DELTA } from '@/flexternships/static/constants/core-constants';
 
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
@@ -28,6 +30,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
   const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
   const populateBlobSasTokenParams = useAppStore((state) => state.populateBlobSasTokenParams);
 
   const openGlobalModal = useAppStore((state) => state.openModal);
@@ -42,7 +45,18 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     } else {
       navigate(`${routes.auth.path}/login`);
     }
-  }, [populateUserDetails]);
+  }, [populateUserDetails, populateBlobSasTokenParams]);
+
+  useEffect(() => {
+    if (!blobSasTokenParams?.se) return;
+
+    const timeoutId = triggerBeforeExpiry(
+      new Date(blobSasTokenParams.se).getTime(),
+      () => populateBlobSasTokenParams(true),
+      { deltaBeforeExpiry: BLOB_SAS_TOKEN_EXPIRY_DELTA },
+    );
+    if (timeoutId) return () => clearTimeout(timeoutId);
+  }, [blobSasTokenParams, populateBlobSasTokenParams]);
 
   useEffect(() => {
     const checkFeatureAccess = async () => {
