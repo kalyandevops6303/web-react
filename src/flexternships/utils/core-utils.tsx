@@ -144,3 +144,19 @@ export const keysToCamelCase = (data: any, depth: number = Infinity): any => {
 
   return data;
 };
+
+export const triggerBeforeExpiry = (
+  expiryTimestamp: number,
+  functionToTrigger: () => void,
+  options: { deltaBeforeExpiry?: number } = {},
+) => {
+  const { deltaBeforeExpiry = 0 } = options;
+  const timeUntilExpiry = expiryTimestamp - Date.now() - deltaBeforeExpiry;
+
+  // If the expiry is in the future, set a timeout to trigger the function
+  if (timeUntilExpiry > 0) return setTimeout(functionToTrigger, timeUntilExpiry);
+
+  // If the expiry is in the past, trigger the function immediately
+  functionToTrigger();
+  return;
+};
