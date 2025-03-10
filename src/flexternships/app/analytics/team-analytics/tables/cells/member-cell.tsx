@@ -1,12 +1,16 @@
 import { Row } from '@tanstack/react-table';
 import { Avatar, AvatarImage, AvatarFallback } from '@/flexternships/app/components/ui/avatar';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 export default function MemberCell({ row }: Readonly<{ row: Row<any> }>) {
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   return (
     <div>
       <div className="flex items-center gap-3">
         <Avatar className="w-10 h-10">
-          <AvatarImage src={row.original.member.imageUri} />
+          <AvatarImage src={addQueryParams(row.original.member.imageUri, blobSasTokenParams)} />
           <AvatarFallback>{row.original.member.firstName.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col items-start justify-start">

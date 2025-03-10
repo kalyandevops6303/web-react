@@ -1,11 +1,15 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/flexternships/app/components/ui/avatar';
 import { cn } from '@/flexternships/lib/utils';
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { stringToColour, addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 
-export default function FlexternAvatar({ imageUri, name, className }: FlexternAvatarProps) {
+export default function FlexternAvatar({ imageUri, name, className, useSasToken = true }: FlexternAvatarProps) {
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+  const imageUriAdjustedForSasToken = useSasToken ? addQueryParams(imageUri, blobSasTokenParams) : imageUri;
+
   return (
     <Avatar>
-      <AvatarImage src={imageUri} />
+      <AvatarImage src={imageUriAdjustedForSasToken} />
       <AvatarFallback
         className={cn('p-2 leading-6 font-semibold text-lg', className)}
         style={{
@@ -29,4 +33,5 @@ type FlexternAvatarProps = {
   imageUri?: string;
   name: string;
   className?: string;
+  useSasToken?: boolean;
 };

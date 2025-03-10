@@ -2,8 +2,10 @@ import { FlexternUserAppRole } from '@/flexternships/constraints/enums/core-enum
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
 import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
+import { stringToColour, addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+
 interface CommentBoxProps {
   comment: string;
   giverDetails: {
@@ -25,13 +27,15 @@ interface CommentBoxProps {
 
 const CommentBox = ({ comment, giverDetails, milestoneInfo, createdAt }: CommentBoxProps) => {
   const formattedDate = formatEpochToHumanReadable(createdAt, false, false, getUserTimezone());
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   return (
     <div className="w-full p-4 flex m-0 bg-white">
       <div className="flex flex-col md:flex-row gap-5 w-full">
         <div className="flex flex-col gap-5 w-full md:w-1/3">
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={giverDetails.imageUri} />
+              <AvatarImage src={addQueryParams(giverDetails.imageUri, blobSasTokenParams)} />
               <AvatarFallback
                 className="p-2 leading-6 font-semibold text-lg"
                 style={{

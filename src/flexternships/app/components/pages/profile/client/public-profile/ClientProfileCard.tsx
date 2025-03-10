@@ -14,14 +14,15 @@ import SecondaryButton from '@flexternships/app/components/core/buttons/Secondar
 import { FlexternClientPublicProfileDetails } from '@/flexternships/constraints/types/user-profile-types';
 
 // Stores
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 
 export default function ClientProfileCard(props: ClientProfileCardProps) {
   const { clientDetails, isDelegatesInView, scrollToDelegates } = props;
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
   const navigate = useNavigate();
 
   const getLinkIcon = (link: string) => {
@@ -51,7 +52,7 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
         <div className="size-[120px]">
           <img
             className="w-full h-full object-contain"
-            src={clientDetails?.companyDetails?.companyLogo || defaultAvatar}
+            src={addQueryParams(clientDetails?.companyDetails?.companyLogo, blobSasTokenParams) || defaultAvatar}
           />
         </div>
         <div className="text-lg text-grey-heading font-medium">

@@ -14,12 +14,13 @@ import defaultKudosIcon from '@/flexternships/assets/icons/core/kudos/kudos-defa
 import defaultWowIcon from '@/flexternships/assets/icons/core/wow/wow-default.svg';
 
 // Utils and stores
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { stringToColour, addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useFlexternUserStore, useAppStore } from '@/flexternships/stores/core-stores';
 
 export default function SelectTalentCard(props: SelectTalentCardProps) {
   const { selected, onClick, talentInfo, category = QuickActionCategory.RECOGNITION } = props;
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const cardClasses = classNames('flex flex-row justify-between gap-x-6 rounded-md p-4 border-1 min-w-[330px]', {
     'bg-trublue-light border-trublue-secondary-500': selected,
@@ -41,7 +42,7 @@ export default function SelectTalentCard(props: SelectTalentCardProps) {
       <div className="flex flex-row items-center gap-x-4">
         <div>
           <Avatar className="size-8">
-            <AvatarImage src={talentInfo.profileImage} />
+            <AvatarImage src={addQueryParams(talentInfo.profileImage, blobSasTokenParams)} />
             <AvatarFallback className="p-2 font-semibold text-sm" style={defaultAvatarStyle}>
               {talentInfo.name.charAt(0).toUpperCase()}
             </AvatarFallback>

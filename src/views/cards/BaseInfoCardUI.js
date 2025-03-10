@@ -13,12 +13,16 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 const BaseInfoUI = ({ data, hideUserInfo }) => {
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const appPermissions = useSelector(appPermissionsSelector);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -99,7 +103,7 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
             className="market-place-card-photo me-75"
             src={
               data?.client?.image_uri?.length || data?.client_info?.[0]?.image_uri
-                ? data?.client?.image_uri || data?.client_info?.[0]?.image_uri
+                ? addQueryParams(data?.client?.image_uri || data?.client_info?.[0]?.image_uri, blobSasTokenParams)
                 : defaultAvatar
             }
             alt="avatar"
