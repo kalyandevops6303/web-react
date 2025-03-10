@@ -145,6 +145,14 @@ export const keysToCamelCase = (data: any, depth: number = Infinity): any => {
   return data;
 };
 
+/**
+ * Sets up a timer to trigger a function before a timestamp expires
+ * @param expiryTimestamp - Unix timestamp in milliseconds when expiry occurs
+ * @param functionToTrigger - Function to call when timer completes
+ * @param options - Optional configuration
+ * @param options.deltaBeforeExpiry - Milliseconds before expiry to trigger the function (default: 0)
+ * @returns Timeout ID if timer was set, undefined if function was triggered immediately
+ */
 export const triggerBeforeExpiry = (
   expiryTimestamp: number,
   functionToTrigger: () => void,
