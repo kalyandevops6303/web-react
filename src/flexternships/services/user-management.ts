@@ -14,8 +14,8 @@ import { handleError } from '../utils/error-utils';
 import { ValidatedRequestToken } from '../constraints/types/core-types';
 import { logout as logoutZustand } from '../utils/core-utils';
 import errorHandler from '@/utility/errorHandler';
-import { FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
-import { parseDelegateInvitations } from '../utils/parsing-utils';
+import { DocType, FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
+import { parseDelegateInvitations, parseTermsAndConditionsDocument } from '../utils/parsing-utils';
 
 /// File Endpoints
 /**
@@ -121,13 +121,9 @@ export const acceptsTermsAndConditions = async (docId: string, docType: string) 
   const config = {
     headers: headers,
     withCredentials: true,
-    params: {
-      doc_id: docId,
-      doc_type: docType,
-    },
   };
   try {
-    // await axios.put(routes.userManagement.user.acceptTerms, {}, config); TODO: Uncomment this when the endpoint is ready
+    await axios.put(routes.userManagement.tnc.signDocument, { doc_id: docId, doc_type: docType }, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while accepting terms and conditions');
   }
@@ -139,7 +135,7 @@ export const acceptsTermsAndConditions = async (docId: string, docType: string) 
  * @returns A Promise that resolves to the document sign status.
  * @throws {Error} If fetching status fails or an unexpected error occurs.
  */
-export const getDocumentSignStatus = async (docType: string) => {
+export const getDocumentSignStatus = async (docType: DocType) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
@@ -149,12 +145,8 @@ export const getDocumentSignStatus = async (docType: string) => {
     },
   };
   try {
-    // const response = await axios.get(routes.userManagement.user.getDocumentSignStatus, config);
-    return {
-      docId: '123',
-      docType: docType,
-      docContent: 'Your data is safe with us',
-    };
+    const response = await axios.get(routes.userManagement.tnc.docInfo, config);
+    return parseTermsAndConditionsDocument(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching document sign status');
   }
