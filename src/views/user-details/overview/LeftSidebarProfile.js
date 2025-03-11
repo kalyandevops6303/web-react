@@ -334,7 +334,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
             {isTalentView && (
               <>
-                {data?.resume?.file_name && (
+                {/* VRA changes */}
+                {/* {data?.resume?.file_name && (
                   <div
                     onClick={() =>
                       dispatch(
@@ -360,7 +361,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                       </>
                     )}
                   </div>
-                )}
+                )} */}
 
                 {!data?.flextern && (
                   <div className="d-flex mb-75">
