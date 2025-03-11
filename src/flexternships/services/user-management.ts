@@ -110,6 +110,57 @@ export const validateUserRequestByToken = async (requestToken: string): Promise<
 };
 
 /**
+ * Accepts terms and conditions for a user.
+ * @param docId - The ID of the terms document.
+ * @param docType - The type of terms document.
+ * @returns A Promise that resolves when the terms are accepted.
+ * @throws {Error} If accepting terms fails or an unexpected error occurs.
+ */
+export const acceptsTermsAndConditions = async (docId: string, docType: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+    params: {
+      doc_id: docId,
+      doc_type: docType,
+    },
+  };
+  try {
+    // await axios.put(routes.userManagement.user.acceptTerms, {}, config); TODO: Uncomment this when the endpoint is ready
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while accepting terms and conditions');
+  }
+};
+
+/**
+ * Gets the document sign status for a user.
+ * @param docType - The type of document to check.
+ * @returns A Promise that resolves to the document sign status.
+ * @throws {Error} If fetching status fails or an unexpected error occurs.
+ */
+export const getDocumentSignStatus = async (docType: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+    params: {
+      doc_type: docType,
+    },
+  };
+  try {
+    // const response = await axios.get(routes.userManagement.user.getDocumentSignStatus, config);
+    return {
+      docId: '123',
+      docType: docType,
+      docContent: 'Your data is safe with us',
+    };
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching document sign status');
+  }
+};
+
+/**
  * Fetches user details including app roles.
  * @returns A Promise that resolves to the user details.
  * @throws {Error} If the user details retrieval fails or an unexpected error occurs.
