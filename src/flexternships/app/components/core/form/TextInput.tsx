@@ -19,6 +19,7 @@ export default function TextInput(props: InputProps) {
     error,
     tooltip,
     isPassword,
+    allowViewPassword,
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
@@ -86,7 +87,7 @@ export default function TextInput(props: InputProps) {
             value={value?.toString() ?? ''}
             onChange={handleChange}
           />
-          {isPassword && (
+          {isPassword && allowViewPassword && (
             <button
               type="button"
               onClick={togglePasswordVisibility}
@@ -117,4 +118,5 @@ type InputProps = {
   tooltip?: string;
   error?: string;
   isPassword?: boolean; // New optional field for password input
+  allowViewPassword?: boolean; // New optional field for password input
 };
