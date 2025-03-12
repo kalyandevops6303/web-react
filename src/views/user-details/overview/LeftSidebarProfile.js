@@ -44,6 +44,7 @@ import { checkReportSuccess } from '../../../redux/reducers/report';
 import { selectAlreadyReported, selectCheckReportLoading } from '../../../redux/selectors/reportSelectors';
 import { profile } from 'console';
 import PermissionWrapper from '@/PermissionWrapper';
+import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -169,7 +170,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                 <Heart className="cursor-pointer d-flex ms-auto heart" onClick={favUnfavLoading ? null : handleLike} />
               ))}
           </div>
-          <div className="user-image">
+          <div>
             {isClient && (
               <img
                 src={data?.company_logo?.length > 0 ? data?.company_logo : defaultAvatar}
@@ -181,12 +182,18 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
 
             {isTalentView && (
-              <img
-                src={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                alt="user"
-                width={112}
-                height={120}
-                style={{ objectFit: 'cover' }}
+              // <img
+              //   src={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+              //   alt="user"
+              //   width={112}
+              //   height={120}
+              //   style={{ objectFit: 'cover' }}
+              // />
+              <FlexternAvatar
+                className="text-base w-20 h-20 flex items-center justify-center"
+                imageUri={data?.image_uri}
+                name={`${data?.first_name} ${data?.last_name}`}
+                size="lg"
               />
             )}
             {isTeamView && (
