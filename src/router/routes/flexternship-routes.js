@@ -739,18 +739,126 @@ export const FlexternshipRoutes = [
   },
   {
     path: routes.individualAnalytics.path,
-    element: <IndividualAnalytics />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+        ]}
+      >
+        <IndividualAnalytics />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.teamAnalytics.path,
-    element: <TeamAnalytics />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+        ]}
+      >
+        <TeamAnalytics />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.conversationParticipation.path,
-    element: <ConversationParticipationPage />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+        ]}
+      >
+        <ConversationParticipationPage />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.commits.path,
-    element: <Commits />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+        ]}
+      >
+        <Commits />
+      </RoleAccessWrapper>
+    ),
   },
 ];

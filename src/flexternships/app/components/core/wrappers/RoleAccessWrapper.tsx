@@ -28,6 +28,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
   const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
   const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
+  const isTncAccepted = useFlexternUserStore((state) => state.userDetails?.isTncAccepted);
   const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
@@ -120,7 +121,11 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     );
   }
 
-  if (!allowBlockedUsers && isUserBlocked) {
+  if (!isTncAccepted) {
+    openGlobalModal(GlobalModalType.TERMS_AND_CONDITIONS);
+  }
+
+  if (isTncAccepted && !allowBlockedUsers && isUserBlocked) {
     const allowedAction = async () => {
       closeGlobalModal();
       navigate(routes.blockedProjects.path);

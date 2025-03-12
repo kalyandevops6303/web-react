@@ -94,6 +94,7 @@ export type ProjectDetails = {
   viewRecognition?: boolean;
   giveRecognition: boolean;
   addNote: boolean;
+  viewAnalytics: boolean;
 };
 
 type ProjectRole = {

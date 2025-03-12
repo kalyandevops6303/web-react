@@ -114,6 +114,7 @@ export type FlexternClientDetails = {
     title: string;
     companyName: string;
   };
+  isTncAccepted: boolean;
 };
 
 export type FlexternTalentDetails = {
@@ -134,6 +135,7 @@ export type FlexternTalentDetails = {
     name: string;
   };
   isBlocked?: boolean;
+  isTncAccepted: boolean;
 };
 
 export type FlexternUser = {
@@ -150,8 +152,8 @@ export type FlexternUserStore = FlexternUser & FlexternUserActions;
 
 export type GlobalModalActions = {
   onConfirm: () => Promise<void>;
-  onClose: () => void;
-  onCancel: () => void;
+  onClose?: () => void;
+  onCancel?: () => void;
 };
 
 export type GlobalModalContent = {

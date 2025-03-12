@@ -133,6 +133,10 @@ export const routes = {
     features: {
       getPermittedFeatures: `${serviceUrls.userManagement}/features/permitted-features`,
     },
+    tnc: {
+      signDocument: `${serviceUrls.userManagement}/document/sign`,
+      docInfo: `${serviceUrls.userManagement}/document/info`,
+    },
   },
   dashboardV2: {
     clientDetails: {
