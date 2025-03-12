@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { BadgeType } from '@/flexternships/constraints/types/project-details-types';
-import { Eye, MessageSquare, Paperclip } from 'react-feather';
+import { Activity, Eye, MessageSquare, Paperclip } from 'react-feather';
 import {
   ProjectPrimaryStatus,
   ProjectSecondaryStatus,
@@ -165,6 +165,10 @@ const LeftSideBarProjectDetails = () => {
   const handleViewAllQuickActions = () => {
     if (disableViewAllQuickActions) return;
     handleQuickActionClick(QuickAction.GIVE_RECOGNITION);
+  };
+
+  const goToAnalytics = () => {
+    navigate(`/analytics/project/${projectId}/team`);
   };
 
   const showSecondaryStatusCondition =
@@ -426,6 +430,14 @@ const LeftSideBarProjectDetails = () => {
               icon={<MessageSquare className="text-trublue-secondary-500" size={18} />}
               disabled={!data?.addNote}
               onClick={() => handleQuickActionClick(QuickAction.ADD_NOTES)}
+            />
+          )}
+          {userDetails.userType === UserType.CLIENT && (
+            <PrimaryIconText
+              text="View Analytics"
+              icon={<Activity className="text-trublue-secondary-500" size={18} />}
+              disabled={!data?.viewAnalytics}
+              onClick={goToAnalytics}
             />
           )}
           {userDetails.userType === UserType.TALENT && (
