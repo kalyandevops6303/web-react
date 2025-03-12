@@ -19,7 +19,7 @@ export default function TextInput(props: InputProps) {
     error,
     tooltip,
     isPassword,
-    allowViewPassword,
+    allowViewPassword = true,
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
