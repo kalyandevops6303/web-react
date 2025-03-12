@@ -164,14 +164,18 @@ export default function ProfileDropdown() {
               </Link>
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem
-              asChild
-              className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
-            >
-              <Link to={publicProfileUrl}>Public Profile</Link>
-            </DropdownMenuItem>
+            isClient && ( // Removing public profile link for talents
+              <>
+                <DropdownMenuItem
+                  asChild
+                  className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
+                >
+                  <Link to={publicProfileUrl}>Public Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+              </>
+            )
           )}
-          <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
 
           {/* Client Edit Profile Link */}
           {isClient && (
