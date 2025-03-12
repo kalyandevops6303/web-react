@@ -18,9 +18,11 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   const param = useParams();
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
+
   const handleGiveRecognition = () => {
     navigate(`/quick-actions/${param.projectId}`);
   };
+
   return (
     <div className="w-full">
       {isEmpty(milestoneId) && (
@@ -30,11 +32,13 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
               return <NavigationTab key={index} tab={tab} index={index} isActive={tab.id === projectStep} />;
             })}
           </div>
-          {!projectLoading && (
-            <PrimaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>
-              {userDetails.userType === UserType.TALENT ? 'Give Kudos!' : 'Give a WOW!'}
-            </PrimaryButton>
-          )}
+          <div className="flex flex-row gap-x-3">
+            {!projectLoading && (
+              <PrimaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>
+                {userDetails.userType === UserType.TALENT ? 'Give Kudos!' : 'Give a WOW!'}
+              </PrimaryButton>
+            )}
+          </div>
         </div>
       )}
       <div>

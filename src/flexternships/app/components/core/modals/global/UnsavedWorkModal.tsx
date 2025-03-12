@@ -34,7 +34,7 @@ export default function UnsavedWorkModal() {
     if (modalContent?.metadata?.nextPath !== undefined) {
       navigate(modalContent.metadata.nextPath);
     }
-    modalActions.onCancel();
+    modalActions?.onCancel?.();
   };
 
   return (

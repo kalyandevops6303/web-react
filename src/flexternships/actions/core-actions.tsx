@@ -44,6 +44,7 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
         },
         role: data.talent_info?.role,
         isBlocked: data.is_blocked,
+        isTncAccepted: data.is_tnc_accepted ?? false,
         adminClient: {
           id: data?.admin_client_info?.user_id,
           department: data?.admin_client_info?.department,
