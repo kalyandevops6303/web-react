@@ -8,16 +8,18 @@ import classNames from 'classnames';
 export default function SecondaryButton(props: ButtonProps) {
   const { children, onClick, loading = false, disabled, className, cancel = false } = props;
 
+  const isDisabled = disabled || loading;
+
   const getButtonStyle = () => {
-    if (disabled && cancel) return Styles.secondaryDisabledButtonRed;
-    if (disabled) return Styles.secondaryDisabledButtonBlue;
+    if (isDisabled && cancel) return Styles.secondaryDisabledButtonRed;
+    if (isDisabled) return Styles.secondaryDisabledButtonBlue;
     if (cancel) return Styles.secondaryEnabledButtonRed;
     return Styles.secondaryEnabledButtonBlue;
   };
 
   return (
     <button
-      disabled={disabled}
+      disabled={isDisabled}
       onClick={onClick}
       className={`${Styles.baseButton} ${getButtonStyle()} ${className || ''}`}
     >
