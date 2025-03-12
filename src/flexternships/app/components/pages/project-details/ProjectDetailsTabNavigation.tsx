@@ -7,6 +7,7 @@ import PrimaryButton from '../../core/buttons/PrimaryButton';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import SecondaryButton from '../../core/buttons/SecondaryButton';
 
 export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTabType[] }) {
   const projectDetails = useProjectsStore((state) => state.projectDetails);
@@ -18,8 +19,13 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
   const param = useParams();
   const milestoneId = param['milestoneId'];
   const projectStep = milestoneId ? 'milestone' : param['projectStep'];
+
   const handleGiveRecognition = () => {
     navigate(`/quick-actions/${param.projectId}`);
+  };
+
+  const handleViewAnalytics = () => {
+    navigate(`/analytics/project/${param.projectId}/team`);
   };
   return (
     <div className="w-full">
@@ -30,11 +36,18 @@ export default function ProjectDetailsTabNavigation({ tabs }: { tabs: ProjectTab
               return <NavigationTab key={index} tab={tab} index={index} isActive={tab.id === projectStep} />;
             })}
           </div>
-          {!projectLoading && (
-            <PrimaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>
-              {userDetails.userType === UserType.TALENT ? 'Give Kudos!' : 'Give a WOW!'}
-            </PrimaryButton>
-          )}
+          <div className="flex flex-row gap-x-3">
+            {projectDetails.viewAnalytics && userDetails.userType !== UserType.TALENT && (
+              <SecondaryButton className="m-0" onClick={handleViewAnalytics}>
+                View Analytics
+              </SecondaryButton>
+            )}
+            {!projectLoading && (
+              <PrimaryButton className="m-0" onClick={handleGiveRecognition} disabled={!projectDetails.giveRecognition}>
+                {userDetails.userType === UserType.TALENT ? 'Give Kudos!' : 'Give a WOW!'}
+              </PrimaryButton>
+            )}
+          </div>
         </div>
       )}
       <div>

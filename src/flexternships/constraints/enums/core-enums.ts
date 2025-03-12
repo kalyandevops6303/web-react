@@ -105,6 +105,7 @@ export enum ServerResponseStatus {
 export enum GlobalModalType {
   UNSAVED_WORK = 'UNSAVED_WORK',
   PROJECTS_BLOCKED = 'PROJECTS_BLOCKED',
+  TERMS_AND_CONDITIONS = 'TERMS_AND_CONDITIONS',
 }
 
 export enum MessageRole {
@@ -128,4 +129,8 @@ export enum FlexternDelegateInvitationStatus {
 
 export enum FlexternDelegateInvitationType {
   FULL_ACCESS = 'FULL_ACCESS',
+}
+
+export enum DocType {
+  TERMS_AND_CONDITIONS = 'TERMS_AND_CONDITIONS',
 }

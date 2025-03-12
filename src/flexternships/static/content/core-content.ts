@@ -13,3 +13,10 @@ export const projectsBlockedModalContent: GlobalModalContent = {
   confirmButtonText: 'View Blocked Projects',
   cancelButtonText: '',
 };
+
+export const tncModalContent: GlobalModalContent = {
+  title: 'Terms and Conditions',
+  description: 'You have not accepted the terms and conditions. Please accept the terms and conditions to continue.',
+  confirmButtonText: 'Accept Terms and Conditions',
+  cancelButtonText: 'Logout',
+};

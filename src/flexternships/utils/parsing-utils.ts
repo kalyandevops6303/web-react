@@ -11,7 +11,7 @@ import {
 import { QuickActionsStats, CommentsTimeline } from '../constraints/types/quick-actions-types';
 import { TeamMemberDetails } from '../constraints/types/project-details-types';
 import { Competency } from '../constraints/types/competency-types';
-import { FlexternDelegateInvitationType, FlexternUserAppRole } from '../constraints/enums/core-enums';
+import { DocType, FlexternDelegateInvitationType, FlexternUserAppRole } from '../constraints/enums/core-enums';
 import {
   DetailedPerformanceInsights,
   FlexternComments,
@@ -536,5 +536,18 @@ export const parseDelegateInvitations = (data: Record<string, any>) => {
       },
       status: invitation.status,
     })),
+  };
+};
+
+/**
+ * Parses terms and conditions document from raw API response
+ * @param data Raw terms and conditions document data from API
+ * @returns Formatted terms and conditions document data
+ */
+export const parseTermsAndConditionsDocument = (data: Record<string, string | DocType>) => {
+  return {
+    docContent: data.doc_content,
+    docId: data.doc_id,
+    docType: data.doc_type,
   };
 };
