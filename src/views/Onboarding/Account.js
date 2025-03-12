@@ -548,6 +548,7 @@ const Account = () => {
                           render={({ field }) => (
                             <Input
                               {...field}
+                              type="password"
                               placeholder="Enter mobile number"
                               className="filled-form-control filled-form-text-field"
                               disabled
@@ -570,6 +571,7 @@ const Account = () => {
                       render={({ field }) => (
                         <Input
                           {...field}
+                          type="password"
                           placeholder="Enter email address"
                           className="filled-form-control filled-form-text-field"
                           disabled
