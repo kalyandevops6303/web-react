@@ -182,13 +182,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
 
             {isTalentView && (
-              // <img
-              //   src={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-              //   alt="user"
-              //   width={112}
-              //   height={120}
-              //   style={{ objectFit: 'cover' }}
-              // />
               <FlexternAvatar
                 className="text-base w-20 h-20 flex items-center justify-center"
                 imageUri={data?.image_uri}
