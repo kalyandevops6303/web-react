@@ -346,6 +346,8 @@ const ActionButtonWrapper = styled.div`
 `;
 
 const DetailsWrap = styled.div`
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
   .content-header-left {
     margin-bottom: 0 !important;
   }
