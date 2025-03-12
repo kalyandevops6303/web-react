@@ -109,10 +109,12 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         imageUri = data?.bidders?.talent_image_uri?.length ? data?.bidders?.talent_image_uri : defaultAvatar;
       }
     } else {
-      imageUri = clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar;
+      imageUri = clientDetails?.image_uri?.length
+        ? addQueryParams(clientDetails?.image_uri, blobSasTokenParams)
+        : defaultAvatar;
     }
 
-    return addQueryParams(imageUri, blobSasTokenParams);
+    return imageUri;
   };
 
   const avatarGroup = !isEmpty(data?.bidders)
