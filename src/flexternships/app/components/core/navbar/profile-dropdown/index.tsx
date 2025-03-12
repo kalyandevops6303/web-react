@@ -37,7 +37,7 @@ function DelegateProfile() {
           {fullName} <span className="text-grey">({clientFullName})</span>
         </div>
       </div>
-      <FlexternAvatar name={fullName} imageUri={userDetails.imageUri} />
+      <FlexternAvatar name={fullName} imageUri={userDetails?.imageUri} size="sm" />
     </div>
   );
 }
