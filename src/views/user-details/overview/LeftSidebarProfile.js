@@ -242,16 +242,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             </div>
           )}
           <div className="projects-rating projects-rating-public">
-            <Rating
+            {/* <Rating
               initialRating={returnFormattedRating(data?.rating)}
               emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
               fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
               readonly
-            />
-            <CardText className="mt-50 font-small-3">
+            /> */}
+            {/* <CardText className="mt-50 font-small-3">
               {recentProjectsMetadata?.total_records || 0} Project(s)<span className="ms-50 me-25 fw-300">|</span>
               {data?.total_reviews || 0} Review(s)
-            </CardText>
+            </CardText> */}
           </div>
           {showProfilePercent && !data?.flextern && (
             <div className="profile-completion mt-2">
