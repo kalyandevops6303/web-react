@@ -223,6 +223,7 @@ export default function AccountDetails() {
               </div>
               <TextInput
                 isPassword
+                allowViewPassword={false}
                 value={userDetails.phone}
                 onChange={() => {}}
                 className="w-[281px]"
