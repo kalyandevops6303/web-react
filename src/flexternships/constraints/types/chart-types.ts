@@ -72,6 +72,7 @@ export interface CustomPieChartProps2 {
   statsOrientation: StatsOrientation;
   className: string;
   isLoading?: boolean;
+  seperatorExpanded?: boolean;
 }
 
 export interface CustomPieChartProps extends IChartLayoutProps {

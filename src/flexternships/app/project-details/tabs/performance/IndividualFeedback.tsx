@@ -8,6 +8,8 @@ import { User } from 'react-feather';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import IndividualFeedbackResponse from './IndividualFeedbackResponse';
 import Rating from '@/flexternships/app/components/core/feedback/Rating';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const { milestoneId, feedbackType } = props;
@@ -15,6 +17,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
   const performanceDetails = useProjectsStore((state) => state.performanceDetails);
   const getPerformanceDetails = useProjectsStore((state) => state.getPeerOrIndividualPerformanceDetails);
   const isPerformanceDetailsLoading = useProjectsStore((state) => state.isPerformanceDetailsLoading);
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   useEffect(() => {
     if (milestoneId) getPerformanceDetails(milestoneId, feedbackType);
@@ -27,7 +30,7 @@ export default function IndividualFeedback(props: IndividualFeedbackProps) {
       <div className="flex items-center justify-between w-full mr-5 h-10">
         <div className="flex items-center gap-2 w-1/3">
           <Avatar>
-            <AvatarImage src={image_uri ? image_uri : defaultAvatar} />
+            <AvatarImage src={addQueryParams(image_uri, blobSasTokenParams) || defaultAvatar} />
             <AvatarFallback>
               <User color="#6E6B7B" />
             </AvatarFallback>

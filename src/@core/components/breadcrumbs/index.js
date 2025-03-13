@@ -37,7 +37,7 @@ const BreadCrumbs = (props) => {
 
   return (
     <div className="content-header row" style={{ display: 'contents' }}>
-      <div className="content-header-left col-md-9 col-12 mb-2">
+      <div className="content-header-left col-md-9 col-12 ">
         <div className="row breadcrumbs-top">
           <div className="col-12 px-0">
             <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none">

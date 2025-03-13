@@ -3,6 +3,8 @@ import { ChevronRight, User } from 'react-feather';
 import AIGeneratedIcon from '@flexternships/assets/icons/core/AIGenerated.svg';
 import { Link, useParams } from 'react-router-dom';
 import TooltipInfo from '../../components/core/tooltips/TooltipInfo';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 type IndividualOverviewProps = {
   userId: string;
@@ -39,6 +41,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
     aiGeneratedSummary,
   } = props;
 
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
   const { userId } = useParams();
 
   return (
@@ -47,7 +50,7 @@ export default function IndividualOverview(props: Readonly<IndividualOverviewPro
         <div className="flex p-5 justify-between flex-wrap items-center gap-5 self-stretch rounded-10 bg-white shadow-card">
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage src={imageUri} />
+              <AvatarImage src={addQueryParams(imageUri, blobSasTokenParams)} />
               <AvatarFallback>
                 <User color="#6E6B7B" />
               </AvatarFallback>

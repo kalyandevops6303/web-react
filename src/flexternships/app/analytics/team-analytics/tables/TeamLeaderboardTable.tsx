@@ -11,6 +11,7 @@ import {
   ManagerFeedbackHeader,
   TeamNameHeader,
   WowsHeader,
+  TeamRankHeader,
 } from '@flexternships/app/analytics/team-analytics/tables/headers';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { useEffect } from 'react';
@@ -36,11 +37,12 @@ type LeaderboardTableRecordType = {
 const columns: ColumnDef<LeaderboardTableRecordType>[] = [
   {
     accessorKey: 'rank',
-    header: 'TEAM RANK',
+    header: TeamRankHeader,
     sortingFn: (rowA, rowB) => {
       return rowA.original.rank - rowB.original.rank;
     },
     cell: RankCell,
+    size: 70,
   },
   {
     accessorKey: 'name',
@@ -48,30 +50,34 @@ const columns: ColumnDef<LeaderboardTableRecordType>[] = [
     sortingFn: (rowA, rowB) => {
       return rowA.original.name.localeCompare(rowB.original.name);
     },
+    size: 250,
   },
   {
     accessorKey: 'attractivenessScore',
-    header: AttractivenessScoreHeader,
+    header: ({ column }) => <AttractivenessScoreHeader noWrap column={column} />,
     sortingFn: (rowA, rowB) => {
       return rowA.original.attractivenessScore.score - rowB.original.attractivenessScore.score;
     },
     cell: AttractivenessScoreCell,
+    size: 100,
   },
   {
     accessorKey: 'managerFeedback',
-    header: ManagerFeedbackHeader,
+    header: ({ column }) => <ManagerFeedbackHeader noWrap column={column} />,
     sortingFn: (rowA, rowB) => {
       return rowA.original.managerFeedback.score - rowB.original.managerFeedback.score;
     },
     cell: ManagerFeedbackCell,
+    size: 100,
   },
   {
     accessorKey: 'wows',
-    header: WowsHeader,
+    header: ({ column }) => <WowsHeader column={column} text="TOTAL WOWS!" />,
     sortingFn: (rowA, rowB) => {
       return rowA.original.wows - rowB.original.wows;
     },
     cell: WowsCell,
+    size: 80,
   },
 ];
 
@@ -103,7 +109,7 @@ export default function TeamLeaderboardTable() {
             allowPagination={false}
             allowColumnFilters={false}
             allowSelection={false}
-            className="max-h-[200px] overflow-y-auto"
+            // className="max-h-[200px] overflow-y-auto"
             highlightByKey="projectId"
             highlightedValues={[projectId as string]}
             scrollHighlightedRowsIntoView

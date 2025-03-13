@@ -43,9 +43,10 @@ const CardInfoWrapper = styled.div`
 `;
 
 const EstimatedTimeHeading = styled.h1`
+  font-size: 12px;
   background-color: #fbc02d1f;
   width: fit-content;
-  padding: 0.5rem 1rem;
+  padding: 10px 22px;
   margin-top: 1.5rem;
   border-radius: 0.75rem;
   color: #0284c7;
@@ -78,13 +79,13 @@ const ProjectCardWrap = styled(CardWrap)`
   margin-top: 1rem;
   width: 98%;
   .card-body {
-    padding: 2.1rem 2.6rem 1.4rem 2.6rem;
+    padding: 32px 40px;
   }
   a {
     color: inherit;
   }
   .status-row {
-    margin-left: -0.5rem;
+    margin-left: 0rem;
   }
   .nowrap {
     white-space: nowrap;
@@ -98,6 +99,7 @@ const ProjectCardWrap = styled(CardWrap)`
   }
   .font-name {
     font-size: 18px;
+    color: ${theme.checkboxLabel};
   }
   .name {
     color: ${theme.headingTextColor};
@@ -138,8 +140,8 @@ const ProjectCardWrap = styled(CardWrap)`
   }
 
   .market-place-card-photo {
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 30px;
+    width: 30px;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -435,7 +437,7 @@ const ClientCardWrap = styled(CardWrap)`
   }
   .marketplace-card-role {
     line-height: 1.125rem;
-    font-size: 0.75rem !important;
+    font-size: 12px !important;
     color: ${theme.gray};
     font-weight: 400;
   }

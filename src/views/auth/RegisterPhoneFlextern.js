@@ -34,6 +34,7 @@ const RegisterPhoneFlextern = () => {
   const savedFormData = useSelector(formData);
   const [code, setCode] = useState(savedFormData?.code || '');
   const [booleanSent, setBooleanSent] = useState(false);
+  const [otpVerifyError, setOtpVerifyError] = useState('');
   const isLoading = useSelector(selectAuthLoading);
   const mobileData = useSelector(selectMobile);
   const isDelegate = getItem('isDelegate');
@@ -78,6 +79,11 @@ const RegisterPhoneFlextern = () => {
       dispatch(clearPhoneData());
     };
   }, [localFormData]);
+  const resetErrorOtpandCode = () => {
+    setOtpVerifyError('');
+    setCode('');
+    setBooleanSent(true);
+  };
 
   useEffect(() => {
     if (savedFormData) {
@@ -138,7 +144,7 @@ const RegisterPhoneFlextern = () => {
   };
 
   const verifyOtp = async () => {
-    const response = await dispatch(
+    const errorMessage = await dispatch(
       verifyPhone(
         {
           phone: mobileData.phone,
@@ -149,7 +155,9 @@ const RegisterPhoneFlextern = () => {
         onVerifyOtpSuccess,
       ),
     );
-    setError(response);
+    if (errorMessage) {
+      setOtpVerifyError(errorMessage);
+    }
     dispatch(clearAllFormData());
   };
 
@@ -223,6 +231,7 @@ const RegisterPhoneFlextern = () => {
               isDisabled={!booleanSent}
             />{' '}
           </FormGroup>
+          {otpVerifyError && <p className="text-error text-xs">{otpVerifyError}</p>}
           {!booleanSent ? (
             <Button color="primary" block type="submit" disabled={!mobileValue || isLoading}>
               {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
@@ -238,7 +247,7 @@ const RegisterPhoneFlextern = () => {
               >
                 Verify OTP
               </Button>
-              <ResendOTPComp isPhoneResend />
+              <ResendOTPComp isPhoneResend resetErrorOtpandCode={resetErrorOtpandCode} />
             </>
           )}
         </Form>

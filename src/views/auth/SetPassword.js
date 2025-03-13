@@ -2,13 +2,12 @@
 import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { Info } from 'react-feather';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Button, FormFeedback, Spinner, UncontrolledTooltip } from 'reactstrap';
+import { CardTitle, Label, Form, Button, FormFeedback, Spinner } from 'reactstrap';
 
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
@@ -20,7 +19,6 @@ import '@styles/react/pages/page-authentication.scss';
 import { setPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet, selectTrumioIsFlextern } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
-import theme from '../../configs/themeVariables';
 import PasswordStrengthMeter from './components/PasswordStrengthMeter';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
@@ -157,11 +155,9 @@ const SetPassword = () => {
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
             <p className={`text-xs mt-2 ${cnfPassword === newPassword ? 'text-success' : 'text-danger'}`}>
-              {cnfPassword && newPassword
-                ? cnfPassword === newPassword
-                  ? 'Passwords Match'
-                  : 'Passwords Do Not Match'
-                : ''}
+              {cnfPassword &&
+                newPassword &&
+                (cnfPassword === newPassword ? 'Passwords Match' : 'Passwords Do Not Match')}
             </p>
           </div>
 

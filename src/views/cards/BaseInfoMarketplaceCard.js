@@ -19,6 +19,8 @@ import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import { appPermissionsSelector, selectUserData } from '../../redux/selectors/authSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal, setDeleteDraftModal }) => {
   const project = data && data?.project;
@@ -31,6 +33,9 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const userData = useSelector(selectUserData);
   const appPermissions = useSelector(appPermissionsSelector);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   const location = useLocation();
   const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
   const handleLike = (e) => {
@@ -96,15 +101,20 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   };
 
   const getImage = () => {
+    let imageUri = '';
     if (!isEmpty(data?.bidders)) {
       if (data?.bidders?.user_type === userTypes.team) {
-        return data?.bidders?.team_logo?.length ? data?.bidders?.team_logo : defaultAvatar;
+        imageUri = data?.bidders?.team_logo?.length ? data?.bidders?.team_logo : defaultAvatar;
       } else {
-        return data?.bidders?.talent_image_uri?.length ? data?.bidders?.talent_image_uri : defaultAvatar;
+        imageUri = data?.bidders?.talent_image_uri?.length ? data?.bidders?.talent_image_uri : defaultAvatar;
       }
     } else {
-      return clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar;
+      imageUri = clientDetails?.image_uri?.length
+        ? addQueryParams(clientDetails?.image_uri, blobSasTokenParams)
+        : defaultAvatar;
     }
+
+    return imageUri;
   };
 
   const avatarGroup = !isEmpty(data?.bidders)
@@ -280,7 +290,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         <div className="m-2" />
       )}
       {project && (
-        <div>
+        <div className="d-flex justify-content-between flex-column">
           <BadgeGroup
             title="Skills"
             data={project?.skills_required}

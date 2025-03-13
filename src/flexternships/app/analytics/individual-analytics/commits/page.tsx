@@ -20,8 +20,8 @@ export default function Commits() {
   const isCommitsLoading = useAnalyticsStore((state) => state.isCommitsLoading);
 
   useEffect(() => {
-    getData(projectId, userId);
-  }, [projectId, userId]);
+    getData(projectId);
+  }, [projectId]);
 
   const handleViewInGithub = () => {
     if (!data || !data.githubUrl) return showToastMessage(ToastType.ERROR, 'Error opening GitHub URL');
@@ -29,7 +29,7 @@ export default function Commits() {
   };
 
   const goToIndividualAnalytics = () => {
-    navigate(`/analytics/project/${projectId}/individual/${userId}`);
+    navigate(`/analytics/project/${projectId}/team`);
   };
 
   return (
@@ -39,10 +39,6 @@ export default function Commits() {
           {
             label: 'Analytics',
             href: `/analytics/project/${projectId}/team`,
-          },
-          {
-            label: 'Individual Analytics',
-            href: `/analytics/project/${projectId}/individual/${userId}`,
           },
           {
             label: 'Commits & Quality',

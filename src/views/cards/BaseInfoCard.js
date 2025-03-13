@@ -87,15 +87,17 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   };
 
   const getImage = () => {
+    let imageUri = '';
     if (data?.bidder_details) {
       if (data?.bidder_details?.user_type === userTypes.team) {
-        return data?.bidder_details?.team_logo?.length ? data?.bidder_details?.team_logo : defaultAvatar;
+        imageUri = data?.bidder_details?.team_logo?.length ? data?.bidder_details?.team_logo : defaultAvatar;
       } else {
-        return data?.bidder_details?.image_uri?.length ? data?.bidder_details?.image_uri : defaultAvatar;
+        imageUri = data?.bidder_details?.image_uri?.length ? data?.bidder_details?.image_uri : defaultAvatar;
       }
     } else {
-      return clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar;
+      imageUri = clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar;
     }
+    return addQueryParams(imageUri, blobSasTokenParams);
   };
 
   const avatarGroup = data?.bidder_details?.workers?.length

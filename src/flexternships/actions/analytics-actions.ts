@@ -30,7 +30,6 @@ export const getRecognitionChartData = async (projectId: string, userId: string,
 
 // Performance Chart
 export const getPerformanceChartData = async (projectId: string, userId: string, set: any) => {
-  console.log('getPerformanceChartData', projectId, userId);
   set({ isPerformanceChartLoading: true });
   const data: any = await getPerformanceChartDataService(projectId, userId);
   set((state: any) => ({
@@ -293,9 +292,9 @@ export const getConversationAttachmentStats = async (projectId: string, userId: 
 };
 
 // Commits
-export const getCommits = async (projectId: string, userId: string, set: any) => {
+export const getCommits = async (projectId: string, set: any) => {
   set({ isCommitsLoading: true });
-  const data: any = await getGitHubStatsService(projectId, userId);
+  const data: any = await getGitHubStatsService(projectId);
   set((state: any) => ({
     ...state,
     commits: data,

@@ -29,6 +29,7 @@ export type ProjectTabType = {
   component: JSX.Element;
   talentVisible: boolean;
   clientVisible: boolean;
+  isDisabled?: boolean;
 };
 
 export type BreadCrumbType = {

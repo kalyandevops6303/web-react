@@ -24,6 +24,8 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
@@ -32,6 +34,8 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -118,7 +122,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                   <Avatar
                     img={
                       data?.image_uri?.length > 0
-                        ? data?.image_uri
+                        ? addQueryParams(data?.image_uri, blobSasTokenParams)
                         : generateAvatar(
                             data?.user_id,
                             (data?.first_name?.charAt(0)?.toUpperCase() || '') +
@@ -144,7 +148,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                         {data?.last_name}
                       </Link>
                     </CardTitle>
-                    <CardText className="truncate-1 font-small-3 fs-6 fw-300 mb-25 marketplace-card-role">
+                    <CardText className="truncate-1 font-small-3 fs-3 fw-300 mb-25">
                       {data?.role?.name || 'Role'}
                     </CardText>
                     <div className="d-flex teamcard-flex-cloumn">

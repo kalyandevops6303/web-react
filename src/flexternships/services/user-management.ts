@@ -65,6 +65,30 @@ export const changePasswordWithCurrentPassword = async (currentPassword: string,
   }
 };
 
+/// Blob SAS Token Endpoints
+/**
+ * Retrieves blob SAS token parameters.
+ * @returns A Promise that resolves to the blob SAS token parameters.
+ * @throws {Error} If the blob SAS token retrieval fails or an unexpected error occurs.
+ */
+export const getBlobSasTokenParams = async () => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, withCredentials: true };
+  try {
+    const response = await axios.get(routes.userManagement.storage.getBlobSasTokenParams, config);
+    const sasUrlParams = new URLSearchParams(response.data.data);
+
+    const formattedSasParams: Record<string, string | null> = {};
+
+    sasUrlParams.forEach((value, key) => {
+      formattedSasParams[key] = value;
+    });
+    return formattedSasParams;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching blob SAS token parameters');
+  }
+};
+
 /// User Endpoints
 /**
  * Validates a request token.

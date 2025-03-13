@@ -33,8 +33,12 @@ const Header = styled.div`
 const CustomBadge = styled.span`
   .badge {
     border-radius: ${(props) => (props.rounded ? '10px !important' : 'none')};
-    padding-right: 8px !important;
-    padding-left: 8px !important;
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+    margin-bottom: 16px;
+  }
+  .count-text {
+    margin-top: 16px;
   }
   .count-text {
     margin-top: 16px;
@@ -61,7 +65,7 @@ const CustomBadge = styled.span`
     color: ${theme.disputeBorderRedColor};
     border: ${`2px solid ${theme.disputeBorderRedColor}`};
   }
-  .COMPLETED,
+
   .ACCEPTED,
   .CREATED,
   .YET_TO_START,
@@ -217,18 +221,18 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.lightBlueColor}` : 'none')};
   }
+
+  .COMPLETED,
   .SIGN_NDA,
   .SIGN_CONTRACT,
   .SIGN_REQUESTED,
   .SIGN_DOCUMENTS {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
-    border: ${`1px solid ${theme.lightBlueColor}`};
   }
   .MILESTONE {
     background: ${theme.lightOrangeColor} !important;
     color: ${theme.progressBarOrange};
-    border: ${`2px solid ${theme.progressBarOrange}`};
   }
 `;
 
@@ -507,7 +511,14 @@ const Elevate = styled.div`
   width: 100%;
   transition: box-shadow 0.3s; /* Optional: Add a transition for a smoother effect on hover */
   border-radius: 0.375rem;
+  .assigned-start-text {
+    font-size: 14px;
+  }
   box-shadow: ${(props) => (props.active === true ? `0px 0px 0px 1px ${theme.blueBorderColorv2}` : '')};
+  .project-card-title {
+    font-size: 18px;
+    font-weight: 500;
+  }
   &:hover {
     box-shadow: ${(props) => (props.active === false ? '' : `0px 0px 0px 1px ${theme.blueBorderColorv2}`)};
   }

@@ -480,6 +480,7 @@ export const parseConversationParticipationStats = (data: Record<string, number>
   return {
     messagesCount: data.message_count,
     participationPercentage: data.participation_percentage,
+    countOfMessagesPerDay: data.frequency_of_messages_per_day,
   };
 };
 

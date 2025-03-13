@@ -29,6 +29,8 @@ import { Link } from 'react-router-dom';
 import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 import ProjectStatusChip from '../../components/pages/project-details/project-card/ProjectStatusChip';
 import CustomXAxisLabel from './labels/CustomXAxisLabel';
+import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
+import GithubInsightsCard from './GithubInsightsCard';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -36,6 +38,7 @@ export default function TeamAnalytics() {
   const teamDiversity = useAnalyticsStore((state) => state.team.teamDiversity);
   const params = useParams();
 
+  const [seperatorExpanded, setSeperatorExpanded] = useState(false);
   const [tagsData, setTagsData] = useState<BadgeType[]>([]);
 
   const projectDetails = useProjectsStore((state) => state.projectDetails);
@@ -91,6 +94,13 @@ export default function TeamAnalytics() {
       .replace(/(\d{2})$/, "'$1");
   };
 
+  useEffect(() => {
+    if (teamDiversity?.chartData) {
+      const allItemsGreaterThanZero = teamDiversity.chartData.every((item: any) => item.count > 0);
+      setSeperatorExpanded(allItemsGreaterThanZero);
+    }
+  }, [teamDiversity]);
+
   return (
     <div className="bg-background flex flex-col gap-6 mt-20 md:mt-0">
       <BreadCrumbs
@@ -136,11 +146,10 @@ export default function TeamAnalytics() {
               <ProjectStatusChip status={projectDetails?.status} statusType={StatusType?.PRIMARY} />
               <div className="flex flex-row items-center gap-2">
                 <Link to={`/project-details/${projectDetails?.id}/team`}>
-                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5">
-                    {projectDetails?.details?.name}
+                  <div className="text-trublue-secondary-500 font-montserrat text-base font-semibold leading-5 ">
+                    {projectDetails?.details?.name} <ChevronRight className="inline" size={18} color="#0185E4" />
                   </div>
                 </Link>
-                <ChevronRight size={18} color="#0185E4" />
               </div>
               <div className="flex gap-1">
                 <div className="text-dark-200 font-montserrat text-sm font-normal leading-[22px]">
@@ -196,8 +205,11 @@ export default function TeamAnalytics() {
                 </span>
                 <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
               </div>
-              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">
-                Team Learnability Score
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
+                <div>Team Learnability Score</div>
+                <TooltipInfo iconSize={18}>
+                  <div>Team Learnability Score</div>
+                </TooltipInfo>
               </div>
             </div>
             <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
@@ -206,7 +218,12 @@ export default function TeamAnalytics() {
                   {teamMembersDetails?.totalRecognitionCount}
                 </span>
               </div>
-              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat">WOWs & Kudos</div>
+              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
+                <div>Recognitions</div>
+                <TooltipInfo iconSize={18}>
+                  <div>Recognitions</div>
+                </TooltipInfo>
+              </div>
             </div>
           </div>
         )}
@@ -227,6 +244,7 @@ export default function TeamAnalytics() {
                 YAxisDataKey={'score'}
                 hideDeselectedMetricsFromTooltip
                 customXAxisLabel={CustomXAxisLabel}
+                filtersLabel="Legend:"
               />
             )}
           </div>
@@ -245,6 +263,7 @@ export default function TeamAnalytics() {
               className="bg-white"
               statsOrientation={StatsOrientation.VERTICAL}
               isLoading={isTeamRolesLoading}
+              seperatorExpanded={seperatorExpanded}
             />
           </div>
         )}
@@ -283,6 +302,7 @@ export default function TeamAnalytics() {
       </div>
 
       <PerformanceInsightsCard />
+      <GithubInsightsCard />
       <TeamLeaderboardTable />
     </div>
   );

@@ -115,7 +115,7 @@ const BadgeGroup = ({ id, data, title, color, isDraft }) => {
             {hiddenTagsCount > 0 && (
               <>
                 <CustomBadge id={customBadgeId} className="count">
-                  <Badge color="light-blue" className="light-blue count-text ">
+                  <Badge color="light-blue" className="light-blue count-text">
                     + {hiddenTagsCount}
                   </Badge>
                 </CustomBadge>

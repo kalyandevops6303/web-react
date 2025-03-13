@@ -65,6 +65,9 @@ export const routes = {
     },
   },
   userManagement: {
+    storage: {
+      getBlobSasTokenParams: `${serviceUrls.userManagement}/storage/sas-token`,
+    },
     auth: {
       logout: `${serviceUrls.userManagement}/user/logout`,
     },

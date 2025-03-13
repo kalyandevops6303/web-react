@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { EstimatedTimeHeading, ProjectCardWrap, CardInfoWrapper } from './style';
@@ -16,11 +16,14 @@ import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
 import {
+  checkTimeLeft,
   convertUnixTimestampToDate,
+  getDaysLeft,
   getModifiedProjectResponse,
   getPath,
   getReadType,
   getSecondaryStatus,
+  getTimeLeftIfWithin24Hours,
 } from '../../utility/Utils';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
@@ -36,6 +39,7 @@ const ProjectCard = ({
   data,
   isPopoverOpen,
 }) => {
+  const navigate = useNavigate();
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -127,6 +131,7 @@ const ProjectCard = ({
 
     return switchData?.navigateTo;
   };
+  const checkTime = checkTimeLeft(data?.listing_details?.start_date_epoch);
 
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
@@ -150,28 +155,58 @@ const ProjectCard = ({
             <Row>
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
-                  <CustomBadge>
-                    {(() => {
-                      const isSecondaryStatusValid = data?.secondary_status
-                        ? Object.keys(secondaryStatusConstants)?.includes(data?.secondary_status?.next)
-                        : Object.keys(primaryStatus)?.includes(data?.status);
+                  {(() => {
+                    const isActiveOrOngoing = [primaryStatus.ACTIVE, primaryStatus.ON_GOING].includes(data?.status);
+                    const isNextMilestone = data?.secondary_status?.next === secondaryStatusConstants?.MILESTONE;
+                    const isBlocked = [primaryStatus.BLOCKED, primaryStatus.COMPLETED].includes(data?.status);
+                    const isSecondaryStatusValid =
+                      !isBlocked && data?.secondary_status
+                        ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
+                        : Object.keys(primaryStatus).includes(data?.status);
 
-                      const badgeStatus = isSecondaryStatusValid
-                        ? data?.secondary_status
-                          ? data?.secondary_status?.next
-                          : data?.status
-                        : pathname;
+                    const badgeStatus =
+                      isSecondaryStatusValid && !isBlocked && data?.secondary_status
+                        ? data?.secondary_status?.next.includes('SIGN')
+                          ? data?.status
+                          : data?.secondary_status?.next
+                        : data?.status || pathname;
 
-                      return (
+                    if (isActiveOrOngoing && isNextMilestone) {
+                      return checkTime?.moreThanOneDay ? (
+                        <span className="text-danger fw-semibold small">
+                          Starts in {getDaysLeft(data?.listing_details?.start_date_epoch)} Days
+                        </span>
+                      ) : checkTime?.moreThanOneHour ? (
+                        <span className="text-danger fw-semibold small">
+                          Starts in {getTimeLeftIfWithin24Hours(data?.listing_details?.start_date_epoch)} Hours
+                        </span>
+                      ) : (
+                        <CustomBadge>
+                          <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
+                            {!isBlocked && data?.secondary_status
+                              ? data?.secondary_status?.next.includes('SIGN')
+                                ? primaryStatus[data?.status]
+                                : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
+                              : primaryStatus[data?.status]}
+                          </Badge>
+                        </CustomBadge>
+                      );
+                    }
+
+                    return (
+                      <CustomBadge>
                         <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                          {data?.secondary_status
-                            ? getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
+                          {!isBlocked && data?.secondary_status
+                            ? data?.secondary_status?.next.includes('SIGN')
+                              ? primaryStatus[data?.status]
+                              : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
                             : primaryStatus[data?.status]}
                         </Badge>
-                      );
-                    })()}
-                  </CustomBadge>
+                      </CustomBadge>
+                    );
+                  })()}
                 </div>
+
                 <CardTitle className="d-flex align-items-center mb-3">
                   <span className="cursor-pointer" onClick={handleRedirection}>
                     {data?.name || data?.details?.name}
@@ -258,7 +293,13 @@ const ProjectCard = ({
                   </CardText>
                 )}
 
-                <EstimatedTimeHeading>Estimated time to complete feedback 3min 30sec</EstimatedTimeHeading>
+                <EstimatedTimeHeading
+                  onClick={() => {
+                    navigate(`/project-details/${data._id}/milestone`);
+                  }}
+                >
+                  Estimated time to complete feedback 3min 30sec
+                </EstimatedTimeHeading>
               </Col>
               <Col lg="4">
                 {primaryFilter !== 'terminated' ? (
