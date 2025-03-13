@@ -18,7 +18,7 @@ export default function TagGroup({ tags, truncateAfter }: Readonly<{ tags: Badge
               <PrimaryTag
                 key={tag?.id}
                 content={tag?.name}
-                className="flex h-[18px] px-[9px] py-[1px] items-center gap-[3px] rounded-xl"
+                className="flex min-h-[18px] px-[9px] py-[1px] items-center gap-[3px] rounded-xl break-words"
               />
             ))}
 
@@ -26,7 +26,7 @@ export default function TagGroup({ tags, truncateAfter }: Readonly<{ tags: Badge
         <PrimaryTag
           key={tags?.[truncateAfter]?.id}
           content={`+${tags?.length - truncateAfter}`}
-          className="flex h-[18px] px-[9px] py-[1px] items-center gap-[3px] rounded-xl"
+          className="flex min-h-[18px] px-[9px] py-[1px] items-center gap-[3px] rounded-xl"
         />
       )}
     </div>

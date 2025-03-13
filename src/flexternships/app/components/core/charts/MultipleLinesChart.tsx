@@ -93,9 +93,8 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
   const getAverage = (data: any[], metric: string) => {
     if (data.length <= 1) return 0;
 
-    let dataWithoutFirst = data.slice(1);
     if (YAxisDataKey) {
-      dataWithoutFirst = dataWithoutFirst.map((item) => {
+      data = data.map((item) => {
         return {
           ...item,
           [metric]: item[metric][YAxisDataKey],
@@ -103,7 +102,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
       });
     }
 
-    const validData = dataWithoutFirst.filter((curr) => curr[metric] !== undefined && curr[metric] !== null);
+    const validData = data.filter((curr) => curr[metric] !== undefined && curr[metric] !== null);
 
     if (validData.length === 0) return 0;
 
@@ -199,6 +198,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  padding={{ left: 120, right: 120 }}
                   tick={(props: any) =>
                     CustomXAxisLabel ? (
                       <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
@@ -268,7 +268,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  left: -20,
+                  // left: -20,
                   right: 100,
                   bottom: CustomXAxisLabel ? 40 : 0,
                   top: 20,
@@ -285,9 +285,10 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   dataKey={XAxisDataKey}
                   tickLine={false}
                   axisLine={false}
+                  padding={{ left: 120, right: 120 }}
                   tick={(props: any) =>
                     CustomXAxisLabel ? (
-                      <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
+                      <CustomXAxisLabel props={props} chartData={[...chartData]} XAxisDataKey={XAxisDataKey} />
                     ) : (
                       <foreignObject x={props.x - 50} y={props.y} width={100} height={120}>
                         <div className="flex flex-col items-center text-gray-600">

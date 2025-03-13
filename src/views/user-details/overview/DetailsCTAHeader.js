@@ -192,7 +192,7 @@ const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
   };
 
   return (
-    <div className="fixed-head">
+    <div className="mb-5 -mt-5">
       <div className="inner-head">
         <div className="back back-wrap" onClick={handleBack}>
           <span className="chevron-left-bg">
