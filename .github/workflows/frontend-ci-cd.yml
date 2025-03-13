@@ -71,20 +71,20 @@ jobs:
 
       - name: Set SharePoint SubFolder Name Based on Tag
         run: |
-           if [[ "${{ vars.TAG }}" == uat_* ]]; then
-            echo "SUBFOLDER=uat" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
-            echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
-            echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == v* ]]; then
-            echo "SUBFOLDER=prod" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
-            echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
-           else
-            echo "Error: Unrecognized environment tag format."
-            exit 1
-           fi
+          if [[ "${{ vars.TAG }}" == uat_* ]]; then
+           echo "SUBFOLDER=uat" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
+           echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
+           echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == v* ]]; then
+           echo "SUBFOLDER=prod" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
+           echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
+          else
+           echo "Error: Unrecognized environment tag format."
+           exit 1
+          fi
 
       - name: Fetch Download URL from SharePoint
         id: get_download_url
@@ -213,19 +213,37 @@ jobs:
           npm run build -- --mode ${{ env.VITE_ENV_MODE }}
 
       - name: Upload to blob storage
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
         run: |
           today=$(date +%d-%m-%Y-%H.%M)
           az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d "${{ env.backup_directory }}/frontend-$today" --source ./dist
 
       - name: Delete blob storage
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
         run: az storage blob delete-batch --account-name ${{ env.storage }} --auth-mode login --source '$web' --pattern '*'
 
       - name: Upload to blob storage
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
         run: az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d '$web' --source ./dist
 
       - name: Purge CDN endpoint
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
         run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name ${{ env.cdn_endpoint }} --domains ${{ env.cdn_domain }} --content-paths '/*'
 
+      - name: Webapp Deploy
+        if: ${{ vars.ENVIRONMENT == 'tru-uat-auto' }}
+        id: webapp_deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }} 
+          action: "upload"
+          skip_api_build: true
+          skip_app_build: true
+          app_location: "dist"
+          output_location: ""
+          is_static_export: true
+          
       # Azure logout
       - name: logout
         run: |

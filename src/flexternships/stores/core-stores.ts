@@ -13,6 +13,7 @@ import {
   closeModal,
   fetchNotificationsCount,
   openModal,
+  populateBlobSasTokenParams,
   populateUserDetails,
   setWip,
   unsetWip,
@@ -36,6 +37,8 @@ const defaultAppState: AppState = {
   modalContent: undefined,
   modalActions: undefined,
   unreadNotificationsCount: 0,
+  backPath: undefined,
+  blobSasTokenParams: undefined,
 };
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -53,4 +56,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
   getCurrentNextPath: () => get().modalContent?.metadata?.nextPath,
   fetchNotificationsCount: () => fetchNotificationsCount(set),
   resetStore: () => set({ ...defaultAppState }),
+  setBackPath: (backPath: string) => set({ backPath }),
+  populateBlobSasTokenParams: (force: boolean = false) => populateBlobSasTokenParams(force, get, set),
 }));

@@ -73,14 +73,12 @@ export const getProjectInvitationDetails = async (projectId: string, set: (state
 export const getSelfOrTeamPerformanceDetails = async (projectId: string, feedbackType: string, set: any) => {
   set({ isPerformanceDetailsLoading: true });
   const res = await getSelfOrTeamPerformanceDetailsService(projectId, feedbackType);
-  console.log(res);
   set({ performanceDetails: res, isPerformanceDetailsLoading: false });
 };
 
 export const getPeerOrIndividualPerformanceDetails = async (milestoneId: string, feedbackType: string, set: any) => {
   set({ isPerformanceDetailsLoading: true });
   const res = await getPeerOrIndividualPerformanceDetailsService(milestoneId, feedbackType);
-  console.log(res);
   set({ performanceDetails: res, isPerformanceDetailsLoading: false });
 };
 

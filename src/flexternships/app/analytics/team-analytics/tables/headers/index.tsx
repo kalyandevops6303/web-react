@@ -6,7 +6,7 @@ import AttractivenessScoreHeader from './attractiveness-score-header';
 import ManagerFeedbackHeader from './manager-feedback-header';
 import WowsHeader from './wows-header';
 import TeamNameHeader from './team-name-header';
-
+import TeamRankHeader from './team-rank-header';
 export {
   SelectHeader,
   RankHeader,
@@ -16,4 +16,5 @@ export {
   ManagerFeedbackHeader,
   WowsHeader,
   TeamNameHeader,
+  TeamRankHeader,
 };

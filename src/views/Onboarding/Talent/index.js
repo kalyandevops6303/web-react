@@ -11,12 +11,13 @@ import { getItemFromSession, removeItemFromSession } from '../../../utility/sess
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { selectTrumioIsFlextern } from '../../../redux/selectors/authSelectors';
 import FlexternTabs from '../../../flexternship/flexternOnboarding/FlexternTabs';
-
+import { useAppStore } from '@/flexternships/stores/core-stores';
 const TalentOnboarding = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isFlexternInvited = useSelector(selectTrumioIsFlextern);
+  const backPath = useAppStore((state) => state.backPath);
   const tabNames = isFlexternInvited
     ? {
         Account: '1',
@@ -90,8 +91,11 @@ const TalentOnboarding = () => {
   }, [location]);
 
   const onBackClick = () => {
-    navigate(getItemFromSession('backRouteForProfileEdit'));
-    removeItemFromSession('backRouteForProfileEdit');
+    if (backPath) {
+      navigate(backPath);
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   useEffect(() => {

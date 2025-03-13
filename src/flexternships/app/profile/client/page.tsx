@@ -28,6 +28,8 @@ import CustomBreadCrumbs from '../../components/core/CustomBreadCrumbs';
 import ClientRecentProjects from '../../components/pages/profile/client/public-profile/ClientRecentProjects';
 import ClientProfileCard from '../../components/pages/profile/client/public-profile/ClientProfileCard';
 import ClientCompanyTagline from '../../components/pages/profile/client/public-profile/ClientCompanyTagline';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 
 export default function ClientPublicProfile() {
   const [clientDetails, setClientDetails] = useState<FlexternClientPublicProfileDetails>();
@@ -45,6 +47,8 @@ export default function ClientPublicProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [isProjectsLoading, setIsProjectsLoading] = useState(true);
   const [isDelegatesInView, setIsDelegatesInView] = useState(false);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -169,7 +173,7 @@ export default function ClientPublicProfile() {
                   <div className="size-11">
                     <img
                       className="w-full h-full object-contain rounded-full"
-                      src={delegate.imageUri || defaultAvatar}
+                      src={addQueryParams(delegate.imageUri, blobSasTokenParams) || defaultAvatar}
                     />
                   </div>
                   <div className="flex flex-col justify-between">

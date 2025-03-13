@@ -126,12 +126,12 @@ const Alerts = () => {
             Alerts
           </CardTitle>
           {isDisabled ? (
-            <CardText className="text-decoration-underline view-all-cta card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
+            <CardText className="text-decoration-underline view-all-cta card-text font-small-5 me-25 mb-0 text-muted cursor-not-allowed">
               View All
             </CardText>
           ) : (
             <Link to="/notifications">
-              <CardText className="text-decoration-underline view-all-cta card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+              <CardText className="text-decoration-underline view-all-cta card-text font-small-5 me-25 mb-0 text-primary cursor-pointer">
                 View All
               </CardText>
             </Link>

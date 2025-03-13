@@ -41,6 +41,19 @@ export default function TeamPerformanceInsights() {
     populateCompetencies();
   }, [populateCompetencies]);
 
+  // Add useEffect for handling hash scroll
+  useEffect(() => {
+    // Get the hash from the URL (e.g., '#COM')
+    const hash = window.location.hash;
+    if (hash && !isCompetenciesLoading) {
+      // Remove the '#' and find the element
+      const element = document.getElementById(hash.slice(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [isCompetenciesLoading, competencies]); // Re-run when competencies load or change
+
   return (
     <div className="flex flex-col gap-y-4">
       <div>
@@ -73,7 +86,9 @@ export default function TeamPerformanceInsights() {
           </div>
           <div className="flex flex-col gap-y-4">
             {competencies.map((competencyItem) => (
-              <PerformanceInsightsCard key={competencyItem.id} competencyItem={competencyItem} />
+              <div id={competencyItem.abbreviation}>
+                <PerformanceInsightsCard key={competencyItem.id} competencyItem={competencyItem} />
+              </div>
             ))}
           </div>
         </div>

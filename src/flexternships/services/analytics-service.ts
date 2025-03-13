@@ -420,11 +420,11 @@ export const getConversationAttachmentStatsService = async (projectId: string, u
   }
 };
 
-export const getGitHubStatsService = async (projectId: string, userId: string) => {
+export const getGitHubStatsService = async (projectId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
-    params: { project_id: projectId, user_id: userId },
+    params: { project_id: projectId },
     withCredentials: true,
   };
   try {
@@ -437,7 +437,6 @@ export const getGitHubStatsService = async (projectId: string, userId: string) =
 
 export const getGitHubBranchHistoryPaginatedService = async (
   projectId: string,
-  userId: string,
   options: { metricType: GithubMetricType; page: number; pageSize: number } = {
     metricType: GithubMetricType.COMMITS,
     page: 1,
@@ -452,7 +451,6 @@ export const getGitHubBranchHistoryPaginatedService = async (
   };
   const payload = {
     project_id: projectId,
-    user_id: userId,
     metric_type: options.metricType,
   };
   try {

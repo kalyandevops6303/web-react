@@ -1,11 +1,15 @@
 /* eslint-disable no-undef */
-import { Col, Input, InputGroup, InputGroupText, Label, Row } from 'reactstrap';
+import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Row } from 'reactstrap';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RefreshCcw, Search } from 'react-feather';
 import { PropTypes } from 'prop-types';
 import Select, { components } from 'react-select';
+import CollActive from '@src/assets/images/coll_active.png';
+import ExpandInactive from '@src/assets/images/expand_inactive.png';
 import { AsyncPaginate } from 'react-select-async-paginate';
+import ExpandActive from '@src/assets/images/expand_active.png';
+import CollInactive from '@src/assets/images/coll_inactive.png';
 import classNames from 'classnames';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
@@ -52,8 +56,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const dispatch = useDispatch();
   const popoverRef = useRef(null);
-
   const [hasMore, setHasMore] = useState(true);
+  const [showDepartmentFilter, setShowDepartmentFilter] = useState(true);
   const selectProjectData = useSelector((state) => state.project.listData);
   const selectProjectMetaData = useSelector((state) => state.project.metaData);
   const currentPreview = useSelector((state) => state.project.currentPreview);
@@ -191,6 +195,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       inputRef.current.value = '';
     }
   };
+  const togglePopover = () => {
+    setPopoverOpen(!popoverOpen);
+  };
 
   const setMetaDataForFlextern = () => {
     if (secondFilterState?.department_name?.length > 0) {
@@ -213,6 +220,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     setMetaDataForFlextern();
   }, [secondFilterState]);
 
+  useEffect(() => {
+    if (primaryFilter === 'ongoing' || primaryFilter === 'blocked') {
+      setShowDepartmentFilter(false);
+    }
+  }, [primaryFilter]);
   useEffect(() => {
     setHasMore(true);
     if (currentPreview?.length === 0 || selectProjectData?.length === selectProjectMetaData?.total_records) {
@@ -431,14 +443,53 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       return { options: [], hasMore: false };
     }
   };
-
+  const [isExpanded, setIsExpanded] = useState(false);
   const onChangeFilter = (key, value) => {
     setSecondFilterState({
       ...secondFilterState,
       [key]: value ? [value] : [],
     });
   };
-
+  const ExpandCollapseComp = (
+    <div className="d-flex align-items-center me-10">
+      <Label className="view-label me-1">View:</Label>
+      <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
+      <Popover
+        innerRef={popoverRef}
+        placement="right"
+        isOpen={popoverOpen}
+        target="popoverButton"
+        toggle={togglePopover}
+      >
+        <PopoverBody className="show-more-popover-body">
+          <div
+            className={`d-flex align-items-center tooltip-option tooltip-option-${
+              isExpanded === true ? 'active' : 'inactive'
+            }`}
+            onClick={() => {
+              setIsExpanded(true);
+              setPopoverOpen(false);
+            }}
+          >
+            <img className="me-50" src={isExpanded ? ExpandActive : ExpandInactive} alt="collactive" />
+            <span>Expand</span>
+          </div>
+          <div
+            className={`d-flex align-items-center tooltip-option tooltip-option-${
+              isExpanded === false ? 'active' : 'inactive'
+            }`}
+            onClick={() => {
+              setIsExpanded(false);
+              setPopoverOpen(false);
+            }}
+          >
+            <img className="me-50" src={isExpanded ? CollInactive : CollActive} alt="collactive" />
+            <span>Compress</span>
+          </div>
+        </PopoverBody>
+      </Popover>
+    </div>
+  );
   if (isCardLoading && !selectCardData) {
     return <div />;
   }
@@ -460,6 +511,18 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </InputGroup>
           </div>
           <Row>
+            {primaryFilter !== 'talents' &&
+              primaryFilter !== 'clients' &&
+              primaryFilter !== 'teams' &&
+              (isTab ? (
+                <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </div>
+              ) : (
+                <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </Col>
+              ))}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PROJECT_TYPE']}>
               <Col>
                 <Label className="form-label">Project type</Label>
@@ -548,8 +611,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             {/* // After the department name comes from new API, functionality will be implemented */}
+            {/* && ((primaryFilter.toUpperCase() !== 'BLOCKED') || (primaryFilter.toUpperCase() !== 'ACTIVE')) */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && (
+              {userType !== userTypes.team && showDepartmentFilter && (
                 <Col>
                   <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
