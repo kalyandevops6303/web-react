@@ -44,6 +44,7 @@ import { checkReportSuccess } from '../../../redux/reducers/report';
 import { selectAlreadyReported, selectCheckReportLoading } from '../../../redux/selectors/reportSelectors';
 import { profile } from 'console';
 import PermissionWrapper from '@/PermissionWrapper';
+import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -169,7 +170,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                 <Heart className="cursor-pointer d-flex ms-auto heart" onClick={favUnfavLoading ? null : handleLike} />
               ))}
           </div>
-          <div className="user-image">
+          <div>
             {isClient && (
               <img
                 src={data?.company_logo?.length > 0 ? data?.company_logo : defaultAvatar}
@@ -181,12 +182,11 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
 
             {isTalentView && (
-              <img
-                src={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                alt="user"
-                width={112}
-                height={120}
-                style={{ objectFit: 'cover' }}
+              <FlexternAvatar
+                className="text-base w-20 h-20 flex items-center justify-center"
+                imageUri={data?.image_uri}
+                name={`${data?.first_name} ${data?.last_name}`}
+                size="lg"
               />
             )}
             {isTeamView && (
@@ -242,16 +242,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             </div>
           )}
           <div className="projects-rating projects-rating-public">
-            <Rating
+            {/* <Rating
               initialRating={returnFormattedRating(data?.rating)}
               emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
               fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
               readonly
-            />
-            <CardText className="mt-50 font-small-3">
+            /> */}
+            {/* <CardText className="mt-50 font-small-3">
               {recentProjectsMetadata?.total_records || 0} Project(s)<span className="ms-50 me-25 fw-300">|</span>
               {data?.total_reviews || 0} Review(s)
-            </CardText>
+            </CardText> */}
           </div>
           {showProfilePercent && !data?.flextern && (
             <div className="profile-completion mt-2">
@@ -334,7 +334,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
             {isTalentView && (
               <>
-                {data?.resume?.file_name && (
+                {/* VRA changes */}
+                {/* {data?.resume?.file_name && (
                   <div
                     onClick={() =>
                       dispatch(
@@ -360,7 +361,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                       </>
                     )}
                   </div>
-                )}
+                )} */}
 
                 {!data?.flextern && (
                   <div className="d-flex mb-75">

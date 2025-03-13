@@ -84,11 +84,22 @@ export function getDaysLeft(epoch) {
   const days = Math.floor(diff.days || 0);
 
   // Return undefined if the event has already passed
-  if (days < 0) {
-    return undefined;
-  }
+  // if (days < 0) {
+  //   return undefined;
+  // }
 
   return days;
+}
+
+export function checkTimeLeft(epoch) {
+  const currentTime = Date.now();
+  const oneHourInMs = 60 * 60 * 1000;
+  const oneDayInMs = 24 * oneHourInMs;
+
+  return {
+    moreThanOneDay: epoch - currentTime > oneDayInMs,
+    moreThanOneHour: epoch - currentTime > oneHourInMs,
+  };
 }
 
 /**

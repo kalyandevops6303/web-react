@@ -24,6 +24,8 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
 import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
@@ -32,6 +34,8 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -118,7 +122,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                   <Avatar
                     img={
                       data?.image_uri?.length > 0
-                        ? data?.image_uri
+                        ? addQueryParams(data?.image_uri, blobSasTokenParams)
                         : generateAvatar(
                             data?.user_id,
                             (data?.first_name?.charAt(0)?.toUpperCase() || '') +

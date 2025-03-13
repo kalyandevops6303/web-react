@@ -978,7 +978,8 @@ const Additional = () => {
                 </CardBody>
               </Card>
 
-              <Card>
+              {/* VRA changes */}
+              {/* <Card>
                 <CardHeader>
                   <h4 className="m-0 mt-1 text-lg font-medium">Identity Verification (optional)</h4>
                 </CardHeader>
@@ -1031,7 +1032,7 @@ const Additional = () => {
                   </div>
                   {files && files.length > 0 && fileList()}
                 </CardBody>
-              </Card>
+              </Card> */}
 
               <div className="d-flex justify-content-between align-items-center pb-2 w-100">
                 <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>

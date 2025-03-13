@@ -14,6 +14,8 @@ import { projectsBlockedModalContent } from '@/flexternships/static/content/core
 import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 import routes from '@/flexternships/routes';
+import { triggerBeforeExpiry } from '@/flexternships/utils/core-utils';
+import { BLOB_SAS_TOKEN_EXPIRY_DELTA } from '@/flexternships/static/constants/core-constants';
 
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
@@ -26,8 +28,11 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
   const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
   const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
+  const isTncAccepted = useFlexternUserStore((state) => state.userDetails?.isTncAccepted);
   const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+  const populateBlobSasTokenParams = useAppStore((state) => state.populateBlobSasTokenParams);
 
   const openGlobalModal = useAppStore((state) => state.openModal);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
@@ -37,10 +42,22 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   useEffect(() => {
     if (isUserLoggedIn()) {
       populateUserDetails();
+      populateBlobSasTokenParams();
     } else {
       navigate(`${routes.auth.path}/login`);
     }
-  }, [populateUserDetails]);
+  }, [populateUserDetails, populateBlobSasTokenParams]);
+
+  useEffect(() => {
+    if (!blobSasTokenParams?.se) return;
+
+    const timeoutId = triggerBeforeExpiry(
+      new Date(blobSasTokenParams.se).getTime(),
+      () => populateBlobSasTokenParams(true),
+      { deltaBeforeExpiry: BLOB_SAS_TOKEN_EXPIRY_DELTA },
+    );
+    if (timeoutId) return () => clearTimeout(timeoutId);
+  }, [blobSasTokenParams, populateBlobSasTokenParams]);
 
   useEffect(() => {
     const checkFeatureAccess = async () => {
@@ -104,7 +121,11 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     );
   }
 
-  if (!allowBlockedUsers && isUserBlocked) {
+  if (!isTncAccepted) {
+    openGlobalModal(GlobalModalType.TERMS_AND_CONDITIONS);
+  }
+
+  if (isTncAccepted && !allowBlockedUsers && isUserBlocked) {
     const allowedAction = async () => {
       closeGlobalModal();
       navigate(routes.blockedProjects.path);

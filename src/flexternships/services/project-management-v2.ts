@@ -456,6 +456,7 @@ export const getProjectDetailsById: (projectId: string) => Promise<ProjectDetail
       viewRecognition: data.view_recognition,
       giveRecognition: data.give_recognition,
       addNote: data.add_note,
+      viewAnalytics: data.view_analytics ?? false,
     };
 
     return projectDetailsData;

@@ -65,6 +65,9 @@ export const routes = {
     },
   },
   userManagement: {
+    storage: {
+      getBlobSasTokenParams: `${serviceUrls.userManagement}/storage/sas-token`,
+    },
     auth: {
       logout: `${serviceUrls.userManagement}/user/logout`,
     },
@@ -129,6 +132,10 @@ export const routes = {
     },
     features: {
       getPermittedFeatures: `${serviceUrls.userManagement}/features/permitted-features`,
+    },
+    tnc: {
+      signDocument: `${serviceUrls.userManagement}/document/sign`,
+      docInfo: `${serviceUrls.userManagement}/document/info`,
     },
   },
   dashboardV2: {

@@ -221,10 +221,26 @@ export default function AccountDetails() {
                   {userDetails.countryCode}
                 </span>
               </div>
-              <TextInput value={userDetails.phone} onChange={() => {}} className="w-[281px]" label="" readOnly />
+              <TextInput
+                isPassword
+                allowViewPassword={false}
+                value={userDetails.phone}
+                onChange={() => {}}
+                className="w-[281px]"
+                label=""
+                readOnly
+              />
             </div>
           </div>
-          <TextInput value={userDetails.email} onChange={() => {}} className="w-[393px]" label="Email" readOnly />
+          <TextInput
+            isPassword
+            allowViewPassword={false}
+            value={userDetails.email}
+            onChange={() => {}}
+            className="w-[393px]"
+            label="Email"
+            readOnly
+          />
         </div>
       </div>
       {/* Actions */}

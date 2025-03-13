@@ -3,6 +3,8 @@ import React from 'react';
 import { User } from 'react-feather';
 import { ItemValue, QuestionCheckboxModel, Serializer } from 'survey-core';
 import { ReactQuestionFactory, SurveyQuestionElementBase } from 'survey-react-ui';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 type Choice = {
   first_name: string;
@@ -117,6 +119,8 @@ export class GridCheckbox extends SurveyQuestionElementBase {
 
     const choices = this.question.choices || [];
 
+    const blobSasTokenParams = useAppStore.getState().blobSasTokenParams;
+
     return (
       <div className="w-full">
         <div className="flex justify-start text-[#515759] font-[Montserrat] text-[14px] font-medium leading-[22px] mb-[16px]">
@@ -165,7 +169,10 @@ export class GridCheckbox extends SurveyQuestionElementBase {
                       <div>
                         <div className="flex gap-2 items-center mt-1">
                           <Avatar className="w-7 h-7">
-                            <AvatarImage src={imageUri} className="w-full h-full rounded-full" />
+                            <AvatarImage
+                              src={addQueryParams(imageUri, blobSasTokenParams)}
+                              className="w-full h-full rounded-full"
+                            />
                             <AvatarFallback className="w-full h-full">
                               <User color="#6E6B7B" />
                             </AvatarFallback>

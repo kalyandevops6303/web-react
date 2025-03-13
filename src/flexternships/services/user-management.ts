@@ -14,8 +14,8 @@ import { handleError } from '../utils/error-utils';
 import { ValidatedRequestToken } from '../constraints/types/core-types';
 import { logout as logoutZustand } from '../utils/core-utils';
 import errorHandler from '@/utility/errorHandler';
-import { FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
-import { parseDelegateInvitations } from '../utils/parsing-utils';
+import { DocType, FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
+import { parseDelegateInvitations, parseTermsAndConditionsDocument } from '../utils/parsing-utils';
 
 /// File Endpoints
 /**
@@ -65,6 +65,30 @@ export const changePasswordWithCurrentPassword = async (currentPassword: string,
   }
 };
 
+/// Blob SAS Token Endpoints
+/**
+ * Retrieves blob SAS token parameters.
+ * @returns A Promise that resolves to the blob SAS token parameters.
+ * @throws {Error} If the blob SAS token retrieval fails or an unexpected error occurs.
+ */
+export const getBlobSasTokenParams = async () => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, withCredentials: true };
+  try {
+    const response = await axios.get(routes.userManagement.storage.getBlobSasTokenParams, config);
+    const sasUrlParams = new URLSearchParams(response.data.data);
+
+    const formattedSasParams: Record<string, string | null> = {};
+
+    sasUrlParams.forEach((value, key) => {
+      formattedSasParams[key] = value;
+    });
+    return formattedSasParams;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching blob SAS token parameters');
+  }
+};
+
 /// User Endpoints
 /**
  * Validates a request token.
@@ -106,6 +130,49 @@ export const validateUserRequestByToken = async (requestToken: string): Promise<
     return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while validating the user request');
+  }
+};
+
+/**
+ * Accepts terms and conditions for a user.
+ * @param docId - The ID of the terms document.
+ * @param docType - The type of terms document.
+ * @returns A Promise that resolves when the terms are accepted.
+ * @throws {Error} If accepting terms fails or an unexpected error occurs.
+ */
+export const acceptsTermsAndConditions = async (docId: string, docType: string) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    await axios.put(routes.userManagement.tnc.signDocument, { doc_id: docId, doc_type: docType }, config);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while accepting terms and conditions');
+  }
+};
+
+/**
+ * Gets the document sign status for a user.
+ * @param docType - The type of document to check.
+ * @returns A Promise that resolves to the document sign status.
+ * @throws {Error} If fetching status fails or an unexpected error occurs.
+ */
+export const getDocumentSignStatus = async (docType: DocType) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+    params: {
+      doc_type: docType,
+    },
+  };
+  try {
+    const response = await axios.get(routes.userManagement.tnc.docInfo, config);
+    return parseTermsAndConditionsDocument(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching document sign status');
   }
 };
 

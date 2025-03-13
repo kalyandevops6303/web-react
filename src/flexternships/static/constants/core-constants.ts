@@ -30,3 +30,5 @@ export const TALENT_PROFILE_SECTIONS = [
   { path: 'social-details', label: 'Social' },
   { path: 'additional-details', label: 'Additional Information' },
 ];
+
+export const BLOB_SAS_TOKEN_EXPIRY_DELTA = 2000; // 2 seconds before expiry

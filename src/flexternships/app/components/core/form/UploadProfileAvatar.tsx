@@ -7,10 +7,14 @@ import { uploadFileToUrl } from '@/flexternships/services/core-service';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 export default function UploadProfileAvatar(props: UploadProfileAvatarProps) {
   const { value, onChange, className } = props;
   const [isLoading, setIsLoading] = useState(false);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,7 +54,7 @@ export default function UploadProfileAvatar(props: UploadProfileAvatarProps) {
           <img
             src={
               value.startsWith('https')
-                ? value
+                ? addQueryParams(value, blobSasTokenParams)
                 : fileInputRef.current?.files?.[0]
                 ? URL.createObjectURL(fileInputRef.current.files[0])
                 : undefined

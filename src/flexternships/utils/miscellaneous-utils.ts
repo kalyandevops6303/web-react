@@ -1,4 +1,21 @@
 /**
+ * Adds query parameters to a URL
+ * @param url - Base URL to add parameters to
+ * @param params - Record of parameter key-value pairs to add
+ * @returns URL with added query parameters
+ */
+export const addQueryParams = (url: string | undefined, params: Record<string, string> = {}): string => {
+  if (!url) return '';
+
+  const urlObj = new URL(url);
+  Object.entries(params).forEach(([key, value]) => {
+    urlObj.searchParams.append(key, value);
+  });
+
+  return urlObj.toString();
+};
+
+/**
  * Converts domain or www text into clickable URLs by adding appropriate protocol
  * @param text - Text containing domain or www links
  * @returns Text with properly formatted URLs
