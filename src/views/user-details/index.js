@@ -297,7 +297,7 @@ const UserDetails = () => {
                     />
                   </Col>
                 )}
-                <Col lg="3" className="pe-75">
+                {/* <Col lg="3" className="pe-75">
                   <Statbox
                     elevate={false}
                     title={recentProjectsMetadata?.total_records || 0}
@@ -305,7 +305,7 @@ const UserDetails = () => {
                     icon={<Check height={20} />}
                     color="light-success"
                   />
-                </Col>
+                </Col> */}
                 <PermissionWrapper
                   permissions={appPermissions}
                   permissionName={['DASHBOARD.USER_DETAILS.HOURLY_RATING']}
@@ -400,12 +400,12 @@ const UserDetails = () => {
               </PermissionWrapper>
               {isTeamView && !currentProfile?.flextern && <AssessedSkillsTeam />}
             </Row>
-            <Row>
+            {/* <Row>
               <RecentProjects isEditable={userData?._id === param?.userId} />
-            </Row>
-            <Row>
+            </Row> */}
+            {/* <Row>
               <Reviews />
-            </Row>
+            </Row> */}
           </Col>
         </Row>
         {acceptInvitationModal && (

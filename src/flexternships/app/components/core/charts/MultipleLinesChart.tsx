@@ -95,9 +95,8 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
   const getAverage = (data: any[], metric: string) => {
     if (data.length <= 1) return 0;
 
-    let dataWithoutFirst = data.slice(1);
     if (YAxisDataKey) {
-      dataWithoutFirst = dataWithoutFirst.map((item) => {
+      data = data.map((item) => {
         return {
           ...item,
           [metric]: item[metric][YAxisDataKey],
@@ -105,12 +104,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
       });
     }
 
-    console.log(dataWithoutFirst);
+    const validData = data.filter((curr) => curr[metric] !== undefined && curr[metric] !== null);
 
-    return (
-      dataWithoutFirst.reduce((acc, curr) => acc + (curr[metric as keyof typeof curr] || 0), 0) /
-      (data.length - 1)
-    ).toFixed(2);
+    if (validData.length === 0) return 0;
+
+    return (validData.reduce((acc, curr) => acc + (curr[metric] || 0), 0) / validData.length).toFixed(2);
   };
 
   useEffect(() => {
@@ -122,11 +120,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
   return (
     <div>
       {showFilters && (
-        <div className="flex items-center flex-wrap gap-5 bg-white rounded-t-lg p-6">
+        <div className="flex flex-wrap gap-5 bg-white rounded-t-lg items-center p-6">
           {filtersLabel && <div className="font-montserrat font-medium leading-4 text-grey-700">{filtersLabel}</div>}
           <div
             onClick={toggleAll}
-            className={`flex flex-col justify-center items-start gap-1 p-3 min-w-[60px] rounded-lg border cursor-pointer ${
+            className={`flex flex-col justify-center items-start gap-1 p-3 w-[150px] rounded-lg border cursor-pointer ${
               showAll ? 'border-primary bg-primary-light' : 'border-grey-50'
             }`}
           >
@@ -140,9 +138,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 </span>
               </div>
             )}
-            <div className="flex flex-row items-center justify-start gap-2">
-              <div className="font-montserrat text-sm font-medium leading-sm-custom text-dark-700">All</div>
-            </div>
+            <div className="font-montserrat text-sm font-medium leading-sm-custom text-dark-700">All</div>
           </div>
 
           {chartConfig &&
@@ -172,11 +168,11 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 ) : (
                   <div
                     onClick={() => toggleMetric(key)}
-                    className={`flex p-3 items-center gap-3 min-w-[60px] rounded-lg border cursor-pointer ${
+                    className={`flex p-3 items-center gap-3 w-[150px] rounded-lg border cursor-pointer ${
                       selectedMetrics.includes(key) ? 'border-primary bg-primary-light' : 'border-grey-50'
                     }`}
                   >
-                    <div className="flex w-1 h-[20px] rounded-full z-10" style={{ backgroundColor: color }}></div>
+                    <div className="flex w-1 h-full rounded-full z-10" style={{ backgroundColor: color }}></div>
                     <div className="font-montserrat text-sm font-medium leading-sm-custom text-dark-700 truncate">
                       {label}
                     </div>
@@ -205,6 +201,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  padding={{ left: 120, right: 120 }}
                   tick={(props: any) =>
                     CustomXAxisLabel ? (
                       <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
@@ -274,7 +271,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  left: -20,
+                  // left: -20,
                   right: 100,
                   bottom: CustomXAxisLabel ? 40 : 0,
                   top: 20,
@@ -291,9 +288,10 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   dataKey={XAxisDataKey}
                   tickLine={false}
                   axisLine={false}
+                  padding={{ left: 120, right: 120 }}
                   tick={(props: any) =>
                     CustomXAxisLabel ? (
-                      <CustomXAxisLabel props={props} chartData={chartData} XAxisDataKey={XAxisDataKey} />
+                      <CustomXAxisLabel props={props} chartData={[...chartData]} XAxisDataKey={XAxisDataKey} />
                     ) : (
                       <foreignObject x={props.x - 50} y={props.y} width={100} height={120}>
                         <div className="flex flex-col items-center text-gray-600">
