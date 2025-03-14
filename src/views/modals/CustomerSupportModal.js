@@ -27,7 +27,7 @@ import theme from '../../configs/themeVariables';
 import { getIssueTypeService, getIssueTypeServiceForFlextern } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport, customerSupportForFlextern } from '../../redux/actions/supportActions';
-import { CUSTOMER_SUPPORT_TYPES, DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
 import { isFlexternshipApp } from '@/configs/api/env';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
@@ -130,9 +130,10 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       missing_name: getMissingName(values?.issueType?.value, values),
     };
 
-    isFlexternshipApp
-      ? dispatch(customerSupportForFlextern({ data: postData, onSuccess }))
-      : dispatch(customerSupport({ data: postData, onSuccess }));
+    // isFlexternshipApp
+    //   ? dispatch(customerSupportForFlextern({ data: postData, onSuccess }))
+    //   : dispatch(customerSupport({ data: postData, onSuccess }));
+    dispatch(customerSupport({ data: postData, onSuccess }));
   };
 
   const loadIssueTypeOptions = async (search, prevOptions, { page }) => {
