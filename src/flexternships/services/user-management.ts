@@ -741,6 +741,7 @@ export const sendSupportRequest = async (
   ccEmail: string[],
   description: string,
   issueType: string,
+  missingName?: string,
 ) => {
   const headers = appendAuthToken({});
   const config = {
@@ -755,6 +756,7 @@ export const sendSupportRequest = async (
         cc_email: ccEmail,
         description,
         issue_type: issueType,
+        missing_name: missingName,
       },
       config,
     );
