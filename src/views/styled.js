@@ -222,13 +222,17 @@ const CustomBadge = styled.span`
     border: ${(props) => (props.bordered ? `1px solid ${theme.lightBlueColor}` : 'none')};
   }
 
-  .COMPLETED,
   .SIGN_NDA,
   .SIGN_CONTRACT,
   .SIGN_REQUESTED,
   .SIGN_DOCUMENTS {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
+  }
+  .COMPLETED {
+    background: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.blueColor}` : 'none')};
   }
   .MILESTONE {
     background: ${theme.lightOrangeColor} !important;

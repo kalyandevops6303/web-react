@@ -165,12 +165,16 @@ const ProjectCard = ({
                         : Object.keys(primaryStatus).includes(data?.status);
 
                     const badgeStatus =
-                      isSecondaryStatusValid && !isBlocked && data?.secondary_status
-                        ? data?.secondary_status?.next.includes('SIGN')
-                          ? data?.status
-                          : data?.secondary_status?.next
-                        : data?.status || pathname;
-
+                      data?.status === primaryStatus.COMPLETED.toUpperCase()
+                        ? primaryStatus.COMPLETED.toUpperCase()
+                        : (isSecondaryStatusValid &&
+                            !isBlocked &&
+                            (data?.secondary_status
+                              ? data?.secondary_status?.next.includes('SIGN')
+                                ? data?.status
+                                : data?.secondary_status?.next
+                              : data?.status)) ||
+                          pathname;
                     if (isActiveOrOngoing && isNextMilestone) {
                       return checkTime?.moreThanOneDay ? (
                         <span className="text-danger fw-semibold small">
@@ -183,7 +187,9 @@ const ProjectCard = ({
                       ) : (
                         <CustomBadge>
                           <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                            {!isBlocked && data?.secondary_status
+                            {data?.status === primaryStatus.COMPLETED.toUpperCase()
+                              ? primaryStatus[data?.status]
+                              : !isBlocked && data?.secondary_status
                               ? data?.secondary_status?.next.includes('SIGN')
                                 ? primaryStatus[data?.status]
                                 : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
@@ -196,7 +202,9 @@ const ProjectCard = ({
                     return (
                       <CustomBadge>
                         <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                          {!isBlocked && data?.secondary_status
+                          {data?.status === primaryStatus.COMPLETED.toUpperCase()
+                            ? primaryStatus[data?.status]
+                            : !isBlocked && data?.secondary_status
                             ? data?.secondary_status?.next.includes('SIGN')
                               ? primaryStatus[data?.status]
                               : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
@@ -235,16 +243,17 @@ const ProjectCard = ({
                           ) || data?.listing_details?.start_date}
                         </span>
                       )}
-                      {(data?.completed_date || data?.listing_details?.end_date_epoch) && (
-                        <span className="me-1">
-                          {data?.completed_date || data?.listing_details?.end_date_epoch
-                            ? `Completed Date: ${convertUnixTimestampToDate(
-                                data?.completed_date || data?.listing_details?.end_date_epoch,
-                                isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
-                              )}   `
-                            : ''}
-                        </span>
-                      )}
+                      {!(data?.status === 'ACTIVE' || data?.status === 'ON_GOING') &&
+                        (data?.completed_date || data?.listing_details?.end_date_epoch) && (
+                          <span className="me-1">
+                            {data?.completed_date || data?.listing_details?.end_date_epoch
+                              ? `Completed Date: ${convertUnixTimestampToDate(
+                                  data?.completed_date || data?.listing_details?.end_date_epoch,
+                                  isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
+                                )}   `
+                              : ''}
+                          </span>
+                        )}
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
@@ -273,9 +282,9 @@ const ProjectCard = ({
                   <>
                     {!showFullText ? (
                       <div
-                        className="my-div mb-6"
+                        className="my-div"
                         ref={divRef}
-                        style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                        style={{ maxHeight: '3rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
                       >
                         {data?.details?.description}
                       </div>
