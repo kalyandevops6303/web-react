@@ -119,8 +119,6 @@ export const routes = {
         postAccountDetails: `${serviceUrls.userManagementV2}/client/account-details`,
         putProfileDetails: `${serviceUrls.userManagementV2}/client/profile-details`,
         getOrganisationDetails: `${serviceUrls.userManagementV2}/client/organisation-details`,
-        getSupportTypes: `${serviceUrls.userManagementV2}/support-issue-types`,
-        postSupportRequest: `${serviceUrls.userManagementV2}/support-request`,
       },
     },
     password: {

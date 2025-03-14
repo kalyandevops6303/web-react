@@ -8,12 +8,9 @@ import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import TextInput from '../../form/TextInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { loadSupportTypes, postSupportRequest } from '@/flexternships/services/user-management';
+import { sendSupportRequest } from '@/flexternships/services/user-management';
 import { DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '@/flexternships/static/constants/core-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { AsyncPaginate } from 'react-select-async-paginate';
-import { selectThemeColors } from '@/utility/Utils';
-import classNames from 'classnames';
 
 const contactSupportSchema = yup.object().shape({
   toEmail: yup.string().email('Please enter a valid email'),
@@ -23,19 +20,11 @@ const contactSupportSchema = yup.object().shape({
     .required('Message is required')
     .min(50, 'Message must be at least 50 characters')
     .max(500, 'You have exceeded character limit of 500'),
-  issueType: yup
-    .object()
-    .shape({
-      label: yup.string().required('Issue Type label is required'),
-      value: yup.string().required('Issue Type value is required'),
-    })
-    .required('Issue Type is required')
-    .nullable(),
 });
+
 interface ContactSupportForm {
   toEmail: string;
   ccEmail: string;
-  issueType: { label: string; value: string } | null;
   description: string;
 }
 
@@ -60,9 +49,8 @@ export default function ContactSupportModal(props: Props) {
     mode: 'onChange',
     resolver: yupResolver(contactSupportSchema),
     defaultValues: {
-      toEmail: SUPPORT_EMAIL,
-      ccEmail: userDetails.email,
-      issueType: null,
+      toEmail: '',
+      ccEmail: '',
       description: '',
     },
   });
@@ -70,14 +58,7 @@ export default function ContactSupportModal(props: Props) {
   const onSubmit = async (data: ContactSupportForm) => {
     setIsConfirmLoading(true);
     try {
-      const postData = {
-        to_email: SUPPORT_EMAIL,
-        cc_email: [userDetails.email],
-        description: data?.description,
-        issue_type: data?.issueType?.value || DEFAULT_SUPPORT_TYPE,
-        missing_name: '',
-      };
-      await postSupportRequest(postData);
+      await sendSupportRequest(SUPPORT_EMAIL, [userDetails.email], data.description, DEFAULT_SUPPORT_TYPE);
       onClose();
       onConfirmSuccess();
     } catch (error: unknown) {
@@ -86,6 +67,7 @@ export default function ContactSupportModal(props: Props) {
       setIsConfirmLoading(false);
     }
   };
+
   return (
     <GenericModal className="max-w-[670px]" isOpen={isOpen} onClose={onClose}>
       <div className="flex gap-x-12 p-10">
@@ -112,30 +94,6 @@ export default function ContactSupportModal(props: Props) {
                     onChange={() => {}}
                     error={errors.ccEmail?.message}
                     readOnly
-                  />
-                </div>
-                <div className="flex flex-col items-start gap-y-2">
-                  <div className="uppercase text-sm text-grey-500 font-semibold">Issue Type: </div>
-                  <Controller
-                    name="issueType"
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <AsyncPaginate
-                          {...field}
-                          debounceTimeout={1000}
-                          additional={{ page: 1 }}
-                          loadOptions={loadSupportTypes}
-                          isClearable
-                          classNamePrefix="select"
-                          placeholder="Select issue type"
-                          theme={selectThemeColors}
-                          className={classNames('react-select', {
-                            'is-invalid': errors?.issueType?.message,
-                          })}
-                        />
-                      );
-                    }}
                   />
                 </div>
               </div>

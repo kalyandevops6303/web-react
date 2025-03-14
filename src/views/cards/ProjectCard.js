@@ -30,6 +30,7 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { secondaryStatusConstants, userTypes } from '../../utility/constants/Constant';
 import PermissionWrapper from '@/PermissionWrapper';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -132,7 +133,6 @@ const ProjectCard = ({
     return switchData?.navigateTo;
   };
   const checkTime = checkTimeLeft(data?.listing_details?.start_date_epoch);
-
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -231,7 +231,7 @@ const ProjectCard = ({
                           Assigned Date:{' '}
                           {convertUnixTimestampToDate(
                             data?.assigned_date || data?.listing_details?.start_date_epoch,
-                            savedUserData?.availability?.timezone?.name,
+                            isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
                           ) || data?.listing_details?.start_date}
                         </span>
                       )}
@@ -240,7 +240,7 @@ const ProjectCard = ({
                           {data?.completed_date || data?.listing_details?.end_date_epoch
                             ? `Completed Date: ${convertUnixTimestampToDate(
                                 data?.completed_date || data?.listing_details?.end_date_epoch,
-                                savedUserData?.availability?.timezone?.name,
+                                isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
                               )}   `
                             : ''}
                         </span>
@@ -250,7 +250,7 @@ const ProjectCard = ({
                           {data?.invite_date
                             ? `Invite Date: ${convertUnixTimestampToDate(
                                 data?.invite_date,
-                                savedUserData?.availability?.timezone?.name,
+                                isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
                               )}`
                             : ''}
                         </span>

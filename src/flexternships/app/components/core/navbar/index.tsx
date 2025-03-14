@@ -64,7 +64,12 @@ export default function Navbar() {
     >
       {/* Left section: Logo and Navigation */}
       <div className="flex flex-row gap-x-5">
-        <div className="py-4 cursor-pointer">
+        <div
+          onClick={() => {
+            navigate(routes.dashboard.path);
+          }}
+          className="py-4 cursor-pointer"
+        >
           <img src={logo} className="h-8" alt="Flexternships Logo" />
         </div>
         <div className="w-0.5 bg-grey-border my-4 h-7 self-center" />
