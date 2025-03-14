@@ -780,3 +780,54 @@ export const logoutUser = async () => {
     handleError(error as Error, 'An unexpected error occurred while logging out');
   }
 };
+
+export const loadSupportTypes = async (
+  inputValue: string,
+  _options: any,
+  additional: { page: number } = { page: 1 },
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    params: {
+      page: additional.page,
+      page_size: 10,
+      search: inputValue,
+    },
+    headers: headers,
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.userManagement.user.v2.getSupportTypes, config);
+    const supportTypes = response.data.data || [];
+
+    return {
+      options: supportTypes.map((support: any) => ({
+        label: support.name,
+        value: support.type,
+      })),
+      hasMore: supportTypes.length === 10, // Check if there are more results
+      additional: {
+        page: additional.page + 1,
+      },
+    };
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching support types');
+    return { options: [], hasMore: false };
+  }
+};
+
+export const postSupportRequest = async (data: any) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.post(routes.userManagement.user.v2.postSupportRequest, data, config);
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching support types');
+    return { options: [], hasMore: false };
+  }
+};
