@@ -78,13 +78,17 @@ export default function TextInput(props: InputProps) {
       ) : (
         <div className="w-full flex flex-col relative">
           <input
-            type={isPassword && !showPassword ? 'password' : 'text'}
+            type={'text'}
             placeholder={placeholder}
             className={`${Styles.formInput} ${
               readOnly ? Styles.formInputReadOnly : error ? Styles.formInputError : Styles.formInputDefault
             }`}
             disabled={readOnly}
-            value={value?.toString() ?? ''}
+            value={
+              isPassword && (!showPassword || !allowViewPassword)
+                ? '*'.repeat(value?.toString().length ?? 0)
+                : value?.toString() ?? ''
+            }
             onChange={handleChange}
           />
           {isPassword && allowViewPassword && (
