@@ -222,8 +222,7 @@ export default function AccountDetails() {
                 </span>
               </div>
               <TextInput
-                isPassword
-                allowViewPassword={false}
+                isMasked
                 value={userDetails.phone}
                 onChange={() => {}}
                 className="w-[281px]"
@@ -233,8 +232,7 @@ export default function AccountDetails() {
             </div>
           </div>
           <TextInput
-            isPassword
-            allowViewPassword={false}
+            isMasked
             value={userDetails.email}
             onChange={() => {}}
             className="w-[393px]"
