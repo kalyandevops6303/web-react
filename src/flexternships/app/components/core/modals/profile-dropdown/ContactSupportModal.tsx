@@ -89,13 +89,12 @@ export default function ContactSupportModal(props: Props) {
                 <div className="flex flex-row items-center gap-x-2.5">
                   <div className="uppercase text-sm text-grey-500 font-semibold">CC: </div>
                   <TextInput
-                    isPassword
-                    allowViewPassword={false}
                     className="w-80"
                     value={userDetails.email}
                     onChange={() => {}}
                     error={errors.ccEmail?.message}
                     readOnly
+                    isMasked
                   />
                 </div>
               </div>

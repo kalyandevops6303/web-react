@@ -20,6 +20,7 @@ export default function TextInput(props: InputProps) {
     tooltip,
     isPassword,
     allowViewPassword = true,
+    isMasked = false,
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
@@ -78,17 +79,13 @@ export default function TextInput(props: InputProps) {
       ) : (
         <div className="w-full flex flex-col relative">
           <input
-            type={'text'}
+            type={isPassword && !showPassword ? 'password' : 'text'}
             placeholder={placeholder}
             className={`${Styles.formInput} ${
               readOnly ? Styles.formInputReadOnly : error ? Styles.formInputError : Styles.formInputDefault
             }`}
             disabled={readOnly}
-            value={
-              isPassword && (!showPassword || !allowViewPassword)
-                ? '*'.repeat(value?.toString().length ?? 0)
-                : value?.toString() ?? ''
-            }
+            value={isMasked ? '*'.repeat(value?.toString().length ?? 0) : value?.toString() ?? ''}
             onChange={handleChange}
           />
           {isPassword && allowViewPassword && (
@@ -123,4 +120,5 @@ type InputProps = {
   error?: string;
   isPassword?: boolean; // New optional field for password input
   allowViewPassword?: boolean; // New optional field for password input
+  isMasked?: boolean; // New optional field for masked input
 };
