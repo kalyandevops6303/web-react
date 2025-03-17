@@ -1,7 +1,13 @@
 name: Deploy to Azure Static Web Apps
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - tru-uat
+  #     - pilot/project-hackathon
+  # pull_request:
+  #   branches:
+  #     - tru-dev
 
 # name: Deploy to Azure Static Web Apps
 
