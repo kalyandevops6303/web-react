@@ -63,7 +63,8 @@ jobs:
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
             echo "FILENAME=env-fe-tru-prod.txt" >> $GITHUB_ENV
           else
-            echo "FILENAME=env-fe-webapp.txt" >> $GITHUB_ENV
+            echo "Error: Unrecognized environment tag format."
+            exit 1
           fi
 
       - name: Set SharePoint SubFolder Name Based on Tag
