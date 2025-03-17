@@ -68,7 +68,7 @@ const SetNewPassword = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard pb-1">
-          Forgot Password! 🔐
+          Set New Password! 🔐
         </CardTitle>
 
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
@@ -139,14 +139,6 @@ const SetNewPassword = () => {
             {isLoading ? <Spinner size="sm" /> : 'Save Password'}
           </Button>
         </Form>
-        <div className="d-flex justify-content-center sign-info">
-          <Label>
-            <small>Already have an account?</small>
-          </Label>
-          <Label tag={Link} to="/auth/login" className="primary">
-            <small>Sign in</small>
-          </Label>
-        </div>
       </div>
     </OnBoardWrap>
   );
