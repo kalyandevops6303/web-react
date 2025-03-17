@@ -1,6 +1,7 @@
-name: Azure Static WebApps					
+name: Azure Static WebApps
 on:
   workflow_dispatch:
+
 #   release:
 #     types:
 #       - published
