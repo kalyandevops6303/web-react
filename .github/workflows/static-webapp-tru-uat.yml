@@ -1,6 +1,15 @@
-name: Azure Static WebApps
+name: Deploy to Azure Static Web Apps
+
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target Environment'
+        required: true
+        type: choice
+        options:
+          - tru-uat
+          - tru-uat-auto
   # push:
   #   branches:
   #     - tru-uat
@@ -210,18 +219,16 @@ jobs:
       #     npm run build -- --mode ${{ env.VITE_ENV_MODE }}
       #     du -sh dist/
           
-      - name: Set API Token Based on Branch
+      - name: Set Azure Static Web Apps Token
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/tru-uat-auto" ]]; then
-            echo "AZURE_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_04D842210 }}" >> $GITHUB_ENV
-            cat AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_04D842210
-          elif [[ "${{ github.ref }}" == "refs/heads/tru-uat" ]]; then
-            echo "AZURE_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_PEBBLE_019F02E0F }}" >> $GITHUB_ENV
-            cat AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_PEBBLE_019F02E0F
-          else
-            echo "Branch not recognized!"
-            exit 1
-          fi  
+          if [ "${{ github.event.inputs.environment }}" == "tru-uat" ]; then
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_PEBBLE_019F02E0F }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" == "tru-uat-auto" ]; then
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_04D842210 }}" >> $GITHUB_ENV
+          fi
+
+      - name: Display Token (For Debugging)
+        run: cat $GITHUB_ENV | grep AZURE_STATIC_WEB_APPS_API_TOKEN
           
       # - name: Webapp Deploy
       #   id: webapp_deploy
