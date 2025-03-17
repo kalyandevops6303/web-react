@@ -239,7 +239,7 @@ jobs:
           fi
 
       - name: Debug Environment Variables
-        run: cat $GITHUB_ENV
+        run: cat $AZURE_STATIC_WEB_APPS_API_TOKEN
       
       # - name: Display Token (For Debugging)
       #   run: env | grep AZURE_STATIC_WEB_APPS_API_TOKEN
