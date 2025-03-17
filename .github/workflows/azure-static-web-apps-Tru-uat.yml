@@ -1,6 +1,9 @@
 name: Azure Static WebApps
 on:
   workflow_dispatch:
+  # push:
+  #   branches:
+  #     - tru-uat
 
 #   release:
 #     types:
