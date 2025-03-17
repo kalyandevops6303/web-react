@@ -1,6 +1,7 @@
-name: Azure Static WebApps					
-# on:
-#   workflow_dispatch:
+name: Azure Static WebApps
+on:
+  workflow_dispatch:
+
 #   release:
 #     types:
 #       - published
@@ -15,209 +16,222 @@ jobs:
           submodules: true
           lfs: false
   
-      - name: Set manifest folder names
-        run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
-             echo "FOLDER=UAT" >> $GITHUB_ENV
-          elif [[ "${{ vars.ENVIRONMENT }}" == "prod" || "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
-             echo "FOLDER=Prod" >> $GITHUB_ENV
-          else
-             echo "FOLDER=Dev" >> $GITHUB_ENV           
-          fi
+      # - name: Set manifest folder names
+      #   run: |
+      #     if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
+      #        echo "FOLDER=UAT" >> $GITHUB_ENV
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == "prod" || "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
+      #        echo "FOLDER=Prod" >> $GITHUB_ENV
+      #     else
+      #        echo "FOLDER=Dev" >> $GITHUB_ENV           
+      #     fi
 
-      - name: Debug TAG variable
-        run: echo "TAG is '${{ vars.TAG }}'"
+      # - name: Debug TAG variable
+      #   run: echo "TAG is '${{ vars.TAG }}'"
 
-      ## Sharepoint tasks
-      - name: Get SharePoint Access Token
-        id: get_token
-        env:
-          CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.ENV_CLIENT_SECRET }}
-          TENANT_ID: ${{ secrets.ENV_TENANT_ID }}
-          SITENAME: Trumio-env
-        run: |
-          response=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=${{ env.CLIENT_ID }}&client_secret=${{ env.CLIENT_SECRET }}&grant_type=client_credentials&resource=https://graph.microsoft.com" "https://login.microsoftonline.com/${{ env.TENANT_ID }}/oauth2/token")
-          echo "token=$(echo $response | jq -r '.access_token')" >> $GITHUB_ENV
+      # ## Sharepoint tasks
+      # - name: Get SharePoint Access Token
+      #   id: get_token
+      #   env:
+      #     CLIENT_ID: ${{ secrets.ENV_CLIENT_ID }}
+      #     CLIENT_SECRET: ${{ secrets.ENV_CLIENT_SECRET }}
+      #     TENANT_ID: ${{ secrets.ENV_TENANT_ID }}
+      #     SITENAME: Trumio-env
+      #   run: |
+      #     response=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=${{ env.CLIENT_ID }}&client_secret=${{ env.CLIENT_SECRET }}&grant_type=client_credentials&resource=https://graph.microsoft.com" "https://login.microsoftonline.com/${{ env.TENANT_ID }}/oauth2/token")
+      #     echo "token=$(echo $response | jq -r '.access_token')" >> $GITHUB_ENV
 
-      - name: Retrieve Site ID
-        id: get_site_id
-        run: |
-          site_response=$(curl -H "Authorization: Bearer ${{ env.token }}" \
-          "https://graph.microsoft.com/v1.0/sites?search=${{ env.SITENAME }}")
-          echo "site_id=trumio.sharepoint.com,0702a39f-d261-4be5-b3d4-76525995bc85,b3578a0e-9132-47da-bf61-cc572bf23ced" >> $GITHUB_ENV
+      # - name: Retrieve Site ID
+      #   id: get_site_id
+      #   run: |
+      #     site_response=$(curl -H "Authorization: Bearer ${{ env.token }}" \
+      #     "https://graph.microsoft.com/v1.0/sites?search=${{ env.SITENAME }}")
+      #     echo "site_id=trumio.sharepoint.com,0702a39f-d261-4be5-b3d4-76525995bc85,b3578a0e-9132-47da-bf61-cc572bf23ced" >> $GITHUB_ENV
 
-      - name: Set SharePoint File Name Based on Tag
-        run: |
-          if [[ -z "${{ vars.TAG }}" ]]; then
-            echo "Error: TAG is empty or undefined."
-            exit 1
-          elif [[ "${{ vars.TAG }}" == uat_* ]]; then
-            echo "FILENAME=env-fe-uat.txt" >> $GITHUB_ENV
-          elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
-            echo "FILENAME=env-fe-tru-uat.txt" >> $GITHUB_ENV  
-          elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
-            echo "FILENAME=env-fe-tru-uat-auto.txt" >> $GITHUB_ENV  
-          elif [[ "${{ vars.TAG }}" == v* ]]; then
-            echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
-          elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
-            echo "FILENAME=env-fe-tru-prod.txt" >> $GITHUB_ENV
-          else
-            echo "FILENAME=env-fe-webapp.txt" >> $GITHUB_ENV
-          fi
+      # - name: Set SharePoint File Name Based on Tag
+      #   run: |
+      #     if [[ -z "${{ vars.TAG }}" ]]; then
+      #       echo "Error: TAG is empty or undefined."
+      #       exit 1
+      #     elif [[ "${{ vars.TAG }}" == uat_* ]]; then
+      #       echo "FILENAME=env-fe-uat.txt" >> $GITHUB_ENV
+      #     elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
+      #       echo "FILENAME=env-fe-tru-uat.txt" >> $GITHUB_ENV  
+      #     elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
+      #       echo "FILENAME=env-fe-tru-uat-auto.txt" >> $GITHUB_ENV  
+      #     elif [[ "${{ vars.TAG }}" == v* ]]; then
+      #       echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
+      #     elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
+      #       echo "FILENAME=env-fe-tru-prod.txt" >> $GITHUB_ENV
+      #     else
+      #       echo "Error: Unrecognized environment tag format."
+      #       exit 1
+      #     fi
 
-      - name: Set SharePoint SubFolder Name Based on Tag
-        run: |
-           if [[ "${{ vars.TAG }}" == uat_* ]]; then
-            echo "SUBFOLDER=uat" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
-            echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
-            echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == v* ]]; then
-            echo "SUBFOLDER=prod" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
-            echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
-           else
-            echo "SUBFOLDER=tru-dev" >> $GITHUB_ENV
-           fi
+      # - name: Set SharePoint SubFolder Name Based on Tag
+      #   run: |
+      #      if [[ "${{ vars.TAG }}" == uat_* ]]; then
+      #       echo "SUBFOLDER=uat" >> $GITHUB_ENV
+      #      elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
+      #       echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
+      #      elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
+      #       echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
+      #      elif [[ "${{ vars.TAG }}" == v* ]]; then
+      #       echo "SUBFOLDER=prod" >> $GITHUB_ENV
+      #      elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
+      #       echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
+      #      else
+      #       echo "SUBFOLDER=tru-dev" >> $GITHUB_ENV
+      #      fi
 
-      - name: Echo folder variable
-        run: |
-            echo ${{ env.FOLDER }}
-            echo ${{ env.SUBFOLDER }}
-            echo ${{ env.FILENAME }}
+      # - name: Echo folder variable
+      #   run: |
+      #       echo ${{ env.FOLDER }}
+      #       echo ${{ env.SUBFOLDER }}
+      #       echo ${{ env.FILENAME }}
 
-      - name: Fetch Download URL from SharePoint
-        id: get_download_url
-        run: |
-          file_response=$(curl -H "Authorization: Bearer ${{ env.token }}" \
-          "https://graph.microsoft.com/v1.0/sites/${{ env.site_id }}/drive/root:/${{ env.FOLDER }}/${{ env.SUBFOLDER }}/${{ env.FILENAME }}")
-          echo "File response: $file_response"
-          download_url=$(echo $file_response | jq -r '."@microsoft.graph.downloadUrl"')
-          echo "Download URL: $download_url"
-          echo "download_url=$download_url" >> $GITHUB_ENV
+      # - name: Fetch Download URL from SharePoint
+      #   id: get_download_url
+      #   run: |
+      #     file_response=$(curl -H "Authorization: Bearer ${{ env.token }}" \
+      #     "https://graph.microsoft.com/v1.0/sites/${{ env.site_id }}/drive/root:/${{ env.FOLDER }}/${{ env.SUBFOLDER }}/${{ env.FILENAME }}")
+      #     echo "File response: $file_response"
+      #     download_url=$(echo $file_response | jq -r '."@microsoft.graph.downloadUrl"')
+      #     echo "Download URL: $download_url"
+      #     echo "download_url=$download_url" >> $GITHUB_ENV
 
-      - name: Display Download URL
-        run: |
-          echo "Download URL:"
-          echo "${{ env.download_url }}"
+      # - name: Display Download URL
+      #   run: |
+      #     echo "Download URL:"
+      #     echo "${{ env.download_url }}"
 
-      - name: Download File from SharePoint
-        run: |
-          if [ -z "${{ env.download_url }}" ]; then
-            echo "Error: Download URL is empty"
-            exit 1
-          fi
-          curl -L "${{ env.download_url }}" --output secrets.txt
-          echo "File downloaded successfully."
+      # - name: Download File from SharePoint
+      #   run: |
+      #     if [ -z "${{ env.download_url }}" ]; then
+      #       echo "Error: Download URL is empty"
+      #       exit 1
+      #     fi
+      #     curl -L "${{ env.download_url }}" --output secrets.txt
+      #     echo "File downloaded successfully."
 
-      - name: Copy output to env file and display
-        run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
-              cp secrets.txt .env.uat.local
-          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
-              cp secrets.txt .env.tru-uat.local
-          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
-              cp secrets.txt .env.tru-uat-auto.local
-          elif [[ "${{ vars.ENVIRONMENT }}" == "prod" ]]; then
-              cp secrets.txt .env.production.local
-          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
-              cp secrets.txt .env.tru-production.local
-          else
-              cp secrets.txt .env.webapp.local
-          fi
-        shell: bash
+      # - name: Copy output to env file and display
+      #   run: |
+      #     if [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
+      #         cp secrets.txt .env.uat.local
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
+      #         cp secrets.txt .env.tru-uat.local
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
+      #         cp secrets.txt .env.tru-uat-auto.local
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == "prod" ]]; then
+      #         cp secrets.txt .env.production.local
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
+      #         cp secrets.txt .env.tru-production.local
+      #     else
+      #         cp secrets.txt .env.webapp.local
+      #     fi
+      #   shell: bash
 
-      - name: Install Azure cli
-        run: |
-          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-          AZ_REPO=$(lsb_release -cs)
-          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-          sudo apt-get update
-          sudo apt-get install azure-cli
+      # - name: Install Azure cli
+      #   run: |
+      #     sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+      #     curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+      #     AZ_REPO=$(lsb_release -cs)
+      #     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+      #     sudo apt-get update
+      #     sudo apt-get install azure-cli
 
-      - name: Set Azure environment
-        id: azure
-        run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
-              echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID_UAT }}" >> $GITHUB_ENV
-              echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
-              echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-              echo "azure_clientsecret=${{ secrets.AZURE_CLIENT_SECRET_UAT }}" >> $GITHUB_ENV
-          else
-              echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
-              echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
-              echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-              echo "azure_clientsecret=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
-          fi
-        shell: bash
+      # - name: Set Azure environment
+      #   id: azure
+      #   run: |
+      #     if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
+      #         echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID_UAT }}" >> $GITHUB_ENV
+      #         echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+      #         echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+      #         echo "azure_clientsecret=${{ secrets.AZURE_CLIENT_SECRET_UAT }}" >> $GITHUB_ENV
+      #     else
+      #         echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+      #         echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+      #         echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+      #         echo "azure_clientsecret=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+      #     fi
+      #   shell: bash
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          creds: '{"clientId":"${{ env.azure_clientid }}","clientSecret":"${{ env.azure_clientsecret }}","subscriptionId":"${{ env.azure_subscriptionid }}","tenantId":"${{ env.azure_tenantid }}"}'
+      # - name: Login to Azure
+      #   uses: azure/login@v2
+      #   with:
+      #     creds: '{"clientId":"${{ env.azure_clientid }}","clientSecret":"${{ env.azure_clientsecret }}","subscriptionId":"${{ env.azure_subscriptionid }}","tenantId":"${{ env.azure_tenantid }}"}'
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.x'
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '18.x'
 
-      - name: Set environment variable
-        run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
-              echo "VITE_ENV_MODE=uat" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumiouatfdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=uat.trumio.ai" >> $GITHUB_ENV
+      # - name: Set environment variable
+      #   run: |
+      #     if [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
+      #         echo "VITE_ENV_MODE=uat" >> $GITHUB_ENV
+      #         echo "cdn_endpoint=trumiouatfdcdn" >> $GITHUB_ENV
+      #         echo "cdn_domain=uat.trumio.ai" >> $GITHUB_ENV
 
-          elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat ]]; then
-              echo "VITE_ENV_MODE=tru-uat" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumio-tru-uat-fdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=tru-uat.trumio.ai" >> $GITHUB_ENV
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat ]]; then
+      #         echo "VITE_ENV_MODE=tru-uat" >> $GITHUB_ENV
+      #         echo "cdn_endpoint=trumio-tru-uat-fdcdn" >> $GITHUB_ENV
+      #         echo "cdn_domain=tru-uat.trumio.ai" >> $GITHUB_ENV
 
-          elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat-auto ]]; then
-              echo "VITE_ENV_MODE=tru-uat-auto" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumio-tru-uat-auto-fdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=tru-uat-auto.trumio.ai" >> $GITHUB_ENV
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat-auto ]]; then
+      #         echo "VITE_ENV_MODE=tru-uat-auto" >> $GITHUB_ENV
+      #         echo "cdn_endpoint=trumio-tru-uat-auto-fdcdn" >> $GITHUB_ENV
+      #         echo "cdn_domain=tru-uat-auto.trumio.ai" >> $GITHUB_ENV
 
-          elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
-              echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumioprodcdn" >> $GITHUB_ENV
-              echo "cdn_domain=app.trumio.ai" >> $GITHUB_ENV
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
+      #         echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
+      #         echo "cdn_endpoint=trumioprodcdn" >> $GITHUB_ENV
+      #         echo "cdn_domain=app.trumio.ai" >> $GITHUB_ENV
 
-          elif [[ "${{ vars.ENVIRONMENT }}" == tru-prod ]]; then
-              echo "VITE_ENV_MODE=tru-production" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV            
-          else
-              echo "VITE_ENV_MODE=webapp" >> $GITHUB_ENV
-          fi
+      #     elif [[ "${{ vars.ENVIRONMENT }}" == tru-prod ]]; then
+      #         echo "VITE_ENV_MODE=tru-production" >> $GITHUB_ENV
+      #         echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
+      #         echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV            
+      #     else
+      #         echo "VITE_ENV_MODE=webapp" >> $GITHUB_ENV
+      #     fi
 
-      - name: Echo VITE variable
-        run: echo ${{ env.VITE_ENV_MODE }}
+      # - name: Echo VITE variable
+      #   run: echo ${{ env.VITE_ENV_MODE }}
   
-      - name: Install Dependencies
-        run: |
-          npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
+      # - name: Install Dependencies
+      #   run: |
+      #     npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
 
-      - name: NPM Build
-        run: |
-          npm run build -- --mode ${{ env.VITE_ENV_MODE }}
-          du -sh dist/
+      # - name: NPM Build
+      #   run: |
+      #     npm run build -- --mode ${{ env.VITE_ENV_MODE }}
+      #     du -sh dist/
           
-      - name: Webapp Deploy
-        id: webapp_deploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_04D842210 }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} 
-          action: "upload"
-          skip_api_build: true
-          skip_app_build: true
-          app_location: "dist"
-          output_location: ""
-          is_static_export: true
+      - name: Set API Token Based on Branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/tru-uat-auto" ]]; then
+            echo "AZURE_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_04D842210 }}" >> $GITHUB_ENV
+            cat AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_04D842210
+          elif [[ "${{ github.ref }}" == "refs/heads/tru-uat" ]]; then
+            echo "AZURE_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_PEBBLE_019F02E0F }}" >> $GITHUB_ENV
+            cat AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_PEBBLE_019F02E0F
+          else
+            echo "Branch not recognized!"
+            exit 1
+          fi  
+          
+      # - name: Webapp Deploy
+      #   id: webapp_deploy
+      #   uses: Azure/static-web-apps-deploy@v1
+      #   with:
+      #     azure_static_web_apps_api_token: ${{ env.AZURE_API_TOKEN }}
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }} 
+      #     action: "upload"
+      #     skip_api_build: true
+      #     skip_app_build: true
+      #     app_location: "dist"
+      #     output_location: ""
 
   ## close_pull_request_job:
   #     if: github.event_name == 'pull_request' && github.event.action == 'closed'
