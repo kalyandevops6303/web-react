@@ -69,6 +69,8 @@ import { returnCompleteProfileDetailsCta } from '../../utility/constants/Complet
 import '../../App.css';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { isUserLoggedIn } from '@/utility/commonUtils';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const Account = () => {
@@ -110,6 +112,9 @@ const Account = () => {
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
   const userType = useSelector((state) => state.auth?.userType);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const {
     control,
@@ -172,6 +177,8 @@ const Account = () => {
   const [imageUrlRes, setImageUrlRes] = useState(savedFormData?.imageUrlRes || null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
+  const [isBlobImage, setIsBlobImage] = useState(true);
+
   const fileInputRef = useRef(null);
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
@@ -191,6 +198,7 @@ const Account = () => {
   const onSuccess = () => {
     dispatch(clearAllFormData());
     dispatch(getUserData());
+    populateUserDetails(true);
     if (isDelegate) {
       setItem('isDelegateProfileCreated', true);
       ShowToastMessage(SUCCESS, 'Delegate profile updated successfully');
@@ -429,6 +437,12 @@ const Account = () => {
     getOverallPercentageCompletion();
   }, [profileCompletionFlextern, profileCompletionProject]);
 
+  useEffect(() => {
+    if (isImageUploading) {
+      setIsBlobImage(false);
+    }
+  }, [isImageUploading]);
+
   return (
     <AccountDetailsFormContainer>
       {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
@@ -448,7 +462,11 @@ const Account = () => {
                 <div className="d-flex align-items-center pb-2 image-container">
                   {selectedImage && selectedImagePreview ? (
                     <img
-                      src={selectedImagePreview}
+                      src={
+                        !isBlobImage || isImageUploading
+                          ? selectedImagePreview
+                          : addQueryParams(selectedImagePreview, blobSasTokenParams)
+                      }
                       alt="profile"
                       className="selected-image"
                       style={{ objectFit: 'cover' }}
