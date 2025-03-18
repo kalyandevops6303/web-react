@@ -1,5 +1,5 @@
 import logo from '@flexternships/assets/images/ic_trumio_logo.png';
-import { Bell } from 'react-feather';
+import { Bell, Menu } from 'react-feather';
 import ProfileDropdown from './profile-dropdown';
 import { Link, useLocation } from 'react-router-dom';
 import routes from '@/flexternships/routes';
@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate } from 'react-router-dom';
 import { NAVBAR_ITEMS } from '@/flexternships/static/constants/core-constants';
+import { Sheet, SheetContent, SheetTrigger } from '../../ui/sheet';
 
 /**
  * Main navigation bar component for the Flexternships application.
@@ -64,11 +65,47 @@ export default function Navbar() {
     >
       {/* Left section: Logo and Navigation */}
       <div className="flex flex-row gap-x-5">
-        <div className="py-4 cursor-pointer">
+        {/* Mobile Navigation */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <div className="flex-col justify-center d-flex d-lg-none">
+              <Menu size={20} className="text-grey hover:text-trublue-secondary-500 cursor-pointer" />
+            </div>
+          </SheetTrigger>
+          <SheetContent className="p-0" side="left">
+            <div className="flex flex-col py-12">
+              {[
+                ...NAVBAR_ITEMS,
+                { path: routes.notifications.path, label: 'Notifications', activeTabMatch: routes.notifications.path },
+              ].map((item) => (
+                <div
+                  key={item.path}
+                  onClick={() => handleNavItemClick(item.path)}
+                  role="button"
+                  aria-current={isActiveRoute(item.activeTabMatch) ? 'page' : undefined}
+                  className={classNames(
+                    'text-base font-normal leading-6 text-grey-800 cursor-pointer px-6 py-4',
+                    {
+                      'text-white font-semibold bg-trublue-secondary-500': isActiveRoute(item.activeTabMatch),
+                    },
+                    {
+                      'd-block d-md-none': item.path === routes.notifications.path,
+                    },
+                  )}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
+        {/* Logo */}
+        <Link to={routes.dashboard.path} className="py-4 cursor-pointer">
           <img src={logo} className="h-8" alt="Flexternships Logo" />
-        </div>
-        <div className="w-0.5 bg-grey-border my-4 h-7 self-center" />
-        <div className="flex flex-row items-center gap-x-12">
+        </Link>
+        {/* Desktop Navigation */}
+        <div className="w-0.5 bg-grey-border my-4 h-7 self-center d-none d-lg-block" />
+        <div className="flex-row items-center gap-x-12 d-none d-lg-flex">
           {NAVBAR_ITEMS.map((item) => (
             <div
               key={item.path}
@@ -94,7 +131,7 @@ export default function Navbar() {
       <div className="flex flex-row gap-x-6">
         <Link
           to={routes.notifications.path}
-          className="flex flex-col justify-center py-3 relative cursor-pointer"
+          className="flex-col justify-center py-3 relative cursor-pointer d-none d-md-flex"
           aria-label={`Notifications ${showNotificationsCount ? `(${unreadNotificationsCount} unread)` : ''}`}
         >
           <Bell size={20} className="text-grey hover:text-trublue-secondary-500" />
@@ -104,7 +141,7 @@ export default function Navbar() {
             </span>
           )}
         </Link>
-        <div className="w-0.5 bg-grey-border my-3 h-7 self-center" />
+        <div className="w-0.5 bg-grey-border my-3 h-7 self-center d-none d-md-block" />
         {!isEmpty(userDetails) && <ProfileDropdown />}
       </div>
     </nav>
