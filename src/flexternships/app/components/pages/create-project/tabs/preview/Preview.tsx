@@ -133,7 +133,7 @@ export default function Preview() {
         <div className={Styles.tabContentHeader}>Project Details</div>
         <div className={Styles.previewCardBody}>
           <ProjectDetailsItem
-            className="w-[460px] mb-5"
+            className="w-[460px] mb-5 break-words"
             title="Project name"
             value={formData.requirements.projectName || 'NaN'}
           />
@@ -188,7 +188,7 @@ export default function Preview() {
       <div className={`${Styles.tabContent} shadow-card`}>
         <div className={Styles.tabContentHeader}>Project Description</div>
         <div className={Styles.previewCardBody}>
-          <div className="mt-5 w-full text-grey-heading text-base not-italic font-normal leading-6">
+          <div className="mt-5 w-full text-grey-heading text-base not-italic font-normal leading-6 break-words">
             {formData.requirements.projectDescription || 'NaN'}
           </div>
         </div>
