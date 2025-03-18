@@ -14,9 +14,9 @@
 name: frontend-ci-cd
 on:
   workflow_dispatch:
-  release:
-    types:
-      - published
+#   release:
+#     types:
+#       - published
 
 jobs:
   frontend-ci-cd:
