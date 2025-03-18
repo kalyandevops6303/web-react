@@ -1,27 +1,5 @@
-name: Deploy to Azure Static Web Apps
-
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Target Environment'
-        required: true
-        type: choice
-        options:
-          - tru-uat
-          - tru-uat-auto
-
 # name: Deploy to Azure Static Web Apps
-# on:
-#   push:
-#     branches:
-#       - tru-uat
-#   #     - pilot/project-hackathon
-#   # pull_request:
-#   #   branches:
-#   #     - tru-dev
 
-# name: Deploy to Azure Static Web Apps
 # on:
 #   workflow_dispatch:
 #     inputs:
@@ -32,31 +10,34 @@ on:
 #         options:
 #           - tru-uat
 #           - tru-uat-auto
-  # push:
-  #   branches:
-  #     - tru-uat
 
-#   release:
-#     types:
-#       - published
+name: frontend-ci-cd
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
 jobs:
-  build_and_deploy_job:
-    # if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')												  													
-    runs-on: ubuntu-latest  
+  frontend-ci-cd:
+    #if: |
+    # startsWith(github.ref, 'refs/tags/uat_v') ||
+    # github.event.release.target_commitish == 'uat'
+    runs-on: ubuntu-latest
+    # runs-on: [self-hosted, linux, X64, trumio-orgrunner]
     steps:
       - uses: actions/checkout@v4
-        with:			 
+        with:
+          fetch-depth: 0
+          ref: ${{ vars.BRANCH }}
           submodules: true
-          lfs: false
-  
+
       - name: Set manifest folder names
         run: |
           if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
              echo "FOLDER=UAT" >> $GITHUB_ENV
-          elif [[ "${{ vars.ENVIRONMENT }}" == "prod" || "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
-             echo "FOLDER=Prod" >> $GITHUB_ENV
           else
-             echo "FOLDER=Dev" >> $GITHUB_ENV           
+             echo "FOLDER=Prod" >> $GITHUB_ENV
           fi
 
       - name: Debug TAG variable
@@ -103,25 +84,20 @@ jobs:
 
       - name: Set SharePoint SubFolder Name Based on Tag
         run: |
-           if [[ "${{ vars.TAG }}" == uat_* ]]; then
-            echo "SUBFOLDER=uat" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
-            echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
-            echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == v* ]]; then
-            echo "SUBFOLDER=prod" >> $GITHUB_ENV
-           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
-            echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
-           else
-            echo "SUBFOLDER=tru-dev" >> $GITHUB_ENV
-           fi
-
-      - name: Echo folder variable
-        run: |
-            echo ${{ env.FOLDER }}
-            echo ${{ env.SUBFOLDER }}
-            echo ${{ env.FILENAME }}
+          if [[ "${{ vars.TAG }}" == uat_* ]]; then
+           echo "SUBFOLDER=uat" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
+           echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
+           echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == v* ]]; then
+           echo "SUBFOLDER=prod" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
+           echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
+          else
+           echo "Error: Unrecognized environment tag format."
+           exit 1
+          fi
 
       - name: Fetch Download URL from SharePoint
         id: get_download_url
@@ -160,7 +136,8 @@ jobs:
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
               cp secrets.txt .env.tru-production.local
           else
-              cp secrets.txt .env.webapp.local
+              echo "Error: Invalid environment."
+              exit 1
           fi
         shell: bash
 
@@ -203,35 +180,43 @@ jobs:
         run: |
           if [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
               echo "VITE_ENV_MODE=uat" >> $GITHUB_ENV
+              echo "storage=azusctruatwebsa" >> $GITHUB_ENV
+              echo "backup_directory=uat-frontend-backup" >> $GITHUB_ENV
               echo "cdn_endpoint=trumiouatfdcdn" >> $GITHUB_ENV
               echo "cdn_domain=uat.trumio.ai" >> $GITHUB_ENV
 
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat ]]; then
               echo "VITE_ENV_MODE=tru-uat" >> $GITHUB_ENV
+              echo "storage=azusctrtruuatwebsa" >> $GITHUB_ENV
+              echo "backup_directory=tru-uat-frontend-backup" >> $GITHUB_ENV
               echo "cdn_endpoint=trumio-tru-uat-fdcdn" >> $GITHUB_ENV
               echo "cdn_domain=tru-uat.trumio.ai" >> $GITHUB_ENV
 
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat-auto ]]; then
               echo "VITE_ENV_MODE=tru-uat-auto" >> $GITHUB_ENV
+              echo "storage=aztruuatautowebsa" >> $GITHUB_ENV
+              echo "backup_directory=tru-uat-auto-frontend-backup" >> $GITHUB_ENV
               echo "cdn_endpoint=trumio-tru-uat-auto-fdcdn" >> $GITHUB_ENV
               echo "cdn_domain=tru-uat-auto.trumio.ai" >> $GITHUB_ENV
 
           elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
               echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
+              echo "storage=azusctrwebsa" >> $GITHUB_ENV
+              echo "backup_directory=prod-frontend-backup" >> $GITHUB_ENV
               echo "cdn_endpoint=trumioprodcdn" >> $GITHUB_ENV
               echo "cdn_domain=app.trumio.ai" >> $GITHUB_ENV
 
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-prod ]]; then
               echo "VITE_ENV_MODE=tru-production" >> $GITHUB_ENV
+              echo "storage=azusctrtruprodwebsa" >> $GITHUB_ENV
+              echo "backup_directory=tru-prod-frontend-backup" >> $GITHUB_ENV
               echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV            
-          else
-              echo "VITE_ENV_MODE=webapp" >> $GITHUB_ENV
+              echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV
           fi
 
       - name: Echo VITE variable
         run: echo ${{ env.VITE_ENV_MODE }}
-  
+
       - name: Install Dependencies
         run: |
           npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
@@ -239,33 +224,51 @@ jobs:
       - name: NPM Build
         run: |
           npm run build -- --mode ${{ env.VITE_ENV_MODE }}
-          du -sh dist/
-          
+
+      - name: Upload to blob storage
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
+        run: |
+          today=$(date +%d-%m-%Y-%H.%M)
+          az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d "${{ env.backup_directory }}/frontend-$today" --source ./dist
+
+      - name: Delete blob storage
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
+        run: az storage blob delete-batch --account-name ${{ env.storage }} --auth-mode login --source '$web' --pattern '*'
+
+      - name: Upload to blob storage
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
+        run: az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d '$web' --source ./dist
+
+      - name: Purge CDN endpoint
+        if: ${{ vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-uat' }}
+        run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name ${{ env.cdn_endpoint }} --domains ${{ env.cdn_domain }} --content-paths '/*'
+
       - name: Set Azure Static Web Apps Token
         run: |
-          if [ "${{ github.event.inputs.environment }}" == "tru-uat" ]; then
+          if [[ "${{ github.event.inputs.environment }}" == "tru-uat" ]]; then
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_PEBBLE_019F02E0F }}" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.environment }}" == "tru-uat-auto" ]; then
+          elif [[ "${{ github.event.inputs.environment }}" == "tru-uat-auto" ]]; then
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_04D842210 }}" >> $GITHUB_ENV
           fi
 
-      # - name: Debug Environment Variables
-      #   run: cat $AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_PEBBLE_019F02E0F
-      
-      # - name: Display Token (For Debugging)
-      #   run: env | grep AZURE_STATIC_WEB_APPS_API_TOKEN
-          
       - name: Webapp Deploy
         id: webapp_deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ env.AZURE_API_TOKEN }}
+          azure_static_web_apps_api_token: ${{ env.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} 
           action: "upload"
           skip_api_build: true
           skip_app_build: true
           app_location: "dist"
           output_location: ""
+          is_static_export: true
+          
+      # Azure logout
+      - name: logout
+        run: |
+          az logout
+        if: always()
 
   ## close_pull_request_job:
   #     if: github.event_name == 'pull_request' && github.event.action == 'closed'
