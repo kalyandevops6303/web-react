@@ -14,9 +14,9 @@
 name: frontend-ci-cd
 on:
   workflow_dispatch:
-  release:
-    types:
-      - published
+  # release:
+  #   types:
+  #     - published
 
 jobs:
   frontend-ci-cd:
@@ -187,17 +187,17 @@ jobs:
 
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat ]]; then
               echo "VITE_ENV_MODE=tru-uat" >> $GITHUB_ENV
-              echo "storage=azusctrtruuatwebsa" >> $GITHUB_ENV
-              echo "backup_directory=tru-uat-frontend-backup" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumio-tru-uat-fdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=tru-uat.trumio.ai" >> $GITHUB_ENV
+              # echo "storage=azusctrtruuatwebsa" >> $GITHUB_ENV
+              # echo "backup_directory=tru-uat-frontend-backup" >> $GITHUB_ENV
+              # echo "cdn_endpoint=trumio-tru-uat-fdcdn" >> $GITHUB_ENV
+              # echo "cdn_domain=tru-uat.trumio.ai" >> $GITHUB_ENV
 
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat-auto ]]; then
               echo "VITE_ENV_MODE=tru-uat-auto" >> $GITHUB_ENV
-              echo "storage=aztruuatautowebsa" >> $GITHUB_ENV
-              echo "backup_directory=tru-uat-auto-frontend-backup" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumio-tru-uat-auto-fdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=tru-uat-auto.trumio.ai" >> $GITHUB_ENV
+              # echo "storage=aztruuatautowebsa" >> $GITHUB_ENV
+              # echo "backup_directory=tru-uat-auto-frontend-backup" >> $GITHUB_ENV
+              # echo "cdn_endpoint=trumio-tru-uat-auto-fdcdn" >> $GITHUB_ENV
+              # echo "cdn_domain=tru-uat-auto.trumio.ai" >> $GITHUB_ENV
 
           elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
               echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
