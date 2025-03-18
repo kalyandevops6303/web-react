@@ -356,15 +356,51 @@ export const FlexternshipRoutes = [
   },
   {
     path: routes.projectDoc.path,
-    element: <FlexternshipsContractView />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [],
+          },
+        ]}
+      >
+        <FlexternshipsContractView />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.projectStepDoc.path,
-    element: <ContractView />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [],
+          },
+        ]}
+      >
+        <ContractView />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.projectStepDocId.path,
-    element: <ContractView />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [],
+          },
+        ]}
+      >
+        <ContractView />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.blockedProjects.path,
@@ -507,7 +543,19 @@ export const FlexternshipRoutes = [
   },
   {
     path: routes.talentProfileEdit.path,
-    element: <TalentOnboarding />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [],
+          },
+        ]}
+      >
+        <TalentOnboarding />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.clientProfileEdit.path,
