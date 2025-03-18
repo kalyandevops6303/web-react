@@ -1,7 +1,9 @@
 'use client';
-import { downloadFile, getFileIcon, getFileSize } from '@/flexternships/utils/file-utils';
+import { formatFileSize } from '@/flexternships/utils/file-utils';
 import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import GenericModal from './GenericModal';
+import HorizontalFileCard from '../files/HorizontalFileCard';
+import { getFileDownloadUrl } from '@/flexternships/services/project-management-v2';
 
 export default function DocumentsModal(props: DocumentsModalProps) {
   const { isOpen, onClose, data } = props;
@@ -18,32 +20,16 @@ export default function DocumentsModal(props: DocumentsModalProps) {
     <GenericModal isOpen={isOpen} onClose={handleClose}>
       <div className="relative rounded-lg bg-white pt-13 pr-8 pb-8 pl-6 shadow-lg">
         <h1 className="text-[20px]">Project Requirements Documents</h1>
-        <div className="flex flex-col w-full items-center justify-center gap-1 py-6 px-5">
-          {data.map((doc: any, index: number) => (
-            <div
-              onClick={() =>
-                downloadFile({
-                  data: {
-                    download_url: doc.downloadUrl,
-                    file_name: doc.fileName,
-                  },
-                  file_name: doc.fileName,
-                })
-              }
+        <div className="flex flex-col w-full items-center justify-center gap-1 py-6">
+          {data.map((doc: Document, index: number) => (
+            <HorizontalFileCard
               key={index}
-              className="flex items-center w-full justify-between gap-1 "
-            >
-              <div className="flex flex-row items-center justify-center gap-3  text-sm font-medium leading-[22.652px]">
-                <img className="rounded me-75 mb-25" alt="pdf" src={getFileIcon(doc.fileName)} height="24" width="24" />
-                <h1 className="">{doc?.fileName}</h1>
-              </div>
-              <div className="flex flex-row items-center gap-[60px]">
-                <h1 className="text-sm font-normal leading-[22.652px] text-right">{getFileSize(doc.size)}</h1>
-                <h1 className="text-sm font-normal leading-[22.652px] text-right">
-                  {formatEpochToHumanReadable(doc.createdAt)}
-                </h1>
-              </div>
-            </div>
+              className="m-0 w-full"
+              fileName={doc.fileName}
+              fileSize={formatFileSize(doc.size)}
+              createdAt={formatEpochToHumanReadable(doc.createdAt)}
+              generateDownloadLink={async () => await getFileDownloadUrl(doc.fileKey)}
+            />
           ))}
         </div>
       </div>
@@ -54,5 +40,12 @@ export default function DocumentsModal(props: DocumentsModalProps) {
 interface DocumentsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: any;
+  data: Document[];
 }
+
+type Document = {
+  fileName: string;
+  createdAt: number;
+  fileKey: string;
+  size: number;
+};
