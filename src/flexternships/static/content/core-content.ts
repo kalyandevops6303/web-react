@@ -16,7 +16,7 @@ export const projectsBlockedModalContent: GlobalModalContent = {
 
 export const tncModalContent: GlobalModalContent = {
   title: 'Terms and Conditions',
-  description: 'You have not accepted the terms and conditions. Please accept the terms and conditions to continue.',
-  confirmButtonText: 'Accept Terms and Conditions',
+  description: 'You have not accepted the terms of service and privacy policy. Please accept to continue.',
+  confirmButtonText: 'Accept Terms of Service & Privacy Policy',
   cancelButtonText: 'Logout',
 };

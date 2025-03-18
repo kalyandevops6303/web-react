@@ -28,6 +28,7 @@ import { getIssueTypeService } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport } from '../../redux/actions/supportActions';
 import { CUSTOMER_SUPPORT_TYPES, DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import TextInput from '@/flexternships/app/components/core/form/TextInput';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
   const [issueTypeOptions, setIssueTypeOptions] = useState(null);
@@ -223,10 +224,11 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
                   <CardText className="m-0 me-75 mr-3 fw-bold">CC: </CardText>{' '}
-                  <Input
+                  <TextInput
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
                     value={userEmail}
+                    isMasked
                   />
                 </div>
               </Col>
