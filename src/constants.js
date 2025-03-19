@@ -1,8 +1,3 @@
-export const COMETCHAT_CONSTANTS = {
-  APP_ID: import.meta.env.VITE_APP_ID,
-  REGION: import.meta.env.VITE_APP_REGION,
-};
-
 export const GOOGLE_ANALYTICS_CONSTANTS = {
   TRACKING_ID: import.meta.env.GOOGLE_ANALYTICS_TRACKING_ID,
 };

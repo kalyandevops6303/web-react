@@ -211,21 +211,9 @@ const LeftSidebarProjectDetails = () => {
     setRelistConfirmationModal(true);
   };
 
-  const onMessageClick = () => {
-    navigate(`/chat`, {
-      state: { targetId: params?.projectId, targetType: 'group' },
-    });
-  };
-
   const handleDelete = () => {
     setDeleteModal(true);
     setDeleteModalData(projectDetailsData);
-  };
-
-  const onMessageClientClick = () => {
-    navigate(`/chat`, {
-      state: { targetId: projectDetailsData?.client_details?.user_id },
-    });
   };
   return (
     <LeftSidebarProjectDetailsWrapper>
@@ -499,11 +487,6 @@ const LeftSidebarProjectDetails = () => {
                     Invite
                   </Button>
                 )}
-                {(projectDetailsData?.status === 'ON_GOING' || projectDetailsData?.status === 'COMPLETED') && (
-                  <Button className="w-50" outline color="primary" onClick={onMessageClick}>
-                    Message
-                  </Button>
-                )}
                 {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'TO_BE_LISTED') && (
                   <Button className="w-50" color="danger" onClick={handleWithdraw}>
                     Withdraw
@@ -515,22 +498,6 @@ const LeftSidebarProjectDetails = () => {
                   </Button>
                 )}
               </div>
-            </div>
-          )}
-
-          {(projectDetailsData?.status === 'ON_GOING' || projectDetailsData?.status === 'COMPLETED') &&
-            projectDetailsData?.worker_details?.entity_id === userData?._id && (
-              <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button className="w-50" color="primary" onClick={onMessageClick}>
-                  Message
-                </Button>
-              </div>
-            )}
-          {userData?.user_type === userTypes.talent && invitedByData && (
-            <div className="d-flex gap-1 mt-3 justify-content-center">
-              <Button className="w-50" color="primary" onClick={onMessageClientClick}>
-                Message
-              </Button>
             </div>
           )}
         </CardBody>

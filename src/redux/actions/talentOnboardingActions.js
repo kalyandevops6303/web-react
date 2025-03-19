@@ -37,7 +37,6 @@ import {
   flexternProfileDetailsFailure,
 } from '../reducers/talentOnboarding';
 import {
-  cometChatLogin,
   profileCompletionFlexternFailure,
   profileCompletionFlexternRequest,
   profileCompletionFlexternSuccess,
@@ -110,7 +109,6 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
     const handleSaveTalentDetails = async () => {
       const res = await accountDetailsService(data);
       dispatch(accountDetailsSuccess(res.data.data));
-      dispatch(cometChatLogin(res.data.data.comet_chat_token));
       onSuccess();
     };
     if (data?.image_uri) {

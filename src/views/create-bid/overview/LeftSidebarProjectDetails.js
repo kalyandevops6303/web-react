@@ -60,12 +60,6 @@ const LeftSidebarProjectDetails = () => {
       );
     }
   }, [projectDetailsData]);
-
-  const onMessageClick = () => {
-    navigate(`/chat`, {
-      state: { targetId: projectDetailsData?.client_details?.user_id },
-    });
-  };
   const savedUserData = useSelector(selectSavedUserData);
   return (
     <LeftSidebarProjectDetailsWrapper>
@@ -174,12 +168,6 @@ const LeftSidebarProjectDetails = () => {
             <CardText className="value">
               <ShowMoreLess content={projectDetailsData?.details?.description} maxLength={200} />
             </CardText>
-          </div>
-
-          <div className="d-flex gap-1 mt-3 justify-content-center">
-            <Button className="w-50" color="primary" onClick={onMessageClick}>
-              Message
-            </Button>
           </div>
         </CardBody>
       </Card>

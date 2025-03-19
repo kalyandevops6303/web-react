@@ -30,7 +30,6 @@ import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
 import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
-import Chat from '../../views/chat';
 import Projects from '../../views/projects';
 import MyTeams from '../../views/teams';
 import Clubs from '../../views/clubs';
@@ -197,10 +196,6 @@ export const OneOffRoutes = [
   {
     path: '/referral-reward/*',
     element: <ReferralAndReward />,
-  },
-  {
-    path: '/chat',
-    element: <Chat />,
   },
   {
     path: '/payments',

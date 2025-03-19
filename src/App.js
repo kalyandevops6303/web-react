@@ -3,7 +3,6 @@
 import React, { Suspense, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
 import Hotjar from '@hotjar/browser';
@@ -13,18 +12,16 @@ import { getItem, setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
-import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
-import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
+import { setLoggedInStatus } from './redux/reducers/auth';
 import './App.css';
 import { checkPoints } from './utility/constants/Constant';
-import { COMETCHAT_CONSTANTS, HOTJAR_ANALYTICS_CONSTANTS } from './constants';
+import { HOTJAR_ANALYTICS_CONSTANTS } from './constants';
 import { isUserLoggedIn } from './utility/commonUtils';
 import { getAppPermissions } from './redux/actions/authActions';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const fcmToken = useSelector((state) => state.auth.fcmToken);
-  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
   const location = useLocation();
@@ -34,59 +31,27 @@ const App = () => {
   const hotjarVersion = 6;
   Hotjar.init(siteId, hotjarVersion);
 
-  const appId = COMETCHAT_CONSTANTS.APP_ID;
-  const region = COMETCHAT_CONSTANTS.REGION;
-  const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
-
   useEffect(() => {
     if (isUserLoggedIn()) {
       dispatch(getAppPermissions());
     }
   }, []);
 
-  CometChat.init(appId, appSetting).then(
-    () => {
-      console.log('Initialisation successfully completed!');
-    },
-    (error) => {
-      console.log('Initialisation failed with error:', error);
-    },
-  );
-
-  const loginUser = useCallback(async ({ cometToken, fcm }) => {
-    await CometChat.login(cometToken);
-    dispatch(cometloginSuccess());
-    setItem('cometChatToken', cometToken);
-    console.log('LOGGED IN COMETCHAT');
-    if (fcm) {
-      await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
-        fcmToken: fcm,
-      });
-    }
-    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
-      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-      dispatch(setUnreadMsgCount(totalCount));
-    });
-  }, []);
-
   const tokenFunc = useCallback(async () => {
-    if (isLoggedIn && !fcmToken && !cometAuthToken) {
+    if (isLoggedIn && !fcmToken) {
       const data = await getToken();
       if (data) {
         dispatch(fcmSubscribeNotification(data));
-        loginUser({ cometToken: cometAuthToken, fcm: data });
         setItem('fcmToken', data);
-      } else if (cometAuthToken) {
-        loginUser({ cometToken: cometAuthToken });
       }
     }
-  }, [dispatch, isLoggedIn, fcmToken, cometAuthToken]);
+  }, [dispatch, isLoggedIn, fcmToken]);
 
   useEffect(() => {
-    if (isLoggedIn && !fcmToken && !cometAuthToken) {
+    if (isLoggedIn && !fcmToken) {
       tokenFunc();
     }
-  }, [isLoggedIn, cometAuthToken, fcmToken]);
+  }, [isLoggedIn, fcmToken]);
 
   // Fetch AccessToken and refreshToken from localstorage and check on init
   useEffect(() => {
@@ -100,9 +65,6 @@ const App = () => {
       (userData?.checkpoint === checkPoints.PROFILE_DETAILS || userData?.checkpoint === checkPoints.COMPLETE)
     ) {
       dispatch(setLoggedInStatus());
-
-      const cometChatAuthToken = getItem('cometChatToken');
-      dispatch(cometChatLogin(cometChatAuthToken));
     }
   }, []);
 

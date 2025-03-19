@@ -30,7 +30,6 @@ import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
 import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
-import Chat from '../../views/chat';
 import Projects from '../../views/projects';
 import MyTeams from '../../views/teams';
 import Clubs from '../../views/clubs';
@@ -55,7 +54,7 @@ const getLayout = {
 };
 
 // ** Merge Routes
-const Routes = isFlexternshipApp ? FlexternshipRoutes : OneOffRoutes;
+const Routes = FlexternshipRoutes;
 
 // eslint-disable-next-line consistent-return
 const getRouteMeta = (route) => {
