@@ -371,38 +371,6 @@ export const FlexternshipRoutes = [
     ),
   },
   {
-    path: routes.projectStepDoc.path,
-    element: (
-      <RoleAccessWrapper
-        allowedAppRoles={[
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [],
-          },
-        ]}
-      >
-        <ContractView />
-      </RoleAccessWrapper>
-    ),
-  },
-  {
-    path: routes.projectStepDocId.path,
-    element: (
-      <RoleAccessWrapper
-        allowedAppRoles={[
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [],
-          },
-        ]}
-      >
-        <ContractView />
-      </RoleAccessWrapper>
-    ),
-  },
-  {
     path: routes.blockedProjects.path,
     element: (
       <RoleAccessWrapper

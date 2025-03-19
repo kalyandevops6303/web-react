@@ -55,7 +55,6 @@ import {
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
 import { getDraftTeamLoading, saveDraftTeamLoading, updateTeamLoading } from '../../redux/selectors/teamSelectors';
-import InviteTalentToTeam from '../invite-talent-to-team';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
@@ -239,7 +238,6 @@ const Profile = ({ setDraftSavedModal }) => {
   const [draftTeamId, setDraftTeamId] = useState(null);
   const [teamCreatingModal, setTeamCreatingModal] = useState(null);
   const [teamData, setTeamData] = useState(null);
-  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(false);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
@@ -1000,7 +998,6 @@ const Profile = ({ setDraftSavedModal }) => {
   };
   const onInvite = () => {
     setInviteTeamMemberModal(true);
-    setInviteTalentToTeamModal(true);
     setTeamCreatedModal(false);
   };
 
@@ -1108,14 +1105,6 @@ const Profile = ({ setDraftSavedModal }) => {
           modal={teamCreatedModal}
           toggleModal={toggleTeamCreatedModal}
           teamData={teamData}
-        />
-      )}
-      {inviteTalentToTeamModal && (
-        <InviteTalentToTeam
-          createTeamView
-          inviteTeamMemberModal={inviteTeamMemberModal}
-          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
-          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
         />
       )}
       {isGetDraftTeamLoading ? (
