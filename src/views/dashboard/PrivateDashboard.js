@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Row, Spinner } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
-import RewardsCard from './overview/Reward';
 import AvailableTime from './overview/AvailableTime';
 import Alerts from './overview/Alerts';
 import ProjectListing from './overview/ProjectListing';
@@ -316,11 +315,6 @@ const PrivateDashboard = () => {
             <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PAYMENT_METRICS']}>
               <Col lg="6" sm="12">
                 <EarningCard />
-              </Col>
-            </PermissionWrapper>
-            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.REWARDS']}>
-              <Col lg="6" sm="12">
-                <RewardsCard />
               </Col>
             </PermissionWrapper>
           </Row>
