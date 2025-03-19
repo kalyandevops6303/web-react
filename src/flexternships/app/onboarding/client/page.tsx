@@ -1,4 +1,4 @@
-import { Home } from 'react-feather';
+import { ArrowLeft, Home } from 'react-feather';
 import RestrictedNavbar from '../../components/core/layouts/RestrictedNavbar';
 import TabNavigationForm from '../../components/pages/profile/client/TabNavigationForm';
 import AccountDetails from '../../components/pages/profile/client/tabs/AccountDetails';
@@ -6,15 +6,18 @@ import AccountDetails from '../../components/pages/profile/client/tabs/AccountDe
 // import SocialDetails from '../../components/pages/profile/client/tabs/SocialDetails';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
 import { useEffect } from 'react';
+import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
+import routes from '@/flexternships/routes';
 
 export default function ClientProfilePage() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
   const setCurrentTabIndex = useFlexternUserProfileStore((state) => state.setCurrentTabIndex);
 
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userDetails?.checkpoint === FlexternUserCheckpoint.COMPLETE) {
@@ -49,12 +52,34 @@ export default function ClientProfilePage() {
     // },
   ];
 
+  /**
+   * Navigates back to the previous page if there is a history state,
+   * otherwise navigates to the individual analytics page for the given project and user.
+   */
+  const goBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate(routes.dashboard.path);
+    }
+  };
+
+  const isOnboarding = userDetails?.checkpoint !== FlexternUserCheckpoint.COMPLETE;
+
   return (
     <div>
-      {userDetails?.checkpoint !== FlexternUserCheckpoint.COMPLETE && <RestrictedNavbar />}
+      {isOnboarding && <RestrictedNavbar />}
       <div className="flex flex-col gap-6 py-6 mx-[72px] max-w-[858px]">
+        {!isOnboarding && (
+          <PrimaryIconText
+            icon={<ArrowLeft size={18} />}
+            text="Back"
+            onClick={goBack}
+            className="self-start text-trublue-secondary-500"
+          />
+        )}
         <div className="text-grey-heading text-2xl font-medium not-italic">
-          {userDetails?.checkpoint !== FlexternUserCheckpoint.COMPLETE ? 'Onboarding' : 'Edit Profile'}
+          {isOnboarding ? 'Onboarding' : 'Edit Profile'}
         </div>
         <TabNavigationForm tabs={tabs} hideTabHeader />
       </div>
