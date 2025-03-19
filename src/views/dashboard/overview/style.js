@@ -9,37 +9,6 @@ const gradeColors = {
   Mastery: '#414DFD',
 };
 
-const RewardCardWrapper = styled(CardWrapper)`
-  .reward-body {
-    padding: 0.5rem 1.5rem 1rem 1.8rem !important;
-  }
-  .avatar {
-    cursor: auto;
-  }
-  .card-reward {
-    min-height: 191.95px;
-    p {
-      line-height: inherit;
-    }
-    .avatar {
-      padding: 0.5rem;
-    }
-    @media only screen and (min-device-width: 990px) and (max-device-width: 1160px) {
-      .reward-comp {
-        gap: 12px;
-      }
-      .earn-more {
-        margin-top: 52px;
-      }
-    }
-    @media only screen and (max-device-width: 450px) {
-      .reward-comp {
-        gap: 12px;
-      }
-    }
-  }
-`;
-
 const EarningCardWrapper = styled(CardWrapper)`
   .card-payment {
     min-height: 190px;
@@ -683,7 +652,6 @@ export {
   CardWrapper,
   EarningAmount,
   EarningCardWrapper,
-  RewardCardWrapper,
   TimeCardWrapper,
   ProjectWrapper,
   ProjectsListingWrap,

@@ -39,16 +39,6 @@ const routes = {
     path: '/project-details/:projectId/doc/:docType/*',
     generate: (projectId: string, docType: string) => `/project-details/${projectId}/doc/${docType}`,
   },
-  projectStepDoc: {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
-    generate: (projectId: string, projectStep: string, docType: string) =>
-      `/project-details/${projectId}/${projectStep}/doc/${docType}`,
-  },
-  projectStepDocId: {
-    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
-    generate: (projectId: string, projectStep: string, docType: string, docId: string) =>
-      `/project-details/${projectId}/${projectStep}/doc/${docType}/${docId}`,
-  },
   blockedProjects: { path: '/projects/blocked' },
 
   // Analytics routes

@@ -92,7 +92,6 @@ const API = {
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
-    totalReferralAmount: `${apiAuthEndpoint}/api/v1/referrals/amount`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     checkBidsAccepted: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
@@ -363,12 +362,6 @@ const API = {
     spendingDetails: `${apiOnboardingEndpoint}/api/v1/users/payments`,
     upcomingPayments: `${apiOnboardingEndpoint}/api/v1/users/upcoming-payments`,
     updatePaymentStatus: `${apiPaymentEndPoint}/api/v1/checkout-session-cancel`,
-  },
-  referralAndReward: {
-    createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
-    validateReferral: `${apiAuthEndpoint}/api/v1/referrals/validation`,
-    convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
-    allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
   },
   clubs: {
     listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,

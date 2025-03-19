@@ -24,7 +24,6 @@ import {
   upcomingProjectsForTeamService,
   recommendedProjectsTeamService,
   getModalDataService,
-  totalReferralAmountService,
   updateCardStatusService,
   getProjectInvitationService,
   downloadUrlService,
@@ -95,9 +94,6 @@ import {
   projectModalDataRequest,
   projectModalDataSucess,
   projectModalDataFailure,
-  totalReferralAmountRequest,
-  totalReferralAmountSuccess,
-  totalReferralAmountFailure,
   updateCardStatusRequest,
   updateCardStatusSuccess,
   updateCardStatusFailure,
@@ -533,15 +529,6 @@ const getModalData =
       errorHandler(error, projectModalDataFailure);
     }
   };
-const getTotalReferralAmount = () => async (dispatch) => {
-  dispatch(totalReferralAmountRequest());
-  try {
-    const res = await totalReferralAmountService();
-    dispatch(totalReferralAmountSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, totalReferralAmountFailure);
-  }
-};
 
 const updateCardStatus =
   ({ switch_team_id, data, id, type, onSuccess, isFlextern = false }) =>
@@ -625,7 +612,6 @@ export {
   getWithdrawnProjectsForTalent,
   getActiveProjectsForTeam,
   getUpcomingProjectsForTeam,
-  getTotalReferralAmount,
   updateCardStatus,
   getDashboardUpcomingPayments,
   getProjectInvitation,

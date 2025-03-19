@@ -43,12 +43,6 @@ const TeamMembersComponent = ({ teamId, isClubView }) => {
     );
   };
 
-  const onMessageClick = (userId) => {
-    navigate(`/chat`, {
-      state: { targetId: userId },
-    });
-  };
-
   return (
     <PublicTeamMembersListingModalWrapper>
       <GrayBorderContainer className="d-flex justify-content-between px-2 py-1">
@@ -129,15 +123,6 @@ const TeamMembersComponent = ({ teamId, isClubView }) => {
                       <p className="fw-bold font-medium-2 m-0">
                         {DateTime.fromMillis(item?.member_since).toFormat('MMM dd, yy') || '-'}
                       </p>
-                    </Col>
-                    <Col sm="12" md="1" lg="1">
-                      {savedUserData?._id !== item?.user_id && (
-                        <div className="d-flex justify-content-end">
-                          <div className="message-icon-bg d-flex justify-content-center align-items-center cursor-pointer">
-                            <MessageSquare onClick={() => onMessageClick(item?.user_id)} color={theme.primary} />
-                          </div>
-                        </div>
-                      )}
                     </Col>
                   </Row>
                 </CardBody>

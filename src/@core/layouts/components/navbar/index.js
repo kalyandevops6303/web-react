@@ -16,12 +16,10 @@ import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
 import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CometChat } from '@cometchat-pro/chat';
 import { setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { appPermissionsSelector, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
-import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 import { setActiveNavTab } from '../../../../redux/reducers/activeNavTab';
 import SwitchConfirmModal from '../../../../views/modals/SwitchConfirm';
 import { setConfirmSaveForLater, setNavigatingRoute } from '../../../../redux/reducers/formData';
@@ -86,7 +84,6 @@ const ThemeNavbar = (props) => {
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
-  const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
   const appPermissions = useSelector(appPermissionsSelector);
   const saveArtifactDraftPath = /^\/project-details\/[a-zA-Z0-9_-]+\/milestone-details\/[a-zA-Z0-9_-]+$/;
@@ -112,13 +109,6 @@ const ThemeNavbar = (props) => {
       dispatch(getUserData());
     }
   }, []);
-
-  if (isCometChatLoggedIn) {
-    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
-      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-      dispatch(setUnreadMsgCount(totalCount));
-    });
-  }
 
   useEffect(() => {
     if (location?.pathname?.split('/')?.[1] === 'dashboard') dispatch(setActiveNavTab('dashboard'));
