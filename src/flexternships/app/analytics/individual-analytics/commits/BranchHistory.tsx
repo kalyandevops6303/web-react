@@ -31,7 +31,7 @@ export default function BranchHistory() {
     totalRecords: 0,
     hasNextPage: true,
   });
-  const [isBranchHistoryLoading, setIsBranchHistoryLoading] = useState(false);
+  const [isBranchHistoryLoading, setIsBranchHistoryLoading] = useState(true);
 
   // Function to fetch branch history data
   const fetchBranchHistory = async (options = { resetPage: false }) => {
