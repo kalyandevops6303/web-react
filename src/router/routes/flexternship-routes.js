@@ -17,6 +17,7 @@ import AuthRoute from '../../views/auth/index';
 import TalentOnboarding from '../../views/Onboarding/Talent';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
+import ForgotPasswordVerification from '../../views/auth/ForgotPasswordVerification';
 
 // ** Project Views
 import Projects from '../../views/projects';
@@ -876,5 +877,12 @@ export const FlexternshipRoutes = [
         <Commits />
       </RoleAccessWrapper>
     ),
+  },
+  {
+    path: routes.setNewPassword.path,
+    element: <ForgotPasswordVerification />,
+    meta: {
+      layout: 'blank',
+    },
   },
 ];

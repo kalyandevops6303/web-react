@@ -11,6 +11,12 @@ const routes = {
   comingSoon: { path: '/coming-soon' },
   chatInterface: { path: '/chat-interface' },
 
+  // Forgot password routes
+  setNewPassword: {
+    path: '/auth/reset-password',
+    generate: () => `/auth/reset-password`,
+  },
+
   // Project routes
   projects: { path: '/projects' },
   projectDetails: {
