@@ -121,20 +121,6 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     openGlobalModal(GlobalModalType.TERMS_AND_CONDITIONS);
   }
 
-  // if (isTncAccepted && !allowBlockedUsers && isUserBlocked) {
-  //   const allowedAction = async () => {
-  //     closeGlobalModal();
-  //     navigate(routes.blockedProjects.path);
-  //   };
-  //   const modalActions: GlobalModalActions = {
-  //     onClose: allowedAction,
-  //     onConfirm: allowedAction,
-  //     onCancel: allowedAction,
-  //   };
-
-  //   openGlobalModal(GlobalModalType.PROJECTS_BLOCKED, modalActions, projectsBlockedModalContent);
-  // }
-
   return <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-5 '}`}>{children}</div>;
 }
 
