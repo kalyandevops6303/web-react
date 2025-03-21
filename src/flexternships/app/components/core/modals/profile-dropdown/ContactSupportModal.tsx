@@ -3,8 +3,8 @@ import { Controller, useForm } from 'react-hook-form';
 import PrimaryButton from '../../buttons/PrimaryButton';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { selectThemeColors, showToastMessage } from '@/flexternships/utils/core-utils';
+import { CustomerSupportTypes, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import TextInput from '../../form/TextInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -12,9 +12,7 @@ import { loadSupportTypes, sendSupportRequest } from '@/flexternships/services/u
 import { DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '@/flexternships/static/constants/core-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { AsyncPaginate } from 'react-select-async-paginate';
-import { selectThemeColors } from '@/utility/Utils';
 import classNames from 'classnames';
-import { CUSTOMER_SUPPORT_TYPES } from '@/utility/constants/Constant';
 
 const contactSupportSchema = yup.object().shape({
   toEmail: yup.string().email('Please enter a valid email'),
@@ -33,7 +31,7 @@ const contactSupportSchema = yup.object().shape({
     .required('Issue Type is required')
     .nullable(),
   skill: yup.string().when('issueType.value', {
-    is: (issueType: { label: string; value: string }) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_skill,
+    is: (issueType: { label: string; value: string }) => issueType?.value === CustomerSupportTypes.MISSING_SKILL,
     then: () =>
       yup
         .string()
@@ -42,7 +40,7 @@ const contactSupportSchema = yup.object().shape({
         .required('Skill is required'),
   }),
   tool: yup.string().when('issueType.value', {
-    is: (issueType: { label: string; value: string }) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool,
+    is: (issueType: { label: string; value: string }) => issueType?.value === CustomerSupportTypes.MISSING_TOOL,
     then: () =>
       yup
         .string()
@@ -94,9 +92,9 @@ export default function ContactSupportModal(props: Props) {
     try {
       const missingName = (() => {
         switch (data.issueType?.value) {
-          case CUSTOMER_SUPPORT_TYPES.missing_skill:
+          case CustomerSupportTypes.MISSING_SKILL:
             return data.skill;
-          case CUSTOMER_SUPPORT_TYPES.missing_tool:
+          case CustomerSupportTypes.MISSING_TOOL:
             return data.tool;
           default:
             return '';
@@ -179,7 +177,7 @@ export default function ContactSupportModal(props: Props) {
                       }}
                     />
                   </div>
-                  {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_skill && (
+                  {issueType?.value === CustomerSupportTypes.MISSING_SKILL && (
                     <div className="flex flex-col items-start gap-y-2">
                       <div className="uppercase text-sm text-grey-500 font-semibold">Missing Skill: </div>
                       <Controller
@@ -198,7 +196,7 @@ export default function ContactSupportModal(props: Props) {
                     </div>
                   )}
 
-                  {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool && (
+                  {issueType?.value === CustomerSupportTypes.MISSING_TOOL && (
                     <div className="flex flex-col items-start gap-y-2">
                       <div className="uppercase text-sm text-grey-500 font-semibold">Missing Tool: </div>
                       <Controller
