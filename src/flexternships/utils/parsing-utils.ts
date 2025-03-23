@@ -552,3 +552,27 @@ export const parseTermsAndConditionsDocument = (data: Record<string, string | Do
     docType: data.doc_type,
   };
 };
+
+/**
+ * Parses support types response from raw API data.
+ * @param data Raw support types data from API response.
+ * @param page The current page number for pagination.
+ * @param pageSize The number of records per page.
+ * @returns Formatted support types data with metadata.
+ */
+export const parseSupportTypesResponse = (data: any, page: number, pageSize: number) => {
+  const supportTypes = data.data || [];
+
+  return {
+    data: supportTypes.map((support: any) => ({
+      _id: support.type,
+      name: support.name,
+    })),
+    metadata: {
+      current_page: page,
+      page_size: pageSize,
+      total_records: supportTypes.length,
+      has_next_page: supportTypes.length === pageSize,
+    },
+  };
+};

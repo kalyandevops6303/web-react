@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import PrimaryButton from '../../buttons/PrimaryButton';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
-import { selectThemeColors, showToastMessage } from '@/flexternships/utils/core-utils';
+import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { CustomerSupportTypes, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import TextInput from '../../form/TextInput';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,8 +11,7 @@ import * as yup from 'yup';
 import { loadSupportTypes, sendSupportRequest } from '@/flexternships/services/user-management';
 import { DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '@/flexternships/static/constants/core-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import { AsyncPaginate } from 'react-select-async-paginate';
-import classNames from 'classnames';
+import SingleSelectInput from '../../form/SingleSelectInput';
 
 const contactSupportSchema = yup.object().shape({
   toEmail: yup.string().email('Please enter a valid email'),
@@ -25,13 +24,13 @@ const contactSupportSchema = yup.object().shape({
   issueType: yup
     .object()
     .shape({
-      label: yup.string().required('Issue Type label is required'),
-      value: yup.string().required('Issue Type value is required'),
+      name: yup.string().required('Issue Type label is required'),
+      _id: yup.string().required('Issue Type value is required'),
     })
     .required('Issue Type is required')
     .nullable(),
   skill: yup.string().when('issueType.value', {
-    is: (issueType: { label: string; value: string }) => issueType?.value === CustomerSupportTypes.MISSING_SKILL,
+    is: (issueType: { name: string; _id: string }) => issueType?._id === CustomerSupportTypes.MISSING_SKILL,
     then: () =>
       yup
         .string()
@@ -40,7 +39,7 @@ const contactSupportSchema = yup.object().shape({
         .required('Skill is required'),
   }),
   tool: yup.string().when('issueType.value', {
-    is: (issueType: { label: string; value: string }) => issueType?.value === CustomerSupportTypes.MISSING_TOOL,
+    is: (issueType: { name: string; _id: string }) => issueType?._id === CustomerSupportTypes.MISSING_TOOL,
     then: () =>
       yup
         .string()
@@ -52,7 +51,7 @@ const contactSupportSchema = yup.object().shape({
 interface ContactSupportForm {
   toEmail: string;
   ccEmail: string;
-  issueType: { label: string; value: string } | null;
+  issueType: { name: string; _id: string } | null;
   description: string;
   skill?: string;
   tool?: string;
@@ -86,12 +85,17 @@ export default function ContactSupportModal(props: Props) {
       description: '',
     },
   });
+  const values = useWatch({ control });
 
+  useEffect(() => {
+    console.log('values', values);
+    console.log(isValid);
+  }, [values]);
   const onSubmit = async (data: ContactSupportForm) => {
     setIsConfirmLoading(true);
     try {
       const missingName = (() => {
-        switch (data.issueType?.value) {
+        switch (data.issueType?._id) {
           case CustomerSupportTypes.MISSING_SKILL:
             return data.skill;
           case CustomerSupportTypes.MISSING_TOOL:
@@ -100,19 +104,12 @@ export default function ContactSupportModal(props: Props) {
             return '';
         }
       })();
-      // const postData = {
-      //   to_email: SUPPORT_EMAIL,
-      //   cc_email: [userDetails.email],
-      //   description: data?.description,
-      //   issue_type: data?.issueType?.value || DEFAULT_SUPPORT_TYPE,
-      //   missing_name: missingName,
-      // };
-      // await postSupportRequest(postData);
       await sendSupportRequest(
+        false,
         SUPPORT_EMAIL,
         [userDetails.email],
         data.description,
-        data.issueType?.value || DEFAULT_SUPPORT_TYPE,
+        data.issueType?._id || DEFAULT_SUPPORT_TYPE,
         missingName,
       );
       onClose();
@@ -124,6 +121,7 @@ export default function ContactSupportModal(props: Props) {
     }
   };
   const issueType = watch('issueType');
+  console.log('issueType', issueType);
   return (
     <GenericModal className="max-w-[670px]" isOpen={isOpen} onClose={onClose}>
       <div className="flex gap-x-12 p-10">
@@ -153,31 +151,21 @@ export default function ContactSupportModal(props: Props) {
                   />
                 </div>
                 <div className="flex flex-row items-center gap-x-2.5">
-                  <div className="flex flex-col items-start gap-y-2">
-                    <div className="uppercase text-sm text-grey-500 font-semibold">Issue Type: </div>
-                    <Controller
+                  <div className="flex flex-row items-center gap-x-2">
+                    <SingleSelectInput
                       name="issueType"
                       control={control}
-                      render={({ field }) => {
-                        return (
-                          <AsyncPaginate
-                            {...field}
-                            debounceTimeout={1000}
-                            additional={{ page: 1 }}
-                            loadOptions={loadSupportTypes}
-                            isClearable
-                            classNamePrefix="select"
-                            placeholder="Select issue type"
-                            theme={selectThemeColors}
-                            className={classNames('react-select', {
-                              'is-invalid': errors?.issueType?.message,
-                            })}
-                          />
-                        );
-                      }}
+                      label="Issue Type"
+                      required
+                      placeholder="Select issue type"
+                      loadOptions={loadSupportTypes}
+                      error={errors?.issueType?.message}
+                      isClearable
+                      className="react-select"
+                      maxMenuHeight={200}
                     />
                   </div>
-                  {issueType?.value === CustomerSupportTypes.MISSING_SKILL && (
+                  {issueType?._id === CustomerSupportTypes.MISSING_SKILL && (
                     <div className="flex flex-col items-start gap-y-2">
                       <div className="uppercase text-sm text-grey-500 font-semibold">Missing Skill: </div>
                       <Controller
@@ -196,7 +184,7 @@ export default function ContactSupportModal(props: Props) {
                     </div>
                   )}
 
-                  {issueType?.value === CustomerSupportTypes.MISSING_TOOL && (
+                  {issueType?._id === CustomerSupportTypes.MISSING_TOOL && (
                     <div className="flex flex-col items-start gap-y-2">
                       <div className="uppercase text-sm text-grey-500 font-semibold">Missing Tool: </div>
                       <Controller

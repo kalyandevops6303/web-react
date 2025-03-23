@@ -15,7 +15,11 @@ import { ValidatedRequestToken } from '../constraints/types/core-types';
 import { logout as logoutZustand } from '../utils/core-utils';
 import errorHandler from '@/utility/errorHandler';
 import { DocType, FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
-import { parseDelegateInvitations, parseTermsAndConditionsDocument } from '../utils/parsing-utils';
+import {
+  parseDelegateInvitations,
+  parseSupportTypesResponse,
+  parseTermsAndConditionsDocument,
+} from '../utils/parsing-utils';
 
 /// File Endpoints
 /**
@@ -728,40 +732,47 @@ export const getDelegateInvitationsPaginated = async (page: number = 1, pageSize
   };
 };
 /**
- * Sends a support request to the server.
- * @param toEmail - The recipient email address
- * @param ccEmail - The CC email address
- * @param description - The support request description
- * @param issueType - The type of support issue
- * @returns A Promise that resolves when the support request is sent successfully
- * @throws {Error} If the request fails or an unexpected error occurs
+ * Handles sending a support request based on the request type.
+ * If `isFlextern` is true, it posts a support request; otherwise, it sends a general support request email.
+ * @param isFlextern Determines if the request is for Flextern.
+ * @param toEmail Recipient email for .
+ * @param ccEmail CC email recipients .
+ * @param description Description of the issue.
+ * @param issueType Type of the issue.
+ * @param missingName (Optional) Missing name details for.
+ * @returns The response data for Flextern requests, otherwise undefined.
  */
 export const sendSupportRequest = async (
-  toEmail: string,
-  ccEmail: string[],
-  description: string,
-  issueType: string,
+  isFlextern: boolean,
+  toEmail?: string,
+  ccEmail?: string[],
+  description?: string,
+  issueType?: string,
   missingName?: string,
 ) => {
   const headers = appendAuthToken({});
   const config = {
-    headers: headers,
+    headers,
     withCredentials: true,
   };
+
   try {
-    await axios.post(
-      routes.userManagement.support.contactSupport,
-      {
-        to_email: toEmail,
-        cc_email: ccEmail,
-        description,
-        issue_type: issueType,
-        missing_name: missingName,
-      },
-      config,
-    );
+    const postData = {
+      to_email: toEmail,
+      cc_email: ccEmail,
+      description,
+      issue_type: issueType,
+      missing_name: missingName,
+    };
+    if (isFlextern) {
+      const response = await axios.post(routes.userManagement.user.v2.postSupportRequest, postData, config);
+      return response.data.data;
+    } else if (toEmail && ccEmail && description && issueType) {
+      await axios.post(routes.userManagement.support.contactSupport, postData, config);
+    }
   } catch (error) {
-    handleError(error as Error, 'An unexpected error occurred while sending support request');
+    handleError(error as Error, 'An unexpected error occurred while processing support request');
+    return isFlextern ? { options: [], hasMore: false } : undefined;
   }
 };
 
@@ -783,39 +794,24 @@ export const logoutUser = async () => {
   }
 };
 
-export const loadSupportTypes = async (
-  inputValue: string,
-  _options: any,
-  additional: { page: number } = { page: 1 },
-) => {
+export const loadSupportTypes = async (page: number, pageSize: number, search: string): Promise<PaginatedData> => {
   const headers = appendAuthToken({});
   const config = {
     params: {
-      page: additional.page,
-      page_size: 10,
-      search: inputValue,
+      page,
+      page_size: pageSize,
+      search,
     },
-    headers: headers,
+    headers,
     withCredentials: true,
   };
 
   try {
     const response = await axios.get(routes.userManagement.user.v2.getSupportTypes, config);
-    const supportTypes = response.data.data || [];
-
-    return {
-      options: supportTypes.map((support: any) => ({
-        label: support.name,
-        value: support.type,
-      })),
-      hasMore: supportTypes.length === 10, // Check if there are more results
-      additional: {
-        page: additional.page + 1,
-      },
-    };
+    return parseSupportTypesResponse(response.data, page, pageSize); // Using the parsing function
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching support types');
-    return { options: [], hasMore: false };
+    return { data: [], metadata: { current_page: 1, page_size: 0, total_records: 0, has_next_page: false } };
   }
 };
 
