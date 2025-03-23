@@ -106,16 +106,15 @@ export default function MessageStats() {
           Frequency of Messages (Per day)
         </div>
       </div>
-      {/* Commented out until BE is implemented */}
-      {/* <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
+      <div className="w-[1px] bg-black border-r border-[#E6E7E7]"></div>
       <div className="w-[194px] flex flex-col items-center gap-1 justify-center">
         <div className="text-grey-900 text-center font-montserrat text-[22px] font-semibold leading-6.5">
-          {data?.averageResponseTimeMinutes} mins
+          {Math.round(data?.averageResponseTimeInSeconds / 60)} mins
         </div>
         <div className="text-dark-200 text-center font-montserrat text-sm font-medium leading-5.5">
           Average Response Time
         </div>
-      </div> */}
+      </div>
     </SimpleElevatedCard>
   );
 }

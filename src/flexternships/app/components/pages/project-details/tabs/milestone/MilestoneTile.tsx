@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, Info } from 'react-feather';
+import { ChevronRight } from 'react-feather';
 import { addDaysToEpoch, formatEpochToHumanReadable, getDaysLeft } from '@/flexternships/utils/date-utils';
 import {
   MilestoneFeedbackType,
@@ -31,7 +31,6 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data, disabled }) => {
     acceptedAt,
     submittedAt,
     maxFeedbackDueDays,
-    isBlocked,
     projectDetails,
     milestoneFeedbackDetails,
     isRead,
@@ -112,13 +111,6 @@ const MilestoneTile: React.FC<MilestoneTileProps> = ({ data, disabled }) => {
             />
           ))}
       </div>
-      {isBlocked && (
-        <div className="text-[#EA5455] text-sm font-normal leading-[22px] mt-3 flex items-center gap-2">
-          <Info size={'18'} />
-          <span className="font-semibold">Temporarily Blocked:</span>
-          Request you to completed the feedback forms in order to resume back to the project viewing
-        </div>
-      )}
       <div>{/* Info */}</div>
     </div>
   );

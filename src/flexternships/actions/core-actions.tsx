@@ -43,7 +43,6 @@ export const populateUserDetails = async (force: boolean, get: any, set: any) =>
           name: data.phone_country?.name,
         },
         role: data.talent_info?.role,
-        isBlocked: data.is_blocked,
         isTncAccepted: data.is_tnc_accepted ?? false,
         adminClient: {
           id: data?.admin_client_info?.user_id,

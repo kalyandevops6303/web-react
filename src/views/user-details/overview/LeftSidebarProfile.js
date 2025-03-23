@@ -133,12 +133,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     }
   };
 
-  const onMessageClick = () => {
-    navigate(`/chat`, {
-      state: { targetId: param?.userId },
-    });
-  };
-
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
   };
@@ -578,15 +572,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                     </Button>
                   </div>
                 )}
-              <ActionButtonWrapper>
-                <div className="d-flex gap-1  justify-content-center flex-wrap">
-                  {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
-                    <Button className="w-100" color="primary" onClick={onMessageClick}>
-                      Message
-                    </Button>
-                  )}
-                </div>
-              </ActionButtonWrapper>
             </div>
           </section>
         </CardBody>

@@ -148,6 +148,7 @@ export default function ContactSupportModal(props: Props) {
                     onChange={() => {}}
                     error={errors.ccEmail?.message}
                     readOnly
+                    isMasked
                   />
                 </div>
                 <div className="flex flex-row items-center gap-x-2.5">

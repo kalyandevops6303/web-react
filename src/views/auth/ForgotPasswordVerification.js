@@ -10,11 +10,14 @@ import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback, Spinner 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
-import { verifyOtp } from '../../redux/actions/authActions';
+import { verifyOtp, setForgotPasswordToken } from '../../redux/actions/authActions';
 import OtpInput from '../../lib/otp-input';
 import { selectAuthLoading, selectEmail, selectIsEmailVerified } from '../../redux/selectors/authSelectors';
 import ResendOTPComp from './components/ResendOTP';
 import LogoComp from './components/LogoComp';
+
+// ** Redux
+import { validateRequestFlexTernToken } from '../../redux/actions/authActions';
 
 const ForgotPasswordVerification = () => {
   const dispatch = useDispatch();
@@ -26,14 +29,29 @@ const ForgotPasswordVerification = () => {
   const isEmailVerified = useSelector(selectIsEmailVerified);
   const emailData = useSelector(selectEmail);
 
+  const forgotPasswordToken = new URLSearchParams(window.location.search).get('forgot_password_token');
+
   useEffect(() => {
-    if (!emailData) {
+    if (!emailData && !forgotPasswordToken) {
       navigate('/auth/forgot-password');
     }
     if (isEmailVerified) {
       navigate('/auth/set-new-password');
     }
   }, [isEmailVerified, navigate]);
+
+  useEffect(() => {
+    if (forgotPasswordToken) {
+      dispatch(
+        validateRequestFlexTernToken({
+          requestToken: forgotPasswordToken,
+          onRegistered: () => {
+            navigate('/auth/forgot-password-email-verify');
+          },
+        }),
+      );
+    }
+  }, [forgotPasswordToken]);
 
   const handleChange = (value) => {
     setCode(value);

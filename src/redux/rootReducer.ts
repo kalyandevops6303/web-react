@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './reducers/auth';
-import chat from './reducers/chat';
 import clubs from './reducers/clubs';
 import staticReducer from './reducers/static';
 import talentOnboardingReducer from './reducers/talentOnboarding';
@@ -24,7 +23,6 @@ import myTeams from './reducers/myTeams';
 import project from './reducers/project';
 import dispute from './reducers/dispute';
 import rating from './reducers/rating';
-import referralAndReward from './reducers/referralAndReward';
 import stripeDetails from './reducers/stripeDetails';
 import milestonePayment from './reducers/milestonePayment';
 import activeNavTab from './reducers/activeNavTab';
@@ -40,7 +38,6 @@ import reportReducer from './reducers/report';
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  chat,
   clubs,
   staticData: staticReducer,
   talentOnboarding: talentOnboardingReducer,
@@ -62,7 +59,6 @@ const rootReducer = combineReducers({
   project,
   dispute,
   rating,
-  referralAndReward,
   stripeDetails,
   milestonePayment,
   activeNavTab,

@@ -7,9 +7,9 @@ import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link } from 'react-feather';
-import defaultAvatar from '@flexternships/assets/icons/core/default-avatar.jpg';
 import { addQueryParams, convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
 import { useAppStore } from '@/flexternships/stores/core-stores';
+import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 
 export default function SubmittedArtifactItem(props: Props) {
   const { last = false, data } = props;
@@ -80,10 +80,10 @@ export default function SubmittedArtifactItem(props: Props) {
       </div>
       <div className="py-4 px-2.5 w-[126px] flex items-center justify-center relative">
         <div className="relative" onMouseEnter={toggleTooltip} onMouseLeave={toggleTooltip}>
-          <img
-            className="w-8 h-8 rounded-full object-cover"
-            src={addQueryParams(data.userDetails?.imageUri, blobSasTokenParams) || defaultAvatar}
-            alt={data.userDetails?.name}
+          <FlexternAvatar
+            size="sm"
+            imageUri={addQueryParams(data.userDetails?.imageUri, blobSasTokenParams)}
+            name={data.userDetails?.name}
           />
           {showTooltip && (
             <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 text-xs bg-gray-800 text-white rounded shadow-lg whitespace-nowrap">

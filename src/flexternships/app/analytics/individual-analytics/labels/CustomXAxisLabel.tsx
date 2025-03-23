@@ -15,18 +15,6 @@ interface CustomXAxisLabelProps {
 export default function CustomXAxisLabel({ props, chartData, XAxisDataKey }: CustomXAxisLabelProps) {
   const { x, y, payload } = props;
   const dataPoint = chartData.find((item: { [x: string]: any }) => item[XAxisDataKey] === payload.value);
-  const index = chartData.findIndex((item: { [x: string]: any }) => item[XAxisDataKey] === payload.value);
-
-  // Skip calculations for first index
-  if (index === 0) {
-    return (
-      <foreignObject x={x - 50} y={y} width={100} height={120}>
-        <div className="flex flex-col items-center text-gray-600">
-          <span className="text-sm">{payload.value}</span>
-        </div>
-      </foreignObject>
-    );
-  }
 
   const totalWows = dataPoint?.wowCount;
   const totalKudos = dataPoint?.kudosCount;
