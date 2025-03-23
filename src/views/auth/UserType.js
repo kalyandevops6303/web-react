@@ -19,8 +19,6 @@ import { selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import { getItem, removeItem } from '../../utility/localStorageControl';
-import { validateReferral } from '../../redux/actions/referralAndRewardActions';
-import { validateReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { checkPointRedirection } from '../../utility/Utils';
 
@@ -30,7 +28,6 @@ const UserType = () => {
   const location = useLocation();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isAuthLoading = useSelector((state) => state.auth.googleAuthLoading);
-  const validateReferralIsLoading = useSelector(validateReferralLoading);
   const isUserVisited = getItem('isUserVisited');
 
   const googleId = getItem('google_id_token');
@@ -54,10 +51,6 @@ const UserType = () => {
     }
   };
   useEffect(() => {
-    if (location.search.includes('?referral_token=')) {
-      dispatch(validateReferral(location.search.split('?referral_token=')[1]));
-    }
-
     dispatch(clearDataSuccess());
   }, []);
 
@@ -72,9 +65,7 @@ const UserType = () => {
 
   return (
     <OnBoardWrap>
-      {validateReferralIsLoading ? (
-        <ComponentSpinner className="mt-4 ms-5" />
-      ) : (
+      {
         <div className="card-onboard">
           <LogoComp />
           <CardTitle tag="h2" className="card-title-onboard">
@@ -111,7 +102,7 @@ const UserType = () => {
             </>
           )}
         </div>
-      )}
+      }
     </OnBoardWrap>
   );
 };

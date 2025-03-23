@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, MessageSquare } from 'react-feather';
-import { CometChat } from '@cometchat-pro/chat';
 import NavbarSearch from './NavbarSearch';
 import UserDropdown from './UserDropdown';
 import theme from '../../../../configs/themeVariables';
@@ -12,7 +11,6 @@ import { notificationCount } from '../../../../redux/reducers/notifications';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
-import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
 import { clubStatus } from '../../../../utility/constants/Constant';
 import { getNotificationsPolling } from '../../../../redux/actions/notificationsActions';
 import { notificationsPolling } from '../../../../redux/selectors/notificationsSelectors';
@@ -29,14 +27,10 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const isUserDataLoading = useSelector((state) => state.auth.userDataLoading);
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
-  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const userDetailsData = useSelector(selectUserData);
-  const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
   const notificationsPollingData = useSelector(notificationsPolling);
-  const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
 
   const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading;
-  const isChatView = location.pathname.includes('/chat');
   const isNotificationView = location.pathname.includes('/notifications');
 
   const isWorkInProgress = useAppStore((state) => state.isWip);
@@ -49,21 +43,6 @@ const NavbarUser = ({ setNavBarLoading }) => {
     }
     navigate('/notifications');
     isNotificationCount && dispatch(notificationCount(false));
-  };
-
-  const handleChatNavigate = () => {
-    if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: '/chat' });
-      return;
-    }
-    if (cometAuthToken) {
-      // dispatch(clearUnreadMsgCountData());
-      navigate(`/chat`, {
-        state: { targetId: undefined },
-      });
-    } else {
-      ShowToastMessage(ERROR, 'Something went wrong.');
-    }
   };
 
   useEffect(() => {
@@ -96,26 +75,6 @@ const NavbarUser = ({ setNavBarLoading }) => {
         ''
       ) : (
         <>
-          {!isCometChatLoggedIn ? null : isTabDisabled ? (
-            <MessageIconContainer className="d-flex align-items-center">
-              <div className="text-muted cursor-not-allowed">
-                <MessageSquare size={20} color={theme.bodyColor} />
-              </div>
-            </MessageIconContainer>
-          ) : (
-            <MessageIconContainer className="d-flex align-items-center">
-              <div onClick={handleChatNavigate}>
-                {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
-                <MessageSquare size={20} color={isChatView ? theme.activeColor : theme.bodyColor} />
-              </div>
-              {isChatView && (
-                <LineWrapper>
-                  <div className="line"></div>
-                </LineWrapper>
-              )}
-            </MessageIconContainer>
-          )}
-
           {isTabDisabled ? (
             <div className="text-muted cursor-not-allowed d-flex align-items-center">
               <NotificationIconContainer>

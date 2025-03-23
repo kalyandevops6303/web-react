@@ -21,7 +21,7 @@ export default function FlexternAvatar({
 
   return (
     <Avatar className={className}>
-      <AvatarImage src={imageUriAdjustedForSasToken} className={className} />
+      <AvatarImage src={imageUriAdjustedForSasToken} className={cn(className, 'object-cover')} />
       <AvatarFallback
         className={cn('p-2 leading-6 font-semibold text-lg', className)}
         style={{

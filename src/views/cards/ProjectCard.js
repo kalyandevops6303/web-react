@@ -159,12 +159,10 @@ const ProjectCard = ({
                   {(() => {
                     const isActiveOrOngoing = [primaryStatus.ACTIVE, primaryStatus.ON_GOING].includes(data?.status);
                     const isNextMilestone = data?.secondary_status?.next === secondaryStatusConstants?.MILESTONE;
+                    const isSecondaryStatusValid = data?.secondary_status
+                      ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
+                      : Object.keys(primaryStatus).includes(data?.status);
                     const isBlocked = [primaryStatus.BLOCKED, primaryStatus.COMPLETED].includes(data?.status);
-                    const isSecondaryStatusValid =
-                      !isBlocked && data?.secondary_status
-                        ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
-                        : Object.keys(primaryStatus).includes(data?.status);
-
                     const badgeStatus =
                       data?.status === primaryStatus.COMPLETED.toUpperCase()
                         ? primaryStatus.COMPLETED.toUpperCase()

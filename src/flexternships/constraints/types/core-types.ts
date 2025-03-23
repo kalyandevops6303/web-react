@@ -103,7 +103,6 @@ export type FlexternClientDetails = {
     dialCode: string;
     name: string;
   };
-  isBlocked?: boolean;
   adminClient?: {
     id: string;
     department: string;
@@ -134,7 +133,6 @@ export type FlexternTalentDetails = {
     dialCode: string;
     name: string;
   };
-  isBlocked?: boolean;
   isTncAccepted: boolean;
 };
 

@@ -74,7 +74,6 @@ import {
   userDataSuccess,
   switchProfileSuccess,
   getUserDataSuccess,
-  cometChatLogin,
   savedUserDataSuccess,
   checkAdminRequest,
   checkAdminSuccess,
@@ -151,7 +150,6 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       }
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
-        dispatch(cometChatLogin(res.data.data.comet_chat_token));
         setItemFromSession('isUserVisited', true);
         if (res.data?.data?.is_delegate) {
           setItem('isDelegateProfileCreated', true);
@@ -201,7 +199,6 @@ const loginUserWithGoogle =
       window.dataLayer.push({ user_id: res.data.data.user_id });
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
-        dispatch(cometChatLogin(res.data.data.comet_chat_token));
       } else {
         dispatch(loginSuccess(false));
       }

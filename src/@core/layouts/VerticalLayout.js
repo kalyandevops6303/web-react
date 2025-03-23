@@ -12,7 +12,7 @@ import classnames from 'classnames';
 import { ArrowUp } from 'react-feather';
 
 // ** Reactstrap Imports
-import { Navbar, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 // ** Configs
 import themeConfig from '@configs/themeConfig';
@@ -36,6 +36,7 @@ import FooterComponent from './components/footer';
 // ** Styles
 import '@styles/base/core/menu/menu-types/vertical-menu.scss';
 import '@styles/base/core/menu/menu-types/vertical-overlay-menu.scss';
+import Navbar from '@/flexternships/app/components/core/navbar';
 
 const VerticalLayout = (props) => {
   // ** Props
@@ -157,24 +158,7 @@ const VerticalLayout = (props) => {
         />
       ) : null}
 
-      <Navbar
-        expand="lg"
-        container={false}
-        light={skin !== 'dark'}
-        dark={skin === 'dark' || bgColorCondition}
-        color={bgColorCondition ? navbarColor : undefined}
-        className={classnames(
-          `header-navbar navbar align-items-center ${navbarClasses[navbarType] || 'floating-nav'} navbar-shadow`,
-        )}
-      >
-        <div className="navbar-container d-flex content">
-          {navbar ? (
-            navbar({ skin, setSkin, setMenuVisibility })
-          ) : (
-            <NavbarComponent setMenuVisibility={setMenuVisibility} skin={skin} setSkin={setSkin} />
-          )}
-        </div>
-      </Navbar>
+      <Navbar />
       {children}
 
       {/* Vertical Nav Menu Overlay */}

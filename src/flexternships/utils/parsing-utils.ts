@@ -481,6 +481,7 @@ export const parseConversationParticipationStats = (data: Record<string, number>
     messagesCount: data.message_count,
     participationPercentage: data.participation_percentage,
     countOfMessagesPerDay: data.frequency_of_messages_per_day,
+    averageResponseTimeInSeconds: data.average_response_time_in_seconds,
   };
 };
 

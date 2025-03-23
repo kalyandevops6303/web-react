@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import { useNavigate } from 'react-router-dom';
 import { NAVBAR_ITEMS } from '@/flexternships/static/constants/core-constants';
+import HamburgerMenu from './HamburgerMenu';
 
 /**
  * Main navigation bar component for the Flexternships application.
@@ -64,11 +65,18 @@ export default function Navbar() {
     >
       {/* Left section: Logo and Navigation */}
       <div className="flex flex-row gap-x-5">
-        <div onClick={() => handleNavItemClick(routes.dashboard.path)} className="py-4 cursor-pointer">
+        <HamburgerMenu />
+        {/* Logo */}
+        <Link
+          to={routes.dashboard.path}
+          onClick={() => handleNavItemClick(routes.dashboard.path)}
+          className="py-4 cursor-pointer"
+        >
           <img src={logo} className="h-8" alt="Flexternships Logo" />
-        </div>
-        <div className="w-0.5 bg-grey-border my-4 h-7 self-center" />
-        <div className="flex flex-row items-center gap-x-12">
+        </Link>
+        {/* Desktop Navigation */}
+        <div className="w-0.5 bg-grey-border my-4 h-7 self-center d-none d-lg-block" />
+        <div className="flex-row items-center gap-x-12 d-none d-lg-flex">
           {NAVBAR_ITEMS.map((item) => (
             <div
               key={item.path}
@@ -94,7 +102,7 @@ export default function Navbar() {
       <div className="flex flex-row gap-x-6">
         <Link
           to={routes.notifications.path}
-          className="flex flex-col justify-center py-3 relative cursor-pointer"
+          className="flex-col justify-center py-3 relative cursor-pointer d-none d-md-flex"
           aria-label={`Notifications ${showNotificationsCount ? `(${unreadNotificationsCount} unread)` : ''}`}
         >
           <Bell size={20} className="text-grey hover:text-trublue-secondary-500" />
@@ -104,7 +112,7 @@ export default function Navbar() {
             </span>
           )}
         </Link>
-        <div className="w-0.5 bg-grey-border my-3 h-7 self-center" />
+        <div className="w-0.5 bg-grey-border my-3 h-7 self-center d-none d-md-block" />
         {!isEmpty(userDetails) && <ProfileDropdown />}
       </div>
     </nav>

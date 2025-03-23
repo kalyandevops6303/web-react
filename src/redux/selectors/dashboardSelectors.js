@@ -135,12 +135,6 @@ const upcomingProjectsForTeamLoading = createSelector(
   (dashboard) => dashboard.upcomingProjectsForTeamLoading,
 );
 
-const totalReferralAmount = createSelector(dashboardSelector, (dashboard) => dashboard.totalReferralAmount);
-const totalReferralAmountLoading = createSelector(
-  dashboardSelector,
-  (dashboard) => dashboard.totalReferralAmountLoading,
-);
-
 const downloadUrl = createSelector(dashboardSelector, (dashboard) => dashboard.downloadUrl);
 const downloadUrlLoading = createSelector(dashboardSelector, (dashboard) => dashboard.downloadUrlLoading);
 
@@ -197,8 +191,6 @@ export {
   activeProjectsForTeamLoading,
   upcomingProjectsForTeam,
   upcomingProjectsForTeamLoading,
-  totalReferralAmount,
-  totalReferralAmountLoading,
   selectProjectInvitation,
   selectProjectInvitationLoading,
   downloadUrl,

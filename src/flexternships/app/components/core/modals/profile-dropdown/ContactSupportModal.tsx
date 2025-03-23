@@ -94,6 +94,7 @@ export default function ContactSupportModal(props: Props) {
                     onChange={() => {}}
                     error={errors.ccEmail?.message}
                     readOnly
+                    isMasked
                   />
                 </div>
               </div>

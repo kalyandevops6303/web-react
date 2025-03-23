@@ -5,8 +5,6 @@ import DataService from '../configs/dataService/dataService';
 
 const userDataService = () => DataService.get(API.dashboard.userData);
 
-const totalReferralAmountService = () => DataService.get(API.dashboard.totalReferralAmount);
-
 const recommendedProjectsService = () =>
   isFlexternshipApp
     ? DataService.get(API.dashboard.recommendedProjectsFlextern)
@@ -125,7 +123,6 @@ export {
   upcomingProjectsForTalentService,
   activeProjectsForTeamService,
   upcomingProjectsForTeamService,
-  totalReferralAmountService,
   updateCardStatusService,
   getProjectInvitationService,
   downloadUrlService,
