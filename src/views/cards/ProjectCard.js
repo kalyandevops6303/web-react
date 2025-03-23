@@ -31,6 +31,7 @@ import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../
 import { secondaryStatusConstants, userTypes } from '../../utility/constants/Constant';
 import PermissionWrapper from '@/PermissionWrapper';
 import { isFlexternshipApp } from '@/configs/api/env';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -239,7 +240,7 @@ const ProjectCard = ({
                           Assigned Date:{' '}
                           {convertUnixTimestampToDate(
                             data?.assigned_date || data?.listing_details?.start_date_epoch,
-                            isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
+                            isFlexternshipApp ? getUserTimezone() : savedUserData?.availability?.timezone?.name,
                           ) || data?.listing_details?.start_date}
                         </span>
                       )}
@@ -249,7 +250,7 @@ const ProjectCard = ({
                             {data?.completed_date || data?.listing_details?.end_date_epoch
                               ? `Completed Date: ${convertUnixTimestampToDate(
                                   data?.completed_date || data?.listing_details?.end_date_epoch,
-                                  isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
+                                  isFlexternshipApp ? getUserTimezone() : savedUserData?.availability?.timezone?.name,
                                 )}   `
                               : ''}
                           </span>
@@ -259,7 +260,7 @@ const ProjectCard = ({
                           {data?.invite_date
                             ? `Invite Date: ${convertUnixTimestampToDate(
                                 data?.invite_date,
-                                isFlexternshipApp ? 'Asia/Kolkata' : savedUserData?.availability?.timezone?.name,
+                                isFlexternshipApp ? getUserTimezone() : savedUserData?.availability?.timezone?.name,
                               )}`
                             : ''}
                         </span>
