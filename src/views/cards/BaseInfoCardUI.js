@@ -13,6 +13,8 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 const BaseInfoUI = ({ data, hideUserInfo }) => {
   const dispatch = useDispatch();
@@ -20,11 +22,13 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const appPermissions = useSelector(appPermissionsSelector);
 
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern: flexTern }));
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false), flexTern }));
     }
   };
   const handleUnLike = (e) => {
@@ -99,18 +103,16 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
             className="market-place-card-photo me-75"
             src={
               data?.client?.image_uri?.length || data?.client_info?.[0]?.image_uri
-                ? data?.client?.image_uri || data?.client_info?.[0]?.image_uri
+                ? addQueryParams(data?.client?.image_uri || data?.client_info?.[0]?.image_uri, blobSasTokenParams)
                 : defaultAvatar
             }
             alt="avatar"
           />
           <div className="d-flex w-100 align-items-center">
             <div className="flex-grow-1">
-              <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                {data?.client?.first_name || ''} {data?.client?.last_name || ''}
-              </CardTitle>
+              <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">{data?.client?.department}</CardTitle>
               <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                {data?.client?.company_name}
+                {data?.client?.first_name || ''} {data?.client?.last_name || ''}
               </CardText>
             </div>
 
@@ -130,7 +132,7 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
           </div>
         </div>
       )}
-      <div>
+      <div className="d-flex flex-wrap flex-column">
         <BadgeGroup
           title="Skills"
           data={data?.proficiency?.skills || data?.skills_data}

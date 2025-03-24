@@ -6,12 +6,16 @@ import { Check, User } from 'react-feather';
 import { MouseEvent, useEffect, useState } from 'react';
 import { useLegalStore } from '@/flexternships/stores/legal-store';
 import Spinner from '../../../core/Spinner';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 export default function LegalDocSignee(props: LegalDocSigneeProps) {
   const { userType, company, image_uri, name, role, signed, signedDate, disabled, isCurrentUser, onClick } = props;
 
   const isSignDocumentLoading = useLegalStore((state) => state.isSignLegalDocumentLoading);
   const [showSpinner, setShowSpinner] = useState<boolean>(false);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const styles = {
     signed:
@@ -34,7 +38,7 @@ export default function LegalDocSignee(props: LegalDocSigneeProps) {
     <div className="flex items-start justify-between">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={image_uri ? image_uri : defaultAvatar} />
+          <AvatarImage src={addQueryParams(image_uri, blobSasTokenParams) || defaultAvatar} />
           <AvatarFallback>
             <User color="#6E6B7B" />
           </AvatarFallback>

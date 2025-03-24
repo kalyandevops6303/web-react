@@ -5,14 +5,18 @@ import VerticalTimeline from '@/flexternships/app/components/core/timelines/Vert
 import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/components/ui/avatar';
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 import { useEffect, useState } from 'react';
 import { User } from 'react-feather';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 export default function IndividualFeedbackResponse(props: any) {
   const { feedbackOverview, milestoneId, feedbackType } = props;
 
   const getFeedbackResponse = useFeedbackStore((state) => state.getFeedbackResponse);
   const feedbackResponse = useFeedbackStore((state) => state.feedbackResponse);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const [response, setResponse] = useState<any>([]);
   const [formattedFeedbackResponse, setFormattedFeedbackResponse] = useState<any>([]);
@@ -126,7 +130,10 @@ export default function IndividualFeedbackResponse(props: any) {
                   <div>
                     <div className="flex gap-1 items-center mt-1">
                       <Avatar className="w-7 h-7">
-                        <AvatarImage src={item?.image_uri} className="w-full h-full rounded-full" />
+                        <AvatarImage
+                          src={addQueryParams(item?.image_uri, blobSasTokenParams)}
+                          className="w-full h-full rounded-full"
+                        />
                         <AvatarFallback className="w-full h-full">
                           <User color="#6E6B7B" />
                         </AvatarFallback>

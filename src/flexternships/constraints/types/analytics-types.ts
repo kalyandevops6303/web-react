@@ -73,6 +73,8 @@ export type GitHubBranchHistory = ParsedPaginatedData<GitHubBranchCommit>;
 export type ConversationParticipationStats = {
   messagesCount: number;
   participationPercentage: number;
+  countOfMessagesPerDay: number;
+  averageResponseTimeInSeconds: number;
 };
 
 export type ConversationAttachmentStats = {

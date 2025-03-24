@@ -57,6 +57,7 @@ export function addDaysToEpoch(epoch: number, days: number): number {
  * @returns A formatted date string (e.g., "Sep 30, 2024" or "Sep 30, 24" if truncateYear is true).
  * @throws {TypeError} If epoch is not a number.
  */
+
 export function formatEpochToHumanReadable(
   epoch: number,
   truncateYear = false,

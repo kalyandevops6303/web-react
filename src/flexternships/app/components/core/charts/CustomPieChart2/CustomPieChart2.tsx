@@ -4,12 +4,28 @@ import { Card, CardTitle, CardContent, CardHeader } from '@flexternships/compone
 import { ChartContainer, ChartTooltip } from '@flexternships/components/ui/chart';
 import Stats from '@flexternships/components/core/charts/Stats';
 import { StatsOrientation } from '@/flexternships/constraints/enums/chart-enums';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CustomPieChartTooltip from '@/flexternships/app/components/core/charts/CustomPieChart2/CustomPieChartTooltip';
 import BoxSkeleton from '../../skeletons/BoxSkeleton';
+import classNames from 'classnames';
 
 export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
-  const { chartData, chartConfig, totalCount, title, statsOrientation, className, isLoading } = props;
+  const {
+    chartData,
+    chartConfig,
+    totalCount,
+    title,
+    statsOrientation,
+    className,
+    isLoading,
+    seperatorExpanded = false,
+  } = props;
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    setIsExpanded(seperatorExpanded);
+  }, [seperatorExpanded]);
 
   const statsData = chartData?.map((item) => ({
     label: item.label,
@@ -96,7 +112,7 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
           className="flex w-[600px] md:w-1/2 h-full aspect-video z-10 justify-center text-xs [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none [&_.recharts-sector[stroke='#fff']]:stroke-white"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+            <PieChart className="max-h-[310px] mt-5">
               <ChartTooltip
                 content={({ payload }) => <CustomPieChartTooltip payload={payload} totalCount={totalCount} />}
               />
@@ -108,7 +124,7 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
                 activeIndex={activeIndex}
                 onMouseEnter={onPieEnter}
                 onMouseLeave={onPieLeave}
-                outerRadius={130}
+                outerRadius={140}
               >
                 <LabelList
                   dataKey="count"
@@ -129,7 +145,8 @@ export default function CustomPieChart2(props: Readonly<CustomPieChartProps2>) {
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
-        <div className="h-full max-h-[320px] overflow-y-auto flex flex-col w-full">
+        <div className={classNames('w-1 bg-gray-100 -mt-5', isExpanded ? 'h-[356px]' : 'h-[309px]')}></div>
+        <div className="h-full max-h-[300px] overflow-y-auto flex flex-col w-full">
           <Stats statsData={statsData} orientation={statsOrientation ?? StatsOrientation.HORIZONTAL} />
         </div>
       </CardContent>

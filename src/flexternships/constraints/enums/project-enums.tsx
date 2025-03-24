@@ -76,7 +76,7 @@ export const ProjectPanelCaptionDate2 = {
   [ProjectPrimaryStatus.ON_GOING]: 'End Date',
   [ProjectPrimaryStatus.TERMINATED]: 'Terminate Date',
   [ProjectPrimaryStatus.COMPLETED]: 'End Date',
-  [ProjectPrimaryStatus.WITHDRAWN]: 'Withdraw Date',
+  [ProjectPrimaryStatus.WITHDRAWN]: 'Closed Date',
   [ProjectPrimaryStatus.BLOCKED]: 'End Date',
   [ProjectPrimaryStatus.CLOSED]: 'Closed Date',
 };

@@ -67,7 +67,7 @@ export default function HorizontalFileCard(props: Props) {
               <>
                 {uploadError && (
                   <div
-                    className="p-2 text-error text-sm font-semibold tracking-wide not-italic self-center cursor-pointer mr-8"
+                    className="p-2 text-trublue-secondary-500 text-sm font-semibold tracking-wide not-italic self-center cursor-pointer mr-8"
                     onClick={tryAgain}
                   >
                     Try Again

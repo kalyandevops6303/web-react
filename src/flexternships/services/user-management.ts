@@ -65,6 +65,30 @@ export const changePasswordWithCurrentPassword = async (currentPassword: string,
   }
 };
 
+/// Blob SAS Token Endpoints
+/**
+ * Retrieves blob SAS token parameters.
+ * @returns A Promise that resolves to the blob SAS token parameters.
+ * @throws {Error} If the blob SAS token retrieval fails or an unexpected error occurs.
+ */
+export const getBlobSasTokenParams = async () => {
+  const headers = appendAuthToken({});
+  const config = { headers: headers, withCredentials: true };
+  try {
+    const response = await axios.get(routes.userManagement.storage.getBlobSasTokenParams, config);
+    const sasUrlParams = new URLSearchParams(response.data.data);
+
+    const formattedSasParams: Record<string, string | null> = {};
+
+    sasUrlParams.forEach((value, key) => {
+      formattedSasParams[key] = value;
+    });
+    return formattedSasParams;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching blob SAS token parameters');
+  }
+};
+
 /// User Endpoints
 /**
  * Validates a request token.
@@ -673,18 +697,18 @@ export const inviteDelegate = async (
 /**
  * Fetches a paginated list of delegate invitations.
  * @param page - The page number to fetch (defaults to 1).
- * @param page_size - The number of items per page (defaults to 10).
+ * @param pageSize - The number of items per page (defaults to 10).
  * @returns A Promise that resolves to an object containing paginated delegate invitations and metadata.
  * @throws {Error} If the delegate invitations retrieval fails or an unexpected error occurs.
  */
-export const getDelegateInvitationsPaginated = async (page: number = 1, page_size: number = 10) => {
+export const getDelegateInvitationsPaginated = async (page: number = 1, pageSize: number = 10) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
     withCredentials: true,
     params: {
       page,
-      page_size,
+      page_size: pageSize,
     },
   };
   try {

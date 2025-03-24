@@ -53,6 +53,9 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import '@flexternships/styles/pages/survey/survey.css';
 import SurveyProgress from './SurveyProgress';
 import { useEffect, useRef } from 'react';
+import { useAppStore } from '@/flexternships/stores/core-stores';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+
 interface SurveyFormProps {
   surveyJson: SurveyJson;
   onComplete: (survey: SurveyModel) => void;
@@ -65,6 +68,9 @@ interface SurveyFormProps {
 
 export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
   const { surveyJson, userDetails, onComplete, estimatedTime, projectName, milestoneNumber } = props;
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   const survey = new Model(surveyJson);
   survey.onComplete.add(onComplete);
 
@@ -587,7 +593,7 @@ export default function MilestoneFeedbackSurvey(props: SurveyFormProps) {
         {userDetails ? (
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={userDetails?.imageUri || defaultAvatar} />
+              <AvatarImage src={addQueryParams(userDetails?.imageUri, blobSasTokenParams) || defaultAvatar} />
               <AvatarFallback>
                 <User color="#6E6B7B" />
               </AvatarFallback>

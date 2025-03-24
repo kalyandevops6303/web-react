@@ -7,6 +7,8 @@ import classnames from 'classnames';
 
 // ** Reactstrap Imports
 import { Badge } from 'reactstrap';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 const Avatar = forwardRef((props, ref) => {
   // ** Props
@@ -30,6 +32,8 @@ const Avatar = forwardRef((props, ref) => {
     ...rest
   } = props;
 
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   // ** Function to extract initials from content
   const getInitials = (str) => {
     const results = [];
@@ -39,6 +43,9 @@ const Avatar = forwardRef((props, ref) => {
     });
     return results.join('');
   };
+
+  const sasTokenAdjustedImage = img && img.startsWith('https') ? addQueryParams(img, blobSasTokenParams) : img;
+
   return (
     <Tag
       className={classnames('avatar', {
@@ -72,7 +79,7 @@ const Avatar = forwardRef((props, ref) => {
             'object-fit-cover': true,
           })}
           style={{ objectFit: 'cover', maxHeight: '40px' }}
-          src={img}
+          src={sasTokenAdjustedImage}
           alt="avatarImg"
           height={imgHeight && !size ? imgHeight : 32}
           width={imgWidth && !size ? imgWidth : 32}

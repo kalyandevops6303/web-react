@@ -24,8 +24,8 @@ import { useCompetenciesStore } from '@/flexternships/stores/competencies-store'
 import { useNoteCategoriesStore } from '@/flexternships/stores/note-categories-store';
 
 // Utils
-import { stringToColour } from '@/flexternships/utils/miscellaneous-utils';
-import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { stringToColour, addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
 
 function UnselectedTalentCard({
@@ -36,6 +36,8 @@ function UnselectedTalentCard({
   checkboxIcon = uncheckedIcon,
   className = 'bg-white shadow-card',
 }: UnselectedTalentCardProps) {
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+
   const handleClick = onExpandToggle || onSelectionToggle; // if onExpandToggle is not provided, then onSelectionToggle is used
   const avatarColor = stringToColour(talentInfo.name);
   const avatarBgColor = stringToColour(talentInfo.name, { opacity: 10 });
@@ -60,7 +62,7 @@ function UnselectedTalentCard({
           </div>
           <div className="flex flex-row items-center gap-x-4">
             <Avatar className="size-8">
-              <AvatarImage src={talentInfo.profileImage} />
+              <AvatarImage src={addQueryParams(talentInfo.profileImage, blobSasTokenParams)} />
               <AvatarFallback
                 className="p-2 font-semibold text-sm"
                 style={{

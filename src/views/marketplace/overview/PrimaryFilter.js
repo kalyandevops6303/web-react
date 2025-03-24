@@ -19,14 +19,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const isLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
   const isSecondaryLoading = useSelector((state) => state.marketPlace.loading);
   const appPermissions = useSelector(appPermissionsSelector);
-  const isFlextern = useSelector((state) => state.auth?.flextern);
   const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
 
   const userType = userData?.user_type;
   useEffect(() => {
-    dispatch(
-      getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {}, flexTern: flexTern }),
-    );
+    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {}, flexTern }));
   }, [flexTern]);
 
   if (isLoading && !selectCardData) {
@@ -107,7 +104,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
               className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
               isMarketPlaceTab
               title={selectCardData?.talents ?? 0}
-              desc="Talent"
+              desc="Talents"
               icon={<User height={20} />}
               color="light-purple"
             />

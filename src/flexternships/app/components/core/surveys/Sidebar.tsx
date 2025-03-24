@@ -2,9 +2,12 @@ import { Check, User } from 'react-feather';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { useEffect, useState } from 'react';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 
 const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => void }) => {
   const [filteredData, setFilteredData] = useState(data);
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   useEffect(() => {
     setFilteredData(data.filter((item: any) => item?.isDocumentsSigned));
@@ -25,7 +28,7 @@ const Sidebar = ({ data, onChange }: { data: any; onChange: (userId: any) => voi
           >
             <div className="flex flex-row items-center gap-2">
               <Avatar>
-                <AvatarImage src={item.image ? item.image : defaultAvatar} />
+                <AvatarImage src={addQueryParams(item.image, blobSasTokenParams) || defaultAvatar} />
                 <AvatarFallback>
                   <User color="#6E6B7B" />
                 </AvatarFallback>

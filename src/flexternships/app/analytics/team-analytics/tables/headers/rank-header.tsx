@@ -7,7 +7,7 @@ export default function RankHeader({ column }: Readonly<{ column: Column<any> }>
     <Button
       variant="ghost"
       onClick={() => column.toggleSorting(column.getIsSorted() !== 'desc')}
-      className="flex items-center justify-between gap-2 p-0"
+      className="flex items-center gap-2 p-0 w-full"
     >
       <span className="text-grey-heading font-montserrat text-xs font-semibold leading-none tracking-wider uppercase">
         RANK

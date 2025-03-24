@@ -299,7 +299,7 @@ const verifyPhone = (data, onVerifyOtpSuccess) => async (dispatch) => {
     }
     return null;
   } catch (error) {
-    dispatch(verifyPhoneFailure());
+    dispatch(verifyPhoneFailure(error));
     return error?.response?.data?.errorData?.message;
   }
 };

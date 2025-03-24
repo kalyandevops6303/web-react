@@ -13,15 +13,15 @@ import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
-import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
+import { convertUnixTimestampToDate } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
 
-const getBidByName = (bidBy) => {
-  if (!bidBy) return '';
-  if ('name' in bidBy) return bidBy.name;
-  return `${bidBy.first_name} ${bidBy.last_name}`;
-};
+// const getBidByName = (bidBy) => {
+//   if (!bidBy) return '';
+//   if ('name' in bidBy) return bidBy.name;
+//   return `${bidBy.first_name} ${bidBy.last_name}`;
+// };
 
 const ActiveProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -83,10 +83,10 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
           <h4 className="active-project-name truncate-2">{data?.name || 'Unknown Project Name'}</h4>
           {data?.worker_details.length > 0 && (
             <div className="team-badge px-1">
-              <p className="mb-25">Team</p>
+              <p className="mb-10">Team</p>
             </div>
           )}
-          <div className="mb-1 mt-6">
+          <div className="mb-1 mt-4">
             {data?.worker_details.length > 0 ? (
               <span className="d-flex avatars">
                 <AvatarGroup
