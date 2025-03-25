@@ -28,6 +28,7 @@ export default function AccountDetails() {
   const populateClientInfoDetails = useFlexternUserProfileStore((state) => state.populateClientInfoDetails);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const [isSaveLoading, setIsSaveLoading] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
@@ -86,6 +87,7 @@ export default function AccountDetails() {
     if (userDetails.checkpoint !== FlexternUserCheckpoint.COMPLETE) {
       showSuccessModal();
     } else {
+      populateUserDetails(true);
       navigate(routes.dashboard.path);
     }
   };
