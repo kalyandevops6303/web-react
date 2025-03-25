@@ -201,6 +201,11 @@ const Account = () => {
         ? navigate(`/${userProfileEdit.talent}/personal-details`)
         : navigate(`/${userProfileEdit.client}/personal-details`);
     }
+    if (location.pathname.includes('-onboarding')) {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate(`/${userOnboarding.talent}/personal-details`)
+        : navigate(`/${userOnboarding.client}/personal-details`);
+    }
   };
   const buttonText = selectedImage && selectedImagePreview ? 'Edit Picture' : 'Update Picture';
   const onGetUserDetailsSuccess = (res) => {
