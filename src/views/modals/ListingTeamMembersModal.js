@@ -404,7 +404,6 @@ const ListingTeamMembersModal = ({
   toggleModal,
   onRemove,
   toggleInviteTeamMemberModal,
-  setInviteTalentToTeamModal,
   isAdmin,
   onClubInvite,
 }) => {
@@ -414,7 +413,6 @@ const ListingTeamMembersModal = ({
     } else {
       toggleModal();
       toggleInviteTeamMemberModal(true);
-      setInviteTalentToTeamModal(true);
     }
   };
 
@@ -451,7 +449,6 @@ ListingTeamMembersModal.propTypes = {
   isAdmin: Proptypes.bool,
   toggleModal: Proptypes.func,
   toggleInviteTeamMemberModal: Proptypes.func,
-  setInviteTalentToTeamModal: Proptypes.func,
   onRemove: Proptypes.func,
   onClubInvite: Proptypes.func,
 };
@@ -461,7 +458,6 @@ ListingTeamMembersModal.defaultProps = {
   isAdmin: false,
   toggleModal: () => {},
   toggleInviteTeamMemberModal: () => {},
-  setInviteTalentToTeamModal: () => {},
   onRemove: () => {},
   onClubInvite: () => {},
 };

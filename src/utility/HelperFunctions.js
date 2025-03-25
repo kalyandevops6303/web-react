@@ -1,18 +1,4 @@
 // File Types
-import psdFileIcon from './shared_resources/file-types/psdFile.png';
-import svgFileIcon from './shared_resources/file-types/svgFile.png';
-import txtFileIcon from './shared_resources/file-types/txtFile.png';
-import xlsFileIcon from './shared_resources/file-types/xlsFile.png';
-import zipFileIcon from './shared_resources/file-types/zipFile.png';
-import aiFileIcon from './shared_resources/file-types/aiFile.png';
-import aviFileIcon from './shared_resources/file-types/aviFile.png';
-import mkvFileIcon from './shared_resources/file-types/mkvFile.png';
-import mp3FileIcon from './shared_resources/file-types/mp3File.png';
-import pdfFileIcon from './shared_resources/file-types/pdfFile.png';
-import pptFileIcon from './shared_resources/file-types/pptFile.png';
-import docFileIcon from './shared_resources/file-types/docFile.png';
-import gifFileIcon from './shared_resources/file-types/gifFile.png';
-import jpgFileIcon from './shared_resources/file-types/jpgFile.png';
 
 export const getUserColor = (user) => {
   const colorBasisString = user.uid; // + user.name;
@@ -27,44 +13,6 @@ export const getUserColor = (user) => {
   // }
   // return color;
   return stringToColour(colorBasisString);
-};
-
-export const getFileIcon = (fileName) => {
-  let ext = fileName.split('.');
-  ext = ext[ext.length - 1];
-
-  ext = ext.toLowerCase();
-
-  switch (ext) {
-    case 'psd':
-      return psdFileIcon;
-    case 'svg':
-      return svgFileIcon;
-    case 'txt':
-      return txtFileIcon;
-    case 'xls':
-      return xlsFileIcon;
-    case 'zip':
-      return zipFileIcon;
-    case 'ai':
-      return aiFileIcon;
-    case 'avi':
-      return aviFileIcon;
-    case 'mkv':
-      return mkvFileIcon;
-    case 'mp3':
-      return mp3FileIcon;
-    case 'pdf':
-      return pdfFileIcon;
-    case 'ppt':
-      return pptFileIcon;
-    case 'jpg':
-      return jpgFileIcon;
-    case 'gif':
-      return gifFileIcon;
-    default:
-      return docFileIcon;
-  }
 };
 
 export const convertFileSize = (fileSizeBytes) => {

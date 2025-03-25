@@ -39,7 +39,6 @@ import {
 } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
-import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
 import DelegateAccordion from './DelegateAccordion';

@@ -149,6 +149,10 @@ const Comments = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [flexternComments.metadata.hasNextPage, isCommentsLoading, watch('flexternRole')]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   /**
    * Navigates back to the previous page if there is a history state,
    * otherwise navigates to the individual analytics page for the given project and user.

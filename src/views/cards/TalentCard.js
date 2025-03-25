@@ -23,7 +23,7 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector } from '@/redux/selectors/authSelectors';
-import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { generateAvatar } from '@/utility/HelperFunctions';
 import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 import { useAppStore } from '@/flexternships/stores/core-stores';
 

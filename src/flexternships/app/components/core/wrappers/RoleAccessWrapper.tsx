@@ -9,8 +9,6 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import AccessDenied from '../../pages/defaults/AccessDenied';
 import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
-import { GlobalModalActions } from '@/flexternships/constraints/types/core-types';
-import { projectsBlockedModalContent } from '@/flexternships/static/content/core-content';
 import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 import routes from '@/flexternships/routes';
@@ -20,14 +18,13 @@ import { BLOB_SAS_TOKEN_EXPIRY_DELTA } from '@/flexternships/static/constants/co
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
 export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
-  const { children, allowedAppRoles, fallbackRoute, noPadding = false, allowBlockedUsers = false, featureName } = props;
+  const { children, allowedAppRoles, fallbackRoute, noPadding = false, featureName } = props;
 
   const [hasAccess, setHasAccess] = useState<boolean>(true);
   const [isFeatureLoading, setIsFeatureLoading] = useState<boolean>(false);
 
   const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
   const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
-  const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
   const isTncAccepted = useFlexternUserStore((state) => state.userDetails?.isTncAccepted);
   const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
@@ -35,7 +32,6 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const populateBlobSasTokenParams = useAppStore((state) => state.populateBlobSasTokenParams);
 
   const openGlobalModal = useAppStore((state) => state.openModal);
-  const closeGlobalModal = useAppStore((state) => state.closeModal);
 
   const navigate = useNavigate();
 
@@ -123,20 +119,6 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
 
   if (!isTncAccepted) {
     openGlobalModal(GlobalModalType.TERMS_AND_CONDITIONS);
-  }
-
-  if (isTncAccepted && !allowBlockedUsers && isUserBlocked) {
-    const allowedAction = async () => {
-      closeGlobalModal();
-      navigate(routes.blockedProjects.path);
-    };
-    const modalActions: GlobalModalActions = {
-      onClose: allowedAction,
-      onConfirm: allowedAction,
-      onCancel: allowedAction,
-    };
-
-    openGlobalModal(GlobalModalType.PROJECTS_BLOCKED, modalActions, projectsBlockedModalContent);
   }
 
   return <div className={`flexternships-page ${noPadding ? 'p-0' : 'px-7 pt-5 '}`}>{children}</div>;

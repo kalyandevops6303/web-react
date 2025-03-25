@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Row, Spinner } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
-import RewardsCard from './overview/Reward';
 import AvailableTime from './overview/AvailableTime';
 import Alerts from './overview/Alerts';
 import ProjectListing from './overview/ProjectListing';
@@ -18,7 +17,6 @@ import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import { appPermissionsSelector, selectTrumioIsFlextern, selectUserData } from '../../redux/selectors/authSelectors';
-import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
@@ -51,7 +49,6 @@ const PrivateDashboard = () => {
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
-  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeletModal] = useState(false);
   const [isClubInvite, setIsClubInvite] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState();
@@ -127,45 +124,6 @@ const PrivateDashboard = () => {
     dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
   };
 
-  const onClubInvite = () => {
-    setIsClubInvite(true);
-    setInviteTeamMemberModal(true);
-    setInviteTalentToTeamModal(true);
-  };
-
-  const onTeamInvite = () => {
-    setInviteTeamMemberModal(true);
-    setInviteTalentToTeamModal(true);
-  };
-
-  const onCreateClub = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
-    ) {
-      setCompleteProfileModalInfoText('create club');
-      setCompleteProfileModal(true);
-    } else {
-      setCreateTeamSelected(false);
-      setOptionsModal(true);
-    }
-  };
-
-  const onCreateTeam = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
-    ) {
-      setCompleteProfileModalInfoText('create team');
-      setCompleteProfileModal(true);
-    } else {
-      setCreateTeamSelected(true);
-      setOptionsModal(true);
-    }
-  };
-
   const handleRemoveMember = (data) => {
     setDeletModal(true);
     setDeleteModalData(data);
@@ -219,7 +177,6 @@ const PrivateDashboard = () => {
           modal={listingTeamMembersModal}
           toggleModal={toggleListingTeamMembersModal}
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
-          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           onRemove={handleRemoveMember}
           isAdmin={isClubAdmin}
           onClubInvite={onClubInvite}
@@ -267,60 +224,12 @@ const PrivateDashboard = () => {
           )}
         </span>
       )}
-
-      {inviteTalentToTeamModal && isClubInvite && (
-        <InviteTalentToTeam
-          isClubInvitation
-          inviteTeamMemberModal={inviteTeamMemberModal}
-          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
-          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
-        />
-      )}
-
-      {inviteTalentToTeamModal && !isClubInvite && (
-        <InviteTalentToTeam
-          inviteTeamMemberModal={inviteTeamMemberModal}
-          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
-          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
-        />
-      )}
-
-      {userDetailsData?.user_type === userTypes.talent && (
-        <CreateTeamButtonWrapper>
-          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.CREATE_CLUB']}>
-            <span
-              className="text-decoration-underline font-medium-2 link-primary cursor-pointer"
-              onClick={onCreateClub}
-            >
-              Create Club
-            </span>
-          </PermissionWrapper>
-          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.CREATE_TEAM']}>
-            <span
-              className="text-decoration-underline font-medium-2 link-primary cursor-pointer"
-              onClick={onCreateTeam}
-            >
-              Create Team
-            </span>
-          </PermissionWrapper>
-          <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.CREATES.JOIN_TEAM']}>
-            <Button as="link" color="primary" onClick={handleJoinTeam}>
-              Join Team
-            </Button>
-          </PermissionWrapper>
-        </CreateTeamButtonWrapper>
-      )}
       <Row>
         <Col lg="8" sm="12">
           <Row>
             <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PAYMENT_METRICS']}>
               <Col lg="6" sm="12">
                 <EarningCard />
-              </Col>
-            </PermissionWrapper>
-            <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.REWARDS']}>
-              <Col lg="6" sm="12">
-                <RewardsCard />
               </Col>
             </PermissionWrapper>
           </Row>
