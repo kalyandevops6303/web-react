@@ -9,7 +9,6 @@ import {
 } from '../reducers/clientOnboarding';
 import { accountDetailsService, profileDetailsService } from '../../services/clientOnboardingServices';
 import { saveCheckpointComplete } from './talentOnboardingActions';
-import { cometChatLogin } from '../reducers/auth';
 import { scanAndProcessFiles } from '../../utility/Utils';
 
 const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
@@ -18,7 +17,6 @@ const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
     const handleSaveClientDetails = async () => {
       const res = await accountDetailsService(data);
       dispatch(accountDetailsSuccess(res.data.data));
-      dispatch(cometChatLogin(res.data.data.comet_chat_token));
       onSuccess();
     };
     if (data?.image_uri) {

@@ -35,7 +35,7 @@ import {
 } from '@/flexternships/static/content/milestones-content';
 import { getMilestoneDetailsModalDescription } from '@/flexternships/static/content/milestones-content';
 import DraftSavedModal from '@/flexternships/app/components/core/modals/milestone/DraftSavedModal';
-import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import { useAppStore } from '@/flexternships/stores/core-stores';
 import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
 import RemoveArtifactModal from '@/flexternships/app/components/core/modals/milestone/RemoveArtifactModal';
 
@@ -53,9 +53,6 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   const closeModal = useProjectMilestonesStore((state) => state.closeModal);
   const openModal = useProjectMilestonesStore((state) => state.openModal);
   const modalMetadata = useProjectMilestonesStore((state) => state.modalMetadata);
-
-  // Flextern user store hooks
-  const isUserBlocked = useFlexternUserStore((state) => state.userDetails?.isBlocked);
 
   // Application store hooks
   const setWip = useAppStore((state) => state.setWip);
@@ -94,8 +91,6 @@ export default function DraftArtifacts({ isDisabled = false }: { isDisabled?: bo
   }, [draftArtifacts]);
 
   useEffect(() => {
-    // Don't set wip if user is blocked
-    if (isUserBlocked) return;
     // Set Work in progress flag when this component mounts - accordingly navigation is stopped on the clicked component
     const fieldsLength = watch('draftArtifacts').length;
     if (fieldsLength === 0) return unsetWip();

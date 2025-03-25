@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
-import { CometChat } from '@cometchat-pro/chat';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
@@ -35,7 +34,6 @@ const handleError = (err, callBack) => {
 };
 
 const handleErrorCode = async (err, callBack) => {
-  const cometChatToken = getItem('cometChatToken');
   const fcmToken = getItem('fcmToken');
   const expiredError = getItem('expiredError');
   if (err?.response?.status === 401) {
@@ -52,11 +50,6 @@ const handleErrorCode = async (err, callBack) => {
         } catch (error) {
           console.error(error);
         }
-      }
-
-      if (cometChatToken) {
-        CometChat?.disconnect();
-        await CometChat?.logout();
       }
 
       window.location.href = '/auth/login';

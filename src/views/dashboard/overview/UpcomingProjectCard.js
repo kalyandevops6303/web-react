@@ -13,7 +13,7 @@ import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import { convertUnixTimestampToDate, roundOfAmount, truncateSentence } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { generateAvatar } from '../../../utility/HelperFunctions';
 import { isFlexternshipApp } from '@/configs/api/env';
 
 const UpcomingProjectCard = ({ accordionName, data, className }) => {

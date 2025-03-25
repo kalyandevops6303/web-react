@@ -15,7 +15,7 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
 import { convertUnixTimestampToDate } from '../../../utility/Utils';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
-import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { generateAvatar } from '../../../utility/HelperFunctions';
 
 // const getBidByName = (bidBy) => {
 //   if (!bidBy) return '';

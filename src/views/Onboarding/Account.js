@@ -52,9 +52,7 @@ import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
 import { checkPoints, maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
-import { convertReferral } from '../../redux/actions/referralAndRewardActions';
 import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
-import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
@@ -167,7 +165,6 @@ const Account = () => {
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const profileDetailsForClientLoading = useSelector(clientProfileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
-  const convertReferralIsLoading = useSelector(convertReferralLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(savedFormData?.resetPasswordModal || null);
 
@@ -188,13 +185,6 @@ const Account = () => {
     dispatch(setFormData({ ...savedFormData, resetPasswordModal }));
   }, [resetPasswordModal]);
 
-  const onReferralConversionSuccess = () => {
-    userDetailsData?.user_type === 'TALENT'
-      ? navigate(`/${userOnboarding.talent}/personal-details`)
-      : navigate(`/${userOnboarding.client}/personal-details`);
-    removeItem('referral_data');
-  };
-
   const onSuccess = () => {
     dispatch(clearAllFormData());
     dispatch(getUserData());
@@ -210,35 +200,11 @@ const Account = () => {
       userDetailsData?.user_type === 'TALENT'
         ? navigate(`/${userProfileEdit.talent}/personal-details`)
         : navigate(`/${userProfileEdit.client}/personal-details`);
-    } else {
-      const referralData = getItem('referral_data');
-      const referralViaShareData = getItem('referral_via_share_data');
-      if (referralViaShareData) {
-        const email = watch('email');
-        dispatch(
-          convertReferral({
-            referral_id: referralViaShareData.referral_id,
-            email,
-            onSuccess: onReferralConversionSuccess,
-            invite_type: referralViaShareData.referral_invitation_type,
-          }),
-        );
-      } else if (referralData) {
-        const referralId = referralData?._id;
-        const email = watch('email');
-        dispatch(
-          convertReferral({
-            referral_id: referralId,
-            email,
-            onSuccess: onReferralConversionSuccess,
-            invite_type: referralData?.invitation_type,
-          }),
-        );
-      } else {
-        userDetailsData?.user_type === 'TALENT'
-          ? navigate(`/${userOnboarding.talent}/personal-details`)
-          : navigate(`/${userOnboarding.client}/personal-details`);
-      }
+    }
+    if (location.pathname.includes('-onboarding')) {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate(`/${userOnboarding.talent}/personal-details`)
+        : navigate(`/${userOnboarding.client}/personal-details`);
     }
   };
   const buttonText = selectedImage && selectedImagePreview ? 'Edit Picture' : 'Update Picture';
@@ -620,7 +586,6 @@ const Account = () => {
                 className="d-flex align-items-center justify-content-between"
                 disabled={
                   isImageUploading ||
-                  convertReferralIsLoading ||
                   (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
                     ? !isValid || talentAccountDetailsIsLoading || profileDetailsIsLoading
                     : !isValid || clientAccountDetailsIsLoading || profileDetailsForClientLoading)
@@ -628,7 +593,6 @@ const Account = () => {
               >
                 {talentAccountDetailsIsLoading ||
                 clientAccountDetailsIsLoading ||
-                convertReferralIsLoading ||
                 profileDetailsIsLoading ||
                 profileDetailsForClientLoading ? (
                   <Spinner size="sm" />
