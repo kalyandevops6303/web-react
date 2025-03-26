@@ -66,6 +66,7 @@ export default function TeamAnalytics() {
 
   useEffect(() => {
     if (params?.projectId) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       getProjectDetails(params?.projectId);
       getTeamPerformanceSummary(params?.projectId);
       getTeamMembersAttractiveness(params?.projectId);
