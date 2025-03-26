@@ -30,6 +30,8 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import { secondaryStatusConstants, userTypes } from '../../utility/constants/Constant';
 import PermissionWrapper from '@/PermissionWrapper';
+import { isFlexternshipApp } from '@/configs/api/env';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -132,7 +134,6 @@ const ProjectCard = ({
     return switchData?.navigateTo;
   };
   const checkTime = checkTimeLeft(data?.listing_details?.start_date_epoch);
-
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -161,14 +162,16 @@ const ProjectCard = ({
                     const isSecondaryStatusValid = data?.secondary_status
                       ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
                       : Object.keys(primaryStatus).includes(data?.status);
-
                     const badgeStatus =
-                      isSecondaryStatusValid && data?.secondary_status
-                        ? data?.secondary_status?.next.includes('SIGN')
-                          ? data?.status
-                          : data?.secondary_status?.next
-                        : data?.status || pathname;
-
+                      data?.status === primaryStatus.COMPLETED.toUpperCase()
+                        ? primaryStatus.COMPLETED.toUpperCase()
+                        : (isSecondaryStatusValid &&
+                            (data?.secondary_status
+                              ? data?.secondary_status?.next.includes('SIGN')
+                                ? data?.status
+                                : data?.secondary_status?.next
+                              : data?.status)) ||
+                          pathname;
                     if (isActiveOrOngoing && isNextMilestone) {
                       return checkTime?.moreThanOneDay ? (
                         <span className="text-danger fw-semibold small">
@@ -181,7 +184,9 @@ const ProjectCard = ({
                       ) : (
                         <CustomBadge>
                           <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                            {data?.secondary_status
+                            {data?.status === primaryStatus.COMPLETED.toUpperCase()
+                              ? primaryStatus[data?.status]
+                              : data?.secondary_status
                               ? data?.secondary_status?.next.includes('SIGN')
                                 ? primaryStatus[data?.status]
                                 : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
@@ -194,7 +199,9 @@ const ProjectCard = ({
                     return (
                       <CustomBadge>
                         <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
-                          {data?.secondary_status
+                          {data?.status === primaryStatus.COMPLETED.toUpperCase()
+                            ? primaryStatus[data?.status]
+                            : data?.secondary_status
                             ? data?.secondary_status?.next.includes('SIGN')
                               ? primaryStatus[data?.status]
                               : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
@@ -229,26 +236,27 @@ const ProjectCard = ({
                           Assigned Date:{' '}
                           {convertUnixTimestampToDate(
                             data?.assigned_date || data?.listing_details?.start_date_epoch,
-                            savedUserData?.availability?.timezone?.name,
+                            isFlexternshipApp ? getUserTimezone() : savedUserData?.availability?.timezone?.name,
                           ) || data?.listing_details?.start_date}
                         </span>
                       )}
-                      {(data?.completed_date || data?.listing_details?.end_date_epoch) && (
-                        <span className="me-1">
-                          {data?.completed_date || data?.listing_details?.end_date_epoch
-                            ? `Completed Date: ${convertUnixTimestampToDate(
-                                data?.completed_date || data?.listing_details?.end_date_epoch,
-                                savedUserData?.availability?.timezone?.name,
-                              )}   `
-                            : ''}
-                        </span>
-                      )}
+                      {!(data?.status === 'ACTIVE' || data?.status === 'ON_GOING') &&
+                        (data?.completed_date || data?.listing_details?.end_date_epoch) && (
+                          <span className="me-1">
+                            {data?.completed_date || data?.listing_details?.end_date_epoch
+                              ? `Completed Date: ${convertUnixTimestampToDate(
+                                  data?.completed_date || data?.listing_details?.end_date_epoch,
+                                  isFlexternshipApp ? getUserTimezone() : savedUserData?.availability?.timezone?.name,
+                                )}   `
+                              : ''}
+                          </span>
+                        )}
                       {data?.invite_date && (
                         <span className="me-1">
                           {data?.invite_date
                             ? `Invite Date: ${convertUnixTimestampToDate(
                                 data?.invite_date,
-                                savedUserData?.availability?.timezone?.name,
+                                isFlexternshipApp ? getUserTimezone() : savedUserData?.availability?.timezone?.name,
                               )}`
                             : ''}
                         </span>
@@ -271,9 +279,9 @@ const ProjectCard = ({
                   <>
                     {!showFullText ? (
                       <div
-                        className="my-div mb-6"
+                        className="my-div"
                         ref={divRef}
-                        style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                        style={{ maxHeight: '3rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
                       >
                         {data?.details?.description}
                       </div>
