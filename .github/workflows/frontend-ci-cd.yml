@@ -1,12 +1,12 @@
 name: frontend-ci-cd
 on:
   workflow_dispatch:
-  # release:
-  #   types:
-  #     - published
-  push:
-     tags:
-       - 'tru-uat-at_v*'
+  release:
+    types:
+      - published
+  # push:
+  #    tags:
+  #      - 'tru-uat-at_v*'
 
 jobs:
   frontend-ci-cd:
