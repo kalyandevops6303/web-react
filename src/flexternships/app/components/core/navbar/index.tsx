@@ -67,11 +67,7 @@ export default function Navbar() {
       <div className="flex flex-row gap-x-5">
         <HamburgerMenu />
         {/* Logo */}
-        <Link
-          to={routes.dashboard.path}
-          onClick={() => handleNavItemClick(routes.dashboard.path)}
-          className="py-4 cursor-pointer"
-        >
+        <Link to={routes.dashboard.path} className="py-4 cursor-pointer">
           <img src={logo} className="h-8" alt="Flexternships Logo" />
         </Link>
         {/* Desktop Navigation */}

@@ -162,12 +162,10 @@ const ProjectCard = ({
                     const isSecondaryStatusValid = data?.secondary_status
                       ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
                       : Object.keys(primaryStatus).includes(data?.status);
-                    const isBlocked = [primaryStatus.BLOCKED, primaryStatus.COMPLETED].includes(data?.status);
                     const badgeStatus =
                       data?.status === primaryStatus.COMPLETED.toUpperCase()
                         ? primaryStatus.COMPLETED.toUpperCase()
                         : (isSecondaryStatusValid &&
-                            !isBlocked &&
                             (data?.secondary_status
                               ? data?.secondary_status?.next.includes('SIGN')
                                 ? data?.status
@@ -188,7 +186,7 @@ const ProjectCard = ({
                           <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
                             {data?.status === primaryStatus.COMPLETED.toUpperCase()
                               ? primaryStatus[data?.status]
-                              : !isBlocked && data?.secondary_status
+                              : data?.secondary_status
                               ? data?.secondary_status?.next.includes('SIGN')
                                 ? primaryStatus[data?.status]
                                 : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
@@ -203,7 +201,7 @@ const ProjectCard = ({
                         <Badge className={`${badgeStatus} truncate-1 bordered`} color="badge">
                           {data?.status === primaryStatus.COMPLETED.toUpperCase()
                             ? primaryStatus[data?.status]
-                            : !isBlocked && data?.secondary_status
+                            : data?.secondary_status
                             ? data?.secondary_status?.next.includes('SIGN')
                               ? primaryStatus[data?.status]
                               : getSecondaryStatus(data?.secondary_status?.next, data?.last_in_progress_milestone)
