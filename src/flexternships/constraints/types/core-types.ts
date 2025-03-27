@@ -240,3 +240,8 @@ export type WebSocketMessage = {
   num_projects?: number;
   domain?: string;
 };
+
+export type TnCLocationStateTypes = {
+  invitationToken: string;
+  tncType: UserType;
+};

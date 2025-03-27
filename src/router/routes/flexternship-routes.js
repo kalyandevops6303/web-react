@@ -2,9 +2,11 @@
 import { Navigate } from 'react-router-dom';
 
 // ** Route Components
-import PublicRoute from '@components/routes/PublicRoute';
+// import PublicRoute from '@components/routes/PublicRoute';
 
 // ** Dashboard & User Views
+import CreateFlexternProject from '@flexternships/app/create-project/page';
+import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
 import UserDetails from '../../views/user-details';
 import MarketPlace from '../../views/marketplace';
@@ -28,13 +30,11 @@ import { FEATURE_NAMES } from '@/utility/constants/Constant';
 import routes from '@/flexternships/routes';
 
 // ** Flexternship Project Components
-import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipProjectDetails from '@/flexternships/app/project-details/page';
 import FlexternshipsContractView from '@/flexternships/app/project-details/sign-documents/page';
 import FlexternProjectQuickActions from '@/flexternships/app/quick-actions/page';
 
 // ** Flexternship Onboarding & Profile
-import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import ClientPublicProfile from '@/flexternships/app/profile/client/page';
 
 // ** Flexternship Core Components
@@ -51,12 +51,13 @@ import IndividualAnalytics from '@/flexternships/app/analytics/individual-analyt
 import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
 import ConversationParticipationPage from '@/flexternships/app/analytics/individual-analytics/conversation-participation/page';
 import Commits from '@/flexternships/app/analytics/individual-analytics/commits/page';
+import PrivacyPolicy from '@/flexternships/app/profile/privacy-policy/page';
 
 // ** Default Route
 const DefaultRoute = routes.auth.path;
 
 // ** Merge Routes
-export const FlexternshipRoutes = [
+const FlexternshipRoutes = [
   {
     path: routes.home.path,
     index: true,
@@ -861,4 +862,13 @@ export const FlexternshipRoutes = [
       </RoleAccessWrapper>
     ),
   },
+  {
+    path: routes.privacyPolicy.path,
+    element: <PrivacyPolicy />,
+    meta: {
+      layout: 'blank',
+    },
+  },
 ];
+
+export default FlexternshipRoutes;

@@ -134,3 +134,8 @@ export enum FlexternDelegateInvitationType {
 export enum DocType {
   TERMS_AND_CONDITIONS = 'TERMS_AND_CONDITIONS',
 }
+
+export enum TnCTypes {
+  USER_TERMS = 'USER_TERMS',
+  PRIVACY_POLICY = 'PRIVACY_POLICY',
+}

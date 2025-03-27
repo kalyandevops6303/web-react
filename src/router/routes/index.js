@@ -45,7 +45,7 @@ import NotFound from '../../views/NotFound';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
 import CreateFlexternProject from '@flexternships/app/create-project/page';
 import { isFlexternshipApp } from '@/configs/api/env';
-import { FlexternshipRoutes } from './flexternship-routes';
+import FlexternshipRoutes from './flexternship-routes';
 import { OneOffRoutes } from './one-off-routes';
 
 const getLayout = {

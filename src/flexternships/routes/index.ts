@@ -110,6 +110,11 @@ const routes = {
     generate: (projectId: string) => `/quick-actions/${projectId}`,
   },
 
+  // Privacy Policy
+  privacyPolicy: {
+    path: '/privacy-policy',
+  },
+
   // Not found
   notFound: { path: '*' },
 };

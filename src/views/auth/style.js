@@ -125,6 +125,11 @@ export const OnBoardWrap = styled.div`
   }
 
   .privacy-terms-label {
+    text-align: right;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
     color: ${theme.primary};
   }
 
@@ -213,6 +218,12 @@ export const OnBoardWrap = styled.div`
 
   .checkbox-custom-label {
     .form-check-label {
+      font-size: 14px;
+      padding-top: 20px;
+      padding-bottom: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
       color: ${theme.headingTextColor};
     }
   }
