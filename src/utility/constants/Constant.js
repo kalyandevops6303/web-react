@@ -123,7 +123,9 @@ const projectStatusEnum = {
   ON_GOING: 'ON_GOING',
   CLOSED: 'CLOSED',
   TERMINATED: 'TERMINATED',
+  BLOCKED: 'BLOCKED',
   COMPLETED: 'COMPLETED',
+  CREATED: 'CREATED',
 };
 const disputeStatuses = {
   open: 'OPEN',

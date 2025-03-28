@@ -32,7 +32,7 @@ const Header = styled.div`
 
 const CustomBadge = styled.span`
   .badge {
-    border-radius: ${(props) => (props.rounded ? '10px !important' : 'none')};
+    border-radius: ${(props) => (props.rounded ? '4px' : 'none')};
     padding-right: 9px !important;
     padding-left: 9px !important;
     margin-bottom: 16px;
@@ -220,6 +220,7 @@ const CustomBadge = styled.span`
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.lightBlueColor}` : 'none')};
+    border-radius: '17px !important';
   }
 
   .SIGN_NDA,
@@ -228,6 +229,7 @@ const CustomBadge = styled.span`
   .SIGN_DOCUMENTS {
     background: ${theme.blueBg} !important;
     color: ${theme.blueColor};
+    border-radius: '17px !important';
   }
   .COMPLETED {
     background: ${theme.lightBlueBgColor} !important;
@@ -237,6 +239,7 @@ const CustomBadge = styled.span`
   .MILESTONE {
     background: ${theme.lightOrangeColor} !important;
     color: ${theme.orangeColor};
+    border-radius: 17px !important;
   }
 `;
 

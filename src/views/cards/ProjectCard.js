@@ -28,7 +28,7 @@ import {
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { appPermissionsSelector, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
-import { secondaryStatusConstants, userTypes } from '../../utility/constants/Constant';
+import { projectStatusEnum, secondaryStatusConstants, userTypes } from '../../utility/constants/Constant';
 import PermissionWrapper from '@/PermissionWrapper';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { getUserTimezone } from '@/flexternships/utils/core-utils';
@@ -133,7 +133,7 @@ const ProjectCard = ({
 
     return switchData?.navigateTo;
   };
-  const checkTime = checkTimeLeft(data?.listing_details?.start_date_epoch);
+  const checkTime = checkTimeLeft(data?.details?.expected_start_date);
   return (
     <ProjectCardWrap className={data?.status?.toLowerCase()}>
       <Card onClick={handleShowProject} className="cursor-pointer">
@@ -157,11 +157,21 @@ const ProjectCard = ({
               <Col lg="8">
                 <div className="d-flex mb-1 status-row">
                   {(() => {
-                    const isActiveOrOngoing = [primaryStatus.ACTIVE, primaryStatus.ON_GOING].includes(data?.status);
+                    const isActiveOrOngoing = [
+                      projectStatusEnum.ACTIVE,
+                      projectStatusEnum.ON_GOING,
+                      projectStatusEnum.CREATED,
+                    ].includes(data?.status);
                     const isNextMilestone = data?.secondary_status?.next === secondaryStatusConstants?.MILESTONE;
-                    const isSecondaryStatusValid = data?.secondary_status
-                      ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
-                      : Object.keys(primaryStatus).includes(data?.status);
+
+                    const isSecondaryStatusValid =
+                      ![
+                        projectStatusEnum?.COMPLETED,
+                        projectStatusEnum?.BLOCKED,
+                        projectStatusEnum?.TERMINATED,
+                      ].includes(data?.status) && data?.secondary_status
+                        ? Object.keys(secondaryStatusConstants).includes(data?.secondary_status?.next)
+                        : Object.keys(primaryStatus).includes(data?.status);
                     const badgeStatus =
                       data?.status === primaryStatus.COMPLETED.toUpperCase()
                         ? primaryStatus.COMPLETED.toUpperCase()
