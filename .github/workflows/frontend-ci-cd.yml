@@ -6,7 +6,7 @@ on:
       - published
   # push:
   #    tags:
-  #      - 'tru-test_v*'
+  #      - 'tru-wipro_v*'
 
 jobs:
   frontend-ci-cd:
@@ -24,7 +24,7 @@ jobs:
 
       - name: Set manifest folder names
         run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" || "${{ vars.ENVIRONMENT }}" == "tru-test" ]]; then
+          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
              echo "FOLDER=UAT" >> $GITHUB_ENV
           else
              echo "FOLDER=Prod" >> $GITHUB_ENV
@@ -63,8 +63,8 @@ jobs:
             echo "FILENAME=env-fe-tru-uat.txt" >> $GITHUB_ENV  
           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
             echo "FILENAME=env-fe-tru-uat-auto.txt" >> $GITHUB_ENV
-          elif [[ "${{ vars.TAG }}" == tru-test_* ]]; then
-            echo "FILENAME=env-fe-tru-test.txt" >> $GITHUB_ENV  
+          elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
+            echo "FILENAME=env-fe-tru-wipro.txt" >> $GITHUB_ENV  
           elif [[ "${{ vars.TAG }}" == v* ]]; then
             echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
@@ -82,8 +82,8 @@ jobs:
            echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
            echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
-          elif [[ "${{ vars.TAG }}" == tru-test_* ]]; then
-           echo "SUBFOLDER=tru-test" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
+           echo "SUBFOLDER=tru-wipro" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == v* ]]; then
            echo "SUBFOLDER=prod" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
@@ -125,8 +125,8 @@ jobs:
               cp secrets.txt .env.tru-uat.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
               cp secrets.txt .env.tru-uat-auto.local
-          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-test" ]]; then
-              cp secrets.txt .env.tru-test.local
+          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-wipro" ]]; then
+              cp secrets.txt .env.tru-wipro.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "prod" ]]; then
               cp secrets.txt .env.production.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
@@ -149,7 +149,7 @@ jobs:
       - name: Set Azure environment
         id: azure
         run: |
-          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" || "${{ vars.ENVIRONMENT }}" == "tru-test" ]]; then
+          if [[ "${{ vars.ENVIRONMENT }}" == "uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat" || "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
               echo "azure_clientid=${{ secrets.AZURE_CLIENT_ID_UAT }}" >> $GITHUB_ENV
               echo "azure_tenantid=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
               echo "azure_subscriptionid=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
@@ -180,8 +180,8 @@ jobs:
               echo "VITE_ENV_MODE=tru-uat" >> $GITHUB_ENV
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-uat-auto ]]; then
               echo "VITE_ENV_MODE=tru-uat-auto" >> $GITHUB_ENV
-          elif [[ "${{ vars.ENVIRONMENT }}" == tru-test ]]; then
-              echo "VITE_ENV_MODE=tru-test" >> $GITHUB_ENV
+          elif [[ "${{ vars.ENVIRONMENT }}" == tru-wipro ]]; then
+              echo "VITE_ENV_MODE=tru-wipro" >> $GITHUB_ENV
           
           elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
               echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
@@ -192,10 +192,6 @@ jobs:
 
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-prod ]]; then
               echo "VITE_ENV_MODE=tru-production" >> $GITHUB_ENV
-              echo "storage=azusctrtruprodwebsa" >> $GITHUB_ENV
-              echo "backup_directory=tru-prod-frontend-backup" >> $GITHUB_ENV
-              echo "cdn_endpoint=trumio-tru-prod-fdcdn" >> $GITHUB_ENV
-              echo "cdn_domain=tru-app.trumio.ai" >> $GITHUB_ENV
           fi
 
       - name: Echo VITE variable
@@ -233,8 +229,8 @@ jobs:
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_UAT }}" >> $GITHUB_ENV
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_UAT_AUTO }}" >> $GITHUB_ENV
-          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-test" ]]; then
-            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_TEST }}" >> $GITHUB_ENV
+          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-wipro" ]]; then
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_WIPRO }}" >> $GITHUB_ENV
           elif [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_UAT }}" >> $GITHUB_ENV    
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
@@ -246,7 +242,7 @@ jobs:
       
       - name: Webapp Deploy
         id: webapp_deploy
-        if: ${{ vars.ENVIRONMENT == 'tru-uat-auto' || vars.ENVIRONMENT == 'tru-uat' || vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-prod' || vars.ENVIRONMENT  == 'tru-test' }}
+        if: ${{ vars.ENVIRONMENT == 'tru-uat-auto' || vars.ENVIRONMENT == 'tru-uat' || vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-prod' || vars.ENVIRONMENT  == 'tru-wipro' }}
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ env.AZURE_STATIC_WEB_APPS_API_TOKEN }}
