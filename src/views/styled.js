@@ -56,8 +56,8 @@ const CustomBadge = styled.span`
   }
   .OPEN {
     background: ${theme.badgeBlueColor} !important;
-    color: ${theme.darkBlueColor};
-    border: ${`1px solid ${theme.darkBlueColor}`};
+    color: ${theme.blueColor};
+    border: ${`1px solid ${theme.blueColor}`};
   }
   .DISPUTED,
   .BLOCKED {
@@ -111,7 +111,7 @@ const CustomBadge = styled.span`
   .LISTING_EXPIRED {
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};
-    border: ${(props) => (props.bordered ? `1px solid ${theme.darkRedColor}` : 'none')};
+    border: ${`1px solid ${theme.darkRedColor}`};
   }
   .CLOSED {
     background: ${theme.disabledGrayColor}1f;
@@ -226,17 +226,17 @@ const CustomBadge = styled.span`
   .SIGN_CONTRACT,
   .SIGN_REQUESTED,
   .SIGN_DOCUMENTS {
-    background: ${theme.lightBlueBgColor} !important;
-    color: ${theme.lightBlueColor};
+    background: ${theme.blueBg} !important;
+    color: ${theme.blueColor};
   }
   .COMPLETED {
     background: ${theme.lightBlueBgColor} !important;
-    color: ${theme.lightBlueColor};
-    border: ${(props) => (props.bordered ? `1px solid ${theme.blueColor}` : 'none')};
+    color: ${theme.darkBlueColor};
+    border: ${`1px solid ${theme.darkBlueColor}`};
   }
   .MILESTONE {
     background: ${theme.lightOrangeColor} !important;
-    color: ${theme.progressBarOrange};
+    color: ${theme.orangeColor};
   }
 `;
 
