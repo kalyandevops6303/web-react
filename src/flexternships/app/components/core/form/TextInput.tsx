@@ -87,7 +87,7 @@ export default function TextInput(props: InputProps) {
             readOnly ? Styles.formInputReadOnly : error ? Styles.formInputError : Styles.formInputDefault
           } ${Styles.formInputTextarea}`}
           disabled={readOnly}
-          value={escapeHtml ? unescapeHtml(value.toString()) : value}
+          value={escapeHtml ? unescapeHtml(value?.toString()) : value}
           onChange={handleChange}
         />
       ) : (
