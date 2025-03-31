@@ -48,6 +48,7 @@ const contactSupportSchema = yup.object().shape({
         .required('Tool is required'),
   }),
 });
+
 interface ContactSupportForm {
   toEmail: string;
   ccEmail: string;
@@ -79,9 +80,8 @@ export default function ContactSupportModal(props: Props) {
     mode: 'onChange',
     resolver: yupResolver(contactSupportSchema),
     defaultValues: {
-      toEmail: SUPPORT_EMAIL,
-      ccEmail: userDetails.email,
-      issueType: null,
+      toEmail: '',
+      ccEmail: '',
       description: '',
     },
   });
@@ -105,7 +105,7 @@ export default function ContactSupportModal(props: Props) {
         }
       })();
       await sendSupportRequest(
-        false,
+        true,
         SUPPORT_EMAIL,
         [userDetails.email],
         data.description,

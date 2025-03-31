@@ -456,7 +456,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
       <Popover
         innerRef={popoverRef}
-        placement="right"
+        placement="bottom"
         isOpen={popoverOpen}
         target="popoverButton"
         toggle={togglePopover}
@@ -832,7 +832,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   key={item?._id || item?.id}
                   data={item}
                   isPopoverOpen={popoverOpen}
-                  isExpanded={false}
+                  isExpanded={isExpanded}
                   primaryFilter={primaryFilter}
                   secondaryFilterForInvitedType={secondFilterState.invitation_type[0].value}
                 />

@@ -201,7 +201,7 @@ const LeftSideBarProjectDetails = () => {
             )}
           </div>
 
-          {daysLeft > 0 && <h1 className="text-error font-semibold">{daysLeft} Days Left</h1>}
+          {daysLeft > 0 && <h1 className="text-error font-semibold">Starts in {daysLeft} Days</h1>}
         </div>
         <h1 className="text-grey-heading font-medium text-4.5 leading-[21px] font-montserrat">{data?.details?.name}</h1>
 
@@ -306,7 +306,9 @@ const LeftSideBarProjectDetails = () => {
                   {showSecondaryStatusCondition && (
                     <div className="flex flex-row items-center gap-3">
                       <div className="text-grey font-normal text-sm leading-[21px] font-montserrat">Status:</div>
-                      {showStartsInTimer ? (
+                      {daysLeft > 0 ? (
+                        <h1 className="text-error font-semibold">Starts in {daysLeft} Days</h1>
+                      ) : showStartsInTimer ? (
                         <StartsInTimer epoch={data?.details?.expectedStartDate!} hideSeconds />
                       ) : (
                         <ProjectStatusChip
