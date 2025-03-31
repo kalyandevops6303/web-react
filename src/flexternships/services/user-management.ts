@@ -734,22 +734,17 @@ export const getDelegateInvitationsPaginated = async (page: number = 1, pageSize
 /**
  * Handles sending a support request based on the request type.
  * If `isFlextern` is true, it posts a support request; otherwise, it sends a general support request email.
- * @param isFlextern Determines if the request is for Flextern.
- * @param toEmail Recipient email for .
- * @param ccEmail CC email recipients .
- * @param description Description of the issue.
- * @param issueType Type of the issue.
- * @param missingName (Optional) Missing name details for.
+ * @param params Object containing request details.
  * @returns The response data for Flextern requests, otherwise undefined.
  */
-export const sendSupportRequest = async (
-  isFlextern: boolean,
-  toEmail?: string,
-  ccEmail?: string[],
-  description?: string,
-  issueType?: string,
-  missingName?: string,
-) => {
+export const sendSupportRequest = async (params: {
+  toEmail: string;
+  ccEmail: string[];
+  description?: string;
+  issueType?: string;
+  missingName?: string;
+}) => {
+  const { toEmail, ccEmail, description, issueType, missingName } = params;
   const headers = appendAuthToken({});
   const config = {
     headers,
@@ -764,15 +759,11 @@ export const sendSupportRequest = async (
       issue_type: issueType,
       missing_name: missingName,
     };
-    if (isFlextern) {
-      const response = await axios.post(routes.userManagement.user.v2.postSupportRequest, postData, config);
-      return response.data.data;
-    } else if (toEmail && ccEmail && description && issueType) {
-      await axios.post(routes.userManagement.support.contactSupport, postData, config);
-    }
+    const response = await axios.post(routes.userManagement.user.v2.postSupportRequest, postData, config);
+    return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while processing support request');
-    return isFlextern ? { options: [], hasMore: false } : undefined;
+    return { options: [], hasMore: false };
   }
 };
 
@@ -812,20 +803,5 @@ export const loadSupportTypes = async (page: number, pageSize: number, search: s
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching support types');
     return { data: [], metadata: { current_page: 1, page_size: 0, total_records: 0, has_next_page: false } };
-  }
-};
-
-export const postSupportRequest = async (data: any) => {
-  const headers = appendAuthToken({});
-  const config = {
-    headers: headers,
-    withCredentials: true,
-  };
-  try {
-    const response = await axios.post(routes.userManagement.user.v2.postSupportRequest, data, config);
-    return response.data.data;
-  } catch (error) {
-    handleError(error as Error, 'An unexpected error occurred while fetching support types');
-    return { options: [], hasMore: false };
   }
 };

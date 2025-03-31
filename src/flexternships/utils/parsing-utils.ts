@@ -565,7 +565,7 @@ export const parseSupportTypesResponse = (data: any, page: number, pageSize: num
   const supportTypes = data.data || [];
 
   return {
-    data: supportTypes.map((support: any) => ({
+    data: supportTypes.map((support: { type: string; name: string }) => ({
       _id: support.type,
       name: support.name,
     })),

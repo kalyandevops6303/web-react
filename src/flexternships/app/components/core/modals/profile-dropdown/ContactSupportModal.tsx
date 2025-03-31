@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import PrimaryButton from '../../buttons/PrimaryButton';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
@@ -85,12 +85,6 @@ export default function ContactSupportModal(props: Props) {
       description: '',
     },
   });
-  const values = useWatch({ control });
-
-  useEffect(() => {
-    console.log('values', values);
-    console.log(isValid);
-  }, [values]);
   const onSubmit = async (data: ContactSupportForm) => {
     setIsConfirmLoading(true);
     try {
@@ -104,14 +98,13 @@ export default function ContactSupportModal(props: Props) {
             return '';
         }
       })();
-      await sendSupportRequest(
-        true,
-        SUPPORT_EMAIL,
-        [userDetails.email],
-        data.description,
-        data.issueType?._id || DEFAULT_SUPPORT_TYPE,
+      await sendSupportRequest({
+        toEmail: SUPPORT_EMAIL,
+        ccEmail: [userDetails.email],
+        description: data.description,
+        issueType: data.issueType?._id || DEFAULT_SUPPORT_TYPE,
         missingName,
-      );
+      });
       onClose();
       onConfirmSuccess();
     } catch (error: unknown) {
@@ -121,7 +114,6 @@ export default function ContactSupportModal(props: Props) {
     }
   };
   const issueType = watch('issueType');
-  console.log('issueType', issueType);
   return (
     <GenericModal className="max-w-[670px]" isOpen={isOpen} onClose={onClose}>
       <div className="flex gap-x-12 p-10">
