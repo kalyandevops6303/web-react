@@ -731,11 +731,15 @@ export const getDelegateInvitationsPaginated = async (page: number = 1, pageSize
     data: [],
   };
 };
+
 /**
  * Handles sending a support request based on the request type.
- * If `isFlextern` is true, it posts a support request; otherwise, it sends a general support request email.
- * @param params Object containing request details.
- * @returns The response data for Flextern requests, otherwise undefined.
+ * @param {Object} params - The parameters required to send a support request.
+ * @param {string} params.toEmail - The recipient email address where the support request will be sent.
+ * @param {string[]} params.ccEmail - A list of email addresses to be CC'd in the support request.
+ * @param {string} [params.description] - A brief description of the issue or request (optional).
+ * @param {string} [params.issueType] - The category or type of the issue being reported (optional).
+ * @param {string} [params.missingName] - The name of a missing entity related to the issue, if applicable (optional).
  */
 export const sendSupportRequest = async (params: {
   toEmail: string;
@@ -763,7 +767,7 @@ export const sendSupportRequest = async (params: {
     return response.data.data;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while processing support request');
-    return { options: [], hasMore: false };
+    return { options: [] };
   }
 };
 
@@ -799,7 +803,7 @@ export const loadSupportTypes = async (page: number, pageSize: number, search: s
 
   try {
     const response = await axios.get(routes.userManagement.user.v2.getSupportTypes, config);
-    return parseSupportTypesResponse(response.data, page, pageSize); // Using the parsing function
+    return parseSupportTypesResponse(response.data.data, page, pageSize);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching support types');
     return { data: [], metadata: { current_page: 1, page_size: 0, total_records: 0, has_next_page: false } };
