@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { AsyncPaginate } from 'react-select-async-paginate';
 import '../custom-styles.scss';
 import * as yup from 'yup';
-import classNames from 'classnames';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -22,13 +20,12 @@ import {
   CardText,
 } from 'reactstrap';
 import { SupportModalWrapper } from './style';
-import { getMissingName, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import { returnFilteredDropdownOptions } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import { getIssueTypeService } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
-import { customerSupport, customerSupportForFlextern } from '../../redux/actions/supportActions';
-import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
-import { isFlexternshipApp } from '@/configs/api/env';
+import { customerSupport } from '../../redux/actions/supportActions';
+import { DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '../../utility/constants/Constant';
 import TextInput from '@/flexternships/app/components/core/form/TextInput';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
@@ -133,9 +130,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       // missing_name: getMissingName(values?.issueType?.value, values),
     };
 
-    // isFlexternshipApp
-    //   ? dispatch(customerSupportForFlextern({ data: postData, onSuccess }))
-    //   : dispatch(customerSupport({ data: postData, onSuccess }));
+    dispatch(customerSupport({ data: postData, onSuccess }));
     dispatch(customerSupport({ data: postData, onSuccess }));
   };
 
