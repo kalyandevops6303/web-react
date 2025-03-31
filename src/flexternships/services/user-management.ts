@@ -15,7 +15,11 @@ import { ValidatedRequestToken } from '../constraints/types/core-types';
 import { logout as logoutZustand } from '../utils/core-utils';
 import errorHandler from '@/utility/errorHandler';
 import { DocType, FlexternDelegateInvitationType } from '../constraints/enums/core-enums';
-import { parseDelegateInvitations, parseTermsAndConditionsDocument } from '../utils/parsing-utils';
+import {
+  parseDelegateInvitations,
+  parseSupportTypesResponse,
+  parseTermsAndConditionsDocument,
+} from '../utils/parsing-utils';
 
 /// File Endpoints
 /**
@@ -727,39 +731,43 @@ export const getDelegateInvitationsPaginated = async (page: number = 1, pageSize
     data: [],
   };
 };
+
 /**
- * Sends a support request to the server.
- * @param toEmail - The recipient email address
- * @param ccEmail - The CC email address
- * @param description - The support request description
- * @param issueType - The type of support issue
- * @returns A Promise that resolves when the support request is sent successfully
- * @throws {Error} If the request fails or an unexpected error occurs
+ * Handles sending a support request based on the request type.
+ * @param {Object} params - The parameters required to send a support request.
+ * @param {string} params.toEmail - The recipient email address where the support request will be sent.
+ * @param {string[]} params.ccEmail - A list of email addresses to be CC'd in the support request.
+ * @param {string} [params.description] - A brief description of the issue or request (optional).
+ * @param {string} [params.issueType] - The category or type of the issue being reported (optional).
+ * @param {string} [params.missingName] - The name of a missing entity related to the issue, if applicable (optional).
  */
-export const sendSupportRequest = async (
-  toEmail: string,
-  ccEmail: string[],
-  description: string,
-  issueType: string,
-) => {
+export const sendSupportRequest = async (params: {
+  toEmail: string;
+  ccEmail: string[];
+  description?: string;
+  issueType?: string;
+  missingName?: string;
+}) => {
+  const { toEmail, ccEmail, description, issueType, missingName } = params;
   const headers = appendAuthToken({});
   const config = {
-    headers: headers,
+    headers,
     withCredentials: true,
   };
+
   try {
-    await axios.post(
-      routes.userManagement.support.contactSupport,
-      {
-        to_email: toEmail,
-        cc_email: ccEmail,
-        description,
-        issue_type: issueType,
-      },
-      config,
-    );
+    const postData = {
+      to_email: toEmail,
+      cc_email: ccEmail,
+      description,
+      issue_type: issueType,
+      missing_name: missingName,
+    };
+    const response = await axios.post(routes.userManagement.user.v2.postSupportRequest, postData, config);
+    return response.data.data;
   } catch (error) {
-    handleError(error as Error, 'An unexpected error occurred while sending support request');
+    handleError(error as Error, 'An unexpected error occurred while processing support request');
+    return { options: [] };
   }
 };
 
@@ -778,5 +786,26 @@ export const logoutUser = async () => {
     await axios.post(routes.userManagement.auth.logout, {}, config);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while logging out');
+  }
+};
+
+export const loadSupportTypes = async (page: number, pageSize: number, search: string): Promise<PaginatedData> => {
+  const headers = appendAuthToken({});
+  const config = {
+    params: {
+      page,
+      page_size: pageSize,
+      search,
+    },
+    headers,
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.userManagement.user.v2.getSupportTypes, config);
+    return parseSupportTypesResponse(response.data.data, page, pageSize);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching support types');
+    return { data: [], metadata: { current_page: 1, page_size: 0, total_records: 0, has_next_page: false } };
   }
 };
