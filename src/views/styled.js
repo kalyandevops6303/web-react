@@ -232,7 +232,7 @@ const CustomBadge = styled.span`
     border-radius: '17px !important';
   }
   .COMPLETED {
-    background: ${theme.lightBlueBgColor} !important;
+    background: ${theme.blueBg} !important;
     color: ${theme.darkBlueColor};
     border: ${`1px solid ${theme.darkBlueColor}`};
   }
