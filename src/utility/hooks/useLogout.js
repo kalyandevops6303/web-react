@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Correct import for navigation
-import { CometChat } from '@cometchat-pro/chat';
 import { getItem, setItem } from '../localStorageControl';
 import { clearAllFormData, setFormDocuments } from '@/redux/reducers/formData';
 import { logoutAction } from '@/redux/actions/authActions';
@@ -46,17 +45,6 @@ const useLogout = () => {
           await messaging?.deleteToken();
         } catch (error) {
           console.error('Error deleting FCM token:', error);
-        }
-      }
-
-      // CometChat logout
-      const cometChatToken = getItem('cometChatToken');
-      if (cometChatToken) {
-        try {
-          CometChat.disconnect();
-          await CometChat.logout();
-        } catch (error) {
-          console.error('Error logging out from CometChat:', error);
         }
       }
 

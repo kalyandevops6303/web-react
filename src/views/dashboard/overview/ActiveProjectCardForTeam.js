@@ -14,7 +14,7 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import DurationSegment from './DurationSegment';
 import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 import { convertUnixTimestampToDate, truncateSentence } from '../../../utility/Utils';
-import { generateAvatar } from '@/CometChatWorkspace/src/util/HelperFunctions';
+import { generateAvatar } from '../../../utility/HelperFunctions';
 
 const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);

@@ -25,7 +25,7 @@ const determineClassWhenDisputeStatus = (pathname, userData) => {
     return 'w-100  d-flex  justify-content-between';
   }
   if (
-    userData?.user_type === userTypes.talent ||
+    // userData?.user_type === userTypes.talent ||
     userData?.user_type === userTypes.team ||
     userData?.user_type === userTypes.club
   ) {
@@ -180,6 +180,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
           </div>
         </div>
       </div>
+
       {primaryFilter === 'invited' ? (
         <section>
           {profileToShowInRightSideOfCard?.user_type === userTypes.team ? (
@@ -292,11 +293,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
       ) : (
         <>
           <div className="d-flex w-100">
-            <section
-              className={
-                userData?.user_type === userTypes.client ? 'w-50 me-2 d-none' : 'w-100  d-flex justify-content-between'
-              }
-            >
+            <section className="me-4 d-flex justify-content-center align-items-center">
               {' '}
               {pathname === 'dispute' &&
               (userData?.user_type === userTypes.talent ||
@@ -369,7 +366,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 </div>
               ) : null}
               <div>
-                {flexTern && userData?.user_type === userTypes.client ? (
+                {flexTern ? (
                   <>
                     <p className="font-semibold text-heading text-sm mb-2">Project Team</p>
                     {avatarGroup?.length > 3 ? (

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { AsyncPaginate } from 'react-select-async-paginate';
 import '../custom-styles.scss';
 import * as yup from 'yup';
-import classNames from 'classnames';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -22,12 +20,13 @@ import {
   CardText,
 } from 'reactstrap';
 import { SupportModalWrapper } from './style';
-import { getMissingName, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import { returnFilteredDropdownOptions } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import { getIssueTypeService } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport } from '../../redux/actions/supportActions';
-import { CUSTOMER_SUPPORT_TYPES, DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import TextInput from '@/flexternships/app/components/core/form/TextInput';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
   const [issueTypeOptions, setIssueTypeOptions] = useState(null);
@@ -132,6 +131,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
     };
 
     dispatch(customerSupport({ data: postData, onSuccess }));
+    dispatch(customerSupport({ data: postData, onSuccess }));
   };
 
   const loadIssueTypeOptions = async (search, prevOptions, { page }) => {
@@ -223,10 +223,11 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
                   <CardText className="m-0 me-75 mr-3 fw-bold">CC: </CardText>{' '}
-                  <Input
+                  <TextInput
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
                     value={userEmail}
+                    isMasked
                   />
                 </div>
               </Col>

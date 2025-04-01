@@ -4,13 +4,14 @@ import PrimaryButton from '../../buttons/PrimaryButton';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { CustomerSupportTypes, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import TextInput from '../../form/TextInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { sendSupportRequest } from '@/flexternships/services/user-management';
+import { loadSupportTypes, sendSupportRequest } from '@/flexternships/services/user-management';
 import { DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '@/flexternships/static/constants/core-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import SingleSelectInput from '../../form/SingleSelectInput';
 
 const contactSupportSchema = yup.object().shape({
   toEmail: yup.string().email('Please enter a valid email'),
@@ -20,12 +21,41 @@ const contactSupportSchema = yup.object().shape({
     .required('Message is required')
     .min(50, 'Message must be at least 50 characters')
     .max(500, 'You have exceeded character limit of 500'),
+  issueType: yup
+    .object()
+    .shape({
+      name: yup.string().required('Issue Type label is required'),
+      _id: yup.string().required('Issue Type value is required'),
+    })
+    .required('Issue Type is required')
+    .nullable(),
+  skill: yup.string().when('issueType.value', {
+    is: (issueType: { name: string; _id: string }) => issueType?._id === CustomerSupportTypes.MISSING_SKILL,
+    then: () =>
+      yup
+        .string()
+        .min(1, 'Skill must be at least 1 character')
+        .max(150, 'Skill must be 150 characters or less')
+        .required('Skill is required'),
+  }),
+  tool: yup.string().when('issueType.value', {
+    is: (issueType: { name: string; _id: string }) => issueType?._id === CustomerSupportTypes.MISSING_TOOL,
+    then: () =>
+      yup
+        .string()
+        .min(1, 'Tool must be at least 1 character')
+        .max(150, 'Tool must be 150 characters or less')
+        .required('Tool is required'),
+  }),
 });
 
 interface ContactSupportForm {
   toEmail: string;
   ccEmail: string;
+  issueType: { name: string; _id: string } | null;
   description: string;
+  skill?: string;
+  tool?: string;
 }
 
 interface Props {
@@ -43,6 +73,7 @@ export default function ContactSupportModal(props: Props) {
 
   const {
     control,
+    watch,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<ContactSupportForm>({
@@ -54,11 +85,26 @@ export default function ContactSupportModal(props: Props) {
       description: '',
     },
   });
-
   const onSubmit = async (data: ContactSupportForm) => {
     setIsConfirmLoading(true);
     try {
-      await sendSupportRequest(SUPPORT_EMAIL, [userDetails.email], data.description, DEFAULT_SUPPORT_TYPE);
+      const missingName = (() => {
+        switch (data.issueType?._id) {
+          case CustomerSupportTypes.MISSING_SKILL:
+            return data.skill;
+          case CustomerSupportTypes.MISSING_TOOL:
+            return data.tool;
+          default:
+            return '';
+        }
+      })();
+      await sendSupportRequest({
+        toEmail: SUPPORT_EMAIL,
+        ccEmail: [userDetails.email],
+        description: data.description,
+        issueType: data.issueType?._id || DEFAULT_SUPPORT_TYPE,
+        missingName,
+      });
       onClose();
       onConfirmSuccess();
     } catch (error: unknown) {
@@ -67,7 +113,7 @@ export default function ContactSupportModal(props: Props) {
       setIsConfirmLoading(false);
     }
   };
-
+  const issueType = watch('issueType');
   return (
     <GenericModal className="max-w-[670px]" isOpen={isOpen} onClose={onClose}>
       <div className="flex gap-x-12 p-10">
@@ -94,7 +140,61 @@ export default function ContactSupportModal(props: Props) {
                     onChange={() => {}}
                     error={errors.ccEmail?.message}
                     readOnly
+                    isMasked
                   />
+                </div>
+                <div className="flex flex-row items-center gap-x-2.5">
+                  <div className="flex flex-row items-center gap-x-2">
+                    <SingleSelectInput
+                      name="issueType"
+                      control={control}
+                      label="Issue Type"
+                      required
+                      placeholder="Select issue type"
+                      loadOptions={loadSupportTypes}
+                      error={errors?.issueType?.message}
+                      isClearable
+                      className="react-select"
+                      maxMenuHeight={200}
+                    />
+                  </div>
+                  {issueType?._id === CustomerSupportTypes.MISSING_SKILL && (
+                    <div className="flex flex-col items-start gap-y-2">
+                      <div className="uppercase text-sm text-grey-500 font-semibold">Missing Skill: </div>
+                      <Controller
+                        name="skill"
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextInput
+                            className="w-80"
+                            value={value || ''}
+                            onChange={onChange}
+                            error={errors.skill?.message}
+                            placeholder="Enter missing skill"
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  {issueType?._id === CustomerSupportTypes.MISSING_TOOL && (
+                    <div className="flex flex-col items-start gap-y-2">
+                      <div className="uppercase text-sm text-grey-500 font-semibold">Missing Tool: </div>
+                      <Controller
+                        name="tool"
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextInput
+                            className="w-80"
+                            value={value || ''}
+                            onChange={onChange}
+                            error={errors.tool?.message}
+                            placeholder="Enter missing tool"
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <Controller

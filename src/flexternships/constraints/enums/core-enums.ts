@@ -135,6 +135,17 @@ export enum DocType {
   TERMS_AND_CONDITIONS = 'TERMS_AND_CONDITIONS',
 }
 
+export enum CustomerSupportTypes {
+  MISSING_INSTITUTE = 'missing_institute',
+  MISSING_SKILL = 'missing_skill',
+  MISSING_TOOL = 'missing_tool',
+  MISSING_ASSESSMENT = 'missing_assessment',
+  MISSING_TALENT = 'missing_talent',
+  EDUCATION = 'education',
+  TOOLS_AND_SKILLS = 'tools_and_skills',
+  OTHER = 'other',
+}
+
 export enum TnCTypes {
   USER_TERMS = 'USER_TERMS',
   PRIVACY_POLICY = 'PRIVACY_POLICY',

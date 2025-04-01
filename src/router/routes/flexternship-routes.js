@@ -19,10 +19,10 @@ import AuthRoute from '../../views/auth/index';
 import TalentOnboarding from '../../views/Onboarding/Talent';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
+import ForgotPasswordVerification from '../../views/auth/ForgotPasswordVerification';
 
 // ** Project Views
 import Projects from '../../views/projects';
-import ContractView from '../../views/project-details/ContractView';
 
 // ** Constants & Enums
 import { FlexternUserAppRole, FlexternUserCheckpoint } from '@/flexternships/constraints/enums/core-enums';
@@ -357,15 +357,19 @@ const FlexternshipRoutes = [
   },
   {
     path: routes.projectDoc.path,
-    element: <FlexternshipsContractView />,
-  },
-  {
-    path: routes.projectStepDoc.path,
-    element: <ContractView />,
-  },
-  {
-    path: routes.projectStepDocId.path,
-    element: <ContractView />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [],
+          },
+        ]}
+      >
+        <FlexternshipsContractView />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.blockedProjects.path,
@@ -508,7 +512,19 @@ const FlexternshipRoutes = [
   },
   {
     path: routes.talentProfileEdit.path,
-    element: <TalentOnboarding />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [],
+          },
+        ]}
+      >
+        <TalentOnboarding />
+      </RoleAccessWrapper>
+    ),
   },
   {
     path: routes.clientProfileEdit.path,
@@ -861,6 +877,13 @@ const FlexternshipRoutes = [
         <Commits />
       </RoleAccessWrapper>
     ),
+  },
+  {
+    path: routes.setNewPassword.path,
+    element: <ForgotPasswordVerification />,
+    meta: {
+      layout: 'blank',
+    },
   },
   {
     path: routes.privacyPolicy.path,

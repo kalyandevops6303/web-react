@@ -52,9 +52,7 @@ import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
 import { checkPoints, maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
-import { convertReferral } from '../../redux/actions/referralAndRewardActions';
 import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
-import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 import { formData, formImage } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormImage } from '../../redux/reducers/formData';
@@ -69,6 +67,8 @@ import { returnCompleteProfileDetailsCta } from '../../utility/constants/Complet
 import '../../App.css';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { isUserLoggedIn } from '@/utility/commonUtils';
+import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const Account = () => {
@@ -110,6 +110,9 @@ const Account = () => {
   const isFlextern = useSelector((state) => state.auth?.is_flextern);
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
   const userType = useSelector((state) => state.auth?.userType);
+
+  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
+  const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
 
   const {
     control,
@@ -162,7 +165,6 @@ const Account = () => {
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const profileDetailsForClientLoading = useSelector(clientProfileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
-  const convertReferralIsLoading = useSelector(convertReferralLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(savedFormData?.resetPasswordModal || null);
 
@@ -172,6 +174,8 @@ const Account = () => {
   const [imageUrlRes, setImageUrlRes] = useState(savedFormData?.imageUrlRes || null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [overallPercentageCompletion, setOverallPercentageCompletion] = useState(0);
+  const [isBlobImage, setIsBlobImage] = useState(true);
+
   const fileInputRef = useRef(null);
   const toggleResetPasswordModal = () => {
     setResetPasswordModal(!resetPasswordModal);
@@ -181,16 +185,10 @@ const Account = () => {
     dispatch(setFormData({ ...savedFormData, resetPasswordModal }));
   }, [resetPasswordModal]);
 
-  const onReferralConversionSuccess = () => {
-    userDetailsData?.user_type === 'TALENT'
-      ? navigate(`/${userOnboarding.talent}/personal-details`)
-      : navigate(`/${userOnboarding.client}/personal-details`);
-    removeItem('referral_data');
-  };
-
   const onSuccess = () => {
     dispatch(clearAllFormData());
     dispatch(getUserData());
+    populateUserDetails(true);
     if (isDelegate) {
       setItem('isDelegateProfileCreated', true);
       ShowToastMessage(SUCCESS, 'Delegate profile updated successfully');
@@ -202,35 +200,11 @@ const Account = () => {
       userDetailsData?.user_type === 'TALENT'
         ? navigate(`/${userProfileEdit.talent}/personal-details`)
         : navigate(`/${userProfileEdit.client}/personal-details`);
-    } else {
-      const referralData = getItem('referral_data');
-      const referralViaShareData = getItem('referral_via_share_data');
-      if (referralViaShareData) {
-        const email = watch('email');
-        dispatch(
-          convertReferral({
-            referral_id: referralViaShareData.referral_id,
-            email,
-            onSuccess: onReferralConversionSuccess,
-            invite_type: referralViaShareData.referral_invitation_type,
-          }),
-        );
-      } else if (referralData) {
-        const referralId = referralData?._id;
-        const email = watch('email');
-        dispatch(
-          convertReferral({
-            referral_id: referralId,
-            email,
-            onSuccess: onReferralConversionSuccess,
-            invite_type: referralData?.invitation_type,
-          }),
-        );
-      } else {
-        userDetailsData?.user_type === 'TALENT'
-          ? navigate(`/${userOnboarding.talent}/personal-details`)
-          : navigate(`/${userOnboarding.client}/personal-details`);
-      }
+    }
+    if (location.pathname.includes('-onboarding')) {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate(`/${userOnboarding.talent}/personal-details`)
+        : navigate(`/${userOnboarding.client}/personal-details`);
     }
   };
   const buttonText = selectedImage && selectedImagePreview ? 'Edit Picture' : 'Update Picture';
@@ -429,6 +403,12 @@ const Account = () => {
     getOverallPercentageCompletion();
   }, [profileCompletionFlextern, profileCompletionProject]);
 
+  useEffect(() => {
+    if (isImageUploading) {
+      setIsBlobImage(false);
+    }
+  }, [isImageUploading]);
+
   return (
     <AccountDetailsFormContainer>
       {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
@@ -448,7 +428,11 @@ const Account = () => {
                 <div className="d-flex align-items-center pb-2 image-container">
                   {selectedImage && selectedImagePreview ? (
                     <img
-                      src={selectedImagePreview}
+                      src={
+                        !isBlobImage || isImageUploading
+                          ? selectedImagePreview
+                          : addQueryParams(selectedImagePreview, blobSasTokenParams)
+                      }
                       alt="profile"
                       className="selected-image"
                       style={{ objectFit: 'cover' }}
@@ -602,7 +586,6 @@ const Account = () => {
                 className="d-flex align-items-center justify-content-between"
                 disabled={
                   isImageUploading ||
-                  convertReferralIsLoading ||
                   (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
                     ? !isValid || talentAccountDetailsIsLoading || profileDetailsIsLoading
                     : !isValid || clientAccountDetailsIsLoading || profileDetailsForClientLoading)
@@ -610,7 +593,6 @@ const Account = () => {
               >
                 {talentAccountDetailsIsLoading ||
                 clientAccountDetailsIsLoading ||
-                convertReferralIsLoading ||
                 profileDetailsIsLoading ||
                 profileDetailsForClientLoading ? (
                   <Spinner size="sm" />

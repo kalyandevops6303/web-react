@@ -1,6 +1,6 @@
 // ** React Imports
 import { Fragment } from 'react';
-import { Navigate } from 'react-router-dom';
+
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout';
 import VerticalLayout from '@src/layouts/VerticalLayout';
@@ -13,40 +13,7 @@ import PublicRoute from '@components/routes/PublicRoute';
 // ** Utils
 import { isObjEmpty } from '@utils';
 
-import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
-import UserDetails from '../../views/user-details';
-import AuthRoute from '../../views/auth/index';
-import TalentOnboarding from '../../views/Onboarding/Talent';
-import ClientOnboarding from '../../views/Onboarding/Client';
-import CreateProject from '../../views/CreateProject';
-import MarketPlace from '../../views/marketplace';
-import Search from '../../views/search';
-import Notifications from '../../views/notifications';
-import CreateBid from '../../views/create-bid';
-import TeamInvitation from '../../views/team-invitation';
-import Disputes from '../../views/disputes';
-import CreateTeam from '../../views/createTeam';
-import ComingSoon from '../../views/auth/ComingSoon';
-import ProjectDetails from '../../views/project-details';
-import ContractView from '../../views/project-details/ContractView';
-import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
-import Chat from '../../views/chat';
-import Projects from '../../views/projects';
-import MyTeams from '../../views/teams';
-import Clubs from '../../views/clubs';
-import ReferralAndReward from '../../views/ReferralAndReward';
-import CreateClub from '../../views/createClub';
-import ClubInvitation from '../../views/club-invitation';
-import PaymentFullView from '../../views/paymentFullView';
-import BidDetails from '../../views/project-details/BidDetails';
-import Assessments from '../../views/assessments';
-import InternalProjects from '../../views/internal/projects';
-import NotFound from '../../views/NotFound';
-import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
-import CreateFlexternProject from '@flexternships/app/create-project/page';
-import { isFlexternshipApp } from '@/configs/api/env';
 import FlexternshipRoutes from './flexternship-routes';
-import { OneOffRoutes } from './one-off-routes';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -55,7 +22,7 @@ const getLayout = {
 };
 
 // ** Merge Routes
-const Routes = isFlexternshipApp ? FlexternshipRoutes : OneOffRoutes;
+const Routes = FlexternshipRoutes;
 
 // eslint-disable-next-line consistent-return
 const getRouteMeta = (route) => {

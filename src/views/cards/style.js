@@ -178,7 +178,6 @@ const ProjectCardWrap = styled(CardWrap)`
   }
 
   .show-more {
-    text-decoration: underline;
     color: ${theme.activeNavPillText};
   }
   .show-less {

@@ -103,7 +103,6 @@ export type FlexternClientDetails = {
     dialCode: string;
     name: string;
   };
-  isBlocked?: boolean;
   adminClient?: {
     id: string;
     department: string;
@@ -134,7 +133,6 @@ export type FlexternTalentDetails = {
     dialCode: string;
     name: string;
   };
-  isBlocked?: boolean;
   isTncAccepted: boolean;
 };
 
@@ -239,6 +237,11 @@ export type WebSocketMessage = {
   projects?: Array<ChatProject>;
   num_projects?: number;
   domain?: string;
+};
+
+export type supportTypes = {
+  name: string;
+  type: string;
 };
 
 export type TnCLocationStateTypes = {
