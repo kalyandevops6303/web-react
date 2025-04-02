@@ -46,7 +46,7 @@ export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
               <ol className="pl-5 list-decimal text-lg text-grey font-normal leading-[26px]">
                 <li>This project will be delisted from marketplace.</li>
                 <li>Talent won’t be able to join this project.</li>
-                <li>You can relist this project with new project start date.</li>
+                {/* <li>You can relist this project with new project start date.</li> */}
               </ol>
             </div>
             <div className="flex flex-col gap-y-1">

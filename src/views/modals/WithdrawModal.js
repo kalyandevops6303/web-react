@@ -33,14 +33,14 @@ const WithdrawModal = ({ modal, toggleModal, projectDetailsData }) => {
             </div>
           </div>
           <div className="d-flex justify-content-end mt-2 align-items-center gap-2 mb-2">
-            <Button
+            {/* <Button
               color="primary"
               onClick={() => {
                 toggleModal();
               }}
             >
               Re-list
-            </Button>
+            </Button> */}
             <Button
               color="danger"
               onClick={() => {

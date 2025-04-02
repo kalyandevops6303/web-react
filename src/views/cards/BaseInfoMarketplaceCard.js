@@ -318,7 +318,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                 </div>
               )}
             </PermissionWrapper>
-            {data?.project?.status === 'LISTING_EXPIRED' || data?.project?.status === 'WITHDRAWN' ? (
+            {/* {data?.project?.status === 'LISTING_EXPIRED' || data?.project?.status === 'WITHDRAWN' ? (
               <div className="d-flex justify-content-end relist-btn-wrapper">
                 <Button
                   color="primary"
@@ -332,7 +332,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                   Re-list
                 </Button>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </BidsReceivedWrapper>
       )}
