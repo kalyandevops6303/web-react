@@ -314,11 +314,11 @@ const ProjectModal = ({
       data.status === ProjectPrimaryStatus.WITHDRAWN
     ) {
       return [
-        {
-          type: 'secondary',
-          label: 'Re-list',
-          onClick: handleRelistFlexternProject,
-        },
+        // {
+        //   type: 'secondary',
+        //   label: 'Re-list',
+        //   onClick: handleRelistFlexternProject,
+        // },
       ];
     }
     if (
@@ -602,7 +602,7 @@ const ProjectModal = ({
           isActiveProject ||
           isUpcomingProject ? (
             <div className="d-flex justify-content-end mb-2">
-              {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' && (
+              {/* {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' && (
                 <Button
                   color="primary"
                   outline
@@ -614,7 +614,7 @@ const ProjectModal = ({
                 >
                   Re-list
                 </Button>
-              )}
+              )} */}
               {data?.status !== projectStatusEnum.CLOSED && (
                 <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
                   {checkBidLoadingIsLoading ? (
