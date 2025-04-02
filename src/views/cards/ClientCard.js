@@ -136,21 +136,6 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                       <img src={hat} alt="client-badge" />
                     </Badge>
                   )}
-                  {!isSearchPage && (
-                    <div className="mb-25">
-                      {isFavorite ? (
-                        <Heart
-                          className="cursor-pointer d-flex heart"
-                          fill={theme.red}
-                          stroke={theme.red}
-                          onClick={(e) => handleUnLike(e)}
-                          size={20}
-                        />
-                      ) : (
-                        <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
-                      )}
-                    </div>
-                  )}
                 </div>
                 <div className="d-flex mt-1 justify-content-end w-100">
                   <RatingBadge number={data?.rating ?? 0} />
