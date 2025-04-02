@@ -1,7 +1,7 @@
 import WithdrawProjectModal from '../modals/WithdrawProjectModal';
 
-export default function ProjectWithdrawFlow({ project, onClose, initiateRelist }: ProjectWithdrawFlowProps) {
-  return <WithdrawProjectModal isOpen onClose={onClose} project={project} initiateRelist={initiateRelist} />;
+export default function ProjectWithdrawFlow({ project, onClose }: ProjectWithdrawFlowProps) {
+  return <WithdrawProjectModal isOpen onClose={onClose} project={project} />;
 }
 
 interface ProjectWithdrawFlowProps {
@@ -10,5 +10,5 @@ interface ProjectWithdrawFlowProps {
     name: string;
   };
   onClose: () => void;
-  initiateRelist: () => void;
+  // initiateRelist: () => void; // Hiding relist button temporarily as per product discussion
 }

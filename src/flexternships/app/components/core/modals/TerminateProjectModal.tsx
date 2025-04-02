@@ -5,23 +5,23 @@ import DangerGif from '@flexternships/assets/gifs/danger.gif';
 import { useState } from 'react';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { deleteProject, terminateProject } from '@/flexternships/services/project-management-v2';
+import { terminateProject } from '@/flexternships/services/project-management-v2';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
-const TerminateWithRelistBody = () => {
-  return (
-    <div className="flex flex-col gap-y-4 text-grey">
-      <div className="text-lg font-medium leading-5.5 not-italic">Don't want to continue with the project?</div>
-      <div className="text-base font-normal leading-5">
-        <span className="text-base font-bold leading-5">Delete: </span> Deleting the project will remove this project
-        from the platform.
-      </div>
-      <div className="text-base font-normal leading-5">
-        <span className="text-base font-bold leading-5">Relist Project: </span> Relisting the project will terminate the
-        contract with the existing team/talent & list this project back in marketplace.
-      </div>
-    </div>
-  );
-};
+// const TerminateWithRelistBody = () => {
+//   return (
+//     <div className="flex flex-col gap-y-4 text-grey">
+//       <div className="text-lg font-medium leading-5.5 not-italic">Don't want to continue with the project?</div>
+//       <div className="text-base font-normal leading-5">
+//         <span className="text-base font-bold leading-5">Delete: </span> Deleting the project will remove this project
+//         from the platform.
+//       </div>
+//       <div className="text-base font-normal leading-5">
+//         <span className="text-base font-bold leading-5">Relist Project: </span> Relisting the project will terminate the
+//         contract with the existing team/talent & list this project back in marketplace.
+//       </div>
+//     </div>
+//   );
+// };
 
 const TerminateWithoutRelistBody = () => {
   return (
@@ -34,9 +34,9 @@ const TerminateWithoutRelistBody = () => {
 };
 
 export default function TerminateProjectModal(props: TerminateProjectModalProps) {
-  const { onClose, isOpen, withRelist, project, initiateRelist } = props;
+  const { onClose, isOpen, project } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
-  const [isCancelLoading, setIsCancelLoading] = useState(false);
+  // const [isCancelLoading, setIsCancelLoading] = useState(false);
 
   const populateProjectDetails = useProjectsStore((state) => state.getProjectDetails);
 
@@ -57,22 +57,22 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
     }
   };
 
-  const handleDeleteProject = async () => {
-    setIsCancelLoading(true);
-    try {
-      await deleteProject(project.id);
-      populateProjectDetails(project.id);
-      onClose();
-      showToastMessage(ToastType.SUCCESS, 'Project deleted successfully');
-    } catch (error: unknown) {
-      showToastMessage(
-        ToastType.ERROR,
-        error instanceof Error ? error.message : 'An unexpected error occurred while deleting project',
-      );
-    } finally {
-      setIsCancelLoading(false);
-    }
-  };
+  // const handleDeleteProject = async () => {
+  //   setIsCancelLoading(true);
+  //   try {
+  //     await deleteProject(project.id);
+  //     populateProjectDetails(project.id);
+  //     onClose();
+  //     showToastMessage(ToastType.SUCCESS, 'Project deleted successfully');
+  //   } catch (error: unknown) {
+  //     showToastMessage(
+  //       ToastType.ERROR,
+  //       error instanceof Error ? error.message : 'An unexpected error occurred while deleting project',
+  //     );
+  //   } finally {
+  //     setIsCancelLoading(false);
+  //   }
+  // };
 
   return (
     <GenericModal className="max-w-[790px]" isOpen={isOpen} onClose={onClose}>
@@ -83,7 +83,8 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
         <div className="flex flex-col grow gap-y-9">
           <div className="flex flex-col gap-y-4">
             <h1 className="text-2xl font-medium leading-[38px] text-error">Project Termination</h1>
-            {withRelist ? <TerminateWithRelistBody /> : <TerminateWithoutRelistBody />}
+            {/* {withRelist ? <TerminateWithRelistBody /> : <TerminateWithoutRelistBody />} */}
+            <TerminateWithoutRelistBody />
             <div className="flex flex-col gap-y-1">
               <div className="text-grey-heading text-xl font-medium leading-6">{project.name}</div>
               <div className="text-grey-muted text-sm font-normal leading-4.5">Project Name</div>
@@ -91,22 +92,26 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
           </div>
           <div className="flex flex-row justify-end gap-x-5">
             <SecondaryButton
-              cancel={withRelist}
+              // cancel={withRelist}
               className="m-0"
-              onClick={withRelist ? handleDeleteProject : onClose}
-              loading={isCancelLoading}
-              disabled={isCancelLoading}
+              // onClick={withRelist ? handleDeleteProject : onClose}
+              onClick={onClose}
+              // loading={isCancelLoading}
+              // disabled={isCancelLoading}
             >
-              {withRelist ? 'Delete' : 'Cancel'}
+              {/* {withRelist ? 'Delete' : 'Cancel'} */}
+              Cancel
             </SecondaryButton>
             <PrimaryButton
               cancel
               className="m-0"
-              onClick={withRelist ? initiateRelist : handleTerminateProject}
+              // onClick={withRelist ? initiateRelist : handleTerminateProject}
+              onClick={handleTerminateProject}
               loading={isConfirmLoading}
               disabled={isConfirmLoading}
             >
-              {withRelist ? 'Relist Project' : 'Terminate Project'}
+              {/* {withRelist ? 'Relist Project' : 'Terminate Project'} */}
+              Terminate Project
             </PrimaryButton>
           </div>
         </div>
@@ -118,10 +123,10 @@ export default function TerminateProjectModal(props: TerminateProjectModalProps)
 interface TerminateProjectModalProps {
   onClose: () => void;
   isOpen?: boolean;
-  withRelist?: boolean;
+  // withRelist?: boolean;
   project: {
     id: string;
     name: string;
   };
-  initiateRelist: () => void;
+  // initiateRelist: () => void; // Hiding relist button temporarily as per product discussion
 }
