@@ -635,30 +635,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 </Col>
               )}
             </PermissionWrapper>
-            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TYPE']}>
-              {userType !== userTypes.team && (
-                <Col>
-                  <Label className="form-label">Type</Label>
-                  <CustomSelectWithCount
-                    className="input-width"
-                    isClearable
-                    options={projectStateOptions}
-                    classNamePrefix="select"
-                    placeholder="Select type"
-                    theme={selectThemeColors}
-                    onChange={(value) => onChangeFilter('project_state_type', value)}
-                    value={
-                      secondFilterState?.project_state_type?.length > 0
-                        ? {
-                            value: secondFilterState.project_state_type[0].value,
-                            label: secondFilterState.project_state_type[0].label,
-                          }
-                        : null
-                    }
-                  />
-                </Col>
-              )}
-            </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.STATUS']}>
               {userType !== userTypes.team && (
                 <Col>

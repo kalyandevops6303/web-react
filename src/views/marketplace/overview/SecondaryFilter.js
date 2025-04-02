@@ -574,29 +574,6 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                   {ExpandCollapseComp}
                 </Col>
               ))}
-            <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.TYPE']}>
-              {(primaryFilter === 'talents' || primaryFilter === 'all_listings') && !inMyBids && (
-                <Col>
-                  <>
-                    <Label className="form-label">Type</Label>
-                    <CustomSelectWithCount
-                      className="input-width"
-                      isClearable
-                      options={projectStateOptions}
-                      classNamePrefix="select"
-                      placeholder="Select type"
-                      theme={selectThemeColors}
-                      onChange={onChangeSort}
-                      value={
-                        secondFilterState?.sort_by?.length > 0
-                          ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                          : null
-                      }
-                    />
-                  </>
-                </Col>
-              )}
-            </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.FILTERS.STATUS']}>
               {primaryFilter === 'my_bids' && userType !== userTypes.client ? (
                 <Col>

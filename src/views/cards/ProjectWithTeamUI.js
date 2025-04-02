@@ -164,20 +164,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
               <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          <div>
-            {isFavorite ? (
-              <Heart
-                className="cursor-pointer d-flex heart"
-                fill={theme.red}
-                stroke={theme.red}
-                onClick={(e) => handleUnLike(e)}
-                size={20}
-                display="none"
-              />
-            ) : (
-              <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
-            )}
-          </div>
+          <div></div>
         </div>
       </div>
 
