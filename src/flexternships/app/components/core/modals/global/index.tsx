@@ -1,6 +1,6 @@
 import ProjectsBlockedModal from './ProjectsBlockedModal';
 import UnsavedWorkModal from './UnsavedWorkModal';
-import PrivacyPolicyModal from './PrivacyPolicyModal';
+import TermsAndConditionsModal from './TermsAndConditionsModal';
 
 // Add all the global modals here
 export default function GlobalModal() {
@@ -8,7 +8,7 @@ export default function GlobalModal() {
     <>
       <UnsavedWorkModal />
       <ProjectsBlockedModal />
-      <PrivacyPolicyModal />
+      <TermsAndConditionsModal />
     </>
   );
 }

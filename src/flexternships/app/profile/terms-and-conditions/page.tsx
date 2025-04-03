@@ -19,7 +19,7 @@ import ComponentSpinner from '@/@core/components/spinner/Loading-spinner';
 import { Spinner } from 'reactstrap';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 
-const PrivacyPolicy = () => {
+const TermsAndConditions = () => {
   const location = useLocation();
   const locationState = location.state as TnCLocationStateTypes;
   const [tab, setTab] = useState<DocType>((locationState?.tncType as DocType) || DocType.PRIVACY_POLICY);
@@ -185,4 +185,4 @@ const PrivacyPolicy = () => {
   );
 };
 
-export default PrivacyPolicy;
+export default TermsAndConditions;

@@ -51,7 +51,7 @@ import IndividualAnalytics from '@/flexternships/app/analytics/individual-analyt
 import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
 import ConversationParticipationPage from '@/flexternships/app/analytics/individual-analytics/conversation-participation/page';
 import Commits from '@/flexternships/app/analytics/individual-analytics/commits/page';
-import PrivacyPolicy from '@/flexternships/app/profile/privacy-policy/page';
+import TermsAndConditions from '@/flexternships/app/profile/terms-and-conditions/page';
 
 // ** Default Route
 const DefaultRoute = routes.auth.path;
@@ -886,8 +886,8 @@ const FlexternshipRoutes = [
     },
   },
   {
-    path: routes.privacyPolicy.path,
-    element: <PrivacyPolicy />,
+    path: routes.termsAndConditions.path,
+    element: <TermsAndConditions />,
     meta: {
       layout: 'blank',
     },

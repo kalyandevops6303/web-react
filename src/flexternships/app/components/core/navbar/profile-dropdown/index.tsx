@@ -102,7 +102,7 @@ export default function ProfileDropdown() {
   };
 
   const handlePrivacyPolicyAction = () => {
-    navigate('/privacy-policy');
+    navigate(routes.termsAndConditions.path);
   };
 
   const handleCloseContactSupportModal = () => {

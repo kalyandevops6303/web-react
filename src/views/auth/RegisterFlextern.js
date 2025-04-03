@@ -24,6 +24,7 @@ import TermsModal from '../modals/TermsModal';
 import { getTnCStatus, validateRequestFlexTernToken, verifyEmailForFlextern } from '../../redux/actions/authActions';
 import { userTypes } from '../../utility/constants/Constant';
 import { DocType } from '@/flexternships/constraints/enums/core-enums';
+import routes from '@/flexternships/routes';
 
 const RegisterFlexternForm = React.memo(
   ({
@@ -41,10 +42,14 @@ const RegisterFlexternForm = React.memo(
     tncStatus,
   }) => {
     const handleNavigatePrivacyPolicy = () => {
-      navigate('/privacy-policy', { state: { invitationToken: requestToken, tncType: DocType.PRIVACY_POLICY } });
+      navigate(routes.termsAndConditions.path, {
+        state: { invitationToken: requestToken, tncType: DocType.PRIVACY_POLICY },
+      });
     };
     const handleNavigateUserTerms = () => {
-      navigate('/privacy-policy', { state: { invitationToken: requestToken, tncType: DocType.USER_TERMS } });
+      navigate(routes.termsAndConditions.path, {
+        state: { invitationToken: requestToken, tncType: DocType.USER_TERMS },
+      });
     };
     return (
       <Form className="auth-login-form mt-2" onSubmit={onSubmit}>
@@ -91,7 +96,7 @@ const RegisterFlexternForm = React.memo(
                     disabled={tncStatus}
                     checked={tncStatus || field.value}
                     onChange={() => {
-                      navigate('/privacy-policy', {
+                      navigate(routes.termsAndConditions.path, {
                         state: { invitationToken: requestToken, tncType: DocType.PRIVACY_POLICY },
                       });
                       // field.onChange(e);
@@ -200,7 +205,7 @@ const RegisterFlextern = () => {
         }),
       );
       dispatch(getTnCStatus());
-      if (watch('email')) {
+      if (watch('email') && requestToken) {
         dispatch(
           verifyEmailForFlextern({
             data: { email: watch('email') },

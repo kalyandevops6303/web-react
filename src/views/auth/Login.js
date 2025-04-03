@@ -50,6 +50,7 @@ const Login = () => {
   const dataParam = urlSearchParams.get('data');
 
   const [searchParams] = useSearchParams();
+  console.log('searchParams', searchParams);
   const nextPath = searchParams.get('next_path');
 
   const onValidUrlSuccess = (res) => {

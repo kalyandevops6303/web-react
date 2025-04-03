@@ -107,8 +107,8 @@ const routes = {
   },
 
   // Privacy Policy
-  privacyPolicy: {
-    path: '/privacy-policy',
+  termsAndConditions: {
+    path: '/terms-and-conditions',
   },
 
   // Not found
