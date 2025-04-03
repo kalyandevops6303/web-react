@@ -93,7 +93,7 @@ import {
   verifyTnCStatusRequest,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
-import { checkPoints, userTypes, invitationUserStatus } from '../../utility/constants/Constant';
+import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
 import { getTeams } from './teamsActions';
@@ -504,7 +504,7 @@ const validateRequestFlexTernToken =
       dispatch(verifyRequestInvitationFlexternTokenSuccess(res.data?.data?.email_invited));
       dispatch(setFlexternshipInviteType(res.data?.data?.user_type));
 
-      if (res.data?.data?.user_status === invitationUserStatus.REGISTERED) {
+      if (res.data?.data?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
         if (onRegistered) {
           onRegistered();
         }

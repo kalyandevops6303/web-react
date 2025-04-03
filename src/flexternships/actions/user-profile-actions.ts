@@ -141,16 +141,18 @@ export const checkTnCStatus = async (set: any) => {
   set({ isTnCDetailsLoading: false });
 };
 
-export const getTnCData = async (set: any, docType: DocType | null, docContentRequired: boolean = false) => {
+export const getTnCData = async (
+  set: any,
+  { docType = null, docContentRequired = false }: { docType?: DocType | null; docContentRequired?: boolean },
+) => {
   set({ isTnCDetailsLoading: true });
   const data = await getDocumentsData({ docType, docContentRequired });
-  set({ tncDetails: data });
-  set({ isTnCDetailsLoading: false });
+  set({ tncDetails: data, isTnCDetailsLoading: false });
 };
 
 export const agreeToTnC = async (docType: DocType, set: any) => {
   set({ isAgreeToTnCLoading: true });
   await agreeToTnCDocument({ docType });
-  await getTnCData(set, null, true);
+  await getTnCData(set, { docType: null, docContentRequired: true });
   set({ isAgreeToTnCLoading: false });
 };

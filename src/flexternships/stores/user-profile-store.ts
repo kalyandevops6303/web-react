@@ -42,8 +42,13 @@ export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set
   updateClientCompanyInfo: async (data: FlexternClientCompanyDetails) => updateClientCompanyInfo(data, set),
   resetStore: () => set({ ...defaultInitState }),
   setCurrentTabIndex: (index: number) => setCurrentTabIndex(index, set),
-  populateTnCDetails: async (docType: DocType | null, docContentRequired?: boolean) =>
-    getTnCData(set, docType, docContentRequired),
+  populateTnCDetails: async ({
+    docType = null,
+    docContentRequired = false,
+  }: {
+    docType?: DocType | null;
+    docContentRequired?: boolean;
+  }) => getTnCData(set, { docType, docContentRequired }),
   checkTnCStatus: async () => checkTnCStatus(set),
   agreeToTnC: async (docType: DocType) => agreeToTnC(docType, set),
 }));

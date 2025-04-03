@@ -50,11 +50,20 @@ const PrivacyPolicy = () => {
       setTncAcceptTime(generateInitialStateForAcceptedTime());
       setIsTncAccepted(generateInitialStateForIsAccepted());
     } else {
-      fetchTnCDocuments(null, true);
+      fetchTnCDocuments({ docType: null, docContentRequired: true });
     }
   }, [tncDetails]);
+
   useEffect(() => {
-    fetchTnCDocuments(null, true);
+    if (!isUserLoggedIn()) {
+      if (locationState?.invitationToken) {
+        fetchTnCDocuments({ docType: null, docContentRequired: true });
+      } else {
+        navigate('/auth/login');
+      }
+    } else {
+      fetchTnCDocuments({ docType: null, docContentRequired: true });
+    }
   }, []);
 
   const handleGoBack = () => {

@@ -77,7 +77,13 @@ export type FlexternUserProfileFormActions = {
   updateClientCompanyInfo: (data: FlexternClientCompanyDetails) => Promise<void>;
   resetStore: () => void;
   setCurrentTabIndex: (index: number) => void;
-  populateTnCDetails: (docType: DocType | null, docContentRequired?: boolean) => Promise<void>;
+  populateTnCDetails: ({
+    docType,
+    docContentRequired,
+  }: {
+    docType?: DocType | null;
+    docContentRequired?: boolean;
+  }) => Promise<void>;
   checkTnCStatus: () => Promise<void>;
   agreeToTnC: (docType: DocType) => Promise<void>;
 };
