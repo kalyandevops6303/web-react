@@ -27,7 +27,7 @@ import { CHAT_ENTRY_POINT } from '@/flexternships/static/constants/core-constant
 import ProjectDescriptionModal from '../../core/modals/ProjectDescriptionModal';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { getPrimaryAction, getSecondaryAction, getTextByAction } from '@/flexternships/static/project-details-content';
-import ProjectRelistFlow from '../../core/flows/ProjectRelistFlow';
+// import ProjectRelistFlow from '../../core/flows/ProjectRelistFlow';
 import ProjectTerminateFlow from '../../core/flows/ProjectTerminateFlow';
 import ProjectWithdrawFlow from '../../core/flows/ProjectWithdrawFlow';
 import SimpleElevatedCard from '../../core/cards/SimpleElevatedCard';
@@ -56,7 +56,8 @@ enum UserTypeChipClassnames {
 enum ProjectFlowType {
   WITHDRAW = 'WITHDRAW',
   TERMINATE = 'TERMINATE',
-  RELIST = 'RELIST',
+  // TODO: Uncomment this when relist is implemented
+  // RELIST = 'RELIST',
 }
 
 const LeftSideBarProjectDetails = () => {
@@ -95,14 +96,15 @@ const LeftSideBarProjectDetails = () => {
   const [documentsModal, setDocumentsModal] = useState(false);
 
   const closeCurrentProjectFlow = () => setCurrentProjectFlow(undefined);
-  const initiateRelistFlow = () => setCurrentProjectFlow(ProjectFlowType.RELIST);
+  // const initiateRelistFlow = () => setCurrentProjectFlow(ProjectFlowType.RELIST); // Hiding relist button temporarily as per product discussion
 
   const primaryActionHandler = () => {
     switch (primaryAction) {
       case ProjectLeftPanelAction.MESSAGE:
         return handleMessageClick();
-      case ProjectLeftPanelAction.RELIST:
-        return setCurrentProjectFlow(ProjectFlowType.RELIST);
+      // TODO: Uncomment this when relist is implemented
+      // case ProjectLeftPanelAction.RELIST:
+      //   return setCurrentProjectFlow(ProjectFlowType.RELIST);
       default:
         break;
     }
@@ -367,25 +369,25 @@ const LeftSideBarProjectDetails = () => {
         {projectId &&
           currentProjectFlow &&
           {
-            [ProjectFlowType.RELIST]: (
-              <ProjectRelistFlow
-                project={{ id: projectId, name: data?.details?.name }}
-                onClose={closeCurrentProjectFlow}
-              />
-            ),
+            // [ProjectFlowType.RELIST]: (
+            //   <ProjectRelistFlow
+            //     project={{ id: projectId, name: data?.details?.name }}
+            //     onClose={closeCurrentProjectFlow}
+            //   />
+            // ),
             [ProjectFlowType.TERMINATE]: (
               <ProjectTerminateFlow
                 project={{ id: projectId, name: data?.details?.name }}
                 onClose={closeCurrentProjectFlow}
-                initiateRelist={initiateRelistFlow}
-                withRelist={data.status === ProjectPrimaryStatus.ACTIVE}
+                // initiateRelist={initiateRelistFlow} // Hiding relist button temporarily as per product discussion
+                // withRelist={data.status === ProjectPrimaryStatus.ACTIVE}
               />
             ),
             [ProjectFlowType.WITHDRAW]: (
               <ProjectWithdrawFlow
                 project={{ id: projectId, name: data?.details?.name }}
                 onClose={closeCurrentProjectFlow}
-                initiateRelist={initiateRelistFlow}
+                // initiateRelist={initiateRelistFlow} // Hiding relist button temporarily as per product discussion
               />
             ),
           }[currentProjectFlow]}
