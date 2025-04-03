@@ -31,4 +31,9 @@ export const TALENT_PROFILE_SECTIONS = [
   { path: 'additional-details', label: 'Additional Information' },
 ];
 
+export const statusTextMap: Record<string, string> = {
+  TERMS_AND_CONDITIONS: 'User terms of service',
+  PRIVACY_POLICY: 'Privacy Policy',
+};
+
 export const BLOB_SAS_TOKEN_EXPIRY_DELTA = 2000; // 2 seconds before expiry

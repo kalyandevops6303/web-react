@@ -14,6 +14,8 @@ const verifyEmailService = (data) => DataService.post(API.auth.verifyEmail, data
 const verifyEmailForFlexternService = (data, invitation_token) =>
   DataService.post(`${API.auth.validateFlexTernEmail}?invitation_token=${invitation_token}`, data);
 
+const verfyTnCAcceptanceService = () => DataService.get(`${API.auth.getTnCStatus}?doc_content_required=${false}`);
+
 const setPasswordService = (password) => DataService.post(API.auth.createNewPassowrd, { password });
 
 const registerPhoneService = ({ phone, country_code }) =>
@@ -48,6 +50,7 @@ export {
   registerEmailService,
   verifyEmailService,
   verifyEmailForFlexternService,
+  verfyTnCAcceptanceService,
   setPasswordService,
   registerPhoneService,
   verifyPhoneService,

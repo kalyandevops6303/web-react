@@ -23,6 +23,7 @@ import {
   getFlexternVariablesService,
   getAppPermissionService,
   logoutUserService,
+  verfyTnCAcceptanceService,
 } from '../../services/authServices';
 
 import {
@@ -65,7 +66,6 @@ import {
   resendRequest,
   resendSuccess,
   FCMSubscribe,
-  logOut,
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordFailure,
@@ -88,13 +88,14 @@ import {
   setUserLoginAttemptNo,
   logoutRequest,
   logoutFailure,
+  verifyTnCStatusFailure,
+  verifyTnCStatusSuccess,
+  verifyTnCStatusRequest,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints, userTypes, invitationUserStatus } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
-import { clearTeams } from '../reducers/team';
-import { clearNotificationsData } from '../reducers/notifications';
 import { getTeams } from './teamsActions';
 import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
@@ -179,6 +180,19 @@ const getFlexternVariables = (onSuccessFlexternVariables) => async (dispatch) =>
     }
   } catch (error) {
     errorHandler(error);
+  }
+};
+
+const getTnCStatus = () => async (dispatch) => {
+  dispatch(verifyTnCStatusRequest());
+  try {
+    const res = await verfyTnCAcceptanceService();
+    const tncData = res?.data?.data;
+    const isTnCAccepted = tncData.every((doc) => doc.accepted);
+    dispatch(verifyTnCStatusSuccess(isTnCAccepted));
+  } catch (error) {
+    errorHandler(error);
+    verifyTnCStatusFailure();
   }
 };
 
@@ -491,7 +505,9 @@ const validateRequestFlexTernToken =
       dispatch(setFlexternshipInviteType(res.data?.data?.user_type));
 
       if (res.data?.data?.user_status === invitationUserStatus.REGISTERED) {
-        onRegistered && onRegistered();
+        if (onRegistered) {
+          onRegistered();
+        }
       }
     } catch (error) {
       errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
@@ -532,4 +548,5 @@ export {
   validateRequestFlexTernToken,
   getFlexternVariables,
   getAppPermissions,
+  getTnCStatus,
 };

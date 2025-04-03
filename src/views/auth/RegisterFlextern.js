@@ -11,14 +11,19 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { validations, filteredFormSchema, checkPointRedirection } from '../../utility/Utils';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import { selectAuthLoading, selectEmail, selectFlexternInviteType } from '../../redux/selectors/authSelectors';
+import {
+  selectAuthLoading,
+  selectEmail,
+  selectFlexternInviteType,
+  selectTnCStatus,
+} from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
 import TermsModal from '../modals/TermsModal';
-import { validateRequestFlexTernToken, verifyEmailForFlextern } from '../../redux/actions/authActions';
+import { getTnCStatus, validateRequestFlexTernToken, verifyEmailForFlextern } from '../../redux/actions/authActions';
 import { userTypes } from '../../utility/constants/Constant';
-import { TnCTypes } from '@/flexternships/constraints/enums/core-enums';
+import { DocType } from '@/flexternships/constraints/enums/core-enums';
 
 const RegisterFlexternForm = React.memo(
   ({
@@ -29,16 +34,17 @@ const RegisterFlexternForm = React.memo(
     agreeTerms,
     // setPrivacyPolicyModal,
     // setTermsModal,
-    setAgreeTerms,
+    // setAgreeTerms,
     isLoading,
     emailData,
     requestToken,
+    tncStatus,
   }) => {
     const handleNavigatePrivacyPolicy = () => {
-      navigate('/privacy-policy', { state: { invitationToken: requestToken, tncType: TnCTypes.PRIVACY_POLICY } });
+      navigate('/privacy-policy', { state: { invitationToken: requestToken, tncType: DocType.PRIVACY_POLICY } });
     };
     const handleNavigateUserTerms = () => {
-      navigate('/privacy-policy', { state: { invitationToken: requestToken, tncType: TnCTypes.USER_TERMS } });
+      navigate('/privacy-policy', { state: { invitationToken: requestToken, tncType: DocType.USER_TERMS } });
     };
     return (
       <Form className="auth-login-form mt-2" onSubmit={onSubmit}>
@@ -82,10 +88,14 @@ const RegisterFlexternForm = React.memo(
                     type="checkbox"
                     id="remember-me"
                     size="small"
-                    checked={field.value}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setAgreeTerms(e.target.checked);
+                    disabled={tncStatus}
+                    checked={tncStatus || field.value}
+                    onChange={() => {
+                      navigate('/privacy-policy', {
+                        state: { invitationToken: requestToken, tncType: DocType.PRIVACY_POLICY },
+                      });
+                      // field.onChange(e);
+                      // setAgreeTerms(e.target.checked);
                     }}
                   />
                 )}
@@ -124,6 +134,7 @@ RegisterFlexternForm.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   emailData: PropTypes.string.isRequired,
   requestToken: PropTypes.string.isRequired,
+  tncStatus: PropTypes.bool.isRequired,
 };
 
 const RegisterFlextern = () => {
@@ -133,6 +144,7 @@ const RegisterFlextern = () => {
   const isLoading = useSelector(selectAuthLoading);
   const savedFormData = useSelector(formData);
   const emailData = useSelector(selectEmail);
+  const tncStatus = useSelector(selectTnCStatus);
   const [privacyPolicyModal, setPrivacyPolicyModal] = useState(null);
   const [termsModal, setTermsModal] = useState(null);
   const [agreeTerms, setAgreeTerms] = useState(savedFormData?.agreeTerms || false);
@@ -169,9 +181,14 @@ const RegisterFlextern = () => {
       agreeTerms: location?.state?.tncAccepted ?? false,
     },
   });
+
   const localFormData = useWatch({ control });
   const queryParams = new URLSearchParams(location.search);
   const requestToken = queryParams.get('invitation_token');
+  const onSuccess = (response) => {
+    dispatch(clearAllFormData());
+    checkPointRedirection({ response, navigate });
+  };
   useEffect(() => {
     if (requestToken) {
       dispatch(
@@ -182,8 +199,20 @@ const RegisterFlextern = () => {
           },
         }),
       );
+      dispatch(getTnCStatus());
+      if (watch('email')) {
+        dispatch(
+          verifyEmailForFlextern({
+            data: { email: watch('email') },
+            invitation_token: requestToken,
+            onSuccess: () => {
+              dispatch(clearAllFormData());
+            },
+          }),
+        );
+      }
     }
-  }, [emailData]);
+  }, [watch('email'), requestToken]);
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
@@ -201,11 +230,6 @@ const RegisterFlextern = () => {
       trigger(keysWithValues);
     }
   }, [emailData]);
-
-  const onSuccess = (response) => {
-    dispatch(clearAllFormData());
-    checkPointRedirection({ response, navigate });
-  };
 
   // extract invitation token from url
 
@@ -248,6 +272,7 @@ const RegisterFlextern = () => {
           isLoading={isLoading}
           emailData={emailData}
           requestToken={requestToken}
+          tncStatus={tncStatus}
         />
       </div>
     </OnBoardWrap>

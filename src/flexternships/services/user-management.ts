@@ -20,6 +20,7 @@ import {
   parseSupportTypesResponse,
   parseTermsAndConditionsDocument,
 } from '../utils/parsing-utils';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 /// File Endpoints
 /**
@@ -177,6 +178,53 @@ export const getDocumentSignStatus = async (docType: DocType) => {
     return parseTermsAndConditionsDocument(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching document sign status');
+  }
+};
+
+export const getDocumentsData = async ({
+  docType,
+  docContentRequired,
+}: {
+  docType: DocType | null;
+  docContentRequired: boolean;
+}) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers,
+    withCredentials: true,
+    params: {
+      doc_type: docType,
+      doc_content_required: docContentRequired,
+    },
+  };
+  try {
+    const response = await axios.get(
+      isUserLoggedIn() ? routes.userManagement.tnc.getDocuments : routes.userManagement.tnc.getDocumentsForSignup,
+      config,
+    );
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching document sign status');
+  }
+};
+
+export const agreeToTnCDocument = async ({ docType }: { docType: DocType | null }) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers,
+    withCredentials: true,
+    params: {
+      doc_type: docType,
+    },
+  };
+  try {
+    await axios.put(
+      isUserLoggedIn() ? routes.userManagement.tnc.acceptDocuments : routes.userManagement.tnc.acceptDocumentsForSignup,
+      { doc_type: docType },
+      config,
+    );
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while signing document!');
   }
 };
 

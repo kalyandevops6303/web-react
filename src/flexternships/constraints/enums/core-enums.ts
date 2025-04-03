@@ -133,6 +133,7 @@ export enum FlexternDelegateInvitationType {
 
 export enum DocType {
   TERMS_AND_CONDITIONS = 'TERMS_AND_CONDITIONS',
+  PRIVACY_POLICY = 'PRIVACY_POLICY',
 }
 
 export enum CustomerSupportTypes {
@@ -144,9 +145,4 @@ export enum CustomerSupportTypes {
   EDUCATION = 'education',
   TOOLS_AND_SKILLS = 'tools_and_skills',
   OTHER = 'other',
-}
-
-export enum TnCTypes {
-  USER_TERMS = 'USER_TERMS',
-  PRIVACY_POLICY = 'PRIVACY_POLICY',
 }

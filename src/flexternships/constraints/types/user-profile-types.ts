@@ -1,4 +1,4 @@
-import { FlexternDelegateInvitationType } from '../enums/core-enums';
+import { DocType, FlexternDelegateInvitationType } from '../enums/core-enums';
 import { City, CompanyIndustry, Country, State, Timezone } from './core-types';
 import { ProjectCreationFormData } from './project-creation-types';
 
@@ -43,6 +43,17 @@ export type FlexternClientSocialDetails = {
   }>;
 };
 
+export type TnCDocumentsType = {
+  _id: string;
+  signed_at: number | null;
+  doc_id: string;
+  doc_type: DocType;
+  doc_title: string;
+  doc_stage: string;
+  accepted: boolean;
+  doc_content?: string;
+};
+
 export type FlexternClientProfileDetails = FlexternClientAccountDetails &
   FlexternClientCompanyDetails &
   FlexternClientSocialDetails;
@@ -51,6 +62,9 @@ export type FlexternUserProfileForm = {
   currentTabIndex: number;
   isProfileDetailsLoading: boolean;
   profileDetails: FlexternClientProfileDetails;
+  tncDetails: TnCDocumentsType[];
+  isTnCDetailsLoading: boolean;
+  isAgreeToTnCLoading: boolean;
 };
 
 export type FlexternUserProfileFormActions = {
@@ -63,6 +77,9 @@ export type FlexternUserProfileFormActions = {
   updateClientCompanyInfo: (data: FlexternClientCompanyDetails) => Promise<void>;
   resetStore: () => void;
   setCurrentTabIndex: (index: number) => void;
+  populateTnCDetails: (docType: DocType | null, docContentRequired?: boolean) => Promise<void>;
+  checkTnCStatus: () => Promise<void>;
+  agreeToTnC: (docType: DocType) => Promise<void>;
 };
 
 export type FlexternUserProfileStore = FlexternUserProfileForm & FlexternUserProfileFormActions;

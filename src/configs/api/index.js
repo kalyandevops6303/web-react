@@ -23,6 +23,7 @@ const API = {
     resetPassword: `${apiAuthEndpoint}/api/v1/user/reset-password`,
     checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
     validateFlexTernEmail: `${apiAuthEndpoint}/api/v1/flextern/email/check`,
+    getTnCStatus: `${apiAuthEndpoint}/api/v1/signup/documents`,
     flexternValues: `${apiAuthEndpoint}/api/v1/flextern/values`,
     logout: `${apiAuthEndpoint}/api/v1/user/logout`,
     // v2

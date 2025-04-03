@@ -138,6 +138,10 @@ export const routes = {
     tnc: {
       signDocument: `${serviceUrls.userManagement}/document/sign`,
       docInfo: `${serviceUrls.userManagement}/document/info`,
+      getDocumentsForSignup: `${serviceUrls.userManagement}/signup/documents`,
+      getDocuments: `${serviceUrls.userManagement}/documents`,
+      acceptDocumentsForSignup: `${serviceUrls.userManagement}/accept`,
+      acceptDocuments: `${serviceUrls.userManagement}/user/accept`,
     },
   },
   dashboardV2: {

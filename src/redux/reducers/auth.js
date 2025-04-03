@@ -26,6 +26,7 @@ const initialState = {
   appPermissions: null,
   flexternshipInviteType: null,
   userLoginAttemptNo: null,
+  tncStatus: false,
 };
 
 const authSlice = createSlice({
@@ -107,6 +108,21 @@ const authSlice = createSlice({
       error: action.payload,
     }),
 
+    // TnC Status
+    verifyTnCStatusRequest: (state) => ({
+      ...state,
+      loading: true,
+    }),
+    verifyTnCStatusSuccess: (state, action) => ({
+      ...state,
+      tncStatus: action.payload,
+      loading: false,
+    }),
+    verifyTnCStatusFailure: (state) => ({
+      ...state,
+      tncStatus: false,
+      loading: false,
+    }),
     // Verify Email
     verifyEmailRequest: (state) => ({
       ...state,
@@ -505,6 +521,9 @@ export const {
   logoutRequest,
   logoutSuccess,
   logoutFailure,
+  verifyTnCStatusRequest,
+  verifyTnCStatusSuccess,
+  verifyTnCStatusFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

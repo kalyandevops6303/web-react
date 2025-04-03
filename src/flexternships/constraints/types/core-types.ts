@@ -6,6 +6,7 @@ import {
   MessageRole,
   UserStatus,
   UserInvitationType,
+  DocType,
 } from '../enums/core-enums';
 
 // Paginated Data Types
@@ -246,5 +247,5 @@ export type supportTypes = {
 
 export type TnCLocationStateTypes = {
   invitationToken: string;
-  tncType: UserType;
+  tncType: DocType;
 };

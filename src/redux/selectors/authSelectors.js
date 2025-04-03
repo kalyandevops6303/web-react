@@ -14,6 +14,8 @@ export const selectAuthUserData = createSelector(authSelector, (auth) => auth.us
 
 export const selectFlexternInviteType = createSelector(authSelector, (auth) => auth.flexternshipInviteType);
 
+export const selectTnCStatus = createSelector(authSelector, (auth) => auth.tncStatus);
+
 export const selectUserData = createSelector(authSelector, (auth) => auth.userData);
 
 export const selectSavedUserData = createSelector(authSelector, (auth) => auth.savedUserData);

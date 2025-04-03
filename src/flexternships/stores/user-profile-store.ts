@@ -16,12 +16,19 @@ import {
   updateClientSocialInfo,
   nextTab,
   previousTab,
+  getTnCData,
+  checkTnCStatus,
+  agreeToTnC,
 } from '../actions/user-profile-actions';
+import { DocType } from '../constraints/enums/core-enums';
 
 const defaultInitState: FlexternUserProfileForm = {
   currentTabIndex: 0,
   isProfileDetailsLoading: false,
   profileDetails: {} as FlexternClientProfileDetails,
+  tncDetails: [],
+  isTnCDetailsLoading: false,
+  isAgreeToTnCLoading: false,
 };
 
 export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set, _get) => ({
@@ -35,4 +42,8 @@ export const useFlexternUserProfileStore = create<FlexternUserProfileStore>((set
   updateClientCompanyInfo: async (data: FlexternClientCompanyDetails) => updateClientCompanyInfo(data, set),
   resetStore: () => set({ ...defaultInitState }),
   setCurrentTabIndex: (index: number) => setCurrentTabIndex(index, set),
+  populateTnCDetails: async (docType: DocType | null, docContentRequired?: boolean) =>
+    getTnCData(set, docType, docContentRequired),
+  checkTnCStatus: async () => checkTnCStatus(set),
+  agreeToTnC: async (docType: DocType) => agreeToTnC(docType, set),
 }));
