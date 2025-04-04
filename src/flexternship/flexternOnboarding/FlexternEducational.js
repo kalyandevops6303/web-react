@@ -105,7 +105,8 @@ import CustomerSupportCTA from '../../views/Onboarding/CustomerSupportCTA';
 
 import uuidv4 from '../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../services/createProjectServices';
-
+import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 const EducationFormRow = ({
   index,
   control,
@@ -947,8 +948,21 @@ const FlexternEducational = () => {
     }
   };
 
-  const fetchUploadUrl = async (file) => {
-    const response = await resumeUploadService(file.name);
+  const fetchUploadUrl = async (file, e) => {
+    const getResumeUploadUrl = async (fileName, inputElement) => {
+      try {
+        const response = await resumeUploadService(fileName);
+        return response;
+      } catch (error) {
+        if (error?.response?.status == '429') showToastMessage(ToastType.ERROR, error?.message);
+        if (inputElement) inputElement.value = '';
+        return null;
+      }
+    };
+
+    const response = await getResumeUploadUrl(file.name, e.target);
+    if (!response) return false;
+
     const fileWithUrl = {
       id: uuidv4(),
       file,
@@ -989,15 +1003,18 @@ const FlexternEducational = () => {
     //   );
     dispatch(setResumeParsed(true));
     setParseResume(true);
+    return true;
   };
 
   const handleFileChange = async (e) => {
     if (e.target.files) {
       if (isFileValid(e.target.files[0])) {
         dispatch(clearAllFormData());
-        await fetchUploadUrl(e.target.files[0]);
-        setParseResume(true);
-        dispatch(setResumeParsed(true));
+        const uploadSuccess = await fetchUploadUrl(e.target.files[0], e);
+        if (uploadSuccess) {
+          setParseResume(true);
+          dispatch(setResumeParsed(true));
+        }
       }
     } else {
       e.target.value = '';
