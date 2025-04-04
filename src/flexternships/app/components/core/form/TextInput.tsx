@@ -3,6 +3,7 @@ import Styles from '@flexternships/styles/components/core/form-fields.module.css
 import Tooltip from '../Tooltip';
 import { Eye, EyeOff } from 'react-feather';
 import { TextInputType } from '@/flexternships/constraints/enums/form-enums';
+import escape from 'escape-html';
 
 export default function TextInput(props: InputProps) {
   const {
@@ -21,6 +22,7 @@ export default function TextInput(props: InputProps) {
     isPassword,
     allowViewPassword = true,
     isMasked = false,
+    escapeHtml = true,
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
@@ -33,22 +35,34 @@ export default function TextInput(props: InputProps) {
     }
   }, [value, textarea]);
 
+  const unescapeHtml = (str: string) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = str;
+    return textarea.value;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
+    const originalValue = e.target.value;
+    let valueToStore = originalValue;
+
+    // Escape HTML if enabled, but only for the stored value
+    if (escapeHtml) {
+      valueToStore = escape(originalValue);
+    }
 
     // Validate based on type
     let isValid = true;
 
     if (type === TextInputType.NUMERIC) {
-      isValid = !isNaN(Number(newValue)); // Check if value is numeric
+      isValid = !isNaN(Number(originalValue)); // Validate using original input
     }
 
     // Only call onChange if valid
     if (!isValid) return;
     if (type === TextInputType.NUMERIC) {
-      onChange(Number(newValue));
+      onChange(Number(originalValue));
     } else {
-      onChange(newValue);
+      onChange(valueToStore); // Send escaped value to parent
     }
   };
 
@@ -73,7 +87,7 @@ export default function TextInput(props: InputProps) {
             readOnly ? Styles.formInputReadOnly : error ? Styles.formInputError : Styles.formInputDefault
           } ${Styles.formInputTextarea}`}
           disabled={readOnly}
-          value={value}
+          value={escapeHtml ? unescapeHtml(value?.toString()) : value}
           onChange={handleChange}
         />
       ) : (
@@ -85,7 +99,13 @@ export default function TextInput(props: InputProps) {
               readOnly ? Styles.formInputReadOnly : error ? Styles.formInputError : Styles.formInputDefault
             }`}
             disabled={readOnly}
-            value={isMasked ? '*'.repeat(value?.toString().length ?? 0) : value?.toString() ?? ''}
+            value={
+              isMasked
+                ? '*'.repeat(value?.toString().length ?? 0)
+                : escapeHtml
+                ? unescapeHtml(value?.toString() ?? '')
+                : value?.toString() ?? ''
+            }
             onChange={handleChange}
           />
           {isPassword && allowViewPassword && (
@@ -121,4 +141,5 @@ type InputProps = {
   isPassword?: boolean; // New optional field for password input
   allowViewPassword?: boolean; // New optional field for password input
   isMasked?: boolean; // New optional field for masked input
+  escapeHtml?: boolean; // New optional field for escaping HTML
 };

@@ -168,3 +168,15 @@ export const triggerBeforeExpiry = (
   functionToTrigger();
   return;
 };
+
+export const selectThemeColors = (themes: any) => ({
+  ...themes,
+  colors: {
+    ...themes.colors,
+    primary25: '#7367f01a',
+    primary: 'rgba(1, 133, 228, 0.7)',
+    neutral10: 'rgba(1, 133, 228, 0.7)',
+    neutral20: '#ededed',
+    neutral30: '#ededed',
+  },
+});

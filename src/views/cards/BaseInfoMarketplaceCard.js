@@ -159,21 +159,6 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
               <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          {!isSearchPage && !location.pathname.split('/').includes('my_listings') && (
-            <div className="mb-25">
-              {isFavorite ? (
-                <Heart
-                  className="cursor-pointer d-flex heart"
-                  fill={theme.red}
-                  stroke={theme.red}
-                  onClick={(e) => handleUnLike(e)}
-                  size={20}
-                />
-              ) : (
-                <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
-              )}
-            </div>
-          )}
 
           {project?.match_percentage ? (
             <div className="circular-progressbar-container m-0">
@@ -333,7 +318,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                 </div>
               )}
             </PermissionWrapper>
-            {data?.project?.status === 'LISTING_EXPIRED' || data?.project?.status === 'WITHDRAWN' ? (
+            {/* {data?.project?.status === 'LISTING_EXPIRED' || data?.project?.status === 'WITHDRAWN' ? (
               <div className="d-flex justify-content-end relist-btn-wrapper">
                 <Button
                   color="primary"
@@ -347,7 +332,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                   Re-list
                 </Button>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </BidsReceivedWrapper>
       )}

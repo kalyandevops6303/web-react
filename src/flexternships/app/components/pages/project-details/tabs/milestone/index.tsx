@@ -32,7 +32,7 @@ export default function MilestoneTab() {
     return <MilestoneDetails />;
   }
 
-  if (isMilestonesLoading || isProjectDetailsLoading) {
+  if (isMilestonesLoading || isProjectDetailsLoading || isEmpty(projectDetails)) {
     return (
       <div className="flex flex-col items-center justify-center min-h-48">
         <div className="h-8 w-8">

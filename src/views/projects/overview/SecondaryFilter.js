@@ -456,7 +456,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
       <Popover
         innerRef={popoverRef}
-        placement="right"
+        placement="bottom"
         isOpen={popoverOpen}
         target="popoverButton"
         toggle={togglePopover}
@@ -629,30 +629,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     value={
                       secondFilterState.department_name?.length > 0
                         ? secondFilterState.department_name?.map((item) => item)
-                        : null
-                    }
-                  />
-                </Col>
-              )}
-            </PermissionWrapper>
-            <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TYPE']}>
-              {userType !== userTypes.team && (
-                <Col>
-                  <Label className="form-label">Type</Label>
-                  <CustomSelectWithCount
-                    className="input-width"
-                    isClearable
-                    options={projectStateOptions}
-                    classNamePrefix="select"
-                    placeholder="Select type"
-                    theme={selectThemeColors}
-                    onChange={(value) => onChangeFilter('project_state_type', value)}
-                    value={
-                      secondFilterState?.project_state_type?.length > 0
-                        ? {
-                            value: secondFilterState.project_state_type[0].value,
-                            label: secondFilterState.project_state_type[0].label,
-                          }
                         : null
                     }
                   />
@@ -832,7 +808,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   key={item?._id || item?.id}
                   data={item}
                   isPopoverOpen={popoverOpen}
-                  isExpanded={false}
+                  isExpanded={isExpanded}
                   primaryFilter={primaryFilter}
                   secondaryFilterForInvitedType={secondFilterState.invitation_type[0].value}
                 />

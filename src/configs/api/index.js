@@ -50,6 +50,9 @@ const API = {
     disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
     ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
     issueTypes: `${apiAuthEndpoint}/api/v1/support-issue-types`,
+
+    // v2
+    issueTypesV2: `${apiAuthEndpoint}/api/v2/support-issue-types`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -390,6 +393,9 @@ const API = {
     count: `${apiAuthEndpoint}/api/v1/support-request/count`,
     list: `${apiAuthEndpoint}/api/v1/support-requests/paginated`,
     delete: `${apiAuthEndpoint}/api/v1/support-request`,
+
+    // v2
+    createV2: `${apiAuthEndpoint}/api/v2/support-request`,
   },
   hiring: {
     show_hiring_tab: `${apiAuthEndpoint}/api/v1/talent/check-mandatory-onboarding-details`,

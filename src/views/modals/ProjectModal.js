@@ -194,7 +194,7 @@ const ProjectModal = ({
 
   const handleViewProject = () => {
     if (isFlexternshipApp) {
-      return navigate(`/project-details/${data?._id}/team`);
+      return navigate(`/project-details/${data?._id}/milestone`);
     }
 
     if (location.pathname.split('/').includes('projects')) {
@@ -299,7 +299,7 @@ const ProjectModal = ({
         }),
       );
     }
-    navigate(`/project-details/${data?._id}/team`);
+    navigate(`/project-details/${data?._id}/milestone`);
   };
 
   const handleRelistFlexternProject = () => {
@@ -314,11 +314,11 @@ const ProjectModal = ({
       data.status === ProjectPrimaryStatus.WITHDRAWN
     ) {
       return [
-        {
-          type: 'secondary',
-          label: 'Re-list',
-          onClick: handleRelistFlexternProject,
-        },
+        // {
+        //   type: 'secondary',
+        //   label: 'Re-list',
+        //   onClick: handleRelistFlexternProject,
+        // },
       ];
     }
     if (
@@ -602,7 +602,7 @@ const ProjectModal = ({
           isActiveProject ||
           isUpcomingProject ? (
             <div className="d-flex justify-content-end mb-2">
-              {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' && (
+              {/* {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' && (
                 <Button
                   color="primary"
                   outline
@@ -614,7 +614,7 @@ const ProjectModal = ({
                 >
                   Re-list
                 </Button>
-              )}
+              )} */}
               {data?.status !== projectStatusEnum.CLOSED && (
                 <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
                   {checkBidLoadingIsLoading ? (
@@ -663,7 +663,7 @@ const ProjectModal = ({
                   </PermissionWrapper>
                   <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.VIEW_PROJECT']}>
                     {data?.is_invited && (
-                      <Button color="primary" onClick={() => navigate(`/project-details/${data?._id}/team`)}>
+                      <Button color="primary" onClick={() => navigate(`/project-details/${data?._id}/milestone`)}>
                         <div className="d-flex align-items-center">
                           <span className="me-50">View Project</span>
                           <ChevronRight size={14} />

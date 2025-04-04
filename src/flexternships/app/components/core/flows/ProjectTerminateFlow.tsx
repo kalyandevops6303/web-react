@@ -2,17 +2,17 @@ import TerminateProjectModal from '../modals/TerminateProjectModal';
 
 export default function ProjectTerminateFlow({
   project,
-  withRelist = false,
+  // withRelist = false,
   onClose,
-  initiateRelist,
-}: ProjectTerminateFlowProps) {
+}: // initiateRelist,
+ProjectTerminateFlowProps) {
   return (
     <TerminateProjectModal
       isOpen
       onClose={onClose}
-      withRelist={withRelist}
+      // withRelist={withRelist}
       project={project}
-      initiateRelist={initiateRelist}
+      // initiateRelist={initiateRelist} // Hiding relist button temporarily as per product discussion
     />
   );
 }
@@ -22,7 +22,7 @@ interface ProjectTerminateFlowProps {
     id: string;
     name: string;
   };
-  withRelist?: boolean;
+  // withRelist?: boolean;
   onClose: () => void;
-  initiateRelist: () => void;
+  // initiateRelist: () => void; // Hiding relist button temporarily as per product discussion
 }

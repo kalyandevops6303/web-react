@@ -8,7 +8,7 @@ import { withdrawProject } from '@/flexternships/services/project-management-v2'
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 
 export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
-  const { onClose, isOpen, project, initiateRelist } = props;
+  const { onClose, isOpen, project } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
   const populateProjectDetails = useProjectsStore((state) => state.getProjectDetails);
@@ -46,7 +46,7 @@ export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
               <ol className="pl-5 list-decimal text-lg text-grey font-normal leading-[26px]">
                 <li>This project will be delisted from marketplace.</li>
                 <li>Talent won’t be able to join this project.</li>
-                <li>You can relist this project with new project start date.</li>
+                {/* <li>You can relist this project with new project start date.</li> */}
               </ol>
             </div>
             <div className="flex flex-col gap-y-1">
@@ -55,9 +55,10 @@ export default function WithdrawProjectModal(props: WithdrawProjectModalProps) {
             </div>
           </div>
           <div className="flex flex-row justify-end gap-x-5">
-            <PrimaryButton className="m-0" onClick={initiateRelist}>
+            {/* Hiding relist button for now as per product discussion */}
+            {/* <PrimaryButton className="m-0" onClick={initiateRelist}>
               Relist
-            </PrimaryButton>
+            </PrimaryButton> */}
             <PrimaryButton
               cancel
               className="m-0"
@@ -81,5 +82,5 @@ interface WithdrawProjectModalProps {
     id: string;
     name: string;
   };
-  initiateRelist: () => void;
+  // initiateRelist: () => void; // Hiding relist button temporarily as per product discussion
 }
