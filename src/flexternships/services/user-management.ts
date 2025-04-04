@@ -181,6 +181,15 @@ export const getDocumentSignStatus = async (docType: DocType) => {
   }
 };
 
+/**
+ * Fetches document data based on the provided document type and content requirement.
+ *
+ * @param {Object} params - The parameters for fetching documents.
+ * @param {DocType | null} params.docType - The type of document to fetch.
+ * @param {boolean} params.docContentRequired - Whether the document content is required.
+ * @returns {Promise<any>} A Promise that resolves to the document data.
+ * @throws {Error} If fetching document data fails or an unexpected error occurs.
+ */
 export const getDocumentsData = async ({
   docType,
   docContentRequired,
@@ -208,6 +217,14 @@ export const getDocumentsData = async ({
   }
 };
 
+/**
+ * Sends a request to agree to the Terms and Conditions document.
+ *
+ * @param {Object} params - The parameters for agreeing to the document.
+ * @param {DocType | null} params.docType - The type of document to agree to.
+ * @returns {Promise<void>} A Promise that resolves when the agreement request is successful.
+ * @throws {Error} If signing the document fails or an unexpected error occurs.
+ */
 export const agreeToTnCDocument = async ({ docType }: { docType: DocType | null }) => {
   const headers = appendAuthToken({});
   const config = {
