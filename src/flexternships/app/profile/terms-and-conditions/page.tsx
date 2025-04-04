@@ -18,11 +18,12 @@ import { statusTextMap } from '@/flexternships/static/constants/core-constants';
 import ComponentSpinner from '@/@core/components/spinner/Loading-spinner';
 import { Spinner } from 'reactstrap';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
+import routes from '@/flexternships/routes';
 
 const TermsAndConditions = () => {
   const location = useLocation();
   const locationState = location.state as TnCLocationStateTypes;
-  const [tab, setTab] = useState<DocType>((locationState?.tncType as DocType) || DocType.PRIVACY_POLICY);
+  const [tab, setTab] = useState<DocType>(locationState?.tncType ?? DocType.PRIVACY_POLICY);
   const tncDetails = useFlexternUserProfileStore((state) => state.tncDetails);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const isTnCLoading = useFlexternUserProfileStore((state) => state.isTnCDetailsLoading);
@@ -55,12 +56,22 @@ const TermsAndConditions = () => {
   }, [tncDetails]);
 
   useEffect(() => {
-    if (!isUserLoggedIn()) {
-      if (locationState?.invitationToken) {
-        fetchTnCDocuments({ docType: null, docContentRequired: true });
-      } else {
-        navigate('/auth/login');
-      }
+    if (locationState?.tncAccepted) {
+      setIsTncAccepted((prev) => {
+        const updatedState: Record<string, boolean> = {};
+
+        Object.keys(prev).forEach((key) => {
+          updatedState[key] = true;
+        });
+
+        return updatedState;
+      });
+    }
+  }, [locationState?.tncAccepted]);
+
+  useEffect(() => {
+    if (!location.state && !isUserLoggedIn()) {
+      navigate(routes.auth.path);
     } else {
       fetchTnCDocuments({ docType: null, docContentRequired: true });
     }
@@ -70,30 +81,71 @@ const TermsAndConditions = () => {
     if (isUserLoggedIn()) {
       navigate('/dashboard');
     } else {
-      navigate(`/auth/flextern/register?invitation_token=${locationState?.invitationToken}`);
+      const tncAcceptedPayload = Object.keys(tncAcceptTime).reduce((acc, key) => {
+        acc[key as keyof typeof DocType] = {
+          accepted: isTncAccepted[key as keyof typeof DocType],
+          acceptTime: tncAcceptTime[key as keyof typeof DocType],
+        };
+        return acc;
+      }, {} as Record<keyof typeof DocType, { accepted: boolean; acceptTime: number }>);
+      navigate(`/auth/flextern/register?invitation_token=${locationState?.invitationToken}`, {
+        state: {
+          ...locationState,
+          tncAccepted: tncAcceptedPayload,
+        },
+      });
     }
   };
+  useEffect(() => {
+    if (!isUserLoggedIn() && locationState?.tncAccepted) {
+      Object.entries(locationState.tncAccepted).forEach(([key, value]) => {
+        if (value.accepted) {
+          setIsTncAccepted((prev) => ({
+            ...prev,
+            [key]: value.accepted,
+          }));
+          setTncAcceptTime((prev) => ({
+            ...prev,
+            [key]: value.acceptTime,
+          }));
+        }
+      });
+    }
+  }, [locationState?.tncAccepted]);
   const handleAccept = async () => {
     try {
-      await agreeToTnC(tab);
+      isUserLoggedIn() && (await agreeToTnC(tab));
       showToastMessage(ToastType.SUCCESS, `${statusTextMap[tab]} accepted successfully.`);
       const updatedState = {
         ...isTncAccepted,
         [tab]: true,
       };
       setIsTncAccepted(updatedState);
-      setTncAcceptTime((prev) => ({
-        ...prev,
+      const updatedAcceptTime = {
+        ...tncAcceptTime,
         [tab]: Date.now(),
-      }));
-
+      };
+      setTncAcceptTime(updatedAcceptTime);
       const allAccepted = Object.values(updatedState).every((value) => value);
       if (allAccepted) {
         if (isUserLoggedIn()) {
           await populateUserDetails(true);
-          navigate(`/dashboard`);
+          navigate(routes.dashboard.path);
         } else {
-          navigate(`/auth/flextern/register?invitation_token=${locationState?.invitationToken}`);
+          const tncAcceptedPayload = Object.keys(updatedState).reduce((acc, key) => {
+            acc[key as keyof typeof DocType] = {
+              accepted: updatedState[key as keyof typeof DocType],
+              acceptTime: updatedAcceptTime[key as keyof typeof DocType],
+            };
+            return acc;
+          }, {} as Record<keyof typeof DocType, { accepted: boolean; acceptTime: number }>);
+
+          navigate(`/auth/flextern/register?invitation_token=${locationState?.invitationToken}`, {
+            state: {
+              ...locationState,
+              tncAccepted: tncAcceptedPayload,
+            },
+          });
         }
       } else {
         const nextTab = (Object.keys(updatedState) as DocType[]).find((key) => !updatedState[key]);

@@ -23,7 +23,7 @@ import {
   getFlexternVariablesService,
   getAppPermissionService,
   logoutUserService,
-  verfyTnCAcceptanceService,
+  acceptTnC,
 } from '../../services/authServices';
 
 import {
@@ -88,9 +88,6 @@ import {
   setUserLoginAttemptNo,
   logoutRequest,
   logoutFailure,
-  verifyTnCStatusFailure,
-  verifyTnCStatusSuccess,
-  verifyTnCStatusRequest,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints, userTypes, invitationUserStatus } from '../../utility/constants/Constant';
@@ -183,19 +180,6 @@ const getFlexternVariables = (onSuccessFlexternVariables) => async (dispatch) =>
   }
 };
 
-const getTnCStatus = () => async (dispatch) => {
-  dispatch(verifyTnCStatusRequest());
-  try {
-    const res = await verfyTnCAcceptanceService();
-    const tncData = res?.data?.data;
-    const isTnCAccepted = tncData.every((doc) => doc.accepted);
-    dispatch(verifyTnCStatusSuccess(isTnCAccepted));
-  } catch (error) {
-    errorHandler(error);
-    verifyTnCStatusFailure();
-  }
-};
-
 const loginUserWithGoogle =
   ({ id_token, user_type, onError, onSuccess }) =>
   async (dispatch) => {
@@ -277,6 +261,16 @@ const verifyEmailForFlextern =
       }
     }
   };
+
+const acceptTermsAndConditions = () => async (dispatch) => {
+  dispatch(verifyEmailForFlexternRequest());
+  try {
+    await acceptTnC();
+    dispatch(verifyEmailForFlexternSuccess());
+  } catch (error) {
+    errorHandler(error, verifyEmailForFlexternFailure);
+  }
+};
 const setPassword = (Password) => async (dispatch) => {
   dispatch(setPasswordRequest());
   try {
@@ -548,5 +542,5 @@ export {
   validateRequestFlexTernToken,
   getFlexternVariables,
   getAppPermissions,
-  getTnCStatus,
+  acceptTermsAndConditions,
 };

@@ -246,6 +246,7 @@ export type supportTypes = {
 };
 
 export type TnCLocationStateTypes = {
-  invitationToken: string;
-  tncType: DocType;
+  invitationToken?: string;
+  tncType?: DocType;
+  tncAccepted?: Record<string, { accepted: boolean; acceptTime: number }>;
 };

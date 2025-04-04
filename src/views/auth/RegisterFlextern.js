@@ -11,17 +11,16 @@ import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { validations, filteredFormSchema, checkPointRedirection } from '../../utility/Utils';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import {
-  selectAuthLoading,
-  selectEmail,
-  selectFlexternInviteType,
-  selectTnCStatus,
-} from '../../redux/selectors/authSelectors';
+import { selectAuthLoading, selectEmail, selectFlexternInviteType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
 import TermsModal from '../modals/TermsModal';
-import { getTnCStatus, validateRequestFlexTernToken, verifyEmailForFlextern } from '../../redux/actions/authActions';
+import {
+  acceptTermsAndConditions,
+  validateRequestFlexTernToken,
+  verifyEmailForFlextern,
+} from '../../redux/actions/authActions';
 import { userTypes } from '../../utility/constants/Constant';
 import { DocType } from '@/flexternships/constraints/enums/core-enums';
 import routes from '@/flexternships/routes';
@@ -35,22 +34,38 @@ const RegisterFlexternForm = React.memo(
     agreeTerms,
     // setPrivacyPolicyModal,
     // setTermsModal,
-    // setAgreeTerms,
+    setAgreeTerms,
     isLoading,
     emailData,
     requestToken,
     tncStatus,
   }) => {
+    const [tncStatusState, setTncStatusState] = useState(tncStatus || {});
     const handleNavigatePrivacyPolicy = () => {
       navigate(routes.termsAndConditions.path, {
-        state: { invitationToken: requestToken, tncType: DocType.PRIVACY_POLICY },
+        state: {
+          invitationToken: requestToken,
+          tncType: DocType.PRIVACY_POLICY,
+          tncAccepted: tncStatusState,
+        },
       });
     };
+
     const handleNavigateUserTerms = () => {
       navigate(routes.termsAndConditions.path, {
-        state: { invitationToken: requestToken, tncType: DocType.USER_TERMS },
+        state: {
+          invitationToken: requestToken,
+          tncType: DocType.TERMS_AND_CONDITIONS,
+          tncAccepted: tncStatusState,
+        },
       });
     };
+
+    useEffect(() => {
+      if (tncStatus) {
+        setAgreeTerms(tncStatus);
+      }
+    }, [tncStatus]);
     return (
       <Form className="auth-login-form mt-2" onSubmit={onSubmit}>
         <div className="mb-2">
@@ -93,14 +108,17 @@ const RegisterFlexternForm = React.memo(
                     type="checkbox"
                     id="remember-me"
                     size="small"
-                    disabled={tncStatus}
-                    checked={tncStatus || field.value}
-                    onChange={() => {
-                      navigate(routes.termsAndConditions.path, {
-                        state: { invitationToken: requestToken, tncType: DocType.PRIVACY_POLICY },
-                      });
-                      // field.onChange(e);
-                      // setAgreeTerms(e.target.checked);
+                    checked={field.value}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setAgreeTerms(e.target.checked);
+                      if (!e.target.checked && tncStatus) {
+                        const updatedTncStatus = { ...tncStatus };
+                        Object.keys(tncStatus).forEach((key) => {
+                          updatedTncStatus[key] = { ...updatedTncStatus[key], accepted: false };
+                        });
+                        setTncStatusState(updatedTncStatus);
+                      }
                     }}
                   />
                 )}
@@ -128,6 +146,7 @@ const RegisterFlexternForm = React.memo(
 );
 
 RegisterFlexternForm.propTypes = {
+  watch: PropTypes.func.isRequired,
   navigate: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   control: PropTypes.object.isRequired,
@@ -149,7 +168,6 @@ const RegisterFlextern = () => {
   const isLoading = useSelector(selectAuthLoading);
   const savedFormData = useSelector(formData);
   const emailData = useSelector(selectEmail);
-  const tncStatus = useSelector(selectTnCStatus);
   const [privacyPolicyModal, setPrivacyPolicyModal] = useState(null);
   const [termsModal, setTermsModal] = useState(null);
   const [agreeTerms, setAgreeTerms] = useState(savedFormData?.agreeTerms || false);
@@ -176,6 +194,7 @@ const RegisterFlextern = () => {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
     watch,
     reset,
     trigger,
@@ -204,7 +223,6 @@ const RegisterFlextern = () => {
           },
         }),
       );
-      dispatch(getTnCStatus());
       if (watch('email') && requestToken) {
         dispatch(
           verifyEmailForFlextern({
@@ -247,10 +265,18 @@ const RegisterFlextern = () => {
     else data.user_type = userTypes.talent;
 
     dispatch(verifyEmailForFlextern({ data, invitation_token, onSuccess }));
+    dispatch(acceptTermsAndConditions());
   };
 
   const newPassword = watch('newPassword');
   const cnfPassword = watch('cnfPassword');
+
+  useEffect(() => {
+    const acceptedList = location?.state?.tncAccepted;
+    const allAccepted = acceptedList && Object.keys(acceptedList).every((key) => acceptedList[key].accepted);
+    setAgreeTerms(allAccepted);
+    setValue('agreeTerms', allAccepted);
+  }, [location?.state?.tncAccepted]);
 
   return (
     <OnBoardWrap>
@@ -264,6 +290,7 @@ const RegisterFlextern = () => {
             : inviteHeader.FLEXTERN_TALENT?.title}
         </CardTitle>
         <RegisterFlexternForm
+          watch={watch}
           navigate={navigate}
           onSubmit={handleSubmit(onSubmit)}
           control={control}
@@ -277,7 +304,7 @@ const RegisterFlextern = () => {
           isLoading={isLoading}
           emailData={emailData}
           requestToken={requestToken}
-          tncStatus={tncStatus}
+          tncStatus={location?.state?.tncAccepted}
         />
       </div>
     </OnBoardWrap>
