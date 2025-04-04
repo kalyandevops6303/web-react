@@ -101,7 +101,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
     supportDetails: yup
       .string()
       .min(50, 'Description must be at least 50 characters')
-      .max(500, 'You have exeeded the limit of 500 characters')
+      .max(500, 'You have exceeded the limit of 500 characters')
       .required('Description is required'),
   });
 
@@ -205,10 +205,10 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog trumio">
       <ModalHeader toggle={isLoading ? null : toggleModal} />
       <ModalBody className="pt-0 px-10">
-        <h2 className="font-large-1 text-center mb-7 text-[28px]">Contact</h2>
+        <h2 className="font-large-1 text-center mb-7 text-[28px]">Contact Support</h2>
         <SupportModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
-            <Row className="mb-1">
+            <Row className="mb-4">
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
                   <CardText className="m-0 me-75 mr-3 fw-bold">TO: </CardText>{' '}
@@ -220,7 +220,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                 </div>
               </Col>
             </Row>
-            <Row className="mb-1">
+            <Row className="mb-6">
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
                   <CardText className="m-0 me-75 mr-3 fw-bold">CC: </CardText>{' '}
@@ -233,7 +233,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                 </div>
               </Col>
             </Row>
-            <Row className="mb-1">
+            <Row className="mb-6">
               <Col sm="12" md="12" lg="7">
                 <Label className="form-label text-grey font-normal text-sm" for="issueType">
                   Issue Type
@@ -339,7 +339,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               )}
             </Row>
 
-            <Row className="mt-4 mb-1">
+            <Row className="mt-4 mb-4">
               <Col sm="12" md="12" lg="12">
                 <Label className="form-label text-grey font-normal text-sm" for="skill">
                   Tell us in detail how we can help you?
