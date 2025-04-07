@@ -6,7 +6,6 @@ import { StatsOrientation } from '@/flexternships/constraints/enums/chart-enums'
 import PerformanceInsightsCard from './PerformanceInsightsCard';
 import CustomPieChart2 from '../../components/core/charts/CustomPieChart2/CustomPieChart2';
 import TeamMembersChartTooltip from './tooltips/TeamMembersChartTooltip';
-import BreadCrumbs from '@flexternships/app/components/pages/project-details/BreadCrumbs';
 import AIGeneratedSummary from '../../components/core/cards/AIGeneratedSummary';
 import { useProjectsStore } from '@/flexternships/stores/project-details-store';
 import { useEffect, useState } from 'react';
@@ -32,6 +31,7 @@ import CustomXAxisLabel from './labels/CustomXAxisLabel';
 import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
 import GithubInsightsCard from './GithubInsightsCard';
 import AnalyticsEmptyCard from './cards/AnalyticsEmptyCard';
+import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -105,24 +105,12 @@ export default function TeamAnalytics() {
 
   return (
     <div className="bg-background flex flex-col gap-6 mt-20 md:mt-0">
-      <BreadCrumbs
-        steps={[
-          {
-            title: 'Analytics',
-            link: '/analytics',
-          },
-          {
-            title: '...',
-            link: `/analytics`,
-          },
-          {
-            title: projectDetails?.details?.name,
-            link: window.location.href,
-            isActive: true,
-          },
+      <CustomBreadCrumbs
+        items={[
+          { label: 'Analytics', href: `/project-details/${projectDetails?.id}/team` },
+          { label: projectDetails?.details?.name, href: window.location.href },
         ]}
       />
-
       <div className="flex flex-col md:flex-row gap-2 items-center">
         <div className="w-auto text-dark-200 font-montserrat text-base font-medium leading-6">
           Select project to view analytics:{' '}
