@@ -23,6 +23,7 @@ import {
 } from '../constraints/types/analytics-types';
 import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
+import { supportTypes } from '../constraints/types/core-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -551,5 +552,27 @@ export const parseTermsAndConditionsDocument = (data: Record<string, string | Do
     docContent: data.doc_content,
     docId: data.doc_id,
     docType: data.doc_type,
+  };
+};
+
+/**
+ * Parses support types response from raw API data.
+ * @param data Raw support types data from API response.
+ * @param page The current page number for pagination.
+ * @param pageSize The number of records per page.
+ * @returns Formatted support types data with metadata.
+ */
+export const parseSupportTypesResponse = (data: supportTypes[], page: number, pageSize: number) => {
+  return {
+    data: data.map((support: supportTypes) => ({
+      _id: support.type,
+      name: support.name,
+    })),
+    metadata: {
+      current_page: page,
+      page_size: pageSize,
+      total_records: data.length,
+      has_next_page: false,
+    },
   };
 };

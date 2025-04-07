@@ -91,8 +91,6 @@ import {
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import '../../App.css';
 import UploadResumeModal from '../../views/modals/UploadResumeModal';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 
 const FlexternPersonal = () => {
   const PersonalSchema = yup.object().shape({
@@ -123,7 +121,6 @@ const FlexternPersonal = () => {
           value: yup.string(),
         }),
       )
-
       .max(5, 'Maximum of five languages can be added'),
     writeLanguages: yup
       .array()
@@ -134,13 +131,6 @@ const FlexternPersonal = () => {
         }),
       )
       .max(5, 'Maximum of five languages can be added'),
-    resume: yup
-      .object()
-      .shape({
-        file_name: yup.string(),
-        file_key: yup.string(),
-      })
-      .nullable(),
   });
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
@@ -465,21 +455,8 @@ const FlexternPersonal = () => {
     }
   };
 
-  const fetchUploadUrl = async (file, e) => {
-    const getResumeUploadUrl = async (fileName, inputElement) => {
-      try {
-        const response = await resumeUploadService(fileName);
-        return response;
-      } catch (error) {
-        if (error?.response?.status == '429') showToastMessage(ToastType.ERROR, error?.message);
-        if (inputElement) inputElement.value = '';
-        return null;
-      }
-    };
-
-    const response = await getResumeUploadUrl(file.name, e.target);
-    if (!response) return false;
-
+  const fetchUploadUrl = async (file) => {
+    const response = await resumeUploadService(file.name);
     const fileWithUrl = {
       id: uuidv4(),
       file,
@@ -519,18 +496,14 @@ const FlexternPersonal = () => {
     //   );
     dispatch(setResumeParsed(true));
     setParseResume(true);
-    return true;
   };
-
   const handleFileChange = async (e) => {
     if (e.target.files) {
       if (isFileValid(e.target.files[0])) {
         dispatch(clearAllFormData());
-        const uploadSuccess = await fetchUploadUrl(e.target.files[0], e);
-        if (uploadSuccess) {
-          setParseResume(true);
-          dispatch(setResumeParsed(true));
-        }
+        await fetchUploadUrl(e.target.files[0]);
+        setParseResume(true);
+        dispatch(setResumeParsed(true));
       }
     } else {
       e.target.value = '';
@@ -817,7 +790,7 @@ const FlexternPersonal = () => {
         );
         setFiles([fileUrl]);
         dispatch(setFormDocuments([fileUrl]));
-      } else if (isEmpty(files)) {
+      } else {
         setResumeModalOpen(true);
       }
       if (res?.talent_info?.languages_speak.length > 0) {

@@ -292,7 +292,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
           ) : (
             <p className="m-0">None</p>
           )}
-          {data?.status === 'LISTING_EXPIRED' && (
+          {/* {data?.status === 'LISTING_EXPIRED' && (
             <div className="d-flex justify-content-end relist-btn-wrapper">
               <Button
                 color="primary"
@@ -306,7 +306,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
                 Re-list
               </Button>
             </div>
-          )}
+          )} */}
         </BidsReceivedWrapper>
       )}
     </div>

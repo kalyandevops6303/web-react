@@ -30,6 +30,7 @@ import ProjectStatusChip from '../../components/pages/project-details/project-ca
 import CustomXAxisLabel from './labels/CustomXAxisLabel';
 import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInfo';
 import GithubInsightsCard from './GithubInsightsCard';
+import AnalyticsEmptyCard from './cards/AnalyticsEmptyCard';
 import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
 
 export default function TeamAnalytics() {
@@ -171,7 +172,9 @@ export default function TeamAnalytics() {
             </div>
           </SimpleElevatedCard>
         )}
-        {isTeamPerformanceSummaryLoading ? (
+        {!projectDetails?.viewAnalytics ? (
+          <AnalyticsEmptyCard />
+        ) : isTeamPerformanceSummaryLoading ? (
           <BoxSkeleton className="w-full md:w-3/4" />
         ) : (
           <div className="flex flex-col gap-2 rounded-10 bg-white shadow-card w-full md:w-3/4">
@@ -180,119 +183,125 @@ export default function TeamAnalytics() {
         )}
       </div>
 
-      <TeamMembersTable data={teamMembersDetails?.teamData} />
+      {projectDetails?.viewAnalytics && (
+        <>
+          <TeamMembersTable data={teamMembersDetails?.teamData} />
 
-      <div className="rounded-lg bg-white">
-        {isTeamMembersDetailsLoading ? (
-          <BoxSkeleton className="w-full h-[200px]" />
-        ) : (
-          <div className="flex flex-row gap-3 w-full bg-white rounded-t-10 border-b border-grey-50">
-            <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 border-r border-grey-50 p-3 md:px-6">
-              <div>
-                <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
-                  {teamMembersDetails?.averageAttractivenessScore}
-                </span>
-                <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">/100</span>
+          <div className="rounded-lg bg-white">
+            {isTeamMembersDetailsLoading ? (
+              <BoxSkeleton className="w-full h-[200px]" />
+            ) : (
+              <div className="flex flex-row gap-3 w-full bg-white rounded-t-10 border-b border-grey-50">
+                <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 border-r border-grey-50 p-3 md:px-6">
+                  <div>
+                    <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
+                      {teamMembersDetails?.averageAttractivenessScore}
+                    </span>
+                    <span className="text-center text-sm leading-5.5 font-normal text-grey-500 font-montserrat">
+                      /100
+                    </span>
+                  </div>
+                  <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
+                    <div>Team Learnability Score</div>
+                    <TooltipInfo iconSize={18}>
+                      <div>Team Learnability Score</div>
+                    </TooltipInfo>
+                  </div>
+                </div>
+                <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
+                  <div>
+                    <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
+                      {teamMembersDetails?.totalRecognitionCount}
+                    </span>
+                  </div>
+                  <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
+                    <div>Recognitions</div>
+                    <TooltipInfo iconSize={18}>
+                      <div>Recognitions</div>
+                    </TooltipInfo>
+                  </div>
+                </div>
               </div>
-              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
-                <div>Team Learnability Score</div>
-                <TooltipInfo iconSize={18}>
-                  <div>Team Learnability Score</div>
-                </TooltipInfo>
-              </div>
-            </div>
-            <div className="w-1/2 flex flex-col items-center justify-center gap-0.5 p-3 md:px-6">
-              <div>
-                <span className="text-center text-xl leading-7 font-semibold text-dark font-montserrat">
-                  {teamMembersDetails?.totalRecognitionCount}
-                </span>
-              </div>
-              <div className="text-sm leading-5.5 font-medium text-grey-500 font-montserrat flex items-center gap-2">
-                <div>Recognitions</div>
-                <TooltipInfo iconSize={18}>
-                  <div>Recognitions</div>
-                </TooltipInfo>
-              </div>
-            </div>
-          </div>
-        )}
+            )}
 
-        {isTeamMembersAttractivenessLoading ? (
-          <BoxSkeleton className="w-full h-[200px]" />
-        ) : (
-          <div className="mt-[24px]">
-            {teamMembersAttractiveness && (
-              <MultipleLinesChart
-                chartData={teamMembersAttractiveness?.chartData}
-                chartConfig={teamMembersAttractiveness?.chartConfig}
-                XAxisDataKey={'milestone'}
-                maxYAxis={teamMembersAttractiveness?.maxYAxis}
-                showFilters
-                showDataOnFilters={false}
-                customTooltipContent={TeamMembersChartTooltip}
-                YAxisDataKey={'score'}
-                hideDeselectedMetricsFromTooltip
-                customXAxisLabel={CustomXAxisLabel}
-                filtersLabel="Legend:"
-              />
+            {isTeamMembersAttractivenessLoading ? (
+              <BoxSkeleton className="w-full h-[200px]" />
+            ) : (
+              <div className="mt-[24px]">
+                {teamMembersAttractiveness && (
+                  <MultipleLinesChart
+                    chartData={teamMembersAttractiveness?.chartData}
+                    chartConfig={teamMembersAttractiveness?.chartConfig}
+                    XAxisDataKey={'milestone'}
+                    maxYAxis={teamMembersAttractiveness?.maxYAxis}
+                    showFilters
+                    showDataOnFilters={false}
+                    customTooltipContent={TeamMembersChartTooltip}
+                    YAxisDataKey={'score'}
+                    hideDeselectedMetricsFromTooltip
+                    customXAxisLabel={CustomXAxisLabel}
+                    filtersLabel="Legend:"
+                  />
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
 
-      <div className="flex flex-col md:flex-row gap-[24px] h-full">
-        {!isEmpty(teamRoles) && (
-          <div className="rounded-[8px] w-full md:w-1/2 ">
-            <CustomPieChart2
-              chartData={teamRoles?.chartData}
-              chartConfig={teamRoles?.chartConfig}
-              totalCount={teamRoles?.totalRolesCount}
-              title="Roles"
-              centerText="Roles"
-              className="bg-white"
-              statsOrientation={StatsOrientation.VERTICAL}
-              isLoading={isTeamRolesLoading}
-              seperatorExpanded={seperatorExpanded}
-            />
+          <div className="flex flex-col md:flex-row gap-[24px] h-full">
+            {!isEmpty(teamRoles) && (
+              <div className="rounded-[8px] w-full md:w-1/2 ">
+                <CustomPieChart2
+                  chartData={teamRoles?.chartData}
+                  chartConfig={teamRoles?.chartConfig}
+                  totalCount={teamRoles?.totalRolesCount}
+                  title="Roles"
+                  centerText="Roles"
+                  className="bg-white"
+                  statsOrientation={StatsOrientation.VERTICAL}
+                  isLoading={isTeamRolesLoading}
+                  seperatorExpanded={seperatorExpanded}
+                />
+              </div>
+            )}
+            {!isEmpty(teamUniversities) && (
+              <div className="rounded-[8px] w-full md:w-1/4">
+                <CustomDonutChart
+                  chartData={teamUniversities?.chartData}
+                  chartConfig={teamUniversities?.chartConfig}
+                  totalCount={teamUniversities?.totalUniversityCount}
+                  title="University"
+                  centerText="Universities"
+                  isSemiCircle
+                  isDonutChart
+                  statsOrientation={StatsOrientation.VERTICAL}
+                  className="bg-white"
+                  isLoading={isTeamUniversitiesLoading}
+                  calculateTotalManually
+                />
+              </div>
+            )}
+            {!isEmpty(teamDiversity) && (
+              <div className="rounded-[8px] w-full md:w-1/4">
+                <CustomDonutChart
+                  chartData={teamDiversity?.chartData}
+                  chartConfig={teamDiversity?.chartConfig}
+                  totalCount={teamDiversity?.teamMembersCount}
+                  title="Team Diversity"
+                  centerText="Team Members"
+                  statsOrientation={StatsOrientation.HORIZONTAL}
+                  isDonutChart
+                  className="bg-white"
+                  isLoading={isTeamDiversityLoading}
+                />
+              </div>
+            )}
           </div>
-        )}
-        {!isEmpty(teamUniversities) && (
-          <div className="rounded-[8px] w-full md:w-1/4">
-            <CustomDonutChart
-              chartData={teamUniversities?.chartData}
-              chartConfig={teamUniversities?.chartConfig}
-              totalCount={teamUniversities?.totalUniversityCount}
-              title="University"
-              centerText="Universities"
-              isSemiCircle
-              isDonutChart
-              statsOrientation={StatsOrientation.VERTICAL}
-              className="bg-white"
-              isLoading={isTeamUniversitiesLoading}
-              calculateTotalManually
-            />
-          </div>
-        )}
-        {!isEmpty(teamDiversity) && (
-          <div className="rounded-[8px] w-full md:w-1/4">
-            <CustomDonutChart
-              chartData={teamDiversity?.chartData}
-              chartConfig={teamDiversity?.chartConfig}
-              totalCount={teamDiversity?.teamMembersCount}
-              title="Team Diversity"
-              centerText="Team Members"
-              statsOrientation={StatsOrientation.HORIZONTAL}
-              isDonutChart
-              className="bg-white"
-              isLoading={isTeamDiversityLoading}
-            />
-          </div>
-        )}
-      </div>
 
-      <PerformanceInsightsCard />
-      <GithubInsightsCard />
-      <TeamLeaderboardTable />
+          <PerformanceInsightsCard />
+          <GithubInsightsCard />
+          <TeamLeaderboardTable />
+        </>
+      )}
     </div>
   );
 }

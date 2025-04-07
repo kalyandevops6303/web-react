@@ -46,9 +46,6 @@ import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { setFormDocuments } from '../reducers/formData';
 
-import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-
 const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
   try {
@@ -73,8 +70,12 @@ const getResumeParsedDetails = (setResumeParsedDetails, setParseResume, fileKey,
   } catch (error) {
     setParseResume(false);
     dispatch(resumeParsedDetailsFailure());
-    if (error?.response?.status == '400') showToastMessage(ToastType.ERROR, error?.message);
-    else showToastMessage(ToastType.ERROR, 'Something went wrong. Please try again.');
+    if (setFiles) {
+      setFiles([]);
+    }
+    dispatch(setFormDocuments(null));
+    if (error?.code == '400') ShowToastMessage(ERROR, error?.message);
+    else ShowToastMessage(ERROR, 'Something went wrong. Please try again.');
   }
 };
 

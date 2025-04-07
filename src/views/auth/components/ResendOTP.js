@@ -47,16 +47,17 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP, isClubEm
           }),
         );
       }
-      resetErrorOtpandCode();
-      setCountdown(180); // reset the countdown to 60 seconds
+      resetErrorOtpandCode && resetErrorOtpandCode();
+      setCountdown(180);
     }
   };
   return (
     <div
-      className={`d-flex justify-content-center sign-info ${countdown === 0 && 'cursor-pointer'} `}
-      onClick={handleResend}
+      className={`d-flex justify-content-center sign-info ${countdown === 0 ? 'cursor-pointer' : ''}`}
+      onClick={countdown === 0 ? handleResend : undefined}
+      style={{ opacity: countdown === 0 ? 1 : 0.7 }}
     >
-      <Label className={`${countdown === 0 && 'cursor-pointer primary'}`}>
+      <Label className={`${countdown === 0 ? 'cursor-pointer primary' : ''}`}>
         Resend <span className="primary">OTP</span>&nbsp;
       </Label>
 
@@ -64,7 +65,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP, isClubEm
         <Label>
           <small>
             in {minutes}:{seconds < 10 ? '0' : ''}
-            {seconds} minutes
+            {seconds} {minutes === 1 ? 'minute' : 'minutes'}
           </small>
         </Label>
       )}

@@ -238,3 +238,8 @@ export type WebSocketMessage = {
   num_projects?: number;
   domain?: string;
 };
+
+export type supportTypes = {
+  name: string;
+  type: string;
+};

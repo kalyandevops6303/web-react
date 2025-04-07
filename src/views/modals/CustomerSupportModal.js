@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { AsyncPaginate } from 'react-select-async-paginate';
 import '../custom-styles.scss';
 import * as yup from 'yup';
-import classNames from 'classnames';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -21,13 +19,15 @@ import {
   Label,
   CardText,
 } from 'reactstrap';
+import { AsyncPaginate } from 'react-select-async-paginate';
+import classNames from 'classnames';
 import { SupportModalWrapper } from './style';
 import { getMissingName, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
-import { getIssueTypeService } from '../../services/supportServices';
+import { getIssueTypeServiceForFlextern } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport } from '../../redux/actions/supportActions';
-import { CUSTOMER_SUPPORT_TYPES, DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
 import TextInput from '@/flexternships/app/components/core/form/TextInput';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
@@ -55,53 +55,53 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
 
   const [defaultOption, setDefaultOption] = useState(null);
   const CustomerSupportSchema = yup.object().shape({
-    // issueType: yup
-    //   .object()
-    //   .shape({
-    //     label: yup.string().required('Issue type is required'),
-    //     value: yup.string().required('Issue type is required'),
-    //   })
-    //   .required('Issue type is required'),
-    // skill: yup.string().when('issueType.value', {
-    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_skill,
-    //   then: () =>
-    //     yup
-    //       .string()
-    //       .min(1, 'Skill must be at least 1 character')
-    //       .max(150, 'Skill must be 150 characters or less')
-    //       .required('Skill is required'),
-    // }),
-    // tool: yup.string().when('issueType.value', {
-    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_tool,
-    //   then: () =>
-    //     yup
-    //       .string()
-    //       .min(1, 'Tool must be at least 1 character')
-    //       .max(150, 'Tool must be 150 characters or less')
-    //       .required('Tool is required'),
-    // }),
-    // institute: yup.string().when('issueType.value', {
-    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_institute,
-    //   then: () =>
-    //     yup
-    //       .string()
-    //       .min(1, 'Institution must be at least 1 character')
-    //       .max(150, 'Institution must be 150 characters or less')
-    //       .required('Institution is required'),
-    // }),
-    // assessment: yup.string().when('issueType.value', {
-    //   is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_assessment,
-    //   then: () =>
-    //     yup
-    //       .string()
-    //       .min(1, 'Assessment must be at least 1 character')
-    //       .max(150, 'Assessment must be 150 characters or less')
-    //       .required('Assessment is required'),
-    // }),
+    issueType: yup
+      .object()
+      .shape({
+        label: yup.string().required('Issue type is required'),
+        value: yup.string().required('Issue type is required'),
+      })
+      .required('Issue type is required'),
+    skill: yup.string().when('issueType.value', {
+      is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_skill,
+      then: () =>
+        yup
+          .string()
+          .min(1, 'Skill must be at least 1 character')
+          .max(150, 'Skill must be 150 characters or less')
+          .required('Skill is required'),
+    }),
+    tool: yup.string().when('issueType.value', {
+      is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool,
+      then: () =>
+        yup
+          .string()
+          .min(1, 'Tool must be at least 1 character')
+          .max(150, 'Tool must be 150 characters or less')
+          .required('Tool is required'),
+    }),
+    institute: yup.string().when('issueType.value', {
+      is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute,
+      then: () =>
+        yup
+          .string()
+          .min(1, 'Institution must be at least 1 character')
+          .max(150, 'Institution must be 150 characters or less')
+          .required('Institution is required'),
+    }),
+    assessment: yup.string().when('issueType.value', {
+      is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_assessment,
+      then: () =>
+        yup
+          .string()
+          .min(1, 'Assessment must be at least 1 character')
+          .max(150, 'Assessment must be 150 characters or less')
+          .required('Assessment is required'),
+    }),
     supportDetails: yup
       .string()
       .min(50, 'Description must be at least 50 characters')
-      .max(500, 'You have exeeded the limit of 500 characters')
+      .max(500, 'You have exceeded the limit of 500 characters')
       .required('Description is required'),
   });
 
@@ -128,8 +128,8 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       to_email: SUPPORT_EMAIL,
       cc_email: [userEmail],
       description: values?.supportDetails,
-      issue_type: DEFAULT_SUPPORT_TYPE,
-      // missing_name: getMissingName(values?.issueType?.value, values),
+      issue_type: issueType?.value,
+      missing_name: getMissingName(values?.issueType?.value, values),
     };
 
     dispatch(customerSupport({ data: postData, onSuccess }));
@@ -153,7 +153,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
 
     try {
       // Load new options from the service for the given page
-      const response = await getIssueTypeService(page);
+      const response = await getIssueTypeServiceForFlextern(page);
       const options = response?.data?.data?.map((project) => ({
         label: project.name, // Map the project name to the label
         value: project.type, // Map the project type to the value
@@ -185,7 +185,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
   useEffect(() => {
     // Loading issue types once modal is opened
     const getTypes = async () => {
-      const response = await getIssueTypeService();
+      const response = await getIssueTypeServiceForFlextern();
       const options = response?.data?.data?.map((project) => ({ label: project.name, value: project.type }));
       setIssueTypeOptions(options);
 
@@ -208,7 +208,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
         <h2 className="font-large-1 text-center mb-7 text-[28px]">Contact Support</h2>
         <SupportModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
-            <Row className="mb-1">
+            <Row className="mb-4">
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
                   <CardText className="m-0 me-75 mr-3 fw-bold">TO: </CardText>{' '}
@@ -220,7 +220,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                 </div>
               </Col>
             </Row>
-            <Row className="mb-1">
+            <Row className="mb-6">
               <Col sm="12" md="12" lg="8">
                 <div className="d-flex align-items-center">
                   <CardText className="m-0 me-75 mr-3 fw-bold">CC: </CardText>{' '}
@@ -233,7 +233,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                 </div>
               </Col>
             </Row>
-            {/* <Row className="mb-1">
+            <Row className="mb-6">
               <Col sm="12" md="12" lg="7">
                 <Label className="form-label text-grey font-normal text-sm" for="issueType">
                   Issue Type
@@ -337,9 +337,9 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                   {errors.tool && <FormFeedback>{errors.assessment.message}</FormFeedback>}
                 </Col>
               )}
-            </Row> */}
+            </Row>
 
-            <Row className="mt-4 mb-1">
+            <Row className="mt-4 mb-4">
               <Col sm="12" md="12" lg="12">
                 <Label className="form-label text-grey font-normal text-sm" for="skill">
                   Tell us in detail how we can help you?

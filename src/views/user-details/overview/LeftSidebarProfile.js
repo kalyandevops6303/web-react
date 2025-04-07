@@ -476,97 +476,64 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   <CardText className="Info-key font-small-3 mt-0">No links</CardText>
                 )}
 
-                {
-                  data?.social_links
-                    ?.filter((link) => link?.platform && link?.url)
-                    .reduce(
-                      (acc, item) => {
-                        // Skip if we've already rendered this platform
-                        if (acc.renderedPlatforms.has(item.platform)) return acc;
+                {data?.social_links?.map((item, index) => {
+                  if (item?.platform === 'linkedIn')
+                    return (
+                      <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                        <Avatar
+                          color="light-primary"
+                          icon={
+                            <Linkedin fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                          }
+                          onClick={item?.url}
+                          className="me-1 p-25 mb-1"
+                          id={`tooltip-links-${index}`}
+                        />
+                        <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      </a>
+                    );
+                  if (item?.platform === 'twitter')
+                    return (
+                      <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                        <Avatar
+                          color="light-primary"
+                          icon={<img src={TwitterXIcon} alt="" width={20} height={20} />}
+                          onClick={item?.url}
+                          className="me-1 p-25 mb-1"
+                          id={`tooltip-links-${index}`}
+                        />
+                        <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      </a>
+                    );
 
-                        // Mark this platform as rendered
-                        acc.renderedPlatforms.add(item.platform);
-
-                        // Create the appropriate social link component based on platform
-                        const socialIcons = {
-                          linkedIn: (
-                            <a
-                              key={`linkedin-${acc.components.length}`}
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <Avatar
-                                color="light-primary"
-                                icon={
-                                  <Linkedin
-                                    fill={theme.activeNavPillText}
-                                    stroke={theme.activeNavPillBackground}
-                                    size={24}
-                                  />
-                                }
-                                className="me-1 p-25 mb-1"
-                                id={`tooltip-links-${acc.components.length}`}
-                              />
-                              <UncontrolledTooltip target={`tooltip-links-${acc.components.length}`}>
-                                {item.platform}
-                              </UncontrolledTooltip>
-                            </a>
-                          ),
-                          twitter: (
-                            <a
-                              key={`twitter-${acc.components.length}`}
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <Avatar
-                                color="light-primary"
-                                icon={<img src={TwitterXIcon} alt="" width={20} height={20} />}
-                                className="me-1 p-25 mb-1"
-                                id={`tooltip-links-${acc.components.length}`}
-                              />
-                              <UncontrolledTooltip target={`tooltip-links-${acc.components.length}`}>
-                                {item.platform}
-                              </UncontrolledTooltip>
-                            </a>
-                          ),
-                          github: (
-                            <a
-                              key={`github-${acc.components.length}`}
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <Avatar
-                                color="light-primary"
-                                icon={
-                                  <GitHub
-                                    fill={theme.activeNavPillText}
-                                    stroke={theme.activeNavPillBackground}
-                                    size={24}
-                                  />
-                                }
-                                className="me-1 p-25 mb-1"
-                                id={`tooltip-links-${acc.components.length}`}
-                              />
-                              <UncontrolledTooltip target={`tooltip-links-${acc.components.length}`}>
-                                {item.platform}
-                              </UncontrolledTooltip>
-                            </a>
-                          ),
-                        };
-
-                        // Add component to our list if we have an icon for this platform
-                        if (socialIcons[item.platform]) {
-                          acc.components.push(socialIcons[item.platform]);
-                        }
-
-                        return acc;
-                      },
-                      { renderedPlatforms: new Set(), components: [] },
-                    ).components
-                }
+                  if (item?.platform === 'github')
+                    return (
+                      <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                        <Avatar
+                          color="light-primary"
+                          icon={
+                            <GitHub fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                          }
+                          onClick={item?.url}
+                          className="me-1 p-25 mb-1"
+                          id={`tooltip-links-${index}`}
+                        />
+                        <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      </a>
+                    );
+                  return (
+                    <a key={item?.url} href={item?.url} target="_blank" rel="noopener noreferrer">
+                      <Avatar
+                        color="light-primary"
+                        icon={<Link fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />}
+                        onClick={item?.url}
+                        className="me-1 p-25 mb-1"
+                        id={`tooltip-links-${index}`}
+                      />
+                      <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
+                    </a>
+                  );
+                })}
 
                 <Avatar
                   color="light-primary"

@@ -982,10 +982,11 @@ const FlexternSocial = () => {
                                 </FormFeedback>
                               )}
                           </div>
-
-                          <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
-                            <img src={removeSVG} width={20} height={20} />
-                          </Button>
+                          {watch('otherSocialLinks')?.length > 1 && (
+                            <Button type="button" color="flat-danger" className="" onClick={() => remove(index)}>
+                              <img src={removeSVG} width={20} height={20} />
+                            </Button>
+                          )}
                         </div>
                       </Col>
                     </Row>

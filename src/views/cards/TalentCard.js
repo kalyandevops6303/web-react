@@ -197,21 +197,6 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
                         <img src={hat} alt="client-badge" width={20} height={20} />
                       </Badge>
                     )}
-                    {!isSearchPage && (
-                      <div className="mb-25">
-                        {isFavorite ? (
-                          <Heart
-                            className="cursor-pointer d-flex heart"
-                            fill={theme.red}
-                            stroke={theme.red}
-                            onClick={(e) => handleUnLike(e)}
-                            size={20}
-                          />
-                        ) : (
-                          <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
-                        )}
-                      </div>
-                    )}
                     {data?.match_percentage ? (
                       <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
                         <CircularProgressbarWithChildren
