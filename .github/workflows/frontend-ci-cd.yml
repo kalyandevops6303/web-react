@@ -182,7 +182,11 @@ jobs:
               echo "VITE_ENV_MODE=tru-uat-auto" >> $GITHUB_ENV
           elif [[ "${{ vars.ENVIRONMENT }}" == tru-wipro ]]; then
               echo "VITE_ENV_MODE=tru-wipro" >> $GITHUB_ENV
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> a53093dff969b9f813b6e48fe8e5e4a36f5f2539
           elif [[ "${{ vars.ENVIRONMENT }}" == prod ]]; then
               echo "VITE_ENV_MODE=production" >> $GITHUB_ENV
               echo "storage=azusctrwebsa" >> $GITHUB_ENV
