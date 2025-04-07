@@ -13,8 +13,9 @@ export const getPrimaryAction = (params: { status: ProjectPrimaryStatus; userTyp
     case ProjectPrimaryStatus.CLOSED:
     case ProjectPrimaryStatus.BLOCKED:
       return ProjectLeftPanelAction.MESSAGE;
-    case ProjectPrimaryStatus.WITHDRAWN:
-      return userType === UserType.CLIENT ? ProjectLeftPanelAction.RELIST : undefined;
+    // TODO: Uncomment this when relist is implemented
+    // case ProjectPrimaryStatus.WITHDRAWN:
+    //   return userType === UserType.CLIENT ? ProjectLeftPanelAction.RELIST : undefined;
     default:
       return undefined;
   }
@@ -46,8 +47,9 @@ export const getTextByAction = (action?: ProjectLeftPanelAction) => {
     //   return 'Terminate';
     case ProjectLeftPanelAction.WITHDRAW:
       return 'Withdraw';
-    case ProjectLeftPanelAction.RELIST:
-      return 'Re-List';
+    // TODO: Uncomment this when relist is implemented
+    // case ProjectLeftPanelAction.RELIST:
+    //   return 'Re-List';
     default:
       return undefined;
   }
