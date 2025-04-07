@@ -4,6 +4,8 @@ export const CHAT_ENTRY_POINT = 'https://teams.microsoft.com';
 
 export const DEFAULT_SUPPORT_TYPE = 'others';
 export const SUPPORT_EMAIL = 'support@trumio.ai';
+export const SUPPORT_EMAIL_CLIENT = 'enterprisesupport@trumio.ai';
+export const SUPPORT_EMAIL_TALENT = 'talentsupport@trumio.ai';
 
 export const NAVBAR_ITEMS = [
   {
