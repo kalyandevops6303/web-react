@@ -273,7 +273,9 @@ const RegisterFlextern = () => {
 
   useEffect(() => {
     const acceptedList = location?.state?.tncAccepted;
-    const allAccepted = acceptedList && Object.keys(acceptedList).every((key) => acceptedList[key].accepted);
+    const allAccepted =
+      Array.isArray(acceptedList) &&
+      acceptedList.every((item) => item.acceptTime !== null && item.acceptTime !== undefined);
     setAgreeTerms(allAccepted);
     setValue('agreeTerms', allAccepted);
   }, [location?.state?.tncAccepted]);

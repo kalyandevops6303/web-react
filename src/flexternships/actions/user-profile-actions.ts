@@ -1,4 +1,3 @@
-import { DocType } from '../constraints/enums/core-enums';
 import {
   FlexternClientAccountDetails,
   FlexternClientCompanyDetails,
@@ -6,8 +5,6 @@ import {
   FlexternUserProfileForm,
 } from '../constraints/types/user-profile-types';
 import {
-  agreeToTnCDocument,
-  getDocumentsData,
   getFlexternClientOrgInfo,
   getUserDetails,
   updateFlexternClientInfo,
@@ -132,27 +129,4 @@ export const previousTab = (set: any) => {
 
 export const setCurrentTabIndex = (index: number, set: any) => {
   set({ currentTabIndex: index });
-};
-
-export const checkTnCStatus = async (set: any) => {
-  set({ isTnCDetailsLoading: true });
-  const data = await getDocumentsData({ docType: null, docContentRequired: false });
-  set({ tncDetails: data });
-  set({ isTnCDetailsLoading: false });
-};
-
-export const getTnCData = async (
-  set: any,
-  { docType = null, docContentRequired = false }: { docType?: DocType | null; docContentRequired?: boolean },
-) => {
-  set({ isTnCDetailsLoading: true });
-  const data = await getDocumentsData({ docType, docContentRequired });
-  set({ tncDetails: data, isTnCDetailsLoading: false });
-};
-
-export const agreeToTnC = async (docType: DocType, set: any) => {
-  set({ isAgreeToTnCLoading: true });
-  await agreeToTnCDocument({ docType });
-  await getTnCData(set, { docType: null, docContentRequired: true });
-  set({ isAgreeToTnCLoading: false });
 };

@@ -1,21 +1,20 @@
-import { useAppStore } from '@/flexternships/stores/core-stores';
+import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import privacyGif from '@/flexternships/assets/gifs/privacymodal.gif';
 import GenericModal from '../GenericModal';
 import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
-import ComponentSpinner from '@/@core/components/spinner/Loading-spinner';
 import routes from '@/flexternships/routes';
+import Spinner from '../../Spinner';
 
 export default function TermsAndConditionsModal() {
   const modal = useAppStore((state) => state.modal);
   const closeGlobalModal = useAppStore((state) => state.closeModal);
   const navigate = useNavigate();
-  const checkTnCStatus = useFlexternUserProfileStore((state) => state.checkTnCStatus);
-  const tncDetails = useFlexternUserProfileStore((state) => state.tncDetails);
-  const isTnCLoading = useFlexternUserProfileStore((state) => state.isTnCDetailsLoading);
+  const checkTnCStatus = useFlexternUserStore((state) => state.checkTnCStatus);
+  const tncDetails = useFlexternUserStore((state) => state.tncDetails);
+  const isTnCLoading = useFlexternUserStore((state) => state.isTnCDetailsLoading);
   useEffect(() => {
     checkTnCStatus();
   }, []);
@@ -33,8 +32,8 @@ export default function TermsAndConditionsModal() {
       className="max-w-[700px] min-h-[200px] h-fit"
     >
       {isTnCLoading ? (
-        <div className="flex flex-col items-center justify-center w-full h-full">
-          <ComponentSpinner className="mt-0" />
+        <div className="flex flex-col mt-20 items-center justify-center w-full h-full overflow-hidden">
+          <Spinner />
         </div>
       ) : (
         <div className="flex gap-x-7 pl-9 pr-8 py-10">

@@ -6,74 +6,58 @@ import checkSVG from '@/flexternships/assets/svgs/legal/check.svg';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PrimaryButton from '../../components/core/buttons/PrimaryButton';
-import Header from '@/views/Onboarding/Header';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 import { DocType, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { TnCLocationStateTypes } from '@/flexternships/constraints/types/core-types';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { formatEpochToHumanReadable, formatEpochToTimeInTimezone } from '@/flexternships/utils/date-utils';
 import Navbar from '../../components/core/navbar';
-import { useFlexternUserProfileStore } from '@/flexternships/stores/user-profile-store';
 import { statusTextMap } from '@/flexternships/static/constants/core-constants';
 import ComponentSpinner from '@/@core/components/spinner/Loading-spinner';
-import { Spinner } from 'reactstrap';
+import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import routes from '@/flexternships/routes';
+import RestrictedNavbar from '../../components/core/layouts/RestrictedNavbar';
 
 const TermsAndConditions = () => {
   const location = useLocation();
   const locationState = location.state as TnCLocationStateTypes;
   const [tab, setTab] = useState<DocType>(locationState?.tncType ?? DocType.PRIVACY_POLICY);
-  const tncDetails = useFlexternUserProfileStore((state) => state.tncDetails);
+  const tncDetails = useFlexternUserStore((state) => state.tncDetails);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
-  const isTnCLoading = useFlexternUserProfileStore((state) => state.isTnCDetailsLoading);
-  const isAgreeToTnCLoading = useFlexternUserProfileStore((state) => state.isAgreeToTnCLoading);
-  const fetchTnCDocuments = useFlexternUserProfileStore((state) => state.populateTnCDetails);
-  const agreeToTnC = useFlexternUserProfileStore((state) => state.agreeToTnC);
-  const generateInitialStateForIsAccepted = () =>
-    tncDetails.reduce((acc, item) => {
-      acc[item.doc_type as keyof typeof DocType] = item.accepted ?? false;
-      return acc;
-    }, {} as Record<keyof typeof DocType, boolean>);
-
+  const isTnCLoading = useFlexternUserStore((state) => state.isTnCDetailsLoading);
+  const isAgreeToTnCLoading = useFlexternUserStore((state) => state.isAgreeToTnCLoading);
+  const fetchTnCDocuments = useFlexternUserStore((state) => state.populateTnCDetails);
+  const agreeToTnC = useFlexternUserStore((state) => state.agreeToTnC);
   const generateInitialStateForAcceptedTime = () =>
-    tncDetails.reduce((acc, item) => {
-      acc[item.doc_type as keyof typeof DocType] = item.signed_at ?? 0;
-      return acc;
-    }, {} as Record<keyof typeof DocType, number>);
+    tncDetails.map((item) => {
+      return {
+        docType: item.doc_type,
+        signedAt: item.signed_at,
+      };
+    });
 
   const [tncAcceptTime, setTncAcceptTime] = useState(generateInitialStateForAcceptedTime());
-  const [isTncAccepted, setIsTncAccepted] = useState(generateInitialStateForIsAccepted());
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (tncDetails && tncDetails.length > 0) {
+    fetchTnCDocuments({ docType: null, docContentRequired: true });
+    if (locationState?.tncAccepted && locationState?.tncAccepted.length > 0) {
+      setTncAcceptTime((prev) =>
+        prev.map((item) => {
+          const match = locationState?.tncAccepted?.find((tncTab) => tncTab.docType === item.docType);
+          return match ? { ...item, signedAt: match.acceptTime } : item;
+        }),
+      );
+    } else if (tncDetails && tncDetails.length > 0) {
       setTncAcceptTime(generateInitialStateForAcceptedTime());
-      setIsTncAccepted(generateInitialStateForIsAccepted());
-    } else {
-      fetchTnCDocuments({ docType: null, docContentRequired: true });
     }
-  }, [tncDetails]);
-
-  useEffect(() => {
-    if (locationState?.tncAccepted) {
-      setIsTncAccepted((prev) => {
-        const updatedState: Record<string, boolean> = {};
-
-        Object.keys(prev).forEach((key) => {
-          updatedState[key] = true;
-        });
-
-        return updatedState;
-      });
-    }
-  }, [locationState?.tncAccepted]);
+  }, [locationState?.tncAccepted, tncDetails?.length === 0]);
 
   useEffect(() => {
     if (!location.state && !isUserLoggedIn()) {
       navigate(routes.auth.path);
-    } else {
-      fetchTnCDocuments({ docType: null, docContentRequired: true });
     }
   }, []);
 
@@ -81,14 +65,13 @@ const TermsAndConditions = () => {
     if (isUserLoggedIn()) {
       navigate('/dashboard');
     } else {
-      const tncAcceptedPayload = Object.keys(tncAcceptTime).reduce((acc, key) => {
-        acc[key as keyof typeof DocType] = {
-          accepted: isTncAccepted[key as keyof typeof DocType],
-          acceptTime: tncAcceptTime[key as keyof typeof DocType],
+      const tncAcceptedPayload = tncAcceptTime.map((item) => {
+        return {
+          docType: item.docType,
+          acceptTime: item.signedAt,
         };
-        return acc;
-      }, {} as Record<keyof typeof DocType, { accepted: boolean; acceptTime: number }>);
-      navigate(`/auth/flextern/register?invitation_token=${locationState?.invitationToken}`, {
+      });
+      navigate(routes.flexternRegister.generate(locationState?.invitationToken), {
         state: {
           ...locationState,
           tncAccepted: tncAcceptedPayload,
@@ -96,51 +79,31 @@ const TermsAndConditions = () => {
       });
     }
   };
-  useEffect(() => {
-    if (!isUserLoggedIn() && locationState?.tncAccepted) {
-      Object.entries(locationState.tncAccepted).forEach(([key, value]) => {
-        if (value.accepted) {
-          setIsTncAccepted((prev) => ({
-            ...prev,
-            [key]: value.accepted,
-          }));
-          setTncAcceptTime((prev) => ({
-            ...prev,
-            [key]: value.acceptTime,
-          }));
-        }
-      });
-    }
-  }, [locationState?.tncAccepted]);
+
   const handleAccept = async () => {
     try {
       isUserLoggedIn() && (await agreeToTnC(tab));
       showToastMessage(ToastType.SUCCESS, `${statusTextMap[tab]} accepted successfully.`);
-      const updatedState = {
-        ...isTncAccepted,
-        [tab]: true,
-      };
-      setIsTncAccepted(updatedState);
-      const updatedAcceptTime = {
-        ...tncAcceptTime,
-        [tab]: Date.now(),
-      };
+
+      const updatedAcceptTime = tncAcceptTime.map((item) =>
+        item.docType === tab ? { ...item, signedAt: Date.now() } : item,
+      );
+
       setTncAcceptTime(updatedAcceptTime);
-      const allAccepted = Object.values(updatedState).every((value) => value);
+
+      const allAccepted = updatedAcceptTime.every((item) => item.signedAt !== null);
+
       if (allAccepted) {
         if (isUserLoggedIn()) {
           await populateUserDetails(true);
           navigate(routes.dashboard.path);
         } else {
-          const tncAcceptedPayload = Object.keys(updatedState).reduce((acc, key) => {
-            acc[key as keyof typeof DocType] = {
-              accepted: updatedState[key as keyof typeof DocType],
-              acceptTime: updatedAcceptTime[key as keyof typeof DocType],
-            };
-            return acc;
-          }, {} as Record<keyof typeof DocType, { accepted: boolean; acceptTime: number }>);
+          const tncAcceptedPayload = updatedAcceptTime.map((item) => ({
+            docType: item.docType,
+            acceptTime: item.signedAt,
+          }));
 
-          navigate(`/auth/flextern/register?invitation_token=${locationState?.invitationToken}`, {
+          navigate(routes.flexternRegister.generate(locationState?.invitationToken), {
             state: {
               ...locationState,
               tncAccepted: tncAcceptedPayload,
@@ -148,7 +111,7 @@ const TermsAndConditions = () => {
           });
         }
       } else {
-        const nextTab = (Object.keys(updatedState) as DocType[]).find((key) => !updatedState[key]);
+        const nextTab = updatedAcceptTime.find((item) => item.signedAt === null)?.docType;
         if (nextTab) {
           setTab(nextTab);
         } else {
@@ -165,10 +128,12 @@ const TermsAndConditions = () => {
       return `${formatEpochToTimeInTimezone(timeStamp)} ${formatEpochToHumanReadable(timeStamp)}`;
     }
   };
-
+  const signedAt = isUserLoggedIn()
+    ? tncDetails.find((item) => item.doc_type === tab)?.signed_at
+    : locationState?.invitationToken && tncAcceptTime.find((item) => item.docType === tab)?.signedAt;
   return (
     <div>
-      {isUserLoggedIn() ? <Navbar /> : <Header />}
+      {isUserLoggedIn() ? <Navbar /> : <RestrictedNavbar />}
       {isTnCLoading ? (
         <div>
           <ComponentSpinner className="mt-0" />
@@ -187,16 +152,21 @@ const TermsAndConditions = () => {
               return (
                 <Button
                   key={index}
-                  onClick={() => setTab(item.doc_type as DocType)}
+                  onClick={() => setTab(item.doc_type)}
                   className={`${
-                    tab === item.doc_type ? 'bg-trublue text-white' : 'bg-white text-gray-500'
-                  } hover:bg-white hover:text-trublue hover:border hover:border-trublue flex flex-row items-center gap-2 rounded-lg px-4 py-2`}
+                    tab === item.doc_type
+                      ? 'bg-trublue text-white'
+                      : 'bg-white text-gray-500 hover:text-trublue hover:bg-[#E3F2FD]'
+                  } flex flex-row font-semibold items-center gap-2 rounded-lg px-4 py-2`}
                 >
                   <img
                     src={checkSVG}
                     alt="check"
-                    className={`w-4 h-4 ${isTncAccepted[item.doc_type] ? 'block' : 'hidden'}`}
+                    className={`w-4 h-4 ${
+                      tncAcceptTime?.find((tncTab) => tncTab.docType === item.doc_type)?.signedAt ? 'block' : 'hidden'
+                    }`}
                   />
+
                   {item.doc_title}
                 </Button>
               );
@@ -212,23 +182,13 @@ const TermsAndConditions = () => {
             </p>
           </div>
 
-          {!isUserLoggedIn() ? (
-            locationState?.invitationToken && isTncAccepted[tab] ? (
-              <h1>
-                Agreed on <b>{getAgreedOnTime(tncAcceptTime[tab])}</b>
-              </h1>
-            ) : (
-              <PrimaryButton onClick={handleAccept}>
-                {isAgreeToTnCLoading ? <Spinner size="sm" /> : 'Accept and Continue'}
-              </PrimaryButton>
-            )
-          ) : tncDetails.find((item) => item.doc_type === tab)?.signed_at ? (
+          {signedAt ? (
             <h1>
-              Agreed on <b>{getAgreedOnTime(tncDetails.find((item) => item.doc_type === tab)?.signed_at || 0)}</b>
+              Agreed on <b>{getAgreedOnTime(signedAt || 0)}</b>
             </h1>
           ) : (
             <PrimaryButton onClick={handleAccept}>
-              {isAgreeToTnCLoading ? <Spinner size="sm" /> : 'Accept and Continue'}
+              {isAgreeToTnCLoading ? <Spinner className="size-10" /> : 'Accept and Continue'}
             </PrimaryButton>
           )}
         </div>

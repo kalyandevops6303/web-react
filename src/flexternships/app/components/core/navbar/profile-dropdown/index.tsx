@@ -11,7 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@f
 import DelegateAccordionBody from './DelegateAccordionBody';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternUserAppRole, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import routes from '@/flexternships/routes';
 import useLogout from '@/utility/hooks/useLogout';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
@@ -63,7 +63,6 @@ function GenericProfile() {
 // Component for the profile dropdown menu
 export default function ProfileDropdown() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isContactSupportModalOpen, setIsContactSupportModalOpen] = useState(false);
   const [isContactSupportSuccessModalOpen, setIsContactSupportSuccessModalOpen] = useState(false);
@@ -99,10 +98,6 @@ export default function ProfileDropdown() {
   //* Contact Support Modal Actions */
   const handleOpenContactSupportModal = () => {
     setIsContactSupportModalOpen(true);
-  };
-
-  const handlePrivacyPolicyAction = () => {
-    navigate(routes.termsAndConditions.path);
   };
 
   const handleCloseContactSupportModal = () => {
@@ -214,12 +209,12 @@ export default function ProfileDropdown() {
           >
             Contact Support
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={handlePrivacyPolicyAction}
-            className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer"
-          >
-            Privacy Policy & Terms
-          </DropdownMenuItem>
+          <Link to={routes.termsAndConditions.path}>
+            <DropdownMenuItem className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer">
+              Privacy Policy & Terms
+            </DropdownMenuItem>
+          </Link>
+
           <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
 
           {/* Logout Button */}

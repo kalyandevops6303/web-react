@@ -137,14 +137,37 @@ export type FlexternTalentDetails = {
   isTncAccepted: boolean;
 };
 
+export type TnCDocumentsType = {
+  _id: string;
+  signed_at: number | null;
+  doc_id: string;
+  doc_type: DocType;
+  doc_title: string;
+  doc_stage: string;
+  accepted: boolean;
+  doc_content?: string;
+};
+
 export type FlexternUser = {
   isUserDetailsLoading: boolean;
   userDetails: FlexternClientDetails | FlexternTalentDetails;
+  tncDetails: TnCDocumentsType[];
+  isTnCDetailsLoading: boolean;
+  isAgreeToTnCLoading: boolean;
 };
 
 export type FlexternUserActions = {
   populateUserDetails: (force?: boolean) => Promise<void>;
   resetStore: () => void;
+  populateTnCDetails: ({
+    docType,
+    docContentRequired,
+  }: {
+    docType?: DocType | null;
+    docContentRequired?: boolean;
+  }) => Promise<void>;
+  checkTnCStatus: () => Promise<void>;
+  agreeToTnC: (docType: DocType) => Promise<void>;
 };
 
 export type FlexternUserStore = FlexternUser & FlexternUserActions;
@@ -245,8 +268,12 @@ export type supportTypes = {
   type: string;
 };
 
+export type tncAcceptLocationStateTypes = {
+  docType: DocType;
+  acceptTime: number | null;
+};
 export type TnCLocationStateTypes = {
   invitationToken?: string;
   tncType?: DocType;
-  tncAccepted?: Record<string, { accepted: boolean; acceptTime: number }>;
+  tncAccepted?: tncAcceptLocationStateTypes[];
 };
