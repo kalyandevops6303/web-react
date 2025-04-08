@@ -1,41 +1,13 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React, { useState } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardBody, Spinner } from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import NewTag from '../../../@core/components/new-tag';
 import DurationSegment from './DurationSegment';
 import { truncateSentence } from '../../../utility/Utils';
-import RelistConfirmationModal from '@/views/modals/RelistConfirmationModal';
-import RelistListingDetailsModal from '@/views/modals/RelistListingDetailsModal';
-import RelistSuccessModal from '@/views/modals/RelistSuccessModal';
-import { getWithdrawnProjectsForClient } from '@/redux/actions/dashboardActions';
 
 const WithdrawnProjectCardForClient = ({ data, className }) => {
-  const dispatch = useDispatch();
-  const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
-  const projectModalId = useSelector((state) => state.dashboard.projectModalId);
-  const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
-  const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
-  const [relistSuccessModal, setRelistSuccessModal] = useState(null);
-  const [projectRelistData, setProjectRelistData] = useState(null);
-
-  const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
-
-  const toggleRelistListingDetailsModal = () => setRelistListingDetailsModal(!relistListingDetailsModal);
-
-  const toggleRelistSuccessModal = () => {
-    dispatch(getWithdrawnProjectsForClient());
-    setRelistSuccessModal(!relistSuccessModal);
-    setRelistConfirmationModal(false);
-    setRelistListingDetailsModal(false);
-  };
-
-  const handleToggle = () => {
-    setRelistConfirmationModal(true);
-  };
-
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
@@ -53,42 +25,8 @@ const WithdrawnProjectCardForClient = ({ data, className }) => {
             showWithdrawnDate
             withdrawnDate={data?.project?.updated_at}
           />
-
-          <div
-            onClick={handleToggle}
-            className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
-          >
-            {isModalLoading && projectModalId === data?.project?._id ? <Spinner size="sm" /> : 'Relist'}
-          </div>
         </CardBody>
       </Card>
-      {relistConfirmationModal && (
-        <RelistConfirmationModal
-          modal={relistConfirmationModal}
-          toggleModal={toggleRelistConfirmationModal}
-          setRelistListingDetailsModal={setRelistListingDetailsModal}
-        />
-      )}
-      {relistListingDetailsModal && (
-        <RelistListingDetailsModal
-          modal={relistListingDetailsModal}
-          toggleModal={toggleRelistListingDetailsModal}
-          setRelistConfirmationModal={setRelistConfirmationModal}
-          setRelistSuccessModal={setRelistSuccessModal}
-          projectRelistData={projectRelistData}
-          setProjectRelistData={setProjectRelistData}
-          projectId={data?.project?._id}
-        />
-      )}
-
-      {relistSuccessModal && (
-        <RelistSuccessModal
-          modal={relistSuccessModal}
-          toggleModal={toggleRelistSuccessModal}
-          projectRelistData={projectRelistData}
-          data={data?.project}
-        />
-      )}
     </ProjectWrapper>
   );
 };
