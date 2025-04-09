@@ -1,6 +1,5 @@
 import { ArrowLeft } from 'react-feather';
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
-import { Button } from '@/components/ui/button';
 import parse from 'html-react-parser';
 import checkSVG from '@/flexternships/assets/svgs/legal/check.svg';
 import { useEffect, useState } from 'react';
@@ -18,7 +17,7 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import routes from '@/flexternships/routes';
 import RestrictedNavbar from '../../components/core/layouts/RestrictedNavbar';
-import TncTabButtons from '../../components/core/tab-navigation/TabNavigation';
+import TabNavigation from '../../components/core/tab-navigation/TabNavigation';
 
 const TermsAndConditions = () => {
   const location = useLocation();
@@ -64,7 +63,7 @@ const TermsAndConditions = () => {
 
   const handleGoBack = () => {
     if (isUserLoggedIn()) {
-      navigate('/dashboard');
+      navigate(routes.dashboard.path);
     } else {
       const tncAcceptedPayload = tncAcceptTime.map((item) => {
         return {
@@ -148,48 +147,18 @@ const TermsAndConditions = () => {
             onClick={handleGoBack}
           />
 
-          <div className="bg-white flex flex-row items-center gap-3 p-3 justify-center border border-trublue rounded-lg">
-            <TncTabButtons
-              data={tncDetails}
-              selectedValue={tab}
-              onSelect={(value) => setTab(value as DocType)}
-              labelKey="doc_title"
-              valueKey="doc_type"
-              iconKey="doc_type" // using this to check signedAt condition
-              iconSrc={checkSVG}
-              activeClassName="bg-trublue text-white"
-              inactiveClassName="bg-white text-gray-500 hover:text-trublue hover:bg-[#E3F2FD]"
-            />
-            {tncDetails?.map((item, index) => {
-              return (
-                <Button
-                  key={index}
-                  onClick={() => setTab(item.doc_type)}
-                  className={`${
-                    tab === item.doc_type
-                      ? 'bg-trublue text-white'
-                      : 'bg-white text-gray-500 hover:text-trublue hover:bg-[#E3F2FD]'
-                  } flex flex-row font-semibold items-center gap-2 rounded-lg px-4 py-2`}
-                >
-                  <img
-                    src={checkSVG}
-                    alt="check"
-                    className={`w-4 h-4 ${
-                      tncAcceptTime?.find((tncTab) => tncTab.docType === item.doc_type)?.signedAt ? 'block' : 'hidden'
-                    }`}
-                  />
-
-                  {item.doc_title}
-                </Button>
-              );
-            })}
-          </div>
+          <TabNavigation
+            data={tncDetails}
+            selectedValue={tab}
+            onSelect={(value) => setTab(value as DocType)}
+            getLabel={(item) => item.doc_title}
+            getValue={(item) => item.doc_type}
+            showIcon={(item) => !!item.doc_type}
+            iconSrc={checkSVG}
+          />
 
           <div className="p-5 w-full h-[65vh] overflow-y-scroll rounded-lg border-2 border-[#D8D6DE]">
-            <p
-              className="text-[16px] font-normal leading-[20px]
-"
-            >
+            <p className="text-[16px] font-normal leading-[20px]">
               {parse(tncDetails?.find((item) => item.doc_type === tab)?.doc_content || '')}
             </p>
           </div>
