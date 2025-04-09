@@ -8,7 +8,6 @@ import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link } from 'react-feather';
 import { addQueryParams, convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
-import { useAppStore } from '@/flexternships/stores/core-stores';
 import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 
 export default function SubmittedArtifactItem(props: Props) {
@@ -16,8 +15,6 @@ export default function SubmittedArtifactItem(props: Props) {
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-
-  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const toggleTooltip = () => {
     setShowTooltip((prev) => !prev);
@@ -82,7 +79,7 @@ export default function SubmittedArtifactItem(props: Props) {
         <div className="relative" onMouseEnter={toggleTooltip} onMouseLeave={toggleTooltip}>
           <FlexternAvatar
             size="sm"
-            imageUri={addQueryParams(data.userDetails?.imageUri, blobSasTokenParams)}
+            imageUri={addQueryParams(data?.userDetails?.imageUri)}
             name={data.userDetails?.name}
           />
           {showTooltip && (
