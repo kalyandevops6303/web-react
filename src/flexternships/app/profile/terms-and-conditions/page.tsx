@@ -18,6 +18,7 @@ import Spinner from '@/flexternships/app/components/core/Spinner';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import routes from '@/flexternships/routes';
 import RestrictedNavbar from '../../components/core/layouts/RestrictedNavbar';
+import TncTabButtons from '../../components/core/tab-navigation/TabNavigation';
 
 const TermsAndConditions = () => {
   const location = useLocation();
@@ -148,6 +149,17 @@ const TermsAndConditions = () => {
           />
 
           <div className="bg-white flex flex-row items-center gap-3 p-3 justify-center border border-trublue rounded-lg">
+            <TncTabButtons
+              data={tncDetails}
+              selectedValue={tab}
+              onSelect={(value) => setTab(value as DocType)}
+              labelKey="doc_title"
+              valueKey="doc_type"
+              iconKey="doc_type" // using this to check signedAt condition
+              iconSrc={checkSVG}
+              activeClassName="bg-trublue text-white"
+              inactiveClassName="bg-white text-gray-500 hover:text-trublue hover:bg-[#E3F2FD]"
+            />
             {tncDetails?.map((item, index) => {
               return (
                 <Button
