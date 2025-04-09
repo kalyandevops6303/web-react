@@ -1,12 +1,7 @@
 import { Row } from '@tanstack/react-table';
 import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
-import { useEffect } from 'react';
 
 export default function MemberCell({ row }: Readonly<{ row: Row<any> }>) {
-  useEffect(() => {
-    console.log(row.original.member);
-  }, [row.original.member]);
-
   return (
     <div>
       <div className="flex items-center gap-3">
