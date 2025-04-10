@@ -219,11 +219,9 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) => (value < 10 ? `0${value}` : `${value}`)}
-                  domain={[
-                    (dataMin: number) => Math.floor(dataMin / 10) * 10,
-                    (dataMax: number) => Math.ceil(dataMax / 10) * 10,
-                  ]}
+                  domain={[(dataMin: number) => Math.floor(dataMin), (dataMax: number) => Math.ceil(dataMax)]}
                   tickCount={10}
+                  allowDecimals={false}
                 />
                 <ChartTooltip
                   cursor={false}
@@ -287,11 +285,9 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) => (value < 10 ? `0${value}` : `${value}`)}
-                  domain={[
-                    (dataMin: number) => Math.floor(dataMin / 10) * 10,
-                    (dataMax: number) => Math.ceil(dataMax / 10) * 10,
-                  ]}
+                  domain={[(dataMin: number) => Math.floor(dataMin), (dataMax: number) => Math.ceil(dataMax)]}
                   tickCount={10}
+                  allowDecimals={false}
                 />
                 <XAxis
                   dataKey={XAxisDataKey}
