@@ -3,18 +3,13 @@ import { Controller, useForm } from 'react-hook-form';
 import PrimaryButton from '../../buttons/PrimaryButton';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { CustomerSupportTypes, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
+import { getSupportEmail, showToastMessage } from '@/flexternships/utils/core-utils';
+import { CustomerSupportTypes, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import TextInput from '../../form/TextInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { loadSupportTypes, sendSupportRequest } from '@/flexternships/services/user-management';
-import {
-  DEFAULT_SUPPORT_TYPE,
-  SUPPORT_EMAIL,
-  SUPPORT_EMAIL_CLIENT,
-  SUPPORT_EMAIL_TALENT,
-} from '@/flexternships/static/constants/core-constants';
+import { DEFAULT_SUPPORT_TYPE } from '@/flexternships/static/constants/core-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import SingleSelectInput from '../../form/SingleSelectInput';
 
@@ -73,8 +68,7 @@ export default function ContactSupportModal(props: Props) {
   const { isOpen, onClose, onConfirmSuccess } = props;
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  const supportEmail =
-    (userDetails?.userType === UserType.CLIENT ? SUPPORT_EMAIL_CLIENT : SUPPORT_EMAIL_TALENT) ?? SUPPORT_EMAIL;
+  const supportEmail = getSupportEmail();
   const [isConfirmLoading, setIsConfirmLoading] = useState<boolean>(false);
 
   const {

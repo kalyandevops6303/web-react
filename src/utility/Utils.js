@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
 import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
+import { useSelector } from 'react-redux';
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
@@ -11,6 +12,8 @@ import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta
 import {
   CUSTOMER_SUPPORT_TYPES,
   SUPPORT_EMAIL,
+  TALENT_SUPPORT_EMAIL,
+  CLIENT_SUPPORT_EMAIL,
   bidStatus,
   checkPoints,
   fileScanStatus,
@@ -29,6 +32,7 @@ import JPGIcon from '../assets/images/JPG.svg';
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
 import { isFlexternshipApp } from '@/configs/api/env';
+import { userData } from '@/redux/selectors/dashboardSelectors';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -881,8 +885,15 @@ export const getBidAction = (action) => {
   }
 };
 
+export const getSupportEmail = () => {
+  const userDetailsData = useSelector(userData);
+  const userType = userDetailsData?.user_type;
+  if (!userType) return SUPPORT_EMAIL;
+  return userType === userTypes.client ? CLIENT_SUPPORT_EMAIL : TALENT_SUPPORT_EMAIL;
+};
+
 export const handleEmailClick = () => {
-  const recipient = SUPPORT_EMAIL;
+  const recipient = getSupportEmail();
   const subject = '';
   const body = '';
   const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

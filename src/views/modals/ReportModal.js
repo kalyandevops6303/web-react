@@ -23,9 +23,9 @@ import defaultAvatar from '../../assets/images/portrait/small/avatar-s-11.jpg';
 import { SupportModalWrapper } from './style';
 import theme from '../../configs/themeVariables';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
-import { SUPPORT_EMAIL } from '../../utility/constants/Constant';
 import { reportEntity } from '../../redux/actions/reportActions';
 import { selectReportLoading } from '../../redux/selectors/reportSelectors';
+import { getSupportEmail } from '@/utility/Utils';
 
 const ReportModal = ({
   modal,
@@ -41,6 +41,7 @@ const ReportModal = ({
   const userData = useSelector(selectSavedUserData);
   const reportLoading = useSelector(selectReportLoading);
   const userEmail = userData?.email;
+  const supportEmail = getSupportEmail();
   const CustomerSupportSchema = yup.object().shape({
     reasonOfReport: yup
       .string()
@@ -65,7 +66,7 @@ const ReportModal = ({
 
   const onSubmit = (values) => {
     const postData = {
-      to_email: SUPPORT_EMAIL,
+      to_email: supportEmail,
       cc_email: [userEmail],
       description: values?.reasonOfReport,
       issue_type: `report`,
@@ -125,7 +126,7 @@ const ReportModal = ({
                   <Input
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
-                    value={SUPPORT_EMAIL}
+                    value={supportEmail}
                   />
                 </div>
               </Col>
