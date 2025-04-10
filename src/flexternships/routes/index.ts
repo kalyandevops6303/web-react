@@ -17,6 +17,12 @@ const routes = {
     generate: () => `/auth/reset-password`,
   },
 
+  flexternRegister: {
+    path: '/auth/flextern/register',
+    generate: (invitationToken?: string) =>
+      `/auth/flextern/register${invitationToken ? `?invitation_token=${invitationToken}` : ''}`,
+  },
+
   // Project routes
   projects: { path: '/projects' },
   projectDetails: {
@@ -104,6 +110,11 @@ const routes = {
   quickActions: {
     path: '/quick-actions/:projectId',
     generate: (projectId: string) => `/quick-actions/${projectId}`,
+  },
+
+  // Privacy Policy
+  termsAndConditions: {
+    path: '/terms-and-conditions',
   },
 
   // Not found

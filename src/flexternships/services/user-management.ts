@@ -20,6 +20,7 @@ import {
   parseSupportTypesResponse,
   parseTermsAndConditionsDocument,
 } from '../utils/parsing-utils';
+import { isUserLoggedIn } from '@/utility/commonUtils';
 
 /// File Endpoints
 /**
@@ -177,6 +178,70 @@ export const getDocumentSignStatus = async (docType: DocType) => {
     return parseTermsAndConditionsDocument(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching document sign status');
+  }
+};
+
+/**
+ * Fetches document data based on the provided document type and content requirement.
+ *
+ * @param {Object} params - The parameters for fetching documents.
+ * @param {DocType | null} params.docType - The type of document to fetch.
+ * @param {boolean} params.docContentRequired - Whether the document content is required.
+ * @returns {Promise<any>} A Promise that resolves to the document data.
+ * @throws {Error} If fetching document data fails or an unexpected error occurs.
+ */
+export const getDocumentsData = async ({
+  docType,
+  docContentRequired,
+}: {
+  docType: DocType | null;
+  docContentRequired: boolean;
+}) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers,
+    withCredentials: true,
+    params: {
+      doc_type: docType,
+      doc_content_required: docContentRequired,
+    },
+  };
+  try {
+    const response = await axios.get(
+      isUserLoggedIn() ? routes.userManagement.tnc.getDocuments : routes.userManagement.tnc.getDocumentsForSignup,
+      config,
+    );
+    return response.data.data;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching document sign status');
+  }
+};
+
+/**
+ * Sends a request to agree to the Terms and Conditions document.
+ *
+ * @param {Object} params - The parameters for agreeing to the document.
+ * @param {DocType | null} params.docType - The type of document to agree to.
+ * @returns {Promise<void>} A Promise that resolves when the agreement request is successful.
+ * @throws {Error} If signing the document fails or an unexpected error occurs.
+ */
+export const agreeToTnCDocument = async ({ docType }: { docType: DocType | null }) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers,
+    withCredentials: true,
+    params: {
+      doc_type: docType,
+    },
+  };
+  try {
+    await axios.put(
+      isUserLoggedIn() ? routes.userManagement.tnc.acceptDocuments : routes.userManagement.tnc.acceptDocumentsForSignup,
+      { doc_type: docType },
+      config,
+    );
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while signing document!');
   }
 };
 
