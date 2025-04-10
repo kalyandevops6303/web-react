@@ -408,7 +408,6 @@ const FlexternEducational = () => {
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const supportData = useSelector((state) => state.support.supportCount);
-
   const profileCompletionFlexternMissingValues = useSelector(
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
   );
