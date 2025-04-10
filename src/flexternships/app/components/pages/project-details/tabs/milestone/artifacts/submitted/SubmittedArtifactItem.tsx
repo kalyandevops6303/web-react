@@ -7,8 +7,7 @@ import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { getFileIcon } from '@/flexternships/utils/file-utils';
 import { useState } from 'react';
 import { Download, ExternalLink, Link } from 'react-feather';
-import { addQueryParams, convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
-import { useAppStore } from '@/flexternships/stores/core-stores';
+import { convertToClickableUrl } from '@/flexternships/utils/miscellaneous-utils';
 import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
 
 export default function SubmittedArtifactItem(props: Props) {
@@ -16,8 +15,6 @@ export default function SubmittedArtifactItem(props: Props) {
 
   const [mainActionLoading, setMainActionLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-
-  const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const toggleTooltip = () => {
     setShowTooltip((prev) => !prev);
@@ -80,11 +77,7 @@ export default function SubmittedArtifactItem(props: Props) {
       </div>
       <div className="py-4 px-2.5 w-[126px] flex items-center justify-center relative">
         <div className="relative" onMouseEnter={toggleTooltip} onMouseLeave={toggleTooltip}>
-          <FlexternAvatar
-            size="sm"
-            imageUri={addQueryParams(data.userDetails?.imageUri, blobSasTokenParams)}
-            name={data.userDetails?.name}
-          />
+          <FlexternAvatar size="sm" imageUri={data?.userDetails?.imageUri} name={data.userDetails?.name} />
           {showTooltip && (
             <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 text-xs bg-gray-800 text-white rounded shadow-lg whitespace-nowrap">
               {data.userDetails?.name?.trim() || 'Unknown User'}
