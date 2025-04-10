@@ -100,7 +100,6 @@ import '../../App.css';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import CustomerSupportModal from '../../views/modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../views/modals/CustomerSupportFeedbackModal';
-import NoteComponent from '../../views/Onboarding/NoteComponent';
 import CustomerSupportCTA from '../../views/Onboarding/CustomerSupportCTA';
 
 import uuidv4 from '../../lib/uuidv4';
@@ -407,8 +406,7 @@ const FlexternEducational = () => {
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
-  const supportData = useSelector((state) => state.support.supportCount);
-
+  // const supportData = useSelector((state) => state.support.supportCount);
   const profileCompletionFlexternMissingValues = useSelector(
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
   );
@@ -1505,12 +1503,12 @@ const FlexternEducational = () => {
                       </div>
                     </Row>
                   )}
-                  {supportData?.education?.pending_requests > 0 && (
+                  {/* {supportData?.education?.pending_requests > 0 && (
                     <NoteComponent type="info" requestCount={supportData?.education?.pending_requests} />
                   )}
                   {supportData?.education?.approved_requests > 0 && (
                     <NoteComponent type="success" requestCount={supportData?.education?.approved_requests} />
-                  )}
+                  )} */}
                 </CardBody>
               </Card>
               <Card className="w-100">
@@ -1581,12 +1579,12 @@ const FlexternEducational = () => {
                     </Col>
                   </Row>
                   <Row className="mb-2" />
-                  {supportData?.tools_and_skills?.pending_requests > 0 && (
+                  {/*  {supportData?.tools_and_skills?.pending_requests > 0 && (
                     <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
                   )}
                   {supportData?.tools_and_skills?.approved_requests > 0 && (
                     <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
-                  )}
+                  )} */}
                 </CardBody>
               </Card>
               <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-100">

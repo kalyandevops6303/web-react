@@ -2,6 +2,8 @@
 import { Box, Check, Watch } from 'react-feather';
 
 const SUPPORT_EMAIL = 'support@trumio.ai';
+const TALENT_SUPPORT_EMAIL = 'talentsupport@trumio.ai';
+const CLIENT_SUPPORT_EMAIL = 'enterprisesupport@trumio.ai';
 const DEFAULT_SUPPORT_TYPE = 'others';
 
 const counts = {
@@ -351,6 +353,8 @@ export {
   CHECKOUT_STATUS,
   PAYMENT_TYPES,
   SUPPORT_EMAIL,
+  TALENT_SUPPORT_EMAIL,
+  CLIENT_SUPPORT_EMAIL,
   DEFAULT_SUPPORT_TYPE,
   projectStatusEnum,
   statusEnum,
