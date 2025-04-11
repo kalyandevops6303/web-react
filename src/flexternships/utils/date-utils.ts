@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { getUserTimezone } from './core-utils';
 
 /**
  * Utility to convert a Date object to epoch time (milliseconds since 1970-01-01)
@@ -62,7 +63,7 @@ export function formatEpochToHumanReadable(
   epoch: number,
   truncateYear = false,
   includeTime = false,
-  timezone?: string,
+  timezone: string = getUserTimezone(),
 ): string {
   if (typeof epoch !== 'number') {
     throw new TypeError('Expected a number for epoch');
