@@ -63,15 +63,13 @@ export function formatEpochToHumanReadable(
   epoch: number,
   truncateYear = false,
   includeTime = false,
-  timezone?: string,
+  timezone: string = getUserTimezone(),
 ): string {
   if (typeof epoch !== 'number') {
     throw new TypeError('Expected a number for epoch');
   }
 
-  const dt = timezone
-    ? DateTime.fromMillis(epoch).setZone(timezone)
-    : DateTime.fromMillis(epoch).setZone(getUserTimezone());
+  const dt = timezone ? DateTime.fromMillis(epoch).setZone(timezone) : DateTime.fromMillis(epoch);
 
   const format = includeTime
     ? `MMM d, ${truncateYear ? 'yy' : 'yyyy'}, hh:mm a`
