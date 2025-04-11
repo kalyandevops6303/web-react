@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { getUserTimezone } from './core-utils';
 
 /**
  * Utility to convert a Date object to epoch time (milliseconds since 1970-01-01)
@@ -68,7 +69,9 @@ export function formatEpochToHumanReadable(
     throw new TypeError('Expected a number for epoch');
   }
 
-  const dt = timezone ? DateTime.fromMillis(epoch).setZone(timezone) : DateTime.fromMillis(epoch);
+  const dt = timezone
+    ? DateTime.fromMillis(epoch).setZone(timezone)
+    : DateTime.fromMillis(epoch).setZone(getUserTimezone());
 
   const format = includeTime
     ? `MMM d, ${truncateYear ? 'yy' : 'yyyy'}, hh:mm a`
