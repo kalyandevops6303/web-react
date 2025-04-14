@@ -1,7 +1,13 @@
 import { isEmpty } from 'lodash';
-import { getBlobSasTokenParams, getNotificationsStats, getUserDetails } from '@flexternships/services/user-management';
+import {
+  agreeToTnCDocument,
+  getBlobSasTokenParams,
+  getDocumentsData,
+  getNotificationsStats,
+  getUserDetails,
+} from '@flexternships/services/user-management';
 import { showToastMessage } from '../utils/core-utils';
-import { GlobalModalType, ToastType } from '../constraints/enums/core-enums';
+import { DocType, GlobalModalType, ToastType } from '../constraints/enums/core-enums';
 import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
 
 // Flextern User Actions
@@ -110,4 +116,27 @@ export const populateBlobSasTokenParams = async (force: boolean, get: any, set: 
 
   const data = await getBlobSasTokenParams();
   set({ blobSasTokenParams: data });
+};
+
+export const checkTnCStatus = async (set: any) => {
+  set({ isTnCDetailsLoading: true });
+  const data = await getDocumentsData({ docType: null, docContentRequired: false });
+  set({ tncDetails: data });
+  set({ isTnCDetailsLoading: false });
+};
+
+export const getTnCData = async (
+  set: any,
+  { docType = null, docContentRequired = false }: { docType?: DocType | null; docContentRequired?: boolean },
+) => {
+  set({ isTnCDetailsLoading: true });
+  const data = await getDocumentsData({ docType, docContentRequired });
+  set({ tncDetails: data, isTnCDetailsLoading: false });
+};
+
+export const agreeToTnC = async (docType: DocType, set: any) => {
+  set({ isAgreeToTnCLoading: true });
+  await agreeToTnCDocument({ docType });
+  await getTnCData(set, { docType: null, docContentRequired: true });
+  set({ isAgreeToTnCLoading: false });
 };

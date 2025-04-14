@@ -22,12 +22,12 @@ import {
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import { SupportModalWrapper } from './style';
-import { getMissingName, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import { getMissingName, getSupportEmail, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import { getIssueTypeServiceForFlextern } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport } from '../../redux/actions/supportActions';
-import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { CUSTOMER_SUPPORT_TYPES } from '../../utility/constants/Constant';
 import TextInput from '@/flexternships/app/components/core/form/TextInput';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, assessment }) => {
@@ -52,7 +52,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
   };
 
   const userEmail = getUserEmail();
-
+  const supportEmail = getSupportEmail();
   const [defaultOption, setDefaultOption] = useState(null);
   const CustomerSupportSchema = yup.object().shape({
     issueType: yup
@@ -125,7 +125,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
 
   const onSubmit = (values) => {
     const postData = {
-      to_email: SUPPORT_EMAIL,
+      to_email: supportEmail,
       cc_email: [userEmail],
       description: values?.supportDetails,
       issue_type: issueType?.value,
@@ -215,7 +215,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                   <Input
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
-                    value={SUPPORT_EMAIL}
+                    value={supportEmail}
                   />
                 </div>
               </Col>

@@ -23,6 +23,7 @@ import {
   getFlexternVariablesService,
   getAppPermissionService,
   logoutUserService,
+  acceptTnC,
 } from '../../services/authServices';
 
 import {
@@ -65,7 +66,6 @@ import {
   resendRequest,
   resendSuccess,
   FCMSubscribe,
-  logOut,
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordFailure,
@@ -93,8 +93,6 @@ import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints, userTypes, invitationUserStatus } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
-import { clearTeams } from '../reducers/team';
-import { clearNotificationsData } from '../reducers/notifications';
 import { getTeams } from './teamsActions';
 import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
@@ -263,6 +261,16 @@ const verifyEmailForFlextern =
       }
     }
   };
+
+const acceptTermsAndConditions = () => async (dispatch) => {
+  dispatch(verifyEmailForFlexternRequest());
+  try {
+    await acceptTnC();
+    dispatch(verifyEmailForFlexternSuccess());
+  } catch (error) {
+    errorHandler(error, verifyEmailForFlexternFailure);
+  }
+};
 const setPassword = (Password) => async (dispatch) => {
   dispatch(setPasswordRequest());
   try {
@@ -491,7 +499,9 @@ const validateRequestFlexTernToken =
       dispatch(setFlexternshipInviteType(res.data?.data?.user_type));
 
       if (res.data?.data?.user_status === invitationUserStatus.REGISTERED) {
-        onRegistered && onRegistered();
+        if (onRegistered) {
+          onRegistered();
+        }
       }
     } catch (error) {
       errorHandler(error, verifyRequestInvitationFlexternTokenFailure);
@@ -532,4 +542,5 @@ export {
   validateRequestFlexTernToken,
   getFlexternVariables,
   getAppPermissions,
+  acceptTermsAndConditions,
 };

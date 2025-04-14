@@ -14,6 +14,8 @@ const verifyEmailService = (data) => DataService.post(API.auth.verifyEmail, data
 const verifyEmailForFlexternService = (data, invitation_token) =>
   DataService.post(`${API.auth.validateFlexTernEmail}?invitation_token=${invitation_token}`, data);
 
+const acceptTnC = () => DataService.put(API.auth.acceptTnC);
+
 const setPasswordService = (password) => DataService.post(API.auth.createNewPassowrd, { password });
 
 const registerPhoneService = ({ phone, country_code }) =>
@@ -62,4 +64,5 @@ export {
   checkRequestValidation,
   getFlexternVariablesService,
   logoutUserService,
+  acceptTnC,
 };

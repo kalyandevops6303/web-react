@@ -3,13 +3,13 @@ import { Controller, useForm } from 'react-hook-form';
 import PrimaryButton from '../../buttons/PrimaryButton';
 import SecondaryButton from '../../buttons/SecondaryButton';
 import GenericModal from '../GenericModal';
-import { showToastMessage } from '@/flexternships/utils/core-utils';
+import { getSupportEmail, showToastMessage } from '@/flexternships/utils/core-utils';
 import { CustomerSupportTypes, ToastType } from '@/flexternships/constraints/enums/core-enums';
 import TextInput from '../../form/TextInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { loadSupportTypes, sendSupportRequest } from '@/flexternships/services/user-management';
-import { DEFAULT_SUPPORT_TYPE, SUPPORT_EMAIL } from '@/flexternships/static/constants/core-constants';
+import { DEFAULT_SUPPORT_TYPE } from '@/flexternships/static/constants/core-constants';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import SingleSelectInput from '../../form/SingleSelectInput';
 
@@ -68,7 +68,7 @@ export default function ContactSupportModal(props: Props) {
   const { isOpen, onClose, onConfirmSuccess } = props;
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-
+  const supportEmail = getSupportEmail();
   const [isConfirmLoading, setIsConfirmLoading] = useState<boolean>(false);
 
   const {
@@ -99,7 +99,7 @@ export default function ContactSupportModal(props: Props) {
         }
       })();
       await sendSupportRequest({
-        toEmail: SUPPORT_EMAIL,
+        toEmail: supportEmail,
         ccEmail: [userDetails.email],
         description: data.description,
         issueType: data.issueType?._id || DEFAULT_SUPPORT_TYPE,
@@ -126,7 +126,7 @@ export default function ContactSupportModal(props: Props) {
                   <div className="uppercase text-sm text-grey-500 font-semibold">To: </div>
                   <TextInput
                     className="w-80"
-                    value={SUPPORT_EMAIL}
+                    value={supportEmail}
                     onChange={() => {}}
                     error={errors.toEmail?.message}
                     readOnly

@@ -32,6 +32,7 @@ import TooltipInfo from '@/flexternships/app/components/core/tooltips/TooltipInf
 import GithubInsightsCard from './GithubInsightsCard';
 import AnalyticsEmptyCard from './cards/AnalyticsEmptyCard';
 import CustomBreadCrumbs from '@/flexternships/app/components/core/CustomBreadCrumbs';
+import { getUserTimezone } from '@/flexternships/utils/core-utils';
 
 export default function TeamAnalytics() {
   const teamPerformanceSummary = useAnalyticsStore((state) => state.team.performanceSummary);
@@ -91,6 +92,7 @@ export default function TeamAnalytics() {
         day: '2-digit',
         month: 'short',
         year: '2-digit',
+        timeZone: getUserTimezone(),
       })
       .replace(',', '')
       .replace(/(\d{2})$/, "'$1");

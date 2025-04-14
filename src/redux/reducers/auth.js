@@ -26,6 +26,7 @@ const initialState = {
   appPermissions: null,
   flexternshipInviteType: null,
   userLoginAttemptNo: null,
+  tncStatus: false,
 };
 
 const authSlice = createSlice({
@@ -106,7 +107,6 @@ const authSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
-
     // Verify Email
     verifyEmailRequest: (state) => ({
       ...state,
