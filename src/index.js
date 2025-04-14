@@ -44,12 +44,20 @@ import * as serviceWorker from './serviceWorker';
 import Error from './views/Error';
 import { store, persistor } from './redux/store';
 
+// CLarity
+import Clarity from '@microsoft/clarity';
+
 // ** Lazy load app
 const LazyApp = lazy(() => import('./App'));
 
 // eslint-disable-next-line no-undef
 const container = document.getElementById('root');
 const root = createRoot(container);
+
+const trackingId = import.meta.env.VITE_CLARITY_TRACKING_ID;
+if (trackingId) {
+  Clarity.init(trackingId);
+}
 
 Bugsnag.start({
   apiKey: import.meta.env.VITE_BUGSNAG_API_KEY,
