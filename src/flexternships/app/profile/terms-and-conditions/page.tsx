@@ -153,7 +153,7 @@ const TermsAndConditions = () => {
             onSelect={(value) => setTab(value as DocType)}
             getLabel={(item) => item.doc_title}
             getValue={(item) => item.doc_type}
-            showIcon={(item) => !!item.doc_type}
+            showIcon={(item) => tncAcceptTime.find((doc) => doc.docType === item.doc_type)?.signedAt !== null}
             iconSrc={checkSVG}
           />
 
