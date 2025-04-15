@@ -1,5 +1,4 @@
 // External dependencies
-import { useState } from 'react';
 import classNames from 'classnames';
 import { Menu } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { GlobalModalType } from '@/flexternships/constraints/enums/core-enums';
 import routes from '@/flexternships/routes';
 import { NAVBAR_ITEMS } from '@/flexternships/static/constants/core-constants';
 import { useAppStore } from '@/flexternships/stores/core-stores';
-import { Sheet, SheetContent, SheetTrigger } from '../../ui/sheet';
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from '../../ui/sheet';
 
 /**
  * HamburgerMenu component that provides mobile navigation functionality
@@ -19,7 +18,6 @@ import { Sheet, SheetContent, SheetTrigger } from '../../ui/sheet';
  * @returns {JSX.Element} The rendered HamburgerMenu component
  */
 export default function HamburgerMenu() {
-  const [open, setOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isWorkInProgress = useAppStore((state) => state.isWip);
@@ -42,11 +40,10 @@ export default function HamburgerMenu() {
     } else {
       navigate(route);
     }
-    setOpen(false);
   };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet>
       <SheetTrigger asChild>
         <div className="flex-col justify-center d-flex d-lg-none">
           <Menu size={20} className="text-grey hover:text-trublue-secondary-500 cursor-pointer" />
@@ -58,23 +55,25 @@ export default function HamburgerMenu() {
             ...NAVBAR_ITEMS,
             { path: routes.notifications.path, label: 'Notifications', activeTabMatch: routes.notifications.path },
           ].map((item) => (
-            <div
-              key={item.path}
-              onClick={() => handleNavItemClick(item.path)}
-              role="button"
-              aria-current={isActiveRoute(item.activeTabMatch) ? 'page' : undefined}
-              className={classNames(
-                'text-base font-normal leading-6 text-grey-800 cursor-pointer px-6 py-4',
-                {
-                  'text-white font-semibold bg-trublue-secondary-500': isActiveRoute(item.activeTabMatch),
-                },
-                {
-                  'd-block d-md-none': item.path === routes.notifications.path,
-                },
-              )}
-            >
-              {item.label}
-            </div>
+            <SheetClose asChild>
+              <div
+                key={item.path}
+                onClick={() => handleNavItemClick(item.path)}
+                role="button"
+                aria-current={isActiveRoute(item.activeTabMatch) ? 'page' : undefined}
+                className={classNames(
+                  'text-base font-normal leading-6 text-grey-800 cursor-pointer px-6 py-4',
+                  {
+                    'text-white font-semibold bg-trublue-secondary-500': isActiveRoute(item.activeTabMatch),
+                  },
+                  {
+                    'd-block d-md-none': item.path === routes.notifications.path,
+                  },
+                )}
+              >
+                {item.label}
+              </div>
+            </SheetClose>
           ))}
         </div>
       </SheetContent>
