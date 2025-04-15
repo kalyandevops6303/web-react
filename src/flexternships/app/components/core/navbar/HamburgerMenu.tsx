@@ -1,4 +1,5 @@
 // External dependencies
+import { useState } from 'react';
 import classNames from 'classnames';
 import { Menu } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -18,6 +19,7 @@ import { Sheet, SheetContent, SheetTrigger } from '../../ui/sheet';
  * @returns {JSX.Element} The rendered HamburgerMenu component
  */
 export default function HamburgerMenu() {
+  const [open, setOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isWorkInProgress = useAppStore((state) => state.isWip);
@@ -35,12 +37,16 @@ export default function HamburgerMenu() {
    * @param {string} route - Destination route path
    */
   const handleNavItemClick = (route: string) => {
-    if (isWorkInProgress) return openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: route });
-    navigate(route);
+    if (isWorkInProgress) {
+      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: route });
+    } else {
+      navigate(route);
+    }
+    setOpen(false);
   };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <div className="flex-col justify-center d-flex d-lg-none">
           <Menu size={20} className="text-grey hover:text-trublue-secondary-500 cursor-pointer" />
