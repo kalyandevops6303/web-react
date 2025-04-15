@@ -77,9 +77,9 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   };
 
   let profileToShowInRightSideOfCard;
-  if (userData.user_type === userTypes.talent) {
+  if (userData?.user_type === userTypes.talent) {
     profileToShowInRightSideOfCard = data?.invitation_by;
-  } else if (userData.user_type === userTypes.team) {
+  } else if (userData?.user_type === userTypes.team) {
     if (secondaryFilterForInvitedType === 'SENT') {
       profileToShowInRightSideOfCard = data?.invitation_to;
     } else if (secondaryFilterForInvitedType === 'RECEIVED') {
