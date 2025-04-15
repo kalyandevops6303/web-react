@@ -35,11 +35,8 @@ export default function HamburgerMenu() {
    * @param {string} route - Destination route path
    */
   const handleNavItemClick = (route: string) => {
-    if (isWorkInProgress) {
-      openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: route });
-    } else {
-      navigate(route);
-    }
+    if (isWorkInProgress) return openModal(GlobalModalType.UNSAVED_WORK, undefined, undefined, { nextPath: route });
+    navigate(route);
   };
 
   return (
