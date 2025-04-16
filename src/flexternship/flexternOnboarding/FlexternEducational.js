@@ -1717,7 +1717,7 @@ const FlexternEducational = () => {
                 </CardHeader>
 
                 <CardBody>
-                  {isFlextern && !isFlexternReady && (
+                  {!isFlexternReady && (
                     <div className="d-flex gap-1 mt-1 justify-content-center">
                       <div>
                         <CardText className="m-0">

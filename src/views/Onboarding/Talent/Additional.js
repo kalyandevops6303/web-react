@@ -94,6 +94,7 @@ import { resumeParsedDetailsSuccess } from '@/redux/reducers/talentOnboarding';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { returnCompleteProfileDetailsCta } from '@/utility/constants/CompleteProfileDetailsCta';
 import { isUserLoggedIn } from '@/utility/commonUtils';
+import { isFlexternshipApp } from '@/configs/api/env';
 const customDropdownStyles = {
   menuList: (provided) => ({
     ...provided,
@@ -129,7 +130,7 @@ const Additional = () => {
     (state) => state.auth?.profileCompletionFlextern?.values_missing,
   );
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
-  const isFlextern = useSelector((state) => state.auth?.is_flextern);
+  const isFlextern = isFlexternshipApp;
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const [resumeFiles, setResumeFiles] = useState(savedFormDocuments || []);
