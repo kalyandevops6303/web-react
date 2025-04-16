@@ -27,6 +27,7 @@ const API = {
     logout: `${apiAuthEndpoint}/api/v1/user/logout`,
     // v2
     requestValidation: `${apiAuthEndpoint}/api/v2/requests/validation`,
+    acceptTnC: `${apiAuthEndpoint}/api/v1/accept`,
   },
   static: {
     talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,

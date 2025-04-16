@@ -13,6 +13,7 @@ import CustomToast from '../app/components/core/toasts/CustomToast';
 import { v4 as uuidv4 } from 'uuid';
 import { useProjectMilestonesStore } from '../stores/project-milestones-store';
 import { useProjectsStore } from '../stores/project-details-store';
+import { CLIENT_SUPPORT_EMAIL, SUPPORT_EMAIL, TALENT_SUPPORT_EMAIL } from '../static/constants/core-constants';
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
@@ -180,3 +181,9 @@ export const selectThemeColors = (themes: any) => ({
     neutral30: '#ededed',
   },
 });
+
+export const getSupportEmail = () => {
+  const userType = useFlexternUserStore((state) => state.userDetails?.userType);
+  if (!userType) return SUPPORT_EMAIL;
+  return userType === UserType.CLIENT ? CLIENT_SUPPORT_EMAIL : TALENT_SUPPORT_EMAIL;
+};

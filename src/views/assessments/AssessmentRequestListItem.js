@@ -10,11 +10,11 @@ import { selectDeleteNonAssessmentLoading } from '../../redux/selectors/assessme
 import { deleteNonAssessment } from '../../redux/actions/assessmentActions';
 import { deleteRequest, getCustomerSupportList } from '../../redux/actions/supportActions';
 import { selectDeleteRequestLoading } from '../../redux/selectors/supportSelectors';
-import { SUPPORT_EMAIL } from '../../utility/constants/Constant';
+import { getSupportEmail } from '@/utility/Utils';
 
 const AssessmentsRequestListItem = ({ request }) => {
   const dispatch = useDispatch();
-
+  const supportEmail = getSupportEmail();
   const deleteRequestLoading = useSelector(selectDeleteRequestLoading);
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
 
@@ -68,7 +68,7 @@ const AssessmentsRequestListItem = ({ request }) => {
                   <PaymentInfoBanner className="d-flex px-1 py-1">
                     <Info size={18} color={theme.activeNavPillText} className="me-50 info-banner-icon" />
                     <p className="font-medium-1 m-0 info">
-                      <span className="fw-bolder font-medium-1">{SUPPORT_EMAIL}</span> has received your query. Our team
+                      <span className="fw-bolder font-medium-1">{supportEmail}</span> has received your query. Our team
                       is looking into it. We will revert soon.
                     </p>
                   </PaymentInfoBanner>
@@ -76,7 +76,7 @@ const AssessmentsRequestListItem = ({ request }) => {
                   <SuccessInfoBanner className="d-flex px-1 py-1">
                     <Info size={18} color={theme.succesGreenColor} className="me-50 info-banner-icon" />
                     <p className="font-medium-1 m-0 info">
-                      <span className="fw-bolder font-medium-1">{SUPPORT_EMAIL}</span> has resolved your query. Please
+                      <span className="fw-bolder font-medium-1">{supportEmail}</span> has resolved your query. Please
                       check your email.
                     </p>
                   </SuccessInfoBanner>

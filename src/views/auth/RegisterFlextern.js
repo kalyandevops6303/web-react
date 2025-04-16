@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
@@ -16,52 +16,86 @@ import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
 import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
 import TermsModal from '../modals/TermsModal';
-import SigninWithGoogle from './components/SigninWithGoogle';
-import { validateRequestFlexTernToken, verifyEmailForFlextern } from '../../redux/actions/authActions';
+import {
+  acceptTermsAndConditions,
+  validateRequestFlexTernToken,
+  verifyEmailForFlextern,
+} from '../../redux/actions/authActions';
 import { userTypes } from '../../utility/constants/Constant';
+import { DocType } from '@/flexternships/constraints/enums/core-enums';
+import routes from '@/flexternships/routes';
 
 const RegisterFlexternForm = React.memo(
   ({
+    navigate,
     onSubmit,
     control,
     errors,
     agreeTerms,
-    setPrivacyPolicyModal,
-    setTermsModal,
+    // setPrivacyPolicyModal,
+    // setTermsModal,
     setAgreeTerms,
     isLoading,
     emailData,
-  }) => (
-    <Form className="auth-login-form mt-2" onSubmit={onSubmit}>
-      <div className="mb-2">
-        <Label className="form-label" for="email">
-          Email <span style={{ color: `${theme.red}` }}>*</span>
-        </Label>
+    requestToken,
+    tncStatus,
+  }) => {
+    const [tncStatusState, setTncStatusState] = useState(tncStatus || {});
+    const handleNavigatePrivacyPolicy = () => {
+      navigate(routes.termsAndConditions.path, {
+        state: {
+          invitationToken: requestToken,
+          tncType: DocType.PRIVACY_POLICY,
+          tncAccepted: tncStatusState,
+        },
+      });
+    };
 
-        <Controller
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Enter email ID"
-          autoFocus
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              value={field.value || emailData || ''}
-              placeholder="abc@company.com"
-              className="filled-form-text-field"
-              invalid={errors.email && true}
-              disabled
-            />
-          )}
-        />
-        {errors?.email && <FormFeedback>{errors?.email?.message}</FormFeedback>}
-      </div>
-      <div className="form-check mb-1">
-        <div className="d-flex justify-content-between align-items-center checkbox-custom-label">
-          <Label className="form-check-label" for="remember-me">
-            <small style={{ color: 'var(--Secondary-500---Main, #0185E4)' }}>
+    const handleNavigateUserTerms = () => {
+      navigate(routes.termsAndConditions.path, {
+        state: {
+          invitationToken: requestToken,
+          tncType: DocType.TERMS_AND_CONDITIONS,
+          tncAccepted: tncStatusState,
+        },
+      });
+    };
+
+    useEffect(() => {
+      if (tncStatus) {
+        setAgreeTerms(tncStatus);
+      }
+    }, [tncStatus]);
+    return (
+      <Form className="auth-login-form mt-2" onSubmit={onSubmit}>
+        <div className="mb-2">
+          <Label className="form-label" for="email">
+            Email <span style={{ color: `${theme.red}` }}>*</span>
+          </Label>
+
+          <Controller
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter email ID"
+            autoFocus
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                value={field.value || emailData || ''}
+                placeholder="abc@company.com"
+                className="filled-form-text-field"
+                invalid={errors.email && true}
+                disabled
+              />
+            )}
+          />
+          {errors?.email && <FormFeedback>{errors?.email?.message}</FormFeedback>}
+        </div>
+        <div className="form-check mb-1">
+          <div className="d-flex justify-content-between align-items-center checkbox-custom-label">
+            <Label className="form-check-label" for="remember-me">
               <Controller
                 type="checkbox"
                 id="remember-me"
@@ -73,39 +107,47 @@ const RegisterFlexternForm = React.memo(
                     value={field.value || false}
                     type="checkbox"
                     id="remember-me"
-                    size="md"
+                    size="small"
                     checked={field.value}
                     onChange={(e) => {
                       field.onChange(e);
                       setAgreeTerms(e.target.checked);
+                      if (!e.target.checked && tncStatus) {
+                        const updatedTncStatus = { ...tncStatus };
+                        Object.keys(tncStatus).forEach((key) => {
+                          updatedTncStatus[key] = { ...updatedTncStatus[key], accepted: false };
+                        });
+                        setTncStatusState(updatedTncStatus);
+                      }
                     }}
                   />
                 )}
               />
-              Agree & Sign up
-            </small>
-          </Label>
-
-          <Label color={theme.primary} className="mb-0 ">
-            <small className="privacy-terms-label cursor-pointer" onClick={() => setPrivacyPolicyModal(true)}>
-              Privacy Policy
-            </small>
-            <small style={{ color: 'var(--Secondary-500---Main, #0185E4)' }}> & </small>
-            <small className="privacy-terms-label cursor-pointer" onClick={() => setTermsModal(true)}>
-              Terms
-            </small>
-          </Label>
+              Agree & Sign up: &nbsp;
+              <Label color={theme.primary} className="mb-0 ">
+                <small className="privacy-terms-label cursor-pointer" onClick={handleNavigatePrivacyPolicy}>
+                  Privacy Policy
+                </small>
+                <small className="form-check-label"> & </small>
+                <small className="privacy-terms-label cursor-pointer" onClick={handleNavigateUserTerms}>
+                  Terms
+                </small>
+              </Label>
+            </Label>
+          </div>
+          {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
         </div>
-        {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
-      </div>
-      <Button color="primary" block type="submit" disabled={isLoading || !agreeTerms || !emailData}>
-        {isLoading ? <Spinner size="sm" /> : 'Continue'}
-      </Button>
-    </Form>
-  ),
+        <Button color="primary" block type="submit" disabled={isLoading || !agreeTerms || !emailData}>
+          {isLoading ? <Spinner size="sm" /> : 'Continue'}
+        </Button>
+      </Form>
+    );
+  },
 );
 
 RegisterFlexternForm.propTypes = {
+  watch: PropTypes.func.isRequired,
+  navigate: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   control: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
@@ -115,6 +157,8 @@ RegisterFlexternForm.propTypes = {
   setAgreeTerms: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   emailData: PropTypes.string.isRequired,
+  requestToken: PropTypes.string.isRequired,
+  tncStatus: PropTypes.bool.isRequired,
 };
 
 const RegisterFlextern = () => {
@@ -150,6 +194,7 @@ const RegisterFlextern = () => {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
     watch,
     reset,
     trigger,
@@ -157,13 +202,18 @@ const RegisterFlextern = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       email: savedFormData?.email ?? emailData ?? '',
-      agreeTerms: savedFormData?.agreeTerms ?? false,
+      agreeTerms: location?.state?.tncAccepted ?? false,
     },
   });
+
   const localFormData = useWatch({ control });
+  const queryParams = new URLSearchParams(location.search);
+  const requestToken = queryParams.get('invitation_token');
+  const onSuccess = (response) => {
+    dispatch(clearAllFormData());
+    checkPointRedirection({ response, navigate });
+  };
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const requestToken = queryParams.get('invitation_token');
     if (requestToken) {
       dispatch(
         validateRequestFlexTernToken({
@@ -173,8 +223,20 @@ const RegisterFlextern = () => {
           },
         }),
       );
+      if (watch('email') && requestToken) {
+        const userInviteType = flexternInviteType === userTypes.flexternClient ? userTypes.client : userTypes.talent;
+        dispatch(
+          verifyEmailForFlextern({
+            data: { email: watch('email'), user_type: userInviteType },
+            invitation_token: requestToken,
+            onSuccess: () => {
+              dispatch(clearAllFormData());
+            },
+          }),
+        );
+      }
     }
-  }, [emailData]);
+  }, [watch('email'), requestToken]);
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
@@ -193,27 +255,31 @@ const RegisterFlextern = () => {
     }
   }, [emailData]);
 
-  const onSuccess = (response) => {
-    dispatch(clearAllFormData());
-    checkPointRedirection({ response, navigate });
-  };
-
   // extract invitation token from url
 
   const onSubmit = (values) => {
     const { email } = values;
     const data = {};
     data.email = email;
-    const queryParams = new URLSearchParams(location.search);
     const invitation_token = queryParams.get('invitation_token');
     if (flexternInviteType === userTypes.flexternClient) data.user_type = userTypes.client;
     else data.user_type = userTypes.talent;
 
     dispatch(verifyEmailForFlextern({ data, invitation_token, onSuccess }));
+    dispatch(acceptTermsAndConditions());
   };
 
   const newPassword = watch('newPassword');
   const cnfPassword = watch('cnfPassword');
+
+  useEffect(() => {
+    const acceptedList = location?.state?.tncAccepted;
+    const allAccepted =
+      Array.isArray(acceptedList) &&
+      acceptedList.every((item) => item.acceptTime !== null && item.acceptTime !== undefined);
+    setAgreeTerms(allAccepted);
+    setValue('agreeTerms', allAccepted);
+  }, [location?.state?.tncAccepted]);
 
   return (
     <OnBoardWrap>
@@ -227,6 +293,8 @@ const RegisterFlextern = () => {
             : inviteHeader.FLEXTERN_TALENT?.title}
         </CardTitle>
         <RegisterFlexternForm
+          watch={watch}
+          navigate={navigate}
           onSubmit={handleSubmit(onSubmit)}
           control={control}
           errors={errors}
@@ -238,6 +306,8 @@ const RegisterFlextern = () => {
           setAgreeTerms={setAgreeTerms}
           isLoading={isLoading}
           emailData={emailData}
+          requestToken={requestToken}
+          tncStatus={location?.state?.tncAccepted}
         />
       </div>
     </OnBoardWrap>

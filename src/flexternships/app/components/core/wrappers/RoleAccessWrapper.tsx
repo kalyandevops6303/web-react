@@ -25,7 +25,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
 
   const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
   const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
-  const isTncAccepted = useFlexternUserStore((state) => state.userDetails?.isTncAccepted);
+  const isTncAccepted = useFlexternUserStore((state) => state.userDetails.isTncAccepted);
   const isUserDetailsLoading = useFlexternUserStore((state) => state.isUserDetailsLoading);
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);

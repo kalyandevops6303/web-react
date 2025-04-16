@@ -92,7 +92,7 @@ const Account = () => {
 
   const savedFormData = useSelector(formData);
   const userAuthData = useSelector(selectUserData);
-  const isFlexternInvited = useSelector(selectTrumioIsFlextern);
+  const isFlexternInvited = isFlexternshipApp;
   const isDelegate = getItem('isDelegate');
   const isDelegateModeModalVisible = useSelector(checkIsDelegateModeModalVisible);
 
@@ -107,7 +107,7 @@ const Account = () => {
 
   const isFlexternReady = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed) === 100;
   const isProjectReady = useSelector((state) => state.dashboard?.profilePercentage?.profile_completed) === 100;
-  const isFlextern = useSelector((state) => state.auth?.is_flextern);
+  const isFlextern = isFlexternshipApp;
   const isTrumioTalent = useSelector((state) => state.auth?.trumio_talent);
   const userType = useSelector((state) => state.auth?.userType);
 

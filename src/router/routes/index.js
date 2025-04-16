@@ -13,7 +13,7 @@ import PublicRoute from '@components/routes/PublicRoute';
 // ** Utils
 import { isObjEmpty } from '@utils';
 
-import { FlexternshipRoutes } from './flexternship-routes';
+import FlexternshipRoutes from './flexternship-routes';
 
 const getLayout = {
   blank: <BlankLayout />,

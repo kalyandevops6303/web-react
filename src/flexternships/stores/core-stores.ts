@@ -10,25 +10,40 @@ import {
   GlobalModalContent,
 } from '@flexternships/types/core-types';
 import {
+  agreeToTnC,
+  checkTnCStatus,
   closeModal,
   fetchNotificationsCount,
+  getTnCData,
   openModal,
   populateBlobSasTokenParams,
   populateUserDetails,
   setWip,
   unsetWip,
 } from '@flexternships/actions/core-actions';
-import { GlobalModalType } from '../constraints/enums/core-enums';
+import { DocType, GlobalModalType } from '../constraints/enums/core-enums';
 
 const defaultInitState: FlexternUser = {
   isUserDetailsLoading: false,
   userDetails: {} as FlexternClientDetails | FlexternTalentDetails,
+  tncDetails: [],
+  isTnCDetailsLoading: false,
+  isAgreeToTnCLoading: false,
 };
 
 export const useFlexternUserStore = create<FlexternUserStore>((set, get) => ({
   ...defaultInitState,
   populateUserDetails: (force: boolean = false) => populateUserDetails(force, get, set),
   resetStore: () => set({ ...defaultInitState }),
+  populateTnCDetails: async ({
+    docType = null,
+    docContentRequired = false,
+  }: {
+    docType?: DocType | null;
+    docContentRequired?: boolean;
+  }) => getTnCData(set, { docType, docContentRequired }),
+  checkTnCStatus: async () => checkTnCStatus(set),
+  agreeToTnC: async (docType: DocType) => agreeToTnC(docType, set),
 }));
 
 const defaultAppState: AppState = {

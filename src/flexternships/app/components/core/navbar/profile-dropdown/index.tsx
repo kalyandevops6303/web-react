@@ -63,7 +63,6 @@ function GenericProfile() {
 // Component for the profile dropdown menu
 export default function ProfileDropdown() {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isContactSupportModalOpen, setIsContactSupportModalOpen] = useState(false);
   const [isContactSupportSuccessModalOpen, setIsContactSupportSuccessModalOpen] = useState(false);
@@ -210,6 +209,12 @@ export default function ProfileDropdown() {
           >
             Contact Support
           </DropdownMenuItem>
+          <Link to={routes.termsAndConditions.path}>
+            <DropdownMenuItem className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light cursor-pointer">
+              Privacy Policy & Terms
+            </DropdownMenuItem>
+          </Link>
+
           <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
 
           {/* Logout Button */}
