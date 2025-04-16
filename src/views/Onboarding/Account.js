@@ -70,7 +70,6 @@ import { isUserLoggedIn } from '@/utility/commonUtils';
 import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
 // import { getProfilePercentage } from '../../redux/actions/dashboardActions';
-import { isFlexternshipApp } from '@/configs/api/env';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
