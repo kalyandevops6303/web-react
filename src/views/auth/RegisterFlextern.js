@@ -224,9 +224,10 @@ const RegisterFlextern = () => {
         }),
       );
       if (watch('email') && requestToken) {
+        const userInviteType = flexternInviteType === userTypes.flexternClient ? userTypes.client : userTypes.talent;
         dispatch(
           verifyEmailForFlextern({
-            data: { email: watch('email') },
+            data: { email: watch('email'), user_type: userInviteType },
             invitation_token: requestToken,
             onSuccess: () => {
               dispatch(clearAllFormData());
