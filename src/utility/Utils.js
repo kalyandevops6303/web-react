@@ -995,11 +995,7 @@ export const getMissingName = (type, values) => {
 };
 export const checkPointRedirection = ({ response, navigate, nextPath }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
-    if (response?.is_flextern) {
-      navigate('/auth/register-phone-flexternship');
-    } else {
-      navigate('/auth/register-phone');
-    }
+    navigate('/auth/register-phone-flexternship');
   } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
     if (response?.app_roles?.includes('FLEXTERN_CLIENT')) {
       navigate(`/${response.user_type.toLowerCase()}-onboarding`);

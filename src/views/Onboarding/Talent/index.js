@@ -120,11 +120,7 @@ const TalentOnboarding = () => {
               </div>
             </BackButtonContainer>
           )}
-          {isFlexternInvited ? (
-            <FlexternTabs tabNames={tabNames} active={active} />
-          ) : (
-            <Tabs tabNames={tabNames} active={active} />
-          )}
+          <FlexternTabs tabNames={tabNames} active={active} />
         </div>
       </div>
     </div>
