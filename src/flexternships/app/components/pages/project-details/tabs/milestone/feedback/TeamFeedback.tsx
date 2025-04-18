@@ -57,7 +57,7 @@ export default function TeamFeedback({ goBack }: { goBack: () => void }) {
       milestone_id: params?.milestoneId,
       receiver: {
         user_type: UserType.TALENT,
-        team_id: teamDetails && teamDetails[0].id,
+        team_id: teamDetails && teamDetails[0].teamId,
       },
       feedback_result: survey.data,
     };
