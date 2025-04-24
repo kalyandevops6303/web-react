@@ -204,23 +204,23 @@ jobs:
         run: |
           npm run build -- --mode ${{ env.VITE_ENV_MODE }}
 
-      - name: Upload to blob storage
-        if: ${{ vars.ENVIRONMENT == 'prod' }}
-        run: |
-          today=$(date +%d-%m-%Y-%H.%M)
-          az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d "${{ env.backup_directory }}/frontend-$today" --source ./dist
+      # - name: Upload to blob storage
+      #   if: ${{ vars.ENVIRONMENT == 'prod' }}
+      #   run: |
+      #     today=$(date +%d-%m-%Y-%H.%M)
+      #     az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d "${{ env.backup_directory }}/frontend-$today" --source ./dist
 
-      - name: Delete blob storage
-        if: ${{ vars.ENVIRONMENT == 'prod' }}
-        run: az storage blob delete-batch --account-name ${{ env.storage }} --auth-mode login --source '$web' --pattern '*'
+      # - name: Delete blob storage
+      #   if: ${{ vars.ENVIRONMENT == 'prod' }}
+      #   run: az storage blob delete-batch --account-name ${{ env.storage }} --auth-mode login --source '$web' --pattern '*'
 
-      - name: Upload to blob storage
-        if: ${{ vars.ENVIRONMENT == 'prod' }}
-        run: az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d '$web' --source ./dist
+      # - name: Upload to blob storage
+      #   if: ${{ vars.ENVIRONMENT == 'prod' }}
+      #   run: az storage blob upload-batch --account-name ${{ env.storage }} --auth-mode login -d '$web' --source ./dist
 
-      - name: Purge CDN endpoint
-        if: ${{ vars.ENVIRONMENT == 'prod' }}
-        run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name ${{ env.cdn_endpoint }} --domains ${{ env.cdn_domain }} --content-paths '/*'
+      # - name: Purge CDN endpoint
+      #   if: ${{ vars.ENVIRONMENT == 'prod' }}
+      #   run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name ${{ env.cdn_endpoint }} --domains ${{ env.cdn_domain }} --content-paths '/*'
 
       - name: Set Azure Static Web Apps Token
         run: |
@@ -233,7 +233,9 @@ jobs:
           elif [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_UAT }}" >> $GITHUB_ENV    
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
-            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_PROD }}" >> $GITHUB_ENV             
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_PROD }}" >> $GITHUB_ENV 
+          elif [[ "${{ vars.ENVIRONMENT }}" == "prod" ]]; then
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PROD }}" >> $GITHUB_ENV
           else
             echo "Error: Unrecognized environment "
             exit 1
@@ -241,7 +243,7 @@ jobs:
 
       - name: Webapp Deploy
         id: webapp_deploy
-        if: ${{ vars.ENVIRONMENT == 'tru-uat-auto' || vars.ENVIRONMENT == 'tru-uat' || vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-prod' || vars.ENVIRONMENT  == 'tru-wipro' }}
+        if: ${{ vars.ENVIRONMENT == 'tru-uat-auto' || vars.ENVIRONMENT == 'tru-uat' || vars.ENVIRONMENT == 'uat' || vars.ENVIRONMENT == 'tru-prod' || vars.ENVIRONMENT  == 'tru-wipro' || vars.ENVIRONMENT == 'prod' }}
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ env.AZURE_STATIC_WEB_APPS_API_TOKEN }}
