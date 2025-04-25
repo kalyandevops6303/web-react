@@ -128,17 +128,6 @@ const ProjectModal = ({
   // const checkReportLoading = useSelector(selectCheckReportLoading);
 
   const userDetails = useFlexternUserStore((state) => state.userDetails);
-  useEffect(() => {
-    dispatch(
-      checkIfReported({
-        data: {
-          reported_entity_id: data?._id,
-          reported_entity_type: REPORT_ENTITIES.PROJECT,
-        },
-        onSuccess: checkReportSuccess,
-      }),
-    );
-  }, [cardData]);
 
   useEffect(() => {
     if (data) {
