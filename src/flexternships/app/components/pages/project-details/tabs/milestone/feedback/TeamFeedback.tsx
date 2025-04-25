@@ -61,7 +61,6 @@ export default function TeamFeedback({ goBack }: { goBack: () => void }) {
       },
       feedback_result: survey.data,
     };
-
     submitFeedback(submitFeedbackData, () => {
       setShowSuccessModal(true);
     });

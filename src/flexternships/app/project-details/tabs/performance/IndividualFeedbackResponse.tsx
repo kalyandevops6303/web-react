@@ -6,29 +6,61 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/flexternships/app/compone
 import { FeedbackTypesAPI } from '@/flexternships/constraints/enums/feedback-enums';
 import { useFeedbackStore } from '@/flexternships/stores/feedback-stores';
 import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { User } from 'react-feather';
 import { useAppStore } from '@/flexternships/stores/core-stores';
+import { useProjectsStore } from '@/flexternships/stores/project-details-store';
+import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
+import { useParams } from 'react-router-dom';
 
 export default function IndividualFeedbackResponse(props: any) {
   const { feedbackOverview, milestoneId, feedbackType } = props;
-
+  const { projectId } = useParams();
   const getFeedbackResponse = useFeedbackStore((state) => state.getFeedbackResponse);
   const feedbackResponse = useFeedbackStore((state) => state.feedbackResponse);
-
+  const teamDetails = useProjectsStore((state) => state.teamDetails);
+  const populateTeamDetails = useProjectsStore((state) => state.populateTeamDetails);
   const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const [response, setResponse] = useState<any>([]);
   const [formattedFeedbackResponse, setFormattedFeedbackResponse] = useState<any>([]);
   const [isFeedbackResponseLoading, setIsFeedbackResponseLoading] = useState<boolean>(true);
 
+  const hasFetchedTeamDetails = useRef(false);
+  const hasFetchedResponse = useRef(false);
+
   useEffect(() => {
-    if (feedbackOverview && feedbackOverview?.feedback_id) {
-      getFeedbackResponse(feedbackOverview?.user_id, milestoneId, feedbackType, () => {
-        setIsFeedbackResponseLoading(false);
-      });
-    }
-  }, [feedbackOverview, milestoneId, feedbackType]);
+    hasFetchedResponse.current = false;
+    hasFetchedTeamDetails.current = false;
+  }, [milestoneId, projectId, feedbackType]);
+
+  useEffect(() => {
+    const isTeamFeedback = feedbackType === MilestoneFeedbackType.TEAM_FEEDBACK;
+    if (!projectId || !isTeamFeedback || hasFetchedTeamDetails.current) return;
+    populateTeamDetails(projectId);
+    hasFetchedTeamDetails.current = true;
+  }, [projectId, feedbackType, !hasFetchedTeamDetails.current]);
+
+  useEffect(() => {
+    const isTeamFeedback = feedbackType === MilestoneFeedbackType.TEAM_FEEDBACK;
+
+    const hasValidFeedback = feedbackOverview?.feedback_id != null;
+    const hasTeamDetails = Array.isArray(teamDetails) && teamDetails.length > 0;
+
+    const shouldFetch = (!isTeamFeedback && hasValidFeedback) || (isTeamFeedback && hasTeamDetails);
+
+    if (!shouldFetch || hasFetchedResponse.current) return;
+
+    const receiverId = isTeamFeedback ? teamDetails?.[0]?.teamId : feedbackOverview?.user_id;
+
+    if (!receiverId) return;
+
+    getFeedbackResponse(receiverId, milestoneId, feedbackType, () => {
+      setIsFeedbackResponseLoading(false);
+    });
+
+    hasFetchedResponse.current = true;
+  }, [feedbackOverview?.feedback_id, feedbackOverview?.user_id, milestoneId, feedbackType, teamDetails]);
 
   useEffect(() => {
     if (feedbackType === FeedbackTypesAPI.INDIVIDUAL || feedbackType === FeedbackTypesAPI.PEER) {
