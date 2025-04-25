@@ -6,9 +6,10 @@ import { useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
 import Hotjar from '@hotjar/browser';
-import { getToken, onMessageListener } from './configs/api/firebase';
+import { getToken, messaging, onMessageListener } from './configs/api/firebase';
 import Router from './router/Router';
 import { getItem, setItem } from './utility/localStorageControl';
+import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
 import { setLoggedInStatus } from './redux/reducers/auth';
@@ -40,6 +41,7 @@ const App = () => {
     if (isLoggedIn && !fcmToken) {
       const data = await getToken();
       if (data) {
+        dispatch(fcmSubscribeNotification(data));
         setItem('fcmToken', data);
       }
     }
