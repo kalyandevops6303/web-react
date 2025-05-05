@@ -10,7 +10,7 @@ import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback, Spinner 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
-import { verifyOtp, setForgotPasswordToken } from '../../redux/actions/authActions';
+import { verifyOtp } from '../../redux/actions/authActions';
 import OtpInput from '../../lib/otp-input';
 import { selectAuthLoading, selectEmail, selectIsEmailVerified } from '../../redux/selectors/authSelectors';
 import ResendOTPComp from './components/ResendOTP';
