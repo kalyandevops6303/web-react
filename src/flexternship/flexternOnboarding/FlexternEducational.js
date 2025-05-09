@@ -947,7 +947,7 @@ const FlexternEducational = () => {
     }
   };
 
-  const fetchUploadUrl = async (file) => {
+  const fetchUploadUrl = async (file, e) => {
     const getResumeUploadUrl = async (fileName, inputElement) => {
       try {
         const response = await resumeUploadService(fileName);
