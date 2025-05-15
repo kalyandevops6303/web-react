@@ -10,6 +10,7 @@ import {
 } from '../ui/breadcrumb';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import routes from '@/flexternships/routes';
+import { Link } from 'react-router-dom';
 
 export default function CustomBreadCrumbs(props: CustomBreadCrumbsProps) {
   const { items, startWithHome = true } = props;
@@ -24,15 +25,19 @@ export default function CustomBreadCrumbs(props: CustomBreadCrumbsProps) {
         {startWithHome && (
           <>
             <BreadcrumbItem className="text-trublue-secondary-500">
-              <BreadcrumbLink href={routes.dashboard.path}>
-                <Home size={14} />
+              <BreadcrumbLink asChild>
+                <Link to={routes.dashboard.path}>
+                  <Home size={14} />
+                </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
           </>
         )}
         <BreadcrumbItem className="text-trublue-secondary-500">
-          <BreadcrumbLink href={firstItem.href}>{firstItem.label}</BreadcrumbLink>
+          <BreadcrumbLink asChild>
+            {firstItem.href ? <Link to={firstItem.href}>{firstItem.label}</Link> : firstItem.label}
+          </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         {middleItems.length > 0 && (
@@ -46,7 +51,9 @@ export default function CustomBreadCrumbs(props: CustomBreadCrumbsProps) {
                 <DropdownMenuContent align="start">
                   {middleItems.map((item, index) => (
                     <DropdownMenuItem key={index}>
-                      <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                      <BreadcrumbLink asChild>
+                        {item.href ? <Link to={item.href}>{item.label}</Link> : item.label}
+                      </BreadcrumbLink>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
