@@ -14,6 +14,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { useProjectMilestonesStore } from '../stores/project-milestones-store';
 import { useProjectsStore } from '../stores/project-details-store';
 import { CLIENT_SUPPORT_EMAIL, SUPPORT_EMAIL, TALENT_SUPPORT_EMAIL } from '../static/constants/core-constants';
+import { useNoteCategoriesStore } from '../stores/note-categories-store';
+import { useLegalStore } from '../stores/legal-store';
+import { useFeedbackStore } from '../stores/feedback-stores';
+import { useCompetenciesStore } from '../stores/competencies-store';
+import { useAnalyticsStore } from '../stores/analytics-store';
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
@@ -46,6 +51,11 @@ export const logout = () => {
   useProjectMilestonesStore.getState().resetStore();
   useProjectsStore.getState().resetStore();
   useAppStore.getState().resetStore();
+  useNoteCategoriesStore.getState().resetStore();
+  useLegalStore.getState().resetStore();
+  useFeedbackStore.getState().resetStore();
+  useCompetenciesStore.getState().resetStore();
+  useAnalyticsStore.getState().resetStore();
 };
 
 /**
