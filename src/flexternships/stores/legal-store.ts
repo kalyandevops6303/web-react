@@ -16,4 +16,5 @@ export const useLegalStore = create<any>((set) => ({
   signDocument: async (projectId: string, docType: string, onSuccess: () => void) =>
     signDocument(projectId, docType, onSuccess, set),
   getLegalDocStatus: async (projectId: string, docType: string) => legalDocSignedStatus(projectId, docType, set),
+  resetStore: () => set({ ...defaultInitState }),
 }));

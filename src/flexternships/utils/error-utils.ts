@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { ServerResponseStatus } from '../constraints/enums/core-enums';
+import routes from '../routes';
+import { logout } from './core-utils';
 
 /**
  * Handles errors from API requests, throwing appropriate error messages.
@@ -16,6 +18,11 @@ export const handleError = (error: Error, defaultErrorMessage: string) => {
         message: string;
       };
     };
+    if (errorResponse.errorData.errorCode === 401) {
+      localStorage.clear();
+      logout();
+      window.location.href = routes.auth.path;
+    }
     if (errorResponse.status === ServerResponseStatus.FAIL && errorResponse.errorData?.message) {
       throw new Error(errorResponse.errorData.message);
     }

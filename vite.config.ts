@@ -43,7 +43,7 @@ export default defineConfig({
     global: 'globalThis',
   },
   server: {
-    port: 3000,
+    port: 5173,
     proxy: {
       '/api': {
         target: 'https://pixinvent.com/',
@@ -70,7 +70,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': path.resolve(__dirname, 'src'),
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
       '@src': path.resolve(__dirname, 'src'),
       '@store': path.resolve(__dirname, 'src/redux'),
       '@configs': path.resolve(__dirname, 'src/configs'),
