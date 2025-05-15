@@ -84,4 +84,5 @@ export const useAnalyticsStore = create<any>((set) => ({
   getConversationAttachmentStats: async (projectId: string, userId: string) =>
     getConversationAttachmentStats(projectId, userId, set),
   getCommits: async (projectId: string) => getCommits(projectId, set),
+  resetStore: () => set({ ...defaultInitState }),
 }));
