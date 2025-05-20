@@ -1142,7 +1142,7 @@ const FlexternPersonal = () => {
                     color="primary"
                     type="submit"
                     className="d-flex align-items-center justify-content-between"
-                    disabled={!isValid || profileDetailsIsLoading}
+                    disabled={!isValid || profileDetailsIsLoading || resumeParsedLoading}
                   >
                     {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save & Continue</span>}
                   </Button>
