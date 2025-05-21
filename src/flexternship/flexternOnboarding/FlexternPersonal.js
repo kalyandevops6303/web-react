@@ -166,6 +166,8 @@ const FlexternPersonal = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [parseResume, setParseResume] = useState(IsresumeParsed || false);
+  const [fetchResumeUploadUrlLoading, setFetchResumeUploadUrlLoading] = useState(false);
+  const [uploadResumeFileLoading, setUploadResumeFileLoading] = useState(false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [workingTimeZonesOptions, setWorkingTimeZonesOptions] = useState([]);
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
@@ -267,17 +269,19 @@ const FlexternPersonal = () => {
   };
 
   const handleUploadFile = async (file) => {
+    setUploadResumeFileLoading(true);
     try {
       setUploadingFiles([file]);
-
       await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
         'x-ms-blob-type': 'BlockBlob',
         'Content-Type': 'multipart/form-data',
         'Content-File-Type': file.file.type,
       });
+      setUploadResumeFileLoading(false);
     } catch (error) {
       dispatch(resumeParsedDetailsSuccess(null));
       setParseResume(false);
+      setUploadResumeFileLoading(false);
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
       setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
@@ -459,10 +463,13 @@ const FlexternPersonal = () => {
 
   const fetchUploadUrl = async (file, e) => {
     const getResumeUploadUrl = async (fileName, inputElement) => {
+      setFetchResumeUploadUrlLoading(true);
       try {
         const response = await resumeUploadService(fileName);
+        setFetchResumeUploadUrlLoading(false);
         return response;
       } catch (error) {
+        setFetchResumeUploadUrlLoading(false);
         if (error?.response?.status == '429') showToastMessage(ToastType.ERROR, error?.message);
         if (inputElement) inputElement.value = '';
         return null;
@@ -1142,7 +1149,13 @@ const FlexternPersonal = () => {
                     color="primary"
                     type="submit"
                     className="d-flex align-items-center justify-content-between"
-                    disabled={!isValid || profileDetailsIsLoading || resumeParsedLoading}
+                    disabled={
+                      !isValid ||
+                      profileDetailsIsLoading ||
+                      resumeParsedLoading ||
+                      fetchResumeUploadUrlLoading ||
+                      uploadResumeFileLoading
+                    }
                   >
                     {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save & Continue</span>}
                   </Button>

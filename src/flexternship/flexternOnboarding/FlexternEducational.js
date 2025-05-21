@@ -320,6 +320,8 @@ const FlexternEducational = () => {
   const location = useLocation();
   const isResumeDataUploadedForEducation = useSelector(resumeDataUploadedForEducation);
   const [parsedUploaded, setParsedUploaded] = useState(isResumeDataUploadedForEducation || false);
+  const [fetchResumeUploadUrlLoading, setFetchResumeUploadUrlLoading] = useState(false);
+  const [uploadResumeFileLoading, setUploadResumeFileLoading] = useState(false);
   const profileCompletionFlextern = useSelector((state) => state.auth?.profileCompletionFlextern?.profile_completed);
   const [files, setFiles] = useState(savedFormDocuments || []);
 
@@ -384,17 +386,19 @@ const FlexternEducational = () => {
     return true;
   };
   const handleUploadFile = async (file) => {
+    setUploadResumeFileLoading(true);
     try {
       setUploadingFiles([file]);
-
       await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
         'x-ms-blob-type': 'BlockBlob',
         'Content-Type': 'multipart/form-data',
         'Content-File-Type': file.file.type,
       });
+      setUploadResumeFileLoading(false);
     } catch (error) {
       dispatch(resumeParsedDetailsSuccess(null));
       setParseResume(false);
+      setUploadResumeFileLoading(false);
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
       setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
@@ -949,10 +953,13 @@ const FlexternEducational = () => {
 
   const fetchUploadUrl = async (file, e) => {
     const getResumeUploadUrl = async (fileName, inputElement) => {
+      setFetchResumeUploadUrlLoading(true);
       try {
         const response = await resumeUploadService(fileName);
+        setFetchResumeUploadUrlLoading(false);
         return response;
       } catch (error) {
+        setFetchResumeUploadUrlLoading(false);
         if (error?.response?.status == '429') showToastMessage(ToastType.ERROR, error?.message);
         if (inputElement) inputElement.value = '';
         return null;
@@ -1628,7 +1635,13 @@ const FlexternEducational = () => {
                     color="primary"
                     type="submit"
                     className="d-flex align-items-center justify-content-between"
-                    disabled={!isValid || profileDetailsIsLoading}
+                    disabled={
+                      !isValid ||
+                      profileDetailsIsLoading ||
+                      resumeParsedLoading ||
+                      fetchResumeUploadUrlLoading ||
+                      uploadResumeFileLoading
+                    }
                   >
                     {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save & Continue</span>}
                   </Button>
