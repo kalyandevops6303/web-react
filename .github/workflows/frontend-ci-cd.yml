@@ -136,6 +136,8 @@ jobs:
               cp secrets.txt .env.production.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
               cp secrets.txt .env.tru-production.local
+          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-lti" ]]; then
+              cp secrets.txt .env.tru-lti.local
           else
               echo "Error: Invalid environment."
               exit 1
