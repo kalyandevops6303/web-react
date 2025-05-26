@@ -72,6 +72,8 @@ jobs:
             echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
             echo "FILENAME=env-fe-tru-prod.txt" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
+            echo "FILENAME=env-fe-tru-lti.txt" >> $GITHUB_ENV  
           else
             echo "Error: Unrecognized environment tag format."
             exit 1
@@ -91,6 +93,8 @@ jobs:
            echo "SUBFOLDER=prod" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
            echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
+           echo "SUBFOLDER=tru-lti" >> $GITHUB_ENV
           else
            echo "Error: Unrecognized environment tag format."
            exit 1
@@ -136,6 +140,8 @@ jobs:
               cp secrets.txt .env.production.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
               cp secrets.txt .env.tru-production.local
+          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-lti" ]]; then
+              cp secrets.txt .env.tru-lti.local
           else
               echo "Error: Invalid environment."
               exit 1
