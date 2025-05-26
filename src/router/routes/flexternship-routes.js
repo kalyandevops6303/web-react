@@ -174,7 +174,7 @@ const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.path,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
               },
             ],
           },
@@ -219,7 +219,7 @@ const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.path,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
               },
             ],
           },
@@ -260,7 +260,11 @@ const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.path,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
               },
             ],
           },
@@ -302,7 +306,11 @@ const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.path,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
               },
             ],
           },
@@ -344,7 +352,11 @@ const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.path,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
               },
             ],
           },
@@ -402,7 +414,11 @@ const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.path,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
               },
             ],
           },
@@ -444,7 +460,11 @@ const FlexternshipRoutes = [
             blockCheckpoints: [
               {
                 checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.path,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
               },
             ],
           },

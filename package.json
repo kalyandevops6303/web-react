@@ -58,7 +58,7 @@
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.0.1",
     "js-cookie": "^3.0.5",
-    "libphonenumber-js": "1.10.30",
+    "libphonenumber-js": "1.12.7",
     "lucide-react": "^0.460.0",
     "luxon": "3.5.0",
     "nouislider": "15.5.0",

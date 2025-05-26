@@ -1,15 +1,18 @@
 // ** React Imports
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { isValidPhoneNumber } from 'libphonenumber-js';
+
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback, Spinner } from 'reactstrap';
 import OtpInput from '../../lib/otp-input';
+import parseMin from 'libphonenumber-js/min';
+import parseMax from 'libphonenumber-js/max';
+import parseMobile from 'libphonenumber-js/mobile';
 // ** Reactstrap Imports
-
+import { validatePhoneNumber } from '../../utility/Utils';
 // ** Custom Components
 import CountryDropdown from '../../@core/components/country-dropdown';
 import { OnBoardWrap } from './style';
@@ -122,7 +125,7 @@ const RegisterPhoneFlextern = () => {
   };
 
   const onSubmit = (values) => {
-    if (!isValidPhoneNumber(values.mobile, selectedCountry.code)) {
+    if (!validatePhoneNumber(values.mobile, selectedCountry.code)) {
       setValidPhoneBoolean(false);
       setError('mobile', { type: 'custom', message: 'Invalid phone number' });
     } else {
