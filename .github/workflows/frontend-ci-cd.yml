@@ -65,7 +65,9 @@ jobs:
           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
             echo "FILENAME=env-fe-tru-uat-auto.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
-            echo "FILENAME=env-fe-tru-wipro.txt" >> $GITHUB_ENV  
+            echo "FILENAME=env-fe-tru-wipro.txt" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
+            echo "FILENAME=tru-lti/env-fe-tru-lti.txt" >> $GITHUB_ENV  
           elif [[ "${{ vars.TAG }}" == v* ]]; then
             echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
@@ -132,6 +134,8 @@ jobs:
               cp secrets.txt .env.tru-uat-auto.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-wipro" ]]; then
               cp secrets.txt .env.tru-wipro.local
+          elif [[ "${{ vars.ENVIRONMENT }}" == "tru-lti" ]]; then
+              cp secrets.txt .env.tru-lti.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "prod" ]]; then
               cp secrets.txt .env.production.local
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
@@ -237,9 +241,11 @@ jobs:
           elif [[ "${{ vars.ENVIRONMENT }}" == "uat" ]]; then
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_UAT }}" >> $GITHUB_ENV    
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-prod" ]]; then
-            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_PROD }}" >> $GITHUB_ENV    
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_PROD }}" >> $GITHUB_ENV 
+          elif [[ "${{ vars.ENVIRONMENT }}" == "prod" ]]; then
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PROD }}" >> $GITHUB_ENV
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-lti" ]]; then
-            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_LTI }}" >> $GITHUB_ENV 
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_LTI }}" >> $GITHUB_ENV
           else
             echo "Error: Unrecognized environment "
             exit 1

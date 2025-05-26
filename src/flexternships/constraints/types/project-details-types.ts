@@ -2,6 +2,7 @@ import { DurationType, ProjectPrimaryStatus, ProjectSecondaryStatus } from '../e
 
 export type TeamMemberDetails = {
   id: string;
+  teamId: string;
   name?: string;
   profileImage?: string;
   email?: string;

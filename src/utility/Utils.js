@@ -33,6 +33,9 @@ import JPGIcon from '../assets/images/JPG.svg';
 import fileScanningService from '../services/fileUploadService';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { userData } from '@/redux/selectors/dashboardSelectors';
+import parseMin from 'libphonenumber-js/min';
+import parseMax from 'libphonenumber-js/max';
+import parseMobile from 'libphonenumber-js/mobile';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -1059,4 +1062,11 @@ export const formatWebSocketMessage = (data) => {
     default:
       return { role: MessageRole.ASSISTANT, content: 'Unsupported message type' };
   }
+};
+
+export const validatePhoneNumber = (number, countryCode) => {
+  const isMinValid = parseMin(number, countryCode).isValid();
+  const isMaxValid = parseMax(number, countryCode).isValid();
+  const isMobileValid = parseMobile(number, countryCode).isValid();
+  return isMinValid && isMaxValid && isMobileValid;
 };

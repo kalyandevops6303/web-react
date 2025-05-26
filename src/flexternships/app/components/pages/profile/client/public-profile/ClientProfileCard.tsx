@@ -89,7 +89,7 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
             <span className="text-sm text-grey font-semibold">Department:</span>
             <span className="text-sm text-grey font-normal">{clientDetails?.department || 'Unknown Department'}</span>
           </div>
-          <div className="flex flex-row w-[350px] gap-x-2">
+          {/* <div className="flex flex-row w-[350px] gap-x-2">
             <span className="text-sm text-grey font-semibold">Location:</span>
             <span className="text-sm text-grey font-normal">
               {[
@@ -103,7 +103,7 @@ export default function ClientProfileCard(props: ClientProfileCardProps) {
                 .filter(Boolean)
                 .join(', ')}
             </span>
-          </div>
+          </div> */}
           {clientDetails?.socialLinks?.length > 0 && (
             <div className="flex flex-col gap-y-3">
               <div className="text-sm text-grey font-semibold">Social Links</div>
