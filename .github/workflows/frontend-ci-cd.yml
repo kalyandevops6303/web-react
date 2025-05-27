@@ -67,7 +67,7 @@ jobs:
           elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
             echo "FILENAME=env-fe-tru-wipro.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
-            echo "FILENAME=tru-lti/env-fe-tru-lti.txt" >> $GITHUB_ENV  
+            echo "FILENAME=env-fe-tru-lti.txt" >> $GITHUB_ENV  
           elif [[ "${{ vars.TAG }}" == v* ]]; then
             echo "FILENAME=env-fe-prod.txt" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
@@ -87,6 +87,8 @@ jobs:
            echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
            echo "SUBFOLDER=tru-wipro" >> $GITHUB_ENV
+          elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
+           echo "SUBFOLDER=tru-lti" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == v* ]]; then
            echo "SUBFOLDER=prod" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
