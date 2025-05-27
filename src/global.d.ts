@@ -49,7 +49,6 @@ declare interface ImportMeta {
     VITE_GOOGLE_CLIENT_ID: string;
     VITE_APP_ID: string;
     VITE_APP_REGION: string;
-    GOOGLE_ANALYTICS_TRACKING_ID: string;
     VITE_HOTJAR_TRACKING_ID: number;
     VITE_VAPID: string;
     VITE_FIREBASE_API_KEY: string;
@@ -65,7 +64,6 @@ declare interface ImportMeta {
 
 declare global {
   interface Window {
-    dataLayer: any;
     google: {
       accounts: {
         id: {
