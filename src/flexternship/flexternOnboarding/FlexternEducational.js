@@ -1268,7 +1268,6 @@ const FlexternEducational = () => {
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
-    dispatch(getCustomerSupportCount());
   }, [parseResume, parsedResumeData, parsedUploaded]);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
