@@ -450,6 +450,12 @@ export const parseGitHubStats = (data: Record<string, any>): GitHubStats => {
     pullRequestsCount: data.pr_count,
     projectName: data.project_name,
     githubUrl: data.github_url,
+    projectStartDate: data.project_start_date,
+    projectEndDate: data.project_end_date,
+    securityRatingGrade: data.security_rating_grade,
+    maintainabilityRatingGrade: data.maintainability_rating_grade,
+    reliabilityRatingGrade: data.reliability_rating_grade,
+    lastGithubSyncRun: data.last_github_sync_run,
   };
 };
 

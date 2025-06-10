@@ -7,7 +7,7 @@ import BoxSkeleton from '../../components/core/skeletons/BoxSkeleton';
 import { Grade } from '@/flexternships/app/components/tds/grade/Grade';
 import TooltipInfo from '../../components/core/tooltips/TooltipInfo';
 
-export default function GithubInsightsCard() {
+export default function GithubInsightsCardIndividual() {
   const params = useParams();
 
   const data = useAnalyticsStore((state) => state.commits);
@@ -15,7 +15,7 @@ export default function GithubInsightsCard() {
   const isCommitsLoading = useAnalyticsStore((state) => state.isCommitsLoading);
 
   useEffect(() => {
-    getData(params?.projectId);
+    getData(params?.projectId, params?.userId);
   }, [params?.projectId]);
 
   if (isCommitsLoading) {
@@ -27,7 +27,7 @@ export default function GithubInsightsCard() {
       <div className="border-b border-grey-50">
         <div className="px-5 py-4 flex items-center justify-between">
           <h1 className="text-dark-100 font-montserrat text-lg font-medium leading-xxl-custom">Commits & Quality</h1>
-          <Link to={`/analytics/project/${params?.projectId}/team/commits`}>
+          <Link to={`/analytics/project/${params?.projectId}/individual/${params?.userId}/commits`}>
             <div className="flex items-center gap-1">
               <p className="text-trublue-secondary-500 text-center font-montserrat text-sm font-semibold leading-normal tracking-wider">
                 View all
