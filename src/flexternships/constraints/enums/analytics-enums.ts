@@ -27,3 +27,15 @@ export enum GithubMetricType {
   COMMITS = 'COMMITS',
   PULL_REQUESTS = 'PULL_REQUESTS',
 }
+
+export enum PullRequestStatus {
+  OPEN = 'open',
+  CLOSED = 'closed',
+  MERGED = 'merged',
+}
+
+export enum PullRequestStatusStyleType {
+  open = 'active',
+  closed = 'deactivated',
+  merged = 'expired',
+}

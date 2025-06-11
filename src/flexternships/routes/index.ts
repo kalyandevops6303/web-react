@@ -71,6 +71,10 @@ const routes = {
     path: '/analytics/project/:projectId/team/commits',
     generate: (projectId: string) => `/analytics/project/${projectId}/team/commits`,
   },
+  commitsIndividual: {
+    path: '/analytics/project/:projectId/individual/:userId/commits',
+    generate: (projectId: string, userId: string) => `/analytics/project/${projectId}/individual/${userId}/commits`,
+  },
   comments: {
     path: '/analytics/project/:projectId/individual/:userId/comments',
     generate: (projectId: string, userId: string) => `/analytics/project/${projectId}/individual/${userId}/comments`,
