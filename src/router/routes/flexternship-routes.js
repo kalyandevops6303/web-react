@@ -490,7 +490,25 @@ const FlexternshipRoutes = [
   },
   {
     path: routes.talentOnboarding.path,
-    element: <TalentOnboarding />,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.ACCOUNT_DETAILS, FlexternUserCheckpoint.PROFILE_DETAILS],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.COMPLETE,
+                redirectRoute: routes.dashboard.path,
+              },
+            ],
+          },
+        ]}
+        noPadding
+      >
+        <TalentOnboarding />
+      </RoleAccessWrapper>
+    ),
     meta: {
       layout: 'blank',
     },
