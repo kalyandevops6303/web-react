@@ -420,11 +420,14 @@ export const getConversationAttachmentStatsService = async (projectId: string, u
   }
 };
 
-export const getGitHubStatsService = async (projectId: string) => {
+export const getGitHubStatsService = async (projectId: string, userId: string) => {
   const headers = appendAuthToken({});
   const config = {
     headers: headers,
-    params: { project_id: projectId },
+    params: {
+      project_id: projectId,
+      ...(userId && { user_id: userId }),
+    },
     withCredentials: true,
   };
   try {
@@ -458,5 +461,34 @@ export const getGitHubBranchHistoryPaginatedService = async (
     return parseGitHubBranchHistory(response.data?.data) || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching branch history');
+  }
+};
+
+export const getGitHubPullRequestHistoryPaginatedService = async (
+  projectId: string,
+  userId?: string,
+  options: { metricType: GithubMetricType; page: number; pageSize: number } = {
+    metricType: GithubMetricType.PULL_REQUESTS,
+    page: 1,
+    pageSize: 10,
+  },
+) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    params: {
+      page: options.page,
+      page_size: options.pageSize,
+      project_id: projectId,
+      metric_type: options.metricType,
+      ...(userId && { user_id: userId }),
+    },
+    withCredentials: true,
+  };
+  try {
+    const response = await axios.get(`${routes.analytics.github.prHistory}`, config);
+    return keysToCamelCase(response.data?.data) || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching pull request history');
   }
 };

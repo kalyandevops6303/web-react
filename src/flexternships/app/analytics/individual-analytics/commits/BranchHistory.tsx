@@ -1,16 +1,13 @@
-import FlexternAvatar from '@/flexternships/app/components/core/avatars/FlexternAvatar';
-import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard';
-import ExpandableText from '@/flexternships/app/components/core/ExpandableText';
 import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
 import { GithubMetricType } from '@/flexternships/constraints/enums/analytics-enums';
+import { getGitHubPullRequestHistoryPaginatedService } from '@/flexternships/services/analytics-service';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
-import { getGitHubBranchHistoryPaginatedService } from '@/flexternships/services/analytics-service';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
-import { formatEpochToHumanReadable } from '@/flexternships/utils/date-utils';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { GitHubBranchCommit, GitHubBranchHistory } from '@/flexternships/constraints/types/analytics-types';
+import { GitHubBranchHistory, GitHubPullRequest } from '@/flexternships/constraints/types/analytics-types';
 import Spinner from '@/flexternships/app/components/core/Spinner';
+import PullRequestCard from './PullRequestCard';
 
 function BranchHistorySkeleton() {
   return (
@@ -23,8 +20,8 @@ function BranchHistorySkeleton() {
 }
 
 export default function BranchHistory() {
-  const { projectId } = useParams();
-  const [branchHistoryData, setBranchHistoryData] = useState<GitHubBranchCommit[]>([]);
+  const { projectId, userId } = useParams();
+  const [branchHistoryData, setBranchHistoryData] = useState<GitHubPullRequest[]>([]);
   const [metadata, setMetadata] = useState<GitHubBranchHistory['metadata']>({
     currentPage: 0,
     pageSize: 10,
@@ -44,8 +41,12 @@ export default function BranchHistory() {
 
     try {
       const currentPage = options.resetPage ? 1 : metadata.currentPage + 1;
-      const fetchOptions = { metricType: GithubMetricType.COMMITS, page: currentPage, pageSize: metadata.pageSize };
-      const data = await getGitHubBranchHistoryPaginatedService(projectId, fetchOptions);
+      const fetchOptions = {
+        metricType: GithubMetricType.PULL_REQUESTS,
+        page: currentPage,
+        pageSize: metadata.pageSize,
+      };
+      const data = await getGitHubPullRequestHistoryPaginatedService(projectId, userId, fetchOptions);
 
       if (data) {
         setBranchHistoryData((prevData) => (options.resetPage ? data.data : [...prevData, ...data.data]));
@@ -87,29 +88,10 @@ export default function BranchHistory() {
     <div className="flex flex-col gap-7">
       <div className="flex flex-col gap-4">
         {branchHistoryData.length > 0
-          ? branchHistoryData.map((item: GitHubBranchCommit, index: number) => (
-              <SimpleElevatedCard key={index} className="bg-white flex items-start p-4 flex-wrap gap-y-5">
-                <div className="flex items-center gap-2 w-full md:w-1/3">
-                  <FlexternAvatar
-                    className="text-base"
-                    imageUri={item.imageUri}
-                    name={`${item.firstName} ${item.lastName}`}
-                  />
-                  <div>
-                    <div className="text-[#5E5873] font-montserrat text-sm font-medium leading-[23px]">
-                      {item.firstName} {item.lastName}
-                    </div>
-                    <div className="text-[#6E6B7B] font-montserrat text-sm font-normal leading-[21px]">{item.role}</div>
-                  </div>
-                </div>
-
-                <div className="w-full md:w-2/3 border-l border-[#E0E0E0] pl-5">
-                  <div className="text-[#B9B9C3] font-montserrat text-xs font-medium leading-5">
-                    {formatEpochToHumanReadable(item.timestamp)}
-                  </div>
-                  <ExpandableText charLimit={200}>{item.message}</ExpandableText>
-                </div>
-              </SimpleElevatedCard>
+          ? branchHistoryData.map((item: GitHubPullRequest, index: number) => (
+              <div key={index}>
+                <PullRequestCard data={item} />
+              </div>
             ))
           : !isBranchHistoryLoading && <div className="text-lg text-center text-grey">No branch history found</div>}
         {isBranchHistoryLoading && (

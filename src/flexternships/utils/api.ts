@@ -170,6 +170,7 @@ export const routes = {
     github: {
       analytics: `${serviceUrls.dashboardV2}/individual/github/analytics`,
       stats: `${serviceUrls.dashboardV2}/individual/github/stats`,
+      prHistory: `${serviceUrls.dashboardV2}/github/analytics/list`,
     },
     team: {
       performanceSummary: `${serviceUrls.dashboardV2}/team/performance/summary`,

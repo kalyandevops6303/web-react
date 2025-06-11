@@ -917,6 +917,37 @@ const FlexternshipRoutes = [
     ),
   },
   {
+    path: routes.commitsIndividual.path,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+        ]}
+      >
+        <Commits />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
     path: routes.setNewPassword.path,
     element: <ForgotPasswordVerification />,
     meta: {
