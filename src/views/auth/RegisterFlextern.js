@@ -60,7 +60,6 @@ const RegisterFlexternForm = React.memo(
         },
       });
     };
-
     useEffect(() => {
       if (tncStatus) {
         setAgreeTerms(tncStatus);
@@ -307,7 +306,7 @@ const RegisterFlextern = () => {
           isLoading={isLoading}
           emailData={emailData}
           requestToken={requestToken}
-          tncStatus={location?.state?.tncAccepted}
+          tncStatus={location?.state?.tncAccepted ?? false}
         />
       </div>
     </OnBoardWrap>
