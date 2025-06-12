@@ -47,6 +47,7 @@ import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector, selectAuthUserData } from '@/redux/selectors/authSelectors';
+import { Link } from 'react-router-dom';
 
 const Control = ({ children, ...rest }) => <components.Control {...rest}>{children}</components.Control>;
 
@@ -806,6 +807,15 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
                     isMyListing={primaryFilter === 'my_listings'}
                     isRecommanded={isRecommanded}
                     data={selectMarketPlaceData}
+                    notFoundContent={
+                      <div>
+                        All projects are into execution, kindly refer to{' '}
+                        <Link to="/projects/ongoing" className="hover:underline">
+                          <b>Projects Tab</b>
+                        </Link>
+                      </div>
+                    }
+                    // text={primaryFilter === 'my_listings' ? 'No projects found!' : 'No data found'}
                   />
                 ) : (
                   ''
