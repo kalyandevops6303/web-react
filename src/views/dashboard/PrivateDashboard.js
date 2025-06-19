@@ -42,6 +42,7 @@ import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import PermissionWrapper from '../../PermissionWrapper';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
 import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
+import TalentPrivateDashboard from '@/flexternships/app/private-dashboard/talent/page';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -145,6 +146,10 @@ const PrivateDashboard = () => {
   const handleRaiseDispute = () => {
     setRaisedDisputeModal(true);
   };
+
+  if (userDetailsData?.user_type === userTypes.talent) {
+    return <TalentPrivateDashboard />;
+  }
 
   return (
     <div className={`trumio ${userDetailsData?.user_type === userTypes.talent ? 'flex flex-col gap-1.5' : ''}`}>
