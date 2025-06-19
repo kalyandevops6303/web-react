@@ -1,14 +1,6 @@
 import SimpleElevatedCard from '@/flexternships/app/components/core/cards/SimpleElevatedCard';
 import BoxSkeleton from '@/flexternships/app/components/core/skeletons/BoxSkeleton';
 import { StatusBadge } from '@/flexternships/app/components/tds/status-badge/StatusBadge';
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from '@/flexternships/app/components/ui/select';
-// import { TimePeriodOptionLabels, TimePeriodOptions } from '@/flexternships/constraints/enums/analytics-enums';
 import { useAnalyticsStore } from '@/flexternships/stores/analytics-store';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
