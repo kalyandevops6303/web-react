@@ -3,7 +3,7 @@ import ProjectCard from './ProjectCard';
 
 export default function ProjectsAccordion() {
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion type="single" collapsible>
       <AccordionItem value="item-1" className="rounded-lg border-none bg-white shadow-card">
         <AccordionTrigger className="py-4 px-6 hover:no-underline cursor-default">
           <div className="flex items-center gap-x-3">

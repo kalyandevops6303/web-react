@@ -1,15 +1,16 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../../ui/accordion';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Info } from 'react-feather';
+import routes from '@/flexternships/routes';
 
-export default function AssessmentSection() {
+export default function DashboardAssessmentSection() {
   return (
-    <Accordion type="single" collapsible className="bg-white w-full rounded-md">
-      <AccordionItem value="item-1" className="border-none">
+    <Accordion type="single" defaultValue="my-assessments" collapsible className="bg-white rounded-md">
+      <AccordionItem value="my-assessments" className="border-none">
         <AccordionTrigger className="py-4 px-6 hover:no-underline cursor-default">
           <div className="flex items-center justify-between w-full py-2">
             <Link
-              to="/dashboard/assessments"
+              to={routes.assessments.path}
               className="flex items-center gap-1 text-lg font-medium leading-5.5 text-trublue-secondary-500"
             >
               <div>My Assessments</div>

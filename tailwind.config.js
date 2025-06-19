@@ -44,6 +44,7 @@ module.exports = {
           heading: '#5E5873',
           muted: '#B9B9C3',
           c2: '#C2C2C2',
+          10: '#FAFAFA',
           50: '#E6E7E7',
           200: '#B4B7B8',
           300: '#9C9FA1',
