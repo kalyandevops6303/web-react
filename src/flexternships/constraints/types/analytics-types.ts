@@ -117,6 +117,8 @@ export type ConversationParticipationStats = {
   participationPercentage: number;
   countOfMessagesPerDay: number;
   averageResponseTimeInSeconds: number;
+  meetingAttendancePercentage?: number;
+  meetingParticipationPercentage?: number;
 };
 
 export type ConversationAttachmentStats = {
