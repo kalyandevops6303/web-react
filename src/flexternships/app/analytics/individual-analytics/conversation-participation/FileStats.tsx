@@ -38,7 +38,6 @@ export default function FileStats() {
         Total files shared: <span className="text-grey-900 font-semibold">{data?.totalFilesShared}</span>
       </div>
       <div className="flex gap-5 w-full">
-        {/* <div className="grow"> */}
         <div className={`${styles.documentsCard}`} style={{ width: `${styles.documentsWidth}%` }}>
           <div className="font-montserrat text-sm font-medium leading-5.5 text-grey-700">Documents</div>
           <div className="flex items-center gap-2 pb-3">
@@ -51,8 +50,6 @@ export default function FileStats() {
             </div>
           </div>
         </div>
-        {/* </div> */}
-        {/* <div className="grow"> */}
         <div className={`${styles.linksCard}`} style={{ width: `${styles.linksWidth}%` }}>
           <div className="font-montserrat text-sm font-medium leading-5.5 text-grey-700">Links</div>
           <div className="flex items-center gap-2 pb-3">
@@ -65,7 +62,6 @@ export default function FileStats() {
             </div>
           </div>
         </div>
-        {/* </div> */}
       </div>
     </SimpleElevatedCard>
   );

@@ -21,9 +21,6 @@ export default function MessageStats() {
   const getData = useAnalyticsStore((state) => state.getConversationParticipationStats);
   const isLoading = useAnalyticsStore((state) => state.isConversationParticipationStatsLoading);
 
-  // const [messagesCountState, setMessagesCountState] = useState(TimePeriodOptions.LAST_7_DAYS);
-  // const [participationPercentageState, setParticipationPercentageState] = useState(TimePeriodOptions.LAST_7_DAYS);
-
   useEffect(() => {
     getData(projectId, userId);
   }, [userId, projectId]);
