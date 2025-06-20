@@ -65,7 +65,7 @@ pipeline {
                             filename = '/QA-auto/env-fe-qa-auto.txt'
                             break
                         case 'tru-dev':
-                            filename = '/Dev/cm-tru-dev/env-fe-tru-dev.txt'
+                            filename = '/Dev/tru-dev/env-fe-tru-dev.txt'
                             break
 			case 'tru-qa':
                             filename = '/QA/tru-qa/env-fe-tru-qa.txt'
