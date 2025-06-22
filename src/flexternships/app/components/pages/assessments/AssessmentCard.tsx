@@ -15,7 +15,7 @@ const CustomTable = () => {
           </tr>
         </thead>
         <tbody>
-          <tr className="bg-white border-b border-grey-50">
+          <tr className="bg-white border-b border-grey-50 h-[52px]">
             <td className="py-3 pr-2.5 pl-6">Section 1</td>
             <td className="py-3 px-2.5">10 Jan 2024, 4:00 PM IST</td>
             <td className="py-3 pl-2.5 pr-6 flex flex-row gap-x-2">
@@ -23,7 +23,7 @@ const CustomTable = () => {
               <span className="text-sm font-medium leading-4.5 text-grey">Proficient</span>
             </td>
           </tr>
-          <tr className="bg-grey-10 border-b border-grey-50">
+          <tr className="bg-grey-10 border-b border-grey-50 h-[52px]">
             <td className="py-3 pr-2.5 pl-6">Section 2</td>
             <td className="py-3 px-2.5">10 Jan 2024, 4:00 PM IST</td>
             <td className="py-3 pl-2.5 pr-6 flex flex-row gap-x-2">
@@ -31,7 +31,7 @@ const CustomTable = () => {
               <span className="text-sm font-medium leading-4.5 text-grey">Mastery</span>
             </td>
           </tr>
-          <tr className="bg-white">
+          <tr className="bg-white h-[52px]">
             <td className="py-3 pr-2.5 pl-6">Section 3</td>
             <td className="py-3 px-2.5">10 Jan 2024, 4:00 PM IST</td>
             <td className="py-3 pl-2.5 pr-6 flex flex-row gap-x-2">
@@ -47,7 +47,7 @@ const CustomTable = () => {
 
 function AssessmentAccordion() {
   return (
-    <Accordion type="single" defaultValue="my-assessments" collapsible className="bg-white rounded-10">
+    <Accordion type="single" defaultValue="my-assessments" collapsible className="bg-white rounded-10 overflow-hidden">
       <AccordionItem value="my-assessments" className="border-none">
         <AccordionTrigger className="p-6 hover:no-underline cursor-default">
           <div className="flex flex-row items-center w-full gap-x-10 pr-10">
@@ -69,14 +69,14 @@ function AssessmentAccordion() {
                 </div>
               </div>
               <div className="flex flex-col gap-y-1.5">
-                <div className="text-grey-900 text-lg font-medium leading-5.5">36</div>
+                <div className="text-grey-900 text-lg font-medium leading-5.5 self-start">36</div>
                 <div className="flex flex-row items-center gap-x-1">
                   <HelpCircle size={16} className="text-grey-500" />
                   <span className="text-sm font-medium leading-4.5 text-grey-500">Questions</span>
                 </div>
               </div>
               <div className="flex flex-col gap-y-1.5">
-                <div className="text-grey-900 text-lg font-medium leading-5.5">10 min</div>
+                <div className="text-grey-900 text-lg font-medium leading-5.5 self-start">10 min</div>
                 <div className="flex flex-row items-center gap-x-1">
                   <Clock size={16} className="text-grey-500" />
                   <span className="text-sm font-medium leading-4.5 text-grey-500">Time Taken</span>
@@ -86,7 +86,7 @@ function AssessmentAccordion() {
           </div>
         </AccordionTrigger>
         <AccordionContent className="p-0">
-          <div className="p-6 pt-0">
+          <div className="p-6 pt-0 bg-white">
             <CustomTable />
           </div>
         </AccordionContent>

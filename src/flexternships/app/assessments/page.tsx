@@ -33,6 +33,7 @@ export default function AssessmentsPage() {
       </div>
       <div className="flex flex-col gap-y-6">
         <AssessmentCard />
+        <AssessmentCard />
       </div>
 
       {/* <PreparingAssessmentModal isOpen={true} onClose={() => {}} /> */}
