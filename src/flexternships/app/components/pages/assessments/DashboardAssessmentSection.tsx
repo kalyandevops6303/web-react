@@ -1,16 +1,29 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../../ui/accordion';
 import { Link } from 'react-router-dom';
-import { ChevronRight, HelpCircle, Clock, Info } from 'react-feather';
+import { ChevronRight, HelpCircle, Clock, Info, Lock } from 'react-feather';
 import routes from '@/flexternships/routes';
+import { useAssessmentsStore } from '@/flexternships/stores/assessments-store';
+import React, { useEffect } from 'react';
+import { isEmpty } from 'lodash';
+import { Assessment } from '@flexternships/types/assessment-types';
+import { formatEpochToDuration } from '@/flexternships/utils/date-utils';
+import classNames from 'classnames';
+import { ProjectPrimaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import { AssessmentStatus, AssessmentType } from '@/flexternships/constraints/enums/assessment-enums';
 
-const AssessmentInfo = () => {
-  const isCompleted = true;
+const AssessmentInfo = ({ assessment }: { assessment: Assessment }) => {
+  const isBenchmarkingAssessment = assessment.type === AssessmentType.BENCHMARKING;
+  const isAssessmentCompleted = assessment.status === AssessmentStatus.COMPLETED;
+  const isProjectCompleted = assessment.projectStatus === ProjectPrimaryStatus.COMPLETED;
 
-  if (isCompleted)
+  const isAssessmentEnabled = isBenchmarkingAssessment || isProjectCompleted;
+  const durationinMillis = assessment.totalDuration * 1000;
+
+  if (isAssessmentCompleted)
     return (
       <div className="flex flex-col gap-y-2 grow">
         <div className="flex items-center gap-x-1.5">
-          <span className="text-grey-300 text-xs font-semibold leading-4 uppercase">BENCHMARKING</span>
+          <span className="text-grey-300 text-xs font-semibold leading-4 uppercase">{assessment.type}</span>
           <Info size={16} className="text-grey-300" />
         </div>
         <div className="flex flex-row gap-x-5 items-center justify-between">
@@ -23,14 +36,18 @@ const AssessmentInfo = () => {
           </div>
           <div className="flex flex-row gap-x-5">
             <div className="flex flex-col gap-y-1.5">
-              <div className="text-grey-900 text-lg font-medium leading-5.5 self-start">36</div>
+              <div className="text-grey-900 text-lg font-medium leading-5.5 self-start">
+                {assessment.numberOfQuestions}
+              </div>
               <div className="flex flex-row items-center gap-x-1">
                 <HelpCircle size={16} className="text-grey-500" />
                 <span className="text-sm font-medium leading-4.5 text-grey-500">Questions</span>
               </div>
             </div>
             <div className="flex flex-col gap-y-1.5">
-              <div className="text-grey-900 text-lg font-medium leading-5.5 self-start">10 min</div>
+              <div className="text-grey-900 text-lg font-medium leading-5.5 self-start">
+                {formatEpochToDuration(durationinMillis)}
+              </div>
               <div className="flex flex-row items-center gap-x-1">
                 <Clock size={16} className="text-grey-500" />
                 <span className="text-sm font-medium leading-4.5 text-grey-500">Time Taken</span>
@@ -43,18 +60,40 @@ const AssessmentInfo = () => {
   return (
     <div className="flex flex-col gap-y-2 grow">
       <div className="flex items-center gap-x-1.5">
-        <span className="text-grey-300 text-xs font-semibold leading-4 uppercase">BENCHMARKING</span>
+        <span className="text-grey-300 text-xs font-semibold leading-4 uppercase">{assessment.type}</span>
         <Info size={16} className="text-grey-300" />
       </div>
       <div className="flex flex-row gap-x-3 py-3">
         <div className="grow text-base font-medium leading-5 text-grey-900">UX Designer</div>
-        <div className="text-sm font-semibold tracking-wide text-trublue-secondary-500">Take Assessment</div>
+        <div
+          className={classNames('text-sm font-semibold tracking-wide', {
+            'text-trublue-disabled flex gap-x-2 items-center cursor-default': !isAssessmentEnabled,
+            'text-trublue-secondary-500 cursor-pointer': isAssessmentEnabled,
+          })}
+        >
+          Take Assessment {!isAssessmentEnabled && <Lock size={16} className="text-trublue-disabled" />}
+        </div>
       </div>
     </div>
   );
 };
 
 export default function DashboardAssessmentSection() {
+  const assessments = useAssessmentsStore((state) => state.assessments);
+  const isAssessmentsLoading = useAssessmentsStore((state) => state.isAssessmentsLoading);
+  const populateAssessments = useAssessmentsStore((state) => state.populateAssessments);
+
+  const isGradeMetadataLoading = useAssessmentsStore((state) => state.isGradeMetadataLoading);
+  const populateGradeMetadata = useAssessmentsStore((state) => state.populateGradeMetadata);
+
+  useEffect(() => {
+    populateAssessments();
+    populateGradeMetadata();
+  }, []);
+
+  if (isAssessmentsLoading || isGradeMetadataLoading) return <div>Loading...</div>;
+  if (isEmpty(assessments)) return <div>No assessments found</div>;
+
   return (
     <Accordion type="single" defaultValue="my-assessments" collapsible className="bg-white rounded-md">
       <AccordionItem value="my-assessments" className="border-none">
@@ -75,18 +114,12 @@ export default function DashboardAssessmentSection() {
         </AccordionTrigger>
         <AccordionContent className="p-0">
           <div className="p-6 flex gap-x-7 border-t border-grey-50">
-            <AssessmentInfo />
-            <div className="w-[1px] rounded-md bg-grey-50" />
-            <div className="flex flex-col gap-y-2 grow">
-              <div className="flex items-center gap-x-1.5">
-                <span className="text-grey-300 text-xs font-semibold leading-4 uppercase">BENCHMARKING</span>
-                <Info size={16} className="text-grey-300" />
-              </div>
-              <div className="flex flex-row gap-x-3 py-3">
-                <div className="grow text-base font-medium leading-5 text-grey-900">UX Designer</div>
-                <div className="text-sm font-semibold tracking-wide text-trublue-secondary-500">Take Assessment</div>
-              </div>
-            </div>
+            {assessments.map((assessment, index) => (
+              <React.Fragment key={assessment.id}>
+                <AssessmentInfo key={assessment.id} assessment={assessment} />
+                {index !== assessments.length - 1 && <div className="w-[1px] rounded-md bg-grey-50" />}
+              </React.Fragment>
+            ))}
           </div>
         </AccordionContent>
       </AccordionItem>

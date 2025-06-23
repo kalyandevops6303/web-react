@@ -1,4 +1,4 @@
-// import PreparingAssessmentModal from '../components/core/modals/assessments/PreparingAssessmentModal';
+import PreparingAssessmentModal from '../components/core/modals/assessments/PreparingAssessmentModal';
 import CustomBreadCrumbs from '../components/core/CustomBreadCrumbs';
 import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
 import { ChevronLeft, Info } from 'react-feather';
@@ -6,12 +6,37 @@ import { useNavigate } from 'react-router-dom';
 import routes from '@/flexternships/routes';
 import InfoNote from '../components/core/InfoNote';
 import AssessmentCard from '../components/pages/assessments/AssessmentCard';
+import { useAssessmentsStore } from '@/flexternships/stores/assessments-store';
+import { useEffect, useState } from 'react';
+import { isEmpty } from 'lodash';
+import { Assessment } from '@/flexternships/constraints/types/assessment-types';
 
 export default function AssessmentsPage() {
+  const assessments = useAssessmentsStore((state) => state.assessments);
+  const isAssessmentsLoading = useAssessmentsStore((state) => state.isAssessmentsLoading);
+  const populateAssessments = useAssessmentsStore((state) => state.populateAssessments);
+
+  const [isPreparingAssessmentModalOpen, setIsPreparingAssessmentModalOpen] = useState(false);
+  const [assessmentToPrepare, setAssessmentToPrepare] = useState<Assessment | undefined>();
+
+  useEffect(() => {
+    populateAssessments();
+  }, []);
+
   const navigate = useNavigate();
   const goBack = () => {
     navigate(routes.dashboard.path);
   };
+
+  const takeAssessment = (assessment: Assessment) => {
+    setAssessmentToPrepare(assessment);
+    setIsPreparingAssessmentModalOpen(true);
+  };
+
+  const closePreparingAssessmentModal = () => {
+    setIsPreparingAssessmentModalOpen(false);
+  };
+
   return (
     <div className="flex flex-col gap-y-6">
       <div>
@@ -32,11 +57,23 @@ export default function AssessmentsPage() {
         <InfoNote note="You have been assigned to take following assessment(s). Please complete them at your earliest to expedite your flexternship process." />
       </div>
       <div className="flex flex-col gap-y-6">
-        <AssessmentCard />
-        <AssessmentCard />
+        {isAssessmentsLoading ? (
+          <div>Loading...</div>
+        ) : isEmpty(assessments) ? (
+          <div>No assessments found</div>
+        ) : (
+          assessments.map((assessment) => (
+            <AssessmentCard key={assessment.id} assessment={assessment} takeAssessment={takeAssessment} />
+          ))
+        )}
       </div>
-
-      {/* <PreparingAssessmentModal isOpen={true} onClose={() => {}} /> */}
+      {assessmentToPrepare && (
+        <PreparingAssessmentModal
+          isOpen={isPreparingAssessmentModalOpen}
+          onClose={closePreparingAssessmentModal}
+          assessment={assessmentToPrepare}
+        />
+      )}
     </div>
   );
 }
