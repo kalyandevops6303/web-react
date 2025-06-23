@@ -1,3 +1,4 @@
+import { serviceUrls } from '@/flexternships/utils/api';
 import {
   apiAuthEndpoint,
   apiOnboardingEndpoint,
@@ -162,6 +163,9 @@ const API = {
     saveDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft/save`,
     draftProjectsCheck: `${apiCreateProjectEndpoint}/api/v1/project/draft/check`,
     deleteDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft`,
+
+    // projectv2
+    draftProjectCheckV2: `${serviceUrls.projectManagementV2}/project/draft/check`,
   },
   projectDetails: {
     getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,

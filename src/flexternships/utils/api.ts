@@ -1,6 +1,6 @@
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const serviceUrls = {
+export const serviceUrls = {
   dashboardV2: `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}/api/v2`,
   projectManagementV2: `${baseUrl}/projectv2/api/v1`,
   userManagement: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v1`,
@@ -17,6 +17,7 @@ export const routes = {
       create: `${serviceUrls.projectManagementV2}/project`,
       saveDraft: `${serviceUrls.projectManagementV2}/project/draft/save`,
       getDraft: `${serviceUrls.projectManagementV2}/project/draft/get`,
+      checkDraft: `${serviceUrls.projectManagementV2}/project/draft/check`,
       getProjectDetailsById: `${serviceUrls.projectManagementV2}/project/detail`,
       getProjectTeamDetails: `${serviceUrls.projectManagementV2}/project/team-view`,
       acceptProject: `${serviceUrls.projectManagementV2}/project/accept`,
