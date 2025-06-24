@@ -2,8 +2,8 @@ import { FeedbackProgress } from '@/flexternships/constraints/types/milestone-in
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { useState } from 'react';
 import { MatrixCell, DropdownOption, CellProps } from '@/flexternships/constraints/types/form-types';
-import { firstColumn, individualHeaders, teamColumns, teamHeaders } from '@/flexternships/mocks/meeting-feedback';
-// import MatrixElements from "./MatrixElements";
+import { firstColumn, teamColumns } from '@/flexternships/mocks/meeting-feedback';
+import MatrixElements from './MatrixElements';
 import IndividualFeedback from './IndividualFeedback';
 import TeamFeedback from './TeamFeedback';
 
@@ -17,10 +17,10 @@ const FeedbackItem = ({ feedback }: { feedback: FeedbackProgress }) => {
       })),
     );
   };
-  // const { headers } = MatrixElements({
-  //     feedbackType: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
-  // });
-  const headers = individualHeaders;
+  const { headers } = MatrixElements({
+    feedbackType: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
+  });
+  // const headers = individualHeaders;
 
   const [ratingMatrix, setRatingMatrix] = useState<MatrixCell[][]>(() => initializeMatrix(firstColumn, headers));
 
@@ -32,9 +32,9 @@ const FeedbackItem = ({ feedback }: { feedback: FeedbackProgress }) => {
         colId: col.identifier,
       })),
     );
-  // const teamHeaders = MatrixElements({
-  //     feedbackType: MilestoneFeedbackType.TEAM_FEEDBACK,
-  // }).headers;
+  const teamHeaders = MatrixElements({
+    feedbackType: MilestoneFeedbackType.TEAM_FEEDBACK,
+  }).headers;
   const [teamMatrix, setTeamMatrix] = useState<MatrixCell[][]>(() => initializeTeamMatrix(teamHeaders, teamColumns));
   const [topLeaders, setTopLeaders] = useState<DropdownOption[]>([]);
   const [qualitativeFeedback, setQualitativeFeedback] = useState('');

@@ -1,3 +1,8 @@
+import { MilestoneFeedbackInputCellType } from '../constraints/enums/feedback-enums';
+import { FeedbackElement } from '../constraints/types/milestone-feedback-types';
+import { useMilestoneFeedbackStore } from '../stores/feedback-store';
+import { MilestoneFeedbackType } from '../constraints/enums/core-enums';
+
 /**
  * Adds query parameters to a URL
  * @param url - Base URL to add parameters to
@@ -65,4 +70,60 @@ export const stringToColour = (str: string, params?: { opacity?: number }): stri
   }
 
   return colour;
+};
+
+export const getFeedbackQuestion = (
+  feedbackType: MilestoneFeedbackType,
+  questionName: string,
+): FeedbackElement | undefined => {
+  const feedbackSkeletons = useMilestoneFeedbackStore.getState().feedbackSkeletons;
+  const feedbackSkeleton = feedbackSkeletons.find((skeleton) => skeleton.type === feedbackType);
+  const question = feedbackSkeleton?.elements.find((element) => element.name === questionName);
+  return question;
+};
+
+export const getNumberRatingInputConfig = (element: FeedbackElement) => {
+  return {
+    type: MilestoneFeedbackInputCellType.NUMBER,
+    min: element.rateValues?.[0]?.value || 1,
+    max: element.rateValues?.[element.rateValues.length - 1]?.value || 5,
+  };
+};
+
+export const getWowGroupInputConfig = (element: FeedbackElement) => {
+  return {
+    type: MilestoneFeedbackInputCellType.DROPDOWN,
+    options: element.choices?.map((choice) => {
+      if (typeof choice === 'string') {
+        return {
+          label: choice,
+          value: choice,
+        };
+      } else {
+        return {
+          label: choice.text,
+          value: choice.value,
+        };
+      }
+    }),
+  };
+};
+
+export const getAreaCheckboxInputConfig = (element: FeedbackElement) => {
+  return {
+    type: MilestoneFeedbackInputCellType.DROPDOWN,
+    options: element.choices?.map((choice) => {
+      if (typeof choice === 'string') {
+        return {
+          label: choice,
+          value: choice,
+        };
+      } else {
+        return {
+          label: choice.text,
+          value: choice.value,
+        };
+      }
+    }),
+  };
 };

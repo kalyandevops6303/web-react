@@ -1,5 +1,5 @@
 import { MilestoneFeedbackType, MilestoneStatus, UserType } from '../../constraints/enums/core-enums';
-import { RecognitionType } from '../../constraints/enums/feedback-enum';
+import { RecognitionType } from '../../constraints/enums/feedback-enums';
 import { MilestoneDetailsModalType } from '../../constraints/enums/miscellaneous-enums';
 
 export const recognitionCardContent = {

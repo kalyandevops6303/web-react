@@ -9,6 +9,8 @@ import axios from 'axios';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
+import { parseFeedbackSkeletons } from '@flexternships/utils/parsing-utils';
+import { mockFeedbackSkeletons } from '../mocks/meeting-feedback';
 
 /**
  * Gets milestone feedback information for a project.
@@ -88,5 +90,23 @@ export const getFeedbackResponseService: (
     return response.data?.data || undefined;
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching feedback details');
+  }
+};
+
+/**
+ * Fetches the feedback skeletons from the API.
+ * @returns A Promise that resolves to the feedback skeletons.
+ */
+export const getFeedbackSkeletonsService = async () => {
+  // const config = { withCredentials: true };
+  try {
+    // const response = await axios.get(
+    //   routes.flexAdmin.project.getFeedbackData,
+    //   config
+    // );
+    const response = mockFeedbackSkeletons;
+    return parseFeedbackSkeletons(response.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching feedback skeletons');
   }
 };

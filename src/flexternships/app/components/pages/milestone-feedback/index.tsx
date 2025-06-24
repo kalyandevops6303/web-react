@@ -11,12 +11,12 @@ import ProjectNotFound from './components/ProjectNotFound';
 import SomethingWentWrong from './components/SomethingWentWrong';
 import MilestoneFeedbackStatusLoader from './components/Loader';
 import { MilestoneFeedbackStatus } from '@/flexternships/constraints/enums/core-enums';
-import { MilestoneFeedbackErrorType } from '@/flexternships/constraints/enums/feedback-enum';
+import { MilestoneFeedbackErrorType } from '@/flexternships/constraints/enums/feedback-enums';
 import { MilestoneFeedbackProgress } from '@/flexternships/constraints/types/milestone-insight-types';
 import FeedbackItem from './components/FeedbackItem';
-import { PanelRightOpen } from 'lucide-react';
+// import { PanelRightOpen } from 'lucide-react';
 // import MilestoneInsights from "./components/milestone-insight/MilestoneInsights";
-import classNames from 'classnames';
+// import classNames from 'classnames';
 
 const milestoneFeedbackProgress = {
   project: {
@@ -44,7 +44,7 @@ const GiveMilestoneFeedback = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorType, setErrorType] = useState<MilestoneFeedbackErrorType | undefined>();
   const [feedbackProgress, setFeedbackProgress] = useState<MilestoneFeedbackProgress | undefined>();
-  const [showMilestoneInsights, setShowMilestoneInsights] = useState(false);
+  // const [showMilestoneInsights, setShowMilestoneInsights] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -78,10 +78,10 @@ const GiveMilestoneFeedback = () => {
   const navigate = useNavigate();
 
   // Calculate left content width based on sidebar state
-  const leftContentClass = classNames(
-    'flex flex-col transition-all duration-300',
-    showMilestoneInsights ? 'w-[calc(100%-22rem)]' : 'w-full',
-  );
+  // const leftContentClass = classNames(
+  //   'flex flex-col transition-all duration-300',
+  //   showMilestoneInsights ? 'w-[calc(100%-22rem)]' : 'w-full',
+  // );
 
   return (
     <div className="bg-grey-50/10 relative min-h-screen">
@@ -106,14 +106,14 @@ const GiveMilestoneFeedback = () => {
         {/* Main Content Row */}
         <div className="flex flex-row gap-6 relative">
           {/* Left Content Area */}
-          <section className={leftContentClass}>
+          <section className="w-full">
             {feedbackProgress?.feedbacks.map((feedback) => (
               <FeedbackItem key={feedback.type} feedback={feedback} />
             ))}
           </section>
 
           {/* Open Insights Button */}
-          {!showMilestoneInsights && (
+          {/* {!showMilestoneInsights && (
             <button
               className="absolute right-0 top-0 bg-white border border-gray-200 rounded-l px-2 py-1 shadow hover:bg-gray-50 transition"
               onClick={() => setShowMilestoneInsights(true)}
@@ -121,7 +121,7 @@ const GiveMilestoneFeedback = () => {
             >
               <PanelRightOpen size={20} />
             </button>
-          )}
+          )} */}
 
           {/* Milestone Insights Sidebar */}
           {/* <MilestoneInsights

@@ -9,9 +9,9 @@ import {
 } from '../../../ui/dropdown-menu';
 import TextBox from '../../../core/surveys/TextBox';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
-import { leaderOptions, teamColumns, teamHeaders } from '@/flexternships/mocks/meeting-feedback';
-// import MatrixElements from "./MatrixElements";
-// import { MilestoneFeedbackType } from "@/flexternships/constraints/enums/core-enums";
+import { leaderOptions, teamColumns } from '@/flexternships/mocks/meeting-feedback';
+import MatrixElements from './MatrixElements';
+import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { ChevronDown } from 'react-feather';
 
 interface TeamFeedbackProps {
@@ -49,16 +49,16 @@ const TeamFeedback = ({
     }
   };
 
-  // const headers = MatrixElements({
-  //     feedbackType: MilestoneFeedbackType.TEAM_FEEDBACK,
-  // }).headers;
+  const { headers } = MatrixElements({
+    feedbackType: MilestoneFeedbackType.TEAM_FEEDBACK,
+  });
   return (
     <div className="flex flex-col gap-8 py-4 px-6 w-full">
       <div className="flex flex-col gap-2">
         <div className="text-lg font-bold text-grey-heading">Team Feedback</div>
         <ExcelGrid
           headers={teamColumns}
-          firstColumn={teamHeaders}
+          firstColumn={headers}
           matrix={teamMatrix}
           onChange={setTeamMatrix}
           inputConfig

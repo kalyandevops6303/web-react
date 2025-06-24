@@ -24,6 +24,7 @@ import {
 import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
 import { supportTypes } from '../constraints/types/core-types';
+import { FeedbackSkeleton } from '../constraints/types/milestone-feedback-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -581,4 +582,12 @@ export const parseSupportTypesResponse = (data: supportTypes[], page: number, pa
       has_next_page: false,
     },
   };
+};
+
+export const parseFeedbackSkeletons = (responseData: any): FeedbackSkeleton[] => {
+  return responseData.map((skeleton: any) => ({
+    id: skeleton._id,
+    type: skeleton.type,
+    elements: skeleton.elements,
+  }));
 };
