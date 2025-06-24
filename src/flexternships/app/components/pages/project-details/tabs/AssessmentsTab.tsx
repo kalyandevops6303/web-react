@@ -3,7 +3,12 @@ import PreparingAssessmentModal from '../../../core/modals/assessments/Preparing
 import { useState } from 'react';
 import { Assessment } from '@/flexternships/constraints/types/assessment-types';
 
-export default function AssessmentsTab({ className }: { className?: string }) {
+type AssessmentsTabProps = {
+  className?: string;
+  forceRefresh?: boolean;
+};
+
+export default function AssessmentsTab({ className, forceRefresh = false }: AssessmentsTabProps) {
   const [isPreparingAssessmentModalOpen, setIsPreparingAssessmentModalOpen] = useState(false);
   const [assessmentToPrepare, setAssessmentToPrepare] = useState<Assessment | undefined>();
 
@@ -17,7 +22,7 @@ export default function AssessmentsTab({ className }: { className?: string }) {
   };
   return (
     <div className={className}>
-      <MyAssessments takeAssessment={takeAssessment} />
+      <MyAssessments takeAssessment={takeAssessment} forceRefresh={forceRefresh} />
       {assessmentToPrepare && (
         <PreparingAssessmentModal
           isOpen={isPreparingAssessmentModalOpen}

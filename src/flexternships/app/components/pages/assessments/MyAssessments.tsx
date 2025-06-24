@@ -6,7 +6,12 @@ import Spinner from '../../core/Spinner';
 import { Assessment } from '@/flexternships/constraints/types/assessment-types';
 import { useParams } from 'react-router-dom';
 
-export default function MyAssessments({ takeAssessment }: { takeAssessment: (assessment: Assessment) => void }) {
+type MyAssessmentsProps = {
+  takeAssessment: (assessment: Assessment) => void;
+  forceRefresh?: boolean;
+};
+
+export default function MyAssessments({ takeAssessment, forceRefresh = false }: MyAssessmentsProps) {
   const assessments = useAssessmentsStore((state) => state.assessments);
   const isAssessmentsLoading = useAssessmentsStore((state) => state.isAssessmentsLoading);
   const populateAssessments = useAssessmentsStore((state) => state.populateAssessments);
@@ -17,9 +22,9 @@ export default function MyAssessments({ takeAssessment }: { takeAssessment: (ass
   const { projectId } = useParams();
 
   useEffect(() => {
-    populateAssessments({ projectId: projectId });
+    populateAssessments({ projectId: projectId, force: forceRefresh });
     populateGradeMetadata();
-  }, []);
+  }, [forceRefresh]);
   return (
     <div className="flex flex-col gap-y-6">
       {isAssessmentsLoading || isGradeMetadataLoading ? (

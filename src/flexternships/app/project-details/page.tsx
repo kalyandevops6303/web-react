@@ -121,7 +121,7 @@ export default function FlexternshipProjectDetails() {
       icon: <FileText size={18} />,
       description: 'Pre & post project',
       route: '/assessments',
-      component: <AssessmentsTab className="mt-6" />,
+      component: <AssessmentsTab forceRefresh className="mt-6" />,
       talentVisible: true,
       clientVisible: false,
       isDisabled: false,
