@@ -5,28 +5,13 @@ import { ChevronLeft, Info } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/flexternships/routes';
 import InfoNote from '../components/core/InfoNote';
-import AssessmentCard from '../components/pages/assessments/AssessmentCard';
-import { useAssessmentsStore } from '@/flexternships/stores/assessments-store';
-import { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { useState } from 'react';
 import { Assessment } from '@/flexternships/constraints/types/assessment-types';
-import Spinner from '../components/core/Spinner';
+import MyAssessments from '../components/pages/assessments/MyAssessments';
 
 export default function AssessmentsPage() {
-  const assessments = useAssessmentsStore((state) => state.assessments);
-  const isAssessmentsLoading = useAssessmentsStore((state) => state.isAssessmentsLoading);
-  const populateAssessments = useAssessmentsStore((state) => state.populateAssessments);
-
-  const isGradeMetadataLoading = useAssessmentsStore((state) => state.isGradeMetadataLoading);
-  const populateGradeMetadata = useAssessmentsStore((state) => state.populateGradeMetadata);
-
   const [isPreparingAssessmentModalOpen, setIsPreparingAssessmentModalOpen] = useState(false);
   const [assessmentToPrepare, setAssessmentToPrepare] = useState<Assessment | undefined>();
-
-  useEffect(() => {
-    populateAssessments();
-    populateGradeMetadata();
-  }, []);
 
   const navigate = useNavigate();
   const goBack = () => {
@@ -61,19 +46,7 @@ export default function AssessmentsPage() {
       <div>
         <InfoNote note="You have been assigned to take following assessment(s). Please complete them at your earliest to expedite your flexternship process." />
       </div>
-      <div className="flex flex-col gap-y-6">
-        {isAssessmentsLoading || isGradeMetadataLoading ? (
-          <div className="p-10 flex justify-center items-center">
-            <Spinner className="size-8" />
-          </div>
-        ) : isEmpty(assessments) ? (
-          <div>No assessments found</div>
-        ) : (
-          assessments.map((assessment) => (
-            <AssessmentCard key={assessment.id} assessment={assessment} takeAssessment={takeAssessment} />
-          ))
-        )}
-      </div>
+      <MyAssessments takeAssessment={takeAssessment} />
       {assessmentToPrepare && (
         <PreparingAssessmentModal
           isOpen={isPreparingAssessmentModalOpen}
