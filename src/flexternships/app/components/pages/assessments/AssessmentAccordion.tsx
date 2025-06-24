@@ -52,7 +52,7 @@ const CustomTable = ({ sections }: { sections: AssessmentSectionResult[] }) => {
 };
 
 export default function AssessmentAccordion({ assessment }: { assessment: Assessment }) {
-  const timeTakenInMillis = assessment.totalDuration * 1000; // TODO: change duration to time taken
+  const timeTakenInMillis = assessment.totalDuration * 1000;
 
   const [assessmentResult, setAssessmentResult] = useState<AssessmentSectionResult[]>([]);
   const [isAssessmentResultLoading, setIsAssessmentResultLoading] = useState(false);
