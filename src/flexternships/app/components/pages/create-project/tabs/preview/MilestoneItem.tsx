@@ -16,8 +16,10 @@ export default function MilestoneItem(props: Props) {
     <div className={`${Styles.milestoneItem} ${className ?? ''} ${last ? '' : 'border-b-1'}`}>
       <div className={`${Styles.milestoneMainInfo} relative`} onClick={toggleSubInfo}>
         <div className={`${Styles.milestoneMainInfoItem} font-semibold w-[200px]`}>Milestone #{milestoneIndex + 1}</div>
-        <div className={`${Styles.milestoneMainInfoItem} font-medium w-[120px]`}>{data.duration} Week(s)</div>
-        <div className={`${Styles.milestoneMainInfoItem} font-medium grow`}>{data.title}</div>
+        <div className={`${Styles.milestoneMainInfoItem} font-medium w-[120px]`}>
+          {String(data.duration || 0)} Week(s)
+        </div>
+        <div className={`${Styles.milestoneMainInfoItem} font-medium grow`}>{String(data.title || 'Milestone')}</div>
         <span className="absolute top-4 right-4 text-grey-muted cursor-pointer">
           {isSubInfoExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
         </span>
@@ -26,15 +28,15 @@ export default function MilestoneItem(props: Props) {
         <div className={Styles.milestoneDescriptionContainer}>
           <div className={Styles.milestoneSubInfoHeading}>Description</div>
           <ExpandableText className={Styles.milestoneSubInfoContent} charLimit={180}>
-            {data.description}
+            {String(data.description || 'No description')}
           </ExpandableText>
         </div>
         <div>
           <div className={Styles.milestoneSubInfoHeading}>Deliverables</div>
           <ul className={`${Styles.milestoneSubInfoContent} ${Styles.milestoneDeliverablesList}`}>
-            {data.deliverables.map((deliverable, index) => (
+            {(data.deliverables || []).map((deliverable, index) => (
               <li key={index} className={Styles.listItem}>
-                {deliverable}
+                {String(deliverable || 'Deliverable')}
               </li>
             ))}
           </ul>

@@ -33,6 +33,7 @@ import {
   DEFAULT_ALL_NOTE_CATEGORIES_OPTION,
 } from '../static/constants/quick-actions-constants';
 import { QuickActionCategory } from '../constraints/enums/quick-actions-enums';
+import toast from 'react-hot-toast';
 
 /**
  * Retrieves a file upload URL for a given filename.
@@ -99,6 +100,25 @@ export const createFlexternProject: (
     },
     withCredentials: true,
   };
+
+  if (!projectData?.requirements?.projectName?.trim()) {
+    toast.error('Project name is required');
+  }
+  if (!projectData?.requirements?.projectDescription?.trim()) {
+    toast.error('Project description is required');
+  }
+  if (!projectData?.roles?.length) {
+    toast.error('At least one role is required');
+  }
+  if (!projectData?.milestones?.length) {
+    toast.error('At least one milestone is required');
+  }
+
+  const invalidRoles = projectData.roles.filter((role) => !role?.role?._id);
+  if (invalidRoles.length > 0) {
+    toast.error('All roles must have valid role IDs');
+  }
+
   const formattedProjectData = {
     details: {
       name: projectData?.requirements?.projectName,
@@ -128,18 +148,23 @@ export const createFlexternProject: (
     //   start_date_epoch: projectData?.listingDetails?.listingStartDate,
     //   end_date_epoch: projectData?.listingDetails?.listingEndDate,
     // },
-    milestones: projectData.milestones.map((item) => ({
-      milestone_id: item._id,
-      name: item.title,
-      description: item.description,
-      estimated_duration: {
-        duration: Math?.max(1, item?.duration),
-        duration_type: 'WEEK',
-      },
-      deliverables: item?.deliverables,
-      // "seq": 0,
-      // "milestone_id": ""
-    })),
+    milestones: projectData.milestones.map((item) => {
+      const duration = typeof item.duration === 'string' ? parseFloat(item.duration) : item.duration;
+      if (!duration || duration <= 0) {
+        toast.error(`Invalid milestone duration: ${item.title} has duration ${duration}`);
+      }
+
+      return {
+        milestone_id: item._id,
+        name: item.title,
+        description: item.description,
+        estimated_duration: {
+          duration: Math.max(1, Math.ceil(duration)), // Ensure at least 1 week and integer
+          duration_type: 'WEEK',
+        },
+        deliverables: item?.deliverables,
+      };
+    }),
     removed_milestone_ids: draftProjectId ? projectData.removedMilestoneIds ?? [] : [],
   };
 
@@ -147,6 +172,7 @@ export const createFlexternProject: (
     const response = await axios?.post(routes?.projectManagementV2?.project?.create, formattedProjectData, config);
     return response?.data?.data?.project_id || undefined;
   } catch (error) {
+    console.error('API Error:', error);
     handleError(error as Error, 'An unexpected error occurred while creating the Flextern project');
   }
 };

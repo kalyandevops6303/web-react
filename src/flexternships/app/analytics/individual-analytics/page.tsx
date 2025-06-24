@@ -113,6 +113,11 @@ export default function IndividualAnalytics() {
           score: formattedIndividualOverviewDetails?.totalComments,
           href: `${window.location.pathname}/comments`,
         },
+        {
+          title: 'Conversation Participation',
+          score: formattedIndividualOverviewDetails?.totalComments,
+          href: `/analytics/project/${projectId}/individual/${userId}/conversation-participation`,
+        },
       ]);
     }
   }, [formattedIndividualOverviewDetails]);

@@ -1,3 +1,4 @@
+import { isFlexternshipApp } from '@/configs/api/env';
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
@@ -45,7 +46,8 @@ const saveDraftProjectService = ({ projectId, data }) => {
   return DataService.post(API.createProject.saveDraftProject, data);
 };
 
-const draftProjectsCheckService = () => DataService.get(API.createProject.draftProjectsCheck);
+const draftProjectsCheckService = () =>
+  DataService.get(!isFlexternshipApp ? API.createProject.draftProjectsCheck : API.createProject.draftProjectCheckV2);
 
 const deleteDraftProjectService = (projectId) =>
   DataService.delete(`${API.createProject.deleteDraftProject}?project_id=${projectId}`);
