@@ -20,6 +20,7 @@ import TalentOnboarding from '../../views/Onboarding/Talent';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
 import ForgotPasswordVerification from '../../views/auth/ForgotPasswordVerification';
+import GiveMilestoneFeedback from '@/flexternships/app/components/pages/milestone-feedback/index';
 
 // ** Project Views
 import Projects from '../../views/projects';
@@ -960,6 +961,39 @@ const FlexternshipRoutes = [
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: routes.projectMilestoneFeedback.path,
+    element: (
+      // <RoleAccessWrapper
+      //   allowedAppRoles={[
+      //     {
+      //       appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+      //       allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+      //       blockCheckpoints: [
+      //         {
+      //           checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+      //           redirectRoute: routes.clientOnboarding.path,
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+      //       allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+      //       blockCheckpoints: [
+      //         {
+      //           checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+      //           redirectRoute: routes.clientOnboarding.path,
+      //         },
+      //       ],
+      //     },
+      //   ]}
+      // featureName={FEATURE_NAMES.AYESHA_BOT}
+      // fallbackRoute={routes.dashboard.path}
+      // >
+      <GiveMilestoneFeedback />
+      // </RoleAccessWrapper>
+    ),
   },
 ];
 

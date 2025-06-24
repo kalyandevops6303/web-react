@@ -15,3 +15,15 @@ export const enum FeedbackTypesAPI {
 export const enum FeedbackConfig {
   FEEDBACK_TOTAL = '10',
 }
+
+export enum MilestoneFeedbackErrorType {
+  FEEDBACK_ALREADY_SUBMITTED = 'FEEDBACK_ALREADY_SUBMITTED',
+  MILESTONE_NOT_FOUND = 'MILESTONE_NOT_FOUND',
+  PROJECT_NOT_FOUND = 'PROJECT_NOT_FOUND',
+}
+
+export enum MilestoneFeedbackInputCellType {
+  STRING = 'string',
+  NUMBER = 'number',
+  DROPDOWN = 'dropdown',
+}
