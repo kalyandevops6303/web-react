@@ -10,17 +10,22 @@ import { useAssessmentsStore } from '@/flexternships/stores/assessments-store';
 import { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { Assessment } from '@/flexternships/constraints/types/assessment-types';
+import Spinner from '../components/core/Spinner';
 
 export default function AssessmentsPage() {
   const assessments = useAssessmentsStore((state) => state.assessments);
   const isAssessmentsLoading = useAssessmentsStore((state) => state.isAssessmentsLoading);
   const populateAssessments = useAssessmentsStore((state) => state.populateAssessments);
 
+  const isGradeMetadataLoading = useAssessmentsStore((state) => state.isGradeMetadataLoading);
+  const populateGradeMetadata = useAssessmentsStore((state) => state.populateGradeMetadata);
+
   const [isPreparingAssessmentModalOpen, setIsPreparingAssessmentModalOpen] = useState(false);
   const [assessmentToPrepare, setAssessmentToPrepare] = useState<Assessment | undefined>();
 
   useEffect(() => {
     populateAssessments();
+    populateGradeMetadata();
   }, []);
 
   const navigate = useNavigate();
@@ -57,8 +62,10 @@ export default function AssessmentsPage() {
         <InfoNote note="You have been assigned to take following assessment(s). Please complete them at your earliest to expedite your flexternship process." />
       </div>
       <div className="flex flex-col gap-y-6">
-        {isAssessmentsLoading ? (
-          <div>Loading...</div>
+        {isAssessmentsLoading || isGradeMetadataLoading ? (
+          <div className="p-10 flex justify-center items-center">
+            <Spinner className="size-8" />
+          </div>
         ) : isEmpty(assessments) ? (
           <div>No assessments found</div>
         ) : (

@@ -10,6 +10,7 @@ import { formatEpochToDuration } from '@/flexternships/utils/date-utils';
 import classNames from 'classnames';
 import { ProjectPrimaryStatus } from '@/flexternships/constraints/enums/core-enums';
 import { AssessmentStatus, AssessmentType } from '@/flexternships/constraints/enums/assessment-enums';
+import BoxSkeleton from '../../core/skeletons/BoxSkeleton';
 
 const AssessmentInfo = ({ assessment }: { assessment: Assessment }) => {
   const isBenchmarkingAssessment = assessment.type === AssessmentType.BENCHMARKING;
@@ -77,6 +78,23 @@ const AssessmentInfo = ({ assessment }: { assessment: Assessment }) => {
     </div>
   );
 };
+const AssessmentSectionSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-y-2 grow">
+      <div className="flex flex-row gap-y-2">
+        <div className="flex flex-col">
+          <BoxSkeleton className="w-1 h-4 rounded-md" />
+          <BoxSkeleton className="w-full h-4 rounded-md" />
+        </div>
+        <div className="w-[1px] rounded-md bg-grey-50" />
+        <div className="flex flex-col">
+          <BoxSkeleton className="w-1 h-4 rounded-md" />
+          <BoxSkeleton className="w-full h-4 rounded-md" />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function DashboardAssessmentSection() {
   const assessments = useAssessmentsStore((state) => state.assessments);
@@ -90,9 +108,6 @@ export default function DashboardAssessmentSection() {
     populateAssessments();
     populateGradeMetadata();
   }, []);
-
-  if (isAssessmentsLoading || isGradeMetadataLoading) return <div>Loading...</div>;
-  if (isEmpty(assessments)) return <div>No assessments found</div>;
 
   return (
     <Accordion type="single" defaultValue="my-assessments" collapsible className="bg-white rounded-md">
@@ -114,12 +129,18 @@ export default function DashboardAssessmentSection() {
         </AccordionTrigger>
         <AccordionContent className="p-0">
           <div className="p-6 flex gap-x-7 border-t border-grey-50">
-            {assessments.map((assessment, index) => (
-              <React.Fragment key={assessment.id}>
-                <AssessmentInfo key={assessment.id} assessment={assessment} />
-                {index !== assessments.length - 1 && <div className="w-[1px] rounded-md bg-grey-50" />}
-              </React.Fragment>
-            ))}
+            {isAssessmentsLoading || isGradeMetadataLoading ? (
+              <AssessmentSectionSkeleton />
+            ) : isEmpty(assessments) ? (
+              <div>No assessments found</div>
+            ) : (
+              assessments.map((assessment, index) => (
+                <React.Fragment key={assessment.id}>
+                  <AssessmentInfo key={assessment.id} assessment={assessment} />
+                  {index !== assessments.length - 1 && <div className="w-[1px] rounded-md bg-grey-50" />}
+                </React.Fragment>
+              ))
+            )}
           </div>
         </AccordionContent>
       </AccordionItem>
