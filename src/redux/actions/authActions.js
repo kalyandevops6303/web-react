@@ -155,7 +155,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       }
     }
   } catch (error) {
-    if (error?.response?.data?.errorData?.errorCode === 403) {
+    if (error?.response?.data?.errorData?.errorCode === 401) {
       const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
       dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
       dispatch(loginFailure());
