@@ -23,7 +23,7 @@ export default function AssessmentCard({
   const isAssessmentEnabled = isBenchmarkingAssessment || isProjectCompleted;
 
   const verifyAndTakeAssessment = () => {
-    if (!isAssessmentEnabled) return;
+    // if (!isAssessmentEnabled) return;
     takeAssessment(assessment);
   };
 

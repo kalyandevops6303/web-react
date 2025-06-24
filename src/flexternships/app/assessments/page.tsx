@@ -1,30 +1,15 @@
-import PreparingAssessmentModal from '../components/core/modals/assessments/PreparingAssessmentModal';
 import CustomBreadCrumbs from '../components/core/CustomBreadCrumbs';
 import PrimaryIconText from '../components/core/buttons/PrimaryIconText';
 import { ChevronLeft, Info } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/flexternships/routes';
 import InfoNote from '../components/core/InfoNote';
-import { useState } from 'react';
-import { Assessment } from '@/flexternships/constraints/types/assessment-types';
-import MyAssessments from '../components/pages/assessments/MyAssessments';
+import AssessmentsTab from '../components/pages/project-details/tabs/AssessmentsTab';
 
 export default function AssessmentsPage() {
-  const [isPreparingAssessmentModalOpen, setIsPreparingAssessmentModalOpen] = useState(false);
-  const [assessmentToPrepare, setAssessmentToPrepare] = useState<Assessment | undefined>();
-
   const navigate = useNavigate();
   const goBack = () => {
     navigate(routes.dashboard.path);
-  };
-
-  const takeAssessment = (assessment: Assessment) => {
-    setAssessmentToPrepare(assessment);
-    setIsPreparingAssessmentModalOpen(true);
-  };
-
-  const closePreparingAssessmentModal = () => {
-    setIsPreparingAssessmentModalOpen(false);
   };
 
   return (
@@ -46,14 +31,7 @@ export default function AssessmentsPage() {
       <div>
         <InfoNote note="You have been assigned to take following assessment(s). Please complete them at your earliest to expedite your flexternship process." />
       </div>
-      <MyAssessments takeAssessment={takeAssessment} />
-      {assessmentToPrepare && (
-        <PreparingAssessmentModal
-          isOpen={isPreparingAssessmentModalOpen}
-          onClose={closePreparingAssessmentModal}
-          assessment={assessmentToPrepare}
-        />
-      )}
+      <AssessmentsTab />
     </div>
   );
 }
