@@ -1,4 +1,4 @@
-import { Box, Star, Users, Watch } from 'react-feather';
+import { Box, FileText, Star, Users, Watch } from 'react-feather';
 import ProjectDetailsTabNavigation from '../components/pages/project-details/ProjectDetailsTabNavigation';
 
 import { useEffect, useState } from 'react';
@@ -14,6 +14,7 @@ import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '@/flexternships/co
 import { isEmpty } from 'lodash';
 import CustomBreadCrumbs from '../components/core/CustomBreadCrumbs';
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
+import AssessmentsTab from '../components/pages/project-details/tabs/AssessmentsTab';
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
@@ -113,6 +114,17 @@ export default function FlexternshipProjectDetails() {
       talentVisible: true,
       clientVisible: true,
       isDisabled: [ProjectPrimaryStatus.ACTIVE, ProjectPrimaryStatus.OPEN].includes(projectDetails?.status) ?? false,
+    },
+    {
+      id: 'assessments',
+      title: 'Assessments',
+      icon: <FileText size={18} />,
+      description: 'Pre & post project',
+      route: '/assessments',
+      component: <AssessmentsTab forceRefresh className="mt-6" />,
+      talentVisible: true,
+      clientVisible: false,
+      isDisabled: false,
     },
   ];
   const getCapitalizedStep = (step: string) => step.charAt(0).toUpperCase() + step.slice(1);

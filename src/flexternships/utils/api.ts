@@ -64,6 +64,11 @@ export const routes = {
       getPaginatedNoteCategories: `${serviceUrls.projectManagementV2}/note/category/paginated`,
       submitNotes: `${serviceUrls.projectManagementV2}/note`,
     },
+    assessments: {
+      fetchAll: `${serviceUrls.projectManagementV2}/assessments`,
+      fetchResult: `${serviceUrls.projectManagementV2}/assessments/result`,
+      fetchGradeMetadata: `${serviceUrls.projectManagementV2}/grade-metadata`,
+    },
   },
   userManagement: {
     storage: {

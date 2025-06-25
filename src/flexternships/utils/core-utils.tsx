@@ -6,19 +6,23 @@ import {
   ToastType,
   UserType,
 } from '@flexternships/enums/core-enums';
+import CustomToast from '../app/components/core/toasts/CustomToast';
+import { v4 as uuidv4 } from 'uuid';
+import { CLIENT_SUPPORT_EMAIL, SUPPORT_EMAIL, TALENT_SUPPORT_EMAIL } from '../static/constants/core-constants';
+
+// Zustand Stores
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { useAppStore, useFlexternUserStore } from '@flexternships/stores/core-stores';
 import { useFlexternUserProfileStore } from '@flexternships/stores/user-profile-store';
-import CustomToast from '../app/components/core/toasts/CustomToast';
-import { v4 as uuidv4 } from 'uuid';
 import { useProjectMilestonesStore } from '../stores/project-milestones-store';
 import { useProjectsStore } from '../stores/project-details-store';
-import { CLIENT_SUPPORT_EMAIL, SUPPORT_EMAIL, TALENT_SUPPORT_EMAIL } from '../static/constants/core-constants';
 import { useNoteCategoriesStore } from '../stores/note-categories-store';
 import { useLegalStore } from '../stores/legal-store';
 import { useFeedbackStore } from '../stores/feedback-stores';
 import { useCompetenciesStore } from '../stores/competencies-store';
 import { useAnalyticsStore } from '../stores/analytics-store';
+import { useAssessmentsStore } from '../stores/assessments-store';
+import { GradeMetadata } from '../constraints/types/assessment-types';
 
 /**
  * Displays a toast message with appropriate styling based on the message type.
@@ -56,6 +60,7 @@ export const logout = () => {
   useFeedbackStore.getState().resetStore();
   useCompetenciesStore.getState().resetStore();
   useAnalyticsStore.getState().resetStore();
+  useAssessmentsStore.getState().resetStore();
 };
 
 /**
@@ -196,4 +201,10 @@ export const getSupportEmail = () => {
   const userType = useFlexternUserStore((state) => state.userDetails?.userType);
   if (!userType) return SUPPORT_EMAIL;
   return userType === UserType.CLIENT ? CLIENT_SUPPORT_EMAIL : TALENT_SUPPORT_EMAIL;
+};
+
+export const getGradeMetadataByName = (name?: string) => {
+  if (!name) return;
+  const gradeMetadata = useAssessmentsStore.getState().gradeMetadata;
+  return gradeMetadata.find((grade: GradeMetadata) => grade.name === name);
 };
