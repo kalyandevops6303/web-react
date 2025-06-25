@@ -1,6 +1,6 @@
 import { DropdownOption } from '@/flexternships/constraints/types/form-types';
 import { MatrixCell } from '@/flexternships/constraints/types/form-types';
-import ExcelGrid from './ExcelGrid';
+import ExcelGrid from './Spreadsheet';
 import {
   DropdownMenu,
   DropdownMenuTrigger,

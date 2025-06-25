@@ -1,5 +1,5 @@
 import { MatrixCell } from '@/flexternships/constraints/types/form-types';
-import ExcelGrid from './ExcelGrid';
+import ExcelGrid from './Spreadsheet';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
 import { firstColumn } from '@/flexternships/mocks/meeting-feedback';
 import MatrixElements from './MatrixElements';

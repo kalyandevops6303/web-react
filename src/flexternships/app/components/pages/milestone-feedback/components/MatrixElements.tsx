@@ -18,7 +18,6 @@ const MatrixElements = ({ feedbackType }: { feedbackType: MilestoneFeedbackType 
       populateFeedbackSkeletons();
     }
   }, [feedbackSkeleton, populateFeedbackSkeletons]);
-  console.log(feedbackSkeleton);
 
   const headers: CellProps[] =
     feedbackSkeleton?.elements
