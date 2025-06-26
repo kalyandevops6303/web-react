@@ -89,7 +89,9 @@ export type FlexternClientDetails = {
   lastName: string;
   imageUri?: string;
   timezone: Timezone;
-  departmentName: string;
+  departmentName: {
+    name: string;
+  };
   email: string;
   phoneVerified: boolean;
   appRoles: Array<FlexternUserAppRole>;

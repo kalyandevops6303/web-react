@@ -155,7 +155,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       }
     }
   } catch (error) {
-    if (error?.response?.data?.errorData?.errorCode === 403) {
+    if (error?.response?.data?.errorData?.errorCode === 401) {
       const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
       dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
       dispatch(loginFailure());
@@ -243,7 +243,9 @@ const verifyEmailForFlextern =
       if (!isEmpty(res?.data?.data)) {
         setItem('access_token_expires', res.data.data.access_token_expires);
         setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-        window.dataLayer.push({ user_id: res.data.data.user_id });
+        if (typeof window !== 'undefined' && window.dataLayer && Array.isArray(window.dataLayer)) {
+          window.dataLayer.push({ user_id: res.data.data.user_id });
+        }
         dispatch(setTalentBooleanIsFlextern(true));
         dispatch(verifyEmailForFlexternSuccess());
         if (onSuccess) {
@@ -376,7 +378,9 @@ const logoutAction =
       const res = await logoutUserService();
 
       onSuccess();
-      !suppressToast && showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+      if (!suppressToast) {
+        showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+      }
     } catch (error) {
       if (error?.response?.data?.errorData?.errorCode === 403 && !suppressToast) {
         showToastMessage(ToastType.ERROR, error?.response?.data?.errorData?.message);

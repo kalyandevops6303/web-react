@@ -52,9 +52,8 @@ export default function HamburgerMenu() {
             ...NAVBAR_ITEMS,
             { path: routes.notifications.path, label: 'Notifications', activeTabMatch: routes.notifications.path },
           ].map((item) => (
-            <SheetClose asChild>
+            <SheetClose key={item.path} asChild>
               <div
-                key={item.path}
                 onClick={() => handleNavItemClick(item.path)}
                 role="button"
                 aria-current={isActiveRoute(item.activeTabMatch) ? 'page' : undefined}
