@@ -257,7 +257,7 @@ export const parseCommentsTimeline = (data: Record<string, any>): CommentsTimeli
     const giverDesignation =
       giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
         ? 'Mentor'
-        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT
+        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT || giverAppRole === FlexternUserAppRole.PROJECT_ADVISOR
         ? 'Manager'
         : commentsTimelineItem.giver_details.project_role;
 
