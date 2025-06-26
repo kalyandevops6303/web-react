@@ -25,6 +25,7 @@ import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-s
 import { FlexternClientDetails } from '@/flexternships/constraints/types/core-types';
 import { saveForLaterModalContent } from '@/flexternships/static/content/core-content';
 import routes from '@/flexternships/routes';
+import toast from 'react-hot-toast';
 
 export default function Preview() {
   const previousTab = useProjectCreationStore((state) => state.previousTab);
@@ -66,11 +67,54 @@ export default function Preview() {
   const handlePost = async () => {
     setIsSubmitting(true);
     try {
+      if (!formData.requirements.projectName?.trim()) {
+        toast.error('Project name is required');
+      }
+      if (!formData.requirements.projectDescription?.trim()) {
+        toast.error('Project description is required');
+      }
+      if (!formData.requirements.estimatedDuration || formData.requirements.estimatedDuration <= 0) {
+        toast.error('Valid estimated duration is required');
+      }
+      if (!formData.requirements.estimatedWeeklyHours || formData.requirements.estimatedWeeklyHours <= 0) {
+        toast.error('Valid estimated weekly hours are required');
+      }
+      if (!formData.requirements.estimatedStartDate || formData.requirements.estimatedStartDate <= 0) {
+        toast.error('Valid estimated start date is required');
+      }
+      if (!formData.roles || formData.roles.length === 0) {
+        toast.error('At least one role is required');
+      }
+
+      const invalidRoles = formData.roles.filter((role) => !role?.role?._id || !role?.role?.name);
+      if (invalidRoles.length > 0) {
+        toast.error('All roles must be properly selected with valid role information');
+      }
+
+      if (!formData.milestones || formData.milestones.length === 0) {
+        toast.error('At least one milestone is required');
+      }
+
+      const invalidMilestones = formData.milestones.filter(
+        (milestone) =>
+          !milestone.title?.trim() ||
+          !milestone.description?.trim() ||
+          !milestone.duration ||
+          milestone.duration <= 0 ||
+          !milestone.deliverables ||
+          milestone.deliverables.length === 0,
+      );
+      if (invalidMilestones.length > 0) {
+        toast.error('All milestones must have valid title, description, duration, and deliverables');
+      }
+
+      console.log('Form data being sent:', formData); // Add logging for debugging
       const createdProjectId = await createFlexternProject(formData, projectId);
       setCreatedProjectId(createdProjectId);
       setRecallTimeLeft(5);
       openModal(ModalType.PROJECT_CREATED);
     } catch (error: unknown) {
+      console.error('Error creating project:', error); // Add detailed error logging
       closeModal();
       showToastMessage(
         ToastType.ERROR,
@@ -82,13 +126,13 @@ export default function Preview() {
   };
 
   const handleRecall = async () => {
-    if (!createdProjectId) throw new Error('Project ID not found');
+    if (!createdProjectId) toast.error('Project ID not found');
     setIsRecalling(true);
     try {
-      await recallProjectById(createdProjectId);
+      await recallProjectById(createdProjectId!);
       setRecallTimeLeft(-1);
       closeModal();
-      navigate(routes.editProject.generate(createdProjectId));
+      navigate(routes.editProject.generate(createdProjectId!));
     } catch (error) {
       showToastMessage(
         ToastType.ERROR,
@@ -135,17 +179,21 @@ export default function Preview() {
           <ProjectDetailsItem
             className="w-[460px] mb-5 break-words"
             title="Project name"
-            value={formData.requirements.projectName || 'NaN'}
+            value={String(formData.requirements.projectName || 'NaN')}
           />
           <ProjectDetailsItem
             className="w-[333px] mb-5"
             title="Department Name (BU) *"
-            value={(userDetails as FlexternClientDetails).departmentName || 'NaN'}
+            value={
+              typeof (userDetails as FlexternClientDetails)?.departmentName.name === 'string'
+                ? (userDetails as FlexternClientDetails).departmentName.name || 'NaN'
+                : 'NaN'
+            }
           />
           <ProjectDetailsItem
             className="w-[237px] mb-5"
             title="Estimated Duration"
-            value={`${formData.requirements.estimatedDuration} weeks`}
+            value={`${formData.requirements.estimatedDuration || 0} weeks`}
             tooltip="Estimated duration of the project in weeks"
           />
           {/* <ProjectDetailsItem
@@ -168,19 +216,19 @@ export default function Preview() {
           <ProjectDetailsItem
             className="w-[230px]"
             title="Total Milestones"
-            value={`${formData.milestones.length}`.padStart(2, '0') || 'NaN'}
+            value={String(formData.milestones.length).padStart(2, '0') || 'NaN'}
             // greymatter={`in ${formData.requirements.estimatedDuration} Weeks`}
           />
           <ProjectDetailsItem
             className="w-[333px]"
             title="Estimated Hours/Week per Flextern"
-            value={`${formData.requirements.estimatedWeeklyHours}hrs weekly`}
+            value={`${formData.requirements.estimatedWeeklyHours || 0}hrs weekly`}
             tooltip="Estimated weekly work-hours for each flextern"
           />
           <ProjectDetailsItem
             className="w-[237px]"
             title="Total Project Hours per Flextern"
-            value={`${formData.requirements.totalProjectHoursEach}hrs`}
+            value={`${formData.requirements.totalProjectHoursEach || 0}hrs`}
             tooltip="Total project hours for each flextern"
           />
         </div>
@@ -189,7 +237,7 @@ export default function Preview() {
         <div className={Styles.tabContentHeader}>Project Description</div>
         <div className={Styles.previewCardBody}>
           <div className="mt-5 w-full text-grey-heading text-base not-italic font-normal leading-6 break-words">
-            {formData.requirements.projectDescription || 'NaN'}
+            {String(formData.requirements.projectDescription || 'NaN')}
           </div>
         </div>
       </div>

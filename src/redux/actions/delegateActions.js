@@ -30,7 +30,9 @@ const signUpDelegate =
         setItem('user_id', res?.data?.data.user_id);
         setItem('user_type', res?.data?.data.user_type);
       }
-      window.dataLayer.push({ user_id: res?.data?.data.user_id });
+      if (typeof window !== 'undefined' && window.dataLayer && Array.isArray(window.dataLayer)) {
+        window.dataLayer.push({ user_id: res?.data?.data.user_id });
+      }
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(signUpDelegateSuccess(res?.data?.data));
         setItemFromSession('isUserVisited', true);
