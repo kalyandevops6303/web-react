@@ -14,12 +14,13 @@ export interface CellProps {
     options?: DropdownOption[];
     isMultiSelect?: boolean;
   };
+  width?: number;
 }
 
 export interface MatrixCell {
-  value: string | number | string[];
   rowId: string;
   colId: string;
+  value: string | number | string[];
 }
 
 export interface ExcelGridProps {

@@ -26,6 +26,7 @@ export enum MilestoneFeedbackInputCellType {
   STRING = 'string',
   NUMBER = 'number',
   DROPDOWN = 'dropdown',
+  HEADER = 'header',
 }
 
 export enum FeedbackSkeletonItemType {

@@ -1,13 +1,17 @@
-import { FeedbackProgress } from '@/flexternships/constraints/types/milestone-insight-types';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MatrixCell, DropdownOption, CellProps } from '@/flexternships/constraints/types/form-types';
 import { firstColumn, teamColumns } from '@/flexternships/mocks/meeting-feedback';
 import MatrixElements from './MatrixElements';
 import IndividualFeedback from './IndividualFeedback';
 import TeamFeedback from './TeamFeedback';
+import PrimaryButton from '../../../core/buttons/PrimaryButton';
 
-const FeedbackItem = ({ feedback }: { feedback: FeedbackProgress }) => {
+const FeedbackItem = () => {
+  const { headers } = MatrixElements({
+    feedbackType: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
+  });
+
   const initializeMatrix = (firstColumn: CellProps[], headers: CellProps[]): MatrixCell[][] => {
     return firstColumn.map((row) =>
       headers.map((col) => ({
@@ -17,12 +21,18 @@ const FeedbackItem = ({ feedback }: { feedback: FeedbackProgress }) => {
       })),
     );
   };
-  const { headers } = MatrixElements({
-    feedbackType: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
-  });
-  // const headers = individualHeaders;
 
-  const [ratingMatrix, setRatingMatrix] = useState<MatrixCell[][]>(() => initializeMatrix(firstColumn, headers));
+  const [ratingMatrix, setRatingMatrix] = useState<MatrixCell[][]>([]);
+
+  useEffect(() => {
+    if (headers.length > 0 && ratingMatrix.length === 0) {
+      setRatingMatrix(initializeMatrix(firstColumn, headers));
+    }
+  }, [headers.length]);
+
+  const teamHeaders = MatrixElements({
+    feedbackType: MilestoneFeedbackType.TEAM_FEEDBACK,
+  }).headers;
 
   const initializeTeamMatrix = (rows: CellProps[], cols: CellProps[]) =>
     rows.map((row) =>
@@ -32,32 +42,55 @@ const FeedbackItem = ({ feedback }: { feedback: FeedbackProgress }) => {
         colId: col.identifier,
       })),
     );
-  const teamHeaders = MatrixElements({
-    feedbackType: MilestoneFeedbackType.TEAM_FEEDBACK,
-  }).headers;
-  const [teamMatrix, setTeamMatrix] = useState<MatrixCell[][]>(() => initializeTeamMatrix(teamHeaders, teamColumns));
+  const [teamMatrix, setTeamMatrix] = useState<MatrixCell[][]>([]);
+  useEffect(() => {
+    if (teamHeaders.length > 0 && teamMatrix.length === 0) {
+      setTeamMatrix(initializeTeamMatrix(teamHeaders, teamColumns));
+    }
+  }, [teamHeaders.length]);
   const [topLeaders, setTopLeaders] = useState<DropdownOption[]>([]);
   const [qualitativeFeedback, setQualitativeFeedback] = useState('');
 
-  const getFeedbackComponent = (feedbackType: MilestoneFeedbackType) => {
-    switch (feedbackType) {
-      case MilestoneFeedbackType.INDIVIDUAL_FEEDBACK:
-        return <IndividualFeedback ratingMatrix={ratingMatrix} setRatingMatrix={setRatingMatrix} />;
-      case MilestoneFeedbackType.TEAM_FEEDBACK:
-        return (
-          <TeamFeedback
-            teamMatrix={teamMatrix}
-            setTeamMatrix={setTeamMatrix}
-            topLeaders={topLeaders}
-            setTopLeaders={setTopLeaders}
-            qualitativeFeedback={qualitativeFeedback}
-            setQualitativeFeedback={setQualitativeFeedback}
-          />
-        );
-    }
+  const handleSubmit = () => {
+    console.log('Rating Matrix:', ratingMatrix);
+    let teamFeedback: { rowId: string; comment?: string; rating?: string; names?: string[] }[] = teamMatrix.map(
+      (row) => {
+        const rowId = row[0].rowId;
+        const comment = String(row[0].value);
+        const rating = String(row[1].value);
+        return {
+          rowId,
+          comment,
+          rating,
+        };
+      },
+    );
+    teamFeedback.push({
+      rowId: 'comment',
+      comment: qualitativeFeedback,
+    });
+    teamFeedback.push({
+      rowId: 'topLeaders',
+      names: topLeaders.map((l) => l.value),
+    });
+    console.log('teamFeedback', teamFeedback);
   };
-
-  return getFeedbackComponent(feedback.type);
+  return (
+    <div>
+      <IndividualFeedback ratingMatrix={ratingMatrix} setRatingMatrix={setRatingMatrix} />;
+      <TeamFeedback
+        teamMatrix={teamMatrix}
+        setTeamMatrix={setTeamMatrix}
+        topLeaders={topLeaders}
+        setTopLeaders={setTopLeaders}
+        qualitativeFeedback={qualitativeFeedback}
+        setQualitativeFeedback={setQualitativeFeedback}
+      />
+      <div className="flex justify-end mt-4">
+        <PrimaryButton onClick={handleSubmit}>Submit Feedback</PrimaryButton>
+      </div>
+    </div>
+  );
 };
 
 export default FeedbackItem;

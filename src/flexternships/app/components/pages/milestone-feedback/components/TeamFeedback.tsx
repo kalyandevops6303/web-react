@@ -1,6 +1,6 @@
 import { DropdownOption } from '@/flexternships/constraints/types/form-types';
 import { MatrixCell } from '@/flexternships/constraints/types/form-types';
-import ExcelGrid from './Spreadsheet';
+import Spreadsheet from '../../../core/tables/Spreadsheet';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -8,7 +8,6 @@ import {
   DropdownMenuCheckboxItem,
 } from '../../../ui/dropdown-menu';
 import TextBox from '../../../core/surveys/TextBox';
-import PrimaryButton from '../../../core/buttons/PrimaryButton';
 import { leaderOptions, teamColumns } from '@/flexternships/mocks/meeting-feedback';
 import MatrixElements from './MatrixElements';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
@@ -31,15 +30,6 @@ const TeamFeedback = ({
   qualitativeFeedback,
   setQualitativeFeedback,
 }: TeamFeedbackProps) => {
-  const handleTeamSubmit = () => {
-    console.log('Team Matrix:', teamMatrix);
-    console.log(
-      'Top Leaders:',
-      topLeaders.map((l) => l.value),
-    );
-    console.log('Qualitative Feedback:', qualitativeFeedback);
-  };
-
   const handleLeaderToggle = (leader: DropdownOption) => {
     const isSelected = topLeaders.some((l) => l.value === leader.value);
     if (isSelected) {
@@ -53,16 +43,10 @@ const TeamFeedback = ({
     feedbackType: MilestoneFeedbackType.TEAM_FEEDBACK,
   });
   return (
-    <div className="flex flex-col gap-8 py-4 px-6 w-full">
+    <div className="flex flex-col gap-8 py-4 px-6 w-full border border-gray-200 rounded-lg">
       <div className="flex flex-col gap-2">
         <div className="text-lg font-bold text-grey-heading">Team Feedback</div>
-        <ExcelGrid
-          headers={teamColumns}
-          firstColumn={headers}
-          matrix={teamMatrix}
-          onChange={setTeamMatrix}
-          inputConfig
-        />
+        <Spreadsheet headers={teamColumns} firstColumn={headers} matrix={teamMatrix} onChange={setTeamMatrix} />
       </div>
       <div className="flex flex-row gap-4 mt-4">
         <div>
@@ -94,12 +78,9 @@ const TeamFeedback = ({
             placeholder="Write qualitative feedback..."
             value={qualitativeFeedback}
             onChange={(value) => setQualitativeFeedback(value)}
-            rows={3}
+            minWidth="100%"
           />
         </div>
-      </div>
-      <div className="flex justify-end mt-4">
-        <PrimaryButton onClick={handleTeamSubmit}>Submit Feedback</PrimaryButton>
       </div>
     </div>
   );

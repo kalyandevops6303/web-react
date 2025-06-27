@@ -67,56 +67,56 @@ export const headers = [
       max: 5,
     },
   },
-  {
-    value: 'Improvement',
-    identifier: 'h7',
-    backgroundColor: '#0DA8B21F',
-    color: '#0DA8B2',
-    inputConfig: {
-      type: MilestoneFeedbackInputCellType.DROPDOWN,
-      options: [
-        { label: 'Excellent', value: 'excellent' },
-        { label: 'Good', value: 'good' },
-        { label: 'Needs Improvement', value: 'needs_improvement' },
-      ],
-      placeholder: 'Area of Development',
-      isMultiSelect: true,
-    },
-  },
-  {
-    value: 'Recognition',
-    identifier: 'h8',
-    backgroundColor: '#584CDB1F',
-    color: '#584CDB',
-    inputConfig: {
-      type: MilestoneFeedbackInputCellType.DROPDOWN,
-      options: [
-        { label: 'Wow', value: 'wow' },
-        { label: 'Not Applicable', value: 'na' },
-      ],
-      placeholder: 'Select recognition',
-    },
-  },
-  {
-    value: 'Competency',
-    identifier: 'h9',
-    backgroundColor: '#FF57331F',
-    color: '#FF5733',
-    inputConfig: {
-      type: MilestoneFeedbackInputCellType.DROPDOWN,
-      options: [
-        { label: 'Communication', value: 'communication' },
-        { label: 'Collaboration', value: 'collaboration' },
-        { label: 'Leadership', value: 'leadership' },
-        { label: 'Effectiveness', value: 'effectiveness' },
-        { label: 'Problem Solving', value: 'problem_solving' },
-        { label: 'Innovation', value: 'innovation' },
-        { label: 'Improvement', value: 'improvement' },
-      ],
-      placeholder: 'Select competency',
-      isMultiSelect: true,
-    },
-  },
+  // {
+  //   value: 'Improvement',
+  //   identifier: 'h7',
+  //   backgroundColor: '#0DA8B21F',
+  //   color: '#0DA8B2',
+  //   inputConfig: {
+  //     type: MilestoneFeedbackInputCellType.DROPDOWN,
+  //     options: [
+  //       { label: 'Excellent', value: 'excellent' },
+  //       { label: 'Good', value: 'good' },
+  //       { label: 'Needs Improvement', value: 'needs_improvement' },
+  //     ],
+  //     placeholder: 'Area of Development',
+  //     isMultiSelect: true,
+  //   },
+  // },
+  // {
+  //   value: 'Recognition',
+  //   identifier: 'h8',
+  //   backgroundColor: '#584CDB1F',
+  //   color: '#584CDB',
+  //   inputConfig: {
+  //     type: MilestoneFeedbackInputCellType.DROPDOWN,
+  //     options: [
+  //       { label: 'Wow', value: 'wow' },
+  //       { label: 'Not Applicable', value: 'na' },
+  //     ],
+  //     placeholder: 'Select recognition',
+  //   },
+  // },
+  // {
+  //   value: 'Competency',
+  //   identifier: 'h9',
+  //   backgroundColor: '#FF57331F',
+  //   color: '#FF5733',
+  //   inputConfig: {
+  //     type: MilestoneFeedbackInputCellType.DROPDOWN,
+  //     options: [
+  //       { label: 'Communication', value: 'communication' },
+  //       { label: 'Collaboration', value: 'collaboration' },
+  //       { label: 'Leadership', value: 'leadership' },
+  //       { label: 'Effectiveness', value: 'effectiveness' },
+  //       { label: 'Problem Solving', value: 'problem_solving' },
+  //       { label: 'Innovation', value: 'innovation' },
+  //       { label: 'Improvement', value: 'improvement' },
+  //     ],
+  //     placeholder: 'Select competency',
+  //     isMultiSelect: true,
+  //   },
+  // },
 ];
 
 export const firstColumn = [
@@ -133,7 +133,7 @@ export const teamCriteria = [
 ];
 
 export const teamColumns = [
-  { value: 'Feedback', identifier: 'feedback' },
+  { value: 'Feedback', identifier: 'feedback', width: 400 },
   {
     value: 'Ratings',
     identifier: 'ratings',

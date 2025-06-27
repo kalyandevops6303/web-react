@@ -54,7 +54,7 @@ const MatrixElements = ({ feedbackType }: { feedbackType: MilestoneFeedbackType 
         };
       }) || [];
 
-  if (feedbackType === MilestoneFeedbackType.TEAM_FEEDBACK) {
+  if (feedbackType === MilestoneFeedbackType.INDIVIDUAL_FEEDBACK) {
     headers.push({
       value: 'Competency',
       identifier: 'competency',
@@ -70,6 +70,7 @@ const MatrixElements = ({ feedbackType }: { feedbackType: MilestoneFeedbackType 
               value: choice.name,
             })) || [],
         placeholder: 'Select competencies',
+        isMultiSelect: true,
       },
     });
   }

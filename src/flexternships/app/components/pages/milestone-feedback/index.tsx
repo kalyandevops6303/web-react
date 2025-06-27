@@ -107,9 +107,7 @@ const GiveMilestoneFeedback = () => {
         <div className="flex flex-row gap-6 relative">
           {/* Left Content Area */}
           <section className="w-full">
-            {feedbackProgress?.feedbacks.map((feedback) => (
-              <FeedbackItem key={feedback.type} feedback={feedback} />
-            ))}
+            <FeedbackItem />
           </section>
 
           {/* Open Insights Button */}

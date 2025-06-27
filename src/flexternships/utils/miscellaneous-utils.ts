@@ -125,5 +125,6 @@ export const getAreaCheckboxInputConfig = (element: FeedbackElement) => {
         };
       }
     }),
+    isMultiSelect: true,
   };
 };
