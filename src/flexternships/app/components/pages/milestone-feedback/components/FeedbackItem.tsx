@@ -76,13 +76,13 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
             if (cell.colId === 'recognition') {
               return {
                 row_id: cell.rowId,
-                col_id: cell.colId,
+                column_id: cell.colId,
                 value: { competencies, recognition: cell.value },
               };
             }
             return {
               row_id: cell.rowId,
-              col_id: cell.colId,
+              column_id: cell.colId,
               value: cell.value,
             };
           })
@@ -90,24 +90,24 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
       }),
     };
 
-    let teamFeedback: { rowId: string; comment?: string; rating?: string; leaders?: Leader[] }[] = teamMatrix.map(
+    let teamFeedback: { row_id: string; comment?: string; rating?: string; leaders?: Leader[] }[] = teamMatrix.map(
       (row) => {
-        const rowId = row[0].rowId;
+        const row_id = row[0].rowId;
         const comment = String(row[0].value);
         const rating = String(row[1].value);
         return {
-          rowId,
+          row_id,
           comment,
           rating,
         };
       },
     );
     teamFeedback.push({
-      rowId: 'comment',
+      row_id: 'comment',
       comment: qualitativeFeedback,
     });
     teamFeedback.push({
-      rowId: 'topLeaders',
+      row_id: 'top_leaders',
       leaders: topLeaders.map((leader) => ({
         id: leader.value,
         name: leader.label,
@@ -116,7 +116,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     const manager_to_team_request = {
       milestone_id: milestoneId,
       team_id: teamId,
-      team_feedback: teamFeedback,
+      team_feedback_matrix: teamFeedback,
     };
     const data = {
       manager_to_peer_request,
