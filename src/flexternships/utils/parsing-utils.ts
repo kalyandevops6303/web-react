@@ -612,6 +612,10 @@ export const parseAssessmentResult = (data: any): AssessmentSectionResult[] => {
   return data?.map((section: any) => ({
     name: section.section_name,
     grade: section.section_grade,
+    skills: section.skills_data?.map((skill: any) => ({
+      name: skill.skill_name,
+      grade: skill.skill_grade,
+    })),
   }));
 };
 

@@ -19,8 +19,8 @@ const CustomTable = ({ sections }: { sections: AssessmentSectionResult[] }) => {
         <thead className="bg-grey-background uppercase h-[52px] text-xs font-semibold tracking-[1px] text-grey-heading">
           <tr>
             <th className="text-left pr-2.5 pl-6">Section</th>
-            <th className="text-left px-2.5 w-[220px]">Completed On</th>
-            <th className="text-left pl-2.5 pr-6 w-[200px]">Grade</th>
+            <th className="text-left px-2.5">Skills Assessed</th>
+            <th className="text-left pl-2.5 pr-6 w-[168px]">Grade</th>
           </tr>
         </thead>
         <tbody>
@@ -34,14 +34,36 @@ const CustomTable = ({ sections }: { sections: AssessmentSectionResult[] }) => {
               key={section.name}
             >
               <td className="py-3 pr-2.5 pl-6">{section.name}</td>
-              <td className="py-3 px-2.5">10 Jan 2024, 4:00 PM IST</td>
+              <td className="py-3 px-2.5">
+                <div className="flex flex-row flex-wrap gap-2">
+                  {section.skills.map((skill) => (
+                    <div className="flex flex-row gap-x-3">
+                      <div
+                        className="w-1 rounded-md"
+                        style={{ backgroundColor: getGradeMetadataByName(skill.grade)?.colorCode }}
+                      />
+                      <div className="flex flex-col gap-y-1 min-w-[124px]">
+                        <div className="text-sm font-medium leading-4.5 text-grey-700">{skill.name}</div>
+                        <div
+                          className="text-sm font-medium leading-4.5 uppercase"
+                          style={{ color: getGradeMetadataByName(skill.grade)?.colorCode }}
+                        >
+                          {skill.grade}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </td>
               {/* TODO: Remove completed on and remove hardcoded data */}
-              <td className="py-3 pl-2.5 pr-6 flex flex-row gap-x-2">
-                <div
-                  className="w-1 rounded-md"
-                  style={{ backgroundColor: getGradeMetadataByName(section.grade)?.colorCode }}
-                />
-                <span className="text-sm font-medium leading-4.5 text-grey">{section.grade}</span>
+              <td className="py-3 pl-2.5 pr-6">
+                <div className="flex flex-row gap-x-2">
+                  <div
+                    className="w-1 rounded-md"
+                    style={{ backgroundColor: getGradeMetadataByName(section.grade)?.colorCode }}
+                  />
+                  <span className="text-sm font-medium leading-4.5 text-grey">{section.grade}</span>
+                </div>
               </td>
             </tr>
           ))}
