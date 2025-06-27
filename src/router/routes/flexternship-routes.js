@@ -53,6 +53,7 @@ import TeamAnalytics from '@/flexternships/app/analytics/team-analytics/page';
 import ConversationParticipationPage from '@/flexternships/app/analytics/individual-analytics/conversation-participation/page';
 import Commits from '@/flexternships/app/analytics/individual-analytics/commits/page';
 import TermsAndConditions from '@/flexternships/app/profile/terms-and-conditions/page';
+import AssessmentsPage from '@/flexternships/app/assessments/page';
 
 // ** Default Route
 const DefaultRoute = routes.auth.path;
@@ -70,7 +71,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -115,7 +116,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -150,7 +151,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -195,7 +196,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -236,7 +237,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -282,7 +283,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -328,7 +329,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -390,7 +391,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -436,7 +437,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -520,7 +521,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.ACCOUNT_DETAILS],
             blockCheckpoints: [
               {
@@ -571,7 +572,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -602,7 +603,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -633,7 +634,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -679,7 +680,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -719,7 +720,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -764,7 +765,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -799,7 +800,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -830,7 +831,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -861,7 +862,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -892,7 +893,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -923,7 +924,7 @@ const FlexternshipRoutes = [
       <RoleAccessWrapper
         allowedAppRoles={[
           {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
             allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
             blockCheckpoints: [
               {
@@ -945,6 +946,31 @@ const FlexternshipRoutes = [
         ]}
       >
         <Commits />
+      </RoleAccessWrapper>
+    ),
+  },
+  {
+    path: routes.assessments.path,
+    element: (
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('account-details'),
+              },
+              {
+                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
+                redirectRoute: routes.talentOnboarding.generate('personal-details'),
+              },
+            ],
+          },
+        ]}
+      >
+        <AssessmentsPage />
       </RoleAccessWrapper>
     ),
   },

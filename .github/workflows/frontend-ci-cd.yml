@@ -80,9 +80,9 @@ jobs:
       - name: Set SharePoint SubFolder Name Based on Tag
         run: |
           if [[ "${{ vars.TAG }}" == uat_* ]]; then
-           echo "SUBFOLDER=uat" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-uat" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
-           echo "SUBFOLDER=tru-uat" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-tru-uat" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
            echo "SUBFOLDER=tru-uat-auto" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
@@ -229,7 +229,7 @@ jobs:
       - name: Set Azure Static Web Apps Token
         run: |
           if [[ "${{ vars.ENVIRONMENT }}" == "tru-uat" ]]; then
-            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_UAT }}" >> $GITHUB_ENV
+            echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_TEST }}" >> $GITHUB_ENV
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-uat-auto" ]]; then
             echo "AZURE_STATIC_WEB_APPS_API_TOKEN=${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TRU_UAT_AUTO }}" >> $GITHUB_ENV
           elif [[ "${{ vars.ENVIRONMENT }}" == "tru-wipro" ]]; then

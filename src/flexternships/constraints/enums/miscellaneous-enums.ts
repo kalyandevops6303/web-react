@@ -17,3 +17,8 @@ export enum MilestoneDropdownOptions {
   GIVE_RECOGNITION = 'GIVE_RECOGNITION',
   VIEW_RECOGNITION = 'VIEW_RECOGNITION',
 }
+
+export enum SkillBadgeType {
+  PROJECT = 'PROJECT',
+  COHORT = 'COHORT',
+}

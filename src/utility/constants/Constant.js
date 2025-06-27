@@ -32,11 +32,13 @@ const userTypes = {
   club: 'CLUB',
   flexternTalent: 'FLEXTERN_TALENT',
   flexternClient: 'FLEXTERN_CLIENT',
+  projectAdvisor: 'PROJECT_ADVISOR',
 };
 
 const appRoles = {
   flexternClient: 'FLEXTERN_CLIENT',
   flexternTalent: 'FLEXTERN_TALENT',
+  projectAdvisor: 'PROJECT_ADVISOR',
 };
 
 const teamTypes = {

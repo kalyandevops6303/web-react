@@ -24,6 +24,7 @@ import {
 import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
 import { supportTypes } from '../constraints/types/core-types';
+import { Assessment, AssessmentSectionResult, GradeMetadata } from '../constraints/types/assessment-types';
 import { FeedbackSkeleton } from '../constraints/types/milestone-feedback-types';
 import { MilestoneFeedbackProgress } from '../constraints/types/milestone-insight-types';
 
@@ -258,7 +259,7 @@ export const parseCommentsTimeline = (data: Record<string, any>): CommentsTimeli
     const giverDesignation =
       giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
         ? 'Mentor'
-        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT
+        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT || giverAppRole === FlexternUserAppRole.PROJECT_ADVISOR
         ? 'Manager'
         : commentsTimelineItem.giver_details.project_role;
 
@@ -585,6 +586,45 @@ export const parseSupportTypesResponse = (data: supportTypes[], page: number, pa
       has_next_page: false,
     },
   };
+};
+
+export const parseAssessments = (data: any): Assessment[] => {
+  return data.map((assessment: any) => ({
+    id: assessment._id,
+    assessmentId: assessment.assessment_id,
+    name: assessment.name,
+    url: assessment.url,
+    projectId: assessment.project_id,
+    projectStatus: assessment.project_status,
+    type: assessment.type,
+    numberOfQuestions: assessment.no_of_questions,
+    totalDuration: assessment.total_duration,
+    userAssessmentResult: assessment.user_assessment_result
+      ? {
+          id: assessment.user_assessment_result._id,
+          overallPercentage: assessment.user_assessment_result.overall_percentage,
+        }
+      : undefined,
+    grade: assessment.grade,
+    status: assessment.status,
+  }));
+};
+
+export const parseAssessmentResult = (data: any): AssessmentSectionResult[] => {
+  return data?.map((section: any) => ({
+    name: section.section_name,
+    grade: section.section_grade,
+  }));
+};
+
+export const parseGradeMetadata = (data: any): GradeMetadata[] => {
+  return data?.map((grade: any) => ({
+    id: grade._id,
+    name: grade.grade,
+    toPercentage: grade.to_percentage,
+    fromPercentage: grade.from_percentage,
+    colorCode: grade.colour_code,
+  }));
 };
 
 export const parseFeedbackSkeletons = (responseData: any): FeedbackSkeleton[] => {
