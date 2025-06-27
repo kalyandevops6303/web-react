@@ -193,7 +193,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             currentValue.map((item) => (
               <div
                 key={item.value}
-                className={`flex flex-row overflow-hidden items-center bg-[#4DAAEC] text-white text-xs rounded-[3px]`}
+                className={`flex flex-row overflow-hidden items-center bg-[#4DAAEC] text-white text-xs rounded-[3px] whitespace-nowrap`}
               >
                 {item.label}
                 <button

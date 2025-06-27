@@ -25,6 +25,7 @@ import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
 import { supportTypes } from '../constraints/types/core-types';
 import { FeedbackSkeleton } from '../constraints/types/milestone-feedback-types';
+import { MilestoneFeedbackProgress } from '../constraints/types/milestone-insight-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -592,4 +593,22 @@ export const parseFeedbackSkeletons = (responseData: any): FeedbackSkeleton[] =>
     type: skeleton.type,
     elements: skeleton.elements,
   }));
+};
+
+export const parseFeedbackStatus = (responseData: any): MilestoneFeedbackProgress => {
+  return {
+    project: {
+      id: responseData?.project_id,
+      name: responseData.project_name,
+    },
+    milestone: {
+      id: responseData?.milestone_id,
+      name: responseData.milestone_name,
+    },
+    overallStatus: responseData?.feedback_status[0]?.status,
+    feedbacks: responseData?.feedback_status.map((feedback: any) => ({
+      type: feedback.type,
+      status: feedback.status,
+    })),
+  };
 };

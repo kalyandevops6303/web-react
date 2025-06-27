@@ -3,7 +3,6 @@ import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-en
 import { MilestoneFeedbackInputCellType } from '@/flexternships/constraints/enums/feedback-enums';
 import { useMilestoneFeedbackStore } from '@/flexternships/stores/feedback-store';
 import { CellProps } from '@/flexternships/constraints/types/form-types';
-import { useEffect } from 'react';
 import {
   getAreaCheckboxInputConfig,
   getNumberRatingInputConfig,
@@ -11,14 +10,8 @@ import {
 } from '@/flexternships/utils/miscellaneous-utils';
 
 const MatrixElements = ({ feedbackType }: { feedbackType: MilestoneFeedbackType }) => {
-  const { feedbackSkeletons, populateFeedbackSkeletons } = useMilestoneFeedbackStore();
+  const { feedbackSkeletons } = useMilestoneFeedbackStore();
   const feedbackSkeleton = feedbackSkeletons.find((skeleton) => skeleton.type === feedbackType);
-  useEffect(() => {
-    if (!feedbackSkeleton) {
-      populateFeedbackSkeletons();
-    }
-  }, [feedbackSkeleton, populateFeedbackSkeletons]);
-
   const headers: CellProps[] =
     feedbackSkeleton?.elements
       .filter((element) =>
@@ -56,6 +49,17 @@ const MatrixElements = ({ feedbackType }: { feedbackType: MilestoneFeedbackType 
 
   if (feedbackType === MilestoneFeedbackType.INDIVIDUAL_FEEDBACK) {
     headers.push({
+      value: 'Qualitative Feedback',
+      identifier: 'qualitativeFeedback',
+      backgroundColor: '#FF9F431F',
+      color: '#FF9F43',
+      inputConfig: {
+        type: MilestoneFeedbackInputCellType.STRING,
+        placeholder: 'Please type here',
+      },
+      width: 300,
+    });
+    headers.push({
       value: 'Competency',
       identifier: 'competency',
       backgroundColor: '#FF9F431F',
@@ -65,9 +69,9 @@ const MatrixElements = ({ feedbackType }: { feedbackType: MilestoneFeedbackType 
         options:
           feedbackSkeleton?.elements
             ?.find((element) => element.type === FeedbackSkeletonItemType.WOW_GROUP)
-            ?.competency?.choices?.map((choice: { name: string }) => ({
+            ?.competency?.choices?.map((choice: { name: string; abbreviation?: string }) => ({
               label: choice.name,
-              value: choice.name,
+              value: choice.abbreviation || choice.name,
             })) || [],
         placeholder: 'Select competencies',
         isMultiSelect: true,

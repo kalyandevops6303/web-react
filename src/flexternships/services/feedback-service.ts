@@ -9,8 +9,7 @@ import axios from 'axios';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
-import { parseFeedbackSkeletons } from '@flexternships/utils/parsing-utils';
-import { mockFeedbackSkeletons } from '../mocks/meeting-feedback';
+import { parseFeedbackSkeletons, parseFeedbackStatus } from '@flexternships/utils/parsing-utils';
 
 /**
  * Gets milestone feedback information for a project.
@@ -98,15 +97,52 @@ export const getFeedbackResponseService: (
  * @returns A Promise that resolves to the feedback skeletons.
  */
 export const getFeedbackSkeletonsService = async () => {
-  // const config = { withCredentials: true };
+  const config = { withCredentials: true };
   try {
-    // const response = await axios.get(
-    //   routes.flexAdmin.project.getFeedbackData,
-    //   config
-    // );
-    const response = mockFeedbackSkeletons;
-    return parseFeedbackSkeletons(response.data);
+    const response = await axios.get(routes.projectManagementV2.feedback.getFeedbackSkeletons, config);
+    // const response = mockFeedbackSkeletons;
+    return parseFeedbackSkeletons(response.data.data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while fetching feedback skeletons');
+  }
+};
+
+/**
+ * Fetches the feedback status for a specific milestone.
+ * @param milestoneId - The ID of the milestone to get feedback status for.
+ * @returns A Promise that resolves to the feedback status data or undefined.
+ * @throws {Error} If the feedback status retrieval fails or an unexpected error occurs.
+ */
+export const getFeedbackStatusService = async (milestoneId: string) => {
+  const config = { withCredentials: true };
+  try {
+    const response = await axios.get(routes.projectManagementV2.feedback.getFeedbackStatus, {
+      ...config,
+      params: {
+        milestone_id: milestoneId,
+      },
+    });
+    return parseFeedbackStatus(response.data.data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while fetching feedback status');
+  }
+};
+
+/**
+ * Submits milestone feedback.
+ * @param formData - The feedback form data to submit.
+ * @returns A Promise that resolves to the submission response data or undefined.
+ * @throws {Error} If the feedback submission fails or an unexpected error occurs.
+ */
+export const submitMilestoneFeedbackService = async (formData: any) => {
+  const headers = appendAuthToken({});
+  try {
+    const response = await axios.post(routes.projectManagementV2.feedback.submitMilestoneFeedback, formData, {
+      headers,
+      withCredentials: true,
+    });
+    return response.data?.data || undefined;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while submitting milestone feedback');
   }
 };

@@ -1,6 +1,5 @@
 import { ExcelGridProps } from '@/flexternships/constraints/types/form-types';
 import React from 'react';
-// import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent } from '../../../ui/dropdown-menu';
 import { Dropdown } from '../dynamic-select/Dropdown';
 
 const ExcelGrid: React.FC<ExcelGridProps> = ({
@@ -13,23 +12,17 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
 }) => {
   const excelGridHeaders = headers.filter((header) => header.inputConfig?.type === 'dropdown');
   const handleCellChange = (rowId: string, colId: string, value: string | number | string[]) => {
-    console.log('rowId', rowId);
-    console.log('colId', colId);
-    console.log('value', value);
     const rowIndex = firstColumn.findIndex((row) => row.identifier === rowId);
     const colIndex = headers.findIndex((header) => header.identifier === colId);
-    console.log('rowIndex', rowIndex);
-    console.log('colIndex', colIndex);
     const newMatrix = matrix.map((row, rIndex) => {
       if (rIndex !== rowIndex) return row;
       return row.map((cell, cIndex) => (cIndex === colIndex ? { ...cell, value } : cell));
     });
     onChange?.(newMatrix);
-    console.log('newMatrix', newMatrix);
   };
 
   return (
-    <div className={`overflow-x-auto ${className}`}>
+    <div className={className}>
       <table className="min-w-full border-collapse">
         <thead>
           <tr>
@@ -37,7 +30,7 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
             {excelGridHeaders.map((header) => (
               <th
                 key={header?.identifier || ''}
-                className=" text-m px-4 items-center h-2"
+                className="text-m px-4 items-center h-2 w-32 max-w-48 overflow-x-auto"
                 style={{
                   backgroundColor: header.backgroundColor || '#f9fafb',
                   borderColor: header.borderColor || '#e5e7eb',
@@ -64,7 +57,7 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
               {excelGridHeaders.map((header, colIndex) => (
                 <td
                   key={`${cell?.identifier}-${header?.identifier}`}
-                  className="border border-gray-300 text-xs px-2 py-1 h-4 w-10 overflow-auto-x"
+                  className="border border-gray-300 text-xs px-2 py-1 h-4 w-48 whitespace-nowrap"
                 >
                   {inputConfig && header.inputConfig?.type === 'number' ? (
                     <input

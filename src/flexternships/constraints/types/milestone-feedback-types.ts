@@ -31,6 +31,7 @@ export type FeedbackElement = {
   competency?: {
     choices?: {
       name: string;
+      abbreviation?: string;
     }[];
   };
 };

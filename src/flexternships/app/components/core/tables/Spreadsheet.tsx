@@ -16,15 +16,11 @@ const Spreadsheet: React.FC<ExcelGridProps> = ({
   const [dropdownStates, setDropdownStates] = useState<{ [key: string]: { isOpen: boolean; selectedValue?: string } }>(
     {},
   );
-
-  // // Register custom cell templates
-  // const customCellTemplates = {
-  //   'custom-dropdown': new CustomDropdownCellTemplate()
-  // };
+  const spreadsheetHeaders = headers.filter((header) => header.inputConfig?.type !== 'dropdown');
 
   const columns: Column[] = [
     { columnId: 'rowLabel', width: 150, resizable: true },
-    ...headers.map((header) => ({
+    ...spreadsheetHeaders.map((header) => ({
       columnId: header.identifier,
       width: header?.width || 150,
       resizable: true,
@@ -36,7 +32,7 @@ const Spreadsheet: React.FC<ExcelGridProps> = ({
       rowId: 'header',
       cells: [
         { type: 'header', text: '' },
-        ...headers.map((header) => ({
+        ...spreadsheetHeaders.map((header) => ({
           type: 'header' as const,
           text: header.value,
           style: { backgroundColor: header?.backgroundColor || '#a6a6a6', color: header?.color || '#000000' },
@@ -53,7 +49,8 @@ const Spreadsheet: React.FC<ExcelGridProps> = ({
           className: 'border-b border-gray-400 items-center justify-center',
           style: { background: row?.backgroundColor || '#a6a6a6', color: row?.color || '#000000' },
         },
-        ...headers.map((column, colIndex) => {
+        ...spreadsheetHeaders.map((column) => {
+          const colIndex = headers.findIndex((header) => header.identifier === column.identifier);
           const cellValue = matrix[rowIndex]?.[colIndex]?.value ?? '';
 
           if (column.inputConfig?.type === 'number') {

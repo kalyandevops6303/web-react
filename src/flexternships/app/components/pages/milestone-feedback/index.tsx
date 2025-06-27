@@ -1,4 +1,3 @@
-import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -10,53 +9,122 @@ import MilestoneNotFound from './components/MilestoneNotFound';
 import ProjectNotFound from './components/ProjectNotFound';
 import SomethingWentWrong from './components/SomethingWentWrong';
 import MilestoneFeedbackStatusLoader from './components/Loader';
-import { MilestoneFeedbackStatus } from '@/flexternships/constraints/enums/core-enums';
+import { MilestoneFeedbackStatus } from '@/flexternships/constraints/enums/feedback-enums';
 import { MilestoneFeedbackErrorType } from '@/flexternships/constraints/enums/feedback-enums';
 import { MilestoneFeedbackProgress } from '@/flexternships/constraints/types/milestone-insight-types';
 import FeedbackItem from './components/FeedbackItem';
+import { useMilestoneFeedbackStore } from '@/flexternships/stores/feedback-store';
+import { fetchTeamDetails } from '@/flexternships/services/project-details';
+import { CellProps } from '@/flexternships/constraints/types/form-types';
+import { getFeedbackStatusService } from '@/flexternships/services/feedback-service';
+import ShowToastMessage from '@/@core/components/toast';
+import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 // import { PanelRightOpen } from 'lucide-react';
 // import MilestoneInsights from "./components/milestone-insight/MilestoneInsights";
 // import classNames from 'classnames';
 
-const milestoneFeedbackProgress = {
-  project: {
-    id: '1',
-    name: 'Project 1',
-  },
-  milestone: {
-    id: '1',
-    name: 'Milestone 1',
-  },
-  overallStatus: MilestoneFeedbackStatus.PENDING,
-  feedbacks: [
-    {
-      type: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
-      status: MilestoneFeedbackStatus.PENDING,
-    },
-    {
-      type: MilestoneFeedbackType.TEAM_FEEDBACK,
-      status: MilestoneFeedbackStatus.PENDING,
-    },
-  ],
-};
+// const milestoneFeedbackProgress = {
+//   project: {
+//     id: '1',
+//     name: 'Project 1',
+//   },
+//   milestone: {
+//     id: '1',
+//     name: 'Milestone 1',
+//   },
+//   overallStatus: MilestoneFeedbackStatus.PENDING,
+//   feedbacks: [
+//     {
+//       type: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
+//       status: MilestoneFeedbackStatus.PENDING,
+//     },
+//     {
+//       type: MilestoneFeedbackType.TEAM_FEEDBACK,
+//       status: MilestoneFeedbackStatus.PENDING,
+//     },
+//   ],
+// };
 
 const GiveMilestoneFeedback = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorType, setErrorType] = useState<MilestoneFeedbackErrorType | undefined>();
   const [feedbackProgress, setFeedbackProgress] = useState<MilestoneFeedbackProgress | undefined>();
+  const { populateFeedbackSkeletons, isFeedbackSkeletonsLoading } = useMilestoneFeedbackStore();
   // const [showMilestoneInsights, setShowMilestoneInsights] = useState(false);
+  const { projectId } = useParams();
+  const { milestoneId } = useParams();
+  const navigate = useNavigate();
+  const [teamDetails, setTeamDetails] = useState<CellProps[]>([]);
+  const [isTeamDetailsLoading, setIsTeamDetailsLoading] = useState(false);
+  const [teamId, setTeamId] = useState<string>('');
 
   useEffect(() => {
-    setIsLoading(true);
-    // add api call
-    if (milestoneFeedbackProgress.overallStatus === MilestoneFeedbackStatus.COMPLETED) {
-      setErrorType(MilestoneFeedbackErrorType.FEEDBACK_ALREADY_SUBMITTED);
-      setIsLoading(false);
-      return;
-    }
-    setFeedbackProgress(milestoneFeedbackProgress);
-    setIsLoading(false);
+    populateFeedbackSkeletons();
+  }, [populateFeedbackSkeletons]);
+
+  useEffect(() => {
+    const fetchFeedbackStatus = async () => {
+      setIsLoading(true);
+      if (!projectId) {
+        setErrorType(MilestoneFeedbackErrorType.PROJECT_NOT_FOUND);
+        setIsLoading(false);
+        return;
+      }
+      if (!milestoneId) {
+        setErrorType(MilestoneFeedbackErrorType.MILESTONE_NOT_FOUND);
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const milestoneFeedbackProgress = await getFeedbackStatusService(milestoneId);
+        if (
+          milestoneFeedbackProgress &&
+          milestoneFeedbackProgress.overallStatus === MilestoneFeedbackStatus.COMPLETED
+        ) {
+          setErrorType(MilestoneFeedbackErrorType.FEEDBACK_ALREADY_SUBMITTED);
+        }
+        setFeedbackProgress(milestoneFeedbackProgress);
+      } catch (error) {
+        ShowToastMessage(ToastType.ERROR, 'Error fetching feedback status');
+        if (error instanceof Error && error.message.includes('Milestone not found')) {
+          setErrorType(MilestoneFeedbackErrorType.MILESTONE_NOT_FOUND);
+        } else {
+          setErrorType(MilestoneFeedbackErrorType.PROJECT_NOT_FOUND);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFeedbackStatus();
   }, []);
+
+  useEffect(() => {
+    if (!projectId) return;
+    const fetchTeamMembersDetails = async () => {
+      try {
+        setIsTeamDetailsLoading(true);
+        const teamDetails = await fetchTeamDetails(projectId);
+        const memberList = teamDetails
+          .filter((member: any) => member._id !== '')
+          .map((member: any) => {
+            return {
+              value: member.first_name + ' ' + member.last_name,
+              identifier: member._id,
+            };
+          });
+        setTeamDetails(memberList);
+        setTeamId(teamDetails[0].team_id);
+      } catch (error) {
+        ShowToastMessage(ToastType.ERROR, 'Error fetching team details');
+        if (error instanceof Error && error.message.includes('Project not found')) {
+          setErrorType(MilestoneFeedbackErrorType.PROJECT_NOT_FOUND);
+        }
+      } finally {
+        setIsTeamDetailsLoading(false);
+      }
+    };
+    fetchTeamMembersDetails();
+  }, [projectId]);
 
   const getErrorComponent = () => {
     switch (errorType) {
@@ -71,11 +139,8 @@ const GiveMilestoneFeedback = () => {
     }
   };
 
-  if (isLoading) return <MilestoneFeedbackStatusLoader />;
+  if (isLoading || isFeedbackSkeletonsLoading || isTeamDetailsLoading) return <MilestoneFeedbackStatusLoader />;
   if (errorType) return getErrorComponent();
-
-  const { projectId } = useParams();
-  const navigate = useNavigate();
 
   // Calculate left content width based on sidebar state
   // const leftContentClass = classNames(
@@ -107,7 +172,7 @@ const GiveMilestoneFeedback = () => {
         <div className="flex flex-row gap-6 relative">
           {/* Left Content Area */}
           <section className="w-full">
-            <FeedbackItem />
+            <FeedbackItem milestoneId={milestoneId!} teamDetails={teamDetails} teamId={teamId} />
           </section>
 
           {/* Open Insights Button */}

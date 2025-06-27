@@ -1,4 +1,4 @@
-import { DropdownOption } from '@/flexternships/constraints/types/form-types';
+import { CellProps, DropdownOption } from '@/flexternships/constraints/types/form-types';
 import { MatrixCell } from '@/flexternships/constraints/types/form-types';
 import Spreadsheet from '../../../core/tables/Spreadsheet';
 import {
@@ -8,7 +8,7 @@ import {
   DropdownMenuCheckboxItem,
 } from '../../../ui/dropdown-menu';
 import TextBox from '../../../core/surveys/TextBox';
-import { leaderOptions, teamColumns } from '@/flexternships/mocks/meeting-feedback';
+import { teamColumns } from '@/flexternships/mocks/meeting-feedback';
 import MatrixElements from './MatrixElements';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { ChevronDown } from 'react-feather';
@@ -20,6 +20,7 @@ interface TeamFeedbackProps {
   setTopLeaders: (leaders: DropdownOption[]) => void;
   qualitativeFeedback: string;
   setQualitativeFeedback: (feedback: string) => void;
+  teamDetails: CellProps[];
 }
 
 const TeamFeedback = ({
@@ -29,6 +30,7 @@ const TeamFeedback = ({
   setTopLeaders,
   qualitativeFeedback,
   setQualitativeFeedback,
+  teamDetails,
 }: TeamFeedbackProps) => {
   const handleLeaderToggle = (leader: DropdownOption) => {
     const isSelected = topLeaders.some((l) => l.value === leader.value);
@@ -59,13 +61,13 @@ const TeamFeedback = ({
               <ChevronDown className="h-4 w-4 text-gray-500" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-64">
-              {leaderOptions.map((leader) => (
+              {teamDetails.map((leader) => (
                 <DropdownMenuCheckboxItem
-                  key={leader.value}
+                  key={leader.identifier}
                   checked={topLeaders.some((l) => l.value === leader.value)}
-                  onCheckedChange={() => handleLeaderToggle(leader)}
+                  onCheckedChange={() => handleLeaderToggle({ label: leader.value, value: leader.identifier })}
                 >
-                  {leader.label}
+                  {leader.value}
                 </DropdownMenuCheckboxItem>
               ))}
             </DropdownMenuContent>

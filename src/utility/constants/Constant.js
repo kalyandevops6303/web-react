@@ -317,6 +317,7 @@ const { studyYears, graduationYears } = generateYearArrays();
 
 const FEATURE_NAMES = {
   AYESHA_BOT: 'Ayesha Bot',
+  INTERNAL_ADMIN_FEEDBACK: 'internal_admin_feedback',
 };
 
 export {

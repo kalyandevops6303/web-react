@@ -1,4 +1,5 @@
-import { MilestoneFeedbackType, MilestoneFeedbackStatus } from '../enums/core-enums';
+import { MilestoneFeedbackType } from '../enums/core-enums';
+import { MilestoneFeedbackStatus } from '../enums/feedback-enums';
 
 export type FeedbackProgress = {
   type: MilestoneFeedbackType;
@@ -7,14 +8,14 @@ export type FeedbackProgress = {
 
 export type MilestoneFeedbackProgress = {
   project: {
-    id: string;
+    id?: string;
     name: string;
   };
   milestone: {
-    id: string;
+    id?: string;
     name: string;
   };
-  overallStatus: MilestoneFeedbackStatus;
+  overallStatus?: MilestoneFeedbackStatus;
   feedbacks: FeedbackProgress[];
 };
 
