@@ -90,11 +90,11 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
       }),
     };
 
-    let teamFeedback: { row_id: string; comment?: string; rating?: string; leaders?: Leader[] }[] = teamMatrix.map(
+    let teamFeedback: { row_id: string; comment?: string; rating?: number; leaders?: Leader[] }[] = teamMatrix.map(
       (row) => {
         const row_id = row[0].rowId;
         const comment = String(row[0].value);
-        const rating = String(row[1].value);
+        const rating = Number(row[1].value);
         return {
           row_id,
           comment,
@@ -103,7 +103,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
       },
     );
     teamFeedback.push({
-      row_id: 'comment',
+      row_id: 'qualitativeFeedback',
       comment: qualitativeFeedback,
     });
     teamFeedback.push({
