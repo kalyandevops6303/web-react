@@ -1,7 +1,7 @@
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { useState, useEffect } from 'react';
 import { MatrixCell, DropdownOption, CellProps } from '@/flexternships/constraints/types/form-types';
-import { teamColumns } from '@/flexternships/mocks/meeting-feedback';
+import { teamColumns } from '@/flexternships/static/content/milestone-feedback-content';
 import MatrixElements from './MatrixElements';
 import IndividualFeedback from './IndividualFeedback';
 import TeamFeedback from './TeamFeedback';

@@ -8,7 +8,7 @@ import {
   DropdownMenuCheckboxItem,
 } from '../../../ui/dropdown-menu';
 import TextBox from '../../../core/surveys/TextBox';
-import { teamColumns } from '@/flexternships/mocks/meeting-feedback';
+import { teamColumns } from '@/flexternships/static/content/milestone-feedback-content';
 import MatrixElements from './MatrixElements';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { ChevronDown } from 'react-feather';
