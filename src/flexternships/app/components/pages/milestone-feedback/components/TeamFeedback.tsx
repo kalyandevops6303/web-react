@@ -60,11 +60,11 @@ const TeamFeedback = ({
               </span>
               <ChevronDown className="h-4 w-4 text-gray-500" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-64">
+            <DropdownMenuContent className="w-64 bg-white">
               {teamDetails.map((leader) => (
                 <DropdownMenuCheckboxItem
                   key={leader.identifier}
-                  checked={topLeaders.some((l) => l.value === leader.value)}
+                  checked={topLeaders.some((l) => l.value === leader.identifier)}
                   onCheckedChange={() => handleLeaderToggle({ label: leader.value, value: leader.identifier })}
                 >
                   {leader.value}

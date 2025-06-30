@@ -69,9 +69,9 @@ const MatrixElements = ({ feedbackType }: { feedbackType: MilestoneFeedbackType 
         options:
           feedbackSkeleton?.elements
             ?.find((element) => element.type === FeedbackSkeletonItemType.WOW_GROUP)
-            ?.competency?.choices?.map((choice: { name: string; abbreviation?: string }) => ({
+            ?.competency?.choices?.map((choice: { name: string; id?: string }) => ({
               label: choice.name,
-              value: choice.abbreviation || choice.name,
+              value: choice.id || choice.name,
             })) || [],
         placeholder: 'Select competencies',
         isMultiSelect: true,

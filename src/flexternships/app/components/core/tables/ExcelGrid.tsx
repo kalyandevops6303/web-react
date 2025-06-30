@@ -1,6 +1,13 @@
 import { ExcelGridProps } from '@/flexternships/constraints/types/form-types';
 import React from 'react';
 import { Dropdown } from '../dynamic-select/Dropdown';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from '../../ui/dropdown-menu';
+import { ChevronDown } from 'react-feather';
 
 const ExcelGrid: React.FC<ExcelGridProps> = ({
   headers,
@@ -70,37 +77,60 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
                       className="w-full outline-none bg-transparent"
                     />
                   ) : inputConfig && header.inputConfig?.type === 'dropdown' ? (
-                    // <DropdownMenu>
-                    //   <DropdownMenuTrigger className="text-left border-none hover:bg-gray-50">
-                    //     {matrix[rowIndex]?.[colIndex]?.value || header.inputConfig?.placeholder || 'Select...'}
-                    //   </DropdownMenuTrigger>
-                    //   <DropdownMenuContent>
-                    //     {header.inputConfig?.options?.map((option, optionIndex) => (
-                    //       <DropdownMenuItem
-                    //         key={optionIndex}
-                    //         onClick={() => handleCellChange(rowIndex, colIndex, option.value)}
-                    //       >
-                    //         {option.label}
-                    //       </DropdownMenuItem>
-                    //     ))}
-                    //   </DropdownMenuContent>
-                    // </DropdownMenu>
-                    <Dropdown
-                      label=""
-                      options={header.inputConfig?.options || []}
-                      // selected={value}
-                      multi={header.inputConfig?.isMultiSelect}
-                      placeholder={header.inputConfig?.placeholder}
-                      onChange={(selected) => {
-                        if (Array.isArray(selected)) {
-                          const selectedValues = selected.map((option: { value: string }) => option.value);
-                          handleCellChange(cell.identifier, header.identifier, selectedValues);
-                        } else {
-                          const selectedValue = selected?.value;
-                          handleCellChange(cell.identifier, header.identifier, selectedValue || '');
-                        }
-                      }}
-                    />
+                    header.inputConfig?.isMultiSelect ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="flex items-center justify-between w-full px-2 py-1 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-xs">
+                          <span className="text-xs text-gray-700 truncate">
+                            {(() => {
+                              const columnIndex = headers.findIndex((h) => h.identifier === header.identifier);
+                              const currentValues = matrix[rowIndex]?.[columnIndex]?.value as string[];
+                              if (Array.isArray(currentValues) && currentValues.length > 0) {
+                                return `${currentValues.length} selected`;
+                              }
+                              return header.inputConfig?.placeholder || 'Select...';
+                            })()}
+                          </span>
+                          <ChevronDown className="h-3 w-3 text-gray-500" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-48 bg-white">
+                          {header.inputConfig?.options?.map((option) => {
+                            const columnIndex = headers.findIndex((h) => h.identifier === header.identifier);
+                            const currentValues = matrix[rowIndex]?.[columnIndex]?.value as string[];
+                            const isSelected =
+                              Array.isArray(currentValues) && currentValues.some((val) => val === option.value);
+                            return (
+                              <DropdownMenuCheckboxItem
+                                key={option.value}
+                                checked={isSelected}
+                                onCheckedChange={() => {
+                                  // const currentValues = matrix[rowIndex]?.[colIndex]?.value as string[] || [];
+                                  let newValues: string[];
+
+                                  if (isSelected) {
+                                    newValues = currentValues.filter((val) => val !== option.value);
+                                  } else {
+                                    newValues = [...currentValues, option.value];
+                                  }
+                                  handleCellChange(cell.identifier, header.identifier, newValues);
+                                }}
+                              >
+                                {option.label}
+                              </DropdownMenuCheckboxItem>
+                            );
+                          })}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <Dropdown
+                        label=""
+                        options={header.inputConfig?.options || []}
+                        placeholder={header.inputConfig?.placeholder}
+                        onChange={(selected) => {
+                          const selectedValue = selected && !Array.isArray(selected) ? selected.value : '';
+                          handleCellChange(cell.identifier, header.identifier, selectedValue);
+                        }}
+                      />
+                    )
                   ) : (
                     <input
                       type="text"

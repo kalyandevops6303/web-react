@@ -66,18 +66,16 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     const manager_to_peer_request = {
       milestone_id: milestoneId,
       rating_matrix: ratingMatrix.map((row) => {
-        let competencies: string[] = [];
         return row
           .map((cell) => {
             if (cell.colId === 'competency') {
-              competencies = cell.value as string[];
               return;
             }
             if (cell.colId === 'recognition') {
               return {
                 row_id: cell.rowId,
                 column_id: cell.colId,
-                value: { competencies, recognition: cell.value },
+                value: { competencies: row.find((c) => c.colId === 'competency')?.value, recognition: cell.value },
               };
             }
             return {
