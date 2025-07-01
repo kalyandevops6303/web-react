@@ -67,6 +67,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_skill,
       then: (schema) =>
         schema
+          .trim()
           .min(1, 'Skill must be at least 1 character')
           .max(150, 'Skill must be 150 characters or less')
           .required('Skill is required'),
@@ -76,6 +77,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool,
       then: (schema) =>
         schema
+          .trim()
           .min(1, 'Tool must be at least 1 character')
           .max(150, 'Tool must be 150 characters or less')
           .required('Tool is required'),
@@ -85,6 +87,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute,
       then: (schema) =>
         schema
+          .trim()
           .min(1, 'Institution must be at least 1 character')
           .max(150, 'Institution must be 150 characters or less')
           .required('Institution is required'),
@@ -94,6 +97,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_assessment,
       then: (schema) =>
         schema
+          .trim()
           .min(1, 'Assessment must be at least 1 character')
           .max(150, 'Assessment must be 150 characters or less')
           .required('Assessment is required'),
@@ -101,6 +105,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
     }),
     supportDetails: yup
       .string()
+      .trim()
       .min(50, 'Description must be at least 50 characters')
       .max(500, 'You have exceeded the limit of 500 characters')
       .required('Description is required'),
