@@ -691,6 +691,7 @@ export const parseDashboardProjects = (data: any) => {
           duration: milestone.estimated_duration.duration,
           description: milestone.description,
           deliverables: milestone.deliverables,
+          seq: milestone.seq,
         })) || [],
       cohortDetails: {
         name: project.cohort_details?.name,
@@ -701,6 +702,10 @@ export const parseDashboardProjects = (data: any) => {
       listingDetails: {
         startDate: project.listing_details.start_date_epoch,
         endDate: project.listing_details.end_date_epoch,
+      },
+      firstMilestoneWithoutFeedback: {
+        seq: project.first_milestone_without_feedback.seq,
+        milestoneId: project.first_milestone_without_feedback.milestone_id,
       },
     })),
   };

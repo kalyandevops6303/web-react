@@ -43,7 +43,7 @@ export default function ProjectsAccordion({
         value="item-1"
         className="rounded-lg border-none bg-white shadow-card data-[state=open]:bg-trublue-light"
       >
-        <AccordionTrigger className="py-4 px-6 hover:no-underline cursor-default">
+        <AccordionTrigger className="py-4 px-6 hover:no-underline cursor-pointer">
           <div className="flex items-center gap-x-3">
             <span className="text-grey-heading text-lg font-medium">
               {status === ProjectPrimaryStatus.ON_GOING ? 'Current Project' : 'Past Projects'}
