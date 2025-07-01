@@ -1,7 +1,7 @@
 import FlexternAvatar from '../../core/avatars/FlexternAvatar';
 import SimpleElevatedCard from '../../core/cards/SimpleElevatedCard';
 import { Progress } from '../../ui/progress';
-import { CheckCircle, ChevronRight, Clock } from 'react-feather';
+import { CheckCircle, ChevronRight, Clock, Info } from 'react-feather';
 import SecondaryButton from '../../core/buttons/SecondaryButton';
 import SkillBadge from '../../core/badges/SkillBadge';
 import { SkillBadgeType } from '@/flexternships/constraints/enums/miscellaneous-enums';
@@ -85,21 +85,30 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
     }
   };
 
+  const goToFeedback = () => {
+    try {
+      markProjectAsRead(project.id, project.primaryStatus);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      navigate(routes.milestone.generate(project.id, project.firstMilestoneWithoutFeedback.milestoneId));
+    }
+  };
+
   const getProjectActions = () => {
-    // if (project.primaryStatus === ProjectPrimaryStatus.ON_GOING) {
-    //   return [
-    //     <div className="flex flex-row gap-x-2 items-center">
-    //               <SecondaryButton className="m-0" onClick={() => {}}>
-    //                 Give Feedback
-    //               </SecondaryButton>
-    //               <div className="flex items-center gap-x-1">
-    //                 <Info size={16} className="text-grey-300" />
-    //                 Estimated time to complete feedback <span>3 mins</span>
-    //               </div>
-    //             </div>
-    //   ];
-    // }
-    //  Pending on BE
+    if (project.primaryStatus === ProjectPrimaryStatus.ON_GOING && !isEmpty(project.firstMilestoneWithoutFeedback)) {
+      return [
+        <div className="flex flex-row gap-x-2 items-center">
+          <SecondaryButton className="m-0 whitespace-nowrap" onClick={goToFeedback}>
+            Give Feedback
+          </SecondaryButton>
+          <div className="flex flex-row gap-x-1 text-grey-300 text-xs leading-4 font-medium">
+            <Info size={16} className="text-grey-300" />
+            Estimated time to complete feedback <span className="font-semibold text-grey-400">3 mins</span>
+          </div>
+        </div>,
+      ];
+    }
 
     if (project.primaryStatus === ProjectPrimaryStatus.COMPLETED)
       return [

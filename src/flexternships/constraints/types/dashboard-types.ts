@@ -52,6 +52,10 @@ export type DashboardProject = {
   milestones: DashboardMilestone[];
   cohortDetails: CohortDetails;
   listingDetails: ListingDetails;
+  firstMilestoneWithoutFeedback: {
+    seq: number;
+    milestoneId: string;
+  };
   isRead: boolean;
   isFavorite: boolean;
 };

@@ -703,6 +703,10 @@ export const parseDashboardProjects = (data: any) => {
         startDate: project.listing_details.start_date_epoch,
         endDate: project.listing_details.end_date_epoch,
       },
+      firstMilestoneWithoutFeedback: {
+        seq: project.first_milestone_without_feedback.seq,
+        milestoneId: project.first_milestone_without_feedback.milestone_id,
+      },
     })),
   };
 };
