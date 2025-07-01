@@ -162,6 +162,9 @@ export const routes = {
     flexternRoles: {
       getPaginatedFlexternRoles: `${serviceUrls.dashboardV2}/flextern/roles`,
     },
+    projects: {
+      getProjects: `${serviceUrls.dashboardV2}/projects`,
+    },
   },
   analytics: {
     individualOverview: `${serviceUrls.dashboardV2}/talent/header`,
