@@ -16,6 +16,8 @@ import { parseDashboardProjectIntoProjectCreationFormData } from '@/flexternship
 import { useNavigate } from 'react-router-dom';
 import routes from '@/flexternships/routes';
 import { isEmpty } from 'lodash';
+import ProjectStatusChip from '../project-details/project-card/ProjectStatusChip';
+import { StatusType } from '@/flexternships/constraints/enums/project-enums';
 
 function MilestoneChip({ milestone }: { milestone: DashboardMilestone }) {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -128,9 +130,7 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
             <span className="text-grey-heading text-xs font-semibold leading-4.5">New</span>
           </div>
         )}
-        <span className="px-[9px] py-[1px] text-orange bg-orange-light text-xs font-semibold leading-4.5 rounded-[17px]">
-          {project.primaryStatus}
-        </span>
+        <ProjectStatusChip status={project.primaryStatus} statusType={StatusType.PRIMARY} />
         <div className="flex flex-row gap-x-6 flex-wrap lg:flex-nowrap">
           <div className="grow flex flex-col gap-y-4">
             <div className="mt-2 text-grey-600 text-lg font-medium leading-5.5">{project.details.projectName}</div>
