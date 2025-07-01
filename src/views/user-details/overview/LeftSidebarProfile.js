@@ -81,24 +81,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     }
   }, [param?.userType]);
 
-  useEffect(() => {
-    if (param?.userType) {
-      let entityType = param?.userType.toUpperCase();
-      if (param?.userType.toUpperCase() === userTypes.team || param?.userType.toUpperCase() === userTypes.club) {
-        entityType = userTypes.team;
-      }
-      dispatch(
-        checkIfReported({
-          data: {
-            reported_entity_id: data?._id,
-            reported_entity_type: entityType,
-          },
-          onSuccess: checkReportSuccess,
-        }),
-      );
-    }
-  }, [data, userType]);
-
   // It is used to check if the user is a member of the team or not, if yes then it will disable the report button
   useEffect(() => {
     if (publicTeamMembersData?.data) {
@@ -247,28 +229,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               {data?.total_reviews || 0} Review(s)
             </CardText> */}
           </div>
-          {showProfilePercent && !data?.flextern && (
-            <div className="profile-completion mt-2">
-              <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
-              <Progress
-                style={{ height: '0.4rem', borderRadius: '6px' }}
-                className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
-                value={profilePercentageData?.profile_completed}
-              />
-              <CardText className="font-small-3 mt-25">Profile Completion</CardText>
-            </div>
-          )}{' '}
-          {showProfilePercent && data?.flextern && (
-            <div className="profile-completion mt-2">
-              <CardText className="mb-25">{profileCompletionFlextern}%</CardText>
-              <Progress
-                style={{ height: '0.4rem', borderRadius: '6px' }}
-                className={giveProgressBarColorClassName(profileCompletionFlextern)}
-                value={profileCompletionFlextern}
-              />
-              <CardText className="font-small-3 mt-25">Profile Completion</CardText>
-            </div>
-          )}
           {!isEmpty(data.client_delegate) && (
             <section className="user-details mt-2">
               <CardTitle className="info-detail-title main mb-75">Client Delegate</CardTitle>

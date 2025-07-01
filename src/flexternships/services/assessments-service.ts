@@ -17,11 +17,12 @@ import { parseAssessmentResult, parseAssessments, parseGradeMetadata } from '../
  * @returns {Promise<Assessment[]>} A Promise that resolves to an array of assessments.
  * @throws {Error} If the assessments retrieval fails or an unexpected error occurs.
  */
-export const getAllAssessments = async (projectId?: string) => {
+export const getAllAssessments = async (projectId?: string, userId?: string) => {
   const config = {
     withCredentials: true,
     params: {
       project_id: projectId,
+      user_id: userId,
     },
   };
   try {
