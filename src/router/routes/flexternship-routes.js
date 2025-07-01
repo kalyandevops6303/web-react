@@ -989,7 +989,7 @@ const FlexternshipRoutes = [
     },
   },
   {
-    path: routes.projectMilestoneFeedback.path,
+    path: routes.betaMilestoneFeedback.path,
     element: (
       // <RoleAccessWrapper
       //   allowedAppRoles={[

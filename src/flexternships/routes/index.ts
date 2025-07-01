@@ -121,8 +121,8 @@ const routes = {
     path: '/terms-and-conditions',
   },
 
-  // Project Milestone Feedback
-  projectMilestoneFeedback: {
+  // Beta Milestone Feedback
+  betaMilestoneFeedback: {
     path: '/projects/:projectId/milestones/:milestoneId/feedback',
     generate: (projectId: string, milestoneId: string) => `/projects/${projectId}/milestones/${milestoneId}/feedback`,
   },
