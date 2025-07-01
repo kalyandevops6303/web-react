@@ -9,8 +9,8 @@ import axios from 'axios';
 import { routes } from '@flexternships/utils/api';
 import { appendAuthToken } from '@flexternships/utils/local-storage';
 import { handleError } from '@flexternships/utils/error-utils';
-import { parseClientCompletedProjects, parseClientPublicDetails } from '../utils/parsing-utils';
-import { UserType } from '../constraints/enums/core-enums';
+import { parseClientCompletedProjects, parseClientPublicDetails, parseDashboardProjects } from '../utils/parsing-utils';
+import { ProjectPrimaryStatus, UserType } from '../constraints/enums/core-enums';
 
 /**
  * Retrieves public details for a client user.
@@ -66,5 +66,41 @@ export const getClientCompletedProjects = async (clientUserId: string, page: num
     return parseClientCompletedProjects(data);
   } catch (error) {
     handleError(error as Error, 'An unexpected error occurred while retrieving client projects');
+  }
+};
+
+/**
+ * Retrieves projects for a client user.
+ * @param page - The page number to retrieve.
+ * @param pageSize - The number of projects to retrieve per page.
+ * @returns A Promise that resolves to the client's projects or undefined.
+ * @throws {Error} If the projects retrieval fails or an unexpected error occurs.
+ */
+export const getProjects = async (page: number = 1, pageSize: number = 10, projectStatus?: ProjectPrimaryStatus) => {
+  const config = {
+    params: {
+      page,
+      page_size: pageSize,
+      project_status: projectStatus,
+    },
+    withCredentials: true,
+  };
+
+  try {
+    const response = await axios.get(routes.dashboardV2.projects.getProjects, config);
+    const data = response?.data?.data;
+
+    return parseDashboardProjects(data);
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while retrieving projects');
+    return {
+      metadata: {
+        currentPage: 1,
+        pageSize: 10,
+        totalRecords: 0,
+        hasNextPage: false,
+      },
+      data: [],
+    };
   }
 };

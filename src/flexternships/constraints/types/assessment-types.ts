@@ -17,6 +17,10 @@ export type UserAssessmentResult = {
 export type AssessmentSectionResult = {
   name: string;
   grade: string;
+  skills: Array<{
+    name: string;
+    grade: string;
+  }>;
 };
 
 export type Assessment = {
