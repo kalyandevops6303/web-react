@@ -82,6 +82,7 @@ export const getProjects = async (page: number = 1, pageSize: number = 10, proje
       page,
       page_size: pageSize,
       project_status: projectStatus,
+      alert_type: `${projectStatus}_PROJECTS`,
     },
     withCredentials: true,
   };
