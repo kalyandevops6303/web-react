@@ -14,6 +14,7 @@ export type DashboardMilestone = {
   duration: number;
   description: string;
   deliverables: string[];
+  seq: number;
 };
 
 type TeamMemberDetails = {

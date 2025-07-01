@@ -691,6 +691,7 @@ export const parseDashboardProjects = (data: any) => {
           duration: milestone.estimated_duration.duration,
           description: milestone.description,
           deliverables: milestone.deliverables,
+          seq: milestone.seq,
         })) || [],
       cohortDetails: {
         name: project.cohort_details?.name,

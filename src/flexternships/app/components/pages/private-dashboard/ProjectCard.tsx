@@ -18,6 +18,8 @@ import routes from '@/flexternships/routes';
 import { isEmpty } from 'lodash';
 import ProjectStatusChip from '../project-details/project-card/ProjectStatusChip';
 import { StatusType } from '@/flexternships/constraints/enums/project-enums';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../ui/tooltip';
+import { markProjectAsRead } from '@/flexternships/services/dashboard-service';
 
 function MilestoneChip({ milestone }: { milestone: DashboardMilestone }) {
   const userDetails = useFlexternUserStore((state) => state.userDetails);
@@ -53,7 +55,7 @@ function MilestoneChip({ milestone }: { milestone: DashboardMilestone }) {
           'text-grey-600': milestone.status === MilestoneStatus.COMPLETED,
         })}
       >
-        {milestone.title}
+        M{milestone.seq}
       </div>
     </div>
   );
@@ -74,7 +76,13 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
   };
 
   const viewProject = () => {
-    navigate(routes.projectDetails.generate(project.id));
+    try {
+      project.isRead || markProjectAsRead(project.id, project.primaryStatus);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      navigate(routes.projectDetails.generate(project.id));
+    }
   };
 
   const getProjectActions = () => {
@@ -132,7 +140,7 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
         )}
         <ProjectStatusChip status={project.primaryStatus} statusType={StatusType.PRIMARY} />
         <div className="flex flex-row gap-x-6 flex-wrap lg:flex-nowrap">
-          <div className="grow flex flex-col gap-y-4">
+          <div className="flex-1 flex flex-col gap-y-4">
             <div className="mt-2 text-grey-600 text-lg font-medium leading-5.5">{project.details.projectName}</div>
             <div className="flex flex-row gap-x-9">
               <div className="flex flex-col gap-y-1">
@@ -155,6 +163,7 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
                               size="sm"
                               className="w-7 h-7 text-xs border-2 border-white shadow-card cursor-default"
                               name={`${member.firstName} ${member.lastName}`}
+                              imageUri={member.imageUri}
                             />
                           ),
                       )}
@@ -180,11 +189,19 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
                 </div>
               </div>
             </div>
-            <div className="relative">
-              <Progress value={progress} className="h-3" />
+            <div>
+              <div className="relative">
+                <Progress value={progress} className="h-3" />
+                <div
+                  className="absolute top-0 left-0 h-3 text-white text-xs font-semibold leading-4 transition-all flex items-center justify-center"
+                  style={{ width: `${progress}%` }}
+                >
+                  {progress}% Completed
+                </div>
+              </div>
             </div>
           </div>
-          <div className="grow flex flex-col gap-y-6">
+          <div className="flex flex-col gap-y-6 w-[484px]">
             <div className="flex flex-col gap-y-2">
               <div className="text-xs font-medium leading-4 text-grey-400">Key Cohort Skills</div>
               <div className="flex flex-row gap-x-2 flex-wrap">
@@ -192,7 +209,22 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
                   <SkillBadge key={index} name={skill.name} type={SkillBadgeType.COHORT} />
                 ))}
                 {project.cohortDetails.skills.length > 3 && (
-                  <SkillBadge name={`+ ${project.cohortDetails.skills.length - 3}`} type={SkillBadgeType.COHORT} />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="cursor-default">
+                        <SkillBadge
+                          name={`+ ${project.cohortDetails.skills.length - 3}`}
+                          type={SkillBadgeType.COHORT}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-[#323232] text-white font-montserrat text-xs font-normal leading-none tracking-wider">
+                        {project.cohortDetails.skills
+                          .slice(3)
+                          .map((skill) => skill.name)
+                          .join(', ')}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </div>
             </div>
@@ -203,7 +235,19 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
                   <SkillBadge key={index} name={skill.name} type={SkillBadgeType.PROJECT} />
                 ))}
                 {project.skills.length > 3 && (
-                  <SkillBadge name={`+ ${project.skills.length - 3}`} type={SkillBadgeType.PROJECT} />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="cursor-default">
+                        <SkillBadge name={`+ ${project.skills.length - 3}`} type={SkillBadgeType.PROJECT} />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-[#323232] text-white font-montserrat text-xs font-normal leading-none tracking-wider">
+                        {project.skills
+                          .slice(3)
+                          .map((skill) => skill.name)
+                          .join(', ')}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </div>
             </div>
