@@ -87,7 +87,7 @@ export default function ProjectCard({ project }: { project: DashboardProject }) 
 
   const goToFeedback = () => {
     try {
-      markProjectAsRead(project.id, project.primaryStatus);
+      project.isRead || markProjectAsRead(project.id, project.primaryStatus);
     } catch (error) {
       console.error(error);
     } finally {
