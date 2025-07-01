@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { MilestoneFeedbackState, MilestoneFeedbackActions } from '../constraints/types/milestone-feedback-types';
-import { populateFeedbackSkeletonsAction } from '../actions/feedback-actions';
+import { MilestoneFeedbackState, MilestoneFeedbackActions } from '../constraints/types/beta-feedback-types';
+import { populateFeedbackSkeletonsAction } from '../actions/beta-actions';
 
 const defaultInitialState: MilestoneFeedbackState = {
   isFeedbackSkeletonsLoading: false,

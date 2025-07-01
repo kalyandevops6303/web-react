@@ -1,14 +1,16 @@
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { useState, useEffect } from 'react';
-import { MatrixCell, DropdownOption, CellProps } from '@/flexternships/constraints/types/form-types';
-import { teamColumns } from '@/flexternships/static/content/milestone-feedback-content';
+import { MatrixCell, DropdownOption, CellProps } from '@/flexternships/constraints/types/beta-feedback-form-types';
+import { teamColumns } from '@/flexternships/static/content/beta-feedback-content';
 import MatrixElements from './MatrixElements';
 import IndividualFeedback from './IndividualFeedback';
 import TeamFeedback from './TeamFeedback';
 import PrimaryButton from '../../../core/buttons/PrimaryButton';
-import { submitMilestoneFeedbackService } from '@/flexternships/services/feedback-service';
+import { submitMilestoneFeedbackService } from '@/flexternships/services/beta-service';
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import { FeedbackData } from '@/flexternships/constraints/types/beta-feedback-types';
+
 interface FeedbackItemProps {
   milestoneId: string;
   teamDetails: CellProps[];
@@ -122,7 +124,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     };
     console.log('Data to be sent:', data);
     try {
-      const response = await submitMilestoneFeedbackService(data);
+      const response = await submitMilestoneFeedbackService(data as FeedbackData);
       showToastMessage(ToastType.SUCCESS, response?.message || 'Feedback submitted successfully');
     } catch (error: unknown) {
       showToastMessage(ToastType.ERROR, (error as Error).message || 'Error submitting feedback');

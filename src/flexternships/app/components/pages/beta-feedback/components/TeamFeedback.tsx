@@ -1,5 +1,5 @@
-import { CellProps, DropdownOption } from '@/flexternships/constraints/types/form-types';
-import { MatrixCell } from '@/flexternships/constraints/types/form-types';
+import { CellProps, DropdownOption } from '@/flexternships/constraints/types/beta-feedback-form-types';
+import { MatrixCell } from '@/flexternships/constraints/types/beta-feedback-form-types';
 import Spreadsheet from '../../../core/tables/Spreadsheet';
 import {
   DropdownMenu,
@@ -8,7 +8,7 @@ import {
   DropdownMenuCheckboxItem,
 } from '../../../ui/dropdown-menu';
 import TextBox from '../../../core/surveys/TextBox';
-import { teamColumns } from '@/flexternships/static/content/milestone-feedback-content';
+import { teamColumns } from '@/flexternships/static/content/beta-feedback-content';
 import MatrixElements from './MatrixElements';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
 import { ChevronDown } from 'react-feather';

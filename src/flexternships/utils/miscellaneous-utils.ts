@@ -1,6 +1,6 @@
-import { MilestoneFeedbackInputCellType } from '../constraints/enums/feedback-enums';
-import { FeedbackElement } from '../constraints/types/milestone-feedback-types';
-import { useMilestoneFeedbackStore } from '../stores/feedback-store';
+import { MilestoneFeedbackInputCellType } from '../constraints/enums/beta-feedback-enums';
+import { FeedbackElement } from '../constraints/types/beta-feedback-types';
+import { useMilestoneFeedbackStore } from '../stores/beta-store';
 import { MilestoneFeedbackType } from '../constraints/enums/core-enums';
 
 /**

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExcelGridProps } from '@/flexternships/constraints/types/form-types';
+import { ExcelGridProps } from '@/flexternships/constraints/types/beta-feedback-form-types';
 // import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent } from '../../../ui/dropdown-menu';
 import { ReactGrid, Column, Row, CellChange, NumberCell, HeaderCell, TextCell } from '@silevis/reactgrid';
 import '@silevis/reactgrid/styles.css';

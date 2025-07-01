@@ -1,4 +1,4 @@
-import { MilestoneFeedbackInputCellType } from '../enums/feedback-enums';
+import { MilestoneFeedbackInputCellType } from '../enums/beta-feedback-enums';
 
 export interface CellProps {
   value: string;

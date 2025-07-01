@@ -1,4 +1,4 @@
-import { ExcelGridProps } from '@/flexternships/constraints/types/form-types';
+import { ExcelGridProps } from '@/flexternships/constraints/types/beta-feedback-form-types';
 import React from 'react';
 import {
   DropdownMenu,

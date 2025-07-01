@@ -9,14 +9,16 @@ import MilestoneNotFound from './components/MilestoneNotFound';
 import ProjectNotFound from './components/ProjectNotFound';
 import SomethingWentWrong from './components/SomethingWentWrong';
 import MilestoneFeedbackStatusLoader from './components/Loader';
-import { MilestoneFeedbackStatus } from '@/flexternships/constraints/enums/feedback-enums';
-import { MilestoneFeedbackErrorType } from '@/flexternships/constraints/enums/feedback-enums';
-import { MilestoneFeedbackProgress } from '@/flexternships/constraints/types/milestone-insight-types';
+import {
+  MilestoneFeedbackStatus,
+  MilestoneFeedbackErrorType,
+} from '@/flexternships/constraints/enums/beta-feedback-enums';
+import { MilestoneFeedbackProgress } from '@/flexternships/constraints/types/beta-feedback-types';
 import FeedbackItem from './components/FeedbackItem';
-import { useMilestoneFeedbackStore } from '@/flexternships/stores/feedback-store';
+import { useMilestoneFeedbackStore } from '@/flexternships/stores/beta-store';
 import { fetchTeamDetails } from '@/flexternships/services/project-details';
-import { CellProps } from '@/flexternships/constraints/types/form-types';
-import { getFeedbackStatusService } from '@/flexternships/services/feedback-service';
+import { CellProps } from '@/flexternships/constraints/types/beta-feedback-form-types';
+import { getFeedbackStatusService } from '@/flexternships/services/beta-service';
 import ShowToastMessage from '@/@core/components/toast';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 // import { PanelRightOpen } from 'lucide-react';

@@ -1,8 +1,10 @@
-import { FeedbackSkeletonItemType } from '@/flexternships/constraints/enums/feedback-enums';
+import {
+  FeedbackSkeletonItemType,
+  MilestoneFeedbackInputCellType,
+} from '@/flexternships/constraints/enums/beta-feedback-enums';
 import { MilestoneFeedbackType } from '@/flexternships/constraints/enums/core-enums';
-import { MilestoneFeedbackInputCellType } from '@/flexternships/constraints/enums/feedback-enums';
-import { useMilestoneFeedbackStore } from '@/flexternships/stores/feedback-store';
-import { CellProps } from '@/flexternships/constraints/types/form-types';
+import { useMilestoneFeedbackStore } from '@/flexternships/stores/beta-store';
+import { CellProps } from '@/flexternships/constraints/types/beta-feedback-form-types';
 import {
   getAreaCheckboxInputConfig,
   getNumberRatingInputConfig,

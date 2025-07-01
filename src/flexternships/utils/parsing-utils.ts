@@ -25,8 +25,7 @@ import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
 import { supportTypes } from '../constraints/types/core-types';
 import { Assessment, AssessmentSectionResult, GradeMetadata } from '../constraints/types/assessment-types';
-import { FeedbackSkeleton } from '../constraints/types/milestone-feedback-types';
-import { MilestoneFeedbackProgress } from '../constraints/types/milestone-insight-types';
+import { FeedbackSkeleton, MilestoneFeedbackProgress } from '../constraints/types/beta-feedback-types';
 
 /**
  * Parses milestone details from raw data into a structured format

@@ -20,7 +20,7 @@ import TalentOnboarding from '../../views/Onboarding/Talent';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ChooseProgram from '../../views/Onboarding/Talent/ChooseProgram';
 import ForgotPasswordVerification from '../../views/auth/ForgotPasswordVerification';
-import GiveMilestoneFeedback from '@/flexternships/app/components/pages/milestone-feedback/index';
+import GiveMilestoneFeedback from '@/flexternships/app/components/pages/beta-feedback/index';
 
 // ** Project Views
 import Projects from '../../views/projects';

@@ -1,29 +1,8 @@
-import { MilestoneFeedbackType } from '../enums/core-enums';
-import { MilestoneFeedbackStatus } from '../enums/feedback-enums';
-
-export type FeedbackProgress = {
-  type: MilestoneFeedbackType;
-  status: MilestoneFeedbackStatus;
-};
-
-export type MilestoneFeedbackProgress = {
-  project: {
-    id?: string;
-    name: string;
-  };
-  milestone: {
-    id?: string;
-    name: string;
-  };
-  overallStatus?: MilestoneFeedbackStatus;
-  feedbacks: FeedbackProgress[];
-};
-
 export type PullRequestInsights = {
   id: string;
   number: number;
   prCreatedAt: string;
-  prMergedAt: string | null;
+  prMergedAt: string;
   projectId: string;
   title: string;
   userId: string;

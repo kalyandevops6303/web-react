@@ -1,4 +1,4 @@
-import { CellProps, MatrixCell } from '@/flexternships/constraints/types/form-types';
+import { CellProps, MatrixCell } from '@/flexternships/constraints/types/beta-feedback-form-types';
 import Spreadsheet from '../../../core/tables/Spreadsheet';
 import ExcelGrid from '../../../core/tables/ExcelGrid';
 import MatrixElements from './MatrixElements';
