@@ -37,6 +37,7 @@ import AssessedSkillsTeam from './overview/AssessedSkillsTeam';
 import { getProfileCompletionFlextern } from '../../redux/actions/talentOnboardingActions';
 import PermissionWrapper from '@/PermissionWrapper';
 import { UserType } from '@/flexternships/constraints/enums/core-enums';
+import TalentProfileAssessmentSection from '@/flexternships/app/components/pages/assessments/TalentProfileAssessmentSection';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -74,61 +75,57 @@ const UserDetails = () => {
 
   useEffect(() => {
     if (currentProfile) {
-      if (currentUserType === UserType.TALENT) {
-        navigate(`/dashboard`);
-      } else {
-        dispatch(clearData());
-        dispatch(getRequestStatusSuccess(null));
+      dispatch(clearData());
+      dispatch(getRequestStatusSuccess(null));
 
-        // eslint-disable-next-line no-undef
-        window?.scrollTo(0, 0);
+      // eslint-disable-next-line no-undef
+      window?.scrollTo(0, 0);
 
-        // to fetch entity's profile data
-        dispatch(
-          getProfile({
-            id: param?.userId,
-            user_type: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
-            isEditable,
-            currentUserType: userData?.user_type,
-            projectId: projectId || undefined,
-          }),
-        );
+      // to fetch entity's profile data
+      dispatch(
+        getProfile({
+          id: param?.userId,
+          user_type: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+          isEditable,
+          currentUserType: userData?.user_type,
+          projectId: projectId || undefined,
+        }),
+      );
 
-        // to fetch entity's recent projects data
-        dispatch(
-          getRecentProjects({
-            user_id: param?.userId,
-            entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
-            metadata: { page: 1, page_size: 10 },
-          }),
-        );
+      // to fetch entity's recent projects data
+      dispatch(
+        getRecentProjects({
+          user_id: param?.userId,
+          entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+          metadata: { page: 1, page_size: 10 },
+        }),
+      );
 
-        // to fetch entity's reviews data
-        dispatch(
-          getReview({
-            user_id: param?.userId,
-            entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
-            metadata: { page: 1, page_size: 10 },
-          }),
-        );
-        // to fetch entity's profile percentage data if showProfilePercent is true
-        if (showProfilePercent) {
-          if (isTalentView || isClient) {
-            if (isFlextern) {
-              dispatch(getProfileCompletionFlextern());
-            } else {
-              dispatch(getProfilePercentage());
-            }
-          }
-          if (isTeamView || isClubView) {
-            dispatch(getTeamProfilePercentage());
+      // to fetch entity's reviews data
+      dispatch(
+        getReview({
+          user_id: param?.userId,
+          entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+          metadata: { page: 1, page_size: 10 },
+        }),
+      );
+      // to fetch entity's profile percentage data if showProfilePercent is true
+      if (showProfilePercent) {
+        if (isTalentView || isClient) {
+          if (isFlextern) {
+            dispatch(getProfileCompletionFlextern());
+          } else {
+            dispatch(getProfilePercentage());
           }
         }
-
-        // to fetch TEAM/CLUB members list data
         if (isTeamView || isClubView) {
-          dispatch(getPublicTeamMembers({ teamId: param?.userId, page: 1, pageSize: 10, oldData: [] }));
+          dispatch(getTeamProfilePercentage());
         }
+      }
+
+      // to fetch TEAM/CLUB members list data
+      if (isTeamView || isClubView) {
+        dispatch(getPublicTeamMembers({ teamId: param?.userId, page: 1, pageSize: 10, oldData: [] }));
       }
     }
   }, [currentUserType]);
@@ -264,14 +261,6 @@ const UserDetails = () => {
               isEditable={userData?._id === param?.userId}
               isClubProfile={currentProfile.team_type === 'CLUB'}
             />
-            {(isTeamView || isClubView) && (
-              <MembersListingCard
-                toggleModal={togglePublicTeamMembersListingModal}
-                teamId={param?.userId}
-                publicTeamMembersListingModal={publicTeamMembersListingModal}
-                isClubView={isClubView}
-              />
-            )}
           </Col>
           <Col lg="9">
             <DetailsHeaderSection>
@@ -284,60 +273,7 @@ const UserDetails = () => {
                   isEditable={userData?._id === param?.userId}
                   isClubProfile={currentProfile.team_type === 'CLUB'}
                 />
-                {isClient && (
-                  <Col lg="3" className="pe-75">
-                    <Statbox
-                      className="cursor-pointer"
-                      onClick={handelRedirectToOpenListing}
-                      elevate={false}
-                      title={currentProfile?.open_listing_count || 0}
-                      desc="Open listing(s)"
-                      icon={<img src={MoneyIcon} height={22} alt="money" />}
-                      color="light-warning"
-                    />
-                  </Col>
-                )}
-                {/* <Col lg="3" className="pe-75">
-                  <Statbox
-                    elevate={false}
-                    title={recentProjectsMetadata?.total_records || 0}
-                    desc="Completed Project(s)"
-                    icon={<Check height={20} />}
-                    color="light-success"
-                  />
-                </Col> */}
-                <PermissionWrapper
-                  permissions={appPermissions}
-                  permissionName={['DASHBOARD.USER_DETAILS.HOURLY_RATING']}
-                >
-                  {isTalentView && !currentProfile?.flextern && (
-                    <Col lg="3" className="pe-75">
-                      <Statbox
-                        elevate={false}
-                        title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
-                        desc="Hourly Rate"
-                        icon={<img src={MoneyIcon} height={22} alt="money" />}
-                        color="light-warning"
-                      />
-                    </Col>
-                  )}
-                </PermissionWrapper>
-                <>
-                  {isTeamView ||
-                    (isClubView && (
-                      <Col lg="3" className="pe-75">
-                        <Statbox
-                          elevate={false}
-                          title={`${currentProfile?.total_project_value?.code || ''} ${
-                            currentProfile?.total_project_value || 0
-                          }`}
-                          desc="Total Project Value"
-                          icon={<img src={MoneyIcon} height={22} alt="money" />}
-                          color="light-warning"
-                        />
-                      </Col>
-                    ))}
-                </>
+
                 <PermissionWrapper
                   permissions={appPermissions}
                   permissionName={['DASHBOARD.USER_DETAILS.WORK_EXPERIENCE']}
@@ -390,6 +326,9 @@ const UserDetails = () => {
                 isClient={isClient}
                 isEditable={userData?._id === param?.userId}
               />
+            </Row>
+            <Row>
+              <TalentProfileAssessmentSection />
             </Row>
             <Row>
               <PermissionWrapper

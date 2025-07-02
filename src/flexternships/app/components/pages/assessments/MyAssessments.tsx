@@ -5,6 +5,7 @@ import AssessmentCard from './AssessmentCard';
 import Spinner from '../../core/Spinner';
 import { Assessment } from '@/flexternships/constraints/types/assessment-types';
 import { useParams } from 'react-router-dom';
+import { AssessmentType } from '@/flexternships/constraints/enums/assessment-enums';
 
 type MyAssessmentsProps = {
   takeAssessment: (assessment: Assessment) => void;
@@ -34,9 +35,11 @@ export default function MyAssessments({ takeAssessment, forceRefresh = false }: 
       ) : isEmpty(assessments) ? (
         <div>No assessments found</div>
       ) : (
-        assessments.map((assessment) => (
-          <AssessmentCard key={assessment.id} assessment={assessment} takeAssessment={takeAssessment} />
-        ))
+        assessments
+          .filter((assessment) => assessment.type !== AssessmentType.SAMPLE)
+          .map((assessment) => (
+            <AssessmentCard key={assessment.id} assessment={assessment} takeAssessment={takeAssessment} />
+          ))
       )}
     </div>
   );

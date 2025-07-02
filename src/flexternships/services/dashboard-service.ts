@@ -82,6 +82,7 @@ export const getProjects = async (page: number = 1, pageSize: number = 10, proje
       page,
       page_size: pageSize,
       project_status: projectStatus,
+      alert_type: `${projectStatus}_PROJECTS`,
     },
     withCredentials: true,
   };
@@ -102,5 +103,28 @@ export const getProjects = async (page: number = 1, pageSize: number = 10, proje
       },
       data: [],
     };
+  }
+};
+
+export const markProjectAsRead = async (projectId: string, projectStatus: ProjectPrimaryStatus) => {
+  const headers = appendAuthToken({});
+  const config = {
+    headers: headers,
+    withCredentials: true,
+  };
+
+  const body = {
+    metadata: {
+      project_id: projectId,
+    },
+    type: `${projectStatus}_PROJECTS`,
+    status: 'READ',
+  };
+
+  try {
+    const response = await axios.post(routes.dashboardV2.projects.markProjectAsRead, body, config);
+    return response;
+  } catch (error) {
+    handleError(error as Error, 'An unexpected error occurred while marking project as read');
   }
 };

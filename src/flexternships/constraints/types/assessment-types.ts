@@ -47,7 +47,7 @@ export type AssessmentState = {
 };
 
 export type AssessmentActions = {
-  populateAssessments: (options?: { projectId?: string; force?: boolean }) => Promise<void>;
+  populateAssessments: (options?: { projectId?: string; userId?: string; force?: boolean }) => Promise<void>;
   populateGradeMetadata: (options?: { force?: boolean }) => Promise<void>;
   resetStore: () => void;
 };

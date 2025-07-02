@@ -14,6 +14,7 @@ export type DashboardMilestone = {
   duration: number;
   description: string;
   deliverables: string[];
+  seq: number;
 };
 
 type TeamMemberDetails = {
@@ -51,6 +52,10 @@ export type DashboardProject = {
   milestones: DashboardMilestone[];
   cohortDetails: CohortDetails;
   listingDetails: ListingDetails;
+  firstMilestoneWithoutFeedback: {
+    seq: number;
+    milestoneId: string;
+  };
   isRead: boolean;
   isFavorite: boolean;
 };

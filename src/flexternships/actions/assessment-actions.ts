@@ -7,6 +7,7 @@ export const populateAssessments = async (
   get: () => AssessmentState,
   options: {
     projectId?: string;
+    userId?: string;
     force?: boolean;
   } = { force: false },
 ) => {
@@ -14,7 +15,7 @@ export const populateAssessments = async (
   if (!isEmpty(assessments) && !options?.force) return;
 
   set({ isAssessmentsLoading: true });
-  const fetchedAssessments = await getAllAssessments(options?.projectId);
+  const fetchedAssessments = await getAllAssessments(options?.projectId, options?.userId);
   set({ assessments: fetchedAssessments || [], isAssessmentsLoading: false });
 };
 
