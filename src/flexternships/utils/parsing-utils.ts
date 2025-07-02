@@ -748,10 +748,6 @@ export const parseFeedbackStatus = (responseData: any): MilestoneFeedbackProgres
       id: responseData?.milestone_id,
       name: responseData.milestone_name,
     },
-    overallStatus: responseData?.feedback_status[0]?.status,
-    feedbacks: responseData?.feedback_status.map((feedback: any) => ({
-      type: feedback.type,
-      status: feedback.status,
-    })),
+    overallStatus: responseData?.manager_feedback?.status,
   };
 };

@@ -10,18 +10,24 @@ import { submitMilestoneFeedbackService } from '@/flexternships/services/beta-se
 import { showToastMessage } from '@/flexternships/utils/core-utils';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
 import { FeedbackData } from '@/flexternships/constraints/types/beta-feedback-types';
+import {
+  FeedbackSkeletonItemType,
+  MilestoneFeedbackInputCellType,
+} from '@/flexternships/constraints/enums/beta-feedback-enums';
+import { useMilestoneFeedbackStore } from '@/flexternships/stores/beta-store';
 
 interface FeedbackItemProps {
   milestoneId: string;
   teamDetails: CellProps[];
   teamId: string;
+  teamMembers: any[];
 }
 type Leader = {
   id: string;
   name: string;
 };
 
-const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, teamId }) => {
+const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, teamId, teamMembers }) => {
   const [ratingMatrix, setRatingMatrix] = useState<MatrixCell[][]>([]);
   const [teamMatrix, setTeamMatrix] = useState<MatrixCell[][]>([]);
   const [topLeaders, setTopLeaders] = useState<DropdownOption[]>([]);
@@ -39,6 +45,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
         value: '',
         rowId: row.identifier,
         colId: col.identifier,
+        type: col.inputConfig?.type || MilestoneFeedbackInputCellType.STRING,
       })),
     );
   };
@@ -55,6 +62,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
         value: '',
         rowId: row.identifier,
         colId: col.identifier,
+        type: col.inputConfig?.type || MilestoneFeedbackInputCellType.STRING,
       })),
     );
 
@@ -63,6 +71,14 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
       setTeamMatrix(initializeTeamMatrix(teamHeaders, teamColumns));
     }
   }, [teamHeaders.length]);
+
+  const { feedbackSkeletons } = useMilestoneFeedbackStore();
+  const feedbackSkeleton = feedbackSkeletons.find(
+    (skeleton) => skeleton.type === MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
+  );
+  const competencyChoices = feedbackSkeleton?.elements?.find(
+    (element) => element.type === FeedbackSkeletonItemType.WOW_GROUP,
+  )?.competency?.choices;
 
   const handleSubmit = async () => {
     const manager_to_peer_request = {
@@ -74,10 +90,20 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
               return;
             }
             if (cell.colId === 'recognition') {
+              const competencies = row.find((c) => c.colId === 'competency')?.value;
+              const competencyList = Array.isArray(competencies)
+                ? competencies.map((competency) => {
+                    return competencyChoices?.find((c) => c.id === competency);
+                  })
+                : [competencyChoices?.find((c) => c.id === competencies)];
+
               return {
                 row_id: cell.rowId,
                 column_id: cell.colId,
-                value: { competencies: row.find((c) => c.colId === 'competency')?.value, recognition: cell.value },
+                value: {
+                  recognition: Array.isArray(cell.value) ? (cell.value[0] as string) : (cell.value as string),
+                  competencies: competencyList,
+                },
               };
             }
             return {
@@ -108,10 +134,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     });
     teamFeedback.push({
       row_id: 'top_leaders',
-      leaders: topLeaders.map((leader) => ({
-        id: leader.value,
-        name: leader.label,
-      })),
+      leaders: topLeaders.map((leader) => teamMembers.find((member) => member._id === leader.value)),
     });
     const manager_to_team_request = {
       milestone_id: milestoneId,

@@ -21,6 +21,7 @@ export interface MatrixCell {
   rowId: string;
   colId: string;
   value: string | number | string[];
+  type: MilestoneFeedbackInputCellType;
 }
 
 export interface ExcelGridProps {

@@ -57,6 +57,7 @@ const GiveMilestoneFeedback = () => {
   const { milestoneId } = useParams();
   const navigate = useNavigate();
   const [teamDetails, setTeamDetails] = useState<CellProps[]>([]);
+  const [teamMembers, setTeamMembers] = useState([]);
   const [isTeamDetailsLoading, setIsTeamDetailsLoading] = useState(false);
   const [teamId, setTeamId] = useState<string>('');
 
@@ -90,8 +91,10 @@ const GiveMilestoneFeedback = () => {
         ShowToastMessage(ToastType.ERROR, 'Error fetching feedback status');
         if (error instanceof Error && error.message.includes('Milestone not found')) {
           setErrorType(MilestoneFeedbackErrorType.MILESTONE_NOT_FOUND);
-        } else {
+        } else if (error instanceof Error && error.message.includes('Project not found')) {
           setErrorType(MilestoneFeedbackErrorType.PROJECT_NOT_FOUND);
+        } else {
+          setErrorType(MilestoneFeedbackErrorType.SOMETHING_WENT_WRONG);
         }
       } finally {
         setIsLoading(false);
@@ -106,6 +109,7 @@ const GiveMilestoneFeedback = () => {
       try {
         setIsTeamDetailsLoading(true);
         const teamDetails = await fetchTeamDetails(projectId);
+        setTeamMembers(teamDetails);
         const memberList = teamDetails
           .filter((member: any) => member._id !== '')
           .map((member: any) => {
@@ -174,7 +178,12 @@ const GiveMilestoneFeedback = () => {
         <div className="flex flex-row gap-6 relative">
           {/* Left Content Area */}
           <section className="w-full">
-            <FeedbackItem milestoneId={milestoneId!} teamDetails={teamDetails} teamId={teamId} />
+            <FeedbackItem
+              milestoneId={milestoneId!}
+              teamDetails={teamDetails}
+              teamId={teamId}
+              teamMembers={teamMembers}
+            />
           </section>
 
           {/* Open Insights Button */}

@@ -16,7 +16,6 @@ export type MilestoneFeedbackProgress = {
     name: string;
   };
   overallStatus?: MilestoneFeedbackStatus;
-  feedbacks: FeedbackProgress[];
 };
 export type FeedbackElement = {
   type: string;
@@ -49,6 +48,9 @@ export type FeedbackElement = {
   competency?: {
     choices?: {
       name: string;
+      abbreviation: string;
+      id: string;
+      colorCode: string;
     }[];
   };
 };

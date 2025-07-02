@@ -11,7 +11,7 @@ interface IndividualFeedbackProps {
 }
 
 const IndividualFeedback = ({ ratingMatrix, setRatingMatrix, memberList }: IndividualFeedbackProps) => {
-  const { headers } = MatrixElements({
+  let { headers } = MatrixElements({
     feedbackType: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
   });
   return (
