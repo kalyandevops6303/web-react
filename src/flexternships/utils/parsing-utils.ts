@@ -27,6 +27,7 @@ import { supportTypes } from '../constraints/types/core-types';
 import { Assessment, AssessmentSectionResult, GradeMetadata } from '../constraints/types/assessment-types';
 import { DashboardProject } from '../constraints/types/dashboard-types';
 import { ProjectCreationFormData } from '../constraints/types/project-creation-types';
+import { FeedbackSkeleton, MilestoneFeedbackProgress } from '../constraints/types/beta-feedback-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -731,5 +732,27 @@ export const parseDashboardProjectIntoProjectCreationFormData = (
       deliverables: milestone.deliverables,
     })),
     listingDetails: project.listingDetails,
+  };
+};
+
+export const parseFeedbackSkeletons = (responseData: any): FeedbackSkeleton[] => {
+  return responseData.map((skeleton: any) => ({
+    id: skeleton._id,
+    type: skeleton.type,
+    elements: skeleton.elements,
+  }));
+};
+
+export const parseFeedbackStatus = (responseData: any): MilestoneFeedbackProgress => {
+  return {
+    project: {
+      id: responseData?.project_id,
+      name: responseData.project_name,
+    },
+    milestone: {
+      id: responseData?.milestone_id,
+      name: responseData.milestone_name,
+    },
+    overallStatus: responseData?.manager_feedback?.status,
   };
 };

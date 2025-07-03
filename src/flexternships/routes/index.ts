@@ -121,6 +121,12 @@ const routes = {
     path: '/terms-and-conditions',
   },
 
+  // Beta Milestone Feedback
+  betaMilestoneFeedback: {
+    path: '/projects/:projectId/milestones/:milestoneId/feedback',
+    generate: (projectId: string, milestoneId: string) => `/projects/${projectId}/milestones/${milestoneId}/feedback`,
+  },
+
   // Not found
   notFound: { path: '*' },
 };

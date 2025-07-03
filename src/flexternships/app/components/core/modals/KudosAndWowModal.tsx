@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PrimaryButton from '../buttons/PrimaryButton';
-import { RecognitionSubHeading, RecognitionType } from '@/flexternships/constraints/enums/feedback-enum';
+import { RecognitionSubHeading, RecognitionType } from '@/flexternships/constraints/enums/feedback-enums';
 import Wow from '@flexternships/assets/icons/core/achieve.png';
 import ThumbsUp from '@flexternships/assets/icons/core/ThumbsUp.svg';
 import { TeamMemberDetails } from '@/flexternships/constraints/types/project-details-types';
