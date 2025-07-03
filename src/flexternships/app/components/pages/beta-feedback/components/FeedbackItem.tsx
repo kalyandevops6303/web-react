@@ -42,7 +42,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
   const initializeMatrix = (memberList: CellProps[], headers: CellProps[]): MatrixCell[][] => {
     return memberList.map((row) =>
       headers.map((col) => ({
-        value: '',
+        value: col.inputConfig?.type === MilestoneFeedbackInputCellType.NUMBER ? 0 : '',
         rowId: row.identifier,
         colId: col.identifier,
         type: col.inputConfig?.type || MilestoneFeedbackInputCellType.STRING,
@@ -59,7 +59,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
   const initializeTeamMatrix = (rows: CellProps[], cols: CellProps[]) =>
     rows.map((row) =>
       cols.map((col) => ({
-        value: '',
+        value: col.inputConfig?.type === MilestoneFeedbackInputCellType.NUMBER ? 0 : '',
         rowId: row.identifier,
         colId: col.identifier,
         type: col.inputConfig?.type || MilestoneFeedbackInputCellType.STRING,
