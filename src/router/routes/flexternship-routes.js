@@ -1013,6 +1013,16 @@ const FlexternshipRoutes = [
               },
             ],
           },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
         ]}
         // featureName={FEATURE_NAMES.AYESHA_BOT}
         // fallbackRoute={routes.dashboard.path}

@@ -145,7 +145,12 @@ export const agreeToTnC = async (docType: DocType, set: any) => {
 export const populateAccessibleFeatures = async (force: boolean, get: any, set: any) => {
   const accessibleFeatures = get().accessibleFeatures;
   if (!isEmpty(accessibleFeatures) && !force) return;
-
-  const data = await getPermittedFeatures();
-  set({ accessibleFeatures: data });
+  try {
+    const data = await getPermittedFeatures();
+    set({ accessibleFeatures: data });
+  } catch (error: unknown) {
+    console.error(
+      error instanceof Error ? error.message : 'An unexpected error occurred while fetching accessible features',
+    );
+  }
 };

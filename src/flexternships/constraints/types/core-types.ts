@@ -194,7 +194,7 @@ export type AppState = {
   unreadNotificationsCount: number;
   backPath: string | undefined;
   blobSasTokenParams: Record<string, string> | undefined;
-  accessibleFeatures: string[] | undefined;
+  accessibleFeatures?: string[];
 };
 
 export type AppActions = {
