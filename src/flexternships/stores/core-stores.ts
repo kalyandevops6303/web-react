@@ -20,6 +20,7 @@ import {
   populateUserDetails,
   setWip,
   unsetWip,
+  populateAccessibleFeatures,
 } from '@flexternships/actions/core-actions';
 import { DocType, GlobalModalType } from '../constraints/enums/core-enums';
 
@@ -54,6 +55,7 @@ const defaultAppState: AppState = {
   unreadNotificationsCount: 0,
   backPath: undefined,
   blobSasTokenParams: undefined,
+  accessibleFeatures: undefined,
 };
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -73,4 +75,5 @@ export const useAppStore = create<AppStore>((set, get) => ({
   resetStore: () => set({ ...defaultAppState }),
   setBackPath: (backPath: string) => set({ backPath }),
   populateBlobSasTokenParams: (force: boolean = false) => populateBlobSasTokenParams(force, get, set),
+  populateAccessibleFeatures: (force: boolean = false) => populateAccessibleFeatures(force, get, set),
 }));

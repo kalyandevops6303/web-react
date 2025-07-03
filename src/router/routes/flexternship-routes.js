@@ -991,34 +991,44 @@ const FlexternshipRoutes = [
   {
     path: routes.betaMilestoneFeedback.path,
     element: (
-      // <RoleAccessWrapper
-      //   allowedAppRoles={[
-      //     {
-      //       appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
-      //       allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-      //       blockCheckpoints: [
-      //         {
-      //           checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-      //           redirectRoute: routes.clientOnboarding.path,
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
-      //       allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-      //       blockCheckpoints: [
-      //         {
-      //           checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-      //           redirectRoute: routes.clientOnboarding.path,
-      //         },
-      //       ],
-      //     },
-      //   ]}
-      // featureName={FEATURE_NAMES.AYESHA_BOT}
-      // fallbackRoute={routes.dashboard.path}
-      // >
-      <GiveMilestoneFeedback />
-      // </RoleAccessWrapper>
+      <RoleAccessWrapper
+        allowedAppRoles={[
+          {
+            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+          {
+            appRole: FlexternUserAppRole.FLEXTERN_CLIENT,
+            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
+            blockCheckpoints: [
+              {
+                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
+                redirectRoute: routes.clientOnboarding.path,
+              },
+            ],
+          },
+        ]}
+        // featureName={FEATURE_NAMES.AYESHA_BOT}
+        // fallbackRoute={routes.dashboard.path}
+      >
+        <GiveMilestoneFeedback />
+      </RoleAccessWrapper>
     ),
   },
 ];
