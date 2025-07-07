@@ -18,7 +18,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const isLoading = useSelector((state) => state?.project?.cardInfoLoading);
   const isLoadingSecondaryFilter = useSelector((state) => state?.project?.loading);
   const appPermissions = useSelector(appPermissionsSelector);
-  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
+  const flexTern = isFlexternshipApp;
 
   useEffect(() => {
     if (flexTern) {
