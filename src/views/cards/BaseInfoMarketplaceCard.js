@@ -21,6 +21,7 @@ import { appPermissionsSelector, selectUserData } from '../../redux/selectors/au
 import PermissionWrapper from '@/PermissionWrapper';
 import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 import { useAppStore } from '@/flexternships/stores/core-stores';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal, setDeleteDraftModal }) => {
   const project = data && data?.project;
@@ -37,7 +38,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 
   const location = useLocation();
-  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
+  const flexTern = isFlexternshipApp;
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {
