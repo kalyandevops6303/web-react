@@ -8,7 +8,7 @@ import {
 } from '../../ui/dropdown-menu';
 import { ChevronDown } from 'react-feather';
 import { MilestoneFeedbackInputCellType } from '@/flexternships/constraints/enums/beta-feedback-enums';
-
+import { X } from 'lucide-react';
 const ExcelGrid: React.FC<ExcelGridProps> = ({
   headers,
   firstColumn,
@@ -45,10 +45,10 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
             {excelGridHeaders.map((header) => (
               <th
                 key={header?.identifier || ''}
-                className="text-m px-4 items-center h-2 w-32 max-w-48 overflow-x-auto"
+                className="text-m px-4 items-center h-2 w-32 max-w-48 overflow-x-auto border-b border-gray-300"
                 style={{
                   backgroundColor: header.backgroundColor || '#f9fafb',
-                  borderColor: header.borderColor || '#e5e7eb',
+                  borderColor: header.borderColor,
                   color: header.color || '#000',
                 }}
               >
@@ -94,13 +94,16 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
                       // Check if "Other" is selected in the dropdown
                       if (Array.isArray(currentValues) && currentValues.includes('Other')) {
                         return (
-                          <input
-                            type="text"
-                            placeholder="Please specify..."
-                            value={matrix[rowIndex]?.[columnIndex]?.value as string}
-                            onChange={(e) => handleCellChange(cell.identifier, header.identifier, e.target.value)}
-                            className="w-full outline-none bg-transparent"
-                          />
+                          <div>
+                            <input
+                              type="text"
+                              placeholder="Please specify..."
+                              value={matrix[rowIndex]?.[columnIndex]?.value as string}
+                              onChange={(e) => handleCellChange(cell.identifier, header.identifier, e.target.value)}
+                              className="w-full outline-none bg-transparent"
+                            />
+                            <X className="h-3 w-3 text-gray-500" />
+                          </div>
                         );
                       }
 
@@ -128,7 +131,8 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
                             {header.inputConfig?.options?.map((option) => {
                               if (header.identifier === 'competency') {
                                 const previousColumnIndex = headers.findIndex((h) => h.identifier === 'recognition');
-                                if (!matrix[rowIndex]?.[previousColumnIndex]?.value) {
+                                const previousValue = matrix[rowIndex]?.[previousColumnIndex]?.value as string[];
+                                if (!previousValue || previousValue[0] !== 'wow') {
                                   return null;
                                 }
                               }
@@ -171,12 +175,28 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
                       );
                     } else {
                       return (
-                        <input
-                          type="text"
-                          value={matrix[rowIndex]?.[columnIndex]?.value as string}
-                          onChange={(e) => handleCellChange(cell.identifier, header.identifier, e.target.value)}
-                          className="w-full outline-none bg-transparent"
-                        />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={matrix[rowIndex]?.[columnIndex]?.value as string}
+                            onChange={(e) => handleCellChange(cell.identifier, header.identifier, e.target.value)}
+                            className="w-full outline-none bg-transparent"
+                          />
+                          {header?.inputConfig?.isMultiSelect && (
+                            <button
+                              className="rounded-md hover:bg-gray-100 border border-gray-300"
+                              onClick={() =>
+                                handleCellTypeChange(
+                                  cell.identifier,
+                                  header.identifier,
+                                  MilestoneFeedbackInputCellType.DROPDOWN,
+                                )
+                              }
+                            >
+                              <X className="h-3 w-3 text-gray-500" />
+                            </button>
+                          )}
+                        </div>
                       );
                     }
                   })()}

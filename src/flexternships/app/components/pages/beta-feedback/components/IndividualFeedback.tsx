@@ -15,10 +15,10 @@ const IndividualFeedback = ({ ratingMatrix, setRatingMatrix, memberList }: Indiv
     feedbackType: MilestoneFeedbackType.INDIVIDUAL_FEEDBACK,
   });
   return (
-    <div className="flex flex-col gap-8 py-4 px-6 max-w-full border border-gray-200 rounded-lg overflow-x-auto">
+    <div className="flex flex-col gap-8 py-4 px-6 max-w-full border border-gray-200 rounded-lg">
       <div className="flex flex-col gap-2">
         <div className="text-lg font-bold text-grey-heading">Individual Feedback</div>
-        <div className="flex flex-row">
+        <div className="flex flex-row overflow-x-auto">
           <Spreadsheet headers={headers} firstColumn={memberList} matrix={ratingMatrix} onChange={setRatingMatrix} />
           <ExcelGrid
             headers={headers}
