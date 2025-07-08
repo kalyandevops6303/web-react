@@ -15,19 +15,21 @@ import {
   MilestoneFeedbackInputCellType,
 } from '@/flexternships/constraints/enums/beta-feedback-enums';
 import { useMilestoneFeedbackStore } from '@/flexternships/stores/beta-store';
+import { MilestoneFeedbackErrorType } from '@/flexternships/constraints/enums/beta-feedback-enums';
 
 interface FeedbackItemProps {
   milestoneId: string;
   teamDetails: CellProps[];
   teamId: string;
   teamMembers: any[];
+  setErrorType: (errorType: MilestoneFeedbackErrorType) => void;
 }
 type Leader = {
   id: string;
   name: string;
 };
 
-const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, teamId, teamMembers }) => {
+const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, teamId, teamMembers, setErrorType }) => {
   const [ratingMatrix, setRatingMatrix] = useState<MatrixCell[][]>([]);
   const [teamMatrix, setTeamMatrix] = useState<MatrixCell[][]>([]);
   const [topLeaders, setTopLeaders] = useState<DropdownOption[]>([]);
@@ -106,6 +108,13 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
                 },
               };
             }
+            if (cell.colId === 'areasOfDevelopment') {
+              return {
+                row_id: cell.rowId,
+                column_id: cell.colId,
+                value: Array.isArray(cell.value) ? cell.value : [cell.value].filter(Boolean),
+              };
+            }
             return {
               row_id: cell.rowId,
               column_id: cell.colId,
@@ -149,6 +158,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     try {
       const response = await submitMilestoneFeedbackService(data as FeedbackData);
       showToastMessage(ToastType.SUCCESS, response?.message || 'Feedback submitted successfully');
+      setErrorType(MilestoneFeedbackErrorType.FEEDBACK_ALREADY_SUBMITTED);
     } catch (error: unknown) {
       showToastMessage(ToastType.ERROR, (error as Error).message || 'Error submitting feedback');
     }
