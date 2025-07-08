@@ -183,6 +183,7 @@ const GiveMilestoneFeedback = () => {
               teamDetails={teamDetails}
               teamId={teamId}
               teamMembers={teamMembers}
+              setErrorType={setErrorType}
             />
           </section>
 
