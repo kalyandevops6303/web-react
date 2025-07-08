@@ -47,6 +47,7 @@ import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
 import PermissionWrapper from '@/PermissionWrapper';
 import { appPermissionsSelector, selectAuthUserData } from '@/redux/selectors/authSelectors';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const Control = ({ children, ...rest }) => <components.Control {...rest}>{children}</components.Control>;
 
@@ -198,7 +199,7 @@ const SecondaryFilters = ({ primaryFilter, userType, appRole }) => {
     setHasMore(false);
   };
   const userData = useSelector(selectAuthUserData);
-  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
+  const flexTern = isFlexternshipApp;
   useEffect(() => {
     dispatch(clearData());
     const valuesOnly = {};
