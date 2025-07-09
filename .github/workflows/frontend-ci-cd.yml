@@ -86,7 +86,7 @@ jobs:
           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
            echo "SUBFOLDER=cm-tru-uat-auto" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
-           echo "SUBFOLDER=tru-wipro" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-tru-wipro" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
            echo "SUBFOLDER=cm-tru-lti" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == v* ]]; then
