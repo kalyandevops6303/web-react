@@ -80,7 +80,7 @@ const TeamFeedback = ({
             placeholder="Write qualitative feedback..."
             value={qualitativeFeedback}
             onChange={(value) => setQualitativeFeedback(value)}
-            className="w-full"
+            className="w-full focus:ring-0 focus:border-gray-300"
             multiline
           />
         </div>
