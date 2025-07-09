@@ -51,9 +51,13 @@ export const routes = {
       submitFeedback: `${serviceUrls.projectManagementV2}/feedback/response`,
       feedbackResponse: `${serviceUrls.projectManagementV2}/feedback/response`,
       getCompetencies: `${serviceUrls.projectManagementV2}/feedback/competency`,
-      getFeedbackSkeletons: `${serviceUrls.projectManagementV2}/beta/feedback/feedback-data`,
-      getFeedbackStatus: `${serviceUrls.projectManagementV2}/beta/feedback/status`,
-      submitMilestoneFeedback: `${serviceUrls.projectManagementV2}/beta/feedback/create`,
+    },
+    internalAdmin: {
+      getFeedbackSkeletons: `${serviceUrls.projectManagementV2}/internal-admin/feedback/feedback-data`,
+      getFeedbackStatus: `${serviceUrls.projectManagementV2}/internal-admin/feedback/status`,
+      submitMilestoneFeedback: `${serviceUrls.projectManagementV2}/internal-admin/feedback/create`,
+      getFeedbackDraft: `${serviceUrls.projectManagementV2}/internal-admin/feedback/get-draft`,
+      submitFeedbackDraft: `${serviceUrls.projectManagementV2}/internal-admin/feedback/save-draft`,
     },
     notification: {
       markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,

@@ -136,7 +136,12 @@ const GiveMilestoneFeedback = () => {
   const getErrorComponent = () => {
     switch (errorType) {
       case MilestoneFeedbackErrorType.FEEDBACK_ALREADY_SUBMITTED:
-        return <FeedbackAlreadySubmitted />;
+        return (
+          <FeedbackAlreadySubmitted
+            projectName={feedbackProgress?.project.name || ''}
+            milestoneName={feedbackProgress?.milestone.name || ''}
+          />
+        );
       case MilestoneFeedbackErrorType.MILESTONE_NOT_FOUND:
         return <MilestoneNotFound />;
       case MilestoneFeedbackErrorType.PROJECT_NOT_FOUND:

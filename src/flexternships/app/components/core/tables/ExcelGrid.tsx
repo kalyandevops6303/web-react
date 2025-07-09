@@ -107,7 +107,6 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
                         );
                       }
 
-                      // Show dropdown if "Other" is not selected
                       return (
                         <DropdownMenu>
                           <DropdownMenuTrigger className="flex items-center justify-between w-full px-2 h-4 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-xs">
@@ -139,6 +138,19 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({
                               const currentValues = matrix[rowIndex]?.[columnIndex]?.value as string[];
                               const isSelected =
                                 Array.isArray(currentValues) && currentValues.some((val) => val === option.value);
+
+                              // Check if current values are not present in options and switch to string type
+                              if (Array.isArray(currentValues) && currentValues.length > 0) {
+                                const availableOptions = header.inputConfig?.options?.map((opt) => opt.value) || [];
+                                const hasInvalidValues = currentValues.some((val) => !availableOptions.includes(val));
+                                if (hasInvalidValues) {
+                                  handleCellTypeChange(
+                                    cell.identifier,
+                                    header.identifier,
+                                    MilestoneFeedbackInputCellType.STRING,
+                                  );
+                                }
+                              }
                               return (
                                 <DropdownMenuCheckboxItem
                                   key={option.value}

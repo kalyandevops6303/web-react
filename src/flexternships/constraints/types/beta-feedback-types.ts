@@ -89,7 +89,7 @@ type RatingMatrixCell =
     };
 
 // Type for the rating matrix (array of rows, each row is an array of cells)
-type RatingMatrix = RatingMatrixCell[][];
+export type RatingMatrix = RatingMatrixCell[][];
 
 type ManagerToPeerRequest = {
   milestone_id: string;
@@ -97,7 +97,7 @@ type ManagerToPeerRequest = {
 };
 
 // Type for individual team feedback entry
-type TeamFeedbackEntry =
+export type TeamFeedbackEntry =
   | {
       row_id: string; // metric ID
       comment: string;
