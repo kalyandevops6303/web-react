@@ -123,8 +123,9 @@ const routes = {
 
   // Beta Milestone Feedback
   betaMilestoneFeedback: {
-    path: '/projects/:projectId/milestones/:milestoneId/feedback',
-    generate: (projectId: string, milestoneId: string) => `/projects/${projectId}/milestones/${milestoneId}/feedback`,
+    path: '/project-details/:projectId/milestone/:milestoneId/feedback',
+    generate: (projectId: string, milestoneId: string) =>
+      `/project-details/${projectId}/milestone/${milestoneId}/feedback`,
   },
 
   // Not found

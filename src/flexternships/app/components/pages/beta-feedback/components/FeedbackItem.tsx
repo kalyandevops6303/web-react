@@ -78,7 +78,6 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
   };
 
   const deProcessIndividualFeedbackData = (data: RatingMatrix) => {
-    if (ratingMatrix.length === 0) return;
     const newRatingMatrix = [...ratingMatrix];
     data.forEach((row, rowIndex) => {
       row.forEach((item) => {
@@ -127,7 +126,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     if (headers.length > 0 && ratingMatrix.length === 0) {
       setRatingMatrix(initializeMatrix(teamDetails, headers));
     }
-    if (peerDraft.length > 0 && ratingMatrix.length > 0) {
+    if (peerDraft && peerDraft.length > 0 && ratingMatrix.length > 0) {
       deProcessIndividualFeedbackData(peerDraft);
     }
   }, [headers.length, peerDraft]);
@@ -143,7 +142,6 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     );
 
   const deProcessTeamFeedbackData = (data: TeamFeedbackEntry[]) => {
-    if (teamMatrix.length === 0) return;
     const newTeamMatrix = [...teamMatrix];
 
     data.forEach((item) => {
@@ -181,7 +179,7 @@ const FeedbackItem: React.FC<FeedbackItemProps> = ({ milestoneId, teamDetails, t
     if (teamHeaders.length > 0 && teamMatrix.length === 0) {
       setTeamMatrix(initializeTeamMatrix(teamHeaders, teamColumns));
     }
-    if (teamDraft.length > 0 && teamMatrix.length > 0) {
+    if (teamDraft && teamDraft.length > 0 && teamMatrix.length > 0) {
       deProcessTeamFeedbackData(teamDraft);
     }
   }, [teamHeaders.length, teamDraft]);
