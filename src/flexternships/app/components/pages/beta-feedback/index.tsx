@@ -21,6 +21,7 @@ import { CellProps } from '@/flexternships/constraints/types/beta-feedback-form-
 import { getFeedbackStatusService } from '@/flexternships/services/beta-service';
 import ShowToastMessage from '@/@core/components/toast';
 import { ToastType } from '@/flexternships/constraints/enums/core-enums';
+import CustomBreadCrumbs from '../../core/CustomBreadCrumbs';
 // import { PanelRightOpen } from 'lucide-react';
 // import MilestoneInsights from "./components/milestone-insight/MilestoneInsights";
 // import classNames from 'classnames';
@@ -135,7 +136,12 @@ const GiveMilestoneFeedback = () => {
   const getErrorComponent = () => {
     switch (errorType) {
       case MilestoneFeedbackErrorType.FEEDBACK_ALREADY_SUBMITTED:
-        return <FeedbackAlreadySubmitted />;
+        return (
+          <FeedbackAlreadySubmitted
+            projectName={feedbackProgress?.project.name || ''}
+            milestoneName={feedbackProgress?.milestone.name || ''}
+          />
+        );
       case MilestoneFeedbackErrorType.MILESTONE_NOT_FOUND:
         return <MilestoneNotFound />;
       case MilestoneFeedbackErrorType.PROJECT_NOT_FOUND:
@@ -156,6 +162,16 @@ const GiveMilestoneFeedback = () => {
 
   return (
     <div className="bg-grey-50/10 relative min-h-screen">
+      <div>
+        <CustomBreadCrumbs
+          items={[
+            { label: 'Project', href: `/project-details/${projectId}` },
+            { label: 'Milestone', href: `/project-details/${projectId}/milestone/${milestoneId}` },
+            { label: 'Milestone Feedback' },
+          ]}
+          startWithHome
+        />
+      </div>
       <div className="flex flex-col gap-12 w-full max-w-screen-2xl mx-auto px-4 pt-12">
         {/* Header */}
         <header className="flex justify-between items-center">

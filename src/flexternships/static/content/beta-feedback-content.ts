@@ -1,7 +1,7 @@
 import { MilestoneFeedbackInputCellType } from '@/flexternships/constraints/enums/beta-feedback-enums';
 
 export const teamColumns = [
-  { value: 'Feedback', identifier: 'feedback', width: 400 },
+  { value: 'Feedback', identifier: 'feedback', width: 1100 },
   {
     value: 'Ratings',
     identifier: 'ratings',

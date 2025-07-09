@@ -19,7 +19,7 @@ const Spreadsheet: React.FC<ExcelGridProps> = ({
   const spreadsheetHeaders = headers.filter((header) => header.inputConfig?.type !== 'dropdown');
 
   const columns: Column[] = [
-    { columnId: 'rowLabel', width: 150, resizable: true },
+    { columnId: 'rowLabel', width: 200, resizable: true },
     ...spreadsheetHeaders.map((header) => ({
       columnId: header.identifier,
       width: header?.width || 150,
@@ -31,12 +31,16 @@ const Spreadsheet: React.FC<ExcelGridProps> = ({
     {
       rowId: 'header',
       cells: [
-        { type: 'header', text: '' },
+        { type: 'header', text: '', className: 'border-b border-gray-300' },
         ...spreadsheetHeaders.map((header) => ({
           type: 'header' as const,
           text: header.value,
-          style: { backgroundColor: header?.backgroundColor || '#a6a6a6', color: header?.color || '#000000' },
-          className: 'border-b border-gray-300 items-center justify-center',
+          style: {
+            backgroundColor: header?.backgroundColor || '#f0f0f0',
+            color: header?.color,
+            borderColor: header?.borderColor || '#e5e7eb',
+          },
+          className: 'border-b border-gray-300 items-center justify-center font-semibold',
         })),
       ],
     },
@@ -46,8 +50,12 @@ const Spreadsheet: React.FC<ExcelGridProps> = ({
         {
           type: 'header',
           text: row.value,
-          className: 'border-b border-gray-400 items-center justify-center',
-          style: { background: row?.backgroundColor || '#a6a6a6', color: row?.color || '#000000' },
+          className: 'border-b border-gray-300 items-center font-semibold justify-center',
+          style: {
+            background: row?.backgroundColor || '#f0f0f0',
+            color: row?.color,
+            borderColor: row?.borderColor || '#e5e7eb',
+          },
         },
         ...spreadsheetHeaders.map((column) => {
           const colIndex = headers.findIndex((header) => header.identifier === column.identifier);
@@ -108,7 +116,17 @@ const Spreadsheet: React.FC<ExcelGridProps> = ({
     onChange?.(newMatrix);
   };
 
-  return <ReactGrid rows={rows} columns={columns} onCellsChanged={handleChanges} />;
+  return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      onCellsChanged={handleChanges}
+      enableRangeSelection
+      enableColumnSelection
+      enableRowSelection
+      enableColumnResizeOnAllHeaders
+    />
+  );
 };
 
 export default Spreadsheet;
