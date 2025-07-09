@@ -46,7 +46,7 @@ const TeamFeedback = ({
   });
   return (
     <div className="flex flex-col gap-8 py-4 px-6 w-full border border-gray-200 rounded-lg">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-x-auto">
         <div className="text-lg font-bold text-grey-heading">Team Feedback</div>
         <Spreadsheet headers={teamColumns} firstColumn={headers} matrix={teamMatrix} onChange={setTeamMatrix} />
       </div>
