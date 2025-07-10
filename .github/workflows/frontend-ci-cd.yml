@@ -82,21 +82,20 @@ jobs:
       - name: Set SharePoint SubFolder Name Based on Tag
         run: |
           if [[ "${{ vars.TAG }}" == uat_* ]]; then
-           echo "SUBFOLDER=uat" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-uat" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-uat_* ]]; then
            echo "SUBFOLDER=cm-tru-uat" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-uat-auto_* ]]; then
            echo "SUBFOLDER=cm-tru-uat-auto" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-wipro_* ]]; then
-           echo "SUBFOLDER=tru-wipro" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-tru-wipro" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
-           echo "SUBFOLDER=tru-lti" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-tru-lti" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == v* ]]; then
-           echo "SUBFOLDER=prod" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-prod" >> $GITHUB_ENV
           elif [[ "${{ vars.TAG }}" == tru-prod_* ]]; then
-           echo "SUBFOLDER=tru-prod" >> $GITHUB_ENV
-          elif [[ "${{ vars.TAG }}" == tru-lti_* ]]; then
-           echo "SUBFOLDER=tru-lti" >> $GITHUB_ENV
+           echo "SUBFOLDER=cm-tru-prod" >> $GITHUB_ENV
+
           else
            echo "Error: Unrecognized environment tag format."
            exit 1
