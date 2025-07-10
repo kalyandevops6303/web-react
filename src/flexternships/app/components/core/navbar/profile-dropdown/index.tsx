@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@flexternships/components/ui/dropdown-menu';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@flexternships/components/ui/accordion';
-import DelegateAccordionBody from './DelegateAccordionBody';
+// import DelegateAccordionBody from './DelegateAccordionBody';
 import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { FlexternUserAppRole, ToastType, UserType } from '@/flexternships/constraints/enums/core-enums';
 import { Link } from 'react-router-dom';
@@ -117,17 +117,18 @@ export default function ProfileDropdown() {
     setIsInviteDelegateModalOpen(false);
   };
 
-  const handleAddDelegate = () => {
-    setIsInviteDelegateModalOpen(true);
-  };
+  // const handleAddDelegate = () => {
+  //   setIsInviteDelegateModalOpen(true);
+  // };
 
   // Menu items that require accordion functionality
   const accordionToDisplay = isClient
-    ? {
-        id: 'delegates',
-        label: 'Delegate(s)',
-        content: <DelegateAccordionBody onAddDelegate={handleAddDelegate} />,
-      }
+    ? // {
+      //   id: 'delegates',
+      //   label: 'Delegate(s)',
+      //   content: <DelegateAccordionBody onAddDelegate={handleAddDelegate} />,
+      // }
+      null
     : {
         id: 'edit-profile',
         label: 'Edit Profile',
@@ -190,17 +191,21 @@ export default function ProfileDropdown() {
           )}
 
           {/* Accordion Menu Items */}
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value={accordionToDisplay.id} key={accordionToDisplay.id} className="border-none">
-              <AccordionTrigger className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light data-[state=open]:bg-trublue-light cursor-pointer hover:no-underline">
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="p-0 m-0 cursor-pointer">
-                  {accordionToDisplay.label}
-                </DropdownMenuItem>
-              </AccordionTrigger>
-              <AccordionContent className="p-0">{accordionToDisplay.content}</AccordionContent>
-            </AccordionItem>
-            <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
-          </Accordion>
+          {accordionToDisplay && (
+            <>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value={accordionToDisplay.id} key={accordionToDisplay.id} className="border-none">
+                  <AccordionTrigger className="text-sm text-grey font-medium leading-5 p-4 hover:bg-trublue-light data-[state=open]:bg-trublue-light cursor-pointer hover:no-underline">
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="p-0 m-0 cursor-pointer">
+                      {accordionToDisplay.label}
+                    </DropdownMenuItem>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-0">{accordionToDisplay.content}</AccordionContent>
+                </AccordionItem>
+                <DropdownMenuSeparator className="my-0 mx-4 p-0 bg-grey-border" />
+              </Accordion>
+            </>
+          )}
 
           {/* Support Link */}
           <DropdownMenuItem
