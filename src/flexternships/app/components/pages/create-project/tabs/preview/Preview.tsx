@@ -185,8 +185,8 @@ export default function Preview() {
             className="w-[333px] mb-5"
             title="Department Name (BU) *"
             value={
-              typeof (userDetails as FlexternClientDetails)?.departmentName === 'string'
-                ? (userDetails as FlexternClientDetails).departmentName
+              typeof (userDetails as FlexternClientDetails)?.departmentName.name === 'string'
+                ? (userDetails as FlexternClientDetails).departmentName.name
                 : 'NaN'
             }
           />
