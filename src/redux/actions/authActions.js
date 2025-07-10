@@ -375,7 +375,9 @@ const logoutAction =
       const res = await logoutUserService();
 
       onSuccess();
-      !suppressToast && showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+      if (!suppressToast) {
+        showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+      }
     } catch (error) {
       if (error?.response?.data?.errorData?.errorCode === 403 && !suppressToast) {
         showToastMessage(ToastType.ERROR, error?.response?.data?.errorData?.message);
