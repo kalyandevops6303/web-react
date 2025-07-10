@@ -243,9 +243,6 @@ const verifyEmailForFlextern =
       if (!isEmpty(res?.data?.data)) {
         setItem('access_token_expires', res.data.data.access_token_expires);
         setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-        if (typeof window !== 'undefined' && window.dataLayer && Array.isArray(window.dataLayer)) {
-          window.dataLayer.push({ user_id: res.data.data.user_id });
-        }
         dispatch(setTalentBooleanIsFlextern(true));
         dispatch(verifyEmailForFlexternSuccess());
         if (onSuccess) {

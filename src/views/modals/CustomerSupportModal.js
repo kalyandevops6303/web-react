@@ -54,6 +54,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
   const userEmail = getUserEmail();
   const supportEmail = getSupportEmail();
   const [defaultOption, setDefaultOption] = useState(null);
+
   const CustomerSupportSchema = yup.object().shape({
     issueType: yup
       .object()
@@ -62,44 +63,49 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
         value: yup.string().required('Issue type is required'),
       })
       .required('Issue type is required'),
-    skill: yup.string().when('issueType.value', {
+    skill: yup.string().when('issueType', {
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_skill,
-      then: () =>
-        yup
-          .string()
+      then: (schema) =>
+        schema
+          .trim()
           .min(1, 'Skill must be at least 1 character')
           .max(150, 'Skill must be 150 characters or less')
           .required('Skill is required'),
+      otherwise: (schema) => schema.notRequired(),
     }),
-    tool: yup.string().when('issueType.value', {
+    tool: yup.string().when('issueType', {
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool,
-      then: () =>
-        yup
-          .string()
+      then: (schema) =>
+        schema
+          .trim()
           .min(1, 'Tool must be at least 1 character')
           .max(150, 'Tool must be 150 characters or less')
           .required('Tool is required'),
+      otherwise: (schema) => schema.notRequired(),
     }),
-    institute: yup.string().when('issueType.value', {
+    institute: yup.string().when('issueType', {
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute,
-      then: () =>
-        yup
-          .string()
+      then: (schema) =>
+        schema
+          .trim()
           .min(1, 'Institution must be at least 1 character')
           .max(150, 'Institution must be 150 characters or less')
           .required('Institution is required'),
+      otherwise: (schema) => schema.notRequired(),
     }),
-    assessment: yup.string().when('issueType.value', {
+    assessment: yup.string().when('issueType', {
       is: (issueType) => issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_assessment,
-      then: () =>
-        yup
-          .string()
+      then: (schema) =>
+        schema
+          .trim()
           .min(1, 'Assessment must be at least 1 character')
           .max(150, 'Assessment must be 150 characters or less')
           .required('Assessment is required'),
+      otherwise: (schema) => schema.notRequired(),
     }),
     supportDetails: yup
       .string()
+      .trim()
       .min(50, 'Description must be at least 50 characters')
       .max(500, 'You have exceeded the limit of 500 characters')
       .required('Description is required'),
@@ -237,9 +243,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
               <Col sm="12" md="12" lg="7">
                 <Label className="form-label text-grey font-normal text-sm" for="issueType">
                   Issue Type
-                  {issueType?.value !== CUSTOMER_SUPPORT_TYPES.missing_institute && (
-                    <span className="label-asterisk me-50">*</span>
-                  )}
+                  <span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="issueType"
@@ -289,6 +293,30 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                   {errors.skill && <FormFeedback>{errors.skill.message}</FormFeedback>}
                 </Col>
               )}
+              {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute && (
+                <Col sm="12" md="12" lg="5">
+                  <Label className="form-label" for="institute">
+                    Missing Institution
+                    <span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="institute"
+                    name="institute"
+                    control={control}
+                    invalid={errors.institute && true}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        step="any"
+                        onWheel={(e) => e.target.blur()}
+                        placeholder="Enter institute"
+                        invalid={errors.institute && true}
+                      />
+                    )}
+                  />
+                  {errors.institute && <FormFeedback>{errors.institute.message}</FormFeedback>}
+                </Col>
+              )}
               {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="tool">
@@ -323,7 +351,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                     id="assessment"
                     name="assessment"
                     control={control}
-                    invalid={errors.tool && true}
+                    invalid={errors.assessment && true}
                     render={({ field }) => (
                       <Input
                         {...field}
@@ -334,16 +362,16 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected, 
                       />
                     )}
                   />
-                  {errors.tool && <FormFeedback>{errors.assessment.message}</FormFeedback>}
+                  {errors.assessment && <FormFeedback>{errors.assessment.message}</FormFeedback>}
                 </Col>
               )}
             </Row>
 
             <Row className="mt-4 mb-4">
               <Col sm="12" md="12" lg="12">
-                <Label className="form-label text-grey font-normal text-sm" for="skill">
+                <Label className="form-label text-grey font-normal text-sm" for="supportDetails">
                   Tell us in detail how we can help you?
-                  {/* <span className="label-asterisk me-50">*</span> */}
+                  <span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="supportDetails"
@@ -389,6 +417,7 @@ CustomerSupportModal.propTypes = {
   selectedTimeline: Proptypes.object,
   onSuccess: Proptypes.func,
   defaultSelected: Proptypes.string,
+  assessment: Proptypes.string,
 };
 
 CustomerSupportModal.defaultProps = {
@@ -399,4 +428,5 @@ CustomerSupportModal.defaultProps = {
   selectedTimeline: null,
   onSuccess: () => {},
   defaultSelected: [],
+  assessment: '',
 };

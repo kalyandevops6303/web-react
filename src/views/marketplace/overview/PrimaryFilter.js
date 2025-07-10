@@ -11,6 +11,7 @@ import { userTypes } from '../../../utility/constants/Constant';
 import { selectAuthUserData, appPermissionsSelector } from '../../../redux/selectors/authSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import PermissionWrapper from '@/PermissionWrapper';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const isLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
   const isSecondaryLoading = useSelector((state) => state.marketPlace.loading);
   const appPermissions = useSelector(appPermissionsSelector);
-  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
+  const flexTern = isFlexternshipApp;
 
   const userType = userData?.user_type;
   useEffect(() => {

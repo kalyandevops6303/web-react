@@ -30,7 +30,7 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
   const populateUserDetails = useFlexternUserStore((state) => state.populateUserDetails);
   const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
   const populateBlobSasTokenParams = useAppStore((state) => state.populateBlobSasTokenParams);
-
+  const populateAccessibleFeatures = useAppStore((state) => state.populateAccessibleFeatures);
   const openGlobalModal = useAppStore((state) => state.openModal);
 
   const navigate = useNavigate();
@@ -39,10 +39,11 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     if (isUserLoggedIn()) {
       populateUserDetails();
       populateBlobSasTokenParams();
+      populateAccessibleFeatures();
     } else {
       navigate(`${routes.auth.path}/login`);
     }
-  }, [populateUserDetails, populateBlobSasTokenParams]);
+  }, [populateUserDetails, populateBlobSasTokenParams, populateAccessibleFeatures]);
 
   useEffect(() => {
     if (!blobSasTokenParams?.se) return;

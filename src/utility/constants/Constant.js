@@ -32,11 +32,13 @@ const userTypes = {
   club: 'CLUB',
   flexternTalent: 'FLEXTERN_TALENT',
   flexternClient: 'FLEXTERN_CLIENT',
+  projectAdvisor: 'PROJECT_ADVISOR',
 };
 
 const appRoles = {
   flexternClient: 'FLEXTERN_CLIENT',
   flexternTalent: 'FLEXTERN_TALENT',
+  projectAdvisor: 'PROJECT_ADVISOR',
 };
 
 const teamTypes = {
@@ -317,6 +319,7 @@ const { studyYears, graduationYears } = generateYearArrays();
 
 const FEATURE_NAMES = {
   AYESHA_BOT: 'Ayesha Bot',
+  INTERNAL_ADMIN_FEEDBACK: 'internal_admin_feedback',
 };
 
 export {

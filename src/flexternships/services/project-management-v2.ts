@@ -17,7 +17,6 @@ import {
   MilestoneArtifactStatus,
   MilestoneArtifactType,
   MilestoneStatus,
-  ToastType,
 } from '../constraints/enums/core-enums';
 import {
   parseCompetencies,
@@ -34,7 +33,7 @@ import {
   DEFAULT_ALL_NOTE_CATEGORIES_OPTION,
 } from '../static/constants/quick-actions-constants';
 import { QuickActionCategory } from '../constraints/enums/quick-actions-enums';
-import { showToastMessage } from '../utils/core-utils';
+import toast from 'react-hot-toast';
 
 /**
  * Retrieves a file upload URL for a given filename.
@@ -103,21 +102,21 @@ export const createFlexternProject: (
   };
 
   if (!projectData?.requirements?.projectName?.trim()) {
-    showToastMessage(ToastType.ERROR, 'Project name is required');
+    toast.error('Project name is required');
   }
   if (!projectData?.requirements?.projectDescription?.trim()) {
-    showToastMessage(ToastType.ERROR, 'Project description is required');
+    toast.error('Project description is required');
   }
   if (!projectData?.roles?.length) {
-    showToastMessage(ToastType.ERROR, 'At least one role is required');
+    toast.error('At least one role is required');
   }
   if (!projectData?.milestones?.length) {
-    showToastMessage(ToastType.ERROR, 'At least one milestone is required');
+    toast.error('At least one milestone is required');
   }
 
   const invalidRoles = projectData.roles.filter((role) => !role?.role?._id);
   if (invalidRoles.length > 0) {
-    showToastMessage(ToastType.ERROR, 'All roles must have valid role IDs');
+    toast.error('All roles must have valid role IDs');
   }
 
   const formattedProjectData = {
@@ -152,7 +151,7 @@ export const createFlexternProject: (
     milestones: projectData.milestones.map((item) => {
       const duration = typeof item.duration === 'string' ? parseFloat(item.duration) : item.duration;
       if (!duration || duration <= 0) {
-        showToastMessage(ToastType.ERROR, `Invalid milestone duration: ${item.title} has duration ${duration}`);
+        toast.error(`Invalid milestone duration: ${item.title} has duration ${duration}`);
       }
 
       return {

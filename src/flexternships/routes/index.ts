@@ -71,6 +71,10 @@ const routes = {
     path: '/analytics/project/:projectId/team/commits',
     generate: (projectId: string) => `/analytics/project/${projectId}/team/commits`,
   },
+  commitsIndividual: {
+    path: '/analytics/project/:projectId/individual/:userId/commits',
+    generate: (projectId: string, userId: string) => `/analytics/project/${projectId}/individual/${userId}/commits`,
+  },
   comments: {
     path: '/analytics/project/:projectId/individual/:userId/comments',
     generate: (projectId: string, userId: string) => `/analytics/project/${projectId}/individual/${userId}/comments`,
@@ -115,6 +119,13 @@ const routes = {
   // Privacy Policy
   termsAndConditions: {
     path: '/terms-and-conditions',
+  },
+
+  // Beta Milestone Feedback
+  betaMilestoneFeedback: {
+    path: '/project-details/:projectId/milestone/:milestoneId/feedback',
+    generate: (projectId: string, milestoneId: string) =>
+      `/project-details/${projectId}/milestone/${milestoneId}/feedback`,
   },
 
   // Not found

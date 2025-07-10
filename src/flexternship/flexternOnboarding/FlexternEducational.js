@@ -64,7 +64,6 @@ import {
   graduationYears,
   maxFileSize,
 } from '../../utility/constants/Constant';
-import { getCustomerSupportCount } from '../../redux/actions/supportActions';
 import {
   formatDateWithTime,
   downloadFile,
@@ -1268,7 +1267,6 @@ const FlexternEducational = () => {
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
-    dispatch(getCustomerSupportCount());
   }, [parseResume, parsedResumeData, parsedUploaded]);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
@@ -1294,7 +1292,7 @@ const FlexternEducational = () => {
   const onCustomerSupportSuccess = () => {
     setCustomerSupportModal(false);
     setFeedbackSupportModal(true);
-    dispatch(getCustomerSupportCount());
+    // dispatch(getCustomerSupportCount());
   };
 
   useEffect(() => {

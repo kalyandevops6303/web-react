@@ -1,6 +1,7 @@
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const serviceUrls = {
+  dashboard: `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}/api/v1`,
   dashboardV2: `${baseUrl}/${import.meta.env.VITE_API_ONBOARDING_PATH}/api/v2`,
   projectManagementV2: `${baseUrl}/projectv2/api/v1`,
   userManagement: `${baseUrl}/${import.meta.env.VITE_API_AUTH_PATH}/api/v1`,
@@ -51,6 +52,13 @@ export const routes = {
       feedbackResponse: `${serviceUrls.projectManagementV2}/feedback/response`,
       getCompetencies: `${serviceUrls.projectManagementV2}/feedback/competency`,
     },
+    internalAdmin: {
+      getFeedbackSkeletons: `${serviceUrls.projectManagementV2}/internal-admin/feedback/feedback-data`,
+      getFeedbackStatus: `${serviceUrls.projectManagementV2}/internal-admin/feedback/status`,
+      submitMilestoneFeedback: `${serviceUrls.projectManagementV2}/internal-admin/feedback/create`,
+      getFeedbackDraft: `${serviceUrls.projectManagementV2}/internal-admin/feedback/get-draft`,
+      submitFeedbackDraft: `${serviceUrls.projectManagementV2}/internal-admin/feedback/save-draft`,
+    },
     notification: {
       markMilestoneArtifactAsRead: `${serviceUrls.projectManagementV2}/milestone/artifact/mark-as-read`,
     },
@@ -63,6 +71,11 @@ export const routes = {
       getNoteCategories: `${serviceUrls.projectManagementV2}/note/category`,
       getPaginatedNoteCategories: `${serviceUrls.projectManagementV2}/note/category/paginated`,
       submitNotes: `${serviceUrls.projectManagementV2}/note`,
+    },
+    assessments: {
+      fetchAll: `${serviceUrls.projectManagementV2}/assessments`,
+      fetchResult: `${serviceUrls.projectManagementV2}/assessments/result`,
+      fetchGradeMetadata: `${serviceUrls.projectManagementV2}/grade-metadata`,
     },
   },
   userManagement: {
@@ -157,6 +170,10 @@ export const routes = {
     flexternRoles: {
       getPaginatedFlexternRoles: `${serviceUrls.dashboardV2}/flextern/roles`,
     },
+    projects: {
+      getProjects: `${serviceUrls.dashboardV2}/projects`,
+      markProjectAsRead: `${serviceUrls.dashboard}/alert/mark-as-read`,
+    },
   },
   analytics: {
     individualOverview: `${serviceUrls.dashboardV2}/talent/header`,
@@ -171,6 +188,7 @@ export const routes = {
     github: {
       analytics: `${serviceUrls.dashboardV2}/individual/github/analytics`,
       stats: `${serviceUrls.dashboardV2}/individual/github/stats`,
+      prHistory: `${serviceUrls.dashboardV2}/github/analytics/list`,
     },
     team: {
       performanceSummary: `${serviceUrls.dashboardV2}/team/performance/summary`,

@@ -24,6 +24,10 @@ import {
 import { MatrixDataItem } from '../constraints/types/chart-types';
 import { NoteCategory } from '../constraints/types/note-category-types';
 import { supportTypes } from '../constraints/types/core-types';
+import { Assessment, AssessmentSectionResult, GradeMetadata } from '../constraints/types/assessment-types';
+import { DashboardProject } from '../constraints/types/dashboard-types';
+import { ProjectCreationFormData } from '../constraints/types/project-creation-types';
+import { FeedbackSkeleton, MilestoneFeedbackProgress } from '../constraints/types/beta-feedback-types';
 
 /**
  * Parses milestone details from raw data into a structured format
@@ -256,7 +260,7 @@ export const parseCommentsTimeline = (data: Record<string, any>): CommentsTimeli
     const giverDesignation =
       giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE
         ? 'Mentor'
-        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT
+        : giverAppRole === FlexternUserAppRole.FLEXTERN_CLIENT || giverAppRole === FlexternUserAppRole.PROJECT_ADVISOR
         ? 'Manager'
         : commentsTimelineItem.giver_details.project_role;
 
@@ -450,6 +454,12 @@ export const parseGitHubStats = (data: Record<string, any>): GitHubStats => {
     pullRequestsCount: data.pr_count,
     projectName: data.project_name,
     githubUrl: data.github_url,
+    projectStartDate: data.project_start_date,
+    projectEndDate: data.project_end_date,
+    securityRatingGrade: data.security_rating_grade,
+    maintainabilityRatingGrade: data.maintainability_rating_grade,
+    reliabilityRatingGrade: data.reliability_rating_grade,
+    lastGithubSyncRun: data.last_github_sync_run,
   };
 };
 
@@ -483,6 +493,8 @@ export const parseConversationParticipationStats = (data: Record<string, number>
     participationPercentage: data.participation_percentage,
     countOfMessagesPerDay: data.frequency_of_messages_per_day,
     averageResponseTimeInSeconds: data.average_response_time_in_seconds,
+    meetingAttendancePercentage: data.meeting_attendance_percentage,
+    meetingParticipationPercentage: data.meeting_participation_percentage,
   };
 };
 
@@ -574,5 +586,173 @@ export const parseSupportTypesResponse = (data: supportTypes[], page: number, pa
       total_records: data.length,
       has_next_page: false,
     },
+  };
+};
+
+export const parseAssessments = (data: any): Assessment[] => {
+  return data.map((assessment: any) => ({
+    id: assessment._id,
+    assessmentId: assessment.assessment_id,
+    name: assessment.name,
+    url: assessment.url,
+    projectId: assessment.project_id,
+    projectStatus: assessment.project_status,
+    type: assessment.type,
+    numberOfQuestions: assessment.no_of_questions,
+    totalDuration: assessment.total_duration,
+    userAssessmentResult: assessment.user_assessment_result
+      ? {
+          id: assessment.user_assessment_result._id,
+          overallPercentage: assessment.user_assessment_result.overall_percentage,
+        }
+      : undefined,
+    grade: assessment.grade,
+    status: assessment.status,
+  }));
+};
+
+export const parseAssessmentResult = (data: any): AssessmentSectionResult[] => {
+  return data?.map((section: any) => ({
+    name: section.section_name,
+    grade: section.section_grade,
+    skills: section.skills_data?.map((skill: any) => ({
+      name: skill.skill_name,
+      grade: skill.skill_grade,
+    })),
+  }));
+};
+
+export const parseGradeMetadata = (data: any): GradeMetadata[] => {
+  return data?.map((grade: any) => ({
+    id: grade._id,
+    name: grade.grade,
+    toPercentage: grade.to_percentage,
+    fromPercentage: grade.from_percentage,
+    colorCode: grade.colour_code,
+  }));
+};
+export const parseDashboardProjects = (data: any) => {
+  return {
+    metadata: {
+      currentPage: data.metadata.current_page,
+      pageSize: data.metadata.page_size,
+      totalRecords: data.metadata.total_records,
+      hasNextPage: data.metadata.has_next_page,
+    },
+    data: data.data.map((project: any) => ({
+      id: project._id,
+      primaryStatus: project.status,
+      secondaryStatus: project.secondary_status,
+      skills: project.skills_data,
+      details: {
+        projectName: project.details.name,
+        estimatedStartDate: project.details.expected_start_date,
+        estimatedDuration: project.details.expected_duration.duration,
+        estimatedWeeklyHours: project.details.expected_duration.hours_per_week,
+        totalProjectHoursEach:
+          project.details.expected_duration.duration * project.details.expected_duration.hours_per_week,
+        projectDescription: project.details.description,
+        documents:
+          project.details.documents.map((document: any) => ({
+            fileName: document.file_name,
+            fileKey: document.file_key,
+            size: document.size,
+            createdAt: document.created_at,
+          })) || [],
+      },
+      roles:
+        project.roles?.map((role: any) => ({
+          role: role.role,
+          count: role.count,
+          skills: role.proficiency.skills || [],
+          tools: role.proficiency.tools || [],
+        })) || [],
+      team:
+        project.team_details?.members?.map((member: any) => ({
+          userId: member.user_id,
+          roleId: member.role_id,
+          roleName: member.role_name,
+          firstName: member.first_name,
+          lastName: member.last_name,
+          imageUri: member.image_uri,
+        })) || [],
+      clientInfo: {
+        userId: project.client_info[0]?.user_id,
+        firstName: project.client_info[0]?.first_name,
+        lastName: project.client_info[0]?.last_name,
+        imageUri: project.client_info[0]?.image_uri,
+        departmentName: project.client_info[0]?.department,
+        corporateName: project.client_info[0]?.corporate_name,
+      },
+      milestones:
+        project.milestones?.map((milestone: any) => ({
+          id: milestone._id,
+          status: milestone.status,
+          title: milestone.name,
+          duration: milestone.estimated_duration.duration,
+          description: milestone.description,
+          deliverables: milestone.deliverables,
+          seq: milestone.seq,
+        })) || [],
+      cohortDetails: {
+        name: project.cohort_details?.name,
+        skills: project.cohort_skills,
+      },
+      isRead: project.is_read,
+      isFavorite: project.is_favourite,
+      listingDetails: {
+        startDate: project.listing_details.start_date_epoch,
+        endDate: project.listing_details.end_date_epoch,
+      },
+      firstMilestoneWithoutFeedback: {
+        seq: project.first_milestone_without_feedback.seq,
+        milestoneId: project.first_milestone_without_feedback.milestone_id,
+      },
+    })),
+  };
+};
+export const parseDashboardProjectIntoProjectCreationFormData = (
+  project: DashboardProject,
+): ProjectCreationFormData => {
+  return {
+    requirements: {
+      projectName: project.details.projectName,
+      estimatedStartDate: project.details.estimatedStartDate,
+      estimatedDuration: project.details.estimatedDuration,
+      estimatedWeeklyHours: project.details.estimatedWeeklyHours,
+      totalProjectHoursEach: project.details.totalProjectHoursEach,
+      projectDescription: project.details.projectDescription,
+      documents: project.details.documents || [],
+    },
+    roles: project.roles,
+    milestones: project.milestones.map((milestone) => ({
+      title: milestone.title,
+      duration: milestone.duration,
+      description: milestone.description,
+      deliverables: milestone.deliverables,
+    })),
+    listingDetails: project.listingDetails,
+  };
+};
+
+export const parseFeedbackSkeletons = (responseData: any): FeedbackSkeleton[] => {
+  return responseData.map((skeleton: any) => ({
+    id: skeleton._id,
+    type: skeleton.type,
+    elements: skeleton.elements,
+  }));
+};
+
+export const parseFeedbackStatus = (responseData: any): MilestoneFeedbackProgress => {
+  return {
+    project: {
+      id: responseData?.project_id,
+      name: responseData.project_name,
+    },
+    milestone: {
+      id: responseData?.milestone_id,
+      name: responseData.milestone_name,
+    },
+    overallStatus: responseData?.manager_feedback?.status,
   };
 };

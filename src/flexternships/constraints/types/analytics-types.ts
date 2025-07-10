@@ -52,6 +52,12 @@ export type GitHubStats = {
   pullRequestsCount: number;
   projectName: string;
   githubUrl?: string;
+  projectStartDate?: string;
+  projectEndDate?: string;
+  securityRatingGrade?: string;
+  maintainabilityRatingGrade?: string;
+  reliabilityRatingGrade?: string;
+  lastGithubSyncRun?: string;
 };
 
 export type GitHubBranchCommit = {
@@ -68,6 +74,42 @@ export type GitHubBranchCommit = {
   role: string;
 };
 
+export type GitHubPullRequest = {
+  id: string;
+  prTitle: string;
+  prNumber: number;
+  prCreatedAt: string;
+  prMergedAt: string | null;
+  prStatus: string;
+  prUserId: string | null;
+  commits: Array<{
+    commits: Array<{
+      id: string;
+      sha: string;
+      githubUser: string;
+      message: string;
+      pullRequestNumber: number;
+      timestamp: string;
+      url: string;
+      fullDate: string;
+      firstName: string;
+      lastName: string;
+      imageUri: string;
+      talentRole: string;
+    }>;
+    date: string;
+  }>;
+  commitsCount: number;
+  bugs: string;
+  codeSmells: string;
+  vulnerabilities: string;
+  reliabilityRatingGrade: string;
+  securityRatingGrade: string;
+  maintainabilityRatingGrade: string;
+};
+
+export type GitHubPullRequestHistory = ParsedPaginatedData<GitHubPullRequest>;
+
 export type GitHubBranchHistory = ParsedPaginatedData<GitHubBranchCommit>;
 
 export type ConversationParticipationStats = {
@@ -75,6 +117,8 @@ export type ConversationParticipationStats = {
   participationPercentage: number;
   countOfMessagesPerDay: number;
   averageResponseTimeInSeconds: number;
+  meetingAttendancePercentage?: number;
+  meetingParticipationPercentage?: number;
 };
 
 export type ConversationAttachmentStats = {

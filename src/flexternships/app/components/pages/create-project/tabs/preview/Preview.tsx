@@ -108,11 +108,13 @@ export default function Preview() {
         toast.error('All milestones must have valid title, description, duration, and deliverables');
       }
 
+      console.log('Form data being sent:', formData); // Add logging for debugging
       const createdProjectId = await createFlexternProject(formData, projectId);
       setCreatedProjectId(createdProjectId);
       setRecallTimeLeft(5);
       openModal(ModalType.PROJECT_CREATED);
     } catch (error: unknown) {
+      console.error('Error creating project:', error); // Add detailed error logging
       closeModal();
       showToastMessage(
         ToastType.ERROR,
@@ -184,7 +186,7 @@ export default function Preview() {
             title="Department Name (BU) *"
             value={
               typeof (userDetails as FlexternClientDetails)?.departmentName.name === 'string'
-                ? (userDetails as FlexternClientDetails).departmentName.name || 'NaN'
+                ? (userDetails as FlexternClientDetails).departmentName.name
                 : 'NaN'
             }
           />
