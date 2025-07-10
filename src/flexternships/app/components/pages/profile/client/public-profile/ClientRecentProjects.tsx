@@ -78,7 +78,7 @@ export default function ClientRecentProjects(props: ClientRecentProjectsProps) {
                               key={index}
                               className="px-4 py-1 text-[#005EFF] text-sm font-normal leading-4.5 border-1 border-[#005EFF] rounded-[4px]"
                             >
-                              {projectRole.role.name}
+                              {projectRole?.role?.name}
                             </span>
                           ))}
                         </div>
