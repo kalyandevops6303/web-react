@@ -1000,11 +1000,11 @@ export const checkPointRedirection = ({ response, navigate, nextPath }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
     navigate('/auth/register-phone-flexternship');
   } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
-    if (response?.app_roles?.includes('FLEXTERN_CLIENT')) {
+    if (response?.app_roles?.includes('FLEXTERN_CLIENT') || response?.app_roles?.includes('PROJECT_ADVISOR')) {
       navigate(`/${response.user_type.toLowerCase()}-onboarding`);
     } else navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
   } else if (response?.checkpoint === checkPoints.PROFILE_DETAILS) {
-    if (response?.app_roles?.includes('FLEXTERN_CLIENT')) {
+    if (response?.app_roles?.includes('FLEXTERN_CLIENT') || response?.app_roles?.includes('PROJECT_ADVISOR')) {
       navigate(`/${response.user_type.toLowerCase()}-onboarding`);
     } else navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
   } else if (response?.checkpoint === checkPoints.COMPLETE) {

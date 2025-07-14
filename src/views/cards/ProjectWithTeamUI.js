@@ -19,6 +19,7 @@ import { DisputeCount } from '../styled';
 import PermissionWrapper from '@/PermissionWrapper';
 import { addQueryParams } from '@/flexternships/utils/miscellaneous-utils';
 import { useAppStore } from '@/flexternships/stores/core-stores';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const determineClassWhenDisputeStatus = (pathname, userData) => {
   if (pathname === 'dispute' && userData?.user_type === userTypes.client) {
@@ -43,7 +44,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const location = useLocation();
   const navigate = useNavigate();
   const pathname = location.pathname.split('/').pop();
-  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
+  const flexTern = isFlexternshipApp;
 
   const blobSasTokenParams = useAppStore((state) => state.blobSasTokenParams);
 

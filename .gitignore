@@ -69,3 +69,5 @@ yarn.lock
 
 .env
 .env.*
+
+.npmrc

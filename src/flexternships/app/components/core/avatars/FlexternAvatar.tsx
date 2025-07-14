@@ -9,6 +9,12 @@ const style = {
   lg: 'text-2xl',
 };
 
+const sizeMap = {
+  sm: '20px',
+  md: '40px',
+  lg: '120px',
+};
+
 export default function FlexternAvatar({
   imageUri,
   name,
@@ -29,8 +35,8 @@ export default function FlexternAvatar({
           backgroundColor: `${stringToColour(name, {
             opacity: 10,
           })}`,
-          width: `${size === 'sm' ? '20px' : size === 'md' ? '40px' : '120px'}`,
-          height: `${size === 'sm' ? '20px' : size === 'md' ? '40px' : '120px'}`,
+          width: `${sizeMap[size]}`,
+          height: `${sizeMap[size]}`,
         }}
       >
         <span className={cn(style[size])}>

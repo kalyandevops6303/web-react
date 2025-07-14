@@ -220,7 +220,10 @@ function SelectedTalentCard({
                   placeholder="Please enter your comment"
                   className="w-full"
                   value={value ?? ''}
-                  onChange={onChange}
+                  onChange={(newValue) => {
+                    const trimmedValue = (typeof newValue === 'string' && newValue?.trim()) || '';
+                    onChange(trimmedValue);
+                  }}
                   error={commentError?.message}
                 />
               )}

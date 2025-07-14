@@ -134,8 +134,15 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       if (res.data.data.is_delegate) {
         setItem('isDelegate', res.data.data.is_delegate);
       }
-      // if (res.data.)
-      window.dataLayer.push({ user_id: res.data.data.user_id });
+      if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
+        dispatch(loginSuccess(res.data.data));
+        setItemFromSession('isUserVisited', true);
+        if (res.data?.data?.is_delegate) {
+          setItem('isDelegateProfileCreated', true);
+        }
+      } else {
+        dispatch(loginSuccess(false));
+      }
       onSuccess(res.data.data);
       if (res.data?.data?.user_type === userTypes.talent) {
         if (res.data?.data?.is_flextern) {
@@ -146,18 +153,9 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
         dispatch(setTalentBooleanTrumioTalent(res.data?.data?.trumio_talent));
         dispatch(setTalentBooleansFlextern(res.data?.data?.flextern));
       }
-      if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
-        dispatch(loginSuccess(res.data.data));
-        setItemFromSession('isUserVisited', true);
-        if (res.data?.data?.is_delegate) {
-          setItem('isDelegateProfileCreated', true);
-        }
-      } else {
-        dispatch(loginSuccess(false));
-      }
     }
   } catch (error) {
-    if (error?.response?.data?.errorData?.errorCode === 403) {
+    if (error?.response?.data?.errorData?.errorCode === 401) {
       const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
       dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
       dispatch(loginFailure());
@@ -194,7 +192,6 @@ const loginUserWithGoogle =
       setItem('access_token_expires', res.data.data.access_token_expires);
       setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       setItem('user_id', res.data.data.user_id);
-      window.dataLayer.push({ user_id: res.data.data.user_id });
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
       } else {
@@ -246,7 +243,6 @@ const verifyEmailForFlextern =
       if (!isEmpty(res?.data?.data)) {
         setItem('access_token_expires', res.data.data.access_token_expires);
         setItem('refresh_token_expires', res.data.data.refresh_token_expires);
-        window.dataLayer.push({ user_id: res.data.data.user_id });
         dispatch(setTalentBooleanIsFlextern(true));
         dispatch(verifyEmailForFlexternSuccess());
         if (onSuccess) {
@@ -379,7 +375,9 @@ const logoutAction =
       const res = await logoutUserService();
 
       onSuccess();
-      !suppressToast && showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+      if (!suppressToast) {
+        showToastMessage(ToastType.SUCCESS, res?.data?.data?.message);
+      }
     } catch (error) {
       if (error?.response?.data?.errorData?.errorCode === 403 && !suppressToast) {
         showToastMessage(ToastType.ERROR, error?.response?.data?.errorData?.message);

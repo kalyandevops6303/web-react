@@ -23,6 +23,7 @@ import {
 import PrimaryIconText from '../../components/core/buttons/PrimaryIconText';
 import CustomXAxisLabel from './labels/CustomXAxisLabel';
 import TooltipInfo from '../../components/core/tooltips/TooltipInfo';
+import GithubInsightsCardIndividual from './github-insights-card';
 
 export default function IndividualAnalytics() {
   const params = useParams();
@@ -111,6 +112,11 @@ export default function IndividualAnalytics() {
           title: 'Overall Comments',
           score: formattedIndividualOverviewDetails?.totalComments,
           href: `${window.location.pathname}/comments`,
+        },
+        {
+          title: 'Conversation Participation',
+          score: formattedIndividualOverviewDetails?.totalComments,
+          href: `/analytics/project/${projectId}/individual/${userId}/conversation-participation`,
         },
       ]);
     }
@@ -290,6 +296,8 @@ export default function IndividualAnalytics() {
       <div className="flex flex-col md:flex-row gap-3">
         <Footer items={feedbackFooterData} />
       </div>
+
+      <GithubInsightsCardIndividual />
     </div>
   );
 }

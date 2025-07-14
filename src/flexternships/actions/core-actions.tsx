@@ -9,6 +9,7 @@ import {
 import { showToastMessage } from '../utils/core-utils';
 import { DocType, GlobalModalType, ToastType } from '../constraints/enums/core-enums';
 import { AppState, GlobalModalActions, GlobalModalContent } from '../constraints/types/core-types';
+import { getPermittedFeatures } from '../services/feature-access-service';
 
 // Flextern User Actions
 export const populateUserDetails = async (force: boolean, get: any, set: any) => {
@@ -139,4 +140,17 @@ export const agreeToTnC = async (docType: DocType, set: any) => {
   await agreeToTnCDocument({ docType });
   await getTnCData(set, { docType: null, docContentRequired: true });
   set({ isAgreeToTnCLoading: false });
+};
+
+export const populateAccessibleFeatures = async (force: boolean, get: any, set: any) => {
+  const accessibleFeatures = get().accessibleFeatures;
+  if (!isEmpty(accessibleFeatures) && !force) return;
+  try {
+    const data = await getPermittedFeatures();
+    set({ accessibleFeatures: data });
+  } catch (error: unknown) {
+    console.error(
+      error instanceof Error ? error.message : 'An unexpected error occurred while fetching accessible features',
+    );
+  }
 };

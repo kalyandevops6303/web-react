@@ -89,7 +89,9 @@ export type FlexternClientDetails = {
   lastName: string;
   imageUri?: string;
   timezone: Timezone;
-  departmentName: string;
+  departmentName: {
+    name: string;
+  };
   email: string;
   phoneVerified: boolean;
   appRoles: Array<FlexternUserAppRole>;
@@ -194,6 +196,7 @@ export type AppState = {
   unreadNotificationsCount: number;
   backPath: string | undefined;
   blobSasTokenParams: Record<string, string> | undefined;
+  accessibleFeatures?: string[];
 };
 
 export type AppActions = {
@@ -211,6 +214,7 @@ export type AppActions = {
   resetStore: () => void;
   setBackPath: (backPath: string) => void;
   populateBlobSasTokenParams: (force?: boolean) => void;
+  populateAccessibleFeatures: (force?: boolean) => void;
 };
 
 export type AppStore = AppState & AppActions;

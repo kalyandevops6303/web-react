@@ -15,6 +15,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 import { selectUserData } from '../../redux/selectors/authSelectors';
+import { isFlexternshipApp } from '@/configs/api/env';
 
 const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
   const project = data?.project;
@@ -22,7 +23,7 @@ const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
   const dispatch = useDispatch();
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const userData = useSelector(selectUserData);
-  const flexTern = userData?.app_roles?.[0]?.includes('FLEXTERN');
+  const flexTern = isFlexternshipApp;
   const handleLike = (e) => {
     e.stopPropagation();
     if (!isFavUnfavLoading) {

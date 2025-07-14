@@ -18,6 +18,7 @@ const contactSupportSchema = yup.object().shape({
   ccEmail: yup.string().email('Please enter a valid email'),
   description: yup
     .string()
+    .trim()
     .required('Message is required')
     .min(50, 'Message must be at least 50 characters')
     .max(500, 'You have exceeded character limit of 500'),
@@ -29,23 +30,38 @@ const contactSupportSchema = yup.object().shape({
     })
     .required('Issue Type is required')
     .nullable(),
-  skill: yup.string().when('issueType.value', {
-    is: (issueType: { name: string; _id: string }) => issueType?._id === CustomerSupportTypes.MISSING_SKILL,
+  skill: yup.string().when('issueType', {
+    is: (issueType: { name: string; _id: string } | null) => issueType?._id === CustomerSupportTypes.MISSING_SKILL,
     then: () =>
       yup
         .string()
+        .trim()
         .min(1, 'Skill must be at least 1 character')
         .max(150, 'Skill must be 150 characters or less')
         .required('Skill is required'),
+    otherwise: () => yup.string().notRequired(),
   }),
-  tool: yup.string().when('issueType.value', {
-    is: (issueType: { name: string; _id: string }) => issueType?._id === CustomerSupportTypes.MISSING_TOOL,
+  tool: yup.string().when('issueType', {
+    is: (issueType: { name: string; _id: string } | null) => issueType?._id === CustomerSupportTypes.MISSING_TOOL,
     then: () =>
       yup
         .string()
+        .trim()
         .min(1, 'Tool must be at least 1 character')
         .max(150, 'Tool must be 150 characters or less')
         .required('Tool is required'),
+    otherwise: () => yup.string().notRequired(),
+  }),
+  institute: yup.string().when('issueType', {
+    is: (issueType: { name: string; _id: string } | null) => issueType?._id === CustomerSupportTypes.MISSING_INSTITUTE,
+    then: () =>
+      yup
+        .string()
+        .trim()
+        .min(1, 'Institution must be at least 1 character')
+        .max(150, 'Institution must be 150 characters or less')
+        .required('Institution is required'),
+    otherwise: () => yup.string().notRequired(),
   }),
 });
 
@@ -56,6 +72,7 @@ interface ContactSupportForm {
   description: string;
   skill?: string;
   tool?: string;
+  institute?: string;
 }
 
 interface Props {
@@ -94,6 +111,8 @@ export default function ContactSupportModal(props: Props) {
             return data.skill;
           case CustomerSupportTypes.MISSING_TOOL:
             return data.tool;
+          case CustomerSupportTypes.MISSING_INSTITUTE:
+            return data.institute;
           default:
             return '';
         }
@@ -123,7 +142,7 @@ export default function ContactSupportModal(props: Props) {
             <div className="flex flex-col gap-y-6">
               <div className="flex flex-col gap-y-4">
                 <div className="flex flex-row items-center gap-x-2.5">
-                  <div className="uppercase text-sm text-grey-500 font-semibold">To: </div>
+                  <div className="text-sm text-grey-500 font-semibold">To: </div>
                   <TextInput
                     className="w-80"
                     value={supportEmail}
@@ -133,7 +152,7 @@ export default function ContactSupportModal(props: Props) {
                   />
                 </div>
                 <div className="flex flex-row items-center gap-x-2.5">
-                  <div className="uppercase text-sm text-grey-500 font-semibold">CC: </div>
+                  <div className="text-sm text-grey-500 font-semibold">CC: </div>
                   <TextInput
                     className="w-80"
                     value={userDetails.email}
@@ -160,7 +179,9 @@ export default function ContactSupportModal(props: Props) {
                   </div>
                   {issueType?._id === CustomerSupportTypes.MISSING_SKILL && (
                     <div className="flex flex-col items-start gap-y-2">
-                      <div className="uppercase text-sm text-grey-500 font-semibold">Missing Skill: </div>
+                      <div className="text-sm text-grey-500 font-semibold">
+                        Missing Skill: <span className="label-asterisk text-danger">*</span>
+                      </div>
                       <Controller
                         name="skill"
                         control={control}
@@ -171,6 +192,7 @@ export default function ContactSupportModal(props: Props) {
                             onChange={onChange}
                             error={errors.skill?.message}
                             placeholder="Enter missing skill"
+                            required={issueType?._id === CustomerSupportTypes.MISSING_SKILL}
                           />
                         )}
                       />
@@ -179,7 +201,9 @@ export default function ContactSupportModal(props: Props) {
 
                   {issueType?._id === CustomerSupportTypes.MISSING_TOOL && (
                     <div className="flex flex-col items-start gap-y-2">
-                      <div className="uppercase text-sm text-grey-500 font-semibold">Missing Tool: </div>
+                      <div className="text-sm text-grey-500 font-semibold">
+                        Missing Tool: <span className="label-asterisk text-danger">*</span>
+                      </div>
                       <Controller
                         name="tool"
                         control={control}
@@ -190,6 +214,29 @@ export default function ContactSupportModal(props: Props) {
                             onChange={onChange}
                             error={errors.tool?.message}
                             placeholder="Enter missing tool"
+                            required={issueType?._id === CustomerSupportTypes.MISSING_TOOL}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  {issueType?._id === CustomerSupportTypes.MISSING_INSTITUTE && (
+                    <div className="flex flex-col items-start gap-y-2">
+                      <div className="text-sm text-grey-500 font-semibold">
+                        Missing Institution: <span className="label-asterisk text-danger">*</span>
+                      </div>
+                      <Controller
+                        name="institute"
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextInput
+                            className="w-80"
+                            value={value || ''}
+                            onChange={onChange}
+                            error={errors.institute?.message}
+                            placeholder="Enter missing institution"
+                            required={issueType?._id === CustomerSupportTypes.MISSING_INSTITUTE}
                           />
                         )}
                       />
