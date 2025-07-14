@@ -31,6 +31,15 @@ import theme from '../../configs/themeVariables';
 import ResendOTPComp from './components/ResendOTP';
 import { clearPhoneData } from '@/redux/reducers/auth';
 
+// Phone validation schema
+const phoneSchema = yup.object().shape({
+  mobile: yup
+    .string()
+    .min(10, 'Phone number must be at least 10 digits')
+    .max(15, 'Phone number cannot exceed 15 digits')
+    .required('Mobile number is required'),
+});
+
 const RegisterPhoneFlextern = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,10 +62,6 @@ const RegisterPhoneFlextern = () => {
       },
   );
 
-  const schema = yup.object().shape({
-    mobile: yup.string().required('Mobile number is required'),
-  });
-
   const {
     handleSubmit,
     formState: { errors },
@@ -67,7 +72,7 @@ const RegisterPhoneFlextern = () => {
     reset,
     trigger,
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(phoneSchema),
     defaultValues: {
       mobile: savedFormData?.mobile || mobileData?.phone || '',
     },
@@ -92,7 +97,7 @@ const RegisterPhoneFlextern = () => {
     if (savedFormData) {
       const requiredFields = filteredFormSchema({
         savedData: savedFormData,
-        formSchemaFields: { ...schema.fields, selectedCountry },
+        formSchemaFields: { ...phoneSchema.fields, selectedCountry },
       });
       reset(requiredFields);
       const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
@@ -125,11 +130,17 @@ const RegisterPhoneFlextern = () => {
   };
 
   const onSubmit = (values) => {
+    if (!values.mobile || values.mobile.trim() === '') {
+      setError('mobile', { type: 'custom', message: 'Phone number cannot be empty' });
+      return;
+    }
+
     if (!validatePhoneNumber(values.mobile, selectedCountry.code)) {
       setValidPhoneBoolean(false);
       setError('mobile', { type: 'custom', message: 'Invalid phone number' });
     } else {
       setValidPhoneBoolean(true);
+      setBooleanSent(true);
       dispatch(
         registerPhone({
           phone: values.mobile.replace(/[^\d]/g, ''),
@@ -179,27 +190,36 @@ const RegisterPhoneFlextern = () => {
             </Label>
             <div className="d-flex">
               <div>
-                <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} />
+                <CountryDropdown
+                  selectedCountry={selectedCountry}
+                  setSelectedCountry={handleCountryChange}
+                  disabled={booleanSent}
+                />
                 {validPhoneBoolean && <p className="text-success text-xs mt-2">Valid</p>}
               </div>
               <div className="mobile-input">
                 <Controller
-                  type="phone"
-                  id="mobile"
                   name="mobile"
-                  placeholder="Enter phone number"
-                  autoFocus
                   control={control}
                   render={({ field }) => (
                     <Input
                       {...field}
-                      type="number"
-                      value={field.value || ''} // Set a default value for the input
-                      placeholder="Enter phone number"
-                      invalid={errors.mobile && true}
+                      type="text"
+                      value={field.value || ''}
+                      maxLength={10}
+                      onChange={(e) => {
+                        const onlyDigits = e.target.value.replace(/\D/g, '');
+                        if (onlyDigits.length <= 10) {
+                          field.onChange(onlyDigits);
+                        }
+                      }}
+                      placeholder="Enter  phone number"
+                      invalid={!!errors.mobile}
+                      disabled={booleanSent}
                     />
                   )}
                 />
+                {errors.mobile && <span className="text-danger text-sm mt-1 d-block">{errors.mobile.message}</span>}
               </div>
             </div>
 
@@ -245,7 +265,7 @@ const RegisterPhoneFlextern = () => {
                 color="primary"
                 block
                 className="mt-4"
-                disabled={code.length !== 4 || isLoading}
+                disabled={code.length !== 4 || isLoading || !booleanSent}
                 onClick={verifyOtp}
               >
                 Verify OTP
