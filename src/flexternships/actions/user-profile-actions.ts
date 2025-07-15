@@ -10,6 +10,7 @@ import {
   updateFlexternClientInfo,
   upsertFlexternClientAccountInfo,
 } from '../services/user-management';
+import { keysToCamelCase } from '../utils/core-utils';
 
 export const populateClientInfoDetails = async (set: any) => {
   set({ isProfileDetailsLoading: true });
@@ -23,7 +24,7 @@ export const populateClientInfoDetails = async (set: any) => {
       timezone: data.timezone || undefined,
       imageUri: data.client_info?.image_uri,
       title: data.client_info?.title,
-      department: data.client_info?.department,
+      department: keysToCamelCase(data.client_info?.department),
       linkedin: data.client_info?.social_links?.find((link: any) => link.platform === 'linkedin')?.url,
       socialLinks: data.client_info?.social_links?.map((link: any) => ({
         platform: link.platform,
