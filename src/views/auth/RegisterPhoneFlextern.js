@@ -2,17 +2,14 @@
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback, Spinner } from 'reactstrap';
 import OtpInput from '../../lib/otp-input';
-import parseMin from 'libphonenumber-js/min';
-import parseMax from 'libphonenumber-js/max';
-import parseMobile from 'libphonenumber-js/mobile';
 // ** Reactstrap Imports
-import { validatePhoneNumber } from '../../utility/Utils';
+import { validatePhoneNumber, filteredFormSchema } from '../../utility/Utils';
 // ** Custom Components
 import CountryDropdown from '../../@core/components/country-dropdown';
 import { OnBoardWrap } from './style';
@@ -24,7 +21,7 @@ import { selectAuthLoading, selectMobile } from '../../redux/selectors/authSelec
 import LogoComp from './components/LogoComp';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
-import { filteredFormSchema } from '../../utility/Utils';
+// removed duplicate import of filteredFormSchema from '../../utility/Utils'
 import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 import { getItem } from '../../utility/localStorageControl';
 import theme from '../../configs/themeVariables';
@@ -137,7 +134,6 @@ const RegisterPhoneFlextern = () => {
 
     if (!validatePhoneNumber(values.mobile, selectedCountry.code)) {
       setValidPhoneBoolean(false);
-      setError('mobile', { type: 'custom', message: 'Invalid phone number' });
     } else {
       setValidPhoneBoolean(true);
       setBooleanSent(true);

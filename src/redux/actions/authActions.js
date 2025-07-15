@@ -160,11 +160,11 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
       dispatch(loginFailure());
       return error?.response?.data?.errorData?.message;
-    } else if (error?.response?.data?.errorData?.errorCode === 404) {
-      return error?.response?.data?.errorData?.message;
-    } else {
-      errorHandler(error, loginFailure);
     }
+    if (error?.response?.data?.errorData?.errorCode === 404) {
+      return error?.response?.data?.errorData?.message;
+    }
+    errorHandler(error, loginFailure);
   }
 };
 
