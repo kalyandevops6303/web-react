@@ -156,12 +156,15 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     }
   } catch (error) {
     if (error?.response?.data?.errorData?.errorCode === 401) {
-      const noOfAttempt = error?.response?.data?.errorData?.message.match(/\d+/)[0];
+      const noOfAttempt = error?.response?.data?.errorData?.retry_count;
       dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
       dispatch(loginFailure());
-    } else {
-      errorHandler(error, loginFailure);
+      return error?.response?.data?.errorData?.message;
     }
+    if (error?.response?.data?.errorData?.errorCode === 404) {
+      return error?.response?.data?.errorData?.message;
+    }
+    errorHandler(error, loginFailure);
   }
 };
 

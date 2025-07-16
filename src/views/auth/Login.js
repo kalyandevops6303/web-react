@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // ** React Imports
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,10 +21,10 @@ import '@styles/react/pages/page-authentication.scss';
 import { checkPointRedirection, filteredFormSchema, validations } from '../../utility/Utils';
 import { getAppPermissions, loginUser, switchProfile } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
-import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
-import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
+import { getItem, removeItem } from '../../utility/localStorageControl';
 import { validateUrl } from '../../redux/actions/dashboardActions';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
@@ -119,6 +119,7 @@ const Login = () => {
       password: accountCreated ? '' : savedFormData?.password || '',
     },
   });
+  const [errorMessage, setErrorMessage] = useState('');
   const localFormData = useWatch({ control });
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
@@ -143,10 +144,11 @@ const Login = () => {
     checkPointRedirection({ response, navigate, nextPath });
   };
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     const { email, password } = values;
 
-    dispatch(loginUser(email, password, onSuccess));
+    const error = await dispatch(loginUser(email, password, onSuccess));
+    setErrorMessage(error || '');
   };
 
   const emailValue = watch('email'); // track the value of the mobile field
@@ -216,6 +218,7 @@ const Login = () => {
           </div>
 
           <UserRetryCountAuth />
+          {errorMessage?.length > 0 && <p className="text-error text-xs mt-2">{errorMessage}</p>}
           <Button
             className="form-input-spacing"
             size="btn-sm"
