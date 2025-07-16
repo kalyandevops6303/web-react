@@ -33,11 +33,7 @@ export default function FlexternProjectDetailsModal(props: FlexternProjectDetail
               title="Project name"
               value={data?.requirements?.projectName}
             />
-            <ProjectDetailsItem
-              className="w-[333px] m-0"
-              title="Department Name (BU) *"
-              value={data?.client?.departmentName}
-            />
+            <ProjectDetailsItem className="w-[333px] m-0" title="BU" value={data?.client?.departmentName} />
             <ProjectDetailsItem
               className="w-[237px] m-0"
               title="Estimated Duration"

@@ -14,7 +14,7 @@ import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
 
-const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
+const NoDataFoundComponent = ({ isMyListing, isRecommanded, notFoundContent }) => {
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
@@ -94,16 +94,19 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
 
   const { imgSrc, text, onClick } = contentMapping[contentType];
 
+  // Use custom content if provided, otherwise use the default text
+  const displayText = notFoundContent || text;
+
   return (
     <NoDataFoundWrapper>
       <Card className="w-100 p-2">
         <img className="m-auto" height={200} width={200} src={imgSrc} alt="No data found" />
         {onClick ? (
           <CardText onClick={onClick} className="no-data-found-dynamic cursor-pointer">
-            {text}
+            {displayText}
           </CardText>
         ) : (
-          <CardText className="no-data-found-dynamic">{text}</CardText>
+          <CardText className="no-data-found-dynamic">{displayText}</CardText>
         )}
       </Card>
       {completeProfileModal && (
@@ -115,9 +118,11 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
 NoDataFoundComponent.propTypes = {
   isRecommanded: PropTypes.bool,
   isMyListing: PropTypes.bool,
+  notFoundContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 };
 NoDataFoundComponent.defaultProps = {
   isRecommanded: false,
   isMyListing: false,
+  notFoundContent: null,
 };
 export default NoDataFoundComponent;

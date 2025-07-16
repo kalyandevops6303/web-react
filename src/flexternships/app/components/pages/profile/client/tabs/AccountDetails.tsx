@@ -60,7 +60,7 @@ export default function AccountDetails() {
         imageUri: profileDetails.imageUri,
         linkedin: profileDetails.linkedin,
         title: profileDetails.title,
-        department: profileDetails.department,
+        department: profileDetails.department?.name,
       });
     }
   }, [profileDetails, reset]);

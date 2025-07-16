@@ -193,6 +193,7 @@ export default function MultipleLinesChart(props: Readonly<MultipleLinesChartPro
                   left: -20,
                   right: 100,
                   bottom: CustomXAxisLabel ? 40 : 0,
+                  top: 20,
                 }}
               >
                 <CartesianGrid vertical={false} strokeDasharray="4 12" />

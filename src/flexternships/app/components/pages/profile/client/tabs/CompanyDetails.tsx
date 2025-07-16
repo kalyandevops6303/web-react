@@ -45,7 +45,7 @@ export default function CompanyDetails() {
     mode: 'onChange',
     resolver: yupResolver(FlexternClientCompanyDetailsSchema),
     defaultValues: {
-      department: '',
+      department: { name: '', id: '' },
       companyLogo: '',
       title: '',
       companyTagline: '',
@@ -135,7 +135,7 @@ export default function CompanyDetails() {
             control={control}
             render={({ field: { value, onChange } }) => (
               <TextInput
-                value={value}
+                value={value?.name}
                 onChange={onChange}
                 className="w-[393px]"
                 label="Department Name"
