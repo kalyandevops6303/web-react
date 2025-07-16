@@ -32,7 +32,9 @@ function DelegateProfile() {
   return (
     <div className="flex flex-row items-center gap-x-3.5 py-3 cursor-pointer">
       <div className="flex flex-col items-end">
-        <div className="text-trublue-secondary-500 text-sm font-normal leading-5">Trusted Business Systems</div>
+        <div className="text-trublue-secondary-500 text-sm font-normal leading-5">
+          {userDetails?.adminClient?.companyName}
+        </div>
         <div className="text-xs leading-4.5 font-normal text-trublue-secondary-500">
           {fullName} <span className="text-grey">({clientFullName})</span>
         </div>
