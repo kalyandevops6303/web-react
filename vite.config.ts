@@ -14,7 +14,7 @@ const loadJsFilesAsJsx = (): Plugin => ({
   name: 'load-js-files-as-jsx',
   enforce: 'pre',
   async transform(code, id) {
-    if (id.endsWith('.js') || id.endsWith('.jsx')) {
+    if (id.endsWith('.js') || id.endsWith('.jsx') || id.endsWith('.tsx')) {
       return {
         code,
         map: null,
@@ -119,13 +119,25 @@ export default defineConfig({
               loader: 'jsx',
               contents: await fs.promises.readFile(args.path, 'utf8'),
             }));
+            build.onLoad({ filter: /src\/.*\.jsx$/ }, async (args) => ({
+              loader: 'jsx',
+              contents: await fs.promises.readFile(args.path, 'utf8'),
+            }));
+            build.onLoad({ filter: /src\/.*\.ts$/ }, async (args) => ({
+              loader: 'tsx',
+              contents: await fs.promises.readFile(args.path, 'utf8'),
+            }));
+            build.onLoad({ filter: /src\/.*\.tsx$/ }, async (args) => ({
+              loader: 'tsx',
+              contents: await fs.promises.readFile(args.path, 'utf8'),
+            }));
           },
         },
       ],
     },
   },
   esbuild: {
-    loader: 'tsx',
+    loader: 'tsx', // Changed from 'jsx' to 'tsx' to properly handle TypeScript
     include: /src\/.*\.(ts|tsx|js|jsx)$/,
     exclude: [],
   },
