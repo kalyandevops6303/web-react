@@ -84,7 +84,7 @@ const CreateProjectButton = () => {
           secondBtnText="View Drafts"
           firstBtnAction={handleCreateNewProject}
           secondBtnAction={() =>
-            navigate('/marketplace/my_listings', {
+            navigate('/dashboard', {
               state: {
                 isDraftProjects: true,
               },
@@ -100,7 +100,7 @@ const CreateProjectButton = () => {
               outline
               className="me-1"
               onClick={() =>
-                navigate('/marketplace/my_listings', {
+                navigate('/dashboard', {
                   state: {
                     isDraftProjects: true,
                   },
@@ -127,7 +127,7 @@ const CreateProjectButton = () => {
               color="primary"
               outline
               onClick={() =>
-                navigate('/marketplace/my_bids', {
+                navigate('/dashboard', {
                   state: {
                     isDraftBids: true,
                   },

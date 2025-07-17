@@ -560,37 +560,6 @@ const FlexternshipRoutes = [
     ),
   },
   {
-    path: routes.createProject.path,
-    element: (
-      <RoleAccessWrapper
-        allowedAppRoles={[
-          {
-            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.clientOnboarding.path,
-              },
-            ],
-          },
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.clientOnboarding.path,
-              },
-            ],
-          },
-        ]}
-      >
-        <CreateFlexternProject />
-      </RoleAccessWrapper>
-    ),
-  },
-  {
     path: routes.editProject.path,
     element: (
       <RoleAccessWrapper

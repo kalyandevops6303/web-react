@@ -493,7 +493,7 @@ const Additional = () => {
     dispatch(clearAllFormData());
     // dispatch(setFormDocuments(files));
     dispatch(setFormDocuments(null));
-    navigate('/marketplace/all_listings');
+    navigate('/dashboard');
   };
 
   const onBackClick = () => {
@@ -523,7 +523,7 @@ const Additional = () => {
 
     dispatch(setResumeDataUploadedForAdditional(parseResume));
     populateUserDetails(true);
-    navigate('/marketplace/all_listings');
+    navigate('/dashboard');
   };
 
   const onSubmit = (data) => {

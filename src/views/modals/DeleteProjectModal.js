@@ -24,7 +24,7 @@ const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
         project_id: data?._id,
         onSuccess: () => {
           onClose();
-          navigate('/marketplace/my_listings');
+          navigate('/dashboard');
         },
       }),
     );
@@ -36,7 +36,7 @@ const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
         project_id: data?._id,
         onSuccess: () => {
           onClose();
-          navigate('/marketplace/my_listings');
+          navigate('/dashboard');
         },
       }),
     );

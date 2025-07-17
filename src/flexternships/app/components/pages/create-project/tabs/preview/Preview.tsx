@@ -155,7 +155,7 @@ export default function Preview() {
   const closeSuccessfulCreation = () => {
     resetProjectCreationStore();
     closeModal();
-    navigate(`${routes.marketplace.path}/my_listings`);
+    navigate(`/dashboard`);
   };
 
   useEffect(() => {

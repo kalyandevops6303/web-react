@@ -30,7 +30,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
 
   const redirectToMyListings = () => {
     closeModal();
-    navigate(`${routes.marketplace.path}/my_listings`);
+    navigate(`/dashboard`);
     resetProjectCreationStore();
   };
 

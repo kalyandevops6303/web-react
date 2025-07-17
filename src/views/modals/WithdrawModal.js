@@ -48,7 +48,7 @@ const WithdrawModal = ({ modal, toggleModal, projectDetailsData }) => {
                   withdrawProject({
                     project_id: projectDetailsData?._id,
                     onSuccess: () => {
-                      navigate('/marketplace/my_listings');
+                      navigate('/dashboard');
                     },
                   }),
                 );
