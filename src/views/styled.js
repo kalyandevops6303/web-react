@@ -540,6 +540,7 @@ const ElevateWarning = styled.div`
   box-shadow: ${`0px 0px 0px 1px ${theme.red}`};
 `;
 
+// Removable File from Flexternship App (Only WarningMessage part)
 const WarningMessage = styled.div`
   width: 100%;
   background: linear-gradient(0deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.9) 100%), #ea5455;

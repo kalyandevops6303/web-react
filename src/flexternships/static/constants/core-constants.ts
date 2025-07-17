@@ -14,11 +14,6 @@ export const NAVBAR_ITEMS = [
     activeTabMatch: routes.dashboard.path,
   },
   {
-    path: `${routes.marketplace.path}/all_listings`,
-    label: 'Marketplace',
-    activeTabMatch: routes.marketplace.path,
-  },
-  {
     path: `${routes.projects.path}/ongoing`,
     label: 'Projects',
     activeTabMatch: routes.projects.path,

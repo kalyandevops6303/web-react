@@ -9,7 +9,6 @@ import CreateFlexternProject from '@flexternships/app/create-project/page';
 import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/page';
 import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
 import UserDetails from '../../views/user-details';
-import MarketPlace from '../../views/marketplace';
 import Search from '../../views/search';
 import Notifications from '../../views/notifications';
 import NotFound from '../../views/NotFound';
@@ -193,51 +192,6 @@ const FlexternshipRoutes = [
   {
     path: routes.talentProfile.path,
     element: <UserDetails />,
-  },
-  {
-    path: `${routes.marketplace.path}/*`,
-    element: (
-      <RoleAccessWrapper
-        allowedAppRoles={[
-          {
-            appRole: FlexternUserAppRole.PROJECT_ADVISOR,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.clientOnboarding.path,
-              },
-            ],
-          },
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_CLIENT_DELEGATE,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.clientOnboarding.path,
-              },
-            ],
-          },
-          {
-            appRole: FlexternUserAppRole.FLEXTERN_TALENT,
-            allowCheckpoints: [FlexternUserCheckpoint.COMPLETE],
-            blockCheckpoints: [
-              {
-                checkpoint: FlexternUserCheckpoint.ACCOUNT_DETAILS,
-                redirectRoute: routes.talentOnboarding.generate('account-details'),
-              },
-              {
-                checkpoint: FlexternUserCheckpoint.PROFILE_DETAILS,
-                redirectRoute: routes.talentOnboarding.generate('personal-details'),
-              },
-            ],
-          },
-        ]}
-      >
-        <MarketPlace />
-      </RoleAccessWrapper>
-    ),
   },
   {
     path: routes.projectDetails.path,

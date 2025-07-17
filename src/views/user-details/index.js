@@ -219,12 +219,6 @@ const UserDetails = () => {
     );
   };
 
-  const handelRedirectToOpenListing = () => {
-    navigate(`/marketplace/all_listings`, {
-      state: { clientName: `${currentProfile?.first_name} ${currentProfile?.last_name}` },
-    });
-  };
-
   if (loading) {
     return <ComponentSpinner />;
   }

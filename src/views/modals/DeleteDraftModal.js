@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 import React from 'react';
 import Proptypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, Spinner } from 'reactstrap';
