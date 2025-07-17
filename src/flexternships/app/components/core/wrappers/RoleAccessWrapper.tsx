@@ -4,12 +4,11 @@ import {
   GlobalModalType,
 } from '@/flexternships/constraints/enums/core-enums';
 import { useAppStore, useFlexternUserStore } from '@/flexternships/stores/core-stores';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import AccessDenied from '../../pages/defaults/AccessDenied';
 import Spinner from '../Spinner';
 import { isEmpty } from 'lodash';
-import { hasFeatureAccess } from '@/flexternships/services/feature-access-service';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 import routes from '@/flexternships/routes';
 import { triggerBeforeExpiry } from '@/flexternships/utils/core-utils';
@@ -18,10 +17,7 @@ import { BLOB_SAS_TOKEN_EXPIRY_DELTA } from '@/flexternships/static/constants/co
 // Checks the user's access to the app based on the allowed roles
 // Assumes that the user is authenticated to reach this wrapper
 export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
-  const { children, allowedAppRoles, fallbackRoute, noPadding = false, featureName } = props;
-
-  const [hasAccess, setHasAccess] = useState<boolean>(true);
-  const [isFeatureLoading, setIsFeatureLoading] = useState<boolean>(false);
+  const { children, allowedAppRoles, fallbackRoute, noPadding = false } = props;
 
   const userAppRoles = useFlexternUserStore((state) => state.userDetails?.appRoles);
   const userCheckpoint = useFlexternUserStore((state) => state.userDetails?.checkpoint);
@@ -56,24 +52,8 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
     if (timeoutId) return () => clearTimeout(timeoutId);
   }, [blobSasTokenParams, populateBlobSasTokenParams]);
 
-  useEffect(() => {
-    const checkFeatureAccess = async () => {
-      if (featureName) {
-        setIsFeatureLoading(true);
-        try {
-          const hasAccess = await hasFeatureAccess(featureName);
-          setHasAccess(hasAccess);
-        } finally {
-          setIsFeatureLoading(false);
-        }
-      }
-    };
-
-    checkFeatureAccess();
-  }, [featureName]);
-
   // Check if either user details or feature access is still loading
-  if (isUserDetailsLoading || isFeatureLoading) {
+  if (isUserDetailsLoading) {
     return (
       <div className="flex justify-center items-center h-screen w-screen absolute">
         <div className="flex justify-center items-center h-10 w-10">
@@ -81,11 +61,6 @@ export default function RoleAccessWrapper(props: RoleAccessWrapperProps) {
         </div>
       </div>
     );
-  }
-
-  // Check if feature access is denied
-  if (featureName && !hasAccess) {
-    return fallbackRoute ? <Navigate to={fallbackRoute} /> : <AccessDenied />;
   }
 
   // Rest of the existing role access checks
@@ -138,5 +113,4 @@ type RoleAccessWrapperProps = {
   fallbackRoute?: string;
   allowBlockedUsers?: boolean;
   noPadding?: boolean;
-  featureName?: string;
 };

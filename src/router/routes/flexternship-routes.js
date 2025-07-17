@@ -708,7 +708,6 @@ const FlexternshipRoutes = [
             ],
           },
         ]}
-        featureName={FEATURE_NAMES.AYESHA_BOT}
         fallbackRoute={routes.dashboard.path}
       >
         <ChatInterface />
@@ -1032,8 +1031,6 @@ const FlexternshipRoutes = [
             ],
           },
         ]}
-        // featureName={FEATURE_NAMES.AYESHA_BOT}
-        // fallbackRoute={routes.dashboard.path}
       >
         <GiveMilestoneFeedback />
       </RoleAccessWrapper>
