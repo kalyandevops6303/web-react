@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 'use client'; // Mark this component as Client Component
 import { ArrowLeft, Box, Check, FileText, Users } from 'react-feather';
 import { useNavigate } from 'react-router-dom';

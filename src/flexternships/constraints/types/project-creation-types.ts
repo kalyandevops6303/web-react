@@ -62,6 +62,7 @@ export type ProjectRole = {
   tools: Tool[];
 };
 
+// Removable File from Flexternship App (Only ProjectRolesForm)
 export type ProjectRolesForm = {
   projectRoles: ProjectRole[];
 };
@@ -83,6 +84,7 @@ export type ListingDetails = {
   listingEndDate: number;
 };
 
+// Removable File from Flexternship App (Only ProjectCreationFormData)
 export type ProjectCreationFormData = {
   requirements: ProjectDetails;
   roles: ProjectRole[];
@@ -90,6 +92,8 @@ export type ProjectCreationFormData = {
   listingDetails: ListingDetails;
   removedMilestoneIds?: string[];
 };
+
+// Removable File from Flexternship App (Only ProjectCreationState)
 
 // Form State Types
 export type ProjectCreationState = {
@@ -118,4 +122,5 @@ export type ProjectCreationActions = {
   resetStore: () => void;
 };
 
+// Removable File from Flexternship App (Only ProjectCreationStore)
 export type ProjectCreationStore = ProjectCreationState & ProjectCreationActions;

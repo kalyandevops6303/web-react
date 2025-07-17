@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useEffect, useState } from 'react';

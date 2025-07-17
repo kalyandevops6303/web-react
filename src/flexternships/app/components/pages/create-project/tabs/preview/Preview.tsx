@@ -1,3 +1,4 @@
+// Removable File from Flexternship App
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';

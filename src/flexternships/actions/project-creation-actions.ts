@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 import { createFlexternProjectDraft, getFlexternProjectDraft } from '@flexternships/services/project-management-v2';
 import {
   Milestone,

@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 'use client';
 import { useEffect, useState } from 'react';
 import PrimaryButton from '../buttons/PrimaryButton';

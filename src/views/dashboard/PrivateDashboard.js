@@ -209,7 +209,6 @@ const PrivateDashboard = () => {
       <span className="mb-4">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       </span>
-      {userDetailsData?.user_type === userTypes.client && <CreateProjectButton />}
       {userDetailsData?.team_type === userTypes.team && (
         <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onTeamInvite}>

@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 import { ChevronDown, ChevronUp } from 'react-feather';
 import { Controller, FieldErrors, useWatch } from 'react-hook-form';
 import SimpleElevatedCard from '@flexternships/app/components/core/cards/SimpleElevatedCard';
