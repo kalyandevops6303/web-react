@@ -147,3 +147,7 @@ export enum CustomerSupportTypes {
   TOOLS_AND_SKILLS = 'tools_and_skills',
   OTHER = 'other',
 }
+
+export enum FeatureName {
+  TPA_PLAYGROUND = 'Project Advisor Playground',
+}

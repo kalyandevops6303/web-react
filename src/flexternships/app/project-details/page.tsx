@@ -1,4 +1,4 @@
-import { Box, FileText, Star, Users, Watch } from 'react-feather';
+import { Box, ExternalLink, FileText, Star, Users, Watch } from 'react-feather';
 import ProjectDetailsTabNavigation from '../components/pages/project-details/ProjectDetailsTabNavigation';
 
 import { useEffect, useState } from 'react';
@@ -10,11 +10,19 @@ import TeamTab from '../components/pages/project-details/tabs/team';
 import PerformanceTab from './tabs/performance/page';
 import { useProjectMilestonesStore } from '@/flexternships/stores/project-milestones-store';
 import Spinner from '../components/core/Spinner';
-import { ProjectPrimaryStatus, ProjectSecondaryStatus } from '@/flexternships/constraints/enums/core-enums';
+import {
+  FeatureName,
+  ProjectPrimaryStatus,
+  ProjectSecondaryStatus,
+} from '@/flexternships/constraints/enums/core-enums';
 import { isEmpty } from 'lodash';
 import CustomBreadCrumbs from '../components/core/CustomBreadCrumbs';
 import LeftSideBarProjectDetails from '../components/pages/project-details/LeftSideBarProjectDetails';
 import AssessmentsTab from '../components/pages/project-details/tabs/AssessmentsTab';
+import InfoCard from '../components/core/cards/InfoCard';
+import projectAdvisorRoutes from '@/flexternships/routes/project-advisor-routes';
+import FeatureFlag from '../components/core/wrappers/FeatureFlag';
+
 export default function FlexternshipProjectDetails() {
   const getProjectDetails = useProjectsStore((state) => state.getProjectDetails);
   const projectDetailsLoading = useProjectsStore((state) => state.projectDetailsLoading);
@@ -179,6 +187,23 @@ export default function FlexternshipProjectDetails() {
           <CustomBreadCrumbs items={breadCrumbs} />
         </div>
       )}
+
+      <FeatureFlag featureName={FeatureName.TPA_PLAYGROUND}>
+        <InfoCard className="mt-4">
+          <div className="flex flex-row items-center justify-between gap-2">
+            <span>You have exclusive early access to the new and improved Project Wizard experience.</span>
+            <a
+              href={projectAdvisorRoutes.projectWizard(params.projectId ?? '')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-trublue-secondary-500 font-semibold flex flex-row items-center gap-1"
+            >
+              View <ExternalLink size={18} className="inline-block" />
+            </a>
+          </div>
+        </InfoCard>
+      </FeatureFlag>
+
       {projectDetailsLoading ? (
         <div className="w-full h-full min-h-[60vh] flex justify-center items-center mx-auto">
           <Spinner />
