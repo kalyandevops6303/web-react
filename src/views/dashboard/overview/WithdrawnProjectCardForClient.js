@@ -16,7 +16,7 @@ const WithdrawnProjectCardForClient = ({ data, className }) => {
           <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
             {truncateSentence({ sentence: data?.project?.name, maxCharacters: 30 })}
           </p>
-          <p className="active-project-simple-heading">Project</p>
+          {/* <p className="active-project-simple-heading">Project</p> */}
           <DurationSegment
             start_date={data?.project?.expected_start_date}
             end_date={data?.project?.listing_end_date}

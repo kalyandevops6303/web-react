@@ -111,7 +111,7 @@ const WithdrawnProjectCardForTalent = ({ accordionName, data, className }) => {
               />
             </span>
           </div>
-          <p className="active-project-simple-heading">Project</p>
+          {/* <p className="active-project-simple-heading">Project</p> */}
           <DurationSegment start_date={data?.project?.expected_start_date} end_date={data?.project?.listing_end_date} />
           {currentMilestoneData?.length > 0 && (
             <>

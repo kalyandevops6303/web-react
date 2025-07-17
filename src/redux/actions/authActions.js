@@ -153,7 +153,9 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
         dispatch(setTalentBooleanTrumioTalent(res.data?.data?.trumio_talent));
         dispatch(setTalentBooleansFlextern(res.data?.data?.flextern));
       }
+      return res.data.data;
     }
+    return null;
   } catch (error) {
     if (error?.response?.data?.errorData?.errorCode === 401) {
       const noOfAttempt = error?.response?.data?.errorData?.retry_count;
@@ -161,10 +163,20 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
       dispatch(loginFailure());
       return error?.response?.data?.errorData?.message;
     }
+    if (error?.response?.data?.errorData?.errorCode === 403) {
+      const message = error?.response?.data?.errorData?.message;
+      const match = message?.match(/\d+/);
+      const noOfAttempt = match ? Number(match[0]) : null;
+      dispatch(setUserLoginAttemptNo(parseInt(noOfAttempt, 10)));
+      dispatch(loginFailure());
+      showToastMessage(ToastType.ERROR, message.match(/'([^']+)'/) ? message.match(/'([^']+)'/)[1] : message);
+      return message.match(/'([^']+)'/) ? message.match(/'([^']+)'/)[1] : message;
+    }
     if (error?.response?.data?.errorData?.errorCode === 404) {
       return error?.response?.data?.errorData?.message;
     }
     errorHandler(error, loginFailure);
+    return null;
   }
 };
 

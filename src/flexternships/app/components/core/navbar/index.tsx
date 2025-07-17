@@ -1,5 +1,4 @@
 import logo from '@flexternships/assets/images/ic_trumio_logo.png';
-import { Bell } from 'react-feather';
 import ProfileDropdown from './profile-dropdown';
 import { Link, useLocation } from 'react-router-dom';
 import routes from '@/flexternships/routes';
@@ -21,7 +20,7 @@ import HamburgerMenu from './HamburgerMenu';
  * @returns {JSX.Element | null} The rendered Navbar component or null if user details are loading
  */
 export default function Navbar() {
-  const unreadNotificationsCount = useAppStore((state) => state.unreadNotificationsCount);
+  // const unreadNotificationsCount = useAppStore((state) => state.unreadNotificationsCount);
   const fetchNotificationsCount = useAppStore((state) => state.fetchNotificationsCount);
   const isWorkInProgress = useAppStore((state) => state.isWip);
   const openModal = useAppStore((state) => state.openModal);
@@ -32,7 +31,6 @@ export default function Navbar() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const showNotificationsCount: boolean = typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0;
 
   /**
    * Checks if the current route matches the given path
@@ -96,7 +94,7 @@ export default function Navbar() {
 
       {/* Right section: Notifications and Profile */}
       <div className="flex flex-row gap-x-6">
-        <Link
+        {/* <Link
           to={routes.notifications.path}
           className="flex-col justify-center py-3 relative cursor-pointer d-none d-md-flex"
           aria-label={`Notifications ${showNotificationsCount ? `(${unreadNotificationsCount} unread)` : ''}`}
@@ -107,7 +105,7 @@ export default function Navbar() {
               {unreadNotificationsCount}
             </span>
           )}
-        </Link>
+        </Link> */}
         <div className="w-0.5 bg-grey-border my-3 h-7 self-center d-none d-md-block" />
         {!isEmpty(userDetails) && <ProfileDropdown />}
       </div>

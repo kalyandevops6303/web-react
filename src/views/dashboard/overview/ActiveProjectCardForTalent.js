@@ -90,7 +90,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
               />
             </span>
           </div>
-          <p className="active-project-simple-heading">Project</p>
+          {/* <p className="active-project-simple-heading">Project</p> */}
           <DurationSegment start_date={data?.start_date} end_date={data?.end_date} />
           <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
           <div className="bottom-detail d-flex mt-1">

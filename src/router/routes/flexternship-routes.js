@@ -10,7 +10,6 @@ import FlexternshipClientOnboarding from '@flexternships/app/onboarding/client/p
 import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
 import UserDetails from '../../views/user-details';
 import Search from '../../views/search';
-import Notifications from '../../views/notifications';
 import NotFound from '../../views/NotFound';
 
 // ** Auth & Onboarding Views
@@ -589,10 +588,6 @@ const FlexternshipRoutes = [
         <CreateFlexternProject />
       </RoleAccessWrapper>
     ),
-  },
-  {
-    path: routes.notifications.path,
-    element: <Notifications />,
   },
   {
     path: routes.chooseTalentProgram.path,

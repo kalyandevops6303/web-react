@@ -21,7 +21,7 @@ import '@styles/react/pages/page-authentication.scss';
 import { checkPointRedirection, filteredFormSchema, validations } from '../../utility/Utils';
 import { getAppPermissions, loginUser, switchProfile } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
-import { selectAuthLoading } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading, userAttemptNo } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
 import { getItem, removeItem } from '../../utility/localStorageControl';
@@ -34,6 +34,7 @@ import { isFlexternshipApp } from '@/configs/api/env';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Login = () => {
+  const userLoginAttemptNo = useSelector(userAttemptNo);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
@@ -218,7 +219,7 @@ const Login = () => {
           </div>
 
           <UserRetryCountAuth />
-          {errorMessage?.length > 0 && <p className="text-error text-xs mt-2">{errorMessage}</p>}
+          {!userLoginAttemptNo && errorMessage?.length > 0 && <p className="text-error text-xs mt-2">{errorMessage}</p>}
           <Button
             className="form-input-spacing"
             size="btn-sm"

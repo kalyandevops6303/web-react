@@ -97,7 +97,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
         </PermissionWrapper>
       ) : null}
 
-      {(userType === userTypes.client || userType === userTypes.team) && (
+      {/* {(userType === userTypes.client || userType === userTypes.team) && (
         <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TALENTS']}>
           <Col md={5} lg={3} xl={2} onClick={() => handlePrimaryCard('talents')}>
             <Statbox
@@ -111,7 +111,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
             />
           </Col>
         </PermissionWrapper>
-      )}
+      )} */}
       {(userType === userTypes.client || userType === userTypes.talent) && (
         <PermissionWrapper permissions={appPermissions} permissionName={['MARKETPLACE.TEAMS']}>
           <Col onClick={() => handlePrimaryCard('teams')}>
