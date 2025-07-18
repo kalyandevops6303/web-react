@@ -13,6 +13,7 @@ import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjec
 import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
 import { getItem } from '../../../utility/localStorageControl';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
+import routes from '@/flexternships/routes';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
@@ -68,7 +69,7 @@ const CreateProjectButton = () => {
           secondBtnText="View Drafts"
           firstBtnAction={handleCreateNewProject}
           secondBtnAction={() =>
-            navigate('/dashboard', {
+            navigate(routes.dashboard.path, {
               state: {
                 isDraftProjects: true,
               },
@@ -84,7 +85,7 @@ const CreateProjectButton = () => {
               outline
               className="me-1"
               onClick={() =>
-                navigate('/dashboard', {
+                navigate(routes.dashboard.path, {
                   state: {
                     isDraftProjects: true,
                   },
@@ -106,7 +107,7 @@ const CreateProjectButton = () => {
               color="primary"
               outline
               onClick={() =>
-                navigate('/dashboard', {
+                navigate(routes.dashboard.path, {
                   state: {
                     isDraftBids: true,
                   },
