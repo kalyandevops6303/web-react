@@ -155,7 +155,7 @@ export default function Preview() {
   const closeSuccessfulCreation = () => {
     resetProjectCreationStore();
     closeModal();
-    navigate(`/dashboard`);
+    navigate(routes.dashboard.path);
   };
 
   useEffect(() => {

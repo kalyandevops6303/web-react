@@ -30,7 +30,7 @@ export default function TabNavigationForm({ tabs }: { tabs: TabProp[] }) {
 
   const redirectToMyListings = () => {
     closeModal();
-    navigate(`/dashboard`);
+    navigate(routes.dashboard.path);
     resetProjectCreationStore();
   };
 
