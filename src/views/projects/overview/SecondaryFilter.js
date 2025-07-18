@@ -498,22 +498,25 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     <>
       <FormWrapper>
         <SecondaryFiltersWrap>
-          <div className="mt-auto">
-            <InputGroup className="input-group-merge marketplace-search">
-              <InputGroupText>
-                <Search size={14} />
-              </InputGroupText>
-              <Input
-                innerRef={inputRef}
-                onChange={debounce(handleSearchTextChange, 300)}
-                placeholder="Search project name, user name"
-              />
-            </InputGroup>
-          </div>
+          {primaryFilter !== 'completed' && (
+            <div className="mt-auto">
+              <InputGroup className="input-group-merge marketplace-search">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  innerRef={inputRef}
+                  onChange={debounce(handleSearchTextChange, 300)}
+                  placeholder="Search project name, user name"
+                />
+              </InputGroup>
+            </div>
+          )}
           <Row>
             {primaryFilter !== 'talents' &&
               primaryFilter !== 'clients' &&
               primaryFilter !== 'teams' &&
+              primaryFilter !== 'completed' &&
               (isTab ? (
                 <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
                   {ExpandCollapseComp}
@@ -613,7 +616,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             {/* // After the department name comes from new API, functionality will be implemented */}
             {/* && ((primaryFilter.toUpperCase() !== 'BLOCKED') || (primaryFilter.toUpperCase() !== 'ACTIVE')) */}
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.DEPARTMENT_NAME']}>
-              {userType !== userTypes.team && showDepartmentFilter && (
+              {primaryFilter !== 'completed' && userType !== userTypes.team && showDepartmentFilter && (
                 <Col>
                   <Label className="form-label">Department Name</Label>
                   <AsyncPaginate
@@ -636,7 +639,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.STATUS']}>
-              {userType !== userTypes.team && (
+              {primaryFilter !== 'completed' && userType !== userTypes.team && (
                 <Col>
                   <Label className="form-label">Status</Label>
                   <AsyncPaginate
@@ -655,7 +658,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.TALENT_NAME']}>
-              {userType !== userTypes.team && userType === userTypes?.client && (
+              {primaryFilter !== 'completed' && userType !== userTypes.team && userType === userTypes?.client && (
                 <Col>
                   <Label className="form-label">Talent Name</Label>
                   <AsyncPaginate
@@ -678,7 +681,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               )}
             </PermissionWrapper>
             <PermissionWrapper permissions={appPermissions} permissionName={['PROJECT.FILTERS.PROJECT_NAME']}>
-              {userType !== userTypes.team && (
+              {primaryFilter !== 'completed' && userType !== userTypes.team && (
                 <Col>
                   <Label className="form-label">Project Name</Label>
                   <AsyncPaginate
@@ -752,7 +755,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 </Col>
               )}
             </PermissionWrapper>
-            {!isTab && (
+            {primaryFilter !== 'completed' && !isTab && (
               <Col className="reset-btn cursor-pointer" onClick={handleReset}>
                 <div className="reset-icon">
                   <RefreshCcw size={18} color={theme.activeNavPillText} />
@@ -760,7 +763,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 <span className="reset-label">Reset</span>
               </Col>
             )}
-            {isTab && (
+            {primaryFilter !== 'completed' && isTab && (
               <div className="reset-btn cursor-pointer" onClick={handleReset}>
                 <div className="reset-icon">
                   <RefreshCcw size={18} color={theme.activeNavPillText} />

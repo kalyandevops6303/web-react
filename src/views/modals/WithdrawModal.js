@@ -8,6 +8,7 @@ import DeleteGIF from '../../assets/images/gifs/delete.gif';
 import { WithdrawModalWrapper } from './style';
 import { withdrawProject } from '../../redux/actions/projectDetailsAction';
 import { withdrawProjectLoading } from '../../redux/selectors/projectDetailsSelectors';
+import routes from '@/flexternships/routes';
 
 const WithdrawModal = ({ modal, toggleModal, projectDetailsData }) => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const WithdrawModal = ({ modal, toggleModal, projectDetailsData }) => {
                   withdrawProject({
                     project_id: projectDetailsData?._id,
                     onSuccess: () => {
-                      navigate('/marketplace/my_listings');
+                      navigate(routes.dashboard.path);
                     },
                   }),
                 );

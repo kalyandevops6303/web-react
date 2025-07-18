@@ -138,7 +138,7 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
               />
             )}
           </div>
-          <p className="active-project-simple-heading">Project</p>
+          {/* <p className="active-project-simple-heading">Project</p> */}
           <DurationSegment start_date={data?.start_date} end_date={data?.end_date} />
           {data?.current_milestone && (
             <>

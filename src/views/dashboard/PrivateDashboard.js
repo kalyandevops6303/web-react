@@ -41,7 +41,6 @@ import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSe
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 import PermissionWrapper from '../../PermissionWrapper';
 import { resetProjectCreationStore } from '@/flexternships/utils/core-utils';
-import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
 import TalentPrivateDashboard from '@/flexternships/app/private-dashboard/talent/page';
 
 const PrivateDashboard = () => {
@@ -209,7 +208,6 @@ const PrivateDashboard = () => {
       <span className="mb-4">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       </span>
-      {userDetailsData?.user_type === userTypes.client && <CreateProjectButton />}
       {userDetailsData?.team_type === userTypes.team && (
         <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onTeamInvite}>
@@ -230,7 +228,7 @@ const PrivateDashboard = () => {
         </span>
       )}
       <Row>
-        <Col lg="8" sm="12">
+        <Row>
           <Row>
             <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.PAYMENT_METRICS']}>
               <Col lg="6" sm="12">
@@ -301,9 +299,9 @@ const PrivateDashboard = () => {
               <InviteListing />
             </section>
           )}
-        </Col>
+        </Row>
 
-        <Col lg="4" sm="12">
+        <Row>
           {userDetailsData?.team_type !== userTypes.club && (
             <div>
               {userDetailsData?.user_type === 'CLIENT' ? (
@@ -333,11 +331,11 @@ const PrivateDashboard = () => {
               // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
-          <Alerts />
+          {/* <Alerts /> */}
           <PermissionWrapper permissions={appPermissions} permissionName={['DASHBOARD.DISPUTES']}>
             <Disputes handleRaiseDispute={handleRaiseDispute} />
           </PermissionWrapper>
-        </Col>
+        </Row>
       </Row>
     </div>
   );

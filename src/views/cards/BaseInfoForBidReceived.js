@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 /* eslint-disable no-else-return */
 import React, { useState } from 'react';
 import { Badge } from 'reactstrap';

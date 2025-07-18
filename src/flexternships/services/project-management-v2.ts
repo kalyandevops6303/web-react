@@ -177,6 +177,8 @@ export const createFlexternProject: (
   }
 };
 
+// Removable File from Flexternship App (Only createFlexternProjectDraft)
+
 /**
  * Creates a draft of a Flextern project.
  * @param projectData - The data for the project draft to be created.
@@ -248,6 +250,8 @@ export const createFlexternProjectDraft: (
     handleError(error as Error, 'An unexpected error occurred while creating the Flextern project draft');
   }
 };
+
+// Removable File from Flexternship App (Only getFlexternProjectDraft)
 
 /**
  * Retrieves a draft Flextern project by project ID.

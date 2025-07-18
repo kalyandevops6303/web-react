@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 import { closestCenter, DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { yupResolver } from '@hookform/resolvers/yup';

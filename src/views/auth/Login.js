@@ -34,8 +34,8 @@ import { isFlexternshipApp } from '@/configs/api/env';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 
 const Login = () => {
-  const dispatch = useDispatch();
   const userLoginAttemptNo = useSelector(userAttemptNo);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = isUserLoggedIn();
@@ -218,7 +218,7 @@ const Login = () => {
             {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
           </div>
 
-          <UserRetryCountAuth />
+          <UserRetryCountAuth userLoginAttemptNo={userLoginAttemptNo} />
           {!userLoginAttemptNo && errorMessage?.length > 0 && <p className="text-error text-xs mt-2">{errorMessage}</p>}
           <Button
             className="form-input-spacing"

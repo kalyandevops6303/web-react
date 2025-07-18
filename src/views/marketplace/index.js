@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
@@ -8,7 +10,6 @@ import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
-import CreateProjectButton from './overview/CreateProjectButton';
 import { appPermissionsSelector, selectAuthUserData, selectFlexternBoolean } from '../../redux/selectors/authSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
@@ -105,11 +106,6 @@ const MarketPlace = () => {
             },
           ]}
         />
-        <div className="d-flex justify-content-end align-items-center gap-2 -mb-2">
-          <div className="d-flex gap-2">
-            <CreateProjectButton />
-          </div>
-        </div>
         <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
         <Routes>
           <Route

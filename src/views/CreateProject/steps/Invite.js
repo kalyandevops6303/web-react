@@ -43,6 +43,7 @@ import {
 } from '../../../redux/selectors/createProjectSelectors';
 import { getAlmaMaterTalents, getBestTalents, getFavoriteTeams } from '../../../redux/actions/createProjectActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import routes from '@/flexternships/routes';
 
 const Invite = ({ stepper }) => {
   const tabNames = {
@@ -619,7 +620,7 @@ const Invite = ({ stepper }) => {
       </Card>
       <div className="d-flex justify-content-end align-items-center">
         <div>
-          <Link to="/marketplace/my_listings">
+          <Link to={routes.dashboard.path}>
             <Button color="primary" outline>
               <span className="px-2">Close</span>
             </Button>

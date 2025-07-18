@@ -95,6 +95,7 @@ import { useFlexternUserStore } from '@/flexternships/stores/core-stores';
 import { returnCompleteProfileDetailsCta } from '@/utility/constants/CompleteProfileDetailsCta';
 import { isUserLoggedIn } from '@/utility/commonUtils';
 import { isFlexternshipApp } from '@/configs/api/env';
+import routes from '@/flexternships/routes';
 const customDropdownStyles = {
   menuList: (provided) => ({
     ...provided,
@@ -493,7 +494,7 @@ const Additional = () => {
     dispatch(clearAllFormData());
     // dispatch(setFormDocuments(files));
     dispatch(setFormDocuments(null));
-    navigate('/marketplace/all_listings');
+    navigate(routes.dashboard.path);
   };
 
   const onBackClick = () => {
@@ -523,7 +524,7 @@ const Additional = () => {
 
     dispatch(setResumeDataUploadedForAdditional(parseResume));
     populateUserDetails(true);
-    navigate('/marketplace/all_listings');
+    navigate(routes.dashboard.path);
   };
 
   const onSubmit = (data) => {

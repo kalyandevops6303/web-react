@@ -31,7 +31,7 @@ export default function ProjectRelistFlow({ project, onClose }: ProjectRelistFlo
         setCurrentStep((cur) => cur + 1);
         break;
       case 2:
-        navigate(`${routes.marketplace.path}/my_listings`);
+        navigate(routes.dashboard.path);
         onClose();
         break;
     }

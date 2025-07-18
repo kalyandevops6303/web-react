@@ -9,7 +9,6 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
-import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
 import { clearData } from '../../redux/reducers/project';
 import { appPermissionsSelector, selectAuthUserData } from '../../redux/selectors/authSelectors';
 import PermissionWrapper from '@/PermissionWrapper';
@@ -85,7 +84,6 @@ const Projects = () => {
       <ProjectContainer>
         <BreadCrumbs data={[{ title: 'Project', link: '/projects/ongoing' }, { title: primaryEnum[primaryFilter] }]} />
 
-        <CreateProjectButton />
         <PrimaryFilter
           selected={primaryFilter}
           handlePrimaryChangeFilter={handlePrimaryChangeFilter}

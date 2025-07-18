@@ -8,6 +8,7 @@ import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { TerminateModalWrapper } from './style';
 import { relistProject, terminateProject } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
+import routes from '@/flexternships/routes';
 
 const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
         project_id: data?._id,
         onSuccess: () => {
           onClose();
-          navigate('/marketplace/my_listings');
+          navigate(routes.dashboard.path);
         },
       }),
     );
@@ -36,7 +37,7 @@ const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
         project_id: data?._id,
         onSuccess: () => {
           onClose();
-          navigate('/marketplace/my_listings');
+          navigate(routes.dashboard.path);
         },
       }),
     );

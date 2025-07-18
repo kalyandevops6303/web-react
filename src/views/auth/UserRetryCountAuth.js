@@ -1,32 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { userAttemptNo } from '@/redux/selectors/authSelectors';
+import PropTypes from 'prop-types';
 
-const UserRetryCountAuth = () => {
-  const userLoginAttemptNo = useSelector(userAttemptNo);
+const UserRetryCountAuth = ({ userLoginAttemptNo }) => {
   const [timeLeft, setTimeLeft] = useState(0);
+  const [blockedUntil, setBlockedUntil] = useState(null);
 
   const maxCount = 5;
-
   useEffect(() => {
+    let interval;
+
     if (userLoginAttemptNo > maxCount) {
-      const interval = setInterval(() => {
+      if (!blockedUntil) {
+        const thirtyMinutesFromNow = Date.now() + 30 * 60 * 1000;
+        setBlockedUntil(thirtyMinutesFromNow);
+        setTimeLeft(30 * 60 * 1000);
+        return;
+      }
+
+      interval = setInterval(() => {
         const now = Date.now();
-        const diff = userLoginAttemptNo - now;
+        const diff = blockedUntil - now;
+
         if (diff > 0) {
           setTimeLeft(diff);
         } else {
           setTimeLeft(0);
+          setBlockedUntil(null);
           clearInterval(interval);
         }
       }, 1000);
-
-      return () => clearInterval(interval);
+    } else {
+      // User is no longer blocked
+      setBlockedUntil(null);
+      setTimeLeft(0);
     }
-  }, [userLoginAttemptNo]);
+  }, [userLoginAttemptNo, blockedUntil]);
 
   if (!userLoginAttemptNo) {
-    return <></>;
+    return null;
   }
 
   if (userLoginAttemptNo > maxCount) {
@@ -38,8 +49,9 @@ const UserRetryCountAuth = () => {
         <p>
           Your account is disabled. Please try again in{' '}
           <span className="font-semibold">
-            {minutes}:{seconds.toString().padStart(2, '0')}
-          </span>{' '}
+            {' '}
+            {minutes}:{seconds.toString().padStart(2, '0')}{' '}
+          </span>
           mins.
         </p>
       </div>
@@ -62,6 +74,9 @@ const UserRetryCountAuth = () => {
       <p>{maxCount - userLoginAttemptNo} attempts left</p>
     </div>
   );
+};
+UserRetryCountAuth.propTypes = {
+  userLoginAttemptNo: PropTypes.number.isRequired,
 };
 
 export default UserRetryCountAuth;

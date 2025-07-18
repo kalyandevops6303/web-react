@@ -13,6 +13,7 @@ export const BorderCardContainer = styled.div`
   }
 `;
 
+// Removable File from Flexternship App (Only NotificationBadgeContainer)
 export const NotificationBadgeContainer = styled.div`
   background: ${(props) => theme[props.priorityColor]};
   border-radius: 50%;
@@ -30,6 +31,7 @@ export const NotificationBadgeContainer = styled.div`
   }
 `;
 
+// Removable File from Flexternship App (Only MarkAllAsReadButtonContainer)
 export const MarkAllAsReadButtonContainer = styled.div`
   .btn-outline-secondary {
     padding-left: 25px;

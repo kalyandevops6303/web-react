@@ -1,3 +1,4 @@
+// Removable File from Flexternship App
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import PrimaryButton from '@flexternships/app/components/core/buttons/PrimaryButton';
@@ -154,7 +155,7 @@ export default function Preview() {
   const closeSuccessfulCreation = () => {
     resetProjectCreationStore();
     closeModal();
-    navigate(`${routes.marketplace.path}/my_listings`);
+    navigate(routes.dashboard.path);
   };
 
   useEffect(() => {

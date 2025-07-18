@@ -1,3 +1,5 @@
+// Removable File from Flexternship App
+
 'use client';
 import { useProjectCreationStore } from '@flexternships/stores/project-creation-store';
 import { ModalType } from '@flexternships/types/project-creation-types';
