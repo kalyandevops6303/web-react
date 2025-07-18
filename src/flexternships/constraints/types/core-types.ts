@@ -7,6 +7,7 @@ import {
   UserStatus,
   UserInvitationType,
   DocType,
+  FeatureName,
 } from '../enums/core-enums';
 
 // Paginated Data Types
@@ -196,7 +197,7 @@ export type AppState = {
   unreadNotificationsCount: number;
   backPath: string | undefined;
   blobSasTokenParams: Record<string, string> | undefined;
-  accessibleFeatures?: string[];
+  accessibleFeatures?: FeatureName[];
 };
 
 export type AppActions = {
@@ -225,11 +226,6 @@ export type ValidatedRequestToken = {
   projectId: string;
   invitationType: UserInvitationType;
   userStatus: UserStatus;
-};
-
-export type Feature = {
-  featureId: string;
-  featureName: string;
 };
 
 export type ChatMessage = {

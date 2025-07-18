@@ -215,7 +215,6 @@ const RegisterPhoneFlextern = () => {
                     />
                   )}
                 />
-                {errors.mobile && <span className="text-danger text-sm mt-1 d-block">{errors.mobile.message}</span>}
               </div>
             </div>
 
