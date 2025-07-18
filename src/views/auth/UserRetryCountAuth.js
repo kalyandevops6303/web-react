@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { userAttemptNo } from '@/redux/selectors/authSelectors';
+import PropTypes from 'prop-types';
 
-const UserRetryCountAuth = () => {
-  const userLoginAttemptNo = useSelector(userAttemptNo);
+const UserRetryCountAuth = ({ userLoginAttemptNo }) => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [blockedUntil, setBlockedUntil] = useState(null);
 
@@ -16,7 +14,7 @@ const UserRetryCountAuth = () => {
         const thirtyMinutesFromNow = Date.now() + 30 * 60 * 1000;
         setBlockedUntil(thirtyMinutesFromNow);
         setTimeLeft(30 * 60 * 1000);
-        return; // Exit early, the interval will start on the next run
+        return;
       }
 
       interval = setInterval(() => {
@@ -76,6 +74,9 @@ const UserRetryCountAuth = () => {
       <p>{maxCount - userLoginAttemptNo} attempts left</p>
     </div>
   );
+};
+UserRetryCountAuth.propTypes = {
+  userLoginAttemptNo: PropTypes.number.isRequired,
 };
 
 export default UserRetryCountAuth;
