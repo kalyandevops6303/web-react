@@ -175,7 +175,7 @@ const RegisterFlextern = () => {
   const toggleTermsModal = () => setTermsModal(!termsModal);
   const inviteHeader = {
     FLEXTERN_CLIENT: {
-      title: 'Client Sign up 🔐',
+      title: 'Client - Sign up 🔐',
     },
     FLEXTERN_TALENT: {
       title: 'Flextern - Sign up! 🔐',
@@ -287,7 +287,7 @@ const RegisterFlextern = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          {flexternInviteType === userTypes.flexternClient
+          {flexternInviteType === userTypes.client
             ? inviteHeader.FLEXTERN_CLIENT?.title
             : inviteHeader.FLEXTERN_TALENT?.title}
         </CardTitle>

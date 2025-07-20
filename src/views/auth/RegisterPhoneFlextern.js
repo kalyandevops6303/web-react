@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback, Spinner } from 'reactstrap';
@@ -70,11 +70,15 @@ const RegisterPhoneFlextern = () => {
     trigger,
   } = useForm({
     resolver: yupResolver(phoneSchema),
+    mode: 'onChange',
     defaultValues: {
       mobile: savedFormData?.mobile || mobileData?.phone || '',
     },
   });
+
   const localFormData = useWatch({ control });
+  const mobileValue = watch('mobile');
+
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
@@ -84,6 +88,7 @@ const RegisterPhoneFlextern = () => {
       dispatch(clearPhoneData());
     };
   }, [localFormData]);
+
   const resetErrorOtpandCode = () => {
     setOtpVerifyError('');
     setCode('');
@@ -112,17 +117,20 @@ const RegisterPhoneFlextern = () => {
     dispatch(setFormData(allData));
     setSelectedCountry(value);
     clearErrors();
+    // Re-validate phone when country changes
+    if (mobileValue) {
+      trigger('mobile');
+    }
   };
+
   const handleChange = (value) => {
     if (value !== code) {
       dispatch(setFormData({ code: value }));
       setCode(value);
     }
   };
-  const onSuccess = () => {
-    // dispatch(clearAllFormData());
 
-    // navigate('/auth/phone-verify');
+  const onSuccess = () => {
     setBooleanSent(true);
   };
 
@@ -134,9 +142,9 @@ const RegisterPhoneFlextern = () => {
 
     if (!validatePhoneNumber(values.mobile, selectedCountry.code)) {
       setValidPhoneBoolean(false);
+      setError('mobile', { type: 'custom', message: 'Invalid phone number for selected country' });
     } else {
       setValidPhoneBoolean(true);
-      setBooleanSent(true);
       dispatch(
         registerPhone({
           phone: values.mobile.replace(/[^\d]/g, ''),
@@ -171,7 +179,14 @@ const RegisterPhoneFlextern = () => {
     dispatch(clearAllFormData());
   };
 
-  const mobileValue = watch('mobile');
+  const isButtonDisabled = useMemo(() => {
+    const hasValidLength = mobileValue && mobileValue.length >= 10;
+    const hasNoMobileError = !errors?.mobile;
+    const notLoading = !isLoading;
+    const notSent = !booleanSent;
+    return !(hasValidLength && hasNoMobileError && notLoading && notSent);
+  }, [mobileValue, errors?.mobile, isLoading, booleanSent]);
+
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -207,9 +222,15 @@ const RegisterPhoneFlextern = () => {
                         const onlyDigits = e.target.value.replace(/\D/g, '');
                         if (onlyDigits.length <= 10) {
                           field.onChange(onlyDigits);
+                          setValidPhoneBoolean(false);
+                          setTimeout(() => trigger('mobile'), 100);
                         }
                       }}
-                      placeholder="Enter  phone number"
+                      onBlur={() => {
+                        field.onBlur();
+                        trigger('mobile');
+                      }}
+                      placeholder="Enter phone number"
                       invalid={!!errors.mobile}
                       disabled={booleanSent}
                     />
@@ -220,6 +241,7 @@ const RegisterPhoneFlextern = () => {
 
             {errors.mobile && <FormFeedback>{errors.mobile.message}</FormFeedback>}
           </FormGroup>
+
           <FormGroup>
             <Label className="form-label" for="otp">
               OTP
@@ -247,11 +269,17 @@ const RegisterPhoneFlextern = () => {
               }}
               shouldAutoFocus={false}
               isDisabled={!booleanSent}
-            />{' '}
+            />
           </FormGroup>
-          {otpVerifyError && <p className="text-error text-xs">{otpVerifyError}</p>}
+
+          {otpVerifyError && (
+            <p className="text-error text-xs" style={{ color: 'red', marginTop: 8, marginBottom: 0 }}>
+              {otpVerifyError}
+            </p>
+          )}
+
           {!booleanSent ? (
-            <Button color="primary" block type="submit" disabled={!mobileValue || isLoading}>
+            <Button color="primary" block type="submit" disabled={isButtonDisabled}>
               {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
             </Button>
           ) : (
@@ -269,14 +297,6 @@ const RegisterPhoneFlextern = () => {
             </>
           )}
         </Form>
-        {/* <div className="d-flex justify-content-center sign-info">
-          <Label>
-            <small>Already have an account?</small>
-          </Label>
-          <Label tag={Link} to="/auth/login" className="primary">
-            <small>Sign in</small>
-          </Label>
-        </div> */}
       </div>
     </OnBoardWrap>
   );

@@ -1,95 +1,109 @@
 import { isArray, isEmpty } from 'lodash';
-import { userProfileEdit } from './Constant';
+import { userOnboarding, userProfileEdit } from './Constant';
 
+const isOnboarding = window.location.pathname.includes('onboarding');
+const baseRouteToRedirect = isOnboarding ? userOnboarding : userProfileEdit;
 const CompleteProfileDetailsCta = {
   TALENT: [
     {
       keyToMatch: 'tagline',
       label: 'Add Personal Details',
-      path: `/${userProfileEdit.talent}/personal-details`,
+      path: `/${baseRouteToRedirect.talent}/personal-details`,
     },
     {
       keyToMatch: 'educational_institute',
       label: 'Add Education Details',
-      path: `/${userProfileEdit.talent}/educational-details`,
+      path: `/${baseRouteToRedirect.talent}/educational-details`,
     },
     {
       keyToMatch: 'resume',
       label: 'Add Resume',
-      path: `/${userProfileEdit.talent}/personal-details`,
+      path: `/${baseRouteToRedirect.talent}/personal-details`,
     },
     {
       keyToMatch: 'availability',
       label: 'Add Availability Details',
-      path: `/${userProfileEdit.talent}/availability-details`,
+      path: `/${baseRouteToRedirect.talent}/availability-details`,
     },
     {
       keyToMatch: 'payment_account',
       label: 'Add Payment Details',
-      path: `/${userProfileEdit.talent}/payment-details`,
+      path: `/${baseRouteToRedirect.talent}/payment-details`,
     },
     {
       keyToMatch: 'intern-hiring',
       label: 'Get Hired',
-      path: `/${userProfileEdit.talent}/intern-hiring`,
+      path: `/${baseRouteToRedirect.talent}/intern-hiring`,
     },
     {
       keyToMatch: 'intern-xobin-hiring',
       label: 'Get Hired (I)',
-      path: `/${userProfileEdit.talent}/intern-xobin-hiring`,
+      path: `/${baseRouteToRedirect.talent}/intern-xobin-hiring`,
     },
-    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userProfileEdit.talent}/social-details` },
-    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/account-details` },
+    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${baseRouteToRedirect.talent}/social-details` },
+    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${baseRouteToRedirect.talent}/account-details` },
     {
       keyToMatch: 'work_experience',
       label: 'Complete Your Profile',
-      path: `/${userProfileEdit.talent}/personal-details`,
+      path: `/${baseRouteToRedirect.talent}/personal-details`,
     },
-    { keyToMatch: 'languages', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/personal-details` },
+    {
+      keyToMatch: 'languages',
+      label: 'Complete Your Profile',
+      path: `/${baseRouteToRedirect.talent}/personal-details`,
+    },
     {
       keyToMatch: 'additional_info',
       label: 'Complete Additional Info',
-      path: `/${userProfileEdit.talent}/additional-details`,
+      path: `/${baseRouteToRedirect.talent}/additional-details`,
     },
   ],
   CLIENT: [
-    { keyToMatch: 'company_name', label: 'Add Personal Details', path: `/${userProfileEdit.client}/personal-details` },
+    {
+      keyToMatch: 'company_name',
+      label: 'Add Personal Details',
+      path: `/${baseRouteToRedirect.client}/personal-details`,
+    },
     {
       keyToMatch: 'educational_institute',
       label: 'Add Education Details',
-      path: `/${userProfileEdit.client}/educational-details`,
+      path: `/${baseRouteToRedirect.client}/educational-details`,
     },
     {
       keyToMatch: 'availability',
       label: 'Add Availability Details',
-      path: `/${userProfileEdit.client}/availability-details`,
+      path: `/${baseRouteToRedirect.client}/availability-details`,
     },
-    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userProfileEdit.client}/social-details` },
-    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userProfileEdit.client}/account-details` },
-    { keyToMatch: 'company_logo', label: 'Complete Your Profile', path: `/${userProfileEdit.client}/personal-details` },
+    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${baseRouteToRedirect.client}/social-details` },
+    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${baseRouteToRedirect.client}/account-details` },
+    {
+      keyToMatch: 'company_logo',
+      label: 'Complete Your Profile',
+      path: `/${baseRouteToRedirect.client}/personal-details`,
+    },
     {
       keyToMatch: 'company_strength',
       label: 'Complete Your Profile',
-      path: `/${userProfileEdit.client}/personal-details`,
+      path: `/${baseRouteToRedirect.client}/personal-details`,
     },
   ],
   TEAM: [
     {
       keyToMatch: 'team_logo',
       label: 'Complete Your Profile',
-      path: `/${userProfileEdit.team}/profile-details`,
+      path: `/${baseRouteToRedirect.team}/profile-details`,
     },
     {
       keyToMatch: 'payment_account',
       label: 'Add Payment Details',
-      path: `/${userProfileEdit.talent}/payment-details`,
+      path: `/${baseRouteToRedirect.talent}/payment-details`,
     },
   ],
   CLUB: [
     {
       keyToMatch: 'team_logo',
       label: 'Complete Your Profile',
-      path: `/${userProfileEdit.club}/account-details`,
+      path: `/${baseRouteToRedirect.club}/account-details`,
     },
   ],
 };
