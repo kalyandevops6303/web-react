@@ -64,7 +64,7 @@
     "luxon": "3.5.0",
     "nouislider": "15.5.0",
     "nouislider-react": "3.4.1",
-    "postcss": "^8.4.47",
+    "postcss": "8.2.15",
     "postcss-custom-properties": "14.0.1",
     "postcss-import": "16.1.0",
     "postcss-rtl": "2.0.0",
@@ -149,7 +149,7 @@
     "styled-components/react-is": "16.8.0",
     "react-hot-toast/goober/csstype": "3.0.10",
     "html-to-draftjs/immutable": "4.0.0",
-    "postcss-custom-properties/postcss": "8.2",
+    "postcss-custom-properties/postcss": "14.0.1",
     "@esbuild-plugins/node-globals-polyfill/esbuild": "0.15.15"
   },
   "overrides": {
