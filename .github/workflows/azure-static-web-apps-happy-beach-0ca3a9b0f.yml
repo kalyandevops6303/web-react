@@ -2,13 +2,48 @@ name: Azure Static Web Apps CI/CD
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - tru-dev
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - tru-dev
+    inputs:
+      name:
+        description: "Enter name"
+        required: true
+        type: string
+
+      option:
+        description: "Select option"
+        required: true
+        type: choice
+        options:
+          - A
+          - B
+          - C
+
+      city:
+        description: "Enter city (required only if option A is selected)"
+        required: false
+        type: choice
+        options:
+          - x
+          - y
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show inputs
+        run: |
+          echo "Name: ${{ github.event.inputs.name }}"
+          echo "Option: ${{ github.event.inputs.option }}"
+          echo "City: ${{ github.event.inputs.city }}"
+
+      - name: Validate city input for option A
+        if: ${{ github.event.inputs.option == 'A' && github.event.inputs.city == '' }}
+        run: |
+          echo "Error: You must specify a city when option A is selected."
+          exit 1
+
+      - name: Continue deployment
+        run: echo "Proceeding with deployment for option ${{ github.event.inputs.option }}"
+
 
 jobs:
   build_and_deploy_job:
