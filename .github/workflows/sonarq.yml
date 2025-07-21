@@ -59,10 +59,10 @@
 name: SonarQube-Analysis
 
 on:
-  push:
-    branches:
-      - tru-dev
-      - pilot/project-hackathon
+  # push:
+  #   branches:
+  #     - tru-dev
+  #     - pilot/project-hackathon
   pull_request:
     branches:
       - tru-dev
