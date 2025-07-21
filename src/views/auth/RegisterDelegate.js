@@ -79,6 +79,7 @@ const RegisterDelegateForm = React.memo(
               className="input-group-merge create-password mb-75"
               id="newPassword"
               placeholder="Enter your new password"
+              maxLength={30}
             />
           )}
         />
@@ -104,6 +105,7 @@ const RegisterDelegateForm = React.memo(
               className="input-group-merge create-password"
               id="cnfPassword"
               placeholder="Confirm your new password"
+              maxLength={30}
             />
           )}
         />

@@ -7,6 +7,7 @@ export const ResetPasswordSchema = yup.object().shape({
     .string()
     .required('New password is required')
     .min(8, 'Password must be at least 8 characters long')
+    .max(30, 'Password cannot be more than 30 characters')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/,
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
@@ -14,5 +15,6 @@ export const ResetPasswordSchema = yup.object().shape({
   confirmNewPassword: yup
     .string()
     .required('Confirm new password is required')
+    .max(30, 'Password cannot be more than 30 characters')
     .oneOf([yup.ref('newPassword')], 'Passwords must match'),
 });

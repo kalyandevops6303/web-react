@@ -44,7 +44,7 @@ const Login = () => {
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
-    password: yup.string().required('Password is required'),
+    password: yup.string().required('Password is required').max(30, 'Password cannot be more than 30 characters'),
   });
 
   const urlSearchParams = new URLSearchParams(window.location.search);
@@ -212,6 +212,7 @@ const Login = () => {
                     e.preventDefault();
                     return false;
                   }}
+                  maxLength={30}
                 />
               )}
             />

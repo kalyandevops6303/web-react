@@ -72,8 +72,13 @@ const getResumeParsedDetails = (setResumeParsedDetails, setParseResume, fileKey,
   } catch (error) {
     setParseResume(false);
     dispatch(resumeParsedDetailsFailure());
-    if (error?.response?.status == '400') showToastMessage(ToastType.ERROR, error?.message);
-    else showToastMessage(ToastType.ERROR, 'Something went wrong. Please try again.');
+    if (error?.response?.data?.errorData?.errorCode === 400)
+      showToastMessage(ToastType.ERROR, error?.response?.data?.errorData?.message);
+    else
+      showToastMessage(
+        ToastType.ERROR,
+        error?.response?.data?.errorData?.message || 'Something went wrong. Please try again.',
+      );
   }
 };
 
