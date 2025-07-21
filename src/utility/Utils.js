@@ -1065,8 +1065,13 @@ export const formatWebSocketMessage = (data) => {
 };
 
 export const validatePhoneNumber = (number, countryCode) => {
-  const isMinValid = parseMin(number, countryCode).isValid();
-  const isMaxValid = parseMax(number, countryCode).isValid();
-  const isMobileValid = parseMobile(number, countryCode).isValid();
-  return isMinValid && isMaxValid && isMobileValid;
+  const minParsed = parseMin(number, countryCode);
+  const maxParsed = parseMax(number, countryCode);
+  const mobileParsed = parseMobile(number, countryCode);
+
+  const isMinValid = minParsed ? minParsed.isValid() : false;
+  const isMaxValid = maxParsed ? maxParsed.isValid() : false;
+  const isMobileValid = mobileParsed ? mobileParsed.isValid() : false;
+
+  return isMaxValid && isMinValid && isMobileValid;
 };

@@ -6,14 +6,14 @@ export const FlexternClientAccountDetailsSchema = yup.object().shape({
     .string()
     .required('First name is required')
     .matches(/^[a-zA-Z\s]+$/, 'First name can only contain alphabets and spaces')
-    .min(3, 'First name must be at least 3 characters')
-    .max(25, 'First name must not exceed 25 characters'),
+    .min(2, 'First name must be at least 2 characters')
+    .max(30, 'First name must not exceed 30 characters'),
   lastname: yup
     .string()
     .required('Last name is required')
     .matches(/^[a-zA-Z\s]+$/, 'Last name can only contain alphabets and spaces')
-    .min(3, 'Last name must be at least 3 characters')
-    .max(25, 'Last name must not exceed 25 characters'),
+    .min(2, 'Last name must be at least 2 characters')
+    .max(30, 'Last name must not exceed 30 characters'),
   timezone: yup
     .object()
     .shape({
