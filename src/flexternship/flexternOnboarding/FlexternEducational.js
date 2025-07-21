@@ -1300,7 +1300,7 @@ const FlexternEducational = () => {
       setFiles([]);
     }
   }, [files]);
-  console.log(errors);
+
   return (
     <ProfileFormContainer>
       {userDetailsIsLoading ? (
