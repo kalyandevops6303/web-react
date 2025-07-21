@@ -20,13 +20,14 @@ jobs:
         with:
           submodules: true
           lfs: false
-      - name: Install Dependencies
-        run: |
-          npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
+      # - name: Install Dependencies
+      #   run: |
+      #     npm install --legacy-peer-deps && npm install --save env-cmd --legacy-peer-deps
 
-      - name: NPM Build
-        run: |
-          npm run build -- --mode ${{ env.VITE_ENV_MODE }}
+      # - name: NPM Build
+      #   run: |
+      #     npm run build -- --mode ${{ env.VITE_ENV_MODE }}
+      
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -38,7 +39,7 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           skip_api_build: true
           skip_app_build: true
-          app_location: ''
+          app_location: '.'
           output_location: ''
           is_static_export: true
           ###### End of Repository/Build Configurations ######
