@@ -1343,8 +1343,10 @@ const FlexternEducational = () => {
                             })}
                             onChange={(selOption) => {
                               field.onChange(selOption);
-                              setValue('graduationYear', null);
-                              trigger('graduationYear');
+                              if (watch('graduationYear') && selOption?.value >= watch('graduationYear')?.value) {
+                                setValue('graduationYear', null);
+                                trigger('graduationYear');
+                              }
                             }}
                           />
                         )}

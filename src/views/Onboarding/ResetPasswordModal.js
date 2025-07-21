@@ -38,8 +38,12 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
 
   const schema = yup.object().shape({
     oldPassword: yup.string().required('Old Password is required'),
-    newPassword: validations.newPassword.required('New Password is required'),
-    cnfPassword: validations.confirmPassword.required('Please Re-type your password'),
+    newPassword: validations.newPassword
+      .required('New Password is required')
+      .max(30, 'Password cannot be more than 30 characters'),
+    cnfPassword: validations.confirmPassword
+      .required('Please Re-type your password')
+      .max(30, 'Password cannot be more than 30 characters'),
   });
 
   const {
@@ -126,6 +130,7 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
                       className="input-group-merge"
                       id="oldPassword"
                       placeholder="Enter your old password"
+                      maxLength={30}
                     />
                   )}
                 />
@@ -161,6 +166,7 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
                       className="input-group-merge mb-50"
                       id="newPassword"
                       placeholder="Enter your new password"
+                      maxLength={30}
                     />
                   )}
                 />
@@ -188,6 +194,7 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
                       className="input-group-merge"
                       id="cnfPassword"
                       placeholder="Confirm your new password"
+                      maxLength={30}
                     />
                   )}
                 />

@@ -1,7 +1,7 @@
 // ** React Imports
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect } from 'react';
@@ -39,8 +39,12 @@ const SetNewPassword = () => {
   }, [isPasswordSet, navigate]);
 
   const schema = yup.object().shape({
-    newPassword: validations.newPassword.required('Password is required'),
-    cnfPassword: validations.confirmPassword.required('Please Re-type your password'),
+    newPassword: validations.newPassword
+      .required('Password is required')
+      .max(30, 'Password cannot be more than 30 characters'),
+    cnfPassword: validations.confirmPassword
+      .required('Please Re-type your password')
+      .max(30, 'Password cannot be more than 30 characters'),
   });
 
   const {
@@ -99,6 +103,7 @@ const SetNewPassword = () => {
                   id="newPassword"
                   placeholder="Enter new password"
                   style={{ padding: '8px 10px 8px 15px' }}
+                  maxLength={30}
                 />
               )}
             />
@@ -124,6 +129,7 @@ const SetNewPassword = () => {
                   className="input-group-merge create-password"
                   id="cnfPassword"
                   placeholder="Confirm your new password"
+                  maxLength={30}
                 />
               )}
             />

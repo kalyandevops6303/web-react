@@ -45,8 +45,12 @@ const SetPassword = () => {
   }, [isPasswordSet, navigate]);
 
   const schema = yup.object().shape({
-    newPassword: validations.newPassword.required('Password is required'),
-    cnfPassword: validations.confirmPassword.required('Please Re-type your password'),
+    newPassword: validations.newPassword
+      .required('Password is required')
+      .max(30, 'Password cannot be more than 30 characters'),
+    cnfPassword: validations.confirmPassword
+      .required('Please Re-type your password')
+      .max(30, 'Password cannot be more than 30 characters'),
   });
 
   const {
@@ -57,6 +61,7 @@ const SetPassword = () => {
     reset,
     trigger,
   } = useForm({
+    mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
       newPassword: savedFormData?.newPassword || '',
@@ -124,6 +129,7 @@ const SetPassword = () => {
                   className="input-group-merge create-password mb-75"
                   id="newPassword"
                   placeholder="Enter your password"
+                  maxLength={30}
                 />
               )}
             />
@@ -150,6 +156,7 @@ const SetPassword = () => {
                   className="input-group-merge create-password"
                   id="cnfPassword"
                   placeholder="Confirm your password"
+                  maxLength={30}
                 />
               )}
             />

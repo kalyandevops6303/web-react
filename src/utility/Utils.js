@@ -4,6 +4,9 @@ import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
 import { MessageRole, MessageType } from '@flexternships/enums/core-enums';
 import { useSelector } from 'react-redux';
+import parseMin from 'libphonenumber-js/min';
+import parseMax from 'libphonenumber-js/max';
+import parseMobile from 'libphonenumber-js/mobile';
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
@@ -33,9 +36,6 @@ import JPGIcon from '../assets/images/JPG.svg';
 import fileScanningService from '../services/fileUploadService';
 import { isFlexternshipApp } from '@/configs/api/env';
 import { userData } from '@/redux/selectors/dashboardSelectors';
-import parseMin from 'libphonenumber-js/min';
-import parseMax from 'libphonenumber-js/max';
-import parseMobile from 'libphonenumber-js/mobile';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -185,8 +185,11 @@ export const validations = {
     .matches(
       /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
       'Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one special case character.',
-    ),
-  confirmPassword: Yup.string().oneOf([Yup.ref('newPassword'), null], 'Passwords Do not match'),
+    )
+    .max(30, 'Password cannot be more than 30 characters'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('newPassword'), null], 'Passwords Do not match')
+    .max(30, 'Password cannot be more than 30 characters'),
   mobile: Yup.string()
     .trim()
     .matches(/^[0-9]/, 'Min. 10 characters required'),
