@@ -1,0 +1,99 @@
+name: Sonar Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-analyze:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        service: [ calorie-website, solar-system-CD ]
+
+    steps:
+      - name: Set service-specific variables
+        id: vars
+        run: |
+          case "${{ matrix.service }}" in
+            calorie-website)
+              echo "repo=git@github.com:kalyandevops6303/web-react.git" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.CALORIE_PK }}" >> $GITHUB_OUTPUT
+              echo "servive=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+          case "${{ matrix.service }}" in
+            solar-system-CD)
+              echo "repo=git@github.com:kalyandevops6303/web-react.git" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.CALORIE_PK }}" >> $GITHUB_OUTPUT
+              echo "servive=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      # - name: Install SSH Key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Clone Repo
+        run: git clone --branch main "${{ steps.vars.outputs.repo }}" service
+
+      # - name: Set up Python
+      #   if: steps.vars.outputs.type == 'backend'
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.x'
+
+      # - name: Set up Node.js
+      #   if: steps.vars.outputs.type == 'frontend'
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+
+      - name: Install Backend Dependencies
+        if: steps.vars.outputs.type == 'backend'
+        run: |
+          cd service
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Install Frontend Dependencies
+        if: steps.vars.outputs.type == 'frontend'
+        run: |
+          cd service
+          npm ci
+
+      - name: Run SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_URL: "https://sonar-dv.trumio.ai"
+        run: |
+          cd service
+          if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
+            sonar-scanner \
+              -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
+              -Dsonar.projectName=${{ steps.vars.outputs.service }} \
+              -Dsonar.projectVersion=1.0 \
+              -Dsonar.sources=./src \
+              -Dsonar.host.url=${SONAR_URL} \
+              -Dsonar.login=${SONAR_TOKEN}
+          else
+            source venv/bin/activate
+            sonar-scanner \
+              -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
+              -Dsonar.projectName=${{ matrix.service }} \
+              -Dsonar.projectVersion=1.0 \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=${SONAR_URL} \
+              -Dsonar.login=${SONAR_TOKEN}
+          fi
+
+      - name: Clean up
+        run: rm -rf service
