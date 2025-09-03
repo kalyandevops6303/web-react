@@ -78,8 +78,8 @@ jobs:
     #       node-version: 20
     - name: node and npm installtion
       run: |
-          sudo apt install npm
-          sudo apt install nodejs
+          sudo apt install -y npm
+          sudo apt install -y nodejs
 
     - name: Check node Installation
       run: |
