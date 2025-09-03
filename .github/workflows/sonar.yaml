@@ -24,7 +24,7 @@ jobs:
               echo "type=backend" >> $GITHUB_OUTPUT
               ;;
             solar-system-CD)
-              echo "repo=git@github.com:kalyandevops6303/solar-system-CD.git" >> $GITHUB_OUTPUT
+              echo "repo=git@github.com:kalyandevops6303/nodejs-project-demo.git" >> $GITHUB_OUTPUT
               echo "key=${{ secrets.SOLAR_PK }}" >> $GITHUB_OUTPUT
               echo "service=frontend" >> $GITHUB_OUTPUT
               echo "type=frontend" >> $GITHUB_OUTPUT
