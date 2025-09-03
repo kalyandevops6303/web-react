@@ -19,17 +19,17 @@ jobs:
         run: |
           case "${{ matrix.service }}" in
             calorie-website)
-              echo "repo=git@github.com:kalyandevops6303/web-react.git" >> $GITHUB_OUTPUT
+              echo "repo=git@github.com:kalyandevops6303/python-function.git" >> $GITHUB_OUTPUT
               echo "key=${{ secrets.CALORIE_PK }}" >> $GITHUB_OUTPUT
               echo "servive=backend" >> $GITHUB_OUTPUT
               echo "type=backend" >> $GITHUB_OUTPUT
               ;;
           case "${{ matrix.service }}" in
             solar-system-CD)
-              echo "repo=git@github.com:kalyandevops6303/web-react.git" >> $GITHUB_OUTPUT
-              echo "key=${{ secrets.CALORIE_PK }}" >> $GITHUB_OUTPUT
-              echo "servive=backend" >> $GITHUB_OUTPUT
-              echo "type=backend" >> $GITHUB_OUTPUT
+              echo "repo=git@github.com:kalyandevops6303/solar-system-CD.git" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.SOLAR_PK }}" >> $GITHUB_OUTPUT
+              echo "servive=frontend" >> $GITHUB_OUTPUT
+              echo "type=frontend" >> $GITHUB_OUTPUT
               ;;
           esac
 
@@ -73,7 +73,7 @@ jobs:
       - name: Run SonarQube Scanner
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-          SONAR_URL: "https://sonar-dv.trumio.ai"
+          SONAR_URL: "http://4.242.219.84:7500"
         run: |
           cd service
           if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
