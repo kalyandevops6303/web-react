@@ -85,7 +85,7 @@ jobs:
               -Dsonar.projectVersion=1.0 \
               -Dsonar.sources=./src \
               -Dsonar.host.url=${SONAR_URL} \
-              -Dsonar.login=${SONAR_TOKEN}
+              -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }} #${SONAR_TOKEN}
           else
             source venv/bin/activate
             sonar-scanner \
