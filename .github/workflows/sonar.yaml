@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-analyze:
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux, X64, label1]
     strategy:
       matrix:
         service: [ calorie-website, solar-system-CD ]
