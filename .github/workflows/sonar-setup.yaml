@@ -1,0 +1,89 @@
+name: Setup SonarQube, node.js and python
+
+on:
+  workflow_dispatch:
+
+jobs:
+  install-sonarqube:
+    runs-on: [self-hosted, linux, X64, label1]
+    steps:
+
+    - name: Update apt cache
+      run: sudo apt-get update
+
+    # - name: Install dependencies
+    #   run: |
+    #     sudo apt install openjdk-17-jdk -y
+        
+    # - name: Install unzip & wget
+    #   run: |
+    #     sudo apt install unzip
+    #     sudo apt install wget
+
+    # - name: Create sonar user
+    #   run: |
+    #     if ! id "sonar" &>/dev/null; then
+    #       sudo useradd -m -s /bin/bash sonar
+    #     fi
+
+    # - name: Download SonarQube
+    #   run: |
+    #     wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.4.1.88267.zip -O /tmp/sonarqube.zip
+
+    # - name: Extract SonarQube
+    #   run: |
+    #     sudo unzip /tmp/sonarqube.zip -d /opt/
+    #     sudo mv /opt/sonarqube-10.4.1.88267 /opt/sonarqube
+
+    # - name: Set ownership to sonar user
+    #   run: |
+    #     sudo chown -R sonar:sonar /opt/sonarqube
+
+    # - name: Create systemd service file for SonarQube
+    #   run: |
+    #     sudo tee /etc/systemd/system/sonarqube.service > /dev/null <<EOF
+    #     [Unit]
+    #     Description=SonarQube service
+    #     After=syslog.target network.target
+
+    #     [Service]
+    #     Type=forking
+    #     ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
+    #     ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
+    #     User=sonar
+    #     Group=sonar
+    #     Restart=always
+    #     LimitNOFILE=65536
+    #     LimitNPROC=4096
+
+    #     [Install]
+    #     WantedBy=multi-user.target
+    #     EOF
+
+    # - name: Reload systemd and enable SonarQube
+    #   run: |
+    #     sudo systemctl daemon-reexec
+    #     sudo systemctl daemon-reload
+    #     sudo systemctl enable sonarqube
+
+    # - name: Start SonarQube service
+    #   run: |
+    #     sudo systemctl start sonarqube
+    #     sudo systemctl status sonarqube --no-pager
+
+        
+    - name: Setup Node.js for frontend
+      uses: actions/setup-node@v4
+      with:
+          node-version: 20
+    - name: Check node Installation
+      run: |
+         node --version
+    - name: Setup Python for backend
+      uses: actions/setup-python@v5
+      with:
+          python-version: 3.x
+    
+    - name: Check pyhton Installation
+      run: |
+            python --version
