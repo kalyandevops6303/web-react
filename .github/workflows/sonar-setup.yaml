@@ -72,18 +72,28 @@ jobs:
     #     sudo systemctl status sonarqube --no-pager
 
         
-    - name: Setup Node.js for frontend
-      uses: actions/setup-node@v4
-      with:
-          node-version: 20
+    # - name: Setup Node.js for frontend
+    #   uses: actions/setup-node@v4
+    #   with:
+    #       node-version: 20
+    - name: node and npm installtion
+      run: |
+          sudo apt install npm
+          sudo apt install nodejs
+
     - name: Check node Installation
       run: |
          node --version
-    - name: Setup Python for backend
-      uses: actions/setup-python@v5
-      with:
-          python-version: 3.11
-    
+         npm --version
+    # - name: Setup Python for backend
+    #   uses: actions/setup-python@v5
+    #   with:
+    #       python-version: 3.11
+    - name: python installation
+      run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip python3-venv
+          sudo apt install -y python-is-python3
     - name: Check pyhton Installation
       run: |
             python --version
