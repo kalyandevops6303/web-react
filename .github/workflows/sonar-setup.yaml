@@ -99,7 +99,7 @@ jobs:
             python --version
     - name: Install SonarScanner
       run: |
-        sudo apt update
+        sudo apt install -y unzip
         sudo apt install -y openjdk-11-jre
         wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
         unzip sonar-scanner.zip
