@@ -100,5 +100,6 @@ jobs:
         #continue-on-error: true
 
       - name: Clean up
+        if: always()
         run: rm -rf service
-        continue-on-error: true
+        #continue-on-error: true
