@@ -97,6 +97,7 @@ jobs:
               -Dsonar.host.url=${SONAR_URL} \
               -Dsonar.login=${SONAR_TOKEN}
           fi
+        #continue-on-error: true
 
       - name: Clean up
         run: rm -rf service
