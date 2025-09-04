@@ -101,3 +101,4 @@ jobs:
 
       - name: Clean up
         run: rm -rf service
+        continue-on-error: true
