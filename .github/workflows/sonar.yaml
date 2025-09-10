@@ -12,6 +12,9 @@ jobs:
       fail-fast: false
       matrix:
         service: [ python-func-backend, nodejs-frontend ]
+    env:
+      SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+      SONAR_URL: "http://4.242.219.84:7500"
 
     steps:
       - name: Set service-specific variables
@@ -73,32 +76,62 @@ jobs:
           cd service
           npm ci
 
-      - name: Run SonarQube Scanner
+      - name: Run SonarQube Scanner ENV vars setup
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
           SONAR_URL: "http://4.242.219.84:7500"
-        run: |
-          cd service
-          if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
-            sonar-scanner \
-              -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
-              -Dsonar.projectName=${{ steps.vars.outputs.service }} \
-              -Dsonar.projectVersion=1.0 \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=${SONAR_URL} \
-              -Dsonar.login=${SONAR_TOKEN}
-          else
-            source venv/bin/activate
-            sonar-scanner \
-              -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
-              -Dsonar.projectName=${{ matrix.service }} \
-              -Dsonar.projectVersion=1.0 \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=${SONAR_URL} \
-              -Dsonar.login=${SONAR_TOKEN}
-          fi
+        # run: |
+        #   cd service
+        #   if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
+        #     sonar-scanner \
+        #       -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
+        #       -Dsonar.projectName=${{ steps.vars.outputs.service }} \
+        #       -Dsonar.projectVersion=1.0 \
+        #       -Dsonar.sources=. \
+        #       -Dsonar.host.url=${SONAR_URL} \
+        #       -Dsonar.login=${SONAR_TOKEN}
+        #   else
+        #     source venv/bin/activate
+        #     sonar-scanner \
+        #       -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
+        #       -Dsonar.projectName=${{ matrix.service }} \
+        #       -Dsonar.projectVersion=1.0 \
+        #       -Dsonar.sources=. \
+        #       -Dsonar.host.url=${SONAR_URL} \
+        #       -Dsonar.login=${SONAR_TOKEN}
+        #   fi
         #continue-on-error: true
+      - name: SonarQube Scan for front-end
+        if: steps.vars.outputs.type == 'frontend'
+        uses: SonarSource/sonarqube-scan-action@v5.3.1 # Use the latest version
+        env:
+          SONAR_TOKEN: ${SONAR_TOKEN}
+          SONAR_HOST_URL: ${SONAR_URL}
+        with:
+         args: >
+          -Dsonar.projectKey=${{ steps.vars.outputs.key }}
+          -Dsonar.projectName=${{ matrix.service }}
+          -Dsonar.projectVersion=1.0
+          -Dsonar.sources=/
+          
+      - name: SonarQube Scan for front-end
+        if: steps.vars.outputs.type == 'backend'
+        uses: SonarSource/sonarqube-scan-action@v5.3.1 # Use the latest version
+        env:
+          SONAR_TOKEN: ${SONAR_TOKEN}
+          SONAR_HOST_URL: ${SONAR_URL}
+        with:
+         args: >
+          -Dsonar.projectKey=${{ steps.vars.outputs.key }} 
+          -Dsonar.projectName=${{ matrix.service }} 
+          -Dsonar.projectVersion=1.0 
+          -Dsonar.sources=/
 
+            # Optional: Specify project key and name if different from repository defaults
+            # projectKey: ${{ steps.vars.outputs.key }}
+            # projectName: ${{ matrix.service }}
+            # Optional: Wait for Quality Gate status
+            # waitForQualityGate: true
       - name: Clean up
         if: always()
         run: rm -rf service
