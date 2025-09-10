@@ -78,7 +78,7 @@ jobs:
       #     if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
       - name: Run SonarQube Scanner(frontend)
         if: steps.vars.outputs.type == 'frontend'
-        uses: SonarSource/sonarcloud-github-action@v1.12.0
+        uses: SonarSource/sonarcloud-github-action@v5
         with:
           projectKey: ${{ steps.vars.outputs.key }}
           projectName: ${{ steps.vars.outputs.service }}
@@ -88,7 +88,7 @@ jobs:
           login: ${{ secrets.SONARQUBE_TOKEN }}
       - name: Run SonarQube Scanner(backend)
         if: steps.vars.outputs.type == 'backend'
-        uses: SonarSource/sonarcloud-github-action@v1.12.0
+        uses: SonarSource/sonarcloud-github-action@v5
         with:
           projectKey: ${{ steps.vars.outputs.key }}
           projectName: ${{ steps.vars.outputs.service }}
