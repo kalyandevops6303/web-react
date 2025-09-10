@@ -1,4 +1,4 @@
-name: Sonar Pipeline
+name: Trumio Sonar Pipeline
 
 on:
   workflow_dispatch:
