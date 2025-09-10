@@ -104,7 +104,7 @@ jobs:
         #continue-on-error: true
       - name: SonarQube Scan for front-end
         if: steps.vars.outputs.type == 'frontend'
-        uses: SonarSource/sonarqube-scan-action@v5.3.1 # Use the latest version
+        uses: SonarSource/sonarqube-scan-action@v5 # Use the latest version
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
           SONAR_URL: "http://4.242.219.84:7500"
@@ -115,9 +115,9 @@ jobs:
           -Dsonar.projectVersion=1.0
           -Dsonar.sources=/
           
-      - name: SonarQube Scan for front-end
+      - name: SonarQube Scan for back-end
         if: steps.vars.outputs.type == 'backend'
-        uses: SonarSource/sonarqube-scan-action@v5.3.1 # Use the latest version
+        uses: SonarSource/sonarqube-scan-action@v5 # Use the latest version
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
           SONAR_URL: "http://4.242.219.84:7500"
