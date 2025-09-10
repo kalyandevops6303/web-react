@@ -19,13 +19,13 @@ jobs:
         run: |
           case "${{ matrix.service }}" in
             python-func-backend)
-              echo "repo=kalyandevops6303/python-function" >> $GITHUB_OUTPUT
+              echo "repo=git@github.com:kalyandevops6303/python-function.git" >> $GITHUB_OUTPUT
               echo "key=${{ secrets.CALORIE_PK }}" >> $GITHUB_OUTPUT
               echo "service=backend" >> $GITHUB_OUTPUT
               echo "type=backend" >> $GITHUB_OUTPUT
               ;;
             nodejs-frontend)
-              echo "repo=kalyandevops6303/nodejs-project-demo" >> $GITHUB_OUTPUT
+              echo "repo=git@github.com:kalyandevops6303/nodejs-project-demo.git" >> $GITHUB_OUTPUT
               echo "key=${{ secrets.SOLAR_PK }}" >> $GITHUB_OUTPUT
               echo "service=frontend" >> $GITHUB_OUTPUT
               echo "type=frontend" >> $GITHUB_OUTPUT
@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v4
         with:
             fetch-depth: 0
-            repository: ${{ steps.vars.outputs.key }}
+            repository: ${{ steps.vars.outputs.repo }}
             # token: ${{ secrets.TAG_TOKEN }}
             ref: main
             submodules: true
