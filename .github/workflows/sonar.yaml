@@ -80,6 +80,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
           SONAR_URL: "http://4.242.219.84:7500"
+        run: echo "sonar ENV vars has been set"
         # run: |
         #   cd service
         #   if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
