@@ -99,17 +99,18 @@ jobs:
 
       - name: Run SonarQube Scanner(backend)
         if: steps.vars.outputs.type == 'backend'
+        env:
+         SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+         SONAR_HOST_URL: http://4.242.219.84:7500 #${{ secrets.SONARQUBE_TOKEN }}
         uses: SonarSource/sonarqube-scan-action@v5
         with:
+          projectBaseDir: service
           args: >
             -Dsonar.projectKey=${{ steps.vars.outputs.key }}
             -Dsonar.projectName=${{ matrix.service }}
             -Dsonar.projectVersion=1.0
             -Dsonar.sources=.
-            -Dsonar.host.url=http://4.242.219.84:7500
-            -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
-          projectBaseDir: service
-
+          
         #continue-on-error: true
 
       - name: Clean up
