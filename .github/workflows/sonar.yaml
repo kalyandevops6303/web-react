@@ -46,9 +46,16 @@ jobs:
         run: |
          rm -rf service
 
-      - name: Clone Repo
-        run: git clone --branch main "${{ steps.vars.outputs.repo }}" service
-
+      # - name: Clone Repo
+      #   run: git clone --branch main "${{ steps.vars.outputs.repo }}" service
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+            repository: ${{ env.repo_path }}
+            # token: ${{ secrets.TAG_TOKEN }}
+            ref: tru-dev
+            submodules: true
       # - name: Set up Python
       #   if: steps.vars.outputs.type == 'backend'
       #   uses: actions/setup-python@v5
