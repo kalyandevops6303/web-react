@@ -116,6 +116,7 @@ jobs:
           -Dsonar.projectVersion=1.0
           -Dsonar.sources=/
           -Dsonar.scanner.skipJreProvisioning=true
+          -Dsonar.host.url=http://4.242.219.84:7500
           
       - name: SonarQube Scan for back-end
         if: steps.vars.outputs.type == 'backend'
@@ -131,6 +132,7 @@ jobs:
           -Dsonar.projectVersion=1.0 
           -Dsonar.sources=/
           -Dsonar.scanner.skipJreProvisioning=true
+          -Dsonar.host.url=http://4.242.219.84:7500
       - name: Clean up
         if: always()
         run: rm -rf service
