@@ -12,9 +12,9 @@ jobs:
       fail-fast: false
       matrix:
         service: [ python-func-backend, nodejs-frontend ]
-    # env:
-    #   SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-    #   SONAR_URL: "http://4.242.219.84:7500"
+    env:
+      SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+      SONAR_URL: "http://4.242.219.84:7500"
 
     steps:
       - name: Set service-specific variables
@@ -76,11 +76,11 @@ jobs:
           cd service
           npm ci
 
-      - name: Run SonarQube Scanner ENV vars setup
-        env:
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-          SONAR_URL: "http://4.242.219.84:7500"
-        run: echo "sonar ENV vars has been set"
+      # - name: Run SonarQube Scanner ENV vars setup
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+      #     SONAR_URL: "http://4.242.219.84:7500"
+      #   run: echo "sonar ENV vars has been set"
         # run: |
         #   cd service
         #   if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
