@@ -127,12 +127,6 @@ jobs:
           -Dsonar.projectName=${{ matrix.service }} 
           -Dsonar.projectVersion=1.0 
           -Dsonar.sources=/
-
-            # Optional: Specify project key and name if different from repository defaults
-            # projectKey: ${{ steps.vars.outputs.key }}
-            # projectName: ${{ matrix.service }}
-            # Optional: Wait for Quality Gate status
-            # waitForQualityGate: true
       - name: Clean up
         if: always()
         run: rm -rf service
