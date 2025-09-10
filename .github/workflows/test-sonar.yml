@@ -82,8 +82,8 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         with:
           args: >
-            -Dsonar.projectKey=my-project-key
-            -Dsonar.projectName=my-project-name
+            -Dsonar.projectKey=${{ steps.vars.outputs.key }}
+            -Dsonar.projectName=${{ matrix.service }}
             -Dsonar.projectVersion=1.0
             -Dsonar.sources=.
             -Dsonar.host.url=http://4.242.219.84:7500
@@ -95,8 +95,8 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         with:
           args: >
-            -Dsonar.projectKey=my-project-key
-            -Dsonar.projectName=my-project-name
+            -Dsonar.projectKey=${{ steps.vars.outputs.key }}
+            -Dsonar.projectName=${{ matrix.service }}
             -Dsonar.projectVersion=1.0
             -Dsonar.sources=.
             -Dsonar.host.url=http://4.242.219.84:7500
