@@ -45,9 +45,9 @@ jobs:
         uses: actions/checkout@v4
         with:
             fetch-depth: 0
-            repository: ${{ env.repo_path }}
+            repository: ${{ steps.vars.outputs.key }}
             # token: ${{ secrets.TAG_TOKEN }}
-            ref: tru-dev
+            ref: main
             submodules: true
             path: service
 
