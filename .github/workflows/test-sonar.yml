@@ -76,22 +76,25 @@ jobs:
         run: |
           cd service
           if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
-            sonar-scanner \
-              -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
-              -Dsonar.projectName=${{ steps.vars.outputs.service }} \
-              -Dsonar.projectVersion=1.0 \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=${SONAR_URL} \
-              -Dsonar.login=${SONAR_TOKEN}
+          - name: Run SonarQube Scanner
+            uses: SonarSource/sonarcloud-github-action@v1.12.0
+            with:
+              projectKey: ${{ steps.vars.outputs.key }}
+              projectName: ${{ steps.vars.outputs.service }}
+              projectVersion: '1.0'
+              sources: 'service'
+              hostUrl: 'http://4.242.219.84:7500'
+              login: ${{ secrets.SONARQUBE_TOKEN }}
           else
-            source venv/bin/activate
-            sonar-scanner \
-              -Dsonar.projectKey=${{ steps.vars.outputs.key }} \
-              -Dsonar.projectName=${{ matrix.service }} \
-              -Dsonar.projectVersion=1.0 \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=${SONAR_URL} \
-              -Dsonar.login=${SONAR_TOKEN}
+          - name: Run SonarQube Scanner
+            uses: SonarSource/sonarcloud-github-action@v1.12.0
+            with:
+              projectKey: ${{ steps.vars.outputs.key }}
+              projectName: ${{ steps.vars.outputs.service }}
+              projectVersion: '1.0'
+              sources: 'service'
+              hostUrl: 'http://4.242.219.84:7500'
+              login: ${{ secrets.SONARQUBE_TOKEN }}
           fi
         #continue-on-error: true
 
