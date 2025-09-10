@@ -71,7 +71,7 @@ jobs:
       - name: Install Backend Dependencies
         if: steps.vars.outputs.type == 'backend'
         run: |
-          cd service
+          # cd service
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
@@ -80,7 +80,7 @@ jobs:
       - name: Install Frontend Dependencies
         if: steps.vars.outputs.type == 'frontend'
         run: |
-          cd service
+          # cd service
           npm ci
 
       # - name: Run SonarQube Scanner ENV vars setup
