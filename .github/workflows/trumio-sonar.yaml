@@ -1,0 +1,158 @@
+name: Sonar Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+      - cron: '30 8 * * *'
+
+jobs:
+  build-and-analyze:
+    runs-on: [self-hosted, linux, X64, label1]
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ user_be, dashboard_be, admin_be, ai_assist_be,project_be, jobs_be, notification_be, projectv2_be,admin_fe, frontend ]
+
+    steps:
+      - name: Set service-specific variables
+        id: vars
+        run: |
+          case "${{ matrix.service }}" in
+            frontend)
+              echo "repo=trumio/trumio-web-react" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.FRONTEND_PK }}" >> $GITHUB_OUTPUT
+              echo "servive=frontend" >> $GITHUB_OUTPUT
+              echo "type=frontend" >> $GITHUB_OUTPUT
+              ;;
+            admin_fe)
+              echo "repo=trumio/trumio-admin-react" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.ADMIN_FE_PK }}" >> $GITHUB_OUTPUT
+              echo "service=frontend" >> $GITHUB_OUTPUT
+              echo "type=frontend" >> $GITHUB_OUTPUT
+              ;;
+            user_be)
+              echo "repo=trumio/trumio-user-management-be" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.USER_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+            dashboard_be)
+              echo "repo=trumio/trumio-dashboard-be" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.DASHBOARD_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+            admin_be)
+              echo "repo=trumio/trumio-admin-backend" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.ADMIN_BE_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+            ai_assist_be)
+              echo "repo=trumio/trumio-ai-assist-be" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.AI_ASSIST_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+            project_be)
+              echo "repo=trumio/trumio-project-management-be" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.PROJECT_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+            jobs_be)
+              echo "repo=trumio/trumio-jobs-be" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.PROJECT_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+            notification_be)
+              echo "repo=trumio/trumio-notification-be" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.NOTIFICATION_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+            projectv2_be)
+              echo "repo=trumio/project-management-be-v2" >> $GITHUB_OUTPUT
+              echo "key=${{ secrets.PROJECT_V2_PK }}" >> $GITHUB_OUTPUT
+              echo "service=backend" >> $GITHUB_OUTPUT
+              echo "type=backend" >> $GITHUB_OUTPUT
+              ;;
+          esac
+      # - name: Install SSH Key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
+          
+      - name: Clean existing service directory
+        run: |
+         rm -rf service
+         
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+            repository: ${{ steps.vars.outputs.repo }}
+            token: ${{ secrets.TAG_TOKEN }}
+            ref: main
+            submodules: true
+            path: service
+  
+      - name: Set up Node.js
+        if: steps.vars.outputs.type == 'frontend'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      
+      - name: Install Frontend Dependencies
+        if: steps.vars.outputs.type == 'frontend'
+        run: |
+          cd service
+          npm ci
+          
+      - name: Run SonarQube Scanner(frontend)
+        if: steps.vars.outputs.type == 'frontend'
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+         SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+         SONAR_HOST_URL: http://4.242.219.84:7500 #${{ secrets.SONARQUBE_TOKEN }}
+        with:
+          projectBaseDir: service
+          args: >
+            -Dsonar.projectKey=${{ steps.vars.outputs.key }}
+            -Dsonar.projectName=${{ matrix.service }}
+            -Dsonar.projectVersion=1.0
+            -Dsonar.sources=.
+      
+      - name: Set up Python
+        if: steps.vars.outputs.type == 'backend'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Backend Dependencies
+        if: steps.vars.outputs.type == 'backend'
+        run: |
+          cd service
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Run SonarQube Scanner(backend)
+        if: steps.vars.outputs.type == 'backend'
+        env:
+         SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+         SONAR_HOST_URL: http://4.242.219.84:7500 #${{ secrets.SONARQUBE_TOKEN }}
+        uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          projectBaseDir: service
+          args: >
+            -Dsonar.projectKey=${{ steps.vars.outputs.key }}
+            -Dsonar.projectName=${{ matrix.service }}
+            -Dsonar.projectVersion=1.0
+            -Dsonar.sources=.
+      - name: Clean up
+        if: always()
+        run: rm -rf service
