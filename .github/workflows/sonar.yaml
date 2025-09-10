@@ -114,6 +114,7 @@ jobs:
           -Dsonar.projectName=${{ matrix.service }}
           -Dsonar.projectVersion=1.0
           -Dsonar.sources=/
+          -Dsonar.scanner.skipJreProvisioning=true
           
       - name: SonarQube Scan for back-end
         if: steps.vars.outputs.type == 'backend'
@@ -127,6 +128,7 @@ jobs:
           -Dsonar.projectName=${{ matrix.service }} 
           -Dsonar.projectVersion=1.0 
           -Dsonar.sources=/
+          -Dsonar.scanner.skipJreProvisioning=true
       - name: Clean up
         if: always()
         run: rm -rf service
