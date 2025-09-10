@@ -19,13 +19,13 @@ jobs:
         run: |
           case "${{ matrix.service }}" in
             python-func-backend)
-              echo "repo=git@github.com:kalyandevops6303/python-function.git" >> $GITHUB_OUTPUT
+              echo "repo=kalyandevops6303/python-function" >> $GITHUB_OUTPUT
               echo "key=${{ secrets.CALORIE_PK }}" >> $GITHUB_OUTPUT
               echo "service=backend" >> $GITHUB_OUTPUT
               echo "type=backend" >> $GITHUB_OUTPUT
               ;;
             nodejs-frontend)
-              echo "repo=git@github.com:kalyandevops6303/nodejs-project-demo.git" >> $GITHUB_OUTPUT
+              echo "repo=kalyandevops6303/nodejs-project-demo" >> $GITHUB_OUTPUT
               echo "key=${{ secrets.SOLAR_PK }}" >> $GITHUB_OUTPUT
               echo "service=frontend" >> $GITHUB_OUTPUT
               echo "type=frontend" >> $GITHUB_OUTPUT
