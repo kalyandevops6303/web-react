@@ -76,26 +76,20 @@ jobs:
         run: |
           cd service
           npm ci
-      # - name: Run SonarQube Scanner
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-      #     SONAR_URL: "http://4.242.219.84:7500"
-      #   run: |
-      #     cd service
-      #     if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
       
       - name: Run SonarQube Scanner(frontend)
         if: steps.vars.outputs.type == 'frontend'
         uses: SonarSource/sonarqube-scan-action@v5
+        env:
+         SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+         SONAR_HOST_URL: http://4.242.219.84:7500 #${{ secrets.SONARQUBE_TOKEN }}
         with:
+          projectBaseDir: service
           args: >
             -Dsonar.projectKey=${{ steps.vars.outputs.key }}
             -Dsonar.projectName=${{ matrix.service }}
             -Dsonar.projectVersion=1.0
             -Dsonar.sources=.
-            -Dsonar.host.url=http://4.242.219.84:7500
-            -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
-          projectBaseDir: service
 
       - name: Run SonarQube Scanner(backend)
         if: steps.vars.outputs.type == 'backend'
