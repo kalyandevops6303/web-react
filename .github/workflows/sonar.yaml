@@ -12,9 +12,9 @@ jobs:
       fail-fast: false
       matrix:
         service: [ python-func-backend, nodejs-frontend ]
-    env:
-      SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-      SONAR_URL: "http://4.242.219.84:7500"
+    # env:
+    #   SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+    #   SONAR_URL: "http://4.242.219.84:7500"
 
     steps:
       - name: Set service-specific variables
