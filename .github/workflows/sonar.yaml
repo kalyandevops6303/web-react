@@ -81,7 +81,7 @@ jobs:
         if: steps.vars.outputs.type == 'frontend'
         run: |
           # cd service
-          npm install #npm ci
+          npm install --force or --legacy-peer-deps #npm ci
 
       # - name: Run SonarQube Scanner ENV vars setup
       #   env:
