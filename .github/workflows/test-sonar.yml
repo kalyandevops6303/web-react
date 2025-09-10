@@ -76,26 +76,33 @@ jobs:
       #   run: |
       #     cd service
       #     if [[ "${{ steps.vars.outputs.type }}" == "frontend" ]]; then
+      
       - name: Run SonarQube Scanner(frontend)
         if: steps.vars.outputs.type == 'frontend'
-        uses: SonarSource/sonarcloud-github-action@v5
+        uses: SonarSource/sonarqube-scan-action@v5
         with:
-          projectKey: ${{ steps.vars.outputs.key }}
-          projectName: ${{ steps.vars.outputs.service }}
-          projectVersion: '1.0'
-          sources: 'service'
-          hostUrl: 'http://4.242.219.84:7500'
-          login: ${{ secrets.SONARQUBE_TOKEN }}
+          args: >
+            -Dsonar.projectKey=my-project-key
+            -Dsonar.projectName=my-project-name
+            -Dsonar.projectVersion=1.0
+            -Dsonar.sources=.
+            -Dsonar.host.url=http://4.242.219.84:7500
+            -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+          projectBaseDir: service
+
       - name: Run SonarQube Scanner(backend)
         if: steps.vars.outputs.type == 'backend'
-        uses: SonarSource/sonarcloud-github-action@v5
+        uses: SonarSource/sonarqube-scan-action@v5
         with:
-          projectKey: ${{ steps.vars.outputs.key }}
-          projectName: ${{ steps.vars.outputs.service }}
-          projectVersion: '1.0'
-          sources: 'service'
-          hostUrl: 'http://4.242.219.84:7500'
-          login: ${{ secrets.SONARQUBE_TOKEN }}
+          args: >
+            -Dsonar.projectKey=my-project-key
+            -Dsonar.projectName=my-project-name
+            -Dsonar.projectVersion=1.0
+            -Dsonar.sources=.
+            -Dsonar.host.url=http://4.242.219.84:7500
+            -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+          projectBaseDir: service
+
         #continue-on-error: true
 
       - name: Clean up
