@@ -376,6 +376,13 @@ jobs:
 
         az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-mon-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
         --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name monitor-${{ github.event.inputs.env_name }}.trumio.ai
+
+#backend seeting for project-advisor
+    - name: Backend settings-project-advisor-swa
+      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      run: |
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.PROJECT_ADV_STATIC_WEBAPP_HOSTNAME }}
         
     - name: Backend settings-wipro-lti-ust
       if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-ust'}}
