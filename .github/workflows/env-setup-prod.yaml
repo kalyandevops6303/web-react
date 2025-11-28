@@ -31,13 +31,13 @@ on:
         options:
           - frontend-swa
       project_adv_service:
-        description: 'select only if project advisor service has to be deployed on the Env'
+        description: 'choose if project advisor service has to be deployed on the Env'
         required: false
         type: choice
         default : ""
         options:
-          - N/A
-          - project-adv-swa
+          - yes
+          - no
       mio_int_service:
         description: 'select only if projectadvisor service has to be deployed on the Env'
         required: false
@@ -208,21 +208,21 @@ jobs:
         --location EastUs2 --sku Standard --source https://github.com/trumio/trumio-web-react --branch tru-prod --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
         echo "Azure Frontend Static webapp created successfully!"
     - name: Project-advisor Static Webapp
-      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      if: ${{ github.event.inputs.project_adv_service == 'project-adv-swa' }}
       run: |
         # Project-advisor static webapp creation
         az staticwebapp create --name swa-proj-adv-${{ github.event.inputs.client_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 \
         --location EastUs2 --sku Standard --source https://github.com/trumio/flex-project-advisor-fe --branch tru-prod --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
         echo "Azure Project-advisor Static webapp created successfully!"
     - name: Mio-interview Static Webapp
-      if: ${{ github.event.inputs.frontend_service == 'mio-interview-swa' }}
+      if: ${{ github.event.inputs.mio_int_service == 'mio-interview-swa' }}
       run: |
         # mio-interview static webapp creation
         az staticwebapp create --name swa-mio-int-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 \
         --location EastUs2 --sku Standard --source https://github.com/trumio/flex-mio-interviews-fe --branch tru-prod --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
         echo "Azure mio-interview Static webapp created successfully!"
     - name: org-admin Static Webapp
-      if: ${{ github.event.inputs.frontend_service == 'org-admin-swa' }}
+      if: ${{ github.event.inputs.org_adm_service == 'org-admin-swa' }}
       run: |
         # org-admin static webapp creation
         az staticwebapp create --name swa-org-adm-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 \
@@ -238,21 +238,21 @@ jobs:
         echo "STATIC_WEBAPP_HOSTNAME=$STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
 
     - name: Retrieve webapp id & host(project-advisor)
-      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      if: ${{ github.event.inputs.project_adv_service == 'project-adv-swa' }}
       run: |
         PROJECT_ADV_STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-proj-adv-${{ github.event.inputs.client_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "id" --output tsv)
         PROJECT_ADV_STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-proj-adv-${{ github.event.inputs.client_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "defaultHostname" --output tsv)
         echo "PROJECT_ADV_STATIC_WEBAPP_ID=$PROJECT_ADV_STATIC_WEBAPP_ID" >> $GITHUB_ENV
         echo "PROJECT_ADV_STATIC_WEBAPP_HOSTNAME=$PROJECT_ADV_STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
     - name: Retrieve webapp id & host(mio-interview)
-      if: ${{ github.event.inputs.frontend_service == 'mio-interview-swa' }}
+      if: ${{ github.event.inputs.mio_int_service == 'mio-interview-swa' }}
       run: |
         MIO_INT_STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-mio-int-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "id" --output tsv)
         MIO_INT_STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-mio-int-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "defaultHostname" --output tsv)
         echo "MIO_INT_STATIC_WEBAPP_ID=$MIO_INT_STATIC_WEBAPP_ID" >> $GITHUB_ENV
         echo "MIO_INT_STATIC_WEBAPP_HOSTNAME=$MIO_INT_STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
     - name: Retrieve webapp id & host(org-admin)
-      if: ${{ github.event.inputs.frontend_service == 'org-admin-swa' }}
+      if: ${{ github.event.inputs.org_adm_service == 'org-admin-swa' }}
       run: |
         ORG_ADM_STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-org-adm-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "id" --output tsv)
         ORG_ADM_STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-org-adm-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "defaultHostname" --output tsv)
@@ -345,17 +345,17 @@ jobs:
     #       az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-adm-wbapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.ADM_STATIC_WEBAPP_HOSTNAME }}
 
     - name: Backend pool for project-advisor-fe
-      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      if: ${{ github.event.inputs.project_adv_service == 'project-adv-swa' }}
       run: |
           az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-proj-adv-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.PROJECT_ADV_STATIC_WEBAPP_HOSTNAME }} 
 
     - name: Backend pool for mio-interview-fe
-      if: ${{ github.event.inputs.frontend_service == 'mio-interview-swa' }}
+      if: ${{ github.event.inputs.mio_int_service == 'mio-interview-swa' }}
       run: |
           az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-mio-int-swa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.MIO_INT_STATIC_WEBAPP_HOSTNAME }}
 
     - name: Backend pool for org-admin-fe
-      if: ${{ github.event.inputs.frontend_service == 'org-admin-swa' }}
+      if: ${{ github.event.inputs.org_adm_service == 'org-admin-swa' }}
       run: |
           az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-mio-int-swa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.ORG_ADM_STATIC_WEBAPP_HOSTNAME }}
 
@@ -377,13 +377,26 @@ jobs:
         az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-mon-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
         --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name monitor-${{ github.event.inputs.env_name }}.trumio.ai
 
-#backend seeting for project-advisor
+#backend seeting for project-advisor-swa
     - name: Backend settings-project-advisor-swa
-      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      if: ${{ github.event.inputs.project_adv_service == 'project-adv-swa' }}
       run: |
         az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
         --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.PROJECT_ADV_STATIC_WEBAPP_HOSTNAME }}
         
+#backend seeting for mio-interview-swa
+    - name: Backend settings-mio-interview-swa
+      if: ${{ github.event.inputs.mio_int_service == 'mio-interview-swa' }}
+      run: |
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.MIO_INT_STATIC_WEBAPP_HOSTNAME }}
+#backend seeting for org-admin
+    - name: Backend settings-project-advisor-swa
+      if: ${{ github.event.inputs.org_adm_service == 'org-admin-swa' }}
+      run: |
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.ORG_ADM_STATIC_WEBAPP_HOSTNAME }}
+
     - name: Backend settings-wipro-lti-ust
       if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-ust'}}
       run: |
@@ -453,6 +466,18 @@ jobs:
           --frontend-port 443 \
           --ssl-cert trumio-ai-pfx-2025 \
           --host-name monitor-${{ github.event.inputs.env_name }}.trumio.ai
+#listener for org-admin-swa
+    - name: Listener for org-admin-swa
+      if: ${{ github.event.inputs.frontend_service == 'yes' }}
+      run: |
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-org-adm-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name ${{ github.event.inputs.client_name }}.trumio.ai
 
     - name: Listeners - wipro-lti-ust
       if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-ust' }}
@@ -531,6 +556,27 @@ jobs:
 
         az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-mon-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
         --path /ready --interval 300 --timeout 60 --threshold 5 --match-status-codes 200-399 --host-name-from-settings false
+
+# health probe for project-advisor
+    - name: Health-probe
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |   
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-webapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path / --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false
+
+# health probe for mio-interview
+    - name: Health-probe
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |   
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-webapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path / --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false
+
+# health probe for org-admin
+    - name: Health-probe
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |   
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-webapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path / --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false
 
     - name: Health-probe
       if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-app-wipro' || github.event.inputs.env_name == 'tru-ust'}}
