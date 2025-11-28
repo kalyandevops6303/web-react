@@ -44,7 +44,7 @@ on:
         type: choice
         default : ""
         options:
-          - 
+          - N/A
           - mio-interview-swa
       org_adm_service:
         description: 'select the input if project advisor service has to be deployed on the Env'
@@ -52,6 +52,7 @@ on:
         type: choice
         default : ""
         options:
+          - N/A
           - org-admin-swa
       region:
         description: 'Choose deployment region'
