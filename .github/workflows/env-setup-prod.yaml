@@ -31,7 +31,7 @@ on:
         options:
           - frontend-swa
       project_adv_service:
-        description: 'select the input if project advisor service has to be deployed on the Env'
+        description: 'select only if project advisor service has to be deployed on the Env'
         required: false
         type: choice
         default : ""
@@ -47,7 +47,7 @@ on:
           - N/A
           - mio-interview-swa
       org_adm_service:
-        description: 'select the input if project advisor service has to be deployed on the Env'
+        description: 'select only if project advisor service has to be deployed on the Env'
         required: false
         type: choice
         default : ""
