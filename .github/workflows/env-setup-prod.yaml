@@ -1,0 +1,571 @@
+name: Env-setup-prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      env_name:
+        description: 'Name of new environment'
+        required: true
+        type: choice
+        options:
+          - tru-prod
+          - tru-wipro
+          - tru-lti
+          - tru-app-wipro
+          - tru-ust
+      client_name:
+        description: 'Name of the client'
+        required: true
+        type: choice
+        options:
+          - tru-app
+          - wipro
+          - ltim
+          - tru-app-wipro
+          - ust
+      frontend_service:
+        description: 'select frontend static webapp'
+        required: true
+        type: choice
+        default : "frontend"
+        options:
+          - frontend-swa
+      project_adv_service:
+        description: 'select the input if project advisor service has to be deployed on the Env'
+        required: false
+        type: choice
+        default : ""
+        options:
+          - project-adv-swa
+      mio_int_service:
+        description: 'select only if projectadvisor service has to be deployed on the Env'
+        required: false
+        type: choice
+        default : ""
+        options:
+          - mio-interview-swa
+      org_adm_service:
+        description: 'select the input if project advisor service has to be deployed on the Env'
+        required: false
+        type: choice
+        default : ""
+        options:
+          - org-admin-swa
+      region:
+        description: 'Choose deployment region'
+        required: true
+        type: choice
+        options:
+          - eastus2
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  env-setup:
+    runs-on: trumio-prod-orgrunner
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Install Azure cli        
+      run: |
+            sudo apt-get install ca-certificates curl apt-transport-https lsb-release
+            curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+            AZ_REPO=$(lsb_release -cs)
+            echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+            sudo apt-get update
+            sudo apt-get install azure-cli
+
+    - name: Set Azure environment
+      id: azure
+      run: |
+            echo "azure_clientid=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "azure_tenantid=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
+            echo "azure_subscriptionid=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "azure_clientsecret=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+      shell: bash
+       
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: '{"clientId":"${{ env.azure_clientid }}","clientSecret":"${{ env.azure_clientsecret }}","subscriptionId":"${{ env.azure_subscriptionid }}","tenantId":"${{ env.azure_tenantid }}"}'
+
+  ############### Resource group ###########################
+    - name: Resource group creation
+      run: |
+         az group create --name rg-${{ github.event.inputs.env_name }}-eus2-01 --location ${{ github.event.inputs.region }}    
+        
+   ############### Storage account configuration ###########################
+    - name: Set Storage account variables
+      id: storage_name
+      run: |
+        ENV_NAME="${{ github.event.inputs.env_name }}"
+        STORAGE_ACCOUNT_NAME=$(echo $ENV_NAME | tr -d '-')
+
+        echo "backend_storage=${STORAGE_ACCOUNT_NAME}" >> $GITHUB_ENV
+        echo "monitor_storage=${STORAGE_ACCOUNT_NAME}" >> $GITHUB_ENV
+        echo "nodepool_name=${STORAGE_ACCOUNT_NAME}" >> $GITHUB_ENV
+        
+    - name: App-Storage account
+      id: storage
+      run: |
+        az storage account create --name saapi${{ env.backend_storage }}eus2 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --location ${{ github.event.inputs.region }} --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true && \
+        az storage container create --name trumio-public --account-name saapi${{ env.backend_storage }}eus2 --public-access blob && \
+        az storage container create --name trumio-private --account-name saapi${{ env.backend_storage }}eus2 && \
+        az storage account update --name saapi${{ env.backend_storage }}eus2 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --allow-blob-public-access false
+        echo "Azure Storage account-App created successfully!"
+
+    - name: Secret time-lapse
+      run: sleep 15s
+      shell: bash
+
+    - name: Retrieve storage access key
+      id: access_key
+      run: |
+        STORAGE_KEY=$(az storage account keys list -g rg-${{ github.event.inputs.env_name }}-eus2-01 -n saapi${{ env.backend_storage }}eus2 --query [0].value -o tsv)
+        echo "STORAGE_KEY=$STORAGE_KEY" >> $GITHUB_ENV
+
+    # - name: Storage account CORS
+    #   run: |
+    #     az storage cors add --methods GET PUT --origins https://${{ github.event.inputs.client_name }}.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+    #     az storage cors add --methods GET PUT --origins https://${{ github.event.inputs.client_name }}-api.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+        
+    # Tru-Prod CORS Setup
+    - name: Storage account CORS - tru-prod
+      if: ${{ github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az storage cors add --methods GET PUT --origins https://${{ github.event.inputs.client_name }}.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+        az storage cors add --methods GET PUT --origins https://tru-api.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+
+    # Tru-Wipro & Tru-LTI CORS Setup
+    - name: Storage account CORS - tru-wipro/lti/ust
+      if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-ust' }}
+      run: |
+        az storage cors add --methods GET PUT --origins https://${{ github.event.inputs.client_name }}.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+        az storage cors add --methods GET PUT OPTIONS --origins https://${{ github.event.inputs.client_name }}-ft-api.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+
+   # Tru-App-Wipro CORS Setup
+    - name: Storage account CORS - tru-app-wipro
+      if: ${{ github.event.inputs.env_name == 'tru-app-wipro' }}
+      run: |
+        az storage cors add --methods GET PUT --origins https://${{ github.event.inputs.client_name }}.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+        az storage cors add --methods GET PUT OPTIONS --origins https://tru-api-wipro.trumio.ai --services b --account-key ${{ env.STORAGE_KEY }} --account-name saapi${{ env.backend_storage }}eus2 --allowed-headers '*' --exposed-headers content-length --max-age 200     
+    
+    - name: Adm-Storage account
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az storage account create --name saadmprodeus2 --resource-group rg-cm-prod-eus2-01 --location ${{ github.event.inputs.region }} --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true && \
+        az storage container create --name tru-public --account-name saadmprodeus2 --public-access blob && \
+        az storage container create --name tru-private --account-name saadmprodeus2 && \
+        az storage account update --name saadmprodeus2 --resource-group rg-cm-prod-eus2-01 --allow-blob-public-access false
+        echo "Azure Storage account-App created successfully!"
+
+    - name: SA time-lapse
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: sleep 15s
+      shell: bash
+
+    - name: Retrieve storage access key
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        STORAGE_KEY=$(az storage account keys list -g rg-cm-prod-eus2-01 -n saadmprodeus2 --query [0].value -o tsv)
+        echo "ADM_STORAGE_KEY=$STORAGE_KEY" >> $GITHUB_ENV
+        
+    - name: Storage account CORS
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az storage cors add --methods GET PUT --origins https://admin.trumio.ai --services b --account-key ${{ env.ADM_STORAGE_KEY}} --account-name saadmprodeus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+        az storage cors add --methods GET PUT OPTIONS --origins https://admin-api.trumio.ai --services b --account-key ${{ env.ADM_STORAGE_KEY}} --account-name saadmprodeus2 --allowed-headers '*' --exposed-headers content-length --max-age 200
+
+    - name: Loki-Storage account
+      run: |
+        az storage account create --name samon${{ env.backend_storage }}eus2 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --location ${{ github.event.inputs.region }} --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true && \
+        az storage container create --name lokidata-${{ github.event.inputs.env_name }} --account-name samon${{ env.backend_storage }}eus2 --public-access container && \
+        az storage account update --name samon${{ env.backend_storage }}eus2 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --allow-blob-public-access false
+        echo "Azure Storage account-Loki created successfully!"
+    
+
+ ############### Evengrid topic ###########################
+   # Creation of Eventgrid topic
+    - name: Evengrid topic
+      run: |
+        az eventgrid topic create -g rg-${{ github.event.inputs.env_name }}-eus2-01 --name evgt-api-${{ github.event.inputs.env_name }}-eus2-01 -l ${{ github.event.inputs.region }} --sku Basic
+        echo "Azure Evengrid topic created successfully!"
+
+ ###############Static Webapp ###########################
+
+    - name: Frontend Static Webapp
+      if: ${{ github.event.inputs.frontend_service == 'frontend-swa' }}
+      run: |
+        # frontend static webapp creation
+        az staticwebapp create --name swa-api-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 \
+        --location EastUs2 --sku Standard --source https://github.com/trumio/trumio-web-react --branch tru-prod --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
+        echo "Azure Frontend Static webapp created successfully!"
+    - name: Project-advisor Static Webapp
+      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      run: |
+        # Project-advisor static webapp creation
+        az staticwebapp create --name swa-proj-adv-${{ github.event.inputs.client_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 \
+        --location EastUs2 --sku Standard --source https://github.com/trumio/flex-project-advisor-fe --branch tru-prod --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
+        echo "Azure Project-advisor Static webapp created successfully!"
+    - name: Mio-interview Static Webapp
+      if: ${{ github.event.inputs.frontend_service == 'mio-interview-swa' }}
+      run: |
+        # mio-interview static webapp creation
+        az staticwebapp create --name swa-mio-int-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 \
+        --location EastUs2 --sku Standard --source https://github.com/trumio/flex-mio-interviews-fe --branch tru-prod --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
+        echo "Azure mio-interview Static webapp created successfully!"
+    - name: org-admin Static Webapp
+      if: ${{ github.event.inputs.frontend_service == 'org-admin-swa' }}
+      run: |
+        # org-admin static webapp creation
+        az staticwebapp create --name swa-org-adm-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 \
+        --location EastUs2 --sku Standard --source https://github.com/trumio/flex-org-admin-fe --branch tru-prod --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
+        echo "Azure org-admin Static webapp created successfully!"
+
+    - name: Retrieve webapp id & host(frontend)
+      if: ${{ github.event.inputs.frontend_service == 'frontend-swa' }}
+      run: |
+        STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-api-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "id" --output tsv)
+        STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-api-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "defaultHostname" --output tsv)
+        echo "STATIC_WEBAPP_ID=$STATIC_WEBAPP_ID" >> $GITHUB_ENV
+        echo "STATIC_WEBAPP_HOSTNAME=$STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
+
+    - name: Retrieve webapp id & host(project-advisor)
+      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      run: |
+        PROJECT_ADV_STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-proj-adv-${{ github.event.inputs.client_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "id" --output tsv)
+        PROJECT_ADV_STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-proj-adv-${{ github.event.inputs.client_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "defaultHostname" --output tsv)
+        echo "PROJECT_ADV_STATIC_WEBAPP_ID=$PROJECT_ADV_STATIC_WEBAPP_ID" >> $GITHUB_ENV
+        echo "PROJECT_ADV_STATIC_WEBAPP_HOSTNAME=$PROJECT_ADV_STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
+    - name: Retrieve webapp id & host(mio-interview)
+      if: ${{ github.event.inputs.frontend_service == 'mio-interview-swa' }}
+      run: |
+        MIO_INT_STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-mio-int-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "id" --output tsv)
+        MIO_INT_STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-mio-int-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "defaultHostname" --output tsv)
+        echo "MIO_INT_STATIC_WEBAPP_ID=$MIO_INT_STATIC_WEBAPP_ID" >> $GITHUB_ENV
+        echo "MIO_INT_STATIC_WEBAPP_HOSTNAME=$MIO_INT_STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
+    - name: Retrieve webapp id & host(org-admin)
+      if: ${{ github.event.inputs.frontend_service == 'org-admin-swa' }}
+      run: |
+        ORG_ADM_STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-org-adm-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "id" --output tsv)
+        ORG_ADM_STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-org-adm-${{ github.event.inputs.env_name }}-eus2-01 --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --query "defaultHostname" --output tsv)
+        echo "ORG_ADM_STATIC_WEBAPP_ID=$ORG_ADM_STATIC_WEBAPP_ID" >> $GITHUB_ENV
+        echo "ORG_ADM_STATIC_WEBAPP_HOSTNAME=$ORG_ADM_STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
+
+    # - name: Static webapp
+    #   if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+    #   run: |
+    #     az staticwebapp create --name swa-adm-prod-eus2-01 --resource-group rg-cm-prod-eus2-01 \
+    #     --location EastUs2 --sku Standard --source https://github.com/trumio/flex-tpa-admin-fe --branch production --token ${{ secrets.WEBAPP_TOKEN }} --app-location "/" --output-location "build"
+    #     echo "Azure Static webapp created successfully!"
+
+    # - name: Retrieve webapp id & host
+    #   if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+    #   run: |
+    #     STATIC_WEBAPP_ID=$(az staticwebapp show --name swa-adm-prod-eus2-01 --resource-group rg-cm-prod-eus2-01 --query "id" --output tsv)
+    #     STATIC_WEBAPP_HOSTNAME=$(az staticwebapp show --name swa-adm-prod-eus2-01 --resource-group rg-cm-prod-eus2-01 --query "defaultHostname" --output tsv)
+    #     echo "ADM_STATIC_WEBAPP_ID=$STATIC_WEBAPP_ID" >> $GITHUB_ENV
+    #     echo "ADM_STATIC_WEBAPP_HOSTNAME=$STATIC_WEBAPP_HOSTNAME" >> $GITHUB_ENV
+    
+
+   ############### Open AI ###########################
+    
+    # - name: OpenAI
+    #   run: |
+    #     az cognitiveservices account create --name ${{ github.event.inputs.env_name }}-openai --resource-group ${{ github.event.inputs.env_name }}-rg --kind OpenAI --sku S0 --location eastus2
+     
+    # - name: OpenAI Deployment
+    #   run: |
+    #     az cognitiveservices account deployment create -g Trumio-Prod-RG -n Trumio-Prod-OpenAI --deployment-name gpt-4o-${{ github.event.inputs.env_name }} --model-name gpt-4o --model-version "2024-11-20" --model-format OpenAI --sku-capacity 1 --sku-name "Standard"
+    #     echo "Azure OpenAI service created successfully!"
+
+   ############### Servicebus ###########################
+   
+ 
+    - name: Servicebus namespace
+      run: |
+       az servicebus namespace create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --location ${{ github.event.inputs.region }} --sku Standard
+    
+    - name: Servicebus topic
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az servicebus topic create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --name meeting-transcript-events
+        az servicebus topic create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --name tru-analytics
+        az servicebus topic create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --name tru-notification-event
+        az servicebus topic create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --name trumio-ai
+        az servicebus topic create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --name tru-events
+        az servicebus topic create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --name trumio-events
+        
+    
+    - name: Servicebus topic subscription
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az servicebus topic subscription create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --topic-name meeting-transcript-events --name meeting-transcript-subscription
+        az servicebus topic subscription create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --topic-name tru-analytics --name tru-analytics-subscription
+        az servicebus topic subscription create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --topic-name tru-notification-event --name tru-notification-event-subscription
+        az servicebus topic subscription create --resource-group rg-cm-prod-eus2-01 --namespace-name sbns-api-cm-prod-eus2-01 --topic-name trumio-ai --name trumio-ai
+
+    - name: Servicebus topic
+      run: |
+        az servicebus topic create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --name meeting-transcript-events
+        az servicebus topic create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --name tru-analytics
+        az servicebus topic create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --name tru-notification-event
+        az servicebus topic create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --name trumio-ai
+        az servicebus topic create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --name tru-events
+        az servicebus topic create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --name trumio-events
+        
+    
+    - name: Servicebus topic subscription
+      run: |
+        az servicebus topic subscription create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --topic-name meeting-transcript-events --name meeting-transcript-subscription
+        az servicebus topic subscription create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --topic-name tru-analytics --name tru-analytics-subscription
+        az servicebus topic subscription create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --topic-name tru-notification-event --name tru-notification-event-subscription
+        az servicebus topic subscription create --resource-group rg-${{ github.event.inputs.env_name }}-eus2-01 --namespace-name sbns-api-${{ github.event.inputs.env_name }}-eus2-01 --topic-name trumio-ai --name trumio-ai
+   
+   
+   ################ Application gateway configuration ###########################
+ 
+    - name: Backend pools
+      run: |
+        az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-aks-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers 10.33.1.250
+        az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-sa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers saapi${{ env.backend_storage }}eus2.blob.core.windows.net  
+        az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.STATIC_WEBAPP_HOSTNAME }} 
+        az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-mon-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers 10.33.1.250
+
+    # - name: Backend pool-adm
+    #   if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+    #   run: |
+    #       az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-adm-wbapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.ADM_STATIC_WEBAPP_HOSTNAME }}
+
+    - name: Backend pool for project-advisor-fe
+      if: ${{ github.event.inputs.frontend_service == 'project-adv-swa' }}
+      run: |
+          az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-proj-adv-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.PROJECT_ADV_STATIC_WEBAPP_HOSTNAME }} 
+
+    - name: Backend pool for mio-interview-fe
+      if: ${{ github.event.inputs.frontend_service == 'mio-interview-swa' }}
+      run: |
+          az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-mio-int-swa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.MIO_INT_STATIC_WEBAPP_HOSTNAME }}
+
+    - name: Backend pool for org-admin-fe
+      if: ${{ github.event.inputs.frontend_service == 'org-admin-swa' }}
+      run: |
+          az network application-gateway address-pool create -g rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 -n bp-mio-int-swa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --servers ${{ env.ORG_ADM_STATIC_WEBAPP_HOSTNAME }}
+
+    - name: Backend settings-tru-prod
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-aks-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name tru-api.trumio.ai && \
+        
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-sa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name saapi${{ env.backend_storage }}eus2.blob.core.windows.net
+
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.STATIC_WEBAPP_HOSTNAME }}
+        
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-adm-wbapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.ADM_STATIC_WEBAPP_HOSTNAME }}
+
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-mon-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name monitor-${{ github.event.inputs.env_name }}.trumio.ai
+        
+    - name: Backend settings-wipro-lti-ust
+      if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-ust'}}
+      run: |
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-aks-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ github.event.inputs.client_name }}-ft-api.trumio.ai && \
+        
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-sa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name saapi${{ env.backend_storage }}eus2.blob.core.windows.net
+
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.STATIC_WEBAPP_HOSTNAME }}
+        
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-mon-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name monitor-${{ github.event.inputs.client_name }}.trumio.ai
+
+    - name: Backend settings-tru-app-wipro
+      if: ${{ github.event.inputs.env_name == 'tru-app-wipro' }}
+      run: |
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-aks-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name tru-api-wipro.trumio.ai && \
+        
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-sa-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name saapi${{ env.backend_storage }}eus2.blob.core.windows.net
+
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-webapp-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name ${{ env.STATIC_WEBAPP_HOSTNAME }}
+        
+        az network application-gateway http-settings create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name bs-mon-agw-api-cm-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --port 443 \
+        --cookie-based-affinity Disabled --timeout 90 --host-name-from-backend-pool no --host-name monitor-${{ github.event.inputs.client_name }}.trumio.ai
+
+
+    - name: Listeners
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-aks-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name tru-api.trumio.ai
+
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-webapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name ${{ github.event.inputs.client_name }}.trumio.ai
+
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-adm-wbapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name admin.trumio.ai
+
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-mon-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name monitor-${{ github.event.inputs.env_name }}.trumio.ai
+
+    - name: Listeners - wipro-lti-ust
+      if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-ust' }}
+      run: |
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-aks-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name ${{ github.event.inputs.client_name }}-ft-api.trumio.ai
+        
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-webapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name ${{ github.event.inputs.client_name }}.trumio.ai
+
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-mon-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name monitor-${{ github.event.inputs.client_name }}.trumio.ai
+
+    - name: Listeners - tru-app-wipro
+      if: ${{ github.event.inputs.env_name == 'tru-app-wipro' }}
+      run: |
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-aks-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name tru-api-wipro.trumio.ai
+        
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-webapp-agw-app-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name ${{ github.event.inputs.client_name }}.trumio.ai
+
+        az network application-gateway http-listener create \
+          --resource-group rg-cm-prod-eus2-01 \
+          --gateway-name agw-api-cm-prod-eus2-01 \
+          --name ls-mon-agw-api-${{ github.event.inputs.env_name }}-eus2-01 \
+          --frontend-ip pip-agw-prod-eus2-01 \
+          --frontend-port 443 \
+          --ssl-cert trumio-ai-pfx-2025 \
+          --host-name monitor-${{ github.event.inputs.client_name }}.trumio.ai
+
+    - name: Health-probe
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-aks-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path /user/health-check --interval 300 --timeout 60 --threshold 5 --match-status-codes 200-399 --host-name-from-settings false && \
+        
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-webapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path / --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false && \
+
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-adm-wbapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path / --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false && \
+        
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-sa-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path "/?comp=list&sv" --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false && \
+
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-mon-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path /ready --interval 300 --timeout 60 --threshold 5 --match-status-codes 200-399 --host-name-from-settings false
+
+    - name: Health-probe
+      if: ${{ github.event.inputs.env_name == 'tru-wipro' || github.event.inputs.env_name == 'tru-lti' || github.event.inputs.env_name == 'tru-app-wipro' || github.event.inputs.env_name == 'tru-ust'}}
+      run: |
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-aks-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path /user/health-check --interval 300 --timeout 60 --threshold 5 --match-status-codes 200-399 --host-name-from-settings false && \
+        
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-webapp-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path / --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false && \
+        
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-sa-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path "/?comp=list&sv" --interval 60 --timeout 60 --threshold 3 --match-status-codes 200-399 --host-name-from-settings false && \
+
+        az network application-gateway probe create --resource-group rg-cm-prod-eus2-01 --gateway-name agw-api-cm-prod-eus2-01 --name probe-mon-agw-api-${{ github.event.inputs.env_name }}-eus2-01 --protocol Https --from-http-settings yes --from-settings yes \
+        --path /ready --interval 300 --timeout 60 --threshold 5 --match-status-codes 200-399 --host-name-from-settings false
+   
+   ################ Kubernetes configuration ###########################
+  
+ # Set the target AKS cluster.
+    - uses: azure/aks-set-context@v4
+      with:
+        cluster-name: aks-api-cm-prod-eus2-01
+        resource-group: rg-cm-prod-eus2-01
+
+    #install kubectl on container (runner)
+    - uses: azure/setup-kubectl@v4
+      with:
+        version: 'v1.28.2' # default is latest stable
+      id: install
+
+    # K8s namespace
+    - name: K8s
+      run: |
+          kubectl get namespace ${{ github.event.inputs.env_name }} || kubectl create namespace ${{ github.event.inputs.env_name }}
+          kubectl create secret tls trumio-tls-secret --cert=cert.pem --key=key.pem -n ${{ github.event.inputs.env_name }}
+
+    # - uses: Azure/k8s-deploy@v5
+    #   with:
+    #     action: deploy
+    #     namespace: '${{ github.event.inputs.env_name }}'
+    #     manifests: |
+    #       ingress/ingress-${{ github.event.inputs.env_name }}.yml
+
+  # K8s user nodepool
+    - name: K8s nodepool
+      if: ${{  github.event.inputs.env_name == 'tru-prod' }}
+      run: |
+          az aks nodepool add --cluster-name aks-api-cm-prod-eus2-01 --name usrtruprdeus -g rg-cm-prod-eus2-01 --labels workload=tru-wipro --enable-cluster-autoscaler --max-count 3 --max-pods 30 --min-count 1 --node-count 1 --node-osdisk-size 64 --mode User --node-osdisk-type Managed --node-vm-size Standard_E2as_v5 --vnet-subnet-id /subscriptions/b983da0b-033c-4c43-b7b2-eb5e4a976343/resourceGroups/rg-cm-prod-eus2-01/providers/Microsoft.Network/virtualNetworks/vnet-cm-prod-eus2-01/subnets/snet-aks-prod-eus2-01
