@@ -517,7 +517,7 @@ jobs:
           az aks nodepool add --cluster-name aks-api-cm-prod-eus2-01 --name usrtruprdeus -g rg-cm-prod-eus2-01 --labels workload=tru-wipro --enable-cluster-autoscaler --max-count 3 --max-pods 30 --min-count 1 --node-count 1 --node-osdisk-size 64 --mode User --node-osdisk-type Managed --node-vm-size Standard_E2as_v5 --vnet-subnet-id /subscriptions/b983da0b-033c-4c43-b7b2-eb5e4a976343/resourceGroups/rg-cm-prod-eus2-01/providers/Microsoft.Network/virtualNetworks/vnet-cm-prod-eus2-01/subnets/snet-aks-prod-eus2-01
 
 
-  Frontend-services-configuration(swa):
+  Frontend-services-configuration:
     runs-on: trumio-prod-orgrunner
 
     steps:
