@@ -30,7 +30,7 @@ jobs:
       - uses: dchourasia/ms-teams-notification@1.0 #  or "./" if in a local set-up
         if: always()
         with:
-          github-token: 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
+          github-token: ${{ github.token }}
           webhook-uri: https://sysforetech.webhook.office.com/webhookb2/8a18ecbb-1d97-4f81-9df5-8e51170a53a7@24917450-fe15-4414-92ed-94fa8ec1b938/IncomingWebhook/961c4fc0264c49b38b04530bac141909/d10e89d2-468d-4b4f-a87f-07fa9967914e/V2DESxahJUwHy0ihd4yfXvbEEHTNiRpe3AN4AGb2B05WA1
       - name: Set Azure Static Web Apps Token
         run: |
