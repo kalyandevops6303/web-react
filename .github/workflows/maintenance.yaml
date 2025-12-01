@@ -31,7 +31,7 @@ jobs:
         if: always()
         with:
           github-token: ${{ github.token }}
-          webhook-uri: https://sysforetech.webhook.office.com/webhookb2/8a18ecbb-1d97-4f81-9df5-8e51170a53a7@24917450-fe15-4414-92ed-94fa8ec1b938/IncomingWebhook/961c4fc0264c49b38b04530bac141909/d10e89d2-468d-4b4f-a87f-07fa9967914e/V2DESxahJUwHy0ihd4yfXvbEEHTNiRpe3AN4AGb2B05WA1
+          webhook-uri: https://default24917450fe15441492ed94fa8ec1b9.38.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a3131164c6f640b9906d963ce98af274/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CAaXA8AycB_F6RpM7ZSJt0hhFGUSZFnx3Qfj8Z0Bo8A
       - name: Set Azure Static Web Apps Token
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "tru-uat" ]]; then
