@@ -21,10 +21,17 @@ jobs:
     concurrency: release
     steps:
       - uses: actions/checkout@v4
+      
         with:
           fetch-depth: 0
           #ref: ${{ vars.BRANCH }}
           submodules: true
+      # this is the new step
+      - uses: dchourasia/ms-teams-notification@1.0 #  or "./" if in a local set-up
+        if: always()
+        with:
+          github-token: ${{ github.token }}
+          webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
       - name: Set Azure Static Web Apps Token
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "tru-uat" ]]; then
