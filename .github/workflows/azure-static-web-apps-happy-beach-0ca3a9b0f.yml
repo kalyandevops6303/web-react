@@ -33,99 +33,43 @@ jobs:
         with:
           submodules: true
           lfs: false
-      - name: Notify Teams (Adaptive Card POST)
+      - name: Notify Teams (Adaptive Card)
         if: always()
         env:
-          WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}   # <- make sure this secret exists and contains the full Flow webhook URL
+          WEBHOOK: ${{ secrets.TEAMS_FLOW_WEBHOOK }}
+          STATUS: ${{ job.status }}
         run: |
-          # compute status (job.status is evaluated by GitHub before the step runs)
-          STATUS="${{ job.status }}"   # will be 'success', 'failure', or 'cancelled' (lowercase)
-          # humanize
-          if [ "$STATUS" = "success" ]; then
-            STATUS_LABEL="Success"
-            COLOR="28a745"
-          elif [ "$STATUS" = "failure" ]; then
-            STATUS_LABEL="Failed"
-            COLOR="FF0000"
-          else
-            STATUS_LABEL="Cancelled"
-            COLOR="808080"
-          fi
+          echo "Workflow status: $STATUS"
       
-          # helpful run links and metadata
-          REPO="${GITHUB_REPOSITORY}"
-          RUN_ID="${GITHUB_RUN_ID}"
-          WORKFLOW="${GITHUB_WORKFLOW}"
-          BRANCH="${GITHUB_REF##*/}"
-          ACTOR="${GITHUB_ACTOR}"
-          RUN_URL="https://github.com/${REPO}/actions/runs/${RUN_ID}"
-          LOGS_URL="${RUN_URL}"
-      
-          # card payload (escape $schema so shell doesn't expand it)
-          cat > /tmp/card.json <<CARD
+          cat > card.json <<EOF
+      {
+        "attachments": [
           {
-            "type": "message",
-            "attachments": [
-              {
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "content": {
-                  "\\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                  "type": "AdaptiveCard",
-                  "version": "1.3",
-                  "body": [
-                    {
-                      "type": "ColumnSet",
-                      "columns": [
-                        {
-                          "type": "Column",
-                          "width": "stretch",
-                          "items": [
-                            { "type": "TextBlock", "text": "GitHub Actions — ${REPO}", "weight": "Bolder", "size": "Medium" },
-                            { "type": "TextBlock", "text": "Workflow: ${WORKFLOW}", "spacing": "None" },
-                            { "type": "TextBlock", "text": "Branch: ${BRANCH}", "spacing": "None" },
-                            { "type": "TextBlock", "text": "Actor: ${ACTOR}", "spacing": "None" }
-                          ]
-                        },
-                        {
-                          "type": "Column",
-                          "width": "auto",
-                          "items": [
-                            { "type": "TextBlock", "text": "${STATUS_LABEL}", "weight": "Bolder", "size": "Medium", "color": "Accent" },
-                            { "type": "TextBlock", "text": "Commit: ${GITHUB_SHA:0:7}", "spacing": "None" }
-                          ]
-                        }
-                      ]
-                    },
-                    { "type": "TextBlock", "text": "Run: ${RUN_URL}", "wrap": true, "spacing": "Medium", "isSubtle": true }
-                  ],
-                  "actions": [
-                    {
-                      "type": "Action.OpenUrl",
-                      "title": "View run",
-                      "url": "${RUN_URL}"
-                    },
-                    {
-                      "type": "Action.OpenUrl",
-                      "title": "View logs",
-                      "url": "${LOGS_URL}"
-                    }
-                  ],
-                  "msteams": {
-                    "width": "Full"
-                  }
-                }
-              }
-            ],
-            "themeColor": "${COLOR}"
+            "contentType": "application/vnd.microsoft.card.adaptive",
+            "content": {
+              "\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+              "type": "AdaptiveCard",
+              "version": "1.3",
+              "body": [
+                { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "Repository: $GITHUB_REPOSITORY" },
+                { "type": "TextBlock", "text": "Workflow: $GITHUB_WORKFLOW" },
+                { "type": "TextBlock", "text": "Status: $STATUS" },
+                { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" },
+                { "type": "TextBlock", "text": "Run URL:" },
+                { "type": "TextBlock", "wrap": true, "text": "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" }
+              ]
+            }
           }
-          CARD
-          
-              # debug: print payload to log (helpful while testing)
-              if command -v jq >/dev/null 2>&1; then jq . /tmp/card.json || cat /tmp/card.json; else cat /tmp/card.json; fi
-          
-              # post to Power Automate webhook
-              curl -S -X POST "$WEBHOOK" -H "Content-Type: application/json" --data-binary @/tmp/card.json
-
+        ]
+      }
+      EOF
+      
+          echo "--- Payload being sent ---"
+          cat card.json
+      
+          curl -X POST "$WEBHOOK" \
+            -H "Content-Type: application/json" \
+            --data-binary @card.json
           
       - name: Build And Deploy
         id: builddeploy
@@ -154,4 +98,5 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BEACH_0CA3A9B0F }}
   #         action: "close"
+
 
