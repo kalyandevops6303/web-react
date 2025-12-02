@@ -33,43 +33,53 @@ jobs:
         with:
           submodules: true
           lfs: false
-      - name: Notify Teams (Adaptive Card)
+      - name: Notify Teams (Adaptive Card POST)
         if: always()
         env:
-          WEBHOOK: ${{ secrets.TEAMS_FLOW_WEBHOOK }}
+          WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
           STATUS: ${{ job.status }}
         run: |
-          echo "Workflow status: $STATUS"
+          # compute readable status + simple color
+          if [ "$STATUS" = "success" ]; then
+            STATUS_LABEL="Success"
+            STATUS_COLOR="Good"
+          elif [ "$STATUS" = "failure" ]; then
+            STATUS_LABEL="Failed"
+            STATUS_COLOR="Attention"
+          else
+            STATUS_LABEL="Cancelled"
+            STATUS_COLOR="Warning"
+          fi
       
-          cat > card.json <<EOF
-          {
-            "attachments": [
-              {
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "content": {
-                  "\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                  "type": "AdaptiveCard",
-                  "version": "1.3",
-                  "body": [
-                    { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "Repository: $GITHUB_REPOSITORY" },
-                    { "type": "TextBlock", "text": "Workflow: $GITHUB_WORKFLOW" },
-                    { "type": "TextBlock", "text": "Status: $STATUS" },
-                    { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" },
-                    { "type": "TextBlock", "text": "Run URL:" },
-                    { "type": "TextBlock", "wrap": true, "text": "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" }
-                  ]
+          cat > /tmp/card.json <<'CARD'
+            {
+              "attachments": [
+                {
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.3",
+                    "body": [
+                      { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions Notification" }
+                    ]
+                  }
                 }
-              }
-            ]
-          }
-          EOF
-          
-              echo "--- Payload being sent ---"
-              cat card.json
-          
-              curl -X POST "$WEBHOOK" \
-                -H "Content-Type: application/json" \
-                --data-binary @card.json
+              ]
+            }
+            CARD
+            
+                # now inject dynamic values safely
+                # replace placeholders with actual values
+                sed -i "s/GitHub Actions Notification/GitHub Actions — $GITHUB_REPOSITORY\nWorkflow: $GITHUB_WORKFLOW\nBranch: ${GITHUB_REF##*/}\nStatus: $STATUS_LABEL\nCommit: $GITHUB_SHA\nRun: https:\/\/github.com\/$GITHUB_REPOSITORY\/actions\/runs\/$GITHUB_RUN_ID/" /tmp/card.json
+            
+                echo "Adaptive Card Payload:"
+                cat /tmp/card.json
+            
+                curl -sS -X POST "$WEBHOOK" \
+                  -H "Content-Type: application/json" \
+                  --data-binary @/tmp/card.json
+
           
       - name: Build And Deploy
         id: builddeploy
@@ -98,6 +108,7 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BEACH_0CA3A9B0F }}
   #         action: "close"
+
 
 
 
