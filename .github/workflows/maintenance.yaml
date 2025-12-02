@@ -38,29 +38,29 @@ jobs:
           WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
         run: |
           cat > /tmp/card.json <<CARD
-      {
-        "attachments": [
           {
-            "contentType": "application/vnd.microsoft.card.adaptive",
-            "content": {
-              "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-              "type": "AdaptiveCard",
-              "version": "1.3",
-              "body": [
-                { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
-                { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
-                { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: ${{ job.status }}" },
-                { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
-              ]
-            }
+            "attachments": [
+              {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.3",
+                  "body": [
+                    { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: ${{ job.status }}" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
+                  ]
+                }
+              }
+            ]
           }
-        ]
-      }
-      CARD
-      
-          curl -sS -X POST "$WEBHOOK" \
-            -H "Content-Type: application/json" \
-            --data-binary @/tmp/card.json
+          CARD
+          
+              curl -sS -X POST "$WEBHOOK" \
+                -H "Content-Type: application/json" \
+                --data-binary @/tmp/card.json
 
       - name: Set Azure Static Web Apps Token
         run: |
