@@ -26,12 +26,43 @@ jobs:
           fetch-depth: 0
           #ref: ${{ vars.BRANCH }}
           submodules: true
-      # this is the new step
-      - uses: dchourasia/ms-teams-notification@1.0 #  or "./" if in a local set-up
+      # # this is the new step
+      # - uses: dchourasia/ms-teams-notification@1.0 #  or "./" if in a local set-up
+      #   if: always()
+      #   with:
+      #     github-token: ${{ github.token }}
+      #     webhook-uri: https://default24917450fe15441492ed94fa8ec1b9.38.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/bd9cd8c14dd0418da46f98baf2ac6d93/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Js0z_I-XJKSgyiAiQ0Uteb0_tVEft6MOXeMPcNKqJW0
+      - name: Notify Teams (Adaptive Card POST)
         if: always()
-        with:
-          github-token: ${{ github.token }}
-          webhook-uri: https://default24917450fe15441492ed94fa8ec1b9.38.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/bd9cd8c14dd0418da46f98baf2ac6d93/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Js0z_I-XJKSgyiAiQ0Uteb0_tVEft6MOXeMPcNKqJW0
+        env:
+          WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
+        run: |
+          cat > /tmp/card.json <<'CARD'
+          {
+            "type": "message",
+            "attachments": [
+              {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.3",
+                  "body": [
+                    { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: ${{ job.status }}" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
+                  ]
+                }
+              }
+            ]
+          }
+          CARD
+      
+          curl -sS -X POST "$WEBHOOK" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/card.json
+
       - name: Set Azure Static Web Apps Token
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "tru-uat" ]]; then
