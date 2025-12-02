@@ -36,7 +36,11 @@ jobs:
         if: always()
         env:
           WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
+          # compute status at runtime (evaluated before the step runs)
+          STATUS: ${{ cancelled() && 'Cancelled' || failure() && 'Failed' || 'Success' }}
         run: |
+          echo "Computed status: $STATUS"
+      
           cat > /tmp/card.json <<CARD
           {
             "type": "message",
@@ -50,7 +54,7 @@ jobs:
                   "body": [
                     { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
                     { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
-                    { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: ${{ job.status }}" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: $STATUS" },
                     { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
                   ]
                 }
@@ -58,14 +62,13 @@ jobs:
             ]
           }
           CARD
-      
-          echo "Posting Adaptive Card to Teams..."
-          cat /tmp/card.json
-      
-          curl -sS -X POST "$WEBHOOK" \
-            -H "Content-Type: application/json" \
-            --data-binary @/tmp/card.json
-
+          
+              echo "Posting Adaptive Card to Teams (payload):"
+              jq . /tmp/card.json || cat /tmp/card.json
+          
+              curl -sS -X POST "$WEBHOOK" \
+                -H "Content-Type: application/json" \
+                --data-binary @/tmp/card.json
 
       - name: Set Azure Static Web Apps Token
         run: |
