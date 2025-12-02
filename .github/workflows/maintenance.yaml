@@ -39,6 +39,7 @@ jobs:
         run: |
           cat > /tmp/card.json <<CARD
           {
+            "type": "message",
             "attachments": [
               {
                 "contentType": "application/vnd.microsoft.card.adaptive",
@@ -57,13 +58,14 @@ jobs:
             ]
           }
           CARD
-          
-              # optional: print to logs for debugging
-              cat /tmp/card.json
-          
-              curl -sS -X POST "$WEBHOOK" \
-                -H "Content-Type: application/json" \
-                --data-binary @/tmp/card.json
+      
+          echo "Posting Adaptive Card to Teams..."
+          cat /tmp/card.json
+      
+          curl -sS -X POST "$WEBHOOK" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/card.json
+
 
       - name: Set Azure Static Web Apps Token
         run: |
