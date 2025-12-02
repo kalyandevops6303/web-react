@@ -42,34 +42,34 @@ jobs:
           echo "Workflow status: $STATUS"
       
           cat > card.json <<EOF
-      {
-        "attachments": [
           {
-            "contentType": "application/vnd.microsoft.card.adaptive",
-            "content": {
-              "\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-              "type": "AdaptiveCard",
-              "version": "1.3",
-              "body": [
-                { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "Repository: $GITHUB_REPOSITORY" },
-                { "type": "TextBlock", "text": "Workflow: $GITHUB_WORKFLOW" },
-                { "type": "TextBlock", "text": "Status: $STATUS" },
-                { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" },
-                { "type": "TextBlock", "text": "Run URL:" },
-                { "type": "TextBlock", "wrap": true, "text": "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" }
-              ]
-            }
+            "attachments": [
+              {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.3",
+                  "body": [
+                    { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "Repository: $GITHUB_REPOSITORY" },
+                    { "type": "TextBlock", "text": "Workflow: $GITHUB_WORKFLOW" },
+                    { "type": "TextBlock", "text": "Status: $STATUS" },
+                    { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" },
+                    { "type": "TextBlock", "text": "Run URL:" },
+                    { "type": "TextBlock", "wrap": true, "text": "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" }
+                  ]
+                }
+              }
+            ]
           }
-        ]
-      }
-      EOF
-      
-          echo "--- Payload being sent ---"
-          cat card.json
-      
-          curl -X POST "$WEBHOOK" \
-            -H "Content-Type: application/json" \
-            --data-binary @card.json
+          EOF
+          
+              echo "--- Payload being sent ---"
+              cat card.json
+          
+              curl -X POST "$WEBHOOK" \
+                -H "Content-Type: application/json" \
+                --data-binary @card.json
           
       - name: Build And Deploy
         id: builddeploy
@@ -98,5 +98,6 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BEACH_0CA3A9B0F }}
   #         action: "close"
+
 
 
