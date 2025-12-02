@@ -35,8 +35,8 @@ jobs:
       - name: Notify Teams (Adaptive Card POST)
         if: always()
         env:
-          WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
-          # compute status at runtime (evaluated before the step runs)
+          WEBHOOK: ${{ secrets.TEAMS_FLOW_WEBHOOK }}
+          # compute final job status (evaluated when the step runs)
           STATUS: ${{ cancelled() && 'Cancelled' || failure() && 'Failed' || 'Success' }}
         run: |
           echo "Computed status: $STATUS"
@@ -55,16 +55,18 @@ jobs:
                     { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
                     { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
                     { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: $STATUS" },
-                    { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
-                    ]
-                  }
+                    { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Run: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" }
+                  ]
                 }
-              ]
-            }
+              }
+            ]
+           }
             CARD
             
                 echo "Posting Adaptive Card to Teams (payload):"
-                jq . /tmp/card.json || cat /tmp/card.json
+                # pretty-print if jq exists, else just cat the file
+                if command -v jq >/dev/null 2>&1; then jq . /tmp/card.json; else cat /tmp/card.json; fi
             
                 curl -sS -X POST "$WEBHOOK" \
                   -H "Content-Type: application/json" \
