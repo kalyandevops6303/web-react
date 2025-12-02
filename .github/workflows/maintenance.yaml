@@ -43,7 +43,7 @@ jobs:
               {
                 "contentType": "application/vnd.microsoft.card.adaptive",
                 "content": {
-                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
                   "type": "AdaptiveCard",
                   "version": "1.3",
                   "body": [
@@ -58,6 +58,7 @@ jobs:
           }
           CARD
           
+              # send the card
               curl -sS -X POST "$WEBHOOK" \
                 -H "Content-Type: application/json" \
                 --data-binary @/tmp/card.json
