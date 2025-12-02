@@ -56,19 +56,19 @@ jobs:
                     { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
                     { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: $STATUS" },
                     { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
-                  ]
+                    ]
+                  }
                 }
-              }
-            ]
-          }
-          CARD
-          
-              echo "Posting Adaptive Card to Teams (payload):"
-              jq . /tmp/card.json || cat /tmp/card.json
-          
-              curl -sS -X POST "$WEBHOOK" \
-                -H "Content-Type: application/json" \
-                --data-binary @/tmp/card.json
+              ]
+            }
+            CARD
+            
+                echo "Posting Adaptive Card to Teams (payload):"
+                jq . /tmp/card.json || cat /tmp/card.json
+            
+                curl -sS -X POST "$WEBHOOK" \
+                  -H "Content-Type: application/json" \
+                  --data-binary @/tmp/card.json
 
       - name: Set Azure Static Web Apps Token
         run: |
