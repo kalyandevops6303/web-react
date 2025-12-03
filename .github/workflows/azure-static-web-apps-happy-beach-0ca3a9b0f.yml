@@ -71,9 +71,10 @@ jobs:
     steps:
       - name: Set color variable
         run: |
-          if [ "$STATUS" = "success" ]; then 
+          echo "Detected FINAL_STATUS='$FINAL_STATUS'"
+          if [ "$FINAL_STATUS" = "success" ]; then 
             echo "COLOR=good" >> $GITHUB_ENV
-          elif [ "$STATUS" = "failure" ]; then 
+          elif [ "$FINAL_STATUS" = "failure" ]; then 
             echo "COLOR=attention" >> $GITHUB_ENV
           else 
             echo "COLOR=warning" >> $GITHUB_ENV
@@ -109,6 +110,7 @@ jobs:
             
           echo "STATUS=$STATUS COLOR=$COLOR"
           cat /tmp/card.json
+
 
 
 
