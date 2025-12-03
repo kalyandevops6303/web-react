@@ -61,7 +61,7 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BEACH_0CA3A9B0F }}
   #         action: "close"
-  notify:
+  Notify_Teams:
     needs: build_and_deploy_job
     runs-on: ubuntu-latest
     if: always()
@@ -81,7 +81,7 @@ jobs:
           fi
           echo "STATUS='$STATUS'"
           echo "needs.build_and_deploy_job.result='${{ needs.build_and_deploy_job.result }}'"
-      - name: Notify Teams Channel
+      - name: Notify Teams Chat
         run: |
           cat > /tmp/card.json <<CARD
           {
@@ -111,4 +111,5 @@ jobs:
             
           echo "STATUS=$STATUS COLOR=$COLOR"
           cat /tmp/card.json
+
 
