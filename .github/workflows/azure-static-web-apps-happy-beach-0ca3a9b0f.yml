@@ -61,11 +61,15 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BEACH_0CA3A9B0F }}
   #         action: "close"
-       
-      - name: Notify Teams (Adaptive Card POST)
-        if: always()
-        env:
-          WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
+  notify:
+    needs: build_and_deploy_job
+    runs-on: ubuntu-latest
+    if: always()
+    env:
+      WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
+      FINAL_STATUS: ${{ needs.build.result }}
+    steps:
+      - name: Notify Teams
         run: |
           cat > /tmp/card.json <<CARD
           {
@@ -78,22 +82,19 @@ jobs:
                   "version": "1.3",
                   "body": [
                     { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
-                    { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
-                    { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: ${{ needs.build.result }}" },
-                    { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
+                    { "type": "TextBlock", "text": "Workflow: $GITHUB_WORKFLOW" },
+                    { "type": "TextBlock", "text": "Job: build — Status: $FINAL_STATUS" },
+                    { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" }
                   ]
                 }
               }
             ]
           }
           CARD
-          
-              # optional: print to logs for debugging
-              cat /tmp/card.json
-          
-              curl -sS -X POST "$WEBHOOK" \
-                -H "Content-Type: application/json" \
-                --data-binary @/tmp/card.json
+
+          curl -sS -X POST "$WEBHOOK" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/card.json
 
 
 
