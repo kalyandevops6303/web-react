@@ -76,7 +76,9 @@ jobs:
                 echo "Adaptive Card Payload:"
                 cat /tmp/card.json
             
-                curl -sS -X POST "$WEBHOOK" -H "Content-Type: application/json" --data-binary @/tmp/card.json
+                curl -sS -X POST "$WEBHOOK" \
+                  -H "Content-Type: application/json" \
+                  --data-binary @/tmp/card.json
 
           
       - name: Build And Deploy
@@ -106,6 +108,7 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BEACH_0CA3A9B0F }}
   #         action: "close"
+
 
 
 
