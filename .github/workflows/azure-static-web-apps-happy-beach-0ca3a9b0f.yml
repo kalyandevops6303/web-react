@@ -69,6 +69,15 @@ jobs:
       WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
       FINAL_STATUS: ${{ needs.build_and_deploy_job.result }}
     steps:
+      - name: Set color variable
+        run: |
+          if [ "$STATUS" = "success" ]; then 
+            echo "COLOR=Good" >> $GITHUB_ENV
+          elif [ "$STATUS" = "failure" ]; then 
+            echo "COLOR=Attention" >> $GITHUB_ENV
+          else 
+            echo "COLOR=Warning" >> $GITHUB_ENV
+          fi
       - name: Notify Teams
         run: |
           cat > /tmp/card.json <<CARD
@@ -83,7 +92,7 @@ jobs:
                   "body": [
                     { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
                     { "type": "TextBlock", "text": "Workflow: $GITHUB_WORKFLOW" },
-                    { "type": "TextBlock", "text": "Job: build_and_deploy_job — Status: $FINAL_STATUS" },
+                    { "type": "TextBlock", "text": "Job: build_and_deploy_job — Status: $FINAL_STATUS", "color": "$COLOR", "weight": "Bolder" },
                     { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" }
                   ]
                 }
@@ -95,6 +104,7 @@ jobs:
           curl -sS -X POST "$WEBHOOK" \
             -H "Content-Type: application/json" \
             --data-binary @/tmp/card.json
+
 
 
 
