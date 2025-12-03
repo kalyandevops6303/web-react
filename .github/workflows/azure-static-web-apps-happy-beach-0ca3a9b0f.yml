@@ -67,7 +67,7 @@ jobs:
     if: always()
     env:
       WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
-      FINAL_STATUS: ${{ needs.build.result }}
+      FINAL_STATUS: ${{ needs.build_and_deploy_job.result }}
     steps:
       - name: Notify Teams
         run: |
@@ -95,6 +95,7 @@ jobs:
           curl -sS -X POST "$WEBHOOK" \
             -H "Content-Type: application/json" \
             --data-binary @/tmp/card.json
+
 
 
 
