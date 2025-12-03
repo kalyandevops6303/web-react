@@ -33,52 +33,75 @@ jobs:
         with:
           submodules: true
           lfs: false
-      - name: Notify Teams (Adaptive Card POST)
+      - name: Notify Teams (Adaptive Card POST) 
         if: always()
         env:
           WEBHOOK: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK }}
-          STATUS: ${{ job.status }}
+          STATUS_RAW: ${{ job.status }}
         run: |
-          # compute readable status + simple color
+          # compute human status label
+          STATUS="${STATUS_RAW}"
           if [ "$STATUS" = "success" ]; then
             STATUS_LABEL="Success"
-            STATUS_COLOR="Good"
           elif [ "$STATUS" = "failure" ]; then
             STATUS_LABEL="Failed"
-            STATUS_COLOR="Attention"
           else
             STATUS_LABEL="Cancelled"
-            STATUS_COLOR="Warning"
           fi
       
-          cat > /tmp/card.json <<'CARD'
-            {
-              "attachments": [
+          # create template with placeholders (indentation here is fine)
+          cat > /tmp/card_template.json <<'TEMPLATE'
                 {
-                  "contentType": "application/vnd.microsoft.card.adaptive",
-                  "content": {
-                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                    "type": "AdaptiveCard",
-                    "version": "1.3",
-                    "body": [
-                      { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions Notification" }
-                    ]
-                  }
+                  "attachments": [
+                    {
+                      "contentType": "application/vnd.microsoft.card.adaptive",
+                      "content": {
+                        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                        "type": "AdaptiveCard",
+                        "version": "1.3",
+                        "body": [
+                          { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "__REPO__" },
+                          { "type": "TextBlock", "text": "__WORKFLOW__" },
+                          { "type": "TextBlock", "text": "Branch: __BRANCH__" },
+                          { "type": "TextBlock", "text": "Status: __STATUS__" },
+                          { "type": "TextBlock", "text": "Commit: __COMMIT__" },
+                          { "type": "TextBlock", "wrap": true, "text": "__RUN_URL__" }
+                        ]
+                      }
+                    }
+                  ]
                 }
-              ]
-            }
-            CARD
-            
-                # now inject dynamic values safely
-                # replace placeholders with actual values
-                sed -i "s/GitHub Actions Notification/GitHub Actions — $GITHUB_REPOSITORY\nWorkflow: $GITHUB_WORKFLOW\nBranch: ${GITHUB_REF##*/}\nStatus: $STATUS_LABEL\nCommit: $GITHUB_SHA\nRun: https:\/\/github.com\/$GITHUB_REPOSITORY\/actions\/runs\/$GITHUB_RUN_ID/" /tmp/card.json
-            
-                echo "Adaptive Card Payload:"
-                cat /tmp/card.json
-            
-                curl -sS -X POST "$WEBHOOK" \
-                  -H "Content-Type: application/json" \
-                  --data-binary @/tmp/card.json
+                TEMPLATE
+                
+                    # helper to escape sed replacement characters (/, &)
+                    esc() {
+                      printf '%s' "$1" | sed -e 's/[\/&]/\\&/g'
+                    }
+                
+                    REPO_ESC=$(esc "$GITHUB_REPOSITORY")
+                    WORKFLOW_ESC=$(esc "$GITHUB_WORKFLOW")
+                    BRANCH_ESC=$(esc "${GITHUB_REF##*/}")
+                    STATUS_ESC=$(esc "$STATUS_LABEL")
+                    COMMIT_ESC=$(esc "$GITHUB_SHA")
+                    RUN_URL_ESC=$(esc "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+                
+                    # replace placeholders and strip leading spaces inserted by YAML indentation
+                    sed -e "s/__REPO__/${REPO_ESC}/g" \
+                        -e "s/__WORKFLOW__/${WORKFLOW_ESC}/g" \
+                        -e "s/__BRANCH__/${BRANCH_ESC}/g" \
+                        -e "s/__STATUS__/${STATUS_ESC}/g" \
+                        -e "s/__COMMIT__/${COMMIT_ESC}/g" \
+                        -e "s/__RUN_URL__/${RUN_URL_ESC}/g" \
+                        /tmp/card_template.json \
+                      | sed -E 's/^[[:space:]]+//g' > /tmp/card.json
+                
+                    echo "=== Final card payload ==="
+                    cat /tmp/card.json
+                
+                    # POST to the Power Automate webhook
+                    curl -S -X POST "$WEBHOOK" \
+                      -H "Content-Type: application/json" \
+                      --data-binary @/tmp/card.json
 
           
       - name: Build And Deploy
@@ -108,6 +131,7 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BEACH_0CA3A9B0F }}
   #         action: "close"
+
 
 
 
