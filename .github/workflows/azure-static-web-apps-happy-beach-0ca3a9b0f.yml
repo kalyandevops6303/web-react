@@ -111,26 +111,3 @@ jobs:
             
           echo "STATUS=$STATUS COLOR=$COLOR"
           cat /tmp/card.json
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
