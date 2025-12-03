@@ -78,6 +78,8 @@ jobs:
           else 
             echo "COLOR=warning" >> $GITHUB_ENV
           fi
+          echo "STATUS='$STATUS'"
+          echo "needs.build_and_deploy_job.result='${{ needs.build_and_deploy_job.result }}'"
       - name: Notify Teams
         run: |
           cat > /tmp/card.json <<CARD
@@ -107,6 +109,7 @@ jobs:
             
           echo "STATUS=$STATUS COLOR=$COLOR"
           cat /tmp/card.json
+
 
 
 
