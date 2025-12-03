@@ -104,6 +104,9 @@ jobs:
           curl -sS -X POST "$WEBHOOK" \
             -H "Content-Type: application/json" \
             --data-binary @/tmp/card.json
+            
+          echo "STATUS=$STATUS COLOR=$COLOR"
+          cat /tmp/card.json
 
 
 
