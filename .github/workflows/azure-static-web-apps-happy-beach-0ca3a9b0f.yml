@@ -79,7 +79,7 @@ jobs:
                   "body": [
                     { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
                     { "type": "TextBlock", "spacing": "None", "text": "Workflow: $GITHUB_WORKFLOW" },
-                    { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: ${{ job.status }}" },
+                    { "type": "TextBlock", "spacing": "None", "text": "Job: $GITHUB_JOB — Status: ${{ needs.build.result }}" },
                     { "type": "TextBlock", "spacing": "None", "text": "Commit: $GITHUB_SHA" }
                   ]
                 }
@@ -94,6 +94,7 @@ jobs:
               curl -sS -X POST "$WEBHOOK" \
                 -H "Content-Type: application/json" \
                 --data-binary @/tmp/card.json
+
 
 
 
