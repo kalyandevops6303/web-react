@@ -72,14 +72,22 @@ jobs:
       - name: Set color variable
         run: |
           echo "Detected FINAL_STATUS='$FINAL_STATUS'"
+          FINAL_STATUS_UPPER=$(echo "$FINAL_STATUS" | tr '[:lower:]' '[:upper:]')
+          echo "FINAL_STATUS_UPPER=$FINAL_STATUS_UPPER" >> $GITHUB_ENV
+
+          
           if [ "$FINAL_STATUS" = "success" ]; then 
             echo "COLOR=good" >> $GITHUB_ENV
+            echo "EMOJI=✅" >> $GITHUB_ENV
           elif [ "$FINAL_STATUS" = "failure" ]; then 
             echo "COLOR=attention" >> $GITHUB_ENV
+            echo "EMOJI=❌" >> $GITHUB_ENV
           else 
             echo "COLOR=warning" >> $GITHUB_ENV
+            echo "EMOJI=⚠️" >> $GITHUB_ENV
           fi
           echo "STATUS='$STATUS'"
+          echo "Mapped FINAL_STATUS_UPPER=$FINAL_STATUS_UPPER COLOR=$COLOR EMOJI=$EMOJI"
           echo "needs.build_and_deploy_job.result='${{ needs.build_and_deploy_job.result }}'"
       - name: Notify Teams Chat
         run: |
@@ -95,7 +103,7 @@ jobs:
                   "body": [
                     { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "GitHub Actions — $GITHUB_REPOSITORY" },
                     { "type": "TextBlock", "text": "Workflow: $GITHUB_WORKFLOW" },
-                    { "type": "TextBlock", "text": "Job:— Status: $FINAL_STATUS", "color": "$COLOR", "weight": "Bolder" },
+                    { "type": "TextBlock", "text": "Status= $FINAL_STATUS_UPPER $EMOJI", "color": "$COLOR", "weight": "Bolder" },
                     { "type": "TextBlock", "text": "Triggered by: $GITHUB_ACTOR" },
                     { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" }
                   ]
@@ -111,6 +119,7 @@ jobs:
             
           echo "STATUS=$STATUS COLOR=$COLOR"
           cat /tmp/card.json
+
 
 
 
