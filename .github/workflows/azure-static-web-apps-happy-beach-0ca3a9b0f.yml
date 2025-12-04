@@ -102,8 +102,8 @@ jobs:
                   "type": "AdaptiveCard",
                   "version": "1.3",
                   "body": [
-                    { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "⚠️ GitHub Actions Workflow Alert — $GITHUB_REPOSITORY" },
-                    { "type": "TextBlock", "text": "Workflow: PREVIOUS_JOB_NAME" },
+                    { "type": "TextBlock", "size": "Medium", "weight": "Bolder", "text": "⚠️GitHub Actions Workflow Alert—$GITHUB_REPOSITORY" },
+                    { "type": "TextBlock", "text": "Workflow: $PREVIOUS_JOB_NAME" },
                     { "type": "TextBlock", "text": "Status= $FINAL_STATUS_UPPER $EMOJI", "color": "$COLOR", "weight": "Bolder" },
                     { "type": "TextBlock", "text": "Triggered by: $GITHUB_ACTOR" },
                     { "type": "TextBlock", "text": "Commit: $GITHUB_SHA" }
@@ -120,4 +120,5 @@ jobs:
             
           echo "STATUS=$STATUS COLOR=$COLOR"
           cat /tmp/card.json
+
 
